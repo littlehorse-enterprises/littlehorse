@@ -5,12 +5,12 @@ import moment from 'moment'
 import { Content } from '../CalendarComponents'
 
 interface CalendarCanvasBProps {
-    earlyDate:Date,
-    lastDate:Date,
-    setEndDT:(dt?:Date) => void, 
-    setStartDT:(dt?:Date) => void,
-    onApply:() => void,
-    outsideCalendarClickRef: React.LegacyRef<HTMLDivElement>
+  earlyDate:Date,
+  lastDate:Date,
+  setEndDT:(dt?:Date) => void, 
+  setStartDT:(dt?:Date) => void,
+  onApply:() => void,
+  outsideCalendarClickRef: React.LegacyRef<HTMLDivElement>
 }
 
 export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, lastDate, outsideCalendarClickRef }: CalendarCanvasBProps) {
@@ -20,7 +20,6 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
   const [ endSelected, setEndSelected ] = useState<Date | undefined>(lastDate)
     
   const updateEndSelectedH = (H:string) => {
-    console.log('updateEndSelectedH')
     setEndSelected(endSelected ? moment(endSelected).set('hour',Number(H)).toDate() : moment(selected).set('hour',Number(H)).toDate() )
   }
   const updateEndSelectedM = (M:string) => {
@@ -33,22 +32,22 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
     setSelected(moment(selected).set('minute',Number(M)).toDate())
   }
   const selectDate = (date:Date) => {
-    if(endSelected) {
+    if (endSelected) {
       setSelected(date)
       setStartDT(date)
       setEndSelected(undefined)
       setEndDT(undefined)
-    }else if(selected){
-      if(date > selected){
+    } else if (selected){
+      if (date > selected){
         setEndDT(date)
         setEndSelected(date)
-      }else{
+      } else {
         setEndDT(selected)
         setEndSelected(selected)
         setSelected(date)
         setStartDT(date)
       }
-    }else{
+    } else {
       setSelected(date)
       setStartDT(date)
     }

@@ -6,18 +6,18 @@ import LHClient from '../LHClient'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 
-  if (req.method === 'POST') {
+    if (req.method === 'POST') {
     //TODO: Insecure channel needs to be changed by a secure one
-    const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+        const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-    try {
-      const response = await client.searchWfSpec(JSON.parse(req.body))
-      res.send(response) 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+        try {
+            const response = await client.searchWfSpec(JSON.parse(req.body))
+            res.send(response) 
+        } catch (error) {
+            console.error('Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

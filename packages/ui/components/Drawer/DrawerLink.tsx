@@ -1,7 +1,7 @@
-interface Props {
-    name?:string
+interface DrawerLinkProps {
+  name?:string
 }
-export function DrawerLink({ name }:Props) {
+export function DrawerLink({ name }:DrawerLinkProps) {
   return <div className="drawer-link">
     <img alt="link" src="/link.svg" style={{ width:'20px', height:'10px' }} />
     {/* <Image src={linkSvg} alt={"link"} width={20} height={10} /> */}

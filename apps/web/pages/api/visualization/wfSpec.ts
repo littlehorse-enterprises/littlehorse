@@ -6,22 +6,22 @@ import type { WfSpec } from '../../../littlehorse-public-api/wf_spec'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-  if (req.method === 'POST') {
+    if (req.method === 'POST') {
     //TODO: Insecure channel needs to be changed by a secure one
-    const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+        const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-    try {
-      const parsedRequestBody = JSON.parse(req.body)
-      const response: WfSpec = await client.getWfSpec({
-        name: parsedRequestBody.id,
-        version: parsedRequestBody.version
-      } as any)
-      res.send(response) 
-    } catch (error) {
-      console.log('WfSpec - Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+        try {
+            const parsedRequestBody = JSON.parse(req.body)
+            const response: WfSpec = await client.getWfSpec({
+                name: parsedRequestBody.id,
+                version: parsedRequestBody.version
+            } as any)
+            res.send(response) 
+        } catch (error) {
+            console.error('visualization/WfSpec - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

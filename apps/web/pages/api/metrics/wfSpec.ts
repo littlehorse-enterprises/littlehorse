@@ -7,18 +7,18 @@ import LHClient from '../LHClient'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 
-  if (req.method === 'POST') {
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
-      const requestParams = JSON.parse(req.body)
+    if (req.method === 'POST') {
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+            const requestParams = JSON.parse(req.body)
 
-      const response = await client.listWfSpecMetrics(ListWfMetricsRequest.fromJSON(requestParams) as any)
-      res.send(response) 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+            const response = await client.listWfSpecMetrics(ListWfMetricsRequest.fromJSON(requestParams) as any)
+            res.send(response) 
+        } catch (error) {
+            console.error('metris/wfSpec - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

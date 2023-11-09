@@ -1,6 +1,6 @@
 import React from 'react'
 
-export interface Props extends React.HTMLAttributes<HTMLHeadElement> {}
+export type Props = React.HTMLAttributes<HTMLHeadElement>
 
 function H4({ children, ...props }: Props) {
   return <h4 {...props}>{children}</h4>

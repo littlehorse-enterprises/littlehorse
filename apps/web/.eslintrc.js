@@ -1,4 +1,7 @@
 module.exports = {
-  root: true,
-  extends: ["custom/next"],
-};
+    root: true,
+    globals: {
+        'NodeJS': 'readonly'
+    },
+    extends: [ 'custom/next' ],
+}

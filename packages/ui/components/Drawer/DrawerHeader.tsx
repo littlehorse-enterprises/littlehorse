@@ -1,10 +1,10 @@
 'use client'
-interface Props {
-    title?:string
-    image?:string
-    name?:string
+interface DrawerHeaderProps {
+  title?:string
+  image?:string
+  name?:string
 }
-export function DrawerHeader({ name, image, title }:Props) {
+export function DrawerHeader({ name, image, title }:DrawerHeaderProps) {
   return <div className='component-header'>
     <img alt={image} src={`/${image}.svg`} />
     <div>

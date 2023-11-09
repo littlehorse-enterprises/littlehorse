@@ -1,11 +1,11 @@
-interface Props {
-    className?: string;
-    style?: any;
+interface LoadingProps {
+  className?: string;
+  style?: any;
 }
 
 export function Loading({
-  className, style
-}: Props) {
+  style
+}: LoadingProps) {
   return <div style={style}>Loading ...</div>
   // return (<div className={`flex grid content-center justify-center ${className || ''}`} style={style}>
   //     <div className="flex gap gap-2 items-center loading">

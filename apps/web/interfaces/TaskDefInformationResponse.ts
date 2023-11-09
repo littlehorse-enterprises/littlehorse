@@ -1,4 +1,4 @@
-import { TaskDefInformation } from "./TaskDefInformation";
+import type { TaskDefInformation } from './TaskDefInformation'
 
 export interface TaskDefInformationResponse {
     code: string;

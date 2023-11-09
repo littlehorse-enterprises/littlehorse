@@ -1,7 +1,7 @@
 module.exports = {
-  reactStrictMode: true,
-  transpilePackages: [ 'ui' ],
-  sassOptions: {
-    outputStyle: 'expanded',
-  },
+    reactStrictMode: true,
+    transpilePackages: [ 'ui' ],
+    sassOptions: {
+        outputStyle: 'expanded',
+    },
 }

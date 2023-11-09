@@ -7,8 +7,8 @@ import { CInput } from './CalendarComponents'
 import { CalendarCanvasB } from './CalendarCanvas'
 
 interface CalendarBProps {
-    earlyDate:Date, changeEarlyDate:(date:Date) => void,
-    lastDate:Date, changeLastDate:(date:Date) => void
+  earlyDate:Date, changeEarlyDate:(date:Date) => void,
+  lastDate:Date, changeLastDate:(date:Date) => void
 }
 
 export function CalendarB({ earlyDate, changeEarlyDate, lastDate, changeLastDate }: CalendarBProps) {
@@ -31,7 +31,6 @@ export function CalendarB({ earlyDate, changeEarlyDate, lastDate, changeLastDate
     setShowCalendar(false)
   }
   const onApply = () => {
-    console.log('apply')
     changeEarlyDate(startDt || moment().toDate())
     changeLastDate(endDt || moment().toDate())
     setShowCalendar(false)     

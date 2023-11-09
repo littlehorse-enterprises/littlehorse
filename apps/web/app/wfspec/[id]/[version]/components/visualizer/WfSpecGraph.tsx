@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import type { Edge } from 'reactflow'
-import ReactFlow from 'reactflow'
+import { ReactFlow } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { SmartBezierEdge, SmartStepEdge } from '@tisoap/react-flow-smart-edge'
 import EntrypointNodeType from './nodeTypes/EntrypointNodeType'
@@ -31,83 +31,82 @@ interface WfSpecGraphProps {
 }
 
 export function WfSpecGraph({
-  wfSpecName,
-  wfSpecVersion,
-  setSelectedNodeName,
-  threadSpec,
-  threadRunNumber,
-  isWfSpecVisualization,
-  wfRunId,
-  setGraphWithNodeRunPosition
+    wfSpecName,
+    wfSpecVersion,
+    setSelectedNodeName,
+    threadSpec,
+    threadRunNumber,
+    isWfSpecVisualization,
+    wfRunId,
+    setGraphWithNodeRunPosition
 }: WfSpecGraphProps) {
-  const nodeTypes = useMemo(() => ({
-    'entrypointNodeType': EntrypointNodeType,
-    'taskNodeType': TaskNodeType,
-    'nopNodeType': NopNodeType,
-    'exitNodeType': ExitNodeType,
-    'spawnThreadNodeType': SpawnThreadNodeType,
-    'waitForThreadsNodeType': WaitForThreadsNodeType,
-    'externalEventNodeType': ExternalEventNodeType,
-    'sleepNodeType': SleepNodeType,
-    'spawnMultipleThreadsNodeType': SpawnMultipleThreadsNodeType,
-    'userTaskNodeType': UserTaskNodeType
-  }), [])
+    const nodeTypes = useMemo(() => ({
+        'entrypointNodeType': EntrypointNodeType,
+        'taskNodeType': TaskNodeType,
+        'nopNodeType': NopNodeType,
+        'exitNodeType': ExitNodeType,
+        'spawnThreadNodeType': SpawnThreadNodeType,
+        'waitForThreadsNodeType': WaitForThreadsNodeType,
+        'externalEventNodeType': ExternalEventNodeType,
+        'sleepNodeType': SleepNodeType,
+        'spawnMultipleThreadsNodeType': SpawnMultipleThreadsNodeType,
+        'userTaskNodeType': UserTaskNodeType
+    }), [])
 
-  const edgeTypes = useMemo(() => ({
-    [EdgeTypesEnum.SMART_EDGE_TYPE]: SmartBezierEdge,
-    [EdgeTypesEnum.CUSTOM_SMART_EDGE_TYPE]: CustomSmartEdgeType,
-    [EdgeTypesEnum.SMART_STEP_TYPE]: SmartStepEdge
-  }), [])
+    const edgeTypes = useMemo(() => ({
+        [EdgeTypesEnum.SmartEdgeType]: SmartBezierEdge,
+        [EdgeTypesEnum.CustomSmartEdgeType]: CustomSmartEdgeType,
+        [EdgeTypesEnum.SmartStepType]: SmartStepEdge
+    }), [])
 
-  const [ reactFlowGraphLayouted, setReactFlowGraphLayouted ] = useState({
-    nodes: [] as ReactFlowNodeWithLHInfo[],
-    edges: [] as Edge[]
-  })
+    const [ reactFlowGraphLayouted, setReactFlowGraphLayouted ] = useState({
+        nodes: [] as ReactFlowNodeWithLHInfo[],
+        edges: [] as Edge[]
+    })
 
-  const getLayoutedGraph = async () => {
-    if (wfSpecVersion !== undefined && wfSpecName !== undefined && threadSpec !== undefined) {
-      const layoutedGraphResponse = await fetch('/api/visualization/workflowLayoutedGraph', {
-        method: 'POST',
-        body: JSON.stringify({
-          wfSpecName,
-          version: wfSpecVersion,
-          threadSpec,
-          threadRunNumber,
-          isWfSpecVisualization,
-          wfRunId
-        })
-      })
+    const getLayoutedGraph = async () => {
+        if (wfSpecVersion !== undefined && wfSpecName !== undefined && threadSpec !== undefined) {
+            const layoutedGraphResponse = await fetch('/api/visualization/workflowLayoutedGraph', {
+                method: 'POST',
+                body: JSON.stringify({
+                    wfSpecName,
+                    version: wfSpecVersion,
+                    threadSpec,
+                    threadRunNumber,
+                    isWfSpecVisualization,
+                    wfRunId
+                })
+            })
 
-      if (layoutedGraphResponse.ok) {
-        layoutedGraphResponse.json().then((layoutedGraph) => {
-          layoutedGraph.nodes = layoutedGraph.nodes.map(node => {
-            node = { ...node, data: { ...node.data, isWfSpecVisualization } }
-            return node
-          })
+            if (layoutedGraphResponse.ok) {
+                layoutedGraphResponse.json().then((layoutedGraph) => {
+                    layoutedGraph.nodes = layoutedGraph.nodes.map(node => {
+                        return { ...node, data: { ...node.data, isWfSpecVisualization } }
+                    })
 
-          setReactFlowGraphLayouted(layoutedGraph)
-          setGraphWithNodeRunPosition(layoutedGraph)
-        })
-      }
+                    setReactFlowGraphLayouted(layoutedGraph)
+                    setGraphWithNodeRunPosition(layoutedGraph)
+                })
+            }
+        }
     }
-  }
 
-  useEffect(() => {
-    getLayoutedGraph()
-  }, [ wfSpecName, wfSpecVersion, threadSpec, threadRunNumber ])
+    useEffect(() => {
+        getLayoutedGraph()
+    }, [ wfSpecName, wfSpecVersion, threadSpec, threadRunNumber ])
 
-  const onNodeClick = (_: ReactMouseEvent, node: ReactFlowNodeWithLHInfo) => {
-    setSelectedNodeName(node.id)
-  }
+    const onNodeClick = (_: ReactMouseEvent, node: ReactFlowNodeWithLHInfo) => {
+        setSelectedNodeName(node.id)
+    }
 
-  return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow edgeTypes={edgeTypes}
-        edges={reactFlowGraphLayouted.edges}
-        nodeTypes={nodeTypes}
-        nodes={reactFlowGraphLayouted.nodes}
-        onNodeClick={onNodeClick}/>
-    </div>
-  )
+    return (
+        <div style={{ width: '100vw', height: '100vh' }}>
+            <ReactFlow edgeTypes={edgeTypes}
+                edges={reactFlowGraphLayouted.edges}
+                nodeTypes={nodeTypes}
+                nodes={reactFlowGraphLayouted.nodes}
+                onNodeClick={onNodeClick}/>
+        </div>
+    )
 
 }

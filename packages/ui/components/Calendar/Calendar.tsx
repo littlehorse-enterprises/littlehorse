@@ -60,8 +60,6 @@ export function Calendar({ type, changeType, lastDate, changeLastDate, noWindows
   }
 
   const onApply = () => {
-    console.log('apply')
-    const dt = moment(endDt || startDt || lastDate)
     let diff = 0
     const endDte = endDt ? endDt : moment(startDt).endOf('day').toDate()
 
@@ -110,7 +108,7 @@ export function Calendar({ type, changeType, lastDate, changeLastDate, noWindows
         </CInput>
 
         <CInput label="TIME RANGE:">
-          <div className="inputWrapper"onClick={setShowCalendarHandler} ref={ancestorOutsideCalendarClickRef}>
+          <div className="inputWrapper" onClick={setShowCalendarHandler} ref={ancestorOutsideCalendarClickRef}>
             {!startDt ? (
               <div className="placeholder">Select date and time</div>
             ) : (

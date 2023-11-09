@@ -1,4 +1,4 @@
-import { InputVarsTaskDef } from "./InputVarsTaskDef";
+import type { InputVarsTaskDef } from './InputVarsTaskDef'
 
 export interface TaskDefInformation {
     createdAt: string;

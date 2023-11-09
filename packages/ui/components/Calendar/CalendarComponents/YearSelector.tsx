@@ -1,5 +1,5 @@
 import * as React from 'react'
-import moment from 'moment'
+import { utc } from 'moment'
 /*
  eslint-disable-next-line import/no-unresolved
  */
@@ -11,7 +11,7 @@ export interface YearSelectorProps {
   date: string;
 }
 export function YearSelector({
-  prevMonth,
+  prevMonth, 
   nextMonth,
   date
 }: YearSelectorProps) {
@@ -21,8 +21,8 @@ export function YearSelector({
         <span className="material-icons">chevron_left</span>
       </div>
       <div className="yearSelector">
-        <div className="calMonth">{moment.utc(date).format('MMMM')}</div>
-        <div className="calYear">{moment.utc(date).format('Y')}</div>
+        <div className="calMonth">{utc(date).format('MMMM')}</div>
+        <div className="calYear">{utc(date).format('Y')}</div>
       </div>
       <div className="lfBtn" onClick={nextMonth}>
         <span className="material-icons">chevron_right</span>

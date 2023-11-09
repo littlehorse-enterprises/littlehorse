@@ -3,14 +3,14 @@
 import { useState, useRef } from 'react'
 import { useOutsideClick } from '../../utils'
 
-export interface Props {
- icon:string
- values:number[]
- value:number 
- onChange: (v:number) => void
+export interface PerPageProps {
+  icon:string
+  values:number[]
+  value:number 
+  onChange: (v:number) => void
 }
 
-export function PerPage(props: Props) {
+export function PerPage(props: PerPageProps) {
   const [ open, setOpen ] = useState(false)
 
   const setValue = (v:number) => {
@@ -27,7 +27,7 @@ export function PerPage(props: Props) {
 
   return <div className="perpage-canvas" ref={ancestorRef}>
     <img alt={props.icon} src={props.icon} />
-    <input className={`input ${props.icon ? 'icon' : undefined}`} onChange={() => {}} onClick={() => { setOpen(prev => !prev) }} readOnly value={props.value} />
+    <input className={`input ${props.icon ? 'icon' : undefined}`} onClick={() => { setOpen(prev => !prev) }} readOnly value={props.value} />
     {open ? <div className="options" ref={ref}>
       {props.values.map( v => <div key={v} onClick={() => { setValue(v) }} >{v}</div>)}
     </div> : undefined}

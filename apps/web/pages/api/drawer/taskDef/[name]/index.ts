@@ -4,24 +4,24 @@ import type { LHPublicApiDefinition } from '../../../../../littlehorse-public-ap
 import LHClient from '../../../LHClient'
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
-  if (req.method === 'GET') {
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+    if (req.method === 'GET') {
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-      const response = await client.getTaskDef({ name: req.query.name } as any)
+            const response = await client.getTaskDef({ name: req.query.name } as any)
 
-      res.json({
-        code: 'OK',
-        data: { result: response }
-      }) 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+            res.json({
+                code: 'OK',
+                data: { result: response }
+            }) 
+        } catch (error) {
+            console.error('taskDef/[name]/index - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

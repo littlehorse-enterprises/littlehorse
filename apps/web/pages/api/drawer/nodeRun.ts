@@ -4,23 +4,23 @@ import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/serv
 import LHClient from '../LHClient'
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
-    const body = JSON.parse(req.body)
-    const { wfRunId, threadRunNumber, name } = body
+    if (req.method === 'POST') {
+        const body = JSON.parse(req.body)
+        const { wfRunId, threadRunNumber, name } = body
 
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
       
-      const response = await client.getNodeRun({ wfRunId, threadRunNumber, position: Number(name) } as any)
-      res.send(response) 
+            const response = await client.getNodeRun({ wfRunId, threadRunNumber, position: Number(name) } as any)
+            res.send(response) 
 
-    } catch (error) {
-      res.send({
-        error: `Drawer NodeRun - Something went wrong.${error}`,
-      }) 
+        } catch (error) {
+            res.send({
+                error: `Drawer NodeRun - Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

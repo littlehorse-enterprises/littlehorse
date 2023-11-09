@@ -7,18 +7,18 @@ import LHClient from '../LHClient'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 
-  if (req.method === 'POST') {
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+    if (req.method === 'POST') {
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-      const response = await client.searchTaskDef(SearchTaskDefRequest.fromJSON(req.body) as any)
+            const response = await client.searchTaskDef(SearchTaskDefRequest.fromJSON(req.body) as any)
 
-      res.send(response) 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+            res.send(response) 
+        } catch (error) {
+            console.error('search/taskDef - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

@@ -5,18 +5,18 @@ import { SearchNodeRunRequest } from '../../../littlehorse-public-api/service'
 import LHClient from '../LHClient'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+    if (req.method === 'POST') {
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-      const response = await client.searchNodeRun(SearchNodeRunRequest.fromJSON(JSON.parse(req.body)) as any)
+            const response = await client.searchNodeRun(SearchNodeRunRequest.fromJSON(JSON.parse(req.body)) as any)
 
-      res.send(response) 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+            res.send(response) 
+        } catch (error) {
+            console.error('search/nodeRun - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

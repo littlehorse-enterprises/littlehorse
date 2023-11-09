@@ -8,8 +8,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const LoadMoreButton: React.ForwardRefRenderFunction<
-  HTMLButtonElement,
-  ButtonProps
+HTMLButtonElement,
+ButtonProps
 /*
  eslint-disable-next-line react/function-component-definition
  */

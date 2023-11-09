@@ -5,24 +5,24 @@ import LHClient from '../LHClient'
 import type { Variable } from '../../../littlehorse-public-api/variable'
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
-    const body = JSON.parse(req.body)
+    if (req.method === 'POST') {
+        const body = JSON.parse(req.body)
 
-    try {
-      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+        try {
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-      const response: Variable = await client.getVariable(body)
-      res.json({ code: 'OK', data: { result: response } }) 
+            const response: Variable = await client.getVariable(body)
+            res.json({ code: 'OK', data: { result: response } }) 
 
 
-    } catch (error) {
-      console.log('Error during GRPC call:', error)
-      res.send({
-        error: `Something went wrong.${error}`,
-      }) 
+        } catch (error) {
+            console.error('drawer/variable - Error during GRPC call:', error)
+            res.send({
+                error: `Something went wrong.${error}`,
+            }) 
+        }
     }
-  }
 }

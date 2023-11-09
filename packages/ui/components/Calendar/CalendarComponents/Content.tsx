@@ -32,7 +32,6 @@ export function Content({
   type: any;
 }) {
   const [ weeks, setWeeks ] = useState<any[]>([])
-  const [ busy, setBusy ] = useState(true)
   const fillDays = (firstDay: moment.Moment, lastDay: moment.Moment) => {
     const dates: any = []
     const month = moment(init).month()
@@ -42,7 +41,7 @@ export function Content({
         selected,
         endSelected,
         date: firstDay.toDate(),
-        otherMonth: firstDay.month() != month,
+        otherMonth: firstDay.month() !== month,
         inRange:
           selected &&
           endSelected &&
@@ -81,13 +80,25 @@ export function Content({
     return dates
   }
   const selectDayHandler = (day: any) => {
-    if (day.afterPresent) return false
+    if (day.afterPresent) {return false}
     selectDay(day.date)
   }
   useEffect(() => {
     setWeeks(enumerateWeeks())
   }, [ init, selected, endSelected ])
 
+  const renderMinutesSelectorValue = () => {
+    if (type === 'HOURS_2') {
+      return '00'
+    }
+
+    if (endSelected) {
+      return moment(endSelected).format('mm')
+    }
+
+    moment(selected).format('mm')
+  }
+  
   return (
     <div
       className="flex"
@@ -161,7 +172,7 @@ export function Content({
         )}
       </div>
 
-      {type != 'DAYS_1' && (
+      {type !== 'DAYS_1' && (
         <div className="timePickerCanvas">
           <div className="block">
             <div className="label">From</div>
@@ -280,13 +291,7 @@ export function Content({
                 className="bg-slate-700"
                 disabled={type === 'HOURS_2'}
                 onChange={(e) => updateEndSelectedM(e.target.value)}
-                value={
-                  type === 'HOURS_2'
-                    ? '00'
-                    : endSelected
-                      ? moment(endSelected).format('mm')
-                      : moment(selected).format('mm')
-                }
+                value={renderMinutesSelectorValue()}
               >
                 <option>00</option>
                 <option>05</option>
