@@ -58,7 +58,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     }
 
     public String getStoreKey() {
-        return LHUtil.toLhDbFormat(maturationTime) + "_" + topic + "_" + key;
+        return LHUtil.toLhDbFormat(maturationTime) + "_" + topic + "_" + key + "/tenant_" + tenantId;
     }
 
     @Override
