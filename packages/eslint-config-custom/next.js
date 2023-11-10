@@ -15,13 +15,8 @@ const project = resolve(process.cwd(), 'tsconfig.json')
 
 module.exports = {
     extends: [
-    // '@vercel/style-guide/eslint/node',
         '@vercel/style-guide/eslint/typescript',
-        // '@vercel/style-guide/eslint/browser',
         '@vercel/style-guide/eslint/react',
-        '@vercel/style-guide/eslint/next',
-    // '@vercel/style-guide/eslint/jest',
-    // '@vercel/style-guide/eslint/jest-react'
     ].map(require.resolve),
     plugins: [
         '@stylistic'
@@ -58,12 +53,12 @@ module.exports = {
         '@typescript-eslint/no-misused-promises': 'off', // turned off as the violations we have are mainly on jsx event handlers which is acceptable
         'react-hooks/exhaustive-deps': 'off', // a lot of warnings, ticket created to analyze case by case if needed -- https://littlehorse.atlassian.net/browse/LH-235
         'react/button-has-type': 'off', // not needed as we are using only submit buttons
-        '@next/next/no-img-element': 'off', // aparently using Next JS Imge requires extra storage on the server, disabling until a decision is taken
+        // '@next/next/no-img-element': 'off', // aparently using Next JS Imge requires extra storage on the server, disabling until a decision is taken
         'react/hook-use-state': 'error',
         'react/no-array-index-key': 'error',
         'react-hooks/rules-of-hooks': 'error',
-        '@next/next/no-html-link-for-pages': 'error',
-        '@next/next/no-head-element': 'error',
+        // '@next/next/no-html-link-for-pages': 'error',
+        // '@next/next/no-head-element': 'error',
         'no-console': [ 'error', {
             'allow': [ 'error' ] 
         } ],
