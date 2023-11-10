@@ -85,7 +85,9 @@ function WfVariable(props: WfVariableProps) {
 
     useEffect(() => {
         getVariableData(props.wfRunId || '', props.threadRunNumber, props.name)
-    
+    }, [ props.wfRunId, props.threadRunNumber ])
+
+    useEffect(() => {
         setVariableValueLabel(parseValueByType(wfVariableValue))
 
         if (isAValueThatCouldBeReallyLong(wfVariableValue)) {
@@ -102,7 +104,7 @@ function WfVariable(props: WfVariableProps) {
                 <p className="center">{props.type}</p>
                 {props.run ? <p
                     className={`${
-                        longVariableValueClass && (isAValueThatCouldBeReallyLong(wfVariableValue))  
+                        longVariableValueClass && (isAValueThatCouldBeReallyLong(wfVariableValue))
                             ? 'json-text-collapsed drawer__mainTable__clickable'
                             : 'center'
                     } json-text-collapsed`}
