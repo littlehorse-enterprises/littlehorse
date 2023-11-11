@@ -8,7 +8,7 @@ import (
 )
 
 
-var createPrincipalCmd = &cobra.Command{
+var putPrincipalCmd = &cobra.Command{
 	Use:   "principal",
 	Short: "Create principal.",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -85,6 +85,6 @@ var (
 )
 
 func init() {
-	putCmd.AddCommand(createPrincipalCmd)
-	createPrincipalCmd.Flags().String("acl", "", "ACLs")
+	putCmd.AddCommand(putPrincipalCmd)
+	putPrincipalCmd.Flags().String("acl", "", "ACLs")
 }

@@ -7,7 +7,7 @@ import (
 // executeCmd represents the run command
 var putCmd = &cobra.Command{
 	Use:   "put",
-	Short: "Create an object",
+	Short: "Create or update an object",
 }
 
 func init() {

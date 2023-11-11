@@ -7,9 +7,9 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
-var putTenant = &cobra.Command{
+var putTenantCmd = &cobra.Command{
 	Use:   "tenant",
-	Short: "Deploy a tenant.",
+	Short: "Create a Tenant. Currently, updating Tenants is not supported.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument")
@@ -23,5 +23,5 @@ var putTenant = &cobra.Command{
 	},
 }
 func init() {
-	putCmd.AddCommand(putTenant)
+	putCmd.AddCommand(putTenantCmd)
 }

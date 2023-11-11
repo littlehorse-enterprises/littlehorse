@@ -715,7 +715,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public int getNumNetworkThreads() {
-        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2000"));
+        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
         if (out < 2) {
             throw new LHMisconfigurationException("Requires at least 2 network threads");
         }
