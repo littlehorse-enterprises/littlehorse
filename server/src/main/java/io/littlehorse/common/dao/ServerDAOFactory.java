@@ -24,7 +24,7 @@ public class ServerDAOFactory {
     private final KafkaStreams streamsInstance;
     private final MetadataCache metadataCache;
 
-    private static final boolean ENABLE_STALE_STORES = true;
+    private static final boolean ENABLE_STALE_STORES = false;
 
     public ServerDAOFactory(final KafkaStreams streamsInstance, final MetadataCache metadataCache) {
         this.streamsInstance = streamsInstance;
@@ -32,18 +32,14 @@ public class ServerDAOFactory {
     }
 
     /**
-     * Gets a {@link ReadOnlyMetadataDAO} instance based on the current authorized
-     * GRPC Request
+     * Gets a{@link ReadOnlyMetadataDAO} instance based on the current authorized GRPC Request.
+     * This DAO will use Global Metadata Store
      */
     public ReadOnlyMetadataDAO getMetadataDao() {
         final String tenantId = AUTH_CONTEXT.get().tenantId();
         final String principalId = AUTH_CONTEXT.get().principalId();
-        return getMetadataDao(tenantId, principalId);
-    }
-
-    public ReadOnlyMetadataDAO getMetadataDao(String tenantId, String principalId) {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
-                readOnlyStore(null, ServerTopology.METADATA_STORE);
+                readOnlyStore(null, ServerTopology.GLOBAL_METADATA_STORE);
         return new ReadOnlyMetadataDAOImpl(
                 ModelStore.instanceFor(allPartitionNativeStore, tenantId),
                 metadataCache,

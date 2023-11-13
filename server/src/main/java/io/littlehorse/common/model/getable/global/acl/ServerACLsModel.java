@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class ServerACLsModel extends LHSerializable<ServerACLs> {
 
     private List<ServerACLModel> acls = new ArrayList<>();
