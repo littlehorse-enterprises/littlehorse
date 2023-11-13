@@ -42,6 +42,7 @@ public class VarMutationsNumbersTest {
 
     @Test
     void shouldRollbackVariablesWhenMutationsFailed() {
+        // this input will cause division by zero, which makes the WfRun fail with ERROR status.
         Arg myInt = Arg.of("my-int", -8);
         Arg myDouble = Arg.of("my-double", 10.0);
         workflowVerifier

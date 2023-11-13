@@ -19,13 +19,36 @@ message WfSpec {
 
   map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
-  int32 retention_hours = 7;
+
+  optional WorkflowRetentionPolicy retention_policy = 8;
+}
+
+message WorkflowRetentionPolicy {
+  oneof wf_gc_policy {
+    // Delete all WfRun's X seconds after they terminate, regardless of
+    // status.
+    int64 seconds_after_wf_termination = 1;
+
+    // Future versions can allow different retention based on WfRun status.
+  }
 }
 
 message ThreadSpec {
   map<string, Node> nodes = 1;
   repeated VariableDef variable_defs = 2;
   repeated InterruptDef interrupt_defs = 3;
+
+  optional ThreadRetentionPolicy retention_policy = 4;
+}
+
+message ThreadRetentionPolicy {
+  oneof thread_gc_policy {
+    // Delete associated ThreadRun's X seconds after they terminate, regardless
+    // of status.
+    int64 seconds_after_thread_termination = 1;
+
+    // Future versions can allow different policies based on ThreadRun status.
+  }
 }
 
 message InterruptDef {
@@ -92,6 +115,7 @@ message Node {
   repeated Edge outgoing_edges = 1;
   repeated VariableMutation variable_mutations = 2;
   repeated FailureHandlerDef failure_handlers = 4;
+
   oneof node {
     EntrypointNode entrypoint = 5;
     ExitNode exit = 6;

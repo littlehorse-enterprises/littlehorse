@@ -133,13 +133,27 @@ class TestLHConfig(unittest.TestCase):
     def test_establish_insecure_channel(self, grpc_package_mock):
         config = LHConfig()
         config.establish_channel()
-        grpc_package_mock.insecure_channel.assert_called_once_with("localhost:2023")
+        grpc_package_mock.insecure_channel.assert_called_once_with(
+            "localhost:2023",
+            options=[
+                ("grpc.keepalive_time_ms", 45000),
+                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_permit_without_calls", True),
+            ],
+        )
 
     @patch("littlehorse.config.grpc")
     def test_establish_insecure_channel_with_custom_server(self, grpc_package_mock):
         config = LHConfig()
         config.establish_channel("192.10.10.20:5555")
-        grpc_package_mock.insecure_channel.assert_called_once_with("192.10.10.20:5555")
+        grpc_package_mock.insecure_channel.assert_called_once_with(
+            "192.10.10.20:5555",
+            options=[
+                ("grpc.keepalive_time_ms", 45000),
+                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_permit_without_calls", True),
+            ],
+        )
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")
@@ -147,7 +161,15 @@ class TestLHConfig(unittest.TestCase):
         os.environ["LHC_API_PROTOCOL"] = "TLS"
         config = LHConfig()
         config.establish_channel()
-        grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)
+        grpc_package_mock.secure_channel.assert_called_once_with(
+            "localhost:2023",
+            ANY,
+            options=[
+                ("grpc.keepalive_time_ms", 45000),
+                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_permit_without_calls", True),
+            ],
+        )
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")
@@ -158,7 +180,13 @@ class TestLHConfig(unittest.TestCase):
         config = LHConfig()
         config.establish_channel(server="192.10.10.20:5555")
         grpc_package_mock.secure_channel.assert_called_once_with(
-            "192.10.10.20:5555", ANY
+            "192.10.10.20:5555",
+            ANY,
+            options=[
+                ("grpc.keepalive_time_ms", 45000),
+                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_permit_without_calls", True),
+            ],
         )
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
@@ -174,7 +202,15 @@ class TestLHConfig(unittest.TestCase):
         grpc_package_mock.metadata_call_credentials.assert_called_once_with(
             grpc_auth_class_mock.return_value
         )
-        grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)
+        grpc_package_mock.secure_channel.assert_called_once_with(
+            "localhost:2023",
+            ANY,
+            options=[
+                ("grpc.keepalive_time_ms", 45000),
+                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_permit_without_calls", True),
+            ],
+        )
 
 
 if __name__ == "__main__":

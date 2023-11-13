@@ -1,8 +1,9 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
@@ -23,7 +24,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(100, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(50, ChronoUnit.MILLIS));
         Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
@@ -46,16 +47,19 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                 }
                 store.put(worker.getTaskDefName(), worker);
                 worker.registerTaskDef(true);
+                TaskDefId taskDefId =
+                        TaskDefId.newBuilder().setName(worker.getTaskDefName()).build();
                 Awaitility.await()
-                        .ignoreException(LHMisconfigurationException.class)
-                        .until(() -> {
-                            try {
-                                worker.start();
-                                return true;
-                            } catch (IOException e) {
-                                throw new IllegalStateException(e);
-                            }
-                        });
+                        .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
+                        .until(() -> testContext.getLhClient().getTaskDef(taskDefId), taskDef -> taskDef != null);
+                Awaitility.await().until(() -> {
+                    try {
+                        worker.start();
+                        return true;
+                    } catch (IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                });
             }
             testContext.registerUserTaskSchemas(testInstance);
             List<ExternalEventDef> externalEventDefinitions =

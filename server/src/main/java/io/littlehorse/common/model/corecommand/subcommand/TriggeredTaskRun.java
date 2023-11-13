@@ -80,7 +80,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         }
 
         // Now verify that the thing hasn't yet been completed.
-        ThreadRunModel thread = wfRunModel.threadRunModels.get(source.getThreadRunNumber());
+        ThreadRunModel thread = wfRunModel.getThreadRun(source.getThreadRunNumber());
 
         // Impossible for thread to be null, but check anyways
         if (thread == null) {

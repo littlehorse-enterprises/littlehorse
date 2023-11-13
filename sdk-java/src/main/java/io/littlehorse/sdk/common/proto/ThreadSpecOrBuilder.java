@@ -88,4 +88,19 @@ io.littlehorse.sdk.common.proto.Node defaultValue);
    */
   io.littlehorse.sdk.common.proto.InterruptDefOrBuilder getInterruptDefsOrBuilder(
       int index);
+
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   * @return Whether the retentionPolicy field is set.
+   */
+  boolean hasRetentionPolicy();
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   * @return The retentionPolicy.
+   */
+  io.littlehorse.sdk.common.proto.ThreadRetentionPolicy getRetentionPolicy();
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 }

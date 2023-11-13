@@ -3,10 +3,12 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
@@ -25,7 +27,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public String name;
     public Map<String, ThreadSpecModel> threadSpecs;
     public String entrypointThreadName;
-    public Integer retentionHours;
+    public WorkflowRetentionPolicyModel retentionPolicy;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -42,8 +44,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public PutWfSpecRequest.Builder toProto() {
         PutWfSpecRequest.Builder out =
                 PutWfSpecRequest.newBuilder().setName(name).setEntrypointThreadName(entrypointThreadName);
-        if (retentionHours != null) {
-            out.setRetentionHours(retentionHours);
+        if (retentionPolicy != null) {
+            out.setRetentionPolicy(retentionPolicy.toProto());
         }
 
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
@@ -56,7 +58,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
-        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
+        if (p.hasRetentionPolicy())
+            retentionPolicy = LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue()));
         }
@@ -76,7 +79,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
-        spec.retentionHours = retentionHours == null ? config.getDefaultWfRunRetentionHours() : retentionHours;
+        spec.setRetentionPolicy(retentionPolicy);
         spec.status = LHStatus.RUNNING;
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();

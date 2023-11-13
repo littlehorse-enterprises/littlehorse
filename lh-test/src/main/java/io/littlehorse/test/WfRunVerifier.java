@@ -24,11 +24,13 @@ import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
+import io.littlehorse.test.internal.step.VerifyTaskRunOutputsStep;
 import io.littlehorse.test.internal.step.VerifyVariableStep;
 import io.littlehorse.test.internal.step.VerifyWfRunStep;
 import io.littlehorse.test.internal.step.WaitForStatusStep;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -63,6 +65,10 @@ public class WfRunVerifier extends AbstractVerifier {
             expectedOutput.accept(actualOutput);
         };
         steps.add(new VerifyTaskExecution(threadRunNumber, nodeRunNumber, taskRunConsumer, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenVerifyAllTaskRuns(int threadRunNumber, Consumer<List<TaskRun>> verifier) {
         return this;
     }
 
@@ -129,6 +135,17 @@ public class WfRunVerifier extends AbstractVerifier {
             return threadRun.getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, threadRunStatus, steps.size() + 1));
+        return this;
+    }
+
+    /**
+     * Accepts a list of objects. Checks every TaskRun in the WfRun and verifies that
+     * the ordered list of TaskRun outputs matches the
+     * @param taskOutputs
+     * @return
+     */
+    public WfRunVerifier verifyAllTaskRunOutputs(List<Object> taskOutputs) {
+        steps.add(new VerifyTaskRunOutputsStep(steps.size() + 1, taskOutputs));
         return this;
     }
 

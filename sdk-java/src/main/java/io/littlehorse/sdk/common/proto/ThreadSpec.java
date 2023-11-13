@@ -52,6 +52,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ThreadSpec.class, io.littlehorse.sdk.common.proto.ThreadSpec.Builder.class);
   }
 
+  private int bitField0_;
   public static final int NODES_FIELD_NUMBER = 1;
   private static final class NodesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
@@ -213,6 +214,32 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return interruptDefs_.get(index);
   }
 
+  public static final int RETENTION_POLICY_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.ThreadRetentionPolicy retentionPolicy_;
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   * @return Whether the retentionPolicy field is set.
+   */
+  @java.lang.Override
+  public boolean hasRetentionPolicy() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   * @return The retentionPolicy.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThreadRetentionPolicy getRetentionPolicy() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+  }
+  /**
+   * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -238,6 +265,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     }
     for (int i = 0; i < interruptDefs_.size(); i++) {
       output.writeMessage(3, interruptDefs_.get(i));
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(4, getRetentionPolicy());
     }
     getUnknownFields().writeTo(output);
   }
@@ -266,6 +296,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, interruptDefs_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getRetentionPolicy());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -287,6 +321,11 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         .equals(other.getVariableDefsList())) return false;
     if (!getInterruptDefsList()
         .equals(other.getInterruptDefsList())) return false;
+    if (hasRetentionPolicy() != other.hasRetentionPolicy()) return false;
+    if (hasRetentionPolicy()) {
+      if (!getRetentionPolicy()
+          .equals(other.getRetentionPolicy())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -309,6 +348,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     if (getInterruptDefsCount() > 0) {
       hash = (37 * hash) + INTERRUPT_DEFS_FIELD_NUMBER;
       hash = (53 * hash) + getInterruptDefsList().hashCode();
+    }
+    if (hasRetentionPolicy()) {
+      hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
+      hash = (53 * hash) + getRetentionPolicy().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -451,13 +494,21 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
 
     // Construct using io.littlehorse.sdk.common.proto.ThreadSpec.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getVariableDefsFieldBuilder();
+        getInterruptDefsFieldBuilder();
+        getRetentionPolicyFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -478,6 +529,11 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         interruptDefsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
       return this;
     }
 
@@ -537,6 +593,14 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         result.nodes_ = internalGetNodes();
         result.nodes_.makeImmutable();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.retentionPolicy_ = retentionPolicyBuilder_ == null
+            ? retentionPolicy_
+            : retentionPolicyBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -638,6 +702,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
           }
         }
       }
+      if (other.hasRetentionPolicy()) {
+        mergeRetentionPolicy(other.getRetentionPolicy());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -699,6 +766,13 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
               }
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getRetentionPolicyFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1321,6 +1395,125 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         interruptDefs_ = null;
       }
       return interruptDefsBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.ThreadRetentionPolicy retentionPolicy_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThreadRetentionPolicy, io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder> retentionPolicyBuilder_;
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     * @return Whether the retentionPolicy field is set.
+     */
+    public boolean hasRetentionPolicy() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     * @return The retentionPolicy.
+     */
+    public io.littlehorse.sdk.common.proto.ThreadRetentionPolicy getRetentionPolicy() {
+      if (retentionPolicyBuilder_ == null) {
+        return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      } else {
+        return retentionPolicyBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.ThreadRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        retentionPolicy_ = value;
+      } else {
+        retentionPolicyBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public Builder setRetentionPolicy(
+        io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder builderForValue) {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicy_ = builderForValue.build();
+      } else {
+        retentionPolicyBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.ThreadRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          retentionPolicy_ != null &&
+          retentionPolicy_ != io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance()) {
+          getRetentionPolicyBuilder().mergeFrom(value);
+        } else {
+          retentionPolicy_ = value;
+        }
+      } else {
+        retentionPolicyBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public Builder clearRetentionPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder getRetentionPolicyBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getRetentionPolicyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+      if (retentionPolicyBuilder_ != null) {
+        return retentionPolicyBuilder_.getMessageOrBuilder();
+      } else {
+        return retentionPolicy_ == null ?
+            io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThreadRetentionPolicy, io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder> 
+        getRetentionPolicyFieldBuilder() {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ThreadRetentionPolicy, io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder>(
+                getRetentionPolicy(),
+                getParentForChildren(),
+                isClean());
+        retentionPolicy_ = null;
+      }
+      return retentionPolicyBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

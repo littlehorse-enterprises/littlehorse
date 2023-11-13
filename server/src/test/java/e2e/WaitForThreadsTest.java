@@ -130,11 +130,10 @@ public class WaitForThreadsTest {
 
     @Test
     void shouldExecuteExceptionHandlerWhenChildThreadTrowsAUserDefinedException() {
-        int person1ApprovalThreadNumber = 1;
         int exceptionHandlerThreadNumber = 4;
-        Map person1DenyEvent = Map.of("approval", false);
-        Map person2Approves = Map.of("approval", true);
-        Map person3Approves = Map.of("approval", true);
+        Map<String, Object> person1DenyEvent = Map.of("approval", false);
+        Map<String, Object> person2Approves = Map.of("approval", true);
+        Map<String, Object> person3Approves = Map.of("approval", true);
         workflowVerifier
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
@@ -151,7 +150,7 @@ public class WaitForThreadsTest {
 
     @Test
     void shouldTerminateWorkflowExecutionWhenExceptionHandlerIsNotPresent() {
-        Map person1DenyEvent = Map.of("approval", false);
+        Map<String, Object> person1DenyEvent = Map.of("approval", false);
         workflowVerifier
                 .prepareRun(waitForThreadsWithoutExceptionHandlerWorkflow)
                 .waitForStatus(RUNNING)

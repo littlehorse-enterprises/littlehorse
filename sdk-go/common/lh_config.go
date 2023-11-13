@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/auth"
@@ -16,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 )
 
 const (
@@ -42,6 +44,9 @@ const (
 	OAUTH_CALLBACK_PORT_KEY        = "LHC_OAUTH_CALLBACK_PORT"
 	OAUTH_CREDENTIALS_LOCATION_KEY = "LHC_OAUTH_CREDENTIALS_LOCATION"
 
+	GRPC_KEEPALIVE_TIME_KEY    = "LHC_GRPC_KEEPALIVE_TIME_MS"
+	GRPC_KEEPALIVE_TIMEOUT_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
+
 	DEFAULT_LISTENER            = "PLAIN"
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
 	DEFAULT_PROTOCOL            = "PLAINTEXT"
@@ -62,6 +67,9 @@ type LHConfig struct {
 	TaskWorkerVersion     string
 	ServerConnectListener string
 
+	GrpcKeepaliveTimeMs    int64
+	GrpcKeepaliveTimeoutMs int64
+
 	clients  map[string]*model.LHPublicApiClient
 	channels map[string]*grpc.ClientConn
 
@@ -73,6 +81,14 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 	if config.channels[url] == nil {
 		var opts []grpc.DialOption
 		apiUrl := config.ApiHost + ":" + config.ApiPort
+
+		opts = append(opts, grpc.WithKeepaliveParams(
+			keepalive.ClientParameters{
+				Time:                time.Duration(config.GrpcKeepaliveTimeMs) * time.Millisecond,
+				Timeout:             time.Duration(config.GrpcKeepaliveTimeoutMs) * time.Millisecond,
+				PermitWithoutStream: true,
+			},
+		))
 
 		if config.ApiProtocol == DEFAULT_PROTOCOL {
 			opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -143,6 +159,9 @@ func NewConfigFromEnv() *LHConfig {
 		TaskWorkerVersion:     os.Getenv(TASK_WORKER_VERSION_KEY),
 		ServerConnectListener: getEnvOrDefault(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
 
+		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
+		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+
 		clients:  make(map[string]*model.LHPublicApiClient),
 		channels: make(map[string]*grpc.ClientConn),
 
@@ -178,6 +197,9 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		TaskWorkerVersion:     p.GetString(TASK_WORKER_VERSION_KEY, ""),
 		ServerConnectListener: p.GetString(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
 
+		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
+		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+
 		clients:  make(map[string]*model.LHPublicApiClient),
 		channels: make(map[string]*grpc.ClientConn),
 
@@ -212,12 +234,25 @@ func stringPtr(s string) *string {
 	return &s
 }
 
+func int64FromEnv(key string, defaultVal int64) int64 {
+	val, err := strconv.Atoi(os.Getenv(key))
+	if err != nil {
+		return defaultVal
+	}
+	return int64(val)
+}
+
 func int32FromEnv(key string, defaultVal int32) int32 {
 	val, err := strconv.Atoi(os.Getenv(key))
 	if err != nil {
 		return defaultVal
 	}
 	return int32(val)
+}
+
+func int64FromProp(p *properties.Properties, key string, defaultVal int64) int64 {
+	val := p.GetInt64(key, int64(defaultVal))
+	return int64(val)
 }
 
 func int32FromProp(p *properties.Properties, key string, defaultVal int32) int32 {

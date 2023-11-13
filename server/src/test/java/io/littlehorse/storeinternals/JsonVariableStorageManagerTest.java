@@ -57,8 +57,11 @@ public class JsonVariableStorageManagerTest {
     @BeforeEach
     public void setup() throws Exception {
         initializeDependencies();
-        Map map = objectMapper.readValue(
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = objectMapper.readValue(
                 Paths.get("./src/test/resources/json-variables-example.json").toFile(), Map.class);
+
         VariableModel variable = TestUtil.variable("wfrun-id");
         variable.setName("testVariable");
         VariableDefModel variableDef = TestUtil.variableDef("testVariable", VariableType.JSON_OBJ);

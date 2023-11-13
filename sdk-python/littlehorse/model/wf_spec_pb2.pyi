@@ -10,7 +10,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpec(_message.Message):
-    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_hours"]
+    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_policy"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -24,18 +24,24 @@ class WfSpec(_message.Message):
     STATUS_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
     version: int
     created_at: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.LHStatus
     thread_specs: _containers.MessageMap[str, ThreadSpec]
     entrypoint_thread_name: str
-    retention_hours: int
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    retention_policy: WorkflowRetentionPolicy
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ...) -> None: ...
+
+class WorkflowRetentionPolicy(_message.Message):
+    __slots__ = ["seconds_after_wf_termination"]
+    SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER: _ClassVar[int]
+    seconds_after_wf_termination: int
+    def __init__(self, seconds_after_wf_termination: _Optional[int] = ...) -> None: ...
 
 class ThreadSpec(_message.Message):
-    __slots__ = ["nodes", "variable_defs", "interrupt_defs"]
+    __slots__ = ["nodes", "variable_defs", "interrupt_defs", "retention_policy"]
     class NodesEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -46,10 +52,18 @@ class ThreadSpec(_message.Message):
     NODES_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_DEFS_FIELD_NUMBER: _ClassVar[int]
     INTERRUPT_DEFS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     nodes: _containers.MessageMap[str, Node]
     variable_defs: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     interrupt_defs: _containers.RepeatedCompositeFieldContainer[InterruptDef]
-    def __init__(self, nodes: _Optional[_Mapping[str, Node]] = ..., variable_defs: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., interrupt_defs: _Optional[_Iterable[_Union[InterruptDef, _Mapping]]] = ...) -> None: ...
+    retention_policy: ThreadRetentionPolicy
+    def __init__(self, nodes: _Optional[_Mapping[str, Node]] = ..., variable_defs: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., interrupt_defs: _Optional[_Iterable[_Union[InterruptDef, _Mapping]]] = ..., retention_policy: _Optional[_Union[ThreadRetentionPolicy, _Mapping]] = ...) -> None: ...
+
+class ThreadRetentionPolicy(_message.Message):
+    __slots__ = ["seconds_after_thread_termination"]
+    SECONDS_AFTER_THREAD_TERMINATION_FIELD_NUMBER: _ClassVar[int]
+    seconds_after_thread_termination: int
+    def __init__(self, seconds_after_thread_termination: _Optional[int] = ...) -> None: ...
 
 class InterruptDef(_message.Message):
     __slots__ = ["external_event_def_name", "handler_spec_name"]

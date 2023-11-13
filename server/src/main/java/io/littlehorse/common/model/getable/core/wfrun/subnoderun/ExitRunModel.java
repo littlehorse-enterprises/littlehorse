@@ -58,7 +58,7 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         String failedChildren = "";
 
         for (int childId : nodeRunModel.getThreadRun().getChildThreadIds()) {
-            ThreadRunModel child = getWfRun().getThreadRunModels().get(childId);
+            ThreadRunModel child = getWfRun().getThreadRuns().get(childId);
             if (!child.isTerminated()) {
                 // Can't exit yet.
                 return;

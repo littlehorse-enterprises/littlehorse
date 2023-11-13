@@ -4,6 +4,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -17,6 +18,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 import org.awaitility.Awaitility;
 
@@ -38,9 +42,12 @@ public class TestContext {
 
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
+    private final Lock wfSpecStoreLock;
+
     public TestContext(TestBootstrapper bootstrapper) {
         this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
+        this.wfSpecStoreLock = new ReentrantLock();
     }
 
     public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) throws IOException {
@@ -146,19 +153,34 @@ public class TestContext {
             }
             userTaskSchemasStore.put(taskDefRequest.getName(), userTaskSchema);
             registerUserTaskDef(taskDefRequest);
+            Awaitility.await()
+                    .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
+                    .until(
+                            () -> lhClient.getLatestUserTaskDef(GetLatestUserTaskDefRequest.newBuilder()
+                                    .setName(taskDefRequest.getName())
+                                    .build()),
+                            Objects::nonNull);
         }
     }
 
     public WfSpec registerWfSpecIfNotPresent(Workflow workflow) {
-        GetLatestWfSpecRequest wfSpecRequest =
-                GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build();
-        if (!wfSpecStore.containsKey(workflow.getName())) {
-            workflow.registerWfSpec(lhClient);
-            return Awaitility.await()
-                    .ignoreException(StatusRuntimeException.class)
-                    .until(() -> lhClient.getLatestWfSpec(wfSpecRequest), Objects::nonNull);
+        wfSpecStoreLock.lock();
+        try {
+            if (!wfSpecStore.containsKey(workflow.getName())) {
+                GetLatestWfSpecRequest wfSpecRequest = GetLatestWfSpecRequest.newBuilder()
+                        .setName(workflow.getName())
+                        .build();
+                workflow.registerWfSpec(lhClient);
+                WfSpec result = Awaitility.await()
+                        .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
+                        .until(() -> lhClient.getLatestWfSpec(wfSpecRequest), Objects::nonNull);
+                wfSpecStore.put(workflow.getName(), result);
+            }
+
+            return wfSpecStore.get(workflow.getName());
+        } finally {
+            wfSpecStoreLock.unlock();
         }
-        return wfSpecStore.get(workflow.getName());
     }
 
     public LHPublicApiBlockingStub getLhClient() {

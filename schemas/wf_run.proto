@@ -23,6 +23,10 @@ message WfRun {
 
   repeated PendingInterrupt pending_interrupts = 9;
   repeated PendingFailureHandler pending_failures = 10;
+
+  // Introduced now since with ThreadRun-level retention, we can't rely upon
+  // thread_runs.size() to determine the number of ThreadRuns.
+  int32 greatest_threadrun_number = 11;
 }
 
 enum ThreadType {
