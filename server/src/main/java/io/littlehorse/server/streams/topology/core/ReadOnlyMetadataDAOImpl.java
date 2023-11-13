@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -39,13 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcessorDAO {
+public class ReadOnlyMetadataDAOImpl implements ReadOnlyMetadataDAO {
 
     private final ReadOnlyModelStore lhStore;
     private final MetadataCache metadataCache;
     private final AuthorizationContext context;
 
-    public ReadOnlyMetadataProcessorDAOImpl(
+    public ReadOnlyMetadataDAOImpl(
             final ReadOnlyModelStore lhStore, final MetadataCache metadataCache, final AuthorizationContext context) {
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;
@@ -180,7 +180,7 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     private static PrincipalModel createAnonymousPrincipal() {
         List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ALL);
+        List<ACLResource> allResources = List.of(ACLResource.ACL_ALL_RESOURCES);
 
         ServerACLsModel acls = new ServerACLsModel();
         acls.getAcls().add(new ServerACLModel(allResources, allActions));

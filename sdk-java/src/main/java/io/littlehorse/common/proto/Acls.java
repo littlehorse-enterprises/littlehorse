@@ -16,47 +16,47 @@ public final class Acls {
   }
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_Principal_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Principal_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Principal_PerTenantAclsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_Tenant_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Tenant_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ServerACLs_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ServerACLs_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ServerACL_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ServerACL_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_PutPrincipalRequest_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_DeletePrincipalRequest_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_PutTenantRequest_descriptor;
-  static final 
+  static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutTenantRequest_fieldAccessorTable;
 
@@ -91,14 +91,14 @@ public final class Acls {
       "AclsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027." +
       "littlehorse.ServerACLs:\0028\001\"$\n\026DeletePrin" +
       "cipalRequest\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenantReq" +
-      "uest\022\n\n\002id\030\001 \001(\t*\204\001\n\013ACLResource\022\020\n\014ACL_" +
+      "uest\022\n\n\002id\030\001 \001(\t*\222\001\n\013ACLResource\022\020\n\014ACL_" +
       "WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL_EXTERNAL" +
       "_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\rACL_PRINC" +
-      "IPAL\020\004\022\016\n\nACL_TENANT\020\005\022\007\n\003ALL\020\006*C\n\tACLAc" +
-      "tion\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADAT" +
-      "A\020\002\022\017\n\013ALL_ACTIONS\020\003BC\n\033io.littlehorse.c" +
-      "ommon.protoP\001Z\007.;model\252\002\030LittleHorse.Com" +
-      "mon.Protob\006proto3"
+      "IPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021ACL_ALL_RESOUR" +
+      "CES\020\006*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n" +
+      "\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BC\n\033io" +
+      ".littlehorse.common.protoP\001Z\007.;model\252\002\030L" +
+      "ittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

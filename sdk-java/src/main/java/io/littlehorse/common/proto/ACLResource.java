@@ -33,9 +33,9 @@ public enum ACLResource
    */
   ACL_TENANT(5),
   /**
-   * <code>ALL = 6;</code>
+   * <code>ACL_ALL_RESOURCES = 6;</code>
    */
-  ALL(6),
+  ACL_ALL_RESOURCES(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -64,9 +64,9 @@ public enum ACLResource
    */
   public static final int ACL_TENANT_VALUE = 5;
   /**
-   * <code>ALL = 6;</code>
+   * <code>ACL_ALL_RESOURCES = 6;</code>
    */
-  public static final int ALL_VALUE = 6;
+  public static final int ACL_ALL_RESOURCES_VALUE = 6;
 
 
   public final int getNumber() {
@@ -99,7 +99,7 @@ public enum ACLResource
       case 3: return ACL_USER_TASK;
       case 4: return ACL_PRINCIPAL;
       case 5: return ACL_TENANT;
-      case 6: return ALL;
+      case 6: return ACL_ALL_RESOURCES;
       default: return null;
     }
   }
@@ -155,4 +155,3 @@ public enum ACLResource
 
   // @@protoc_insertion_point(enum_scope:littlehorse.ACLResource)
 }
-

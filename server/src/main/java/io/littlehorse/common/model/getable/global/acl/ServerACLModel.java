@@ -56,6 +56,6 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     }
 
     public boolean isAdmin() {
-        return resources.contains(ACLResource.ALL) && allowedActions.contains(ACLAction.ALL_ACTIONS);
+        return resources.contains(ACLResource.ACL_ALL_RESOURCES) && allowedActions.contains(ACLAction.ALL_ACTIONS);
     }
 }

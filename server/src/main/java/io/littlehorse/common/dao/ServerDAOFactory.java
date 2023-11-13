@@ -7,7 +7,7 @@ import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
+import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import org.apache.kafka.common.utils.Bytes;
@@ -16,6 +16,9 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
+/**
+ * This class is intended to be used only for the scope of a GRPC request
+ */
 public class ServerDAOFactory {
 
     private final KafkaStreams streamsInstance;
@@ -28,24 +31,29 @@ public class ServerDAOFactory {
         this.metadataCache = metadataCache;
     }
 
-    public ReadOnlyMetadataProcessorDAO getMetadataDao() {
+    /**
+     * Gets a {@link ReadOnlyMetadataDAO} instance based on the current authorized
+     * GRPC Request
+     */
+    public ReadOnlyMetadataDAO getMetadataDao() {
         final String tenantId = AUTH_CONTEXT.get().tenantId();
-        return getMetadataDao(tenantId);
+        final String principalId = AUTH_CONTEXT.get().principalId();
+        return getMetadataDao(tenantId, principalId);
     }
 
-    public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
+    public ReadOnlyMetadataDAO getMetadataDao(String tenantId, String principalId) {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
-        return new ReadOnlyMetadataProcessorDAOImpl(
+        return new ReadOnlyMetadataDAOImpl(
                 ModelStore.instanceFor(allPartitionNativeStore, tenantId),
                 metadataCache,
-                contextFor(LHConstants.DEFAULT_TENANT, tenantId));
+                contextFor(tenantId, principalId));
     }
 
-    public ReadOnlyMetadataProcessorDAO getDefaultMetadataDao() {
+    public ReadOnlyMetadataDAO getDefaultMetadataDao() {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
-        return new ReadOnlyMetadataProcessorDAOImpl(
+        return new ReadOnlyMetadataDAOImpl(
                 ModelStore.defaultStore(allPartitionNativeStore),
                 metadataCache,
                 contextFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));

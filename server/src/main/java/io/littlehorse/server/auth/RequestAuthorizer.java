@@ -11,7 +11,7 @@ import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
@@ -34,7 +34,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
     private ServerDAOFactory daoFactory;
 
     private final AclVerifier aclVerifier;
-    private ReadOnlyMetadataProcessorDAO dao;
+    private ReadOnlyMetadataDAO dao;
 
     public static Map<String, String> principalForThread = new ConcurrentHashMap<>();
 
@@ -107,7 +107,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
         return new AuthorizationContextImpl(resolvedPrincipal.getId(), tenantId, currentAcls);
     }
 
-    private ReadOnlyMetadataProcessorDAO dao() {
+    private ReadOnlyMetadataDAO dao() {
         dao = dao != null ? dao : daoFactory.getDefaultMetadataDao();
         return dao;
     }
@@ -116,7 +116,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
 
         private final Map<String, AuthMetadata> methodMetadata = new HashMap<>();
         private final List<ACLAction> adminActions = List.of(ACLAction.ALL_ACTIONS);
-        private final List<ACLResource> adminResources = List.of(ACLResource.ALL);
+        private final List<ACLResource> adminResources = List.of(ACLResource.ACL_ALL_RESOURCES);
 
         {
             for (MethodDescriptor<?, ?> method :

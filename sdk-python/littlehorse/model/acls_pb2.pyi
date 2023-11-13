@@ -15,7 +15,7 @@ class ACLResource(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ACL_USER_TASK: _ClassVar[ACLResource]
     ACL_PRINCIPAL: _ClassVar[ACLResource]
     ACL_TENANT: _ClassVar[ACLResource]
-    ALL: _ClassVar[ACLResource]
+    ACL_ALL_RESOURCES: _ClassVar[ACLResource]
 
 class ACLAction(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -29,7 +29,7 @@ ACL_EXTERNAL_EVENT: ACLResource
 ACL_USER_TASK: ACLResource
 ACL_PRINCIPAL: ACLResource
 ACL_TENANT: ACLResource
-ALL: ACLResource
+ACL_ALL_RESOURCES: ACLResource
 READ: ACLAction
 RUN: ACLAction
 WRITE_METADATA: ACLAction

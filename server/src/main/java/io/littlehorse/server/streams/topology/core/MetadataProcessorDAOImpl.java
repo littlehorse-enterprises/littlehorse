@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  * way.
  */
 @Slf4j
-public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl implements MetadataProcessorDAO {
+public class MetadataProcessorDAOImpl extends ReadOnlyMetadataDAOImpl implements MetadataProcessorDAO {
 
     private MetadataCommandModel command;
     private final ModelStore lhStore;

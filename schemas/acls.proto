@@ -54,7 +54,7 @@ enum ACLResource {
     ACL_USER_TASK = 3;
     ACL_PRINCIPAL = 4;
     ACL_TENANT = 5;
-    ALL = 6;
+    ACL_ALL_RESOURCES = 6;
 }
 
 enum ACLAction {

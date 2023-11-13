@@ -228,7 +228,7 @@ public class TestUtil {
         ServerACLModel acl = new ServerACLModel();
         acl.setName(Optional.of(name));
         acl.setPrefix(Optional.empty());
-        acl.setResources(List.of(ACLResource.ALL));
+        acl.setResources(List.of(ACLResource.ACL_ALL_RESOURCES));
         acl.setAllowedActions(List.of(ACLAction.ALL_ACTIONS));
         return acl;
     }

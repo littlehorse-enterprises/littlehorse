@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
@@ -83,7 +83,7 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
         return List.of();
     }
 
-    public void validate(ReadOnlyMetadataProcessorDAO dao, LHServerConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataDAO dao, LHServerConfig config) throws LHApiException {
         // TODO: Add validation
     }
 }

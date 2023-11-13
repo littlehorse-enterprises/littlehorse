@@ -10,7 +10,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -138,7 +138,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private final ServerDAOFactory serverDAOFactory;
 
-    private ReadOnlyMetadataProcessorDAO metadataDao() {
+    private ReadOnlyMetadataDAO metadataDao() {
         return serverDAOFactory.getMetadataDao();
     }
 

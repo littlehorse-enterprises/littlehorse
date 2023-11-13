@@ -80,7 +80,7 @@ var (
 		"acl_user_task": model.ACLResource_ACL_USER_TASK,
 		"acl_principal": model.ACLResource_ACL_PRINCIPAL,
 		"acl_tenant": model.ACLResource_ACL_TENANT,
-		"all": model.ACLResource_ALL,
+		"all": model.ACLResource_ACL_ALL_RESOURCES,
 	}
 )
 

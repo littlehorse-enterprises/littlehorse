@@ -13,7 +13,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
-import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
+import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataDAOImpl;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
@@ -21,7 +21,7 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl {
+public abstract class CoreProcessorDAO extends ReadOnlyMetadataDAOImpl {
 
     public CoreProcessorDAO(ReadOnlyModelStore rocksdb, MetadataCache metadataCache, AuthorizationContext context) {
         super(rocksdb, metadataCache, context);
