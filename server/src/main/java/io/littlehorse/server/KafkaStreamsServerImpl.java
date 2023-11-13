@@ -34,6 +34,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -697,7 +698,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
-        responseObserver.onNext(null); // TODO
+        AuthorizationContext authorizationContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        String principalId = authorizationContext.principalId();
+        PrincipalModel principal = metadataDao().getPrincipal(principalId);
+        responseObserver.onNext(principal.toProto().build());
         responseObserver.onCompleted();
     }
 
