@@ -1,0 +1,82 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
+
+// This is a GlobalGetable.
+message Principal {
+    // Principals are agnostic of the Authentication protocol that you use. In OAuth,
+    // the id is retrieved by looking at the claims on the request. In mTLS, the
+    // id is retrived by looking at the Subject Name of the client certificate.
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+
+    // Maps a Tenant ID to a list of ACL's that the Principal has permission to
+    // execute *within that Tenant*
+    map<string, ServerACLs> per_tenant_acls = 3;
+
+    // Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+    ServerACLs global_acls = 4;
+
+    // Future versions will include quotas.
+}
+
+// This is a GlobalGetable
+message Tenant {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    // Future versions will include quotas on a per-Tenant basis.
+}
+
+message ServerACLs {
+    repeated ServerACL acls = 1;
+}
+
+message ServerACL {
+    repeated ACLResource resources = 1;
+    repeated ACLAction allowed_actions = 2;
+
+    oneof resource_filter {
+        string name = 3;
+        string prefix = 4;
+    }
+}
+
+enum ACLResource {
+    ACL_WORKFLOW = 0;
+    ACL_TASK = 1;
+    ACL_EXTERNAL_EVENT = 2;
+    ACL_USER_TASK = 3;
+    ACL_PRINCIPAL = 4;
+    ACL_TENANT = 5;
+    ACL_ALL_RESOURCES = 6;
+}
+
+enum ACLAction {
+    READ = 0;
+    RUN = 1;
+    WRITE_METADATA = 2;
+    ALL_ACTIONS = 3;
+}
+
+message PutPrincipalRequest {
+    string id = 1;
+    map<string, ServerACLs> per_tenant_acls = 2;
+    ServerACLs global_acls = 3;
+    bool overwrite = 5;
+}
+
+message DeletePrincipalRequest {
+    string id = 1;
+}
+
+message PutTenantRequest {
+    string id = 1;
+}
+
+// DeleteTenant not yet supported.

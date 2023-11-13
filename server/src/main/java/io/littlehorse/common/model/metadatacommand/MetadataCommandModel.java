@@ -6,11 +6,14 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.LHStoreType;
@@ -39,6 +42,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteExternalEventDefRequestModel deleteExternalEventDef;
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
+    private PutPrincipalRequestModel putPrincipal;
+    private DeletePrincipalRequestModel deletePrincipal;
+    private PutTenantRequestModel putTenant;
 
     public MetadataCommandModel() {
         super();
@@ -90,6 +96,15 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_USER_TASK_DEF:
                 out.setDeleteUserTaskDef(deleteUserTaskDef.toProto());
                 break;
+            case PUT_TENANT:
+                out.setPutTenant(putTenant.toProto());
+                break;
+            case PUT_PRINCIPAL:
+                out.setPutPrincipal(putPrincipal.toProto());
+                break;
+            case DELETE_PRINCIPAL:
+                out.setDeletePrincipal(deletePrincipal.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -133,11 +148,21 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 deleteUserTaskDef =
                         LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
                 break;
+            case PUT_TENANT:
+                putTenant = LHSerializable.fromProto(p.getPutTenant(), PutTenantRequestModel.class);
+                break;
+            case PUT_PRINCIPAL:
+                putPrincipal = LHSerializable.fromProto(p.getPutPrincipal(), PutPrincipalRequestModel.class);
+                break;
+            case DELETE_PRINCIPAL:
+                deletePrincipal = LHSerializable.fromProto(p.getDeletePrincipal(), DeletePrincipalRequestModel.class);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
     }
 
+    @Override
     public MetadataSubCommand<?> getSubCommand() {
         switch (type) {
             case PUT_WF_SPEC:
@@ -156,6 +181,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putUserTaskDefRequest;
             case DELETE_USER_TASK_DEF:
                 return deleteUserTaskDef;
+            case PUT_PRINCIPAL:
+                return putPrincipal;
+            case DELETE_PRINCIPAL:
+                return deletePrincipal;
+            case PUT_TENANT:
+                return putTenant;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -187,6 +218,15 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteUserTaskDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_USER_TASK_DEF;
             deleteUserTaskDef = (DeleteUserTaskDefRequestModel) cmd;
+        } else if (cls.equals(PutPrincipalRequestModel.class)) {
+            type = MetadataCommandCase.PUT_PRINCIPAL;
+            putPrincipal = (PutPrincipalRequestModel) cmd;
+        } else if (cls.equals(DeletePrincipalRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_PRINCIPAL;
+            deletePrincipal = (DeletePrincipalRequestModel) cmd;
+        } else if (cls.equals(PutTenantRequestModel.class)) {
+            type = MetadataCommandCase.PUT_TENANT;
+            putTenant = (PutTenantRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

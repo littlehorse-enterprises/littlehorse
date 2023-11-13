@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"strings"
 
@@ -35,7 +34,7 @@ var getTaskRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
-			context.Background(),
+			requestContext(),
 			&model.TaskRunId{
 				WfRunId:  args[0],
 				TaskGuid: args[1],
@@ -115,7 +114,7 @@ Choose one of the following option groups:
 		} else {
 			log.Fatal("must at least provide taskDefName")
 		}
-		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(context.Background(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(), search))
 	},
 }
 
@@ -136,7 +135,7 @@ Lists all TaskRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskRuns(
-			context.Background(),
+			requestContext(),
 			req,
 		))
 	},

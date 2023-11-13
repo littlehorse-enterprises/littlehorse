@@ -7,7 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -21,7 +21,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTaskRunRequest> {
+public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;

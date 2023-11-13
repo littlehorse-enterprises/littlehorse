@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"log"
 	"strconv"
 
@@ -48,7 +47,7 @@ taskDefName.
 		ts := timestamppb.Now()
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
-			context.Background(),
+			requestContext(),
 			&model.ListTaskMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),

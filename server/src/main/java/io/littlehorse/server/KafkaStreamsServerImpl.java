@@ -6,9 +6,12 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
+import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -31,6 +34,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -48,10 +52,18 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefReque
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
+import io.littlehorse.common.proto.ACLAction;
+import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.Principal;
+import io.littlehorse.common.proto.PutPrincipalRequest;
+import io.littlehorse.common.proto.PutTenantRequest;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -135,6 +147,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -175,9 +188,11 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.IOException;
@@ -189,6 +204,7 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 
 @Slf4j
@@ -205,8 +221,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private ListenersManager listenerManager;
     private HealthService healthService;
 
-    private ReadOnlyMetadataStore getMetaStore() {
-        return internalComms.getGlobalStoreImpl();
+    private final ServerDAOFactory serverDAOFactory;
+
+    private ReadOnlyMetadataDAO metadataDao() {
+        return serverDAOFactory.getMetadataDao();
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
@@ -228,12 +246,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
-
+        this.serverDAOFactory = new ServerDAOFactory(coreStreams, metadataCache);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
-        this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
+        this.listenerManager = new ListenersManager(
+                config, this, networkThreadpool, healthService.getMeterRegistry(), serverDAOFactory);
 
-        this.internalComms =
-                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, metadataCache);
+        this.internalComms = new BackendInternalComms(
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, serverDAOFactory);
     }
 
     public String getInstanceId() {
@@ -241,8 +260,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -252,8 +272,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
+        PutPrincipalRequestModel reqModel = LHSerializable.fromProto(req, PutPrincipalRequestModel.class);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Principal.class, true);
+    }
+
+    @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), null);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -264,9 +290,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), null);
+        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), null);
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -275,9 +301,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), req.getVersion());
+        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion())));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -286,9 +314,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
-        TaskDefModel td = getMetaStore().getTaskDef(req.getName());
+        TaskDefModel td = metadataDao().getTaskDef(req.getName());
         if (td == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified TaskDef"));
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
@@ -297,9 +325,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
-        ExternalEventDefModel eed = getMetaStore().getExternalEventDef(req.getName());
+        ExternalEventDefModel eed = metadataDao().getExternalEventDef(req.getName());
         if (eed == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEventDef"));
+            ctx.onError(
+                    new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(eed.toProto().build());
             ctx.onCompleted();
@@ -484,6 +513,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
+        PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Tenant.class, true);
+    }
+
+    @Override
     public void searchWfRun(SearchWfRunRequest req, StreamObserver<WfRunIdList> ctx) {
         handleScan(SearchWfRunRequestModel.fromProto(req), ctx, SearchWfRunReply.class);
     }
@@ -511,7 +546,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void searchVariable(SearchVariableRequest req, StreamObserver<VariableIdList> ctx) {
-        handleScan(SearchVariableRequestModel.fromProto(req), ctx, SearchVariableReply.class);
+        handleScan(
+                SearchVariableRequestModel.fromProto(req, serverDAOFactory.getMetadataDao()),
+                ctx,
+                SearchVariableReply.class);
     }
 
     @Override
@@ -525,6 +563,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchWfSpec(SearchWfSpecRequest req, StreamObserver<WfSpecIdList> ctx) {
         handleScan(SearchWfSpecRequestModel.fromProto(req), ctx, SearchWfSpecReply.class);
     }
@@ -564,7 +603,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
 
         try {
-            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(internalComms.getGlobalStoreImpl()));
+            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(serverDAOFactory.getMetadataDao()));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }
@@ -654,6 +693,18 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         processCommand(new MetadataCommandModel(deedr), ctx, Empty.class, true);
     }
 
+    @Override
+    @Authorize(
+            resources = {},
+            actions = {})
+    public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
+        AuthorizationContext authorizationContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        String principalId = authorizationContext.principalId();
+        PrincipalModel principal = metadataDao().getPrincipal(principalId);
+        responseObserver.onNext(principal.toProto().build());
+        responseObserver.onCompleted();
+    }
+
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(new CommandModel(claimEvent), client.getResponseObserver(), PollTaskResponse.class, false);
@@ -682,8 +733,29 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
+        AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        String tenant;
+        String principalId;
 
-        internalComms.getProducer().send(command.getPartitionKey(), command, command.getTopic(config), callback);
+        // TODO: TaskQueueManager multitenancy
+        // The only reason for this validation is that
+        // TaskQueueManager does not support multi-tenancy yet.
+        // In the future this will change
+        Headers commandMetadata;
+        if (authContext != null) {
+            commandMetadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
+        } else {
+            commandMetadata =
+                    HeadersUtil.metadataHeadersFor(ModelStore.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
+        }
+        internalComms
+                .getProducer()
+                .send(
+                        command.getPartitionKey(),
+                        command,
+                        command.getTopic(config),
+                        callback,
+                        commandMetadata.toArray());
     }
 
     private void productionCallback(

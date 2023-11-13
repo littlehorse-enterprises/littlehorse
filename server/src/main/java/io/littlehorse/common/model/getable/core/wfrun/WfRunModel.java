@@ -526,6 +526,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
             if (terminationTime != null) {
                 LHTimer timer = new LHTimer();
+                timer.setPrincipalId(this.getDao().context().principalId());
+                timer.setTenantId(this.getDao().context().tenantId());
                 timer.topic = this.getDao().getCoreCmdTopic();
                 timer.key = id;
                 timer.maturationTime = terminationTime;

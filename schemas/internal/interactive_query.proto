@@ -54,6 +54,7 @@ message InternalScanPb {
         BoundedObjectIdScanPb bounded_object_id_scan = 7;
         TagScanPb tag_scan = 8;
     }
+    string tenant_id = 9;
 }
 
 message InternalGetAdvertisedHostsResponse {

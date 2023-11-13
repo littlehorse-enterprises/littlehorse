@@ -9,10 +9,14 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMe
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
+@Setter
+@Getter
 public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
     public Date time;
@@ -69,7 +73,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         }
     }
 
-    public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
+    public void process(ModelStore store, ProcessorContext<Void, Void> ctx) {
         getSubCommand().process(store, ctx);
     }
 

@@ -7,7 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
+public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
 
     private TaskNodeModel taskToSchedule;
     private NodeRunIdModel source;

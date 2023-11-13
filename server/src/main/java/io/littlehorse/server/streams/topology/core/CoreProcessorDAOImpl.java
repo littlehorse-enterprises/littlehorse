@@ -2,10 +2,12 @@ package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -27,9 +29,10 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
@@ -39,38 +42,42 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
-    private Map<String, ScheduledTaskModel> scheduledTaskPuts;
-    private List<LHTimer> timersToSchedule;
+    private final Map<String, ScheduledTaskModel> scheduledTaskPuts;
+    private final List<LHTimer> timersToSchedule;
     private CommandModel command;
-    private KafkaStreamsServerImpl server;
+    private final KafkaStreamsServerImpl server;
     private Set<HostModel> currentHosts;
 
-    private RocksDBWrapper rocksdb;
-    private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private LHServerConfig config;
+    private final ProcessorContext<String, CommandProcessorOutput> ctx;
+    private final LHServerConfig config;
     private boolean partitionIsClaimed;
 
     private GetableStorageManager storageManager;
 
+    private final ModelStore coreStore;
+
     public CoreProcessorDAOImpl(
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHServerConfig config,
-            KafkaStreamsServerImpl server,
-            MetadataCache metadataCache,
-            RocksDBWrapper localStore,
-            ReadOnlyRocksDBWrapper globalStore) {
-        super(globalStore, metadataCache);
-
+            final LHServerConfig config,
+            final KafkaStreamsServerImpl server,
+            final MetadataCache metadataCache,
+            final ReadOnlyModelStore metadataStore,
+            final ModelStore coreStore,
+            final AuthorizationContext context) {
+        super(metadataStore, metadataCache, context);
+        this.coreStore = coreStore;
         this.server = server;
         this.ctx = ctx;
         this.config = config;
-        this.rocksdb = localStore;
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -80,11 +87,11 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public void initCommand(CommandModel command) {
+    public void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore, Headers metadataHeaders) {
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         this.command = command;
-        this.storageManager = new GetableStorageManager(rocksdb, ctx, config, command, this);
+        this.storageManager = new GetableStorageManager(this.coreStore, ctx, config, command, this);
     }
 
     @Override
@@ -105,14 +112,14 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             if (scheduledTask != null) {
                 forwardTask(scheduledTask);
             } else {
-                rocksdb.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
+                this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
         }
         clearThingsToWrite();
     }
 
     @Override
-    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
         return storageManager.get(id);
     }
 
@@ -178,7 +185,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = rocksdb.get(taskRunId.toString(), ScheduledTaskModel.class);
+        ScheduledTaskModel scheduledTask = this.coreStore.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
@@ -187,44 +194,19 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         return scheduledTask;
     }
 
-    // // This method should only be called if we have a serious unknown bug in
-    // // LittleHorse that causes an unexpected exception to occur while executing
-    // // CommandProcessor#process().
-    // @Override
-    // public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId)
-    // {
-    // // if the wfRun exists: we want to mark it as failed with a message.
-    // // Else, do nothing.
-    // WfRunModel wfRunModel = storageManager.get(wfRunId, WfRunModel.class);
-    // if (wfRunModel != null) {
-    // log.warn("Marking wfRun {} as failed due to internal LH exception", wfRunId);
-    // ThreadRunModel entrypoint = wfRunModel.getThreadRun(0);
-    // entrypoint.setStatus(LHStatus.ERROR);
-
-    // String message = "Had an internal LH failur processing command of type "
-    // + command.getType()
-    // + ": "
-    // + failure.getMessage();
-    // entrypoint.setErrorMessage(message);
-    // storageManager.abortAndUpdate(wfRunModel);
-    // } else {
-    // log.warn("Caught internal LH error but found no WfRun with id {}", wfRunId);
-    // }
-    // clearThingsToWrite();
-    // }
-
     @Override
     public String getCoreCmdTopic() {
         return config.getCoreCmdTopicName();
     }
 
+    @Override
     public void onPartitionClaimed() {
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
 
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = rocksdb.prefixScan("", ScheduledTaskModel.class)) {
+        try (LHKeyValueIterator<ScheduledTaskModel> iter = this.coreStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
@@ -235,20 +217,16 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     private void forwardTask(ScheduledTaskModel scheduledTask) {
-        rocksdb.put(scheduledTask);
+        this.coreStore.put(scheduledTask);
 
-        if (partitionIsClaimed) {
-            server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
-        } else {
-            // We will call onTaskScheduled() when we re-hydrate it.
-            log.debug("Haven't claimed partitions, deferring scheduling of tsr");
-        }
+        server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
     }
 
     private void forwardTimer(LHTimer timer) {
         CommandProcessorOutput output = new CommandProcessorOutput(config.getTimerTopic(), timer, timer.key);
-
-        ctx.forward(new Record<String, CommandProcessorOutput>(timer.key, output, System.currentTimeMillis()));
+        Headers headers =
+                HeadersUtil.metadataHeadersFor(context().tenantId(), context().principalId());
+        ctx.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
     }
 
     private void clearThingsToWrite() {

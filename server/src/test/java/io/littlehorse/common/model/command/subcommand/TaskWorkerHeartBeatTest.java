@@ -39,6 +39,8 @@ public class TaskWorkerHeartBeatTest {
     private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
     private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor = ArgumentCaptor.forClass(TaskWorkerGroupModel.class);
 
+    private final String tenantId = "myTenandId";
+
     @Test
     void doNotRemoveTaskWorkerIfItJustSentAHeartbeat() {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();

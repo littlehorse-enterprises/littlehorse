@@ -51,4 +51,62 @@ public interface LHTimerPbOrBuilder extends
    * @return The payload.
    */
   com.google.protobuf.ByteString getPayload();
+
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return Whether the tenantId field is set.
+   */
+  boolean hasTenantId();
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return The tenantId.
+   */
+  java.lang.String getTenantId();
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return The bytes for tenantId.
+   */
+  com.google.protobuf.ByteString
+      getTenantIdBytes();
+
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return Whether the principalId field is set.
+   */
+  boolean hasPrincipalId();
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return The principalId.
+   */
+  java.lang.String getPrincipalId();
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return The bytes for principalId.
+   */
+  com.google.protobuf.ByteString
+      getPrincipalIdBytes();
 }

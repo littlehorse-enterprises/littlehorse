@@ -7,7 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DeadlineReassignUserTaskModel extends SubCommand<DeadlineReassignUserTask> {
+public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassignUserTask> {
 
     private UserTaskRunIdModel source;
     private VariableAssignmentModel newUserId;

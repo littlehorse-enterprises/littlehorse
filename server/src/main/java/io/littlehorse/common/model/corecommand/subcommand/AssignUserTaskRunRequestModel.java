@@ -7,7 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunRequest> {
+public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private boolean overrideClaim;
@@ -54,6 +54,7 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
         return userTaskRunId.getWfRunId();
     }
 
+    @Override
     public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
 
         if (userGroup == null && userId == null) {

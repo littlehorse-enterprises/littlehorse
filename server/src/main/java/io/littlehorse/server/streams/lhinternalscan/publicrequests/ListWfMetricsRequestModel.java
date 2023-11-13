@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -30,7 +30,7 @@ public class ListWfMetricsRequestModel
     public MetricsWindowLength windowLength;
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+    public LHStore getStoreType() {
         return LHStore.REPARTITION;
     }
 
@@ -64,7 +64,7 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
         return null;
     }
 

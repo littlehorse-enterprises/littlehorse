@@ -82,3 +82,11 @@ message WfSpecMetricsId {
   string wf_spec_name = 3;
   int32 wf_spec_version = 4;
 }
+
+message PrincipalId {
+  string id = 1;
+}
+
+message TenantId {
+  string id = 1;
+}

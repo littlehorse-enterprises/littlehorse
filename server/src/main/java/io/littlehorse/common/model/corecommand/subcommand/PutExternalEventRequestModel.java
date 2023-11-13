@@ -8,7 +8,7 @@ import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -22,7 +22,7 @@ import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
-public class PutExternalEventRequestModel extends SubCommand<PutExternalEventRequest> {
+public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
     public String wfRunId;
     public String externalEventDefName;
@@ -56,6 +56,7 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         return true;
     }
 
+    @Override
     public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config) {
         ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
@@ -88,6 +89,8 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
             deleteExtEventCmd.setSubCommand(deleteExternalEvent);
             deleteExtEventCmd.time = timer.maturationTime;
             timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
+            timer.setTenantId(dao.context().tenantId());
+            timer.setPrincipalId(dao.context().principalId());
             dao.scheduleTimer(timer);
         }
 

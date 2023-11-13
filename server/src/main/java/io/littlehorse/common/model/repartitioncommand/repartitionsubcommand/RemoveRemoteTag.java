@@ -7,7 +7,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.RemoveRemoteTagPb;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implements RepartitionSubCommand {
@@ -40,7 +40,7 @@ public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implement
     }
 
     @Override
-    public void process(RocksDBWrapper repartitionedStore, ProcessorContext<Void, Void> ctx) {
+    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         repartitionedStore.delete(this.storeKey, StoreableType.TAG);
     }
 

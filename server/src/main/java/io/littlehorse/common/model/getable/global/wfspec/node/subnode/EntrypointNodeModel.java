@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -21,7 +21,7 @@ public class EntrypointNodeModel extends SubNode<EntrypointNode> {
 
     public void initFrom(Message proto) {}
 
-    public void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException {}
+    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {}
 
     public EntrypointRunModel createSubNodeRun(Date time) {
         return new EntrypointRunModel();

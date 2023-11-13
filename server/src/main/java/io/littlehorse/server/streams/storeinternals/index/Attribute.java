@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.storeinternals.index;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.AttributePb;
+import java.io.UnsupportedEncodingException;
 
 public class Attribute extends LHSerializable<AttributePb> {
 
@@ -15,6 +16,12 @@ public class Attribute extends LHSerializable<AttributePb> {
 
     public AttributePb.Builder toProto() {
         AttributePb.Builder out = AttributePb.newBuilder().setKey(key).setVal(val);
+        try {
+            key.getBytes("UTF-8");
+            val.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         return out;
     }
 

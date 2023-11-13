@@ -5,14 +5,14 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
+public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
 
     public String wfRunId;
     public int threadRunNumber;
@@ -51,6 +51,7 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
         return wfRunId;
     }
 
+    @Override
     public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {

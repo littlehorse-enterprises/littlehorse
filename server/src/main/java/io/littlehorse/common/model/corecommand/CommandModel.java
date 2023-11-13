@@ -60,12 +60,12 @@ public class CommandModel extends AbstractCommand<Command> {
 
     public CommandModel() {}
 
-    public CommandModel(SubCommand<?> cmd) {
+    public CommandModel(CoreSubCommand<?> cmd) {
         this.time = new Date();
         this.setSubCommand(cmd);
     }
 
-    public CommandModel(SubCommand<?> cmd, Date time) {
+    public CommandModel(CoreSubCommand<?> cmd, Date time) {
         this.time = time;
         this.setSubCommand(cmd);
     }
@@ -74,7 +74,6 @@ public class CommandModel extends AbstractCommand<Command> {
     public Command.Builder toProto() {
         Command.Builder out = Command.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-
         if (commandId != null) {
             out.setCommandId(commandId);
         }
@@ -202,7 +201,8 @@ public class CommandModel extends AbstractCommand<Command> {
         }
     }
 
-    public SubCommand<?> getSubCommand() {
+    @Override
+    public CoreSubCommand<?> getSubCommand() {
         switch (type) {
             case REPORT_TASK_RUN:
                 return reportTaskRun;
@@ -241,7 +241,7 @@ public class CommandModel extends AbstractCommand<Command> {
         throw new IllegalStateException("Not possible to have missing subcommand.");
     }
 
-    public void setSubCommand(SubCommand<?> cmd) {
+    public void setSubCommand(CoreSubCommand<?> cmd) {
         Class<?> cls = cmd.getClass();
         if (cls.equals(RunWfRequestModel.class)) {
             type = CommandCase.RUN_WF;

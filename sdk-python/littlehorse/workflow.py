@@ -1377,9 +1377,7 @@ ThreadInitializer = Callable[[WorkflowThread], None]
 
 
 class Workflow:
-    def __init__(
-        self, name: str, entrypoint: ThreadInitializer
-    ) -> None:
+    def __init__(self, name: str, entrypoint: ThreadInitializer) -> None:
         """Workflow.
 
         Args:

@@ -11,6 +11,8 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -18,10 +20,12 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -85,6 +89,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.TASK_RUN;
         } else if (cls.equals(UserTaskRunModel.class)) {
             return GetableClassEnum.USER_TASK_RUN;
+        } else if (cls.equals(PrincipalModel.class)) {
+            return GetableClassEnum.PRINCIPAL;
+        } else if (cls.equals(TenantModel.class)) {
+            return GetableClassEnum.TENANT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -118,6 +126,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return TaskRunModel.class;
             case USER_TASK_RUN:
                 return UserTaskRunModel.class;
+            case PRINCIPAL:
+                return PrincipalModel.class;
+            case TENANT:
+                return TenantModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -152,6 +164,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return TaskRunIdModel.class;
             case USER_TASK_RUN:
                 return UserTaskRunIdModel.class;
+            case PRINCIPAL:
+                return PrincipalIdModel.class;
+            case TENANT:
+                return TenantIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

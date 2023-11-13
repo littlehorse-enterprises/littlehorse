@@ -1,12 +1,18 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
@@ -23,6 +29,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,19 +38,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TagStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
+
+    private final KeyValueStore<String, Bytes> globalMetadaataStore = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper localStore = new RocksDBWrapper(store, lhConfig);
+    @Mock
+    private KafkaStreamsServerImpl server;
+
+    private String tenantId = "myTenant";
+
+    private ModelStore localStore = ModelStore.instanceFor(store, tenantId);
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
     @InjectMocks
-    private TagStorageManager tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig);
+    private TagStorageManager tagStorageManager;
 
     private Tag tag1 = TestUtil.tag();
 
@@ -51,12 +68,21 @@ public class TagStorageManagerTest {
 
     private List<Tag> tags;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private CoreProcessorDAO processorDAO;
+
+    private AuthorizationContext authorizationContext =
+            new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
 
     @BeforeEach
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
+        globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
+        when(processorDAO.context()).thenReturn(authorizationContext);
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, processorDAO);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);
@@ -89,6 +115,7 @@ public class TagStorageManagerTest {
 
     @Test
     void sendRepartitionCommandForCreateRemoteTagSubCommand() {
+        when(processorDAO.context()).thenReturn(authorizationContext);
         String expectedPartitionKey = "3/__wfSpecName_test-name";
         tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);

@@ -2,9 +2,13 @@ package io.littlehorse.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -21,7 +25,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -56,17 +60,24 @@ public class GetableStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper localStoreWrapper;
+    private String tenantId = "myTenant";
+
+    private ModelStore localStoreWrapper;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
     private GetableStorageManager getableStorageManager;
 
+    @Mock
+    private CoreProcessorDAO mockCoreDao;
+
+    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+
     @BeforeEach
     void setup() {
-        localStoreWrapper = new RocksDBWrapper(store, lhConfig);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
         getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -172,6 +183,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteStringVariableWithUserDefinedStorageType() {
+        when(mockCoreDao.context()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
@@ -235,6 +247,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteIntVariableWithUserDefinedStorageType() {
+        when(mockCoreDao.context()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
@@ -298,6 +311,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
+        when(mockCoreDao.context()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
@@ -381,6 +395,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
+        when(mockCoreDao.context()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);

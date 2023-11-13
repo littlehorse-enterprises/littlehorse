@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
@@ -205,7 +205,7 @@ public class NodeModel extends LHSerializable<Node> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore client, LHServerConfig config) throws LHApiException {
+    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
@@ -245,7 +245,7 @@ public class NodeModel extends LHSerializable<Node> {
         }
 
         try {
-            getSubNode().validate(client, config);
+            getSubNode().validate(metadataDao, config);
         } catch (LHApiException exn) {
             // Decorate the exception with contextual info
             throw exn.getCopyWithPrefix("Sub Node");

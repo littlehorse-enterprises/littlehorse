@@ -204,8 +204,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         taskResult.setTaskRunId(id);
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
-
-        LHTimer timer = new LHTimer(new CommandModel(taskResult, taskResult.getTime()), getDao());
+        CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
+        LHTimer timer = new LHTimer(timerCommand, getDao());
         getDao().scheduleTimer(timer);
 
         // Now that that's out of the way, we can mark the TaskRun as running.

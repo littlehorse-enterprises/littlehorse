@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
@@ -179,7 +179,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config, WfSpecModel oldVersion)
+    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config, WfSpecModel oldVersion)
             throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
@@ -196,7 +196,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
-                ts.validate(dbClient, config);
+                ts.validate(metadataDao, config);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }

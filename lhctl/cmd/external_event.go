@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"log"
 	"strings"
 
@@ -40,7 +39,7 @@ var getExternalEventCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetExternalEvent(
-			context.Background(),
+			requestContext(),
 			&model.ExternalEventId{
 				WfRunId:              args[0],
 				ExternalEventDefName: args[1],
@@ -102,7 +101,7 @@ Choose one of the following option groups:
 			}
 			search.ExtEvtCriteria = extEvtCriteria
 		}
-		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(context.Background(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(), search))
 	},
 }
 
@@ -126,7 +125,7 @@ Lists all ExternalEvent's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListExternalEvents(
-			context.Background(),
+			requestContext(),
 			req,
 		))
 	},

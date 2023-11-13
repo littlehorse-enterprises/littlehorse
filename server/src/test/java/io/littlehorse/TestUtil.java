@@ -1,6 +1,7 @@
 package io.littlehorse;
 
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
@@ -12,6 +13,8 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -22,12 +25,18 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.ACLAction;
+import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TestUtil {
@@ -40,6 +49,10 @@ public class TestUtil {
         wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
+    }
+
+    public static StoredGetable<WfRun, WfRunModel> storedWfRun(String id) {
+        return new StoredGetable<>(wfRun(id));
     }
 
     public static TaskDefModel taskDef(String name) {
@@ -184,5 +197,45 @@ public class TestUtil {
         variableDef.setName(name);
         variableDef.setType(variableTypePb);
         return variableDef;
+    }
+
+    public static ScheduledTaskModel scheduledTaskModel() {
+        return new ScheduledTaskModel(
+                taskDef("my-task").getObjectId(),
+                List.of(),
+                userTaskRun(UUID.randomUUID().toString()));
+    }
+
+    public static ServerACLModel acl() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_PRINCIPAL));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
+    public static ServerACLsModel singleAcl() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class);
+    }
+
+    public static ServerACLModel adminAcl() {
+        return adminAcl("name");
+    }
+
+    public static ServerACLModel adminAcl(String name) {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of(name));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_ALL_RESOURCES));
+        acl.setAllowedActions(List.of(ACLAction.ALL_ACTIONS));
+        return acl;
+    }
+
+    public static ServerACLsModel singleAdminAcl(String aclNAme) {
+        ServerACLs acls =
+                ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
+        return ServerACLsModel.fromProto(acls, ServerACLsModel.class);
     }
 }

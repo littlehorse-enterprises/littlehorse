@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"time"
-
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
@@ -21,7 +19,7 @@ var getWfRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetWfRun(
-			context.Background(),
+			requestContext(),
 			&model.WfRunId{
 				Id: args[0],
 			},
@@ -113,7 +111,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		}
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchWfRun(context.Background(), search),
+			getGlobalClient(cmd).SearchWfRun(requestContext(), search),
 		)
 	},
 }
@@ -129,7 +127,7 @@ var stopWfRunCmd = &cobra.Command{
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		common.PrintResp(getGlobalClient(cmd).StopWfRun(
-			context.Background(),
+			requestContext(),
 			&model.StopWfRunRequest{
 				WfRunId:         args[0],
 				ThreadRunNumber: trn,
@@ -149,7 +147,7 @@ var resumeWfRunCmd = &cobra.Command{
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
-			context.Background(),
+			requestContext(),
 			&model.ResumeWfRunRequest{
 				WfRunId:         args[0],
 				ThreadRunNumber: trn,
@@ -168,7 +166,7 @@ var deleteWfRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).DeleteWfRun(
-			context.Background(),
+			requestContext(),
 			&model.DeleteWfRunRequest{
 				Id: &model.WfRunId{
 					Id: args[0],

@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -46,7 +46,9 @@ public class JsonVariableStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper storeWrapper;
+    private ModelStore storeWrapper;
+
+    private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableStorageManager getableStorageManager;
@@ -81,13 +83,13 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = new RocksDBWrapper(store, lhConfig);
+        storeWrapper = ModelStore.instanceFor(store, tenantId);
         getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
     private List<Tag> storedTags() {
-        return localTagScan("").map(LHIterKeyValue::getValue).toList();
+        return localTagScan("5/").map(LHIterKeyValue::getValue).toList();
     }
 
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {

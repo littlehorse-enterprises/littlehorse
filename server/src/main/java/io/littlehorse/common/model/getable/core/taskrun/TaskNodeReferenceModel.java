@@ -70,6 +70,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
 
     private String getFailureCodeFor(TaskStatus status) {
         switch (status) {
+            case TASK_EXCEPTION: // TODO: LH-162: This shouldn't be TASK_FAILURE
             case TASK_FAILED:
                 return LHConstants.TASK_FAILURE;
             case TASK_TIMEOUT:
@@ -90,6 +91,8 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
 
     private String getMessageFor(TaskStatus status) {
         switch (status) {
+            case TASK_EXCEPTION: // TODO: LH-162: Verify that this makes sense
+                return "Task threw business exception";
             case TASK_FAILED:
                 return "Task execution failed";
             case TASK_TIMEOUT:

@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -45,8 +45,8 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore client, LHServerConfig config) throws LHApiException {
-        eed = client.getExternalEventDef(externalEventDefName);
+    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
+        eed = metadataDao.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
             throw new LHApiException(

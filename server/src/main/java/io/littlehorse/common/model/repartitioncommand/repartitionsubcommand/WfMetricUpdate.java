@@ -11,7 +11,7 @@ import io.littlehorse.common.proto.WfMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import java.util.Date;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -39,10 +39,12 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
         this.wfSpecVersion = wfSpecVersion;
     }
 
+    @Override
     public Class<WfMetricUpdatePb> getProtoBaseClass() {
         return WfMetricUpdatePb.class;
     }
 
+    @Override
     public WfMetricUpdatePb.Builder toProto() {
         WfMetricUpdatePb.Builder out = WfMetricUpdatePb.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
@@ -59,6 +61,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         WfMetricUpdatePb p = (WfMetricUpdatePb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
@@ -116,7 +119,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     }
 
     @Override
-    public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
+    public void process(ModelStore store, ProcessorContext<Void, Void> ctx) {
         throw new NotImplementedException("Need to re-enable workflow metrics");
         /*
          * // Update workflow-level metrics

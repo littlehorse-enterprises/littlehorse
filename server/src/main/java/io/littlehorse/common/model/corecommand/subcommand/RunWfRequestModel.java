@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunWfRequestModel extends SubCommand<RunWfRequest> {
+public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     public String wfSpecName;
     public Integer wfSpecVersion;
@@ -64,6 +64,7 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         return true;
     }
 
+    @Override
     public WfRun process(CoreProcessorDAO dao, LHServerConfig config) {
         WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {

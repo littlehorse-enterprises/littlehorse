@@ -33,14 +33,13 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String token = extractAccessToken(headers);
-
         try {
             validateToken(token);
         } catch (Exception e) {
             log.error("Error authorizing request", e);
             call.close(getStatusByException(e), headers);
         }
-
+        headers.put(CLIENT_ID, tokenCache.getIfPresent(token).getUserName());
         return next.startCall(call, headers);
     }
 
@@ -59,7 +58,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
                 .trim();
     }
 
-    private void validateToken(String token) throws Exception {
+    private void validateToken(String token) {
         if (Strings.isNullOrEmpty(token)) {
             throw new PermissionDeniedException("Token is empty");
         }

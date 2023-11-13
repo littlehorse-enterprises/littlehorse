@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -151,7 +151,7 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
         TagStorageType tagStorageType = tagStorageTypePbByUserId()
                 .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
@@ -182,7 +182,7 @@ public class SearchUserTaskRunRequestModel
                         .findFirst();
     }
 
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
-        return indexTypeForSearch(metaStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+    public LHStore getStoreType() {
+        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 }

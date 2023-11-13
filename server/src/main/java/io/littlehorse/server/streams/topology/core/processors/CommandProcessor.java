@@ -2,34 +2,46 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CommandProcessor implements Processor<String, CommandModel, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private CoreProcessorDAOImpl dao;
     private LHServerConfig config;
     private KafkaStreamsServerImpl server;
-    private RocksDBWrapper rocksdb;
     private final MetadataCache metadataCache;
+
+    private KeyValueStore<String, Bytes> nativeStore;
+
+    private CommandDAOFactory daoFactory;
 
     public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -41,17 +53,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
 
-        // Once multi-tenancy is implemented, we will pass the rocksdb store in
-        // the initCommand() method. That way, we can isolate the tenants through
-        // rocksdb without changing any business logic in common.model or in
-        // CoreProcessorDAOImpl.
-        this.rocksdb = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_STORE), config);
-
-        ReadOnlyRocksDBWrapper globalStore =
-                new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
-
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, rocksdb, globalStore);
-        dao.onPartitionClaimed();
+        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
+        daoFactory = new CommandDAOFactory();
+        daoFactory.getDefaultDao(LHConstants.ANONYMOUS_PRINCIPAL).onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
@@ -69,7 +73,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void processHelper(final Record<String, CommandModel> commandRecord) {
         CommandModel command = commandRecord.value();
-        dao.initCommand(command);
+        CoreProcessorDAO coreDao = daoFactory.fromMetadata(command, commandRecord.headers());
+        coreDao.initCommand(command, this.nativeStore, commandRecord.headers());
 
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
@@ -79,16 +84,16 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 command.getPartitionKey());
 
         try {
-            Message response = command.process(dao, config);
-            dao.commit();
-            if (command.hasResponse() && command.commandId != null) {
+            Message response = command.process(coreDao, config);
+            coreDao.commit();
+            if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.commandId)
+                        .setCommandId(command.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
                         .setResult(response.toByteString())
                         .build();
 
-                server.onResponseReceived(command.commandId, cmdReply);
+                server.onResponseReceived(command.getCommandId(), cmdReply);
             }
         } catch (Exception exn) {
             if (isUserError(exn)) {
@@ -145,5 +150,61 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void forwardMetricsUpdates(long timestamp) {
         // TODO: batch and send metrics to the repartition processor
+    }
+
+    private final class CommandDAOFactory {
+
+        CoreProcessorDAO fromMetadata(CommandModel command, Headers metadata) {
+            String tenantId = HeadersUtil.tenantIdFromMetadata(metadata);
+            String principalId = HeadersUtil.principalIdFromMetadata(metadata);
+            return new CoreProcessorDAOImpl(
+                    ctx,
+                    config,
+                    server,
+                    metadataCache,
+                    storeFor(command, tenantId, globalMetadata()),
+                    storeFor(command, tenantId, coreStore()),
+                    contextFor(principalId, tenantId));
+        }
+
+        CoreProcessorDAO getDefaultDao(String tenantId) {
+            return new CoreProcessorDAOImpl(
+                    ctx,
+                    config,
+                    server,
+                    metadataCache,
+                    ModelStore.defaultStore(globalMetadata()),
+                    ModelStore.defaultStore(coreStore()),
+                    defaultContext(tenantId));
+        }
+
+        private ModelStore storeFor(CommandModel command, String tenantId, KeyValueStore<String, Bytes> nativeStore) {
+            ModelStore store;
+            if (command.getSubCommand() instanceof ClusterLevelCommand) {
+                store = ModelStore.defaultStore(nativeStore);
+            } else {
+                store = ModelStore.instanceFor(nativeStore, tenantId);
+            }
+            return store;
+        }
+
+        private KeyValueStore<String, Bytes> globalMetadata() {
+            return ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
+        }
+
+        private KeyValueStore<String, Bytes> coreStore() {
+            return ctx.getStateStore(ServerTopology.CORE_STORE);
+        }
+
+        private AuthorizationContext contextFor(String principalId, String tenantId) {
+            // TODO: for fine-grained acl verification we will need to find list of ACLS for the principalId and
+            // tenantId
+            List<ServerACLModel> currentAcls = List.of();
+            return new AuthorizationContextImpl(principalId, tenantId, currentAcls);
+        }
+
+        private AuthorizationContext defaultContext(String principalId) {
+            return new AuthorizationContextImpl(principalId, ModelStore.DEFAULT_TENANT, List.of());
+        }
     }
 }

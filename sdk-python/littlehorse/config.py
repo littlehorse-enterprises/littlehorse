@@ -234,7 +234,7 @@ class LHConfig:
         Returns:
             int: The keepalive interval for grpc.
         """
-        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIME_MS, '45000'))
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIME_MS, "45000"))
 
     @property
     def grpc_keepalive_timeout_ms(self) -> int:
@@ -244,7 +244,7 @@ class LHConfig:
         Returns:
             int: The keepalive timeout for grpc.
         """
-        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, '5000'))
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, "5000"))
 
     @property
     def num_worker_threads(self) -> int:
@@ -293,9 +293,9 @@ class LHConfig:
         insecure_channel = grpc.insecure_channel
 
         channel_args = [
-            ('grpc.keepalive_time_ms', self.grpc_keepalive_time_ms),
-            ('grpc.keepalive_timeout_ms', self.grpc_keepalive_timeout_ms),
-            ('grpc.keepalive_permit_without_calls', True),
+            ("grpc.keepalive_time_ms", self.grpc_keepalive_time_ms),
+            ("grpc.keepalive_timeout_ms", self.grpc_keepalive_timeout_ms),
+            ("grpc.keepalive_permit_without_calls", True),
         ]
 
         if async_channel:

@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -92,7 +92,7 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataDAO readOnlyDao) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
         out.initFrom(proto);
         return out;
@@ -110,13 +110,13 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataStore stores) {
+    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
         boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
 
         // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
         // that VariableDef, and it's also guaranteed that all of the VariableDef's are the same.
         Integer wfSpecVersion = isPersistentVariableQuery ? null : value.getWfSpecVersion();
-        WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), wfSpecVersion);
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
@@ -164,21 +164,21 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
-            TagStorageType result = indexTypeForSearchFromWfSpec(stores);
+            TagStorageType result = indexTypeForSearchFromWfSpec(readOnlyDao);
             log.trace("Doing a {} search", result);
             return result;
         });
     }
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+    public LHStore getStoreType() {
         switch (type) {
             case WF_RUN_ID:
                 return LHStore.CORE;
             case VALUE:
-                return indexTypeForSearch(metaStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+                return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
             case VARIABLECRITERIA_NOT_SET:
         }
         throw new LHApiException(Status.INVALID_ARGUMENT, "Didn't provide variable criteria");

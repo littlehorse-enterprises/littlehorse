@@ -3,11 +3,13 @@ package io.littlehorse.common.util;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import java.io.Closeable;
+import java.util.List;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.utils.Bytes;
 
 public class LHProducer implements Closeable {
@@ -18,8 +20,8 @@ public class LHProducer implements Closeable {
         prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceId()));
     }
 
-    public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb) {
-        return sendRecord(new ProducerRecord<>(topic, key, new Bytes(t.toBytes())), cb);
+    public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb, Header... headers) {
+        return sendRecord(new ProducerRecord<>(topic, null, key, new Bytes(t.toBytes()), List.of(headers)), cb);
     }
 
     public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic) {

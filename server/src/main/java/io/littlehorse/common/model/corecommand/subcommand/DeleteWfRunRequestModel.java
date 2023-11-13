@@ -5,11 +5,11 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 
-public class DeleteWfRunRequestModel extends SubCommand<DeleteWfRunRequest> {
+public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
 
     public WfRunIdModel wfRunId;
 
@@ -31,6 +31,7 @@ public class DeleteWfRunRequestModel extends SubCommand<DeleteWfRunRequest> {
         return wfRunId.getPartitionKey().get();
     }
 
+    @Override
     public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         dao.delete(wfRunId);
         return Empty.getDefaultInstance();

@@ -1,11 +1,10 @@
 package io.littlehorse.common.dao;
 
-import com.google.protobuf.Message;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -13,22 +12,27 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
+import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataDAOImpl;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueStore;
 
-public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
+public abstract class CoreProcessorDAO extends ReadOnlyMetadataDAOImpl {
 
-    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
-        super(rocksdb, metadataCache);
+    public CoreProcessorDAO(ReadOnlyModelStore rocksdb, MetadataCache metadataCache, AuthorizationContext context) {
+        super(rocksdb, metadataCache, context);
     }
 
     /*
      * Lifecycle for processing a Command
      */
 
-    public abstract void initCommand(CommandModel command);
+    public abstract void initCommand(
+            CommandModel command, KeyValueStore<String, Bytes> nativeStore, Headers metadataHeaders);
 
     public abstract CommandModel getCommand();
 
@@ -37,8 +41,6 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
     /*
      * Basic CRUD for CoreGetables
      */
-
-    public abstract <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
     public abstract void put(CoreGetable<?> getable);
 
@@ -77,4 +79,6 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
     public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName);
 
     public abstract InternalHosts getInternalHosts();
+
+    public abstract void onPartitionClaimed();
 }

@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"log"
 	"strconv"
 
@@ -52,7 +51,7 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 		ts := timestamppb.Now()
 
 		common.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
-			context.Background(),
+			requestContext(),
 			&model.ListWfMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),

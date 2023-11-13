@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -81,12 +81,12 @@ public class SearchNodeRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+    public LHStore getStoreType() {
         return LHStore.CORE; // only object id prefix scan supported.
     }
 

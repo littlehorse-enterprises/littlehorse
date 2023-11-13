@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -115,7 +115,7 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
         List<String> searchAttributes =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =
@@ -145,7 +145,7 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+    public LHStore getStoreType() {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
             return LHStore.CORE;
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {

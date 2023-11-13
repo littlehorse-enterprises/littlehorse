@@ -1,28 +1,32 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @AllArgsConstructor
 public class TagStorageManager {
 
-    private RocksDBWrapper localStore;
-    private ProcessorContext<String, CommandProcessorOutput> context;
-    private LHServerConfig lhConfig;
+    private final ModelStore lhStore;
+    private final ProcessorContext<String, CommandProcessorOutput> context;
+    private final LHServerConfig lhConfig;
+    private final CoreProcessorDAO dao;
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
         List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();
@@ -43,7 +47,7 @@ public class TagStorageManager {
         if (tag.isRemote()) {
             this.sendRepartitionCommandForCreateRemoteTag(tag);
         } else {
-            localStore.put(tag);
+            lhStore.put(tag);
         }
     }
 
@@ -52,7 +56,7 @@ public class TagStorageManager {
             String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
             sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
         } else {
-            localStore.delete(cachedTag.getId(), StoreableType.TAG);
+            lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
     }
 
@@ -63,22 +67,30 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
+        Headers metadata = HeadersUtil.metadataHeadersFor(
+                dao.context().tenantId(), dao.context().principalId());
+        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
         cpo.topic = this.lhConfig.getRepartitionTopicName();
-        cpo.payload = new RepartitionCommand(command, new Date(), tagStoreKey);
-        Record<String, CommandProcessorOutput> out = new Record<>(tagAttributeString, cpo, System.currentTimeMillis());
+        cpo.payload = repartitionCommand;
+        Record<String, CommandProcessorOutput> out =
+                new Record<>(tagAttributeString, cpo, System.currentTimeMillis(), metadata);
         this.context.forward(out);
     }
 
     private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
         CreateRemoteTag command = new CreateRemoteTag(tag);
+        Headers metadata = HeadersUtil.metadataHeadersFor(
+                dao.context().tenantId(), dao.context().principalId());
         String partitionKey = tag.getPartitionKey();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());
-        cpo.setPayload(new RepartitionCommand(command, new Date(), partitionKey));
-        Record<String, CommandProcessorOutput> out = new Record<>(partitionKey, cpo, System.currentTimeMillis());
+        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
+        cpo.setPayload(repartitionCommand);
+        Record<String, CommandProcessorOutput> out =
+                new Record<>(partitionKey, cpo, System.currentTimeMillis(), metadata);
         this.context.forward(out);
     }
 }

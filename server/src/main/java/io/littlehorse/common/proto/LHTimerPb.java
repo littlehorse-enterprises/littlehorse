@@ -24,6 +24,8 @@ private static final long serialVersionUID = 0L;
     key_ = "";
     topic_ = "";
     payload_ = com.google.protobuf.ByteString.EMPTY;
+    tenantId_ = "";
+    principalId_ = "";
   }
 
   @java.lang.Override
@@ -46,6 +48,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.LHTimerPb.class, io.littlehorse.common.proto.LHTimerPb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int MATURATION_TIME_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp maturationTime_;
   /**
@@ -161,6 +164,124 @@ private static final long serialVersionUID = 0L;
     return payload_;
   }
 
+  public static final int TENANT_ID_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object tenantId_ = "";
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return Whether the tenantId field is set.
+   */
+  @java.lang.Override
+  public boolean hasTenantId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return The tenantId.
+   */
+  @java.lang.Override
+  public java.lang.String getTenantId() {
+    java.lang.Object ref = tenantId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      tenantId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * default if not set
+   * </pre>
+   *
+   * <code>optional string tenant_id = 5;</code>
+   * @return The bytes for tenantId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTenantIdBytes() {
+    java.lang.Object ref = tenantId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      tenantId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int PRINCIPAL_ID_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object principalId_ = "";
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return Whether the principalId field is set.
+   */
+  @java.lang.Override
+  public boolean hasPrincipalId() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return The principalId.
+   */
+  @java.lang.Override
+  public java.lang.String getPrincipalId() {
+    java.lang.Object ref = principalId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      principalId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * anonymous if not set
+   * </pre>
+   *
+   * <code>optional string principal_id = 6;</code>
+   * @return The bytes for principalId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getPrincipalIdBytes() {
+    java.lang.Object ref = principalId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      principalId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -187,6 +308,12 @@ private static final long serialVersionUID = 0L;
     if (!payload_.isEmpty()) {
       output.writeBytes(4, payload_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, tenantId_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, principalId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -209,6 +336,12 @@ private static final long serialVersionUID = 0L;
     if (!payload_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, payload_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, tenantId_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, principalId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -236,6 +369,16 @@ private static final long serialVersionUID = 0L;
         .equals(other.getTopic())) return false;
     if (!getPayload()
         .equals(other.getPayload())) return false;
+    if (hasTenantId() != other.hasTenantId()) return false;
+    if (hasTenantId()) {
+      if (!getTenantId()
+          .equals(other.getTenantId())) return false;
+    }
+    if (hasPrincipalId() != other.hasPrincipalId()) return false;
+    if (hasPrincipalId()) {
+      if (!getPrincipalId()
+          .equals(other.getPrincipalId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -257,6 +400,14 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTopic().hashCode();
     hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
     hash = (53 * hash) + getPayload().hashCode();
+    if (hasTenantId()) {
+      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTenantId().hashCode();
+    }
+    if (hasPrincipalId()) {
+      hash = (37 * hash) + PRINCIPAL_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPrincipalId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -401,6 +552,8 @@ private static final long serialVersionUID = 0L;
       key_ = "";
       topic_ = "";
       payload_ = com.google.protobuf.ByteString.EMPTY;
+      tenantId_ = "";
+      principalId_ = "";
       return this;
     }
 
@@ -448,6 +601,16 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.payload_ = payload_;
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.tenantId_ = tenantId_;
+        to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.principalId_ = principalId_;
+        to_bitField0_ |= 0x00000002;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -510,6 +673,16 @@ private static final long serialVersionUID = 0L;
       if (other.getPayload() != com.google.protobuf.ByteString.EMPTY) {
         setPayload(other.getPayload());
       }
+      if (other.hasTenantId()) {
+        tenantId_ = other.tenantId_;
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
+      if (other.hasPrincipalId()) {
+        principalId_ = other.principalId_;
+        bitField0_ |= 0x00000020;
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -558,6 +731,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 42: {
+              tenantId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
+            case 50: {
+              principalId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -866,6 +1049,212 @@ private static final long serialVersionUID = 0L;
     public Builder clearPayload() {
       bitField0_ = (bitField0_ & ~0x00000008);
       payload_ = getDefaultInstance().getPayload();
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object tenantId_ = "";
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @return Whether the tenantId field is set.
+     */
+    public boolean hasTenantId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @return The tenantId.
+     */
+    public java.lang.String getTenantId() {
+      java.lang.Object ref = tenantId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tenantId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @return The bytes for tenantId.
+     */
+    public com.google.protobuf.ByteString
+        getTenantIdBytes() {
+      java.lang.Object ref = tenantId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tenantId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @param value The tenantId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTenantId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      tenantId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTenantId() {
+      tenantId_ = getDefaultInstance().getTenantId();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional string tenant_id = 5;</code>
+     * @param value The bytes for tenantId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTenantIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      tenantId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object principalId_ = "";
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @return Whether the principalId field is set.
+     */
+    public boolean hasPrincipalId() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @return The principalId.
+     */
+    public java.lang.String getPrincipalId() {
+      java.lang.Object ref = principalId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        principalId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @return The bytes for principalId.
+     */
+    public com.google.protobuf.ByteString
+        getPrincipalIdBytes() {
+      java.lang.Object ref = principalId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        principalId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @param value The principalId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPrincipalId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      principalId_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPrincipalId() {
+      principalId_ = getDefaultInstance().getPrincipalId();
+      bitField0_ = (bitField0_ & ~0x00000020);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional string principal_id = 6;</code>
+     * @param value The bytes for principalId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPrincipalIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      principalId_ = value;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }

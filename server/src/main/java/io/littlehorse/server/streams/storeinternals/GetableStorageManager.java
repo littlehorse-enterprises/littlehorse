@@ -11,7 +11,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.*;
@@ -23,23 +23,23 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class GetableStorageManager {
 
     private final CommandModel command;
-    private RocksDBWrapper rocksdb;
+    private final ModelStore store;
     private CoreProcessorDAO dao;
     private final TagStorageManager tagStorageManager;
     private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
     public GetableStorageManager(
-            RocksDBWrapper rocksdb,
+            final ModelStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHServerConfig config,
-            CommandModel command,
-            CoreProcessorDAO dao) {
+            final LHServerConfig config,
+            final CommandModel command,
+            final CoreProcessorDAO dao) {
 
-        this.rocksdb = rocksdb;
+        this.store = store;
         this.uncommittedChanges = new TreeMap<>();
         this.command = command;
         this.dao = dao;
-        this.tagStorageManager = new TagStorageManager(rocksdb, ctx, config);
+        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, dao);
     }
 
     /**
@@ -55,7 +55,7 @@ public class GetableStorageManager {
      * @param id  is the ObjectId to look for.
      * @return the specified AbstractGetable, or null if it doesn't exist.
      */
-    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
 
@@ -68,7 +68,7 @@ public class GetableStorageManager {
 
         // Next check the store.
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) rocksdb.get(id.getStoreableKey(), StoredGetable.class);
+        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(id.getStoreableKey(), StoredGetable.class);
 
         if (storeResult == null) return null;
 
@@ -121,7 +121,7 @@ public class GetableStorageManager {
 
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> previousValue =
-                (StoredGetable<U, T>) rocksdb.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
+                (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
@@ -240,12 +240,12 @@ public class GetableStorageManager {
             GetableToStore<?, ?> entity = entry.getValue();
 
             if (entity.getObjectToStore() == null) {
-                rocksdb.delete(storeableKey, StoreableType.STORED_GETABLE);
+                store.delete(storeableKey, StoreableType.STORED_GETABLE);
 
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
             } else {
                 AbstractGetable<?> getable = entity.getObjectToStore();
-                rocksdb.put(new StoredGetable<>(getable));
+                store.put(new StoredGetable<>(getable));
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
             }
         }
@@ -261,12 +261,12 @@ public class GetableStorageManager {
                 // Note: we know this is a CoreGetable, but no need to cast, so
                 // we use AbstractGetable here.
                 AbstractGetable<?> getable = entity.getObjectToStore();
-                rocksdb.put(new StoredGetable<>(getable));
+                store.put(new StoredGetable<>(getable));
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
             } else {
                 // Do a deletion!
-                rocksdb.delete(storeableKey, StoreableType.STORED_GETABLE);
+                store.delete(storeableKey, StoreableType.STORED_GETABLE);
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
             }
         }
@@ -300,7 +300,7 @@ public class GetableStorageManager {
         // First iterate over what's in the store.
         String storePrefix = StoredGetable.getRocksDBKey(prefix, AbstractGetable.getTypeEnum(cls));
 
-        try (LHKeyValueIterator<?> iterator = rocksdb.range(storePrefix, storePrefix + "~", StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iterator = store.range(storePrefix, storePrefix + "~", StoredGetable.class)) {
 
             while (iterator.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iterator.next();

@@ -11,14 +11,13 @@ import "common_wfspec.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
 import "storage.proto";
+import "acls.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
 message Command {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
-
-    reserved 3; // reserved to contain Tenant Id in future versions.
 
     oneof command {
         ReportTaskRun report_task_run = 4;
@@ -46,8 +45,6 @@ message MetadataCommand {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
 
-    reserved 3; // reserved to contain Tenant Id in future versions.
-
     oneof metadata_command {
         PutWfSpecRequest put_wf_spec = 4;
         PutTaskDefRequest put_task_def = 5;
@@ -58,9 +55,9 @@ message MetadataCommand {
         PutUserTaskDefRequest put_user_task_def = 10;
         DeleteUserTaskDefRequest delete_user_task_def = 11;
 
-        // TODO: PutPrincipal
-        // TODO: DeletePrincipal
-        // TODO: PutTenant
+        PutPrincipalRequest put_principal = 12;
+        DeletePrincipalRequest delete_principal = 13;
+        PutTenantRequest put_tenant = 14;
         // TODO: DeleteTenant
     }
 }
@@ -69,6 +66,7 @@ message MetadataCommand {
 message RepartitionCommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
+
     oneof repartition_command {
         TaskMetricUpdatePb task_metric_update = 3;
         WfMetricUpdatePb wf_metric_update = 4;
@@ -162,4 +160,6 @@ message LHTimerPb {
     string key = 2;
     string topic = 3;
     bytes payload = 4;
+    optional string tenant_id = 5; // default if not set
+    optional string principal_id = 6; // anonymous if not set
 }

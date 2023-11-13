@@ -7,7 +7,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAssignor;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartBeatRequest> {
+public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHeartBeatRequest> {
 
     public String clientId;
     public String taskDefName;

@@ -48,5 +48,12 @@ public class LHConstants {
     public static final String CLUSTER_LEVEL_METRIC = "CLUSTER_LEVEL_METRIC";
 
     public static final int INFINITE_RETENTION = -1;
+
+    public static final String DEFAULT_TENANT = "default";
+    public static final String ANONYMOUS_PRINCIPAL = "anonymous";
+
+    public static final String TENANT_ID_HEADER_NAME = "tenantId";
+
+    public static final String PRINCIPAL_ID_HEADER_NAME = "principalId";
 }
 // NOTE: Use m6a.4xlarge
