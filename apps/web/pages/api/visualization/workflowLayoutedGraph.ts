@@ -9,48 +9,60 @@ import GraphLayouter from '../../../app/wfspec/[id]/[version]/components/visuali
 import EdgeLabelExtractor from '../../../app/wfspec/[id]/[version]/components/visualizer/extractors/EdgeLabelExtractor'
 import type { WfSpec } from '../../../littlehorse-public-api/wf_spec'
 import LHClient from '../LHClient'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (req.method === 'POST') {
-    //TODO: Insecure channel needs to be changed by a secure one
-        const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+        const session = await getServerSession(req, res, authOptions)
 
-        try {
-            const parsedRequestBody = JSON.parse(req.body)
+        if (session) {
+            //TODO: Insecure channel needs to be changed by a secure one
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-            const wfSpec: WfSpec = await client.getWfSpec({
-                name: parsedRequestBody.wfSpecName,
-                version: parsedRequestBody.version
-            } as any)
+            try {
+                const parsedRequestBody = JSON.parse(req.body)
 
-            const elkInstance = new ElkConstructor()
-            let layoutedGraph: ReactFlowGraph
+                const wfSpec: WfSpec = await client.getWfSpec({
+                    name: parsedRequestBody.wfSpecName,
+                    version: parsedRequestBody.version
+                } as any)
 
-            if (parsedRequestBody.isWfSpecVisualization) {
-                layoutedGraph = await new GraphLayouter(
-                    elkInstance,
-                    EdgeLabelExtractor.extract).getLayoutedGraph(wfSpec, parsedRequestBody.wfSpecName, parsedRequestBody.threadSpec)
-            } else {
-                layoutedGraph = await new GraphLayouter(
-                    elkInstance,
-                    EdgeLabelExtractor.extract,
-                    client).getLayoutedGraphForWfRun(wfSpec,
-                    parsedRequestBody.wfSpecName,
-                    parsedRequestBody.wfRunId,
-                    parsedRequestBody.threadRunNumber,
-                    parsedRequestBody.threadSpec
-                )
+                const elkInstance = new ElkConstructor()
+                let layoutedGraph: ReactFlowGraph
+
+                if (parsedRequestBody.isWfSpecVisualization) {
+                    layoutedGraph = await new GraphLayouter(
+                        elkInstance,
+                        EdgeLabelExtractor.extract).getLayoutedGraph(wfSpec, parsedRequestBody.wfSpecName, parsedRequestBody.threadSpec)
+                } else {
+                    layoutedGraph = await new GraphLayouter(
+                        elkInstance,
+                        EdgeLabelExtractor.extract,
+                        client).getLayoutedGraphForWfRun(wfSpec,
+                        parsedRequestBody.wfSpecName,
+                        parsedRequestBody.wfRunId,
+                        parsedRequestBody.threadRunNumber,
+                        parsedRequestBody.threadSpec
+                    )
+                }
+
+                res.send(layoutedGraph)
+            } catch (error) {
+                console.error('WfSpecLayoutedGraph - Error during GRPC call:', error)
+                res.status(404)
+                res.send({
+                    error: `Something went wrong.${error}`,
+                })
             }
-
-            res.send(layoutedGraph)
-        } catch (error) {
-            console.error('WfSpecLayoutedGraph - Error during GRPC call:', error)
-            res.status(404)
-            res.send({
-                error: `Something went wrong.${error}`,
-            })
+        } else {
+            res.status(401)
+                .json({
+                    status: 401,
+                    message: 'You need to be authenticated to access this resource.'
+                })
         }
     }
 }

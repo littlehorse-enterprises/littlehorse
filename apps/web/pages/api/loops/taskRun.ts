@@ -1,76 +1,75 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createChannel, createClient } from 'nice-grpc'
 import type { Client } from 'nice-grpc/src/client/Client'
-import { LHPublicApiDefinition, SearchTaskRunRequest } from '../../../littlehorse-public-api/service'
+import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import { SearchTaskRunRequest } from '../../../littlehorse-public-api/service'
 import LHClient from '../LHClient'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
-    if (process.env.API_URL === undefined) {
-        res.send({
-            error: 'Not API URL provided in the configuration.',
-        })
-    } else {
-        // - TASK_SCHEDULED    
-        // - TASK_RUNNING
-        // - TASK_SUCCESS
-        // - TASK_FAILED
-        // - TASK_TIMEOUT
-        // - TASK_OUTPUT_SERIALIZING_ERROR
-        // - TASK_INPUT_VAR_SUB_ERROR"
-        const body = JSON.parse(req.body)
-        const { taskDefName, wfRunId } = body
+    if (req.method === 'POST') {
+        const session = await getServerSession(req, res, authOptions)
+        
+        if (session) {
+            // - TASK_SCHEDULED
+            // - TASK_RUNNING
+            // - TASK_SUCCESS
+            // - TASK_FAILED
+            // - TASK_TIMEOUT
+            // - TASK_OUTPUT_SERIALIZING_ERROR
+            // - TASK_INPUT_VAR_SUB_ERROR"
+            const body = JSON.parse(req.body)
+            const { taskDefName, wfRunId } = body
+            let out = []
 
-        let out = []
+            const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-        if (req.method === 'POST'){
             try {
-                const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
-
                 const scheduledTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
-                    'statusAndTaskDef':{
-                        status:'TASK_SCHEDULED',  
+                    'statusAndTaskDef': {
+                        status: 'TASK_SCHEDULED',
                         taskDefName
                     },
-                    'limit':99
+                    'limit': 99
                 }) as any)
-                out = out.concat(scheduledTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+                out = out.concat(scheduledTasks.results.filter(r => r.wfRunId === wfRunId) as any)
             } catch (error) {
                 console.error('TaskRun - Error during GRPC call:', error)
             }
 
             try {
-                const channel = createChannel(process.env.API_URL)
-                const client = createClient(LHPublicApiDefinition, channel)
-
                 const runningTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
-                    'statusAndTaskDef':{
-                        status:'TASK_RUNNING',  
+                    'statusAndTaskDef': {
+                        status: 'TASK_RUNNING',
                         taskDefName
                     },
-                    'limit':99
+                    'limit': 99
                 }) as any)
-                out = out.concat(runningTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+                out = out.concat(runningTasks.results.filter(r => r.wfRunId === wfRunId) as any)
             } catch (error) {
                 console.error('loops/taskRun - Error during GRPC call:', error)
             }
 
             try {
-                const channel = createChannel(process.env.API_URL)
-                const client = createClient(LHPublicApiDefinition, channel)
-
                 const successfulTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
-                    'statusAndTaskDef':{
-                        status:'TASK_SUCCESS',  
+                    'statusAndTaskDef': {
+                        status: 'TASK_SUCCESS',
                         taskDefName
                     },
-                    'limit':99
+                    'limit': 99
                 }) as any)
-                out = out.concat(successfulTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+                out = out.concat(successfulTasks.results.filter(r => r.wfRunId === wfRunId) as any)
             } catch (error) {
                 console.error('Error during GRPC call:', error)
             }
 
-            res.send(out) 
+            res.send(out)
+        } else {
+            res.status(401)
+                .json({
+                    status: 401,
+                    message: 'You need to be authenticated to access this resource.'
+                })
         }
     }
 }

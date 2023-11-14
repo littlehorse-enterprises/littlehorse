@@ -13,6 +13,7 @@
     "@next/eslint-plugin-next": "^12.3.4",
     "@turbo/gen": "^1.10.16",
     "@types/jest": "29.5.5",
+    "node-mocks-http": "^1.13.0",
     "@vercel/style-guide": "^5.0.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react": "^7.33.2",
