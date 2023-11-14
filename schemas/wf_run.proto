@@ -12,6 +12,8 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfRun {
+  reserved 5;
+
   string id = 1;
   string wf_spec_name = 2;
   int32 wf_spec_version = 3;
@@ -27,6 +29,9 @@ message WfRun {
   // Introduced now since with ThreadRun-level retention, we can't rely upon
   // thread_runs.size() to determine the number of ThreadRuns.
   int32 greatest_threadrun_number = 11;
+
+  // Keeps track of old versions of the WfSpec for this WfRun
+  repeated int32 old_wf_spec_versions = 12;
 }
 
 enum ThreadType {
@@ -37,7 +42,9 @@ enum ThreadType {
 }
 
 message ThreadRun {
-  reserved 1, 4, 5;
+  // If not set, then threadRun is currently on the same version as the parent
+  // wfSpec. Left as optional for compatibility purposes.
+  optional int32 wf_spec_version = 19;
   int32 number = 2;
 
   LHStatus status = 3;
@@ -59,6 +66,7 @@ message ThreadRun {
   repeated int32 handled_failed_children = 17;
 
   ThreadType type = 18;
+  reserved 1, 4, 5;
 }
 
 message FailureBeingHandled {
