@@ -217,7 +217,7 @@ public class TestUtil {
 
     public static ServerACLsModel singleAcl() {
         return ServerACLsModel.fromProto(
-                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class);
+                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class, null);
     }
 
     public static ServerACLModel adminAcl() {
@@ -236,6 +236,6 @@ public class TestUtil {
     public static ServerACLsModel singleAdminAcl(String aclNAme) {
         ServerACLs acls =
                 ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
-        return ServerACLsModel.fromProto(acls, ServerACLsModel.class);
+        return ServerACLsModel.fromProto(acls, ServerACLsModel.class, null);
     }
 }

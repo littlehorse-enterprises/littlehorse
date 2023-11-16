@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,19 +36,20 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         FailureDef p = (FailureDef) proto;
         failureName = p.getFailureName();
         message = p.getMessage();
 
         if (p.hasContent()) {
-            content = VariableAssignmentModel.fromProto(p.getContent());
+            content = VariableAssignmentModel.fromProto(p.getContent(), context);
         }
     }
 
-    public static FailureDefModel fromProto(FailureDef proto) {
+    public static FailureDefModel fromProto(FailureDef proto, ExecutionContext context) {
         FailureDefModel out = new FailureDefModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

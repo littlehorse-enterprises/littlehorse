@@ -16,6 +16,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,7 +43,8 @@ public class SearchExternalEventDefRequestModel
         return GetableClassEnum.EXTERNAL_EVENT_DEF;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchExternalEventDefRequest p = (SearchExternalEventDefRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -68,9 +70,10 @@ public class SearchExternalEventDefRequestModel
         return out;
     }
 
-    public static SearchExternalEventDefRequestModel fromProto(SearchExternalEventDefRequest proto) {
+    public static SearchExternalEventDefRequestModel fromProto(
+            SearchExternalEventDefRequest proto, ExecutionContext context) {
         SearchExternalEventDefRequestModel out = new SearchExternalEventDefRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

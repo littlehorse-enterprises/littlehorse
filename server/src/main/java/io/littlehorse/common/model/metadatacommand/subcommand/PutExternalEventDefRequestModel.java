@@ -11,6 +11,7 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
 
@@ -34,7 +35,8 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutExternalEventDefRequest p = (PutExternalEventDefRequest) proto;
         name = p.getName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
@@ -62,9 +64,9 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         return spec.toProto().build();
     }
 
-    public static PutExternalEventDefRequestModel fromProto(PutExternalEventDefRequest p) {
+    public static PutExternalEventDefRequestModel fromProto(PutExternalEventDefRequest p, ExecutionContext context) {
         PutExternalEventDefRequestModel out = new PutExternalEventDefRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

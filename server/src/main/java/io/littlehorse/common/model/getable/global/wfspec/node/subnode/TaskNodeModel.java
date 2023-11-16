@@ -20,6 +20,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,14 +41,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     private TaskDefModel taskDef;
     private CoreProcessorDAO dao;
+    private WfService wfService;
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
-            if (dao == null && node != null) {
-                // Only works for when this is part of a Node, not a UTATask.
-                dao = node.getThreadSpecModel().getWfSpecModel().getDao();
-            }
-            taskDef = dao.getTaskDef(taskDefName);
+            taskDef = wfService.getTaskDef(taskDefName);
         }
         return taskDef;
     }
@@ -65,7 +64,8 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return TaskNode.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
         taskDefName = p.getTaskDefName();
         retries = p.getRetries();
@@ -76,7 +76,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
 
         for (VariableAssignment assn : p.getVariablesList()) {
-            variables.add(VariableAssignmentModel.fromProto(assn));
+            variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
     }
 

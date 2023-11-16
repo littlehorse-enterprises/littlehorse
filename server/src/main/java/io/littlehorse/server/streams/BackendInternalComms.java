@@ -45,6 +45,7 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
@@ -150,6 +151,10 @@ public class BackendInternalComms implements Closeable {
         internalGrpcServer.start();
     }
 
+    public ExecutionContext executionContext() {
+        return null; // TODO eduwer
+    }
+
     public void close() {
         log.info("Closing backend internal comms");
         for (ManagedChannel channel : channels.values()) {
@@ -164,7 +169,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
-            ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
+            ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeError {
 
         if (objectId.getPartitionKey().isEmpty()) {
             throw new IllegalArgumentException(
@@ -188,7 +193,8 @@ public class BackendInternalComms implements Closeable {
                                     .build())
                             .getResponse()
                             .toByteArray(),
-                    clazz);
+                    clazz,
+                    context); // TODO eduwer
         }
     }
 
@@ -384,7 +390,7 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> ctx) {
-            InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class);
+            InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
             try {
                 InternalScanResponse reply = doScan(lhis);
                 ctx.onNext(reply);

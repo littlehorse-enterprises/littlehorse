@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ListUserTaskRunRequestModel
         extends PublicScanRequest<
@@ -30,7 +31,7 @@ public class ListUserTaskRunRequestModel
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ListUserTaskRunRequest p = (ListUserTaskRunRequest) proto;
         wfRunId = p.getWfRunId();
     }

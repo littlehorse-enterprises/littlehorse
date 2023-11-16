@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ListWfMetricsRequestModel
@@ -49,7 +50,8 @@ public class ListWfMetricsRequestModel
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();

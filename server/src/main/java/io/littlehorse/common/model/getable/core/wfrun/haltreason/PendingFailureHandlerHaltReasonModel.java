@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class PendingFailureHandlerHaltReasonModel extends LHSerializable<PendingFailureHandlerHaltReason>
         implements SubHaltReason {
@@ -26,14 +27,15 @@ public class PendingFailureHandlerHaltReasonModel extends LHSerializable<Pending
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         PendingFailureHandlerHaltReason p = (PendingFailureHandlerHaltReason) proto;
         nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static PendingFailureHandlerHaltReasonModel fromProto(PendingFailureHandlerHaltReason proto) {
+    public static PendingFailureHandlerHaltReasonModel fromProto(
+            PendingFailureHandlerHaltReason proto, ExecutionContext context) {
         PendingFailureHandlerHaltReasonModel out = new PendingFailureHandlerHaltReasonModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

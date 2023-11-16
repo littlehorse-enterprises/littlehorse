@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PrincipalId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class PrincipalIdModel extends MetadataId<PrincipalId, Principal, PrincipalModel> {
     private String id;
@@ -18,7 +19,7 @@ public class PrincipalIdModel extends MetadataId<PrincipalId, Principal, Princip
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PrincipalId principalId = (PrincipalId) proto;
         this.id = principalId.getId();
     }

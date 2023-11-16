@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskRunId p = (UserTaskRunId) proto;
         wfRunId = p.getWfRunId();
         userTaskGuid = p.getUserTaskGuid();

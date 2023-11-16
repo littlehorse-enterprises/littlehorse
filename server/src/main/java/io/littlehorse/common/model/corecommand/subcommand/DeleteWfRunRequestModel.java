@@ -4,10 +4,10 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
 
@@ -22,9 +22,9 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteWfRunRequest p = (DeleteWfRunRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getId(), WfRunIdModel.class, context);
     }
 
     public String getPartitionKey() {
@@ -32,8 +32,8 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        dao.delete(wfRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        executionContext.getStorageManager().delete(wfRunId);
         return Empty.getDefaultInstance();
     }
 
@@ -41,9 +41,9 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
         return true;
     }
 
-    public static DeleteWfRunRequestModel fromProto(DeleteWfRunRequest p) {
+    public static DeleteWfRunRequestModel fromProto(DeleteWfRunRequest p, ExecutionContext context) {
         DeleteWfRunRequestModel out = new DeleteWfRunRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

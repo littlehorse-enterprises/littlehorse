@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class WaitForCommandResultModel extends LHSerializable<WaitForCommandResponse> {
@@ -25,7 +26,8 @@ public class WaitForCommandResultModel extends LHSerializable<WaitForCommandResp
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         WaitForCommandResponse p = (WaitForCommandResponse) proto;
         commandId = p.getCommandId();
         resultTime = LHUtil.fromProtoTs(p.getResultTime());

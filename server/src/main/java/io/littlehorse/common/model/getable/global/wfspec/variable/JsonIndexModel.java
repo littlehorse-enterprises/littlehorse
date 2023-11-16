@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         JsonIndex p = (JsonIndex) proto;
         path = p.getPath();
         indexType = p.getIndexType();

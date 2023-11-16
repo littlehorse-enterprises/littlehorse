@@ -56,10 +56,10 @@ public class PrincipalAdministrationTest {
     private MetadataProcessor metadataProcessor;
 
     private PutPrincipalRequestModel putPrincipalRequest =
-            PutPrincipalRequestModel.fromProto(principalRequestToProcess(), PutPrincipalRequestModel.class);
+            PutPrincipalRequestModel.fromProto(principalRequestToProcess(), PutPrincipalRequestModel.class, mock());
 
     private DeletePrincipalRequestModel deletePrincipalRequest =
-            DeletePrincipalRequestModel.fromProto(deletePrincipalRequest(), DeletePrincipalRequestModel.class);
+            DeletePrincipalRequestModel.fromProto(deletePrincipalRequest(), DeletePrincipalRequestModel.class, mock());
 
     private final String tenantId = "test-tenant-id";
     private final String principalId = "test-principal-id";

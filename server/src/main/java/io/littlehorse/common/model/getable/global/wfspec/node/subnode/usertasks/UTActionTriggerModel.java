@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -10,6 +9,8 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,13 +53,13 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         return out;
     }
 
-    public void schedule(CoreProcessorDAO dao, UserTaskRunModel utr) throws LHVarSubError {
+    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr) throws LHVarSubError {
         switch (actionType) {
             case TASK:
-                task.schedule(dao, utr, this);
+                task.schedule(taskManager, utr, this);
                 break;
             case REASSIGN:
-                reassign.schedule(dao, utr, this);
+                reassign.schedule(taskManager, utr, this);
                 break;
             case CANCEL:
                 log.warn("Unimplemented: Cancel trigger");
@@ -69,17 +70,17 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UTActionTrigger p = (UTActionTrigger) proto;
         hook = p.getHook();
         actionType = p.getActionCase();
-        delaySeconds = LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignmentModel.class);
+        delaySeconds = LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignmentModel.class, context);
         switch (actionType) {
             case TASK:
-                task = LHSerializable.fromProto(p.getTask(), UTATaskModel.class);
+                task = LHSerializable.fromProto(p.getTask(), UTATaskModel.class, context);
                 break;
             case REASSIGN:
-                reassign = LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class);
+                reassign = LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class, context);
                 break;
             case CANCEL:
                 cancel = p.getCancel();

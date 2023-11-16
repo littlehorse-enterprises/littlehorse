@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Instant;
 import java.util.Date;
 
@@ -45,18 +46,19 @@ public class SleepNodeModel extends SubNode<SleepNode> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SleepNode p = (SleepNode) proto;
         type = p.getSleepLengthCase();
         switch (type) {
             case RAW_SECONDS:
-                rawSeconds = VariableAssignmentModel.fromProto(p.getRawSeconds());
+                rawSeconds = VariableAssignmentModel.fromProto(p.getRawSeconds(), context);
                 break;
             case TIMESTAMP:
-                timestamp = VariableAssignmentModel.fromProto(p.getTimestamp());
+                timestamp = VariableAssignmentModel.fromProto(p.getTimestamp(), context);
                 break;
             case ISO_DATE:
-                isoDate = VariableAssignmentModel.fromProto(p.getIsoDate());
+                isoDate = VariableAssignmentModel.fromProto(p.getIsoDate(), context);
                 break;
             case SLEEPLENGTH_NOT_SET:
                 throw new RuntimeException("Not possible");

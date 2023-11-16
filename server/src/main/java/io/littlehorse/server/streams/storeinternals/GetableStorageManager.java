@@ -77,7 +77,6 @@ public class GetableStorageManager {
         // 2. This is the first time in this txn (eg. Command Processing) that
         // we are getting the
         out = storeResult.getStoredObject();
-        out.setDao(dao);
 
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;

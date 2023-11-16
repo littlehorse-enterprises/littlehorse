@@ -5,7 +5,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
@@ -16,6 +15,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,8 +46,8 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        TaskRunModel task = dao.get(taskRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        TaskRunModel task = executionContext.getStorageManager().get(taskRunId);
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
@@ -71,33 +71,34 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         return b;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ReportTaskRun p = (ReportTaskRun) proto;
-        this.taskRunId = TaskRunIdModel.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
+        this.taskRunId = TaskRunIdModel.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         this.time = LHUtil.fromProtoTs(p.getTime());
         this.status = p.getStatus();
         this.attemptNumber = p.getAttemptNumber();
 
         if (p.hasOutput()) {
-            this.stdout = VariableValueModel.fromProto(p.getOutput());
+            this.stdout = VariableValueModel.fromProto(p.getOutput(), context);
         }
 
         if (p.hasLogOutput()) {
-            this.stderr = VariableValueModel.fromProto(p.getLogOutput());
+            this.stderr = VariableValueModel.fromProto(p.getLogOutput(), context);
         }
 
         if (p.hasError()) {
-            this.error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class);
+            this.error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class, context);
         }
 
         if (p.hasException()) {
-            this.exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class);
+            this.exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class, context);
         }
     }
 
-    public static ReportTaskRunModel fromProto(ReportTaskRun proto) {
+    public static ReportTaskRunModel fromProto(ReportTaskRun proto, ExecutionContext context) {
         ReportTaskRunModel out = new ReportTaskRunModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

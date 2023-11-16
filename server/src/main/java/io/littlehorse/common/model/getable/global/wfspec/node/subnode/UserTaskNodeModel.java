@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,22 +63,23 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskNode p = (UserTaskNode) proto;
         userTaskDefName = p.getUserTaskDefName();
-        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
-        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId());
+        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup(), context);
+        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId(), context);
 
         if (p.hasUserTaskDefVersion()) {
             userTaskDefVersion = p.getUserTaskDefVersion();
         }
 
         for (UTActionTrigger action : p.getActionsList()) {
-            actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class));
+            actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class, context));
         }
 
         if (p.hasNotes()) {
-            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class);
+            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
     }
 

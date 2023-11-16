@@ -71,7 +71,7 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
             log.trace("Updating cache for {} with key {}", keyType, cacheKey);
 
             @SuppressWarnings("unchecked")
-            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class);
+            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class, null);
             updateCache(cacheKey, storedGetable.getStoredObject());
         }
     }

@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -15,6 +14,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutati
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,18 +42,19 @@ public class UTATaskModel extends LHSerializable<UTATask> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UTATask p = (UTATask) proto;
-        task = LHSerializable.fromProto(p.getTask(), TaskNodeModel.class);
+        task = LHSerializable.fromProto(p.getTask(), TaskNodeModel.class, context);
         for (VariableMutation vm : p.getMutationsList()) {
-            mutations.add(VariableMutationModel.fromProto(vm));
+            mutations.add(VariableMutationModel.fromProto(vm, context));
         }
     }
 
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(CoreProcessorDAO dao, UserTaskRunModel utr, UTActionTriggerModel trigger)
+    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr, UTActionTriggerModel trigger)
             throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
@@ -65,8 +67,8 @@ public class UTATaskModel extends LHSerializable<UTATask> {
 
         Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.intVal));
         LHTimer timer = new LHTimer(
-                new CommandModel(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime), dao);
+                new CommandModel(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime));
 
-        dao.scheduleTimer(timer);
+        taskManager.scheduleTimer(timer);
     }
 }

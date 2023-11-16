@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,12 +44,13 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutUserTaskDefRequest p = (PutUserTaskDefRequest) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
         for (UserTaskField utfpb : p.getFieldsList()) {
-            fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class));
+            fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class, context));
         }
     }
 

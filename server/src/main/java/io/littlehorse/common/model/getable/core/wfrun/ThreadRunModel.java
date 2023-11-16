@@ -41,6 +41,8 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,13 +79,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadType type;
 
+    private GetableStorageManager storageManager;
+    private ExecutionContext executionContext;
+
     public ThreadRunModel() {
         childThreadIds = new ArrayList<>();
         haltReasons = new ArrayList<>();
         handledFailedChildren = new ArrayList<>();
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         ThreadRun proto = (ThreadRun) p;
         number = proto.getNumber();
         status = proto.getStatus();
@@ -102,17 +108,18 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         if (proto.hasInterruptTriggerId()) {
-            interruptTriggerId = LHSerializable.fromProto(proto.getInterruptTriggerId(), ExternalEventIdModel.class);
+            interruptTriggerId =
+                    LHSerializable.fromProto(proto.getInterruptTriggerId(), ExternalEventIdModel.class, context);
         }
 
         for (ThreadHaltReason thrpb : proto.getHaltReasonsList()) {
-            ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb);
+            ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb, context);
             thr.threadRunModel = this;
             haltReasons.add(thr);
         }
 
         if (proto.hasFailureBeingHandled()) {
-            failureBeingHandled = FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled());
+            failureBeingHandled = FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled(), context);
         }
 
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
@@ -120,6 +127,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         type = proto.getType();
+        storageManager = context.getStorageManager();
+        executionContext = context;
     }
 
     public ThreadRun.Builder toProto() {
@@ -158,9 +167,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
-    public static ThreadRunModel fromProto(Message p) {
+    public static ThreadRunModel fromProto(Message p, ExecutionContext context) {
         ThreadRunModel out = new ThreadRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -256,7 +265,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         thr.interrupted = new InterruptedModel();
         thr.interrupted.interruptThreadId = handlerThreadId;
 
-        childThreadIds.add((Integer) handlerThreadId);
+        childThreadIds.add(handlerThreadId);
 
         haltReasons.add(thr);
     }
@@ -483,7 +492,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         // This also stops the children
         halt(haltReason);
-        getWfRun().advance(getWfRun().getDao().getEventTime());
+        getWfRun().advance(executionContext.currentCommand().getTime());
     }
 
     public void acknowledgeXnHandlerStarted(PendingFailureHandlerModel pfh, int handlerThreadNumber) {
@@ -611,7 +620,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         currentNodePosition++;
 
         NodeRunModel cnr = new NodeRunModel();
-        cnr.setDao(wfRun.getDao());
         cnr.setThreadRun(this);
         cnr.nodeName = node.name;
         cnr.status = LHStatus.STARTING;
@@ -794,11 +802,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void putNodeRun(NodeRunModel nr) {
-        wfRun.getDao().put(nr);
+        executionContext.getStorageManager().put(nr);
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = wfRun.getDao().get(new NodeRunIdModel(wfRun.id, number, position));
+        NodeRunModel out = executionContext.getStorageManager().get(new NodeRunIdModel(wfRun.id, number, position));
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -844,7 +852,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
             VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpec());
-            wfRun.getDao().put(variable);
+            executionContext.getStorageManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, createVariable);
     }
@@ -862,9 +870,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = wfRun.getDao().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
+            VariableModel variable =
+                    executionContext.getStorageManager().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
             variable.setValue(var);
-            wfRun.getDao().put(variable);
+            executionContext.getStorageManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
@@ -872,7 +881,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public VariableModel getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        VariableModel out = wfRun.getDao().get(new VariableIdModel(wfRun.getId(), this.number, varName));
+        VariableModel out =
+                executionContext.getStorageManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
         if (out != null) {
             return out;
         }

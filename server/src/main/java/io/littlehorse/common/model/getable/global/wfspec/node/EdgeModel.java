@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.Edge;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,18 +26,19 @@ public class EdgeModel extends LHSerializable<Edge> {
         return out;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         Edge proto = (Edge) p;
         sinkNodeName = proto.getSinkNodeName();
         if (proto.hasCondition()) {
-            condition = EdgeConditionModel.fromProto(proto.getCondition());
+            condition = EdgeConditionModel.fromProto(proto.getCondition(), context);
             condition.edge = this;
         }
     }
 
-    public static EdgeModel fromProto(Edge proto) {
+    public static EdgeModel fromProto(Edge proto, ExecutionContext context) {
         EdgeModel out = new EdgeModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

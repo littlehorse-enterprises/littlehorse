@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunModel> {
@@ -36,7 +37,7 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskRunId p = (TaskRunId) proto;
         wfRunId = p.getWfRunId();
         taskGuid = p.getTaskGuid();

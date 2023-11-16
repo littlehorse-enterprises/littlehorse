@@ -3,11 +3,11 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventNodeTimeoutPb p = (ExternalEventNodeTimeoutPb) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
@@ -45,8 +45,8 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
 
         if (wfRunModel == null) {
             log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);
@@ -62,9 +62,9 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
         return false;
     }
 
-    public static ExternalEventTimeout fromProto(ExternalEventNodeTimeoutPb p) {
+    public static ExternalEventTimeout fromProto(ExternalEventNodeTimeoutPb p, ExecutionContext context) {
         ExternalEventTimeout out = new ExternalEventTimeout();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

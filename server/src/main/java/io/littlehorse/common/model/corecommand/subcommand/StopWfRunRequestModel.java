@@ -4,11 +4,11 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
 
@@ -25,7 +25,7 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         StopWfRunRequest p = (StopWfRunRequest) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
@@ -36,8 +36,8 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");
         }
@@ -50,9 +50,9 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
         return true;
     }
 
-    public static StopWfRunRequestModel fromProto(StopWfRunRequest p) {
+    public static StopWfRunRequestModel fromProto(StopWfRunRequest p, ExecutionContext context) {
         StopWfRunRequestModel out = new StopWfRunRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

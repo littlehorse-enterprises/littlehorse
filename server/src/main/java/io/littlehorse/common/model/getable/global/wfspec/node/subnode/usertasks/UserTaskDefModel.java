@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +54,8 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskDef p = (UserTaskDef) proto;
         name = p.getName();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
@@ -61,7 +63,7 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
         if (p.hasDescription()) description = p.getDescription();
 
         for (UserTaskField utf : p.getFieldsList()) {
-            fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class));
+            fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class, context));
         }
     }
 

@@ -5,7 +5,6 @@ import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
@@ -14,12 +13,15 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,11 +45,12 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     }
 
     @Override
-    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHServerConfig config) {
+    public RegisterTaskWorkerResponse process(ExecutionContext executionContext, LHServerConfig config) {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
-        TaskWorkerGroupModel taskWorkerGroup = dao.get(new TaskWorkerGroupIdModel(taskDefName));
+        TaskWorkerGroupModel taskWorkerGroup =
+                executionContext.getStorageManager().get(new TaskWorkerGroupIdModel(taskDefName));
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
@@ -72,7 +75,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         }
 
         // Verify there are no changes on the current servers
-        boolean thereAreNewHost = checkIfNewHostsHasChanges(dao);
+        boolean thereAreNewHost = checkIfNewHostsHasChanges(executionContext.getInternalHosts());
 
         // If there are dead workers or new workers or new hosts let's rebalance
         if (areInactiveWorkersRemoved || isANewTaskWorker || thereAreNewHost) {
@@ -87,24 +90,25 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         taskWorker.latestHeartbeat = new Date();
 
         // Save the data
-        dao.put(taskWorkerGroup);
+        executionContext.getStorageManager().put(taskWorkerGroup);
 
         // Prepare the response with the assigned host for this specific task worker
         // (taskWorker.hosts)
-        return prepareReply(dao, taskWorker.hosts);
+        Set<LHHostInfo> yourHosts = new HashSet<>();
+        for (HostModel hostInfo : taskWorker.hosts) {
+            yourHosts.add(executionContext.getAdvertisedHost(hostInfo, listenerName));
+        }
+        return prepareReply(yourHosts, taskWorker.hosts);
     }
 
-    private boolean checkIfNewHostsHasChanges(CoreProcessorDAO dao) {
-        InternalHosts internalHosts = dao.getInternalHosts();
+    private boolean checkIfNewHostsHasChanges(InternalHosts internalHosts) {
         hosts = internalHosts.getHosts();
         return internalHosts.hasChanges();
     }
 
-    private RegisterTaskWorkerResponse prepareReply(CoreProcessorDAO dao, Set<HostModel> hosts) {
+    private RegisterTaskWorkerResponse prepareReply(Set<LHHostInfo> yourHosts, Set<HostModel> hosts) {
         RegisterTaskWorkerResponse.Builder reply = RegisterTaskWorkerResponse.newBuilder();
-        for (HostModel hostInfo : hosts) {
-            reply.addYourHosts(dao.getAdvertisedHost(hostInfo, listenerName));
-        }
+        reply.addAllYourHosts(yourHosts);
 
         // If there are no hosts for any reason, then reply an error.
         // This SHOULD be impossible unless there's a bug in LittleHorse.
@@ -149,7 +153,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerHeartBeatRequest heartBeatPb = (TaskWorkerHeartBeatRequest) proto;
         clientId = heartBeatPb.getClientId();
         taskDefName = heartBeatPb.getTaskDefName();
@@ -161,9 +165,9 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         return TaskWorkerHeartBeatRequest.class;
     }
 
-    public static TaskWorkerHeartBeatRequestModel fromProto(TaskWorkerHeartBeatRequest p) {
+    public static TaskWorkerHeartBeatRequestModel fromProto(TaskWorkerHeartBeatRequest p, ExecutionContext context) {
         TaskWorkerHeartBeatRequestModel out = new TaskWorkerHeartBeatRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

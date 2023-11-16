@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,8 @@ public class SearchUserTaskDefRequestModel
         return GetableClassEnum.USER_TASK_DEF;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchUserTaskDefRequest p = (SearchUserTaskDefRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -95,9 +97,9 @@ public class SearchUserTaskDefRequestModel
         return out;
     }
 
-    public static SearchUserTaskDefRequestModel fromProto(SearchUserTaskDefRequest proto) {
+    public static SearchUserTaskDefRequestModel fromProto(SearchUserTaskDefRequest proto, ExecutionContext context) {
         SearchUserTaskDefRequestModel out = new SearchUserTaskDefRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

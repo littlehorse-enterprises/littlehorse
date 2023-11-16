@@ -5,13 +5,13 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTaskRunRequest> {
 
@@ -23,9 +23,10 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         CancelUserTaskRunRequest cancelUserTaskRunPb = (CancelUserTaskRunRequest) proto;
-        userTaskRunId = LHSerializable.fromProto(cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId =
+                LHSerializable.fromProto(cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class, context);
     }
 
     @Override
@@ -34,8 +35,8 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        UserTaskRunModel userTaskRun = dao.get(userTaskRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(userTaskRunId);
         if (userTaskRun == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");
         }

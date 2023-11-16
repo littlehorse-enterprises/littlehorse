@@ -15,6 +15,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ListExternalEventsRequestModel
         extends PublicScanRequest<
@@ -34,7 +35,8 @@ public class ListExternalEventsRequestModel
         return ListExternalEventsRequest.newBuilder().setWfRunId(wfRunId);
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ListExternalEventsRequest p = (ListExternalEventsRequest) proto;
         wfRunId = p.getWfRunId();
     }

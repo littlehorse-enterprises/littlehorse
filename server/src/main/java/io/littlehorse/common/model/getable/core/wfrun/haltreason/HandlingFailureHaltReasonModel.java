@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForTh
 import io.littlehorse.sdk.common.proto.HandlingFailureHaltReason;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,14 +67,15 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         HandlingFailureHaltReason p = (HandlingFailureHaltReason) proto;
         handlerThreadId = p.getHandlerThreadId();
     }
 
-    public static HandlingFailureHaltReasonModel fromProto(HandlingFailureHaltReason proto) {
+    public static HandlingFailureHaltReasonModel fromProto(HandlingFailureHaltReason proto, ExecutionContext context) {
         HandlingFailureHaltReasonModel out = new HandlingFailureHaltReasonModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

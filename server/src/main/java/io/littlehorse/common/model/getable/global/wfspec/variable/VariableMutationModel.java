@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +54,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         VariableMutation p = (VariableMutation) proto;
         lhsName = p.getLhsName();
         if (p.hasLhsJsonPath()) lhsJsonPath = p.getLhsJsonPath();
@@ -62,22 +64,22 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         rhsValueType = p.getRhsValueCase();
         switch (rhsValueType) {
             case LITERAL_VALUE:
-                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue());
+                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue(), context);
                 break;
             case SOURCE_VARIABLE:
-                rhsSourceVariable = VariableAssignmentModel.fromProto(p.getSourceVariable());
+                rhsSourceVariable = VariableAssignmentModel.fromProto(p.getSourceVariable(), context);
                 break;
             case NODE_OUTPUT:
-                nodeOutputSource = NodeOutputSourceModel.fromProto(p.getNodeOutput());
+                nodeOutputSource = NodeOutputSourceModel.fromProto(p.getNodeOutput(), context);
                 break;
             case RHSVALUE_NOT_SET:
                 // not possible
         }
     }
 
-    public static VariableMutationModel fromProto(VariableMutation p) {
+    public static VariableMutationModel fromProto(VariableMutation p, ExecutionContext context) {
         VariableMutationModel out = new VariableMutationModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

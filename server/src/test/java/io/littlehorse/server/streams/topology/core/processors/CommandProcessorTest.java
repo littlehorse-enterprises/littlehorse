@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 import com.google.protobuf.Message;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -70,9 +69,6 @@ public class CommandProcessorTest {
     void supportTaskQueueRehydrationOnInitialization() {
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString());
-        CoreProcessorDAO mockDao = mock(CoreProcessorDAO.class);
-        when(mockDao.get(any())).thenReturn(TestUtil.nodeRun());
-        userTaskRunModel.setDao(mockDao);
         final ScheduledTaskModel scheduledTask =
                 new ScheduledTaskModel(TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel);
         defaultStore.put(scheduledTask);

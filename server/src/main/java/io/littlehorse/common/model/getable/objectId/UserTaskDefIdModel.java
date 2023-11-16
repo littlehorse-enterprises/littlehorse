@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +31,7 @@ public class UserTaskDefIdModel extends MetadataId<UserTaskDefId, UserTaskDef, U
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskDefId p = (UserTaskDefId) proto;
         name = p.getName();
         version = p.getVersion();

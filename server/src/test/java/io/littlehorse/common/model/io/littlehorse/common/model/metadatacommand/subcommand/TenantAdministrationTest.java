@@ -53,7 +53,7 @@ public class TenantAdministrationTest {
     private final String tenantId = "test-tenant-id";
 
     private final PutTenantRequestModel putTenantRequest =
-            PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class);
+            PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class, mock());
 
     private MetadataProcessorDAO metadataDao;
 

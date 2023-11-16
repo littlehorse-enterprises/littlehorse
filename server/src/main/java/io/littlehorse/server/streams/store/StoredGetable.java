@@ -10,6 +10,7 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +39,12 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         StoredGetablePb p = (StoredGetablePb) proto;
-        indexCache = LHSerializable.fromProto(p.getIndexCache(), TagsCache.class);
+        indexCache = LHSerializable.fromProto(p.getIndexCache(), TagsCache.class, context);
         objectType = p.getType();
         try {
-            storedObject = LHSerializable.fromBytes(p.getGetablePayload().toByteArray(), getStoredClass());
+            storedObject = LHSerializable.fromBytes(p.getGetablePayload().toByteArray(), getStoredClass(), context);
         } catch (LHSerdeError exception) {
             log.error("Failed loading from store: {}", exception.getMessage(), exception);
         }

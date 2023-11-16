@@ -2,14 +2,11 @@ package io.littlehorse.common.dao;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.CoreGetable;
-import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
@@ -54,11 +51,11 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataDAOImpl {
 
     public abstract ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
 
-    public abstract void scheduleTask(ScheduledTaskModel scheduledTask);
+    /*public abstract void scheduleTask(ScheduledTaskModel scheduledTask);
 
     public abstract void scheduleTimer(LHTimer timer);
 
-    public abstract ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
+    public abstract ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);*/
 
     public WfRunModel getWfRun(String id) {
         return get(new WfRunIdModel(id));

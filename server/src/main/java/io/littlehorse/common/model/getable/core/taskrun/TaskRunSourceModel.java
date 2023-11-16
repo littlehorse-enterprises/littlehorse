@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,15 +34,17 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         return TaskRunSource.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskRunSource p = (TaskRunSource) proto;
         type = p.getTaskRunSourceCase();
         switch (type) {
             case TASK_NODE:
-                taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class);
+                taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class, context);
                 break;
             case USER_TASK_TRIGGER:
-                userTaskTrigger = LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class);
+                userTaskTrigger =
+                        LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class, context);
                 break;
             case TASKRUNSOURCE_NOT_SET:
                 // Not really possible. Maybe throw error?

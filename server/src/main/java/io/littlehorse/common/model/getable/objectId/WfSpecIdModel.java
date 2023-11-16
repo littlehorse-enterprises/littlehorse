@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,7 +32,7 @@ public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WfSpecId p = (WfSpecId) proto;
         version = p.getVersion();
         name = p.getName();

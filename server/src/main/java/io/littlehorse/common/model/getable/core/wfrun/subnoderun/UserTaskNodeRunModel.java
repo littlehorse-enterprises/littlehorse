@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import lombok.Setter;
 public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     private UserTaskRunIdModel userTaskRunId;
+    private ExecutionContext executionContext;
 
     public UserTaskNodeRunModel() {}
 
@@ -30,11 +32,12 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskNodeRun p = (UserTaskNodeRun) proto;
         if (p.hasUserTaskRunId()) {
-            userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+            userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         }
+        this.executionContext = context;
     }
 
     @Override
@@ -59,7 +62,8 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         NodeModel node = getNodeRunModel().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();
 
-        UserTaskDefModel utd = getDao().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
+        UserTaskDefModel utd =
+                executionContext.wfService().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
@@ -69,16 +73,14 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel());
         // Now we create a new UserTaskRun.
 
-        out.setDao(getDao());
-
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
-        getDao().put(out);
+        executionContext.getStorageManager().put(out);
     }
 
     @Override
     public void halt() {
-        UserTaskRunModel userTaskRunModel = getDao().get(getUserTaskRunId());
+        UserTaskRunModel userTaskRunModel = executionContext.getStorageManager().get(getUserTaskRunId());
         userTaskRunModel.setStatus(UserTaskRunStatus.CANCELLED);
     }
 }

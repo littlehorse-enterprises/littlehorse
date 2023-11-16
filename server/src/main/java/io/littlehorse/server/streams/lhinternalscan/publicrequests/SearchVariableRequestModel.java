@@ -26,6 +26,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,8 @@ public class SearchVariableRequestModel
         return SearchVariableRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchVariableRequest p = (SearchVariableRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -92,9 +94,9 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ExecutionContext context) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

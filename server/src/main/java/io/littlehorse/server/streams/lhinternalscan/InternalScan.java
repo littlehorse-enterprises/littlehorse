@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,7 +59,8 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         InternalScanPb p = (InternalScanPb) proto;
         resultType = p.getResultType();
         limit = p.getLimit();

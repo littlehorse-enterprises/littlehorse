@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.VariableMutation;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -110,64 +111,65 @@ public class NodeModel extends LHSerializable<Node> {
         return out;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         Node proto = (Node) p;
         type = proto.getNodeCase();
 
         for (Edge epb : proto.getOutgoingEdgesList()) {
-            EdgeModel edge = EdgeModel.fromProto(epb);
+            EdgeModel edge = EdgeModel.fromProto(epb, context);
             edge.threadSpecModel = threadSpecModel;
             outgoingEdges.add(edge);
         }
 
         for (VariableMutation vmpb : proto.getVariableMutationsList()) {
             VariableMutationModel vm = new VariableMutationModel();
-            vm.initFrom(vmpb);
+            vm.initFrom(vmpb, context);
             variableMutations.add(vm);
         }
 
         for (FailureHandlerDef ehpb : proto.getFailureHandlersList()) {
-            failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb));
+            failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb, context));
         }
 
         switch (type) {
             case TASK:
                 taskNode = new TaskNodeModel();
-                taskNode.initFrom(proto.getTask());
+                taskNode.initFrom(proto.getTask(), context);
                 break;
             case ENTRYPOINT:
                 entrypointNode = new EntrypointNodeModel();
-                entrypointNode.initFrom(proto.getEntrypoint());
+                entrypointNode.initFrom(proto.getEntrypoint(), context);
                 break;
             case EXIT:
                 exitNode = new ExitNodeModel();
-                exitNode.initFrom(proto.getExit());
+                exitNode.initFrom(proto.getExit(), context);
                 break;
             case EXTERNAL_EVENT:
                 externalEventNode = new ExternalEventNodeModel();
-                externalEventNode.initFrom(proto.getExternalEvent());
+                externalEventNode.initFrom(proto.getExternalEvent(), context);
                 break;
             case START_THREAD:
                 startThreadNode = new StartThreadNodeModel();
-                startThreadNode.initFrom(proto.getStartThread());
+                startThreadNode.initFrom(proto.getStartThread(), context);
                 break;
             case WAIT_FOR_THREADS:
                 waitForThreadsNode = new WaitForThreadsNodeModel();
-                waitForThreadsNode.initFrom(proto.getWaitForThreads());
+                waitForThreadsNode.initFrom(proto.getWaitForThreads(), context);
                 break;
             case NOP:
                 nop = new NopNodeModel();
                 break;
             case SLEEP:
                 sleepNode = new SleepNodeModel();
-                sleepNode.initFrom(proto.getSleep());
+                sleepNode.initFrom(proto.getSleep(), context);
                 break;
             case USER_TASK:
-                userTaskNode = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeModel.class);
+                userTaskNode = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeModel.class, context);
                 break;
             case START_MULTIPLE_THREADS:
-                startMultipleThreadsNode =
-                        LHSerializable.fromProto(proto.getStartMultipleThreads(), StartMultipleThreadsNodeModel.class);
+                startMultipleThreadsNode = LHSerializable.fromProto(
+                        proto.getStartMultipleThreads(), StartMultipleThreadsNodeModel.class, context);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Node " + name + " on thread " + threadSpecModel.name + " is unset!");

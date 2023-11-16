@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrincipalRequest>
         implements ClusterLevelCommand {
@@ -19,7 +20,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     private String id;
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         DeletePrincipalRequest deleteRequest = (DeletePrincipalRequest) proto;
         this.id = deleteRequest.getId();
     }

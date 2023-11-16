@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,11 +34,12 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return StartThreadNode.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         StartThreadNode p = (StartThreadNode) proto;
         threadSpecName = p.getThreadSpecName();
         for (Map.Entry<String, VariableAssignment> e : p.getVariablesMap().entrySet()) {
-            variables.put(e.getKey(), VariableAssignmentModel.fromProto(e.getValue()));
+            variables.put(e.getKey(), VariableAssignmentModel.fromProto(e.getValue(), context));
         }
     }
 

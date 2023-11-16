@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +25,14 @@ public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsN
     private VariableAssignmentModel iterable;
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         StartMultipleThreadsNode node = (StartMultipleThreadsNode) proto;
         threadSpecName = node.getThreadSpecName();
         variables = new HashMap<>();
         node.getVariablesMap().forEach((variableName, variableAssignment) -> {
-            variables.put(variableName, VariableAssignmentModel.fromProto(variableAssignment));
+            variables.put(variableName, VariableAssignmentModel.fromProto(variableAssignment, context));
         });
-        iterable = LHSerializable.fromProto(node.getIterable(), VariableAssignmentModel.class);
+        iterable = LHSerializable.fromProto(node.getIterable(), VariableAssignmentModel.class, context);
     }
 
     @Override

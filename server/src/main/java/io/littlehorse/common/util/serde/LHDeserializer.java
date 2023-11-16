@@ -19,7 +19,7 @@ public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer
     public T deserialize(String topic, byte[] b) {
         if (b == null) return null;
         try {
-            return LHSerializable.fromBytes(b, cls);
+            return LHSerializable.fromBytes(b, cls, null); // TODO eduwer
         } catch (LHSerdeError exn) {
             log.error("Caught and re-throwing exception from deserializer.", exn);
             throw new RuntimeException(exn);

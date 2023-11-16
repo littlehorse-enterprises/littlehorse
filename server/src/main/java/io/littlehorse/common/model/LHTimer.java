@@ -5,10 +5,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,16 +26,14 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public LHTimer() {}
 
-    public LHTimer(CommandModel command, CoreProcessorDAO dao) {
+    public LHTimer(CommandModel command) {
         maturationTime = command.getTime();
         payload = command.toProto().build().toByteArray();
         key = command.getPartitionKey();
-        topic = dao.getCoreCmdTopic();
-        this.tenantId = dao.context().tenantId();
-        this.principalId = dao.context().principalId();
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         LHTimerPb p = (LHTimerPb) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         topic = p.getTopic();

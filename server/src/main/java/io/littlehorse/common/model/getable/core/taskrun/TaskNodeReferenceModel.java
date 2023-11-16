@@ -3,13 +3,13 @@ package io.littlehorse.common.model.getable.core.taskrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,19 +38,21 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeReference p = (TaskNodeReference) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
     }
 
-    public void onCompleted(TaskAttemptModel successfulAttept, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
+    public void onCompleted(TaskAttemptModel successfulAttept) {
+        NodeRunModel nodeRunModel = getExecutionContext().getStorageManager().get(nodeRunId);
         nodeRunModel.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
     }
 
-    public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
+    @Override
+    public void onFailed(TaskAttemptModel lastFailure) {
+        NodeRunModel nodeRunModel = getExecutionContext().getStorageManager().get(nodeRunId);
         FailureModel failure;
         if (!lastFailure.containsException()) {
             String message = getMessageFor(lastFailure.getStatus());

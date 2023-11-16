@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
@@ -25,11 +26,12 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         return ExternalEventNode.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventNode p = (ExternalEventNode) proto;
         externalEventDefName = p.getExternalEventDefName();
         if (p.hasTimeoutSeconds()) {
-            timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds());
+            timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), context);
         }
     }
 

@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,14 +55,16 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         if (p.hasRetentionPolicy())
-            retentionPolicy = LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
+            retentionPolicy =
+                    LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
-            threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue()));
+            threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue(), context));
         }
     }
 
@@ -98,9 +101,9 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return spec.toProto().build();
     }
 
-    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p) {
+    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p, ExecutionContext context) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

@@ -6,6 +6,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,11 +20,12 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         return EdgeCondition.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         EdgeCondition p = (EdgeCondition) proto;
         comparator = p.getComparator();
-        left = VariableAssignmentModel.fromProto(p.getLeft());
-        right = VariableAssignmentModel.fromProto(p.getRight());
+        left = VariableAssignmentModel.fromProto(p.getLeft(), context);
+        right = VariableAssignmentModel.fromProto(p.getRight(), context);
     }
 
     public EdgeCondition.Builder toProto() {
@@ -35,9 +37,9 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         return out;
     }
 
-    public static EdgeConditionModel fromProto(EdgeCondition p) {
+    public static EdgeConditionModel fromProto(EdgeCondition p, ExecutionContext context) {
         EdgeConditionModel out = new EdgeConditionModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
