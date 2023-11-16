@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.Interrupted;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class InterruptedModel extends LHSerializable<Interrupted> implements SubHaltReason {
 
@@ -26,14 +27,15 @@ public class InterruptedModel extends LHSerializable<Interrupted> implements Sub
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         Interrupted p = (Interrupted) proto;
         interruptThreadId = p.getInterruptThreadId();
     }
 
-    public static InterruptedModel fromProto(Interrupted proto) {
+    public static InterruptedModel fromProto(Interrupted proto, ExecutionContext context) {
         InterruptedModel out = new InterruptedModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

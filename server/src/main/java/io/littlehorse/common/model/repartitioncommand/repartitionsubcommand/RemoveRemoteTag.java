@@ -8,6 +8,7 @@ import io.littlehorse.common.proto.RemoveRemoteTagPb;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implements RepartitionSubCommand {
@@ -28,7 +29,7 @@ public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implement
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         var removeRemoteTagSubCommand = (RemoveRemoteTagPb) proto;
         this.storeKey = removeRemoteTagSubCommand.getStoreKey();
         this.partitionKey = removeRemoteTagSubCommand.getPartitionKey();

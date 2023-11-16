@@ -5,12 +5,12 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,24 +39,25 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
         return true;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        ExternalEventModel externalEvent = dao.get(id);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        ExternalEventModel externalEvent = executionContext.getStorageManager().get(id);
         if (!externalEvent.claimed) {
-            dao.delete(id);
+            executionContext.getStorageManager().delete(id);
             return Empty.getDefaultInstance();
         } else {
             throw new LHApiException(Status.FAILED_PRECONDITION, "ExternalEvent already claimed!");
         }
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteExternalEventRequest p = (DeleteExternalEventRequest) proto;
-        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class, context);
     }
 
-    public static DeleteExternalEventRequestModel fromProto(DeleteExternalEventRequest p) {
+    public static DeleteExternalEventRequestModel fromProto(DeleteExternalEventRequest p, ExecutionContext context) {
         DeleteExternalEventRequestModel out = new DeleteExternalEventRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

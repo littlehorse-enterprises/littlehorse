@@ -28,7 +28,7 @@ public class LHIterKeyValue<T extends Storeable<?>> {
     public T getValue() {
         if (val == null) {
             try {
-                val = LHSerializable.fromBytes(valBytes.get(), cls);
+                val = LHSerializable.fromBytes(valBytes.get(), cls, null); // TODO eduwer
             } catch (LHSerdeError exn) {
                 // Not possible
                 throw new RuntimeException(exn);

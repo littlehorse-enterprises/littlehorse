@@ -8,6 +8,7 @@ import io.littlehorse.common.proto.CreateRemoteTagPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implements RepartitionSubCommand {
@@ -36,9 +37,9 @@ public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implement
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         CreateRemoteTagPb remoteTagSubCommandPb = (CreateRemoteTagPb) proto;
-        this.tag = LHSerializable.fromProto(remoteTagSubCommandPb.getTag(), Tag.class);
+        this.tag = LHSerializable.fromProto(remoteTagSubCommandPb.getTag(), Tag.class, context);
     }
 
     @Override

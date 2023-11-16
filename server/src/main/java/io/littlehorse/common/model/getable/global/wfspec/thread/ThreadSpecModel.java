@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,13 +75,14 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return out;
     }
 
-    public void initFrom(Message pr) {
+    @Override
+    public void initFrom(Message pr, ExecutionContext context) {
         ThreadSpec proto = (ThreadSpec) pr;
         for (Map.Entry<String, Node> p : proto.getNodesMap().entrySet()) {
             NodeModel n = new NodeModel();
             n.name = p.getKey();
             n.threadSpecModel = this;
-            n.initFrom(p.getValue());
+            n.initFrom(p.getValue(), context);
             this.nodes.put(p.getKey(), n);
             if (n.type == NodeCase.ENTRYPOINT) {
                 this.entrypointNodeName = n.name;
@@ -89,19 +91,20 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
         for (VariableDef vd : proto.getVariableDefsList()) {
             VariableDefModel v = new VariableDefModel();
-            v.initFrom(vd);
+            v.initFrom(vd, context);
             v.threadSpecModel = this;
             variableDefs.add(v);
         }
 
         for (InterruptDef idefpb : proto.getInterruptDefsList()) {
-            InterruptDefModel idef = InterruptDefModel.fromProto(idefpb);
+            InterruptDefModel idef = InterruptDefModel.fromProto(idefpb, context);
             idef.ownerThreadSpecModel = this;
             interruptDefs.add(idef);
         }
 
         if (proto.hasRetentionPolicy()) {
-            retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class);
+            retentionPolicy =
+                    LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class, context);
         }
     }
 
@@ -363,9 +366,9 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public static ThreadSpecModel fromProto(ThreadSpec p) {
+    public static ThreadSpecModel fromProto(ThreadSpec p, ExecutionContext context) {
         ThreadSpecModel out = new ThreadSpecModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

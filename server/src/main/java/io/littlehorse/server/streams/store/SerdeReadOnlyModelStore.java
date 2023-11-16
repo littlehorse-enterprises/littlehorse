@@ -28,7 +28,7 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
         if (raw == null) return null;
 
         try {
-            return LHSerializable.fromBytes(raw.get(), cls);
+            return LHSerializable.fromBytes(raw.get(), cls, null); // TODO eduwer
         } catch (LHSerdeError exn) {
             throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
         }

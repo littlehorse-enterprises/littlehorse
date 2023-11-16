@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +28,7 @@ public class TaskDefIdModel extends MetadataId<TaskDefId, TaskDef, TaskDefModel>
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskDefId p = (TaskDefId) proto;
         name = p.getName();
     }

@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     private Map<String, String> varToThreadSpec;
 
     private boolean initializedVarToThreadSpec;
+    private ExecutionContext executionContext;
 
     public WfSpecIdModel getObjectId() {
         return new WfSpecIdModel(name, version);
@@ -128,7 +130,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return out;
     }
 
-    public void initFrom(Message pr) {
+    @Override
+    public void initFrom(Message pr, ExecutionContext context) {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         version = proto.getVersion();
@@ -140,22 +143,24 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             ThreadSpecModel ts = new ThreadSpecModel();
             ts.wfSpecModel = this;
             ts.name = e.getKey();
-            ts.initFrom(e.getValue());
+            ts.initFrom(e.getValue(), context);
             threadSpecs.put(e.getKey(), ts);
         }
 
         if (proto.hasRetentionPolicy()) {
-            retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
+            retentionPolicy =
+                    LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
+        this.executionContext = context;
     }
 
     public Class<WfSpec> getProtoBaseClass() {
         return WfSpec.class;
     }
 
-    public static WfSpecModel fromProto(WfSpec proto) {
+    public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
         WfSpecModel out = new WfSpecModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -298,18 +303,22 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public WfRunModel startNewRun(RunWfRequestModel evt) {
         WfRunModel out = new WfRunModel();
-        out.setDao(getDao());
         out.id = evt.id;
 
         out.setWfSpec(this);
         out.wfSpecVersion = version;
         out.wfSpecName = name;
-        out.startTime = getDao().getEventTime();
+        out.startTime = executionContext.currentCommand().getTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.variables, ThreadType.ENTRYPOINT);
+        out.startThread(
+                entrypointThreadName,
+                executionContext.currentCommand().getTime(),
+                null,
+                evt.variables,
+                ThreadType.ENTRYPOINT);
 
-        getDao().put(out);
+        executionContext.getStorageManager().put(out);
 
         return out;
     }

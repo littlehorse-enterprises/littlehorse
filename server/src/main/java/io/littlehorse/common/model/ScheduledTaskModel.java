@@ -13,6 +13,7 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,28 +79,28 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         return ScheduledTask.class;
     }
 
-    public static ScheduledTaskModel fromProto(ScheduledTask p) {
+    public static ScheduledTaskModel fromProto(ScheduledTask p, ExecutionContext context) {
         ScheduledTaskModel out = new ScheduledTaskModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ScheduledTask p = (ScheduledTask) proto;
-        taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         attemptNumber = p.getAttemptNumber();
 
         for (VarNameAndVal v : p.getVariablesList()) {
-            variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class));
+            variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
 
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         if (this.createdAt.getTime() == 0) {
             this.createdAt = new Date();
         }
-        this.source = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
+        this.source = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class, context);
     }
 
     @Override

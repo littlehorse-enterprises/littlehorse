@@ -2,7 +2,6 @@ package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -53,10 +52,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class AbstractGetable<T extends Message> extends LHSerializable<T> {
 
     public abstract Date getCreatedAt();
-
-    // This is here for convenience. It's to be set by the LHDAOImpl, but only
-    // when doing processing (not interactive queries).
-    private CoreProcessorDAO dao;
 
     public Optional<String> getPartitionKey() {
         return getObjectId().getPartitionKey();

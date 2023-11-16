@@ -10,6 +10,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
@@ -33,15 +34,16 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
         externalEventDefName = p.getExternalEventDefName();
     }
 
-    public static InterruptDefModel fromProto(InterruptDef p) {
+    public static InterruptDefModel fromProto(InterruptDef p, ExecutionContext context) {
         InterruptDefModel out = new InterruptDefModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,16 +38,17 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         return TaskAttempt.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskAttempt p = (TaskAttempt) proto;
         if (p.hasOutput()) {
-            output = VariableValueModel.fromProto(p.getOutput());
+            output = VariableValueModel.fromProto(p.getOutput(), context);
         }
         if (p.hasScheduleTime()) {
             scheduleTime = LHUtil.fromProtoTs(p.getScheduleTime());
         }
         if (p.hasLogOutput()) {
-            logOutput = VariableValueModel.fromProto(p.getLogOutput());
+            logOutput = VariableValueModel.fromProto(p.getLogOutput(), context);
         }
         if (p.hasStartTime()) {
             startTime = LHUtil.fromProtoTs(p.getStartTime());
@@ -59,8 +61,9 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         }
         taskWorkerId = p.getTaskWorkerId();
         status = p.getStatus();
-        if (p.hasError()) error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class);
-        if (p.hasException()) exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class);
+        if (p.hasError()) error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class, context);
+        if (p.hasException())
+            exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class, context);
     }
 
     public TaskAttempt.Builder toProto() {

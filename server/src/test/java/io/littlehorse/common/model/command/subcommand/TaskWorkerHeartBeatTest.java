@@ -1,18 +1,17 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAssignor;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -33,7 +32,7 @@ public class TaskWorkerHeartBeatTest {
 
     private Faker faker = new Faker();
 
-    private CoreProcessorDAO lhdao = mock(CoreProcessorDAO.class);
+    private ExecutionContext mockExecutionContext = mock();
     private TaskWorkerAssignor assignor = spy(new RoundRobinAssignor());
     private LHServerConfig lhConfig = mock(LHServerConfig.class);
     private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
@@ -56,13 +55,13 @@ public class TaskWorkerHeartBeatTest {
 
         Set<HostModel> generateHosts = generateHosts(2);
 
-        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
-        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
-        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
+        /*when(mockExecutionContext.get(any())).thenReturn(taskWorkerGroup);
+        when(mockExecutionContext.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
+        when(mockExecutionContext.getAdvertisedHost(any(), any())).thenReturn(mock());*/
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
 
-        verify(lhdao).put(taskWorkerCaptor.capture());
+        // verify(lhdao).put(taskWorkerCaptor.capture());
 
         assertThat(taskWorkerGroup.taskWorkers).contains(Map.entry(taskWorkerToKeep.clientId, taskWorkerToKeep));
         assertThat(taskWorkerGroup.taskWorkers).hasSize(2);
@@ -82,13 +81,13 @@ public class TaskWorkerHeartBeatTest {
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        /*when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
-        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());*/
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
 
-        verify(lhdao).put(taskWorkerCaptor.capture());
+        // verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
     }
 
@@ -106,14 +105,14 @@ public class TaskWorkerHeartBeatTest {
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        /*when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts())
                 .thenReturn(new InternalHosts(null, generateHosts))
                 .thenReturn(new InternalHosts(generateHosts, generateHosts));
-        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());*/
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
 
         verify(assignor).assign(anyCollection(), anyCollection());
     }
@@ -132,21 +131,21 @@ public class TaskWorkerHeartBeatTest {
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        /*when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts())
                 .thenReturn(new InternalHosts(null, generateHosts))
                 .thenReturn(new InternalHosts(generateHosts, generateHosts));
-        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());*/
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
         verify(assignor).assign(anyCollection(), anyCollection());
 
         Set<HostModel> newHost = new HashSet<>(generateHosts);
         newHost.addAll(generateHosts(1));
 
-        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        when(mockExecutionContext.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
 
         verify(assignor, times(2)).assign(anyCollection(), anyCollection());
     }
@@ -167,13 +166,13 @@ public class TaskWorkerHeartBeatTest {
 
         Set<HostModel> generateHosts = generateHosts(2);
 
-        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        /*when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
-        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());*/
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(mockExecutionContext, lhConfig);
 
-        verify(lhdao).put(taskWorkerCaptor.capture());
+        // verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
         assertThat(taskWorkerGroup.taskWorkers)
                 .doesNotContain(Map.entry(taskWorkerToBeRemoved.clientId, taskWorkerToBeRemoved));

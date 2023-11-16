@@ -1,6 +1,7 @@
 package io.littlehorse.io.littlehorse.common.model.metadatacommand.subcommand;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
@@ -101,9 +102,11 @@ public class PutWfSpecRequestModelTest {
     }
 
     private PutWfSpecRequestModel testWorkflowSpec() {
-        return PutWfSpecRequestModel.fromProto(new WorkflowImpl("example-basic", wf -> {
-                    wf.execute("greet");
-                })
-                .compileWorkflow());
+        return PutWfSpecRequestModel.fromProto(
+                new WorkflowImpl("example-basic", wf -> {
+                            wf.execute("greet");
+                        })
+                        .compileWorkflow(),
+                mock()); // TODO eduwer
     }
 }

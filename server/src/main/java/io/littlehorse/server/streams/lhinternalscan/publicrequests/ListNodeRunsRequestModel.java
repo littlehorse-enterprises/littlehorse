@@ -15,6 +15,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ListNodeRunsRequestModel
         extends PublicScanRequest<ListNodeRunsRequest, NodeRunList, NodeRun, NodeRunModel, ListNodeRunReply> {
@@ -29,7 +30,8 @@ public class ListNodeRunsRequestModel
         return ListNodeRunsRequest.newBuilder().setWfRunId(wfRunId);
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ListNodeRunsRequest p = (ListNodeRunsRequest) proto;
         wfRunId = p.getWfRunId();
     }

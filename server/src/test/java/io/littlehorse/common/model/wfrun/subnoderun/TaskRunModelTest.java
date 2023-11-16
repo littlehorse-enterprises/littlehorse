@@ -27,7 +27,7 @@ public class TaskRunModelTest {
         when(mockDao.context()).thenReturn(mockContext);
         taskRun.setId(new TaskRunIdModel("asdf"));
         taskRun.setInputVariables(new ArrayList<>());
-        taskRun.setDao(mockDao);
+        // taskRun.setDao(mockDao);
 
         taskRun.scheduleAttempt();
 

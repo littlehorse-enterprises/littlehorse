@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -13,6 +12,8 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -35,10 +36,10 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UTAReassign p = (UTAReassign) proto;
-        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
-        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId());
+        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup(), context);
+        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId(), context);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         return UTAReassign.class;
     }
 
-    public void schedule(CoreProcessorDAO dao, UserTaskRunModel utr, UTActionTriggerModel trigger)
+    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr, UTActionTriggerModel trigger)
             throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
@@ -63,8 +64,8 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
                 new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup), Date.from(maturationTime));
 
         // Schedule the task
-        LHTimer timer = new LHTimer(command, dao);
+        LHTimer timer = new LHTimer(command);
 
-        dao.scheduleTimer(timer);
+        taskManager.scheduleTimer(timer);
     }
 }

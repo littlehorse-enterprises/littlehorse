@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThr
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +38,11 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return WaitForThreadsRun.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         WaitForThreadsRun p = (WaitForThreadsRun) proto;
         for (WaitForThreadsRun.WaitForThread wft : p.getThreadsList()) {
-            threads.add(LHSerializable.fromProto(wft, WaitForThreadModel.class));
+            threads.add(LHSerializable.fromProto(wft, WaitForThreadModel.class, context));
         }
         policy = p.getPolicy();
     }
@@ -55,9 +57,9 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return out;
     }
 
-    public static WaitForThreadsRunModel fromProto(WaitForThreadsRun p) {
+    public static WaitForThreadsRunModel fromProto(WaitForThreadsRun p, ExecutionContext context) {
         WaitForThreadsRunModel out = new WaitForThreadsRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

@@ -9,6 +9,7 @@ import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<DeleteExternalEventDefRequest> {
 
@@ -24,9 +25,10 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteExternalEventDefRequest p = (DeleteExternalEventDefRequest) proto;
-        id = LHSerializable.fromProto(p.getId(), ExternalEventDefIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), ExternalEventDefIdModel.class, context);
     }
 
     public String getPartitionKey() {
@@ -43,9 +45,10 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
         return true;
     }
 
-    public static DeleteExternalEventDefRequestModel fromProto(DeleteExternalEventDefRequest p) {
+    public static DeleteExternalEventDefRequestModel fromProto(
+            DeleteExternalEventDefRequest p, ExecutionContext context) {
         DeleteExternalEventDefRequestModel out = new DeleteExternalEventDefRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

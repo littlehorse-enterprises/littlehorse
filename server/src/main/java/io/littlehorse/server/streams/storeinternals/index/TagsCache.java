@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -25,10 +26,11 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
         return TagsCachePb.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TagsCachePb p = (TagsCachePb) proto;
         for (CachedTagPb ct : p.getCachedTagsList()) {
-            tags.add(CachedTag.fromProto(ct));
+            tags.add(CachedTag.fromProto(ct, context));
         }
     }
 
@@ -39,9 +41,9 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
         return out;
     }
 
-    public static TagsCache fromProto(TagsCachePb proto) {
+    public static TagsCache fromProto(TagsCachePb proto, ExecutionContext context) {
         TagsCache out = new TagsCache();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

@@ -145,7 +145,7 @@ public class TimerProcessorTest {
         when(mockDao.getCoreCmdTopic()).thenReturn(testTopicName);
         when(mockDao.context().tenantId()).thenReturn(tenantId);
         when(mockDao.context().principalId()).thenReturn(principalId);
-        return new LHTimer(mockCommand, mockDao);
+        return new LHTimer(mockCommand);
     }
 
     private Date timeToDate(LocalDateTime maturationTime) {

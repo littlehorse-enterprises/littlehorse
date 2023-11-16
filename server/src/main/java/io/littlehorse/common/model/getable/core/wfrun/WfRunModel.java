@@ -38,6 +38,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +66,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private List<ThreadRunModel> threadRuns;
     public List<PendingInterruptModel> pendingInterrupts;
     public List<PendingFailureHandlerModel> pendingFailures;
+    private ExecutionContext executionContext;
 
     public WfRunModel() {
         threadRuns = new ArrayList<>();
@@ -115,7 +117,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = getDao().getWfSpec(wfSpecName, wfSpecVersion);
+            wfSpec = executionContext.wfService().getWfSpec(wfSpecName, wfSpecVersion);
         }
         return wfSpec;
     }
@@ -131,7 +133,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .orElse(null);
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         WfRun proto = (WfRun) p;
         id = proto.getId();
         wfSpecName = proto.getWfSpecName();
@@ -144,16 +147,17 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         for (ThreadRun trpb : proto.getThreadRunsList()) {
-            ThreadRunModel thr = ThreadRunModel.fromProto(trpb);
+            ThreadRunModel thr = ThreadRunModel.fromProto(trpb, context);
             thr.wfRun = this;
             threadRuns.add(thr);
         }
         for (PendingInterrupt pipb : proto.getPendingInterruptsList()) {
-            pendingInterrupts.add(PendingInterruptModel.fromProto(pipb));
+            pendingInterrupts.add(PendingInterruptModel.fromProto(pipb, context));
         }
         for (PendingFailureHandler pfhpb : proto.getPendingFailuresList()) {
-            pendingFailures.add(PendingFailureHandlerModel.fromProto(pfhpb));
+            pendingFailures.add(PendingFailureHandlerModel.fromProto(pfhpb, context));
         }
+        this.executionContext = context;
     }
 
     public WfRunIdModel getObjectId() {
@@ -317,7 +321,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEventModel event = getDao().get(pi.externalEventId);
+                ExternalEventModel event = executionContext.getStorageManager().get(pi.externalEventId);
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
@@ -526,9 +530,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
             if (terminationTime != null) {
                 LHTimer timer = new LHTimer();
-                timer.setPrincipalId(this.getDao().context().principalId());
-                timer.setTenantId(this.getDao().context().tenantId());
-                timer.topic = this.getDao().getCoreCmdTopic();
                 timer.key = id;
                 timer.maturationTime = terminationTime;
                 DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
@@ -538,7 +539,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 deleteWfRunCmd.setSubCommand(deleteWfRun);
                 deleteWfRunCmd.time = timer.maturationTime;
                 timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
-                this.getDao().scheduleTimer(timer);
+                executionContext.getTaskManager().scheduleTimer(timer);
             }
         }
     }

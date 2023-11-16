@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,7 +22,8 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
         return UserTaskField.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskField p = (UserTaskField) proto;
         name = p.getName();
         type = p.getType();

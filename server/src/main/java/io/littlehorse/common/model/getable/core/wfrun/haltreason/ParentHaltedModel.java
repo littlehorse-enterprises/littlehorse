@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ParentHalted;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,14 +36,15 @@ public class ParentHaltedModel extends LHSerializable<ParentHalted> implements S
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ParentHalted p = (ParentHalted) proto;
         parentThreadId = p.getParentThreadId();
     }
 
-    public static ParentHaltedModel fromProto(ParentHalted proto) {
+    public static ParentHaltedModel fromProto(ParentHalted proto, ExecutionContext context) {
         ParentHaltedModel out = new ParentHaltedModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

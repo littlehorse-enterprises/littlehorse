@@ -5,7 +5,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -13,6 +12,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,18 +42,19 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
-        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
 
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
-            results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue()));
+            results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue(), context));
         }
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        UserTaskRunModel utr = dao.get(userTaskRunId);
+    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+        UserTaskRunModel utr = executionContext.getStorageManager().get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");
         }

@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -31,20 +32,21 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return VariableDef.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         VariableDef p = (VariableDef) proto;
         type = p.getType();
         name = p.getName();
         persistent = p.getPersistent();
 
         for (JsonIndex idx : p.getJsonIndexesList()) {
-            jsonIndices.add(LHSerializable.fromProto(idx, JsonIndexModel.class));
+            jsonIndices.add(LHSerializable.fromProto(idx, JsonIndexModel.class, context));
         }
 
         if (p.hasIndexType()) indexType = p.getIndexType();
 
         if (p.hasDefaultValue()) {
-            defaultValue = VariableValueModel.fromProto(p.getDefaultValue());
+            defaultValue = VariableValueModel.fromProto(p.getDefaultValue(), context);
         }
     }
 
@@ -62,9 +64,9 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return out;
     }
 
-    public static VariableDefModel fromProto(VariableDef proto) {
+    public static VariableDefModel fromProto(VariableDef proto, ExecutionContext context) {
         VariableDefModel o = new VariableDefModel();
-        o.initFrom(proto);
+        o.initFrom(proto, context);
         return o;
     }
 

@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -19,6 +18,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -57,8 +57,8 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     }
 
     @Override
-    public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config) {
-        ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
+    public ExternalEvent process(ExecutionContext executionContext, LHServerConfig config) {
+        ExternalEventDefModel eed = executionContext.wfService().getExternalEventDef(externalEventDefName);
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);
         }
@@ -73,11 +73,10 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         evt.threadRunNumber = threadRunNumber;
         evt.claimed = false;
 
-        dao.put(evt);
+        executionContext.getStorageManager().put(evt);
 
         if (eed.retentionHours != LHConstants.INFINITE_RETENTION) {
             LHTimer timer = new LHTimer();
-            timer.topic = dao.getCoreCmdTopic();
             timer.key = this.wfRunId;
             Date now = new Date();
             timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
@@ -89,27 +88,25 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             deleteExtEventCmd.setSubCommand(deleteExternalEvent);
             deleteExtEventCmd.time = timer.maturationTime;
             timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
-            timer.setTenantId(dao.context().tenantId());
-            timer.setPrincipalId(dao.context().principalId());
-            dao.scheduleTimer(timer);
+            executionContext.getTaskManager().scheduleTimer(timer);
         }
 
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
         if (wfRunModel != null) {
-            WfSpecModel spec = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+            WfSpecModel spec = executionContext.wfService().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
             if (spec == null) {
                 wfRunModel
                         .getThreadRun(0)
                         .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
 
                 // NOTE: need to commit the dao before we throw the exception.
-                dao.commit();
+                executionContext.endExecution();
                 throw new LHApiException(Status.DATA_LOSS, "Appears wfSpec was deleted");
             } else {
                 wfRunModel.processExternalEvent(evt);
             }
-            dao.put(wfRunModel);
-            dao.put(evt);
+            executionContext.getStorageManager().put(wfRunModel);
+            executionContext.getStorageManager().put(evt);
         } else {
             // it's a pre-emptive event.
         }
@@ -117,20 +114,20 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         return evt.toProto().build();
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         PutExternalEventRequest p = (PutExternalEventRequest) proto;
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
-        content = VariableValueModel.fromProto(p.getContent());
+        content = VariableValueModel.fromProto(p.getContent(), context);
 
         if (p.hasGuid()) guid = p.getGuid();
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static PutExternalEventRequestModel fromProto(PutExternalEventRequest p) {
+    public static PutExternalEventRequestModel fromProto(PutExternalEventRequest p, ExecutionContext context) {
         PutExternalEventRequestModel out = new PutExternalEventRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

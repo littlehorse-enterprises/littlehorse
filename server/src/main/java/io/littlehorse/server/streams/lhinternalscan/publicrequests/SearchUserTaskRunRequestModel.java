@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +59,8 @@ public class SearchUserTaskRunRequestModel
         return SearchUserTaskRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchUserTaskRunRequest p = (SearchUserTaskRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -108,9 +110,9 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    public static SearchUserTaskRunRequestModel fromProto(SearchUserTaskRunRequest proto) {
+    public static SearchUserTaskRunRequestModel fromProto(SearchUserTaskRunRequest proto, ExecutionContext context) {
         SearchUserTaskRunRequestModel out = new SearchUserTaskRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

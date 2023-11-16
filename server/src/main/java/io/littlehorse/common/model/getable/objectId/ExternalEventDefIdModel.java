@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
 public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
@@ -24,7 +25,7 @@ public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, Exte
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventDefId p = (ExternalEventDefId) proto;
         name = p.getName();
     }

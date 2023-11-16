@@ -12,13 +12,14 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
     private String id;
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutTenantRequest putTenantRequest = (PutTenantRequest) proto;
         this.id = putTenantRequest.getId();
     }

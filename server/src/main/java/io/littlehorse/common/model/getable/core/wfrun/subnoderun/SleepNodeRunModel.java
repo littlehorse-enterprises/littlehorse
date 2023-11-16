@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -14,11 +13,13 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeM
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     public Date maturationTime;
+    private ExecutionContext executionContext;
 
     public SleepNodeRunModel() {}
 
@@ -26,18 +27,20 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         return SleepNodeRun.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
+        this.executionContext = context;
     }
 
     public SleepNodeRun.Builder toProto() {
         return SleepNodeRun.newBuilder().setMaturationTime(LHUtil.fromDate(maturationTime));
     }
 
-    public static SleepNodeRunModel fromProto(SleepNodeRun p) {
+    public static SleepNodeRunModel fromProto(SleepNodeRun p, ExecutionContext context) {
         SleepNodeRunModel out = new SleepNodeRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -64,16 +67,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             snm.nodeRunPosition = nodeRunModel.position;
 
             cmd.setSubCommand(snm);
-            CoreProcessorDAO dao = nodeRunModel.getThreadRun().getWfRun().getDao();
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;
             timer.key = nodeRunModel.wfRunId;
-            timer.topic = nodeRunModel.getThreadRun().getWfRun().getDao().getCoreCmdTopic();
             timer.payload = cmd.toProto().build().toByteArray();
-            timer.setTenantId(dao.context().tenantId());
-            timer.setPrincipalId(dao.context().principalId());
 
-            dao.scheduleTimer(timer);
+            executionContext.getTaskManager().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);

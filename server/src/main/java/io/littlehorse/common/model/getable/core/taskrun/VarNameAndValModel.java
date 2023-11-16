@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
 
@@ -29,9 +30,10 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         VarNameAndVal p = (VarNameAndVal) proto;
         varName = p.getVarName();
-        value = VariableValueModel.fromProto(p.getValue());
+        value = VariableValueModel.fromProto(p.getValue(), context);
     }
 }

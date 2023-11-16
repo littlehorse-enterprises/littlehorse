@@ -16,6 +16,7 @@ import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,14 +34,15 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     private boolean overwrite;
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutPrincipalRequest p = (PutPrincipalRequest) proto;
         this.id = p.getId();
-        this.globalAcls = LHSerializable.fromProto(p.getGlobalAcls(), ServerACLsModel.class);
+        this.globalAcls = LHSerializable.fromProto(p.getGlobalAcls(), ServerACLsModel.class, context);
 
         for (Map.Entry<String, ServerACLs> tenantAcls : p.getPerTenantAclsMap().entrySet()) {
             perTenantAcls.put(
-                    tenantAcls.getKey(), LHSerializable.fromProto(tenantAcls.getValue(), ServerACLsModel.class));
+                    tenantAcls.getKey(),
+                    LHSerializable.fromProto(tenantAcls.getValue(), ServerACLsModel.class, context));
         }
         this.overwrite = p.getOverwrite();
     }

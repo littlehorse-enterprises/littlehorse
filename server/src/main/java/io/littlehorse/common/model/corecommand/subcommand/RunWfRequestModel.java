@@ -3,7 +3,6 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -13,9 +12,12 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Setter;
 
+@Setter
 public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     public String wfSpecName;
@@ -49,14 +51,14 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         RunWfRequest p = (RunWfRequest) proto;
         wfSpecName = p.getWfSpecName();
         if (p.hasId()) id = p.getId();
         if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
-            variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue()));
+            variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue(), context));
         }
     }
 
@@ -65,8 +67,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     }
 
     @Override
-    public WfRun process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
+    public WfRun process(ExecutionContext executionContext, LHServerConfig config) {
+        WfSpecModel spec = executionContext.wfService().getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
@@ -74,7 +76,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (id == null) {
             id = LHUtil.generateGuid();
         } else {
-            WfRunModel oldWfRun = dao.getWfRun(id);
+            WfRunModel oldWfRun = executionContext.wfService().getWfRun(id);
             if (oldWfRun != null) {
                 throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
             }
@@ -83,14 +85,14 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         // TODO: Add WfRun Start Metrics
 
         WfRunModel newRun = spec.startNewRun(this);
-        newRun.advance(dao.getEventTime());
+        newRun.advance(executionContext.currentCommand().getTime());
 
         return newRun.toProto().build();
     }
 
-    public static RunWfRequestModel fromProto(RunWfRequest p) {
+    public static RunWfRequestModel fromProto(RunWfRequest p, ExecutionContext context) {
         RunWfRequestModel out = new RunWfRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.sdk.common.proto.ExitRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ExitRunModel extends SubNodeRun<ExitRun> {
@@ -22,15 +23,16 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         return ExitRun.class;
     }
 
-    public void initFrom(Message p) {}
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {}
 
     public ExitRun.Builder toProto() {
         return ExitRun.newBuilder();
     }
 
-    public static ExitRunModel fromProto(ExitRun p) {
+    public static ExitRunModel fromProto(ExitRun p, ExecutionContext context) {
         ExitRunModel out = new ExitRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

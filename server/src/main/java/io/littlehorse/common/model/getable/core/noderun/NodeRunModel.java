@@ -30,6 +30,7 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,6 +77,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public UserTaskNodeRunModel userTaskRun;
 
     public List<Integer> failureHandlerIds;
+    private ExecutionContext executionContext;
 
     public NodeRunModel() {
         failures = new ArrayList<>();
@@ -95,7 +97,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
-            WfRunModel wfRunModel = getDao().getWfRun(wfRunId);
+            WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
             threadRunModelDoNotUseMe = wfRunModel.getThreadRuns().get(threadRunNumber);
         }
         return threadRunModelDoNotUseMe;
@@ -145,7 +147,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return List.of();
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         NodeRun proto = (NodeRun) p;
         wfRunId = proto.getWfRunId();
         threadRunNumber = proto.getThreadRunNumber();
@@ -156,7 +159,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
 
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class);
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
@@ -166,44 +169,44 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         type = proto.getNodeTypeCase();
         switch (type) {
             case TASK:
-                taskRun = LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class);
+                taskRun = LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class, context);
                 break;
             case EXTERNAL_EVENT:
-                externalEventRun = ExternalEventRunModel.fromProto(proto.getExternalEvent());
+                externalEventRun = ExternalEventRunModel.fromProto(proto.getExternalEvent(), context);
                 break;
             case EXIT:
-                exitRun = ExitRunModel.fromProto(proto.getExit());
+                exitRun = ExitRunModel.fromProto(proto.getExit(), context);
                 break;
             case ENTRYPOINT:
-                entrypointRun = EntrypointRunModel.fromProto(proto.getEntrypoint());
+                entrypointRun = EntrypointRunModel.fromProto(proto.getEntrypoint(), context);
                 break;
             case START_THREAD:
-                startThreadRun = StartThreadRunModel.fromProto(proto.getStartThread());
+                startThreadRun = StartThreadRunModel.fromProto(proto.getStartThread(), context);
                 break;
             case WAIT_THREADS:
-                waitThreadsRun = WaitForThreadsRunModel.fromProto(proto.getWaitThreads());
+                waitThreadsRun = WaitForThreadsRunModel.fromProto(proto.getWaitThreads(), context);
                 break;
             case SLEEP:
-                sleepNodeRun = SleepNodeRunModel.fromProto(proto.getSleep());
+                sleepNodeRun = SleepNodeRunModel.fromProto(proto.getSleep(), context);
                 break;
             case USER_TASK:
-                userTaskRun = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class);
+                userTaskRun = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class, context);
                 break;
             case START_MULTIPLE_THREADS:
-                startMultipleThreadsRun =
-                        LHSerializable.fromProto(proto.getStartMultipleThreads(), StartMultipleThreadsRunModel.class);
+                startMultipleThreadsRun = LHSerializable.fromProto(
+                        proto.getStartMultipleThreads(), StartMultipleThreadsRunModel.class, context);
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
 
         for (Failure failure : proto.getFailuresList()) {
-            failures.add(FailureModel.fromProto(failure));
+            failures.add(FailureModel.fromProto(failure, context));
         }
         for (int handlerId : proto.getFailureHandlerIdsList()) {
             failureHandlerIds.add(handlerId);
         }
-
+        this.executionContext = context;
         getSubNodeRun().setNodeRunModel(this);
     }
 

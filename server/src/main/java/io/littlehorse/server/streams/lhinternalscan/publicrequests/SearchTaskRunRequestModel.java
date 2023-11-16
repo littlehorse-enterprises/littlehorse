@@ -22,6 +22,7 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -46,7 +47,8 @@ public class SearchTaskRunRequestModel
         return SearchTaskRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchTaskRunRequest p = (SearchTaskRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -91,9 +93,9 @@ public class SearchTaskRunRequestModel
         return out;
     }
 
-    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto) {
+    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto, ExecutionContext context) {
         SearchTaskRunRequestModel out = new SearchTaskRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

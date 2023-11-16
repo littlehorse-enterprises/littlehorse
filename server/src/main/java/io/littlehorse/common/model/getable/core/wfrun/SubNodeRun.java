@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -44,10 +43,6 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
     public NodeModel getNode() {
         return nodeRunModel.getNode();
-    }
-
-    public CoreProcessorDAO getDao() {
-        return nodeRunModel.getThreadRun().getWfRun().getDao();
     }
 
     public void halt() {}

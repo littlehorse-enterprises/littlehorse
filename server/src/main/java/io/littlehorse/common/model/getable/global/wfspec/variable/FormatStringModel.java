@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -32,11 +33,12 @@ public class FormatStringModel extends LHSerializable<FormatString> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         FormatString p = (FormatString) proto;
-        format = VariableAssignmentModel.fromProto(p.getFormat());
+        format = VariableAssignmentModel.fromProto(p.getFormat(), context);
         for (VariableAssignment arg : p.getArgsList()) {
-            args.add(VariableAssignmentModel.fromProto(arg));
+            args.add(VariableAssignmentModel.fromProto(arg, context));
         }
     }
 }

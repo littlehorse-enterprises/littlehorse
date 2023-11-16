@@ -3,7 +3,6 @@ package io.littlehorse.common.model.corecommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
@@ -25,6 +24,7 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -134,7 +134,7 @@ public class CommandModel extends AbstractCommand<Command> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         Command p = (Command) proto;
         time = LHUtil.fromProtoTs(p.getTime());
 
@@ -145,56 +145,56 @@ public class CommandModel extends AbstractCommand<Command> {
         type = p.getCommandCase();
         switch (type) {
             case REPORT_TASK_RUN:
-                reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun());
+                reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun(), context);
                 break;
             case TASK_CLAIM_EVENT:
-                taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
+                taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent(), context);
                 break;
             case PUT_EXTERNAL_EVENT:
-                putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent());
+                putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent(), context);
                 break;
             case RUN_WF:
-                runWf = RunWfRequestModel.fromProto(p.getRunWf());
+                runWf = RunWfRequestModel.fromProto(p.getRunWf(), context);
                 break;
             case STOP_WF_RUN:
-                stopWfRun = StopWfRunRequestModel.fromProto(p.getStopWfRun());
+                stopWfRun = StopWfRunRequestModel.fromProto(p.getStopWfRun(), context);
                 break;
             case RESUME_WF_RUN:
-                resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun());
+                resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun(), context);
                 break;
             case SLEEP_NODE_MATURED:
-                sleepNodeMatured = SleepNodeMatured.fromProto(p.getSleepNodeMatured());
+                sleepNodeMatured = SleepNodeMatured.fromProto(p.getSleepNodeMatured(), context);
                 break;
             case DELETE_WF_RUN:
-                deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun());
+                deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun(), context);
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
-                externalEventTimeout = ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
+                externalEventTimeout = ExternalEventTimeout.fromProto(p.getExternalEventTimeout(), context);
                 break;
             case TASK_WORKER_HEART_BEAT:
-                taskWorkerHeartBeat = TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat());
+                taskWorkerHeartBeat = TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat(), context);
                 break;
             case DELETE_EXTERNAL_EVENT:
-                deleteExternalEvent = DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent());
+                deleteExternalEvent = DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent(), context);
                 break;
             case ASSIGN_USER_TASK_RUN:
-                assignUserTaskRun =
-                        LHSerializable.fromProto(p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class);
+                assignUserTaskRun = LHSerializable.fromProto(
+                        p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class, context);
                 break;
             case COMPLETE_USER_TASK_RUN:
-                completeUserTaskRun =
-                        LHSerializable.fromProto(p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class);
+                completeUserTaskRun = LHSerializable.fromProto(
+                        p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class, context);
                 break;
             case TRIGGERED_TASK_RUN:
-                triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
+                triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class, context);
                 break;
             case REASSIGNED_USER_TASK:
-                reassignUserTask =
-                        LHSerializable.fromProto(p.getReassignedUserTask(), DeadlineReassignUserTaskModel.class);
+                reassignUserTask = LHSerializable.fromProto(
+                        p.getReassignedUserTask(), DeadlineReassignUserTaskModel.class, context);
                 break;
             case CANCEL_USER_TASK:
                 cancelUserTaskRun =
-                        LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class);
+                        LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -315,7 +315,7 @@ public class CommandModel extends AbstractCommand<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(CoreProcessorDAO dao, LHServerConfig config) {
-        return getSubCommand().process(dao, config);
+    public Message process(ExecutionContext executionContext, LHServerConfig config) {
+        return getSubCommand().process(executionContext, config);
     }
 }

@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,14 +46,14 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         threads = new ArrayList<>();
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WaitForThreadsNode p = (WaitForThreadsNode) proto;
         for (ThreadToWaitFor ttwf : p.getThreadsList()) {
-            threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class));
+            threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class, context));
         }
         policy = p.getPolicy();
         if (p.hasThreadList()) {
-            threadList = VariableAssignmentModel.fromProto(p.getThreadList());
+            threadList = VariableAssignmentModel.fromProto(p.getThreadList(), context);
         }
     }
 

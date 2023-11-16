@@ -9,12 +9,12 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,14 +47,14 @@ public class Tag extends Storeable<TagPb> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TagPb p = (TagPb) proto;
         objectType = p.getObjectType();
         describedObjectId = p.getDescribedObjectId();
         createdAt = LHUtil.fromProtoTs(p.getCreated());
 
         for (AttributePb attr : p.getAttributesList()) {
-            attributes.add(Attribute.fromProto(attr));
+            attributes.add(Attribute.fromProto(attr, context));
         }
 
         tagType = p.getTagType();
@@ -84,11 +84,6 @@ public class Tag extends Storeable<TagPb> {
             builder.append(attr.getEscapedVal());
         }
         return builder.toString();
-    }
-
-    public static String getAttributeStringFromPb(GetableClassEnum objectType, List<AttributePb> attributes) {
-        return getAttributeString(
-                objectType, attributes.stream().map(Attribute::fromProto).collect(Collectors.toList()));
     }
 
     public boolean isRemote() {

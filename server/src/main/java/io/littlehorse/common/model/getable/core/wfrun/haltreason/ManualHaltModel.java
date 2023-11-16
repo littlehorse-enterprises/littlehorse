@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.ManualHalt;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ManualHaltModel extends LHSerializable<ManualHalt> implements SubHaltReason {
 
@@ -24,14 +25,15 @@ public class ManualHaltModel extends LHSerializable<ManualHalt> implements SubHa
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ManualHalt p = (ManualHalt) proto;
         meaningOfLife = p.getMeaningOfLife();
     }
 
-    public static ManualHaltModel fromProto(ManualHalt proto) {
+    public static ManualHaltModel fromProto(ManualHalt proto, ExecutionContext context) {
         ManualHaltModel out = new ManualHaltModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 }

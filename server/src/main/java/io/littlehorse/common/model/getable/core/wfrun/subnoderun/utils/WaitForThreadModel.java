@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private LHStatus threadStatus;
     private int threadRunNumber;
     private boolean alreadyHandled;
+    private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {
         return WaitForThread.class;
@@ -47,7 +49,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
                         new FailureModel(
                                 "Determined threadrunnumber " + threadRunNumber + " is a parent!",
                                 LHConstants.VAR_SUB_ERROR),
-                        waitForThreadNodeRunModel.getDao().getEventTime());
+                        executionContext.currentCommand().getTime());
             }
             potentialParent = potentialParent.getParent();
         }
@@ -55,7 +57,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         this.threadStatus = threadRunModel.getStatus();
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WaitForThread p = (WaitForThread) proto;
         if (p.hasThreadEndTime()) {
             threadEndTime = LHUtil.fromProtoTs(p.getThreadEndTime());

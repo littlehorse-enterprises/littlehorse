@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -19,6 +18,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,20 +28,23 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     public String externalEventDefName;
     public Date eventTime;
     public ExternalEventIdModel externalEventId;
+    private ExecutionContext executionContext;
 
     public Class<ExternalEventRun> getProtoBaseClass() {
         return ExternalEventRun.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventRun p = (ExternalEventRun) proto;
         if (p.hasEventTime()) {
             eventTime = LHUtil.fromProtoTs(p.getEventTime());
         }
         if (p.hasExternalEventId()) {
-            externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
+            externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class, context);
         }
         externalEventDefName = p.getExternalEventDefName();
+        this.executionContext = context;
     }
 
     public ExternalEventRun.Builder toProto() {
@@ -58,9 +61,9 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         return out;
     }
 
-    public static ExternalEventRunModel fromProto(ExternalEventRun p) {
+    public static ExternalEventRunModel fromProto(ExternalEventRun p, ExecutionContext context) {
         ExternalEventRunModel out = new ExternalEventRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -78,11 +81,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         NodeModel node = nodeRunModel.getNode();
         ExternalEventNodeModel eNode = node.externalEventNode;
 
-        ExternalEventModel evt = nodeRunModel
-                .getThreadRun()
-                .wfRun
-                .getDao()
-                .getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
+        ExternalEventModel evt =
+                executionContext.wfService().getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -123,11 +123,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                     throw new LHVarSubError(
                             null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.type + " not INT!");
                 }
-                CoreProcessorDAO dao = nodeRunModel.getThreadRun().wfRun.getDao();
 
                 LHTimer timer = new LHTimer();
-                timer.setTenantId(dao.context().tenantId());
-                timer.topic = nodeRunModel.getThreadRun().wfRun.getDao().getCoreCmdTopic();
                 timer.key = nodeRunModel.wfRunId;
                 timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
 
@@ -141,7 +138,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 cmd.time = timeoutEvt.time;
 
                 timer.payload = cmd.toProto().build().toByteArray();
-                dao.scheduleTimer(timer);
+                executionContext.getTaskManager().scheduleTimer(timer);
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRunModel.fail(

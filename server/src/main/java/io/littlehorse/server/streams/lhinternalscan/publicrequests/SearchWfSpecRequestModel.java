@@ -23,6 +23,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -48,7 +49,8 @@ public class SearchWfSpecRequestModel
         return GetableClassEnum.WF_SPEC;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchWfSpecRequest p = (SearchWfSpecRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -99,9 +101,9 @@ public class SearchWfSpecRequestModel
         return out;
     }
 
-    public static SearchWfSpecRequestModel fromProto(SearchWfSpecRequest proto) {
+    public static SearchWfSpecRequestModel fromProto(SearchWfSpecRequest proto, ExecutionContext context) {
         SearchWfSpecRequestModel out = new SearchWfSpecRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
