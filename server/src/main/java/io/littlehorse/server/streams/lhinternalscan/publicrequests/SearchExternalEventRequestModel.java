@@ -117,7 +117,7 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         List<String> searchAttributes =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =

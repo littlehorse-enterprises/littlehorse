@@ -29,6 +29,8 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
+
+import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,6 +41,7 @@ public class SearchVariableRequestModel
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
     public String wfRunId;
+    private WfService service;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -71,6 +74,7 @@ public class SearchVariableRequestModel
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.service = context.wfService();
     }
 
     public SearchVariableRequest.Builder toProto() {
@@ -112,13 +116,13 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
+    private TagStorageType indexTypeForSearchFromWfSpec() {
         boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
 
         // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
         // that VariableDef, and it's also guaranteed that all of the VariableDef's are the same.
         Integer wfSpecVersion = isPersistentVariableQuery ? null : value.getWfSpecVersion();
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+        WfSpecModel spec = service.getWfSpec(value.getWfSpecName(), wfSpecVersion);
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
@@ -166,9 +170,9 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) {
+    public TagStorageType indexTypeForSearch() {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
-            TagStorageType result = indexTypeForSearchFromWfSpec(readOnlyDao);
+            TagStorageType result = indexTypeForSearchFromWfSpec();
             log.trace("Doing a {} search", result);
             return result;
         });
@@ -180,7 +184,7 @@ public class SearchVariableRequestModel
             case WF_RUN_ID:
                 return LHStore.CORE;
             case VALUE:
-                return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+                return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
             case VARIABLECRITERIA_NOT_SET:
         }
         throw new LHApiException(Status.INVALID_ARGUMENT, "Didn't provide variable criteria");

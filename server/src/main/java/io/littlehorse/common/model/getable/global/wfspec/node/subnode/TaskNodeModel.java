@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -40,7 +39,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public int timeoutSeconds;
 
     private TaskDefModel taskDef;
-    private CoreProcessorDAO dao;
     private WfService wfService;
 
     public TaskDefModel getTaskDef() {
