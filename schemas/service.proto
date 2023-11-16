@@ -464,6 +464,11 @@ message TaskRunList {
   repeated TaskRun results = 1;
 }
 
+message MigrateWfSpecRequest {
+  WfSpecId old_wf_spec = 1;
+  WfSpecVersionMigration migration = 2;
+}
+
 service LHPublicApi {
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
@@ -474,6 +479,7 @@ service LHPublicApi {
   rpc PutWfSpec(PutWfSpecRequest) returns (WfSpec) {}
   rpc GetWfSpec(WfSpecId) returns (WfSpec) {}
   rpc GetLatestWfSpec(GetLatestWfSpecRequest) returns (WfSpec) {}
+  rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
   rpc GetUserTaskDef(UserTaskDefId) returns (UserTaskDef) {}

@@ -27,6 +27,7 @@ const (
 	LHPublicApi_PutWfSpec_FullMethodName               = "/littlehorse.LHPublicApi/PutWfSpec"
 	LHPublicApi_GetWfSpec_FullMethodName               = "/littlehorse.LHPublicApi/GetWfSpec"
 	LHPublicApi_GetLatestWfSpec_FullMethodName         = "/littlehorse.LHPublicApi/GetLatestWfSpec"
+	LHPublicApi_MigrateWfSpec_FullMethodName           = "/littlehorse.LHPublicApi/MigrateWfSpec"
 	LHPublicApi_PutUserTaskDef_FullMethodName          = "/littlehorse.LHPublicApi/PutUserTaskDef"
 	LHPublicApi_GetUserTaskDef_FullMethodName          = "/littlehorse.LHPublicApi/GetUserTaskDef"
 	LHPublicApi_GetLatestUserTaskDef_FullMethodName    = "/littlehorse.LHPublicApi/GetLatestUserTaskDef"
@@ -86,6 +87,7 @@ type LHPublicApiClient interface {
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	GetWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*WfSpec, error)
 	GetLatestWfSpec(ctx context.Context, in *GetLatestWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	GetUserTaskDef(ctx context.Context, in *UserTaskDefId, opts ...grpc.CallOption) (*UserTaskDef, error)
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -199,6 +201,15 @@ func (c *lHPublicApiClient) GetWfSpec(ctx context.Context, in *WfSpecId, opts ..
 func (c *lHPublicApiClient) GetLatestWfSpec(ctx context.Context, in *GetLatestWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
 	out := new(WfSpec)
 	err := c.cc.Invoke(ctx, LHPublicApi_GetLatestWfSpec_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lHPublicApiClient) MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
+	out := new(WfSpec)
+	err := c.cc.Invoke(ctx, LHPublicApi_MigrateWfSpec_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -652,6 +663,7 @@ type LHPublicApiServer interface {
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
 	GetWfSpec(context.Context, *WfSpecId) (*WfSpec, error)
 	GetLatestWfSpec(context.Context, *GetLatestWfSpecRequest) (*WfSpec, error)
+	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
 	GetUserTaskDef(context.Context, *UserTaskDefId) (*UserTaskDef, error)
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
@@ -725,6 +737,9 @@ func (UnimplementedLHPublicApiServer) GetWfSpec(context.Context, *WfSpecId) (*Wf
 }
 func (UnimplementedLHPublicApiServer) GetLatestWfSpec(context.Context, *GetLatestWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestWfSpec not implemented")
+}
+func (UnimplementedLHPublicApiServer) MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MigrateWfSpec not implemented")
 }
 func (UnimplementedLHPublicApiServer) PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskDef not implemented")
@@ -999,6 +1014,24 @@ func _LHPublicApi_GetLatestWfSpec_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LHPublicApiServer).GetLatestWfSpec(ctx, req.(*GetLatestWfSpecRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LHPublicApi_MigrateWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MigrateWfSpecRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).MigrateWfSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_MigrateWfSpec_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).MigrateWfSpec(ctx, req.(*MigrateWfSpecRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1873,6 +1906,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLatestWfSpec",
 			Handler:    _LHPublicApi_GetLatestWfSpec_Handler,
+		},
+		{
+			MethodName: "MigrateWfSpec",
+			Handler:    _LHPublicApi_MigrateWfSpec_Handler,
 		},
 		{
 			MethodName: "PutUserTaskDef",

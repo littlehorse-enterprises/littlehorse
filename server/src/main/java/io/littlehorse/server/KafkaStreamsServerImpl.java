@@ -51,6 +51,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEven
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -95,6 +96,7 @@ import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
+import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.NodeRunIdList;
@@ -380,6 +382,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class);
+        processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
+    }
+
+    @Override
+    public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
+        MigrateWfSpecRequestModel reqModel = LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class);
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
     }
 

@@ -60,6 +60,11 @@ class LHPublicApiStub(object):
                 request_serializer=object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
+        self.MigrateWfSpec = channel.unary_unary(
+                '/littlehorse.LHPublicApi/MigrateWfSpec',
+                request_serializer=service__pb2.MigrateWfSpecRequest.SerializeToString,
+                response_deserializer=wf__spec__pb2.WfSpec.FromString,
+                )
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutUserTaskDef',
                 request_serializer=service__pb2.PutUserTaskDefRequest.SerializeToString,
@@ -332,6 +337,12 @@ class LHPublicApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestWfSpec(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MigrateWfSpec(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -649,6 +660,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
             'GetLatestWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetLatestWfSpec,
                     request_deserializer=object__id__pb2.GetLatestWfSpecRequest.FromString,
+                    response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
+            ),
+            'MigrateWfSpec': grpc.unary_unary_rpc_method_handler(
+                    servicer.MigrateWfSpec,
+                    request_deserializer=service__pb2.MigrateWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
@@ -1006,6 +1022,23 @@ class LHPublicApi(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestWfSpec',
             object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+            wf__spec__pb2.WfSpec.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def MigrateWfSpec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/MigrateWfSpec',
+            service__pb2.MigrateWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

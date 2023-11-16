@@ -17,6 +17,9 @@ message NodeRun {
   int32 thread_run_number = 2;
   int32 position = 3;
 
+  // Optional because old versions do not have the wf_spec_version migration
+  optional int32 wf_spec_version = 4;
+
   LHStatus status = 6;
 
   google.protobuf.Timestamp arrival_time = 7;

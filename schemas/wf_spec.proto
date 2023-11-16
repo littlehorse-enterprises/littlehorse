@@ -20,7 +20,10 @@ message WfSpec {
   map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
 
+  reserved 7;
   optional WorkflowRetentionPolicy retention_policy = 8;
+
+  optional WfSpecVersionMigration migration = 9;
 }
 
 message WorkflowRetentionPolicy {
@@ -31,6 +34,7 @@ message WorkflowRetentionPolicy {
 
     // Future versions can allow different retention based on WfRun status.
   }
+  int32 retention_hours = 7;
 }
 
 message ThreadSpec {
@@ -171,4 +175,27 @@ message SleepNode {
     VariableAssignment timestamp = 2;
     VariableAssignment iso_date = 3;
   }
+}
+
+message WfSpecVersionMigration {
+  int32 new_wf_spec_version = 1;
+  map<string, ThreadSpecMigration> thread_spec_migrations = 2;
+}
+
+message ThreadSpecMigration {
+  string new_thread_spec_name = 1;
+  map<string, NodeMigration> node_migrations = 2;
+
+  // Future work:
+  // - allow changing Variable names
+  // - allow overriding default values for new variables
+  // - any other feature request that comes up in the field
+}
+
+message NodeMigration {
+  string new_node_name = 1;
+
+  // Future work:
+  // - allow one-time task executions during migration
+  // - allow iniatialization of Variables to special values
 }
