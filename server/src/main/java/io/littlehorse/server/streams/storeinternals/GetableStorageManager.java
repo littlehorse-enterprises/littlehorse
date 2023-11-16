@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.storeinternals;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -16,6 +15,8 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.*;
 import java.util.function.Predicate;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -24,7 +25,6 @@ public class GetableStorageManager {
 
     private final CommandModel command;
     private final ModelStore store;
-    private CoreProcessorDAO dao;
     private final TagStorageManager tagStorageManager;
     private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
@@ -33,13 +33,12 @@ public class GetableStorageManager {
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final CoreProcessorDAO dao) {
+            final ExecutionContext executionContext) {
 
         this.store = store;
         this.uncommittedChanges = new TreeMap<>();
         this.command = command;
-        this.dao = dao;
-        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, dao);
+        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
     }
 
     /**

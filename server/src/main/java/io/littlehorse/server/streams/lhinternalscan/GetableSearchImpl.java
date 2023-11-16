@@ -21,7 +21,7 @@ public class GetableSearchImpl implements GetableSearch {
     }
 
     @Override
-    public InternalScan buildInternalScan(ReadOnlyMetadataDAO readOnlyDao, TagStorageType tagStorageType)
+    public InternalScan buildInternalScan(TagStorageType tagStorageType)
             throws LHApiException {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;

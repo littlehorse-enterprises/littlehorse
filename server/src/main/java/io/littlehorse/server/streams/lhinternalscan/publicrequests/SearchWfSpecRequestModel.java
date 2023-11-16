@@ -113,7 +113,7 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         if (taskDefName != null) {
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();

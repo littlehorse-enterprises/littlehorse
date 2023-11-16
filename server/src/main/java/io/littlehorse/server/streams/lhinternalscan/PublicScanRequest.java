@@ -46,10 +46,10 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public InternalScan getInternalSearch() throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
-        InternalScan out = getableSearch.buildInternalScan(readOnlyDao, indexTypeForSearch(readOnlyDao));
+        InternalScan out = getableSearch.buildInternalScan(indexTypeForSearch());
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
 
@@ -98,7 +98,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHApiException if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException;
+    public abstract TagStorageType indexTypeForSearch() throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
 }

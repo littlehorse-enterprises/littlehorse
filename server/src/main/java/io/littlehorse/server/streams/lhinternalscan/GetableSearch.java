@@ -5,6 +5,6 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.TagStorageType;
 
 public interface GetableSearch {
-    InternalScan buildInternalScan(ReadOnlyMetadataDAO readOnlyDao, TagStorageType tagStorageType)
+    InternalScan buildInternalScan(TagStorageType tagStorageType)
             throws LHApiException;
 }

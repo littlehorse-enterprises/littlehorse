@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -35,9 +36,9 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;
 
-    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId) {
+    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
         this.tenantId = tenantId;
-        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore);
+        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore, executionContext);
     }
 
     @Override

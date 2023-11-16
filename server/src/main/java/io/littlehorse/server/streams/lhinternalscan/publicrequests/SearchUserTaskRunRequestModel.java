@@ -153,7 +153,7 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         TagStorageType tagStorageType = tagStorageTypePbByUserId()
                 .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
@@ -185,6 +185,6 @@ public class SearchUserTaskRunRequestModel
     }
 
     public LHStore getStoreType() {
-        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 }

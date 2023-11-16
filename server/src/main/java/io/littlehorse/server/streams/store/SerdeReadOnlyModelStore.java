@@ -6,6 +6,7 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -13,12 +14,14 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
 
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
+    private final ExecutionContext executionContext;
 
-    public SerdeReadOnlyModelStore(final ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
+    public SerdeReadOnlyModelStore(final ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
         if (nativeStore == null) {
             throw new NullPointerException();
         }
         this.nativeStore = nativeStore;
+        this.executionContext = executionContext;
     }
 
     @Override
@@ -28,7 +31,7 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
         if (raw == null) return null;
 
         try {
-            return LHSerializable.fromBytes(raw.get(), cls, null); // TODO eduwer
+            return LHSerializable.fromBytes(raw.get(), cls, executionContext);
         } catch (LHSerdeError exn) {
             throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
         }
