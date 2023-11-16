@@ -10,10 +10,11 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class NodeRun(_message.Message):
-    __slots__ = ["wf_run_id", "thread_run_number", "position", "status", "arrival_time", "end_time", "wf_spec_id", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_threads", "sleep", "user_task", "start_multiple_threads", "failure_handler_ids"]
+    __slots__ = ["wf_run_id", "thread_run_number", "position", "wf_spec_version", "status", "arrival_time", "end_time", "wf_spec_id", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_threads", "sleep", "user_task", "start_multiple_threads", "failure_handler_ids"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
     POSITION_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     ARRIVAL_TIME_FIELD_NUMBER: _ClassVar[int]
     END_TIME_FIELD_NUMBER: _ClassVar[int]
@@ -35,6 +36,7 @@ class NodeRun(_message.Message):
     wf_run_id: str
     thread_run_number: int
     position: int
+    wf_spec_version: int
     status: _common_enums_pb2.LHStatus
     arrival_time: _timestamp_pb2.Timestamp
     end_time: _timestamp_pb2.Timestamp
@@ -53,7 +55,7 @@ class NodeRun(_message.Message):
     user_task: UserTaskNodeRun
     start_multiple_threads: StartMultipleThreadsRun
     failure_handler_ids: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ..., position: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ..., position: _Optional[int] = ..., wf_spec_version: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class TaskNodeRun(_message.Message):
     __slots__ = ["task_run_id"]

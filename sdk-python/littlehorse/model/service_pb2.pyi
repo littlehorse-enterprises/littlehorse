@@ -726,3 +726,11 @@ class TaskRunList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_task_run_pb2.TaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_task_run_pb2.TaskRun, _Mapping]]] = ...) -> None: ...
+
+class MigrateWfSpecRequest(_message.Message):
+    __slots__ = ["old_wf_spec", "migration"]
+    OLD_WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    MIGRATION_FIELD_NUMBER: _ClassVar[int]
+    old_wf_spec: _object_id_pb2.WfSpecId
+    migration: _wf_spec_pb2.WfSpecVersionMigration
+    def __init__(self, old_wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., migration: _Optional[_Union[_wf_spec_pb2.WfSpecVersionMigration, _Mapping]] = ...) -> None: ...

@@ -8,6 +8,27 @@ public interface ThreadRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * If not set, then threadRun is currently on the same version as the parent
+   * wfSpec. Left as optional for compatibility purposes.
+   * </pre>
+   *
+   * <code>optional int32 wf_spec_version = 19;</code>
+   * @return Whether the wfSpecVersion field is set.
+   */
+  boolean hasWfSpecVersion();
+  /**
+   * <pre>
+   * If not set, then threadRun is currently on the same version as the parent
+   * wfSpec. Left as optional for compatibility purposes.
+   * </pre>
+   *
+   * <code>optional int32 wf_spec_version = 19;</code>
+   * @return The wfSpecVersion.
+   */
+  int getWfSpecVersion();
+
+  /**
    * <code>int32 number = 2;</code>
    * @return The number.
    */

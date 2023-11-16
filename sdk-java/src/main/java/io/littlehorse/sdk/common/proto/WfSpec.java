@@ -292,6 +292,32 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
+  public static final int MIGRATION_FIELD_NUMBER = 9;
+  private io.littlehorse.sdk.common.proto.WfSpecVersionMigration migration_;
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * @return Whether the migration field is set.
+   */
+  @java.lang.Override
+  public boolean hasMigration() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * @return The migration.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration() {
+    return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
+  }
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder() {
+    return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -329,6 +355,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(8, getRetentionPolicy());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(9, getMigration());
     }
     getUnknownFields().writeTo(output);
   }
@@ -371,6 +400,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getRetentionPolicy());
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, getMigration());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -405,6 +438,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
+    if (hasMigration() != other.hasMigration()) return false;
+    if (hasMigration()) {
+      if (!getMigration()
+          .equals(other.getMigration())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -435,6 +473,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (hasRetentionPolicy()) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
+    }
+    if (hasMigration()) {
+      hash = (37 * hash) + MIGRATION_FIELD_NUMBER;
+      hash = (53 * hash) + getMigration().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -590,6 +632,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               .alwaysUseFieldBuilders) {
         getCreatedAtFieldBuilder();
         getRetentionPolicyFieldBuilder();
+        getMigrationFieldBuilder();
       }
     }
     @java.lang.Override
@@ -610,6 +653,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (retentionPolicyBuilder_ != null) {
         retentionPolicyBuilder_.dispose();
         retentionPolicyBuilder_ = null;
+      }
+      migration_ = null;
+      if (migrationBuilder_ != null) {
+        migrationBuilder_.dispose();
+        migrationBuilder_ = null;
       }
       return this;
     }
@@ -671,6 +719,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.migration_ = migrationBuilder_ == null
+            ? migration_
+            : migrationBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -744,6 +798,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
+      if (other.hasMigration()) {
+        mergeMigration(other.getMigration());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -813,6 +870,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000040;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  getMigrationFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1422,6 +1486,125 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         retentionPolicy_ = null;
       }
       return retentionPolicyBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfSpecVersionMigration migration_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder> migrationBuilder_;
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * @return Whether the migration field is set.
+     */
+    public boolean hasMigration() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * @return The migration.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration() {
+      if (migrationBuilder_ == null) {
+        return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
+      } else {
+        return migrationBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public Builder setMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
+      if (migrationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        migration_ = value;
+      } else {
+        migrationBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public Builder setMigration(
+        io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder builderForValue) {
+      if (migrationBuilder_ == null) {
+        migration_ = builderForValue.build();
+      } else {
+        migrationBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public Builder mergeMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
+      if (migrationBuilder_ == null) {
+        if (((bitField0_ & 0x00000080) != 0) &&
+          migration_ != null &&
+          migration_ != io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance()) {
+          getMigrationBuilder().mergeFrom(value);
+        } else {
+          migration_ = value;
+        }
+      } else {
+        migrationBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public Builder clearMigration() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      migration_ = null;
+      if (migrationBuilder_ != null) {
+        migrationBuilder_.dispose();
+        migrationBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder getMigrationBuilder() {
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return getMigrationFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder() {
+      if (migrationBuilder_ != null) {
+        return migrationBuilder_.getMessageOrBuilder();
+      } else {
+        return migration_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder> 
+        getMigrationFieldBuilder() {
+      if (migrationBuilder_ == null) {
+        migrationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder>(
+                getMigration(),
+                getParentForChildren(),
+                isClean());
+        migration_ = null;
+      }
+      return migrationBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

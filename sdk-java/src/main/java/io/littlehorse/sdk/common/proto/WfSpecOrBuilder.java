@@ -111,4 +111,19 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
+
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * @return Whether the migration field is set.
+   */
+  boolean hasMigration();
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * @return The migration.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration();
+  /**
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();
 }

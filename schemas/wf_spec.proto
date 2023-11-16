@@ -184,8 +184,18 @@ message WfSpecVersionMigration {
 
 message ThreadSpecMigration {
   string new_thread_spec_name = 1;
+  map<string, NodeMigration> node_migrations = 2;
+
   // Future work:
   // - allow changing Variable names
   // - allow overriding default values for new variables
   // - any other feature request that comes up in the field
+}
+
+message NodeMigration {
+  string new_node_name = 1;
+
+  // Future work:
+  // - allow one-time task executions during migration
+  // - allow iniatialization of Variables to special values
 }

@@ -51,6 +51,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public String entrypointThreadName;
     public LHStatus status;
+    private WfSpecVersionMigrationModel migration;
 
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec;
@@ -125,6 +126,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
 
+        if (migration != null) {
+            out.setMigration(migration.toProto());
+        }
+
         return out;
     }
 
@@ -146,6 +151,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
         if (proto.hasRetentionPolicy()) {
             retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
+        }
+
+        if (proto.hasMigration()) {
+            migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class);
         }
     }
 

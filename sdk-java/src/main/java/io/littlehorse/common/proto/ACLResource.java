@@ -155,3 +155,4 @@ public enum ACLResource
 
   // @@protoc_insertion_point(enum_scope:littlehorse.ACLResource)
 }
+

@@ -32,6 +32,25 @@ public interface NodeRunOrBuilder extends
   int getPosition();
 
   /**
+   * <pre>
+   * Optional because old versions do not have the wf_spec_version migration
+   * </pre>
+   *
+   * <code>optional int32 wf_spec_version = 4;</code>
+   * @return Whether the wfSpecVersion field is set.
+   */
+  boolean hasWfSpecVersion();
+  /**
+   * <pre>
+   * Optional because old versions do not have the wf_spec_version migration
+   * </pre>
+   *
+   * <code>optional int32 wf_spec_version = 4;</code>
+   * @return The wfSpecVersion.
+   */
+  int getWfSpecVersion();
+
+  /**
    * <code>.littlehorse.LHStatus status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */

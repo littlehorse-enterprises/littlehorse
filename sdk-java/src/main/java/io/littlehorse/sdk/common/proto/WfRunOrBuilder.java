@@ -160,4 +160,33 @@ public interface WfRunOrBuilder extends
    * @return The greatestThreadrunNumber.
    */
   int getGreatestThreadrunNumber();
+
+  /**
+   * <pre>
+   * Keeps track of old versions of the WfSpec for this WfRun
+   * </pre>
+   *
+   * <code>repeated int32 old_wf_spec_versions = 12;</code>
+   * @return A list containing the oldWfSpecVersions.
+   */
+  java.util.List<java.lang.Integer> getOldWfSpecVersionsList();
+  /**
+   * <pre>
+   * Keeps track of old versions of the WfSpec for this WfRun
+   * </pre>
+   *
+   * <code>repeated int32 old_wf_spec_versions = 12;</code>
+   * @return The count of oldWfSpecVersions.
+   */
+  int getOldWfSpecVersionsCount();
+  /**
+   * <pre>
+   * Keeps track of old versions of the WfSpec for this WfRun
+   * </pre>
+   *
+   * <code>repeated int32 old_wf_spec_versions = 12;</code>
+   * @param index The index of the element to return.
+   * @return The oldWfSpecVersions at the given index.
+   */
+  int getOldWfSpecVersions(int index);
 }
