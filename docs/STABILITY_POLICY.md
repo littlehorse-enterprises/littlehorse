@@ -6,47 +6,54 @@ However, we also note that LittleHorse is a young project, and we are still lear
 
 This document defines the policy for LittleHorse API Stability, which is based on [Semantic Versioning](https://semver.org).
 
-## Semantic Versioning Policy
+## Policy After `1.0.0`
 
-LittleHorse follows the rules of [Semantic Versioning](https://semver.org). According to Semanatic Versioning, any pre-`1.0.0` project may define their own compatibility policy, but rules for any release after `1.0.0` are well-documented and well-defined.
+After releasing `1.0.0`, we will strictly follow the SemVer rules. As a refresher, any project **in the post-`1.0.0` phase** must adhere to the following rules:
 
-As a refresher, the rules for a project **after the `1.0.0` release** are:
+* A patch release increments `Z` (`x.y.Z`) and is for bug fixes only, with no API changes.
+* A minor release increments `Y` (`x.Y.z`) and introduces new features in a backwards-compatible manner.
+* A major release increments `X` (`X.y.z`) and must be used if any backwards-incompatible changes are made.
 
-* A patch release `Z` (`x.y.Z`) is for backwards-compatible bug fixes only, with no API changes.
-* A minor release `Y` (`x.Y.z`) introduces new features in a backwards-compatible manner.
-* A major release `X` (`X.y.z`) must be incremented if any backwards-incompatible changes are made.
+Our Public API will be determined by the content of our [documentation](https://littlehorse.dev/docs/overview) prefixed by the `/v1_0` for version `1.0.x`, or `/v2_4` for version `2.4.x`, for example. Before releasing `1.0.0`, our documentation will not be versioned.
 
 _After we release `1.0.0`,_ we will provide 12 months of patch support for every minor version. This is equivalent to other major projects such as Kubernetes and Apache Kafka.
 
-### Policy Prior to `1.0.0`
+## Policy Prior to `1.0.0`
 
-Semantic Versioning allows projects in the pre-`1.0.0` phase to define their own compatibility rules. For LittleHorse, they are as follows:
+Semantic Versioning says that for a project in the pre-`1.0.0` phase, "anything may change at anytime." It is intended for projects in the early development stages. At LittleHorse, we are no longer in initial development, but we have many new features that we are still trying out and learning about as we get feedback from our users.
 
-* A patch release `Z` (`0.y.Z`) is for backwards-compatible improvements and bug-fixes.
+We wish to clearly communicate expectations about what might change and what is stable, and we also wish to be able to quickly add new features and get feedback from our users. As such, we will adhere to the following guidelines prior to `1.0.0`:
+
+* Features will be classified by their maturity level: `EXPERIMENTAL`, `BETA`, or `STABLE`.
+* A patch release `Z` (`0.y.Z`) is for backwards-compatible improvements or bug-fixes without any breaking changes.
 * A minor release `Y` (`0.Y.z`) allows for breaking changes to `BETA` or `EXPERIMENTAL` features.
-* No breaking changes to `STABLE` features are allowed without a deprecation notice of 6 months and a viable migration path.
+* No breaking changes to `STABLE` features are allowed without a deprecation notice of 12 months and a viable migration path.
 
-## Maturity Levels
+### Maturity Levels
 
-We classify each feature in LittleHorse according to the following maturity levels.
+We will use the [Stability Status](./STABILITY_STATUS.md) document to keep track of the maturity level of every feature.
 
-### `EXPERIMENTAL`
+#### `EXPERIMENTAL`
 
 An `EXPERIMENTAL` feature is, quite simply, experimental. It is under active development with no promises made about API stability, feature completion, or lack of bugs. We also reserve the right to remove an `EXPERIMENTAL` feature without replacement in a future release.
 
-An `EXPERIMENTAL` feature should not be used in a production system, but the LittleHorse Council appreciates and requests feedback from adventurous testers.
+An `EXPERIMENTAL` feature should not be used in a production system.
 
-### `BETA`
+#### `BETA`
 
 A `BETA` feature has proven its value and passed through the initial development phase. We do not plan to make any breaking changes to the API's presented by this feature. The `BETA` feature has unit tests, and if possible, automated end-to-end tests in our pipeline. The `BETA` feature is supported by all `STABLE` sdk's (as of this writing: Java).
 
 However, the `BETA` feature is still new and as such there might be _unforeseen_ breaking changes as we learn more about how the feature is used and what implications it has for the rest of the system. Additionally, the feature may lack support in some `BETA` sdk's.
 
-It is generally ok to use a `BETA` feature in production; if you do, please give us heads up on our [Community Slack](https://launchpass.com/littlehorsecommunity) and we will do our best to ensure that you have a good experience with the feature. In the unlikely and unfortunate event that we do need to make a breaking change, we will work with you to provide a minimally painful migration experience.
+It is generally okay to use a `BETA` feature in production; if you do, please give us heads up on our [Community Slack](https://launchpass.com/littlehorsecommunity) and we will do our best to ensure that you have a good experience with the feature. In the unlikely event that we do need to make a breaking change, we will work with you to provide a minimally painful migration experience.
 
-### `STABLE`
+**We take breaking changes to `BETA` features very seriously and use a case-by-case approach with input from users in the community.**
 
-A `STABLE` feature has been proven in battle and the LittleHorse Council and LittleHorse Community believe that the API is not going to change. To qualify for the `STABLE` label, a feature must have been `BETA` for at least six months without a breaking change. All behaviors promised in our documentation must have a corresponding test (unit or end-to-end), and the feature must be supported by all `BETA` or `STABLE` sdk's (as of this writing: Java, Go, Python).
+#### `STABLE`
+
+A `STABLE` feature has been stable for some time and the LittleHorse Council believes that the API is not going to undergo breaking changes anytime soon. All behaviors promised in our documentation must have a corresponding test (unit or end-to-end), and the feature must be supported by all `BETA` or `STABLE` sdk's (as of this writing: Java, Go, Python).
+
+A `STABLE` feature can be used in production without any worry.
 
 ## Road to `1.0.0`
 
@@ -92,8 +99,4 @@ There are currently some features in the `EXPERIMENTAL` or `BETA` phases which w
 
 ### Timeline
 
-The earliest we can release `1.0.0` is in July of 2024.
-
-We plan to move OAuth 2.0, Multi-Tenancy, and ACL's to `BETA` by EOY 2023. Our policy then requires a 6-month stabilization period before moving those features into `STABLE`, which is a requirement for the `1.0.0` release.
-
-A more realistic expectation for the timeline is October 2024, because software always takes more time than you think.
+We hope to release `1.0.0` sometime between March 2024 and November 2024.
