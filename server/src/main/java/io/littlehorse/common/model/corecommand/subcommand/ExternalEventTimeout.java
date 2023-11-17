@@ -9,6 +9,8 @@ import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,7 +47,7 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
 
         if (wfRunModel == null) {

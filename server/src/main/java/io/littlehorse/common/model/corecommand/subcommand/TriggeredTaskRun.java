@@ -27,6 +27,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +70,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         String wfRunId = source.getWfRunId();
 
         log.info("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);

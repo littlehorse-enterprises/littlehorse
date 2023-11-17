@@ -56,14 +56,13 @@ public class RequestAuthorizerTest {
     private final KafkaStreams kafkaStreams = mock();
     private final MetadataCache metadataCache = new MetadataCache();
     private final AuthorizationContext context =
-            new AuthorizationContextImpl("my-principal-id", ModelStore.DEFAULT_TENANT, List.of());
+            new AuthorizationContextImpl("my-principal-id", ModelStore.DEFAULT_TENANT, List.of(), false);
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-    private ModelStore modelStore = ModelStore.defaultStore(nativeMetadataStore);
+    private ModelStore modelStore = ModelStore.defaultStore(nativeMetadataStore, mock());
     private final MetadataProcessorDAO metadataDao = new MetadataProcessorDAOImpl(modelStore, metadataCache, context);
-    private final ServerDAOFactory daoFactory = new ServerDAOFactory(kafkaStreams, metadataCache);
     private final RequestAuthorizer requestAuthorizer = new RequestAuthorizer(server, daoFactory);
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata mockMetadata = mock();
@@ -231,7 +230,7 @@ public class RequestAuthorizerTest {
     }
 
     private MetadataProcessorDAO metadataDao() {
-        ModelStore store = ModelStore.defaultStore(nativeMetadataStore);
+        ModelStore store = ModelStore.defaultStore(nativeMetadataStore, mock());
         return new MetadataProcessorDAOImpl(store, metadataCache, context);
     }
 

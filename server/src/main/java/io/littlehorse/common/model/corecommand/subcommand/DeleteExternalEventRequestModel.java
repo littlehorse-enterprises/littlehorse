@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +40,7 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
         return true;
     }
 
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ExternalEventModel externalEvent = executionContext.getStorageManager().get(id);
         if (!externalEvent.claimed) {
             executionContext.getStorageManager().delete(id);

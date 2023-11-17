@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.DeadlineReassignUserTask;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,7 +58,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(source);
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");

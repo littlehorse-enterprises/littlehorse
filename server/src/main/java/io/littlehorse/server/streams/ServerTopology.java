@@ -8,6 +8,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
@@ -83,7 +84,7 @@ public class ServerTopology {
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
     public static Topology initCoreTopology(
-            LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
+            LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache, TaskQueueManager globalTaskQueueManager) {
         Topology topo = new Topology();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;

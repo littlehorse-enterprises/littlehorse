@@ -8,6 +8,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
 
@@ -32,7 +33,7 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         executionContext.getStorageManager().delete(wfRunId);
         return Empty.getDefaultInstance();
     }

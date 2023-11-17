@@ -28,7 +28,7 @@ import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Set;
@@ -50,7 +50,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private final LHServerConfig config;
     private boolean partitionIsClaimed;
 
-    private GetableStorageManager storageManager;
+    private GetableManager storageManager;
 
     private final ModelStore coreStore;
 
@@ -75,7 +75,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     @Override
     public void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore, Headers metadataHeaders) {
         this.command = command;
-        this.storageManager = new GetableStorageManager(this.coreStore, ctx, config, command, this);
+        this.storageManager = new GetableManager(this.coreStore, ctx, config, command, this);
     }
 
     @Override

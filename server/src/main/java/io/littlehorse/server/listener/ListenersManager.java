@@ -1,12 +1,18 @@
 package io.littlehorse.server.listener;
 
 import io.grpc.BindableService;
+import io.grpc.Context;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ServerDAOFactory;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 public class ListenersManager implements Closeable {
 
@@ -17,10 +23,12 @@ public class ListenersManager implements Closeable {
             BindableService service,
             Executor threadpool,
             MeterRegistry meter,
-            ServerDAOFactory factory) {
+            MetadataCache metadataCache,
+            Context.Key<RequestExecutionContext> executionContextKey,
+            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
         this.servers = config.getListeners().stream()
                 .map(serverListenerConfig ->
-                        new ServerListener(serverListenerConfig, threadpool, service, meter, factory))
+                        new ServerListener(serverListenerConfig, threadpool, service, meter, metadataCache, executionContextKey, storeProvider))
                 .toList();
     }
 

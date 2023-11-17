@@ -26,7 +26,6 @@ public class TagStorageManager {
     private final ModelStore lhStore;
     private final ProcessorContext<String, CommandProcessorOutput> context;
     private final LHServerConfig lhConfig;
-    private final ExecutionContext executionContext;
     private final AuthorizationContext authContext;
 
     public TagStorageManager(ModelStore lhStore, ProcessorContext<String, CommandProcessorOutput> context,
@@ -34,7 +33,6 @@ public class TagStorageManager {
         this.lhStore = lhStore;
         this.context = context;
         this.lhConfig = lhConfig;
-        this.executionContext = executionContext;
         this.authContext = executionContext.authorization();
     }
 

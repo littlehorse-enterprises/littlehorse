@@ -16,7 +16,9 @@ import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;
@@ -45,12 +47,12 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     }
 
     @Override
-    public RegisterTaskWorkerResponse process(ExecutionContext executionContext, LHServerConfig config) {
+    public RegisterTaskWorkerResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         log.debug("Processing a heartbeat");
-
+        GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup =
-                executionContext.getStorageManager().get(new TaskWorkerGroupIdModel(taskDefName));
+                getableManager.get(new TaskWorkerGroupIdModel(taskDefName));
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
@@ -90,7 +92,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         taskWorker.latestHeartbeat = new Date();
 
         // Save the data
-        executionContext.getStorageManager().put(taskWorkerGroup);
+        getableManager.put(taskWorkerGroup);
 
         // Prepare the response with the assigned host for this specific task worker
         // (taskWorker.hosts)

@@ -15,6 +15,8 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +72,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     }
 
     @Override
-    public PollTaskResponse process(ExecutionContext executionContext, LHServerConfig config) {
+    public PollTaskResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         TaskRunModel taskRun = executionContext.getStorageManager().get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);

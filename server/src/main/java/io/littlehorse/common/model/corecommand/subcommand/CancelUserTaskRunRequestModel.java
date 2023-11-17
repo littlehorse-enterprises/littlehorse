@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
 public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTaskRunRequest> {
 
@@ -35,7 +36,7 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(userTaskRunId);
         if (userTaskRun == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");

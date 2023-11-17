@@ -3,6 +3,7 @@ package io.littlehorse.server;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -10,8 +11,6 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
-import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -193,6 +192,8 @@ import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
@@ -206,7 +207,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
@@ -221,15 +226,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private ListenersManager listenerManager;
     private HealthService healthService;
+    private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
 
-    private final ServerDAOFactory serverDAOFactory;
+    private static final boolean ENABLE_STALE_STORES = true;
 
-    private ReadOnlyMetadataDAO metadataDao() {
-        return serverDAOFactory.getMetadataDao();
-    }
-
-    private ExecutionContext requestContext() {
-        return null;
+    private RequestExecutionContext requestContext() {
+        return contextKey.get();
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
@@ -237,7 +239,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache),
+                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 // Core topology must be EOS
                 config.getStreamsConfig("core", true));
         this.timerStreams = new KafkaStreams(
@@ -251,13 +253,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
-        this.serverDAOFactory = new ServerDAOFactory(coreStreams, metadataCache);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
-                config, this, networkThreadpool, healthService.getMeterRegistry(), serverDAOFactory);
+                config, this, networkThreadpool, healthService.getMeterRegistry(), metadataCache, contextKey,
+                this::readOnlyStore);
 
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, serverDAOFactory);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey);
     }
 
     public String getInstanceId() {
@@ -267,7 +269,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = getServiceFromContext().getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -285,7 +287,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = getServiceFromContext().getWfSpec(req.getName(), null);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -296,7 +298,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), null);
+        UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), null);
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName())));
         } else {
@@ -307,7 +309,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), req.getVersion());
+        UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
             ctx.onError(new LHApiException(
                     Status.NOT_FOUND,
@@ -320,7 +322,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
-        TaskDefModel td = metadataDao().getTaskDef(req.getName());
+        TaskDefModel td = getServiceFromContext().getTaskDef(req.getName());
         if (td == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
         } else {
@@ -331,7 +333,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
-        ExternalEventDefModel eed = metadataDao().getExternalEventDef(req.getName());
+        ExternalEventDefModel eed = getServiceFromContext().getExternalEventDef(req.getName());
         if (eed == null) {
             ctx.onError(
                     new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
@@ -722,9 +724,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
-        AuthorizationContext authorizationContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        RequestExecutionContext requestContext = requestContext();
+        AuthorizationContext authorizationContext = requestContext.authorization();
         String principalId = authorizationContext.principalId();
-        PrincipalModel principal = metadataDao().getPrincipal(principalId);
+        PrincipalModel principal = requestContext.wfService().getPrincipal(principalId);
         responseObserver.onNext(principal.toProto().build());
         responseObserver.onCompleted();
     }
@@ -757,7 +760,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-        AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        AuthorizationContext authContext = requestContext().authorization();
         String tenant;
         String principalId;
 
@@ -780,6 +783,25 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                         command.getTopic(config),
                         callback,
                         commandMetadata.toArray());
+    }
+
+    private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
+        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
+                StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
+
+        if (ENABLE_STALE_STORES) {
+            params = params.enableStaleStores();
+        }
+
+        if (specificPartition != null) {
+            params = params.withPartition(specificPartition);
+        }
+
+        return coreStreams.store(params);
+    }
+
+    private WfService getServiceFromContext(){
+        return requestContext().wfService();
     }
 
     private void productionCallback(

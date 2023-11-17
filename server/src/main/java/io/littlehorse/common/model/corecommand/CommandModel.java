@@ -26,6 +26,8 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -315,7 +317,7 @@ public class CommandModel extends AbstractCommand<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(ExecutionContext executionContext, LHServerConfig config) {
+    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         return getSubCommand().process(executionContext, config);
     }
 }

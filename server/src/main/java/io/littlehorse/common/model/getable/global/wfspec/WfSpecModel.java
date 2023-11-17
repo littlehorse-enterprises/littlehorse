@@ -9,6 +9,7 @@ import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -23,6 +24,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -302,24 +306,25 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public WfRunModel startNewRun(RunWfRequestModel evt) {
+        ProcessorExecutionContext processorExecutionContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CommandModel currentCommand = processorExecutionContext.currentCommand();
+        GetableManager getableManager = processorExecutionContext.getableManager();
         WfRunModel out = new WfRunModel();
         out.id = evt.id;
 
         out.setWfSpec(this);
         out.wfSpecVersion = version;
         out.wfSpecName = name;
-        out.startTime = executionContext.currentCommand().getTime();
+        out.startTime = currentCommand.getTime();
         out.status = LHStatus.RUNNING;
 
         out.startThread(
                 entrypointThreadName,
-                executionContext.currentCommand().getTime(),
+                currentCommand.getTime(),
                 null,
                 evt.variables,
                 ThreadType.ENTRYPOINT);
-
-        executionContext.getStorageManager().put(out);
-
+        getableManager.put(out);
         return out;
     }
 

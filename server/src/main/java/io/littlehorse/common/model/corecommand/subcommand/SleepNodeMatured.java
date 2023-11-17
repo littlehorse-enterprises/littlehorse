@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,7 +53,7 @@ public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");

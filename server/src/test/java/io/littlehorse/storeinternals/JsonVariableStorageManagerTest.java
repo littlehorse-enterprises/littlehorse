@@ -13,7 +13,7 @@ import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.nio.file.Paths;
@@ -51,7 +51,7 @@ public class JsonVariableStorageManagerTest {
     private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager getableStorageManager;
+    private GetableManager getableManager;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -78,13 +78,13 @@ public class JsonVariableStorageManagerTest {
         variableValue.setType(VariableType.JSON_OBJ);
         variableValue.setJsonObjVal(map);
         variable.setValue(variableValue);
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
     }
 
     private void initializeDependencies() {
         storeWrapper = ModelStore.instanceFor(store, tenantId);
-        getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
+        getableManager = new GetableManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

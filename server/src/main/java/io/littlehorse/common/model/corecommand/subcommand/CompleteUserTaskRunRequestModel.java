@@ -16,6 +16,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,8 +55,8 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         }
     }
 
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
-        UserTaskRunModel utr = executionContext.getStorageManager().get(userTaskRunId);
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");
         }

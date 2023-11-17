@@ -9,6 +9,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
 public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> {
 
@@ -37,7 +38,7 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided WfRun");

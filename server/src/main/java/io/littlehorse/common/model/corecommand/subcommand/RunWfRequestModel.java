@@ -15,6 +15,8 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Setter;
 
 @Setter
@@ -67,7 +69,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     }
 
     @Override
-    public WfRun process(ExecutionContext executionContext, LHServerConfig config) {
+    public WfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfSpecModel spec = executionContext.wfService().getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");

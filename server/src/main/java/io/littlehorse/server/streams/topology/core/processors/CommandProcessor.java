@@ -12,12 +12,15 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -32,14 +35,16 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     private LHServerConfig config;
     private KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
+    private final TaskQueueManager globalTaskQueueManager;
 
     private KeyValueStore<String, Bytes> nativeStore;
     private boolean partitionIsClaimed;
 
-    public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
+    public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache, TaskQueueManager globalTaskQueueManager) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
+        this.globalTaskQueueManager = globalTaskQueueManager;
     }
 
     @Override
@@ -64,7 +69,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void processHelper(final Record<String, CommandModel> commandRecord) {
         CommandModel command = commandRecord.value();
-        ExecutionContext executionContext = buildExecutionContext(commandRecord);
+        ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceId(),
@@ -108,8 +113,10 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         }
     }
 
-    private ExecutionContext buildExecutionContext(Record<String, CommandModel> commandRecord) {
-        return null;
+    private ProcessorExecutionContext buildExecutionContext(Record<String, CommandModel> commandRecord) {
+        Headers metadataHeaders = commandRecord.headers();
+        CommandModel commandToProcess = commandRecord.value();
+        return new ProcessorExecutionContext(commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
     }
 
     private boolean isUserError(Exception exn) {
@@ -143,7 +150,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     }
 
     public void onPartitionClaimed() {
-        ModelStore coreDefaultStore = ModelStore.defaultStore(this.nativeStore);
+        ModelStore coreDefaultStore = ModelStore.defaultStore(this.nativeStore, null);
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }

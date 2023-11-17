@@ -41,7 +41,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadType type;
 
-    private GetableStorageManager storageManager;
+    private GetableManager storageManager;
     private ExecutionContext executionContext;
 
     public ThreadRunModel() {

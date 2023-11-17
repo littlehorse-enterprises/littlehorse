@@ -31,4 +31,9 @@ public interface AuthorizationContext {
      * @return might be empty
      */
     Collection<ServerACLModel> acls();
+
+    /**
+     * @return True if the principal is admin
+     */
+    boolean isAdmin();
 }

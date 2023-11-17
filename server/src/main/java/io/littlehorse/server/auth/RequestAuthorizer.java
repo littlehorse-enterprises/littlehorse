@@ -9,38 +9,42 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.AuthorizationContextImpl;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
-import io.littlehorse.common.dao.ServerDAOFactory;
-import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.server.Authorize;
+import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
-    private ServerDAOFactory daoFactory;
+    BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider;
 
     private final AclVerifier aclVerifier;
-    private ReadOnlyMetadataDAO dao;
+    private final Context.Key<RequestExecutionContext> executionContextKey;
+    private final MetadataCache metadataCache;
 
-    public static Map<String, String> principalForThread = new ConcurrentHashMap<>();
-
-    public RequestAuthorizer(BindableService service, ServerDAOFactory factory) {
-        this.daoFactory = factory;
+    public RequestAuthorizer(BindableService service,
+                             Context.Key<RequestExecutionContext> executionContextKey,
+                             MetadataCache metadataCache,
+                             BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
         this.aclVerifier = new AclVerifier(service);
+        this.executionContextKey = executionContextKey;
+        this.storeProvider = storeProvider;
+        this.metadataCache = metadataCache;
     }
 
     @Override
@@ -50,66 +54,24 @@ public class RequestAuthorizer implements ServerAuthorizer {
         String tenantId = headers.get(TENANT_ID);
         Context context = Context.current();
         try {
-            PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
-            principalForThread.put(
-                    resolvedPrincipal.getId(), Thread.currentThread().getName());
-            validateAcl(call.getMethodDescriptor(), resolvedPrincipal, tenantId);
-            AuthorizationContext authContext = contextFor(resolvedPrincipal, tenantId);
-            context = context.withValue(AUTH_CONTEXT, authContext);
+            RequestExecutionContext requestContext = contextFor(clientId, tenantId);
+            validateAcl(call.getMethodDescriptor(), requestContext.authorization());
+            context = context.withValue(executionContextKey, requestContext);
         } catch (PermissionDeniedException ex) {
             call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
         }
         return Contexts.interceptCall(context, call, headers, next);
     }
 
-    private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
-        if (clientId != null && tenantId != null) {
-            PrincipalModel storedPrincipal = dao().get(new PrincipalIdModel(clientId));
-            if (storedPrincipal == null) {
-                return dao().getPrincipal(null);
-            }
-            return storedPrincipal;
-        } else if (clientId != null) {
-            PrincipalModel storedPrincipal = dao().get(new PrincipalIdModel(clientId));
-            if (storedPrincipal == null) {
-                return dao().getPrincipal(null);
-            }
-            return storedPrincipal;
-        } else {
-            return dao().getPrincipal(null);
+    private void validateAcl(MethodDescriptor<?, ?> method, AuthorizationContext authContext) {
+        if (!authContext.isAdmin()) {
+            Collection<ServerACLModel> perTenantAcls = authContext.acls();
+            aclVerifier.verify(method, perTenantAcls);
         }
     }
 
-    private void validateAcl(MethodDescriptor<?, ?> method, PrincipalModel principalToValidate, String tenantId) {
-        if (!principalToValidate.isAdmin()) {
-            ServerACLsModel perTenantAcls =
-                    principalToValidate.getPerTenantAcls().get(tenantId);
-            if (perTenantAcls != null) {
-                aclVerifier.verify(
-                        method,
-                        principalToValidate.getPerTenantAcls().get(tenantId).getAcls());
-            } else {
-                aclVerifier.verify(method, principalToValidate.getGlobalAcls().getAcls());
-            }
-        }
-    }
-
-    private AuthorizationContext contextFor(PrincipalModel resolvedPrincipal, String tenantId) {
-        if (tenantId == null) {
-            tenantId = LHConstants.DEFAULT_TENANT;
-        }
-        List<ServerACLModel> currentAcls;
-        if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId)) {
-            currentAcls = resolvedPrincipal.getPerTenantAcls().get(tenantId).getAcls();
-        } else {
-            currentAcls = resolvedPrincipal.getGlobalAcls().getAcls();
-        }
-        return new AuthorizationContextImpl(resolvedPrincipal.getId(), tenantId, currentAcls);
-    }
-
-    private ReadOnlyMetadataDAO dao() {
-        dao = dao != null ? dao : daoFactory.getDefaultMetadataDao();
-        return dao;
+    private RequestExecutionContext contextFor(String clientId, String tenantId) {
+        return new RequestExecutionContext(clientId, tenantId, storeProvider.apply(null, ServerTopology.METADATA_STORE),  metadataCache);
     }
 
     private static class AclVerifier {
@@ -147,7 +109,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private void verify(MethodDescriptor<?, ?> serviceMethod, List<ServerACLModel> acls) {
+        private void verify(MethodDescriptor<?, ?> serviceMethod, Collection<ServerACLModel> acls) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
             Set<ACLAction> clientAllowedActions = new HashSet<>();

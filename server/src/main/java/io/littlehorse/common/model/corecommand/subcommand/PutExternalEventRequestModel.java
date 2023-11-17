@@ -20,6 +20,8 @@ import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import org.apache.commons.lang3.time.DateUtils;
 
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
@@ -57,7 +59,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     }
 
     @Override
-    public ExternalEvent process(ExecutionContext executionContext, LHServerConfig config) {
+    public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ExternalEventDefModel eed = executionContext.wfService().getExternalEventDef(externalEventDefName);
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);
@@ -73,7 +75,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         evt.threadRunNumber = threadRunNumber;
         evt.claimed = false;
 
-        executionContext.getStorageManager().put(evt);
+        executionContext.getableManager().put(evt);
 
         if (eed.retentionHours != LHConstants.INFINITE_RETENTION) {
             LHTimer timer = new LHTimer();
@@ -105,8 +107,8 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             } else {
                 wfRunModel.processExternalEvent(evt);
             }
-            executionContext.getStorageManager().put(wfRunModel);
-            executionContext.getStorageManager().put(evt);
+            executionContext.getableManager().put(wfRunModel);
+            executionContext.getableManager().put(evt);
         } else {
             // it's a pre-emptive event.
         }

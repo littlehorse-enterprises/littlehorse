@@ -13,6 +13,8 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -56,13 +58,13 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
     }
 
     @Override
-    public Empty process(ExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
 
         if (userGroup == null && userId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "must provide either UserGroup or userId");
         }
 
-        UserTaskRunModel utr = executionContext.getStorageManager().get(userTaskRunId);
+        UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }

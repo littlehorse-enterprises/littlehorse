@@ -16,7 +16,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Crea
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
@@ -54,7 +54,7 @@ public class UserTaskRunModelStorageManagerTest {
     private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager getableStorageManager;
+    private GetableManager getableManager;
     private String wfRunId = "1234567890";
 
     @Mock
@@ -73,16 +73,16 @@ public class UserTaskRunModelStorageManagerTest {
             userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(
                     new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
-            getableStorageManager.put(userTaskRun);
-            getableStorageManager.commit();
+            getableManager.put(userTaskRun);
+            getableManager.commit();
         }
     }
 
     private void initializeDependencies() {
         when(mockCoreDao.context()).thenReturn(testContext);
         localStoreWrapper = ModelStore.instanceFor(store, tenantId);
-        getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+        getableManager =
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
