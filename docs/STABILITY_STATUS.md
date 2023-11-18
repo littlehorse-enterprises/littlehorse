@@ -8,6 +8,8 @@ The Java SDK itself is considered `STABLE`. This means that any feature expresse
 
 The Python and Go SDK's are considered `BETA`. We do not plan any breaking changes. However, the Python and Go SDK's have been used significantly less than the Java SDK, so they do not qualify for the label of "fully battle-tested" and `STABLE`.
 
+The .NET sdk is `EXPERIMENTAL`.
+
 ## Task Runs
 
 The core `TASK` node functionality (represented by, in Java, `WorkflowThread#execute()`) is generally `STABLE`.
@@ -22,6 +24,7 @@ In particular, the following features are `STABLE`:
 The following features are considered `BETA`:
 * The `WorkerContext#log()` API, which allows a user to send informative logs to the LH Server for human debugging purposes.
 * Sending the `EXCEPTION` status as the result of a `TaskRun` execution (it is not implemented in all SDK's).
+* The values of the `TaskStatus` enum.
 
 ## Failure Handling
 
@@ -35,6 +38,7 @@ The following features are `STABLE`:
 
 The following API's are in the `BETA` state:
 * Propagation of an `ERROR` or `EXCEPTION` from a child `ThreadRun` to its parent `ThreadRun`.
+* The specific values of the `LHErrorType` enum, which correspond to the names of internal `ERROR`s of Littlehorse.
 
 The following features are `EXPERIMENTAL`:
 * Putting a `VariableValue` content into a `Failure` and passing that content as the reserved `INPUT` variable to the `FailureHandler` `ThreadRun`.
@@ -83,14 +87,59 @@ The following features are `EXPERIMENTAL`:
 
 ## Conditional Branching
 
+All Conditional Branching features are `STABLE`.
+
+## Threaded `WfRun`s
+
+The `WorkflowThread#spawnThread()` API is considered `STABLE`. The `WAIT_FOR_THREADS` type of `Node` in the `WfSpec` is also `STABLE`.
+
+The behavior of a child `ThreadRun` being able to access the Variables of the parent is also `STABLE`.
+
+The only thing considered `BETA` is:
+* Propagation of `ERROR` and `EXCEPTION` from the child to the parent `ThreadRun`.
+
 ## Interrupts
+
+Interrupts features are largely `STABLE` with a few in the `BETA` status.
+
+The following guarantees and API's are `STABLE`:
+* The `WorkflowThread#registerInterruptHander()` API.
+* Passing the content of the triggering `ExternalEvent` as the reserved `INPUT` variable into the handler `ThreadRun`.
+* The interrupted `ThreadRun` is `HALTED` before the Interrupt Handler starts.
+* The interrupted `ThreadRun` is resumed after the Interrupt Handler completes.
+* The Interrupt Handler `ThreadRun` is a child of the parent, and as such can edit its variables.
+* When a `ThreadRun` is interrupted, all of its Child `ThreadRun`s are also `HALTED` (not including other interrupt handlers).
+
+The following features and API designs are `EXPERIMENTAL`:
+* How a `Failure` is propagated from the Interrupt Handler to the interrupted `ThreadRun`.
+* Whether other interrupt handlers are halted by a parent being interrupted.
+
+## Variable Value
+
+The `VariableValue` protobuf structure is going to be wire-compatible; however, we plan to transition it to a `oneof` structure. It will be forwards-compatible, but old clients expecting the `type` field will be disappointed.
 
 ## Workflow Spec Versioning
 
+Currently, there are no restrictions that prevent a user from changing the API of a `WfSpec` when releasing a new version of the `WfSpec`. We might possibly add some restrictions. That means, it is `EXPERIMENTAL`.
+
 ## Indexing and Search
+
+The following API's are `STABLE`:
+* Endpoints for `SearchWfRun`, `SearchTaskRun`, `SearchUserTaskRun`, `SearchNodeRun`
+* Endpoints for `SearchWfSpec`, `SearchTaskDef`, `SearchExternalEventDef`, `SearchUserTaskDef`
+* Endpoints for `ListTaskRun`, `ListUserTaskRun`, `ListNodeRun`
+
+The following API's are `BETA`:
+* Endpoints for `SearchVariable`
+
+The following API's are `EXPERIMENTAL` and _will_ undergo changes:
+* Putting an index on a Variable: `WfRunVariable#withIndex()`
+* Variable compatibility guarantees across `WfSpec` versions: `WfRunVariable#persistent()`.
 
 ## `EXCEPTION` Status
 
+The `EXCEPTION` Status as a method for differentating a business process issue from a technical issue is `STABLE`.
+
 ## Workflow Run Retention
 
-## 
+The `WorkflowRetentionPolicy` and `ThreadRetentionPolicy` API's are considered `EXPERIMENTAL`.
