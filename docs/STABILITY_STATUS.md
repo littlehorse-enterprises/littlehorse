@@ -143,3 +143,16 @@ The `EXCEPTION` Status as a method for differentating a business process issue f
 ## Workflow Run Retention
 
 The `WorkflowRetentionPolicy` and `ThreadRetentionPolicy` API's are considered `EXPERIMENTAL`.
+
+## Security
+
+The following security features are considered `STABLE`:
+* TLS encryption
+
+The following security features are considered `BETA` and might undergo breaking API changes:
+* OAuth 2.0 for machine client authentication.
+* OAuth 2.0 + OIDC for human authentication (eg. via `lhctl`).
+
+The following features are `EXPERIMENTAL`:
+* Multi-Tenancy
+* Fine-grained ACL's
