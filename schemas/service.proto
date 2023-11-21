@@ -52,8 +52,8 @@ message PutExternalEventDefRequest {
 }
 
 message PutExternalEventRequest {
-  string wf_run_id = 1;
-  string external_event_def_name = 2;
+  WfRunId wf_run_id = 1;
+  ExternalEventDefId external_event_def_id = 2;
   optional string guid = 3;
   VariableValue content = 5;
   optional int32 thread_run_number = 6;
@@ -199,7 +199,7 @@ message SearchVariableRequest {
   }
 
   oneof variable_criteria {
-    string wf_run_id = 3;
+    WfRunId wf_run_id = 3;
     NameAndValueRequest value = 4;
   }
 }
@@ -270,7 +270,7 @@ message SearchExternalEventRequest {
   }
 
   oneof ext_evt_criteria {
-    string wf_run_id = 3;
+    WfRunId wf_run_id = 3;
     ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;
   }
 }
@@ -281,7 +281,7 @@ message ExternalEventIdList {
 }
 
 message ListNodeRunsRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
 }
 
 message NodeRunList {
@@ -289,7 +289,7 @@ message NodeRunList {
 }
 
 message ListVariablesRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
 }
 
 message VariableList {
@@ -297,7 +297,7 @@ message VariableList {
 }
 
 message ListExternalEventsRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
 }
 
 message ExternalEventList {
@@ -306,13 +306,13 @@ message ExternalEventList {
 
 message RegisterTaskWorkerRequest {
   string client_id = 1;
-  string task_def_name = 2;
+  TaskDefId task_def_id = 2;
   string listener_name = 3;
 }
 
 message TaskWorkerHeartBeatRequest {
   string client_id = 1;
-  string task_def_name = 2;
+  TaskDefId task_def_id = 2;
   string listener_name = 3;
 }
 
@@ -333,13 +333,13 @@ message TaskWorkerMetadata {
 }
 
 message TaskWorkerGroup {
-  string task_def_name = 1;
+  TaskDefId task_def_id = 1;
   google.protobuf.Timestamp created_at = 2;
   map<string, TaskWorkerMetadata> task_workers = 3;
 }
 
 message PollTaskRequest {
-  string task_def_name = 1;
+  TaskDefId task_def_id = 1;
   string client_id = 2;
   optional string task_worker_version = 3;
 }
@@ -372,12 +372,12 @@ message ReportTaskRun {
 }
 
 message StopWfRunRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
   int32 thread_run_number = 2;
 }
 
 message ResumeWfRunRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
   int32 thread_run_number = 2;
 }
 
@@ -394,10 +394,10 @@ message TaskDefMetricsQueryRequest {
 }
 
 message ListTaskMetricsRequest {
-  google.protobuf.Timestamp last_window_start = 1;
-  int32 num_windows = 2;
-  string task_def_name = 3;
-  MetricsWindowLength window_length = 4;
+  TaskDefId task_def_id = 1;
+  google.protobuf.Timestamp last_window_start = 2;
+  MetricsWindowLength window_length = 3;
+  int32 num_windows = 4;
 }
 
 message ListTaskMetricsResponse {
@@ -405,18 +405,16 @@ message ListTaskMetricsResponse {
 }
 
 message WfSpecMetricsQueryRequest {
-  google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLength window_type = 2;
-  string wf_spec_name = 3;
-  int32 wf_spec_version = 4;
+  WfSpecId wf_spec_id = 1;
+  google.protobuf.Timestamp window_start = 2;
+  MetricsWindowLength window_length = 3;
 }
 
 message ListWfMetricsRequest {
-  google.protobuf.Timestamp last_window_start = 1;
-  int32 num_windows = 2;
-  string wf_spec_name = 3;
-  int32 wf_spec_version = 4;
-  MetricsWindowLength window_length = 5;
+  WfSpecId wf_spec_id = 1;
+  google.protobuf.Timestamp last_window_start = 2;
+  MetricsWindowLength window_length = 3;
+  int32 num_windows = 4;
 }
 
 message ListWfMetricsResponse {
@@ -424,9 +422,10 @@ message ListWfMetricsResponse {
 }
 
 message TaskDefMetrics {
-  google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLength type = 2;
-  string taskDefName = 3;
+  TaskDefId task_def_id = 1;
+  google.protobuf.Timestamp window_start = 2;
+  MetricsWindowLength type = 3;
+
   int64 schedule_to_start_max = 4;
   int64 schedule_to_start_avg = 5;
   int64 start_to_complete_max = 6;
@@ -438,19 +437,19 @@ message TaskDefMetrics {
 }
 
 message WfSpecMetrics {
-  google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLength type = 2;
-  string wfSpecName = 3;
-  int32 wfSpecVersion = 4;
-  int64 total_started = 5;
-  int64 total_completed = 6;
-  int64 total_errored = 7;
-  int64 start_to_complete_max = 8;
-  int64 start_to_complete_avg = 9;
+  WfSpecId wf_spec_id = 1;
+  google.protobuf.Timestamp window_start = 2;
+  MetricsWindowLength type = 3;
+
+  int64 total_started = 4;
+  int64 total_completed = 5;
+  int64 total_errored = 6;
+  int64 start_to_complete_max = 7;
+  int64 start_to_complete_avg = 8;
 }
 
 message ListUserTaskRunRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
 }
 
 message UserTaskRunList {
@@ -458,7 +457,7 @@ message UserTaskRunList {
 }
 
 message ListTaskRunsRequest {
-  string wf_run_id = 1;
+  WfRunId wf_run_id = 1;
 }
 
 message TaskRunList {

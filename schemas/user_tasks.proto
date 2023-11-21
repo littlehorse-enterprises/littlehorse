@@ -76,10 +76,9 @@ message CancelUserTaskRunRequest {
 message UserTaskTriggerReference {
   NodeRunId node_run_id = 1;
   int32 user_task_event_number = 2;
-  WfSpecId wf_spec_id = 3;
 
-  optional string user_id = 4;
-  optional string user_group = 5;
+  optional string user_id = 3;
+  optional string user_group = 4;
 }
 
 enum UserTaskRunStatus {
