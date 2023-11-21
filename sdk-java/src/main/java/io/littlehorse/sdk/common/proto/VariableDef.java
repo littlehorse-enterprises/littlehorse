@@ -98,21 +98,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int REQUIRED_FIELD_NUMBER = 3;
-  private boolean required_ = false;
-  /**
-   * <code>bool required = 3;</code>
-   * @return The required.
-   */
-  @java.lang.Override
-  public boolean getRequired() {
-    return required_;
-  }
-
-  public static final int DEFAULT_VALUE_FIELD_NUMBER = 4;
+  public static final int DEFAULT_VALUE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
   /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return Whether the defaultValue field is set.
    */
   @java.lang.Override
@@ -120,7 +109,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return The defaultValue.
    */
   @java.lang.Override
@@ -128,7 +117,7 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
   /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
@@ -155,11 +144,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
-    if (required_ != false) {
-      output.writeBool(3, required_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getDefaultValue());
+      output.writeMessage(3, getDefaultValue());
     }
     getUnknownFields().writeTo(output);
   }
@@ -177,13 +163,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
     }
-    if (required_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, required_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getDefaultValue());
+        .computeMessageSize(3, getDefaultValue());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -203,8 +185,6 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
-    if (getRequired()
-        != other.getRequired()) return false;
     if (hasDefaultValue() != other.hasDefaultValue()) return false;
     if (hasDefaultValue()) {
       if (!getDefaultValue()
@@ -225,9 +205,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getRequired());
     if (hasDefaultValue()) {
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
@@ -371,7 +348,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       type_ = 0;
       name_ = "";
-      required_ = false;
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
@@ -416,11 +392,8 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.name_ = name_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.required_ = required_;
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
@@ -481,9 +454,6 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (other.getRequired() != false) {
-        setRequired(other.getRequired());
-      }
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
@@ -523,18 +493,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              required_ = input.readBool();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
+            case 26: {
               input.readMessage(
                   getDefaultValueFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 34
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -677,50 +642,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private boolean required_ ;
-    /**
-     * <code>bool required = 3;</code>
-     * @return The required.
-     */
-    @java.lang.Override
-    public boolean getRequired() {
-      return required_;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @param value The required to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRequired(boolean value) {
-
-      required_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRequired() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      required_ = false;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> defaultValueBuilder_;
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return Whether the defaultValue field is set.
      */
     public boolean hasDefaultValue() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return The defaultValue.
      */
     public io.littlehorse.sdk.common.proto.VariableValue getDefaultValue() {
@@ -731,7 +664,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
@@ -742,12 +675,12 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(
         io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
@@ -756,16 +689,16 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           defaultValue_ != null &&
           defaultValue_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getDefaultValueBuilder().mergeFrom(value);
@@ -775,15 +708,15 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder clearDefaultValue() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
@@ -793,15 +726,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getDefaultValueBuilder() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getDefaultValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
       if (defaultValueBuilder_ != null) {
@@ -812,7 +745,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 

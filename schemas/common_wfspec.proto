@@ -55,8 +55,7 @@ message VariableMutation {
 message VariableDef {
   VariableType type = 1;
   string name = 2;
-  bool required = 3;
-  optional VariableValue default_value = 4;
+  optional VariableValue default_value = 3;
 }
 
 enum Comparator {

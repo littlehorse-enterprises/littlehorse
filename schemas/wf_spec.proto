@@ -17,7 +17,7 @@ message WfSpec {
   google.protobuf.Timestamp created_at = 3;
   
   // to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
-  reserved 4;
+  MetadataStatus status = 4;
 
   map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
@@ -35,7 +35,6 @@ message WorkflowRetentionPolicy {
 
     // Future versions can allow different retention based on WfRun status.
   }
-  int32 retention_hours = 7;
 }
 
 message JsonIndex {

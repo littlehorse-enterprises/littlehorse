@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private WfSpec() {
     name_ = "";
+    status_ = 0;
     entrypointThreadName_ = "";
     searchableVaraibles_ = java.util.Collections.emptyList();
   }
@@ -128,6 +129,32 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int STATUS_FIELD_NUMBER = 4;
+  private int status_ = 0;
+  /**
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  @java.lang.Override public int getStatusValue() {
+    return status_;
+  }
+  /**
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
+   * @return The status.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetadataStatus getStatus() {
+    io.littlehorse.sdk.common.proto.MetadataStatus result = io.littlehorse.sdk.common.proto.MetadataStatus.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetadataStatus.UNRECOGNIZED : result;
   }
 
   public static final int THREAD_SPECS_FIELD_NUMBER = 5;
@@ -364,6 +391,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (createdAt_ != null) {
       output.writeMessage(3, getCreatedAt());
     }
+    if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
+      output.writeEnum(4, status_);
+    }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
@@ -401,6 +431,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getCreatedAt());
+    }
+    if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, status_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> entry
          : internalGetThreadSpecs().getMap().entrySet()) {
@@ -451,6 +485,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (status_ != other.status_) return false;
     if (!internalGetThreadSpecs().equals(
         other.internalGetThreadSpecs())) return false;
     if (!getEntrypointThreadName()
@@ -486,6 +521,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + status_;
     if (!internalGetThreadSpecs().getMap().isEmpty()) {
       hash = (37 * hash) + THREAD_SPECS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetThreadSpecs().hashCode();
@@ -673,6 +710,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
+      status_ = 0;
       internalGetMutableThreadSpecs().clear();
       entrypointThreadName_ = "";
       retentionPolicy_ = null;
@@ -691,7 +729,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         searchableVaraibles_ = null;
         searchableVaraiblesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -726,9 +764,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WfSpec result) {
       if (searchableVaraiblesBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           searchableVaraibles_ = java.util.Collections.unmodifiableList(searchableVaraibles_);
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.searchableVaraibles_ = searchableVaraibles_;
       } else {
@@ -750,20 +788,23 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
             : createdAtBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.status_ = status_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.threadSpecs_ = internalGetThreadSpecs();
         result.threadSpecs_.makeImmutable();
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.entrypointThreadName_ = entrypointThreadName_;
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.retentionPolicy_ = retentionPolicyBuilder_ == null
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.migration_ = migrationBuilder_ == null
             ? migration_
             : migrationBuilder_.build();
@@ -827,12 +868,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
+      if (other.status_ != 0) {
+        setStatusValue(other.getStatusValue());
+      }
       internalGetMutableThreadSpecs().mergeFrom(
           other.internalGetThreadSpecs());
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       if (!other.getEntrypointThreadName().isEmpty()) {
         entrypointThreadName_ = other.entrypointThreadName_;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (other.hasRetentionPolicy()) {
@@ -845,7 +889,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         if (!other.searchableVaraibles_.isEmpty()) {
           if (searchableVaraibles_.isEmpty()) {
             searchableVaraibles_ = other.searchableVaraibles_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensureSearchableVaraiblesIsMutable();
             searchableVaraibles_.addAll(other.searchableVaraibles_);
@@ -858,7 +902,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
             searchableVaraiblesBuilder_.dispose();
             searchableVaraiblesBuilder_ = null;
             searchableVaraibles_ = other.searchableVaraibles_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
             searchableVaraiblesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getSearchableVaraiblesFieldBuilder() : null;
@@ -910,32 +954,37 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              status_ = input.readEnum();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             case 42: {
               com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
               threadSpecs__ = input.readMessage(
                   ThreadSpecsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableThreadSpecs().getMutableMap().put(
                   threadSpecs__.getKey(), threadSpecs__.getValue());
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 42
             case 50: {
               entrypointThreadName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getRetentionPolicyFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 58
             case 66: {
               input.readMessage(
                   getMigrationFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
               break;
             } // case 66
             case 74: {
@@ -1191,6 +1240,79 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return createdAtBuilder_;
     }
 
+    private int status_ = 0;
+    /**
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatusValue(int value) {
+      status_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
+     * @return The status.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MetadataStatus getStatus() {
+      io.littlehorse.sdk.common.proto.MetadataStatus result = io.littlehorse.sdk.common.proto.MetadataStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetadataStatus.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatus(io.littlehorse.sdk.common.proto.MetadataStatus value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000008;
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      status_ = 0;
+      onChanged();
+      return this;
+    }
+
     private com.google.protobuf.MapField<
         java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> threadSpecs_;
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
@@ -1210,7 +1332,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!threadSpecs_.isMutable()) {
         threadSpecs_ = threadSpecs_.copy();
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return threadSpecs_;
     }
@@ -1270,7 +1392,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return map.get(key);
     }
     public Builder clearThreadSpecs() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       internalGetMutableThreadSpecs().getMutableMap()
           .clear();
       return this;
@@ -1291,7 +1413,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
         getMutableThreadSpecs() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return internalGetMutableThreadSpecs().getMutableMap();
     }
     /**
@@ -1304,7 +1426,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableThreadSpecs().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return this;
     }
     /**
@@ -1314,7 +1436,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> values) {
       internalGetMutableThreadSpecs().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return this;
     }
 
@@ -1361,7 +1483,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       entrypointThreadName_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1371,7 +1493,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      */
     public Builder clearEntrypointThreadName() {
       entrypointThreadName_ = getDefaultInstance().getEntrypointThreadName();
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
@@ -1385,7 +1507,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       entrypointThreadName_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1398,7 +1520,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * @return Whether the retentionPolicy field is set.
      */
     public boolean hasRetentionPolicy() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
@@ -1423,7 +1545,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         retentionPolicyBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1437,7 +1559,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         retentionPolicyBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1446,7 +1568,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      */
     public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
       if (retentionPolicyBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000040) != 0) &&
           retentionPolicy_ != null &&
           retentionPolicy_ != io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance()) {
           getRetentionPolicyBuilder().mergeFrom(value);
@@ -1456,7 +1578,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         retentionPolicyBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1464,7 +1586,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder clearRetentionPolicy() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       retentionPolicy_ = null;
       if (retentionPolicyBuilder_ != null) {
         retentionPolicyBuilder_.dispose();
@@ -1477,7 +1599,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder getRetentionPolicyBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return getRetentionPolicyFieldBuilder().getBuilder();
     }
@@ -1517,7 +1639,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * @return Whether the migration field is set.
      */
     public boolean hasMigration() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
@@ -1542,7 +1664,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         migrationBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1556,7 +1678,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         migrationBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1565,7 +1687,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      */
     public Builder mergeMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
       if (migrationBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000080) != 0) &&
           migration_ != null &&
           migration_ != io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance()) {
           getMigrationBuilder().mergeFrom(value);
@@ -1575,7 +1697,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         migrationBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1583,7 +1705,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder clearMigration() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000080);
       migration_ = null;
       if (migrationBuilder_ != null) {
         migrationBuilder_.dispose();
@@ -1596,7 +1718,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder getMigrationBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return getMigrationFieldBuilder().getBuilder();
     }
@@ -1631,9 +1753,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> searchableVaraibles_ =
       java.util.Collections.emptyList();
     private void ensureSearchableVaraiblesIsMutable() {
-      if (!((bitField0_ & 0x00000080) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         searchableVaraibles_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.SearchableVariableDef>(searchableVaraibles_);
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -1783,7 +1905,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     public Builder clearSearchableVaraibles() {
       if (searchableVaraiblesBuilder_ == null) {
         searchableVaraibles_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         searchableVaraiblesBuilder_.clear();
@@ -1860,7 +1982,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         searchableVaraiblesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder>(
                 searchableVaraibles_,
-                ((bitField0_ & 0x00000080) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         searchableVaraibles_ = null;

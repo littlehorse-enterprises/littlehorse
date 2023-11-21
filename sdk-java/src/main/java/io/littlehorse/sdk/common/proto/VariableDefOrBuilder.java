@@ -31,23 +31,17 @@ public interface VariableDefOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>bool required = 3;</code>
-   * @return The required.
-   */
-  boolean getRequired();
-
-  /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return Whether the defaultValue field is set.
    */
   boolean hasDefaultValue();
   /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return The defaultValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getDefaultValue();
   /**
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
 }

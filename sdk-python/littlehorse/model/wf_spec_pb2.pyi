@@ -10,7 +10,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpec(_message.Message):
-    __slots__ = ["name", "version", "created_at", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "searchable_varaibles"]
+    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "searchable_varaibles"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -21,6 +21,7 @@ class WfSpec(_message.Message):
     NAME_FIELD_NUMBER: _ClassVar[int]
     VERSION_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
@@ -29,20 +30,19 @@ class WfSpec(_message.Message):
     name: str
     version: int
     created_at: _timestamp_pb2.Timestamp
+    status: _common_enums_pb2.MetadataStatus
     thread_specs: _containers.MessageMap[str, ThreadSpec]
     entrypoint_thread_name: str
     retention_policy: WorkflowRetentionPolicy
     migration: WfSpecVersionMigration
     searchable_varaibles: _containers.RepeatedCompositeFieldContainer[SearchableVariableDef]
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ..., searchable_varaibles: _Optional[_Iterable[_Union[SearchableVariableDef, _Mapping]]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.MetadataStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ..., searchable_varaibles: _Optional[_Iterable[_Union[SearchableVariableDef, _Mapping]]] = ...) -> None: ...
 
 class WorkflowRetentionPolicy(_message.Message):
-    __slots__ = ["seconds_after_wf_termination", "retention_hours"]
+    __slots__ = ["seconds_after_wf_termination"]
     SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
     seconds_after_wf_termination: int
-    retention_hours: int
-    def __init__(self, seconds_after_wf_termination: _Optional[int] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    def __init__(self, seconds_after_wf_termination: _Optional[int] = ...) -> None: ...
 
 class JsonIndex(_message.Message):
     __slots__ = ["field_path", "field_type"]

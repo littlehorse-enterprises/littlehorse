@@ -6,9 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -21,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -117,15 +114,11 @@ public class VariableModel extends CoreGetable<Variable> {
                                 Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
-                        variable -> ((VariableModel) variable).isPersistentlyIndexable()));
+                        variable -> ((VariableModel) variable).isIndexable()));
     }
 
     private boolean isIndexable() {
         return !name.equals(LHConstants.EXT_EVT_HANDLER_VAR) && value.getType() != VariableType.NULL;
-    }
-
-    private boolean isPersistentlyIndexable() {
-        return isIndexable() && getDefinition().isPersistent();
     }
 
     @Override
@@ -145,75 +138,56 @@ public class VariableModel extends CoreGetable<Variable> {
         return null;
     }
 
-    private VariableDefModel getDefinition() {
-        return variableDefMap().get(name);
-    }
-
-    private Map<String, VariableDefModel> variableDefMap() {
-        Map<String, VariableDefModel> out = new HashMap<>();
-        for (ThreadSpecModel tSpec : getWfSpec().getThreadSpecs().values()) {
-            for (VariableDefModel varDef : tSpec.getVariableDefs()) {
-                out.put(varDef.getName(), varDef);
-            }
-        }
-
-        return out;
-    }
-
     private List<IndexedField> getDynamicFields() {
-        VariableValueModel variableValue = getValue();
-        Map<String, VariableDefModel> stringVariableDefMap = variableDefMap();
-        VariableDefModel variableDef = stringVariableDefMap.get(this.getName());
-        TagStorageType tagStorageType = variableDef.getTagStorageType();
-        if (tagStorageType == null && variableDef.getType() != VariableType.JSON_OBJ) {
+        VariableValueModel value = getValue();
+        WfSpecModel wfSpec = getWfSpec();
+        ThreadVarDefModel threadVarDef = wfSpec.getAllVariables().get(name);
+
+        TagStorageType indexType = TagStorageType.LOCAL;
+
+        if (!threadVarDef.isSearchable()) {
             return List.of();
         }
-        switch (variableValue.getType()) {
+
+        // Current behavior is that null variables are NOT indexed. This may change in future
+        // releases, but it will be a backwards-compatible change.
+        if (value.getType() == VariableType.NULL) {
+            return List.of();
+        }
+
+        switch (value.getType()) {
             case STR -> {
-                return List.of(new IndexedField(this.getName(), variableValue.getStrVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), value.getStrVal(), indexType));
             }
             case BOOL -> {
-                return List.of(new IndexedField(this.getName(), variableValue.getBoolVal(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(this.getName(), value.getBoolVal(), indexType));
             }
             case INT -> {
-                return List.of(new IndexedField(this.getName(), variableValue.getIntVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), value.getIntVal(), indexType));
             }
             case DOUBLE -> {
-                return List.of(new IndexedField(this.getName(), variableValue.getDoubleVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), value.getDoubleVal(), indexType));
             }
             case JSON_OBJ -> {
                 Map<String, Object> flattenedMap = new HashMap<>();
-                flatten("$.", variableValue.getJsonObjVal(), flattenedMap);
+                flattenJsonObj("$.", value.getJsonObjVal(), flattenedMap);
+
                 return flattenedMap.entrySet().stream()
-                        .map(keyValueJson -> {
-                            TagStorageType storageTypePb = findStorageTypeFromVariableDef(
-                                            variableDef, keyValueJson.getKey())
-                                    .orElse(null);
-                            if (storageTypePb == null) {
-                                return null;
-                            }
-                            return new IndexedField(keyValueJson.getKey(), keyValueJson.getValue(), storageTypePb);
+                        .filter(flatKeyValue -> threadVarDef.isSearchableOn(flatKeyValue.getKey()))
+                        .map(flatKeyValue -> {
+                            return new IndexedField(
+                                    this.getName() + "_" + flatKeyValue.getKey(), flatKeyValue.getValue(), indexType);
                         })
-                        .filter(Objects::nonNull)
                         .toList();
             }
             default -> {
-                log.warn("Tags unimplemented for variable type: {}", variableValue.getType());
+                log.warn("Tags unimplemented for variable type: {}", value.getType());
                 return List.of();
             }
         }
     }
 
-    private Optional<TagStorageType> findStorageTypeFromVariableDef(VariableDefModel variableDef, String jsonPath) {
-        return variableDef.getJsonIndices().stream()
-                .filter(jsonIndex -> {
-                    return jsonIndex.getPath().equals(jsonPath);
-                })
-                .map(JsonIndexModel::getTagStorageType)
-                .findFirst();
-    }
-
-    private static void flatten(String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {
+    private static void flattenJsonObj(String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -221,26 +195,10 @@ public class VariableModel extends CoreGetable<Variable> {
             if (value instanceof Map) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> nestedMap = (Map<String, Object>) value;
-                flatten(prefix + key + ".", nestedMap, flattenedMap);
+                flattenJsonObj(prefix + key + ".", nestedMap, flattenedMap);
             } else {
                 flattenedMap.put(prefix + key, value);
             }
         }
-    }
-
-    @Override
-    public TagStorageType getTagType() {
-        return getWfSpec().getThreadSpecs().values().stream()
-                .map(threadSpec -> {
-                    VariableDefModel currentVariableDef = threadSpec.getVariableDefs().stream()
-                            .filter(variableDef -> variableDef.getName().equals(this.getName()))
-                            .findFirst()
-                            .orElse(null);
-                    return (currentVariableDef != null && currentVariableDef.getTagStorageType() != null)
-                            ? currentVariableDef.getTagStorageType()
-                            : TagStorageType.LOCAL;
-                })
-                .findFirst()
-                .get();
     }
 }

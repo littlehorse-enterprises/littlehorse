@@ -79,8 +79,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
                 return LHConstants.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHConstants.VAR_SUB_ERROR;
-            case TASK_CANCELLED:
-                return LHConstants.USER_TASK_CANCELLED;
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
@@ -104,7 +102,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
-            case TASK_CANCELLED: // TODO: WTF? This is supposed to be for user task.
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unexpected task status: " + status);

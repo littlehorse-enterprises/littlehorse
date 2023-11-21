@@ -7,7 +7,7 @@ import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -111,20 +111,16 @@ public class SearchVariableRequestModel
     }
 
     private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
-        boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
-
-        // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
-        // that VariableDef, and it's also guaranteed that all of the VariableDef's are the same.
-        Integer wfSpecVersion = isPersistentVariableQuery ? null : value.getWfSpecVersion();
+        Integer wfSpecVersion = value.hasWfSpecVersion() ? null : value.getWfSpecVersion();
         WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), wfSpecVersion);
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
         }
 
-        Optional<VariableDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
+        Optional<ThreadVarDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
                 .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
-                .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
+                .filter(variableDef -> variableDef.getVarDef().getName().equals(value.getVarName()))
                 .findFirst();
 
         if (!associatedVariable.isPresent()) {
@@ -132,22 +128,19 @@ public class SearchVariableRequestModel
                     Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + value.getVarName());
         }
 
-        if (isPersistentVariableQuery && !associatedVariable.get().isPersistent()) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "Variable " + value.getVarName() + " is not persistent; must provide wfSpecVersion");
-        }
-
-        VariableDefModel varDef = associatedVariable.get();
-        if (varDef.getTagStorageType() == null) {
+        ThreadVarDefModel threadVarDef = associatedVariable.get();
+        if (!threadVarDef.isSearchable()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
-        if (varDef.getType() != value.getValue().getType()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Variable has type " + varDef.getType());
+        if (threadVarDef.getVarDef().getType() != value.getValue().getType()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Specified Variable has type " + threadVarDef.getVarDef().getType());
         }
 
-        return varDef.getTagStorageType();
+        // Currently, all tags are LOCAL
+        return TagStorageType.LOCAL;
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {

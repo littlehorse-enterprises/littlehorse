@@ -109,17 +109,6 @@ private static final long serialVersionUID = 0L;
     return 0L;
   }
 
-  public static final int RETENTION_HOURS_FIELD_NUMBER = 7;
-  private int retentionHours_ = 0;
-  /**
-   * <code>int32 retention_hours = 7;</code>
-   * @return The retentionHours.
-   */
-  @java.lang.Override
-  public int getRetentionHours() {
-    return retentionHours_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -138,9 +127,6 @@ private static final long serialVersionUID = 0L;
       output.writeInt64(
           1, (long)((java.lang.Long) wfGcPolicy_));
     }
-    if (retentionHours_ != 0) {
-      output.writeInt32(7, retentionHours_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -154,10 +140,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(
             1, (long)((java.lang.Long) wfGcPolicy_));
-    }
-    if (retentionHours_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, retentionHours_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -174,8 +156,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy other = (io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy) obj;
 
-    if (getRetentionHours()
-        != other.getRetentionHours()) return false;
     if (!getWfGcPolicyCase().equals(other.getWfGcPolicyCase())) return false;
     switch (wfGcPolicyCase_) {
       case 1:
@@ -196,8 +176,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + RETENTION_HOURS_FIELD_NUMBER;
-    hash = (53 * hash) + getRetentionHours();
     switch (wfGcPolicyCase_) {
       case 1:
         hash = (37 * hash) + SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER;
@@ -338,7 +316,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      retentionHours_ = 0;
       wfGcPolicyCase_ = 0;
       wfGcPolicy_ = null;
       return this;
@@ -375,9 +352,6 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.retentionHours_ = retentionHours_;
-      }
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy result) {
@@ -429,9 +403,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy other) {
       if (other == io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance()) return this;
-      if (other.getRetentionHours() != 0) {
-        setRetentionHours(other.getRetentionHours());
-      }
       switch (other.getWfGcPolicyCase()) {
         case SECONDS_AFTER_WF_TERMINATION: {
           setSecondsAfterWfTermination(other.getSecondsAfterWfTermination());
@@ -472,11 +443,6 @@ private static final long serialVersionUID = 0L;
               wfGcPolicyCase_ = 1;
               break;
             } // case 8
-            case 56: {
-              retentionHours_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 56
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -568,38 +534,6 @@ private static final long serialVersionUID = 0L;
         wfGcPolicy_ = null;
         onChanged();
       }
-      return this;
-    }
-
-    private int retentionHours_ ;
-    /**
-     * <code>int32 retention_hours = 7;</code>
-     * @return The retentionHours.
-     */
-    @java.lang.Override
-    public int getRetentionHours() {
-      return retentionHours_;
-    }
-    /**
-     * <code>int32 retention_hours = 7;</code>
-     * @param value The retentionHours to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRetentionHours(int value) {
-
-      retentionHours_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 retention_hours = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRetentionHours() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      retentionHours_ = 0;
-      onChanged();
       return this;
     }
     @java.lang.Override

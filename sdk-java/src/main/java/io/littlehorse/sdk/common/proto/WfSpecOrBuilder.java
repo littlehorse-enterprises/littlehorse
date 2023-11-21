@@ -41,6 +41,25 @@ public interface WfSpecOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  int getStatusValue();
+  /**
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
+   * @return The status.
+   */
+  io.littlehorse.sdk.common.proto.MetadataStatus getStatus();
+
+  /**
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   int getThreadSpecsCount();
