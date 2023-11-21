@@ -3,8 +3,6 @@ from unittest.mock import MagicMock
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
-    IndexType,
-    JsonIndex,
     TaskNode,
     VariableAssignment,
     VariableDef,
@@ -21,10 +19,12 @@ from littlehorse.model.wf_spec_pb2 import (
     ExternalEventNode,
     FailureDef,
     InterruptDef,
+    JsonIndex,
     Node,
     NopNode,
     ThreadSpec,
     FailureHandlerDef,
+    ThreadVarDef,
 )
 from littlehorse.workflow import to_variable_assignment, LHErrorType
 
@@ -116,15 +116,15 @@ class TestWfRunVariable(unittest.TestCase):
     def test_validate_is_json_obj_when_using_json_index(self):
         variable = WfRunVariable("my-var", VariableType.STR)
         with self.assertRaises(ValueError) as exception_context:
-            variable.with_json_index("$.myPath", IndexType.LOCAL_INDEX)
+            variable.searchable_on("$.myPath", VariableType.STR)
         self.assertEqual(
             "JsonPath not allowed in a STR variable",
             str(exception_context.exception),
         )
 
     def test_persistent(self):
-        variable = WfRunVariable("my-var", VariableType.STR).persistent()
-        self.assertEqual(variable.compile().persistent, True)
+        variable = WfRunVariable("my-var", VariableType.STR).searchable()
+        self.assertEqual(variable.compile().searchable, True)
 
     def test_validate_is_json_obj_when_using_json_pth(self):
         variable = WfRunVariable("my-var", VariableType.STR)
@@ -149,14 +149,14 @@ class TestWfRunVariable(unittest.TestCase):
     def test_compile_variable(self):
         variable = WfRunVariable("my-var", VariableType.STR)
         self.assertEqual(
-            variable.compile(), VariableDef(name="my-var", type=VariableType.STR)
+            variable.compile(), ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.STR))
         )
 
         variable = WfRunVariable("my-var", VariableType.JSON_OBJ)
-        variable.with_json_index("$.myPath", IndexType.LOCAL_INDEX)
-        expected_output = VariableDef(name="my-var", type=VariableType.JSON_OBJ)
+        variable.searchable_on("$.myPath", VariableType.STR)
+        expected_output = ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ))
         expected_output.json_indexes.append(
-            JsonIndex(path="$.myPath", index_type=IndexType.LOCAL_INDEX)
+            JsonIndex(field_path="$.myPath", field_type=VariableType.STR)
         )
         self.assertEqual(variable.compile(), expected_output)
 
@@ -170,7 +170,7 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)],
+                variable_defs=[ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -547,7 +547,7 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)],
+                variable_defs=[ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -705,7 +705,7 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[VariableDef(name="value", type=VariableType.INT)],
+                variable_defs=[ThreadVarDef(var_def=VariableDef(name="value", type=VariableType.INT))],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -1174,7 +1174,7 @@ class TestWorkflow(unittest.TestCase):
                 thread_specs={
                     "entrypoint": ThreadSpec(
                         variable_defs=[
-                            VariableDef(name="input-name", type=VariableType.STR)
+                            ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))
                         ],
                         nodes={
                             "0-entrypoint-ENTRYPOINT": Node(

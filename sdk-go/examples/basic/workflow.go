@@ -17,7 +17,7 @@ func MyWorkflow(wf *wflib.WorkflowThread) {
 	nameVar := wf.AddVariableWithDefault("name", model.VariableType_STR, "Qui-Gon Jinn")
 
 	// Make it searchable
-	nameVar.WithIndex(model.IndexType_REMOTE_INDEX)
+	nameVar.Searchable()
 
 	wf.Execute("greet", nameVar)
 }

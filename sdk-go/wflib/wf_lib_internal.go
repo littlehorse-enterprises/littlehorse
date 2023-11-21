@@ -50,7 +50,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 					spec:     model.ThreadSpec{},
 				}
 				thr.spec.InterruptDefs = make([]*model.InterruptDef, 0)
-				thr.spec.VariableDefs = make([]*model.VariableDef, 0)
+				thr.spec.VariableDefs = make([]*model.ThreadVarDef, 0)
 
 				// Need to add entrypoint node. We have to do this one manually
 				// for now.
@@ -389,8 +389,23 @@ func (w *LHWorkflow) addSubThread(threadName string, tf ThreadFunc) string {
 	return threadName
 }
 
-func (w *WfRunVariable) setIndex(indexType model.IndexType) {
-	w.varDef.IndexType = &indexType
+func (w *WfRunVariable) searchableImpl() *WfRunVariable {
+	w.threadVarDef.Searchable = true
+	return w
+}
+
+func (w *WfRunVariable) requiredImpl() *WfRunVariable {
+	w.threadVarDef.Required = true
+	return w
+}
+
+// TODO: Add validation that fieldPath is properly set.
+func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType model.VariableType) *WfRunVariable {
+	w.threadVarDef.JsonIndexes = append(w.threadVarDef.JsonIndexes, &model.JsonIndex{
+		FieldPath: fieldPath,
+		FieldType: fieldType,
+	})
+	return w
 }
 
 func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
@@ -520,13 +535,17 @@ func (t *WorkflowThread) addVariable(
 		varDef.DefaultValue = defaultVarVal
 	}
 
-	t.spec.VariableDefs = append(t.spec.VariableDefs, varDef)
+	threadVarDef := &model.ThreadVarDef{
+		VarDef: varDef,
+	}
+
+	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)
 
 	return &WfRunVariable{
-		Name:    name,
-		VarType: &varType,
-		thread:  t,
-		varDef:  varDef,
+		Name:         name,
+		VarType:      &varType,
+		thread:       t,
+		threadVarDef: threadVarDef,
 	}
 }
 
