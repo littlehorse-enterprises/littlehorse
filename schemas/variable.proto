@@ -23,10 +23,8 @@ message VariableValue {
 }
 
 message Variable {
-  VariableValue value = 1;
-  string wf_run_id = 2;
-  int32 thread_run_number = 3;
-  string name = 4;
-  google.protobuf.Timestamp date = 5;
-  WfSpecId wf_spec_id = 6;
+  VariableId id = 1;
+  VariableValue value = 2;
+  google.protobuf.Timestamp created_at = 3;
+  WfSpecId wf_spec_id = 4;
 }
