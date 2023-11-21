@@ -20,11 +20,6 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_INDEX: _ClassVar[VariableMutationType]
     REMOVE_KEY: _ClassVar[VariableMutationType]
 
-class IndexType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    LOCAL_INDEX: _ClassVar[IndexType]
-    REMOTE_INDEX: _ClassVar[IndexType]
-
 class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     LESS_THAN: _ClassVar[Comparator]
@@ -44,8 +39,6 @@ DIVIDE: VariableMutationType
 REMOVE_IF_PRESENT: VariableMutationType
 REMOVE_INDEX: VariableMutationType
 REMOVE_KEY: VariableMutationType
-LOCAL_INDEX: IndexType
-REMOTE_INDEX: IndexType
 LESS_THAN: Comparator
 GREATER_THAN: Comparator
 LESS_THAN_EQ: Comparator
@@ -96,28 +89,16 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., source_variable: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["type", "name", "index_type", "json_indexes", "default_value", "persistent"]
+    __slots__ = ["type", "name", "required", "default_value"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    INDEX_TYPE_FIELD_NUMBER: _ClassVar[int]
-    JSON_INDEXES_FIELD_NUMBER: _ClassVar[int]
+    REQUIRED_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
-    PERSISTENT_FIELD_NUMBER: _ClassVar[int]
     type: _common_enums_pb2.VariableType
     name: str
-    index_type: IndexType
-    json_indexes: _containers.RepeatedCompositeFieldContainer[JsonIndex]
+    required: bool
     default_value: _variable_pb2.VariableValue
-    persistent: bool
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., index_type: _Optional[_Union[IndexType, str]] = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., persistent: bool = ...) -> None: ...
-
-class JsonIndex(_message.Message):
-    __slots__ = ["path", "index_type"]
-    PATH_FIELD_NUMBER: _ClassVar[int]
-    INDEX_TYPE_FIELD_NUMBER: _ClassVar[int]
-    path: str
-    index_type: IndexType
-    def __init__(self, path: _Optional[str] = ..., index_type: _Optional[_Union[IndexType, str]] = ...) -> None: ...
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., required: bool = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
     __slots__ = ["task", "cancel", "reassign", "delay_seconds", "hook"]

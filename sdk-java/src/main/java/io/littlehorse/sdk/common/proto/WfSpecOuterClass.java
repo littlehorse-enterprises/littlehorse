@@ -30,6 +30,21 @@ public final class WfSpecOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_WorkflowRetentionPolicy_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_JsonIndex_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_JsonIndex_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_SearchableVariableDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_SearchableVariableDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ThreadVarDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ThreadVarDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ThreadSpec_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -170,24 +185,32 @@ public final class WfSpecOuterClass {
     java.lang.String[] descriptorData = {
       "\n\rwf_spec.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\022common_enums.prot" +
-      "o\032\023common_wfspec.proto\"\322\003\n\006WfSpec\022\014\n\004nam" +
+      "o\032\023common_wfspec.proto\"\355\003\n\006WfSpec\022\014\n\004nam" +
       "e\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003" +
-      " \001(\0132\032.google.protobuf.Timestamp\022%\n\006stat" +
-      "us\030\004 \001(\0162\025.littlehorse.LHStatus\022:\n\014threa" +
-      "d_specs\030\005 \003(\0132$.littlehorse.WfSpec.Threa" +
-      "dSpecsEntry\022\036\n\026entrypoint_thread_name\030\006 " +
-      "\001(\t\022C\n\020retention_policy\030\010 \001(\0132$.littleho" +
-      "rse.WorkflowRetentionPolicyH\000\210\001\001\022;\n\tmigr" +
-      "ation\030\t \001(\0132#.littlehorse.WfSpecVersionM" +
-      "igrationH\001\210\001\001\032K\n\020ThreadSpecsEntry\022\013\n\003key" +
-      "\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Thre" +
-      "adSpec:\0028\001B\023\n\021_retention_policyB\014\n\n_migr" +
-      "ationJ\004\010\007\020\010\"j\n\027WorkflowRetentionPolicy\022&" +
-      "\n\034seconds_after_wf_termination\030\001 \001(\003H\000\022\027" +
-      "\n\017retention_hours\030\007 \001(\005B\016\n\014wf_gc_policy\"" +
-      "\274\002\n\nThreadSpec\0221\n\005nodes\030\001 \003(\0132\".littleho" +
-      "rse.ThreadSpec.NodesEntry\022/\n\rvariable_de" +
-      "fs\030\002 \003(\0132\030.littlehorse.VariableDef\0221\n\016in" +
+      " \001(\0132\032.google.protobuf.Timestamp\022:\n\014thre" +
+      "ad_specs\030\005 \003(\0132$.littlehorse.WfSpec.Thre" +
+      "adSpecsEntry\022\036\n\026entrypoint_thread_name\030\006" +
+      " \001(\t\022C\n\020retention_policy\030\007 \001(\0132$.littleh" +
+      "orse.WorkflowRetentionPolicyH\000\210\001\001\022;\n\tmig" +
+      "ration\030\010 \001(\0132#.littlehorse.WfSpecVersion" +
+      "MigrationH\001\210\001\001\022@\n\024searchable_varaibles\030\t" +
+      " \003(\0132\".littlehorse.SearchableVariableDef" +
+      "\032K\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005val" +
+      "ue\030\002 \001(\0132\027.littlehorse.ThreadSpec:\0028\001B\023\n" +
+      "\021_retention_policyB\014\n\n_migrationJ\004\010\004\020\005\"j" +
+      "\n\027WorkflowRetentionPolicy\022&\n\034seconds_aft" +
+      "er_wf_termination\030\001 \001(\003H\000\022\027\n\017retention_h" +
+      "ours\030\007 \001(\005B\016\n\014wf_gc_policy\"N\n\tJsonIndex\022" +
+      "\022\n\nfield_path\030\001 \001(\t\022-\n\nfield_type\030\002 \001(\0162" +
+      "\031.littlehorse.VariableType\"B\n\025Searchable" +
+      "VariableDef\022)\n\007var_def\030\001 \001(\0132\030.littlehor" +
+      "se.VariableDef\"\215\001\n\014ThreadVarDef\022)\n\007var_d" +
+      "ef\030\001 \001(\0132\030.littlehorse.VariableDef\022\020\n\010re" +
+      "quired\030\002 \001(\010\022\022\n\nsearchable\030\003 \001(\010\022,\n\014json" +
+      "_indexes\030\004 \003(\0132\026.littlehorse.JsonIndex\"\275" +
+      "\002\n\nThreadSpec\0221\n\005nodes\030\001 \003(\0132\".littlehor" +
+      "se.ThreadSpec.NodesEntry\0220\n\rvariable_def" +
+      "s\030\002 \003(\0132\031.littlehorse.ThreadVarDef\0221\n\016in" +
       "terrupt_defs\030\003 \003(\0132\031.littlehorse.Interru" +
       "ptDef\022A\n\020retention_policy\030\004 \001(\0132\".little" +
       "horse.ThreadRetentionPolicyH\000\210\001\001\032?\n\nNode" +
@@ -296,7 +319,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_WfSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WfSpec_descriptor,
-        new java.lang.String[] { "Name", "Version", "CreatedAt", "Status", "ThreadSpecs", "EntrypointThreadName", "RetentionPolicy", "Migration", "RetentionPolicy", "Migration", });
+        new java.lang.String[] { "Name", "Version", "CreatedAt", "ThreadSpecs", "EntrypointThreadName", "RetentionPolicy", "Migration", "SearchableVaraibles", "RetentionPolicy", "Migration", });
     internal_static_littlehorse_WfSpec_ThreadSpecsEntry_descriptor =
       internal_static_littlehorse_WfSpec_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_WfSpec_ThreadSpecsEntry_fieldAccessorTable = new
@@ -309,8 +332,26 @@ public final class WfSpecOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WorkflowRetentionPolicy_descriptor,
         new java.lang.String[] { "SecondsAfterWfTermination", "RetentionHours", "WfGcPolicy", });
-    internal_static_littlehorse_ThreadSpec_descriptor =
+    internal_static_littlehorse_JsonIndex_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_JsonIndex_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_JsonIndex_descriptor,
+        new java.lang.String[] { "FieldPath", "FieldType", });
+    internal_static_littlehorse_SearchableVariableDef_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_littlehorse_SearchableVariableDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_SearchableVariableDef_descriptor,
+        new java.lang.String[] { "VarDef", });
+    internal_static_littlehorse_ThreadVarDef_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_littlehorse_ThreadVarDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ThreadVarDef_descriptor,
+        new java.lang.String[] { "VarDef", "Required", "Searchable", "JsonIndexes", });
+    internal_static_littlehorse_ThreadSpec_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_ThreadSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ThreadSpec_descriptor,
@@ -322,19 +363,19 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_ThreadSpec_NodesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_ThreadRetentionPolicy_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_ThreadRetentionPolicy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ThreadRetentionPolicy_descriptor,
         new java.lang.String[] { "SecondsAfterThreadTermination", "ThreadGcPolicy", });
     internal_static_littlehorse_InterruptDef_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_InterruptDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InterruptDef_descriptor,
         new java.lang.String[] { "ExternalEventDefName", "HandlerSpecName", });
     internal_static_littlehorse_StartThreadNode_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_StartThreadNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_StartThreadNode_descriptor,
@@ -346,7 +387,7 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_StartThreadNode_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_StartMultipleThreadsNode_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_StartMultipleThreadsNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_StartMultipleThreadsNode_descriptor,
@@ -358,13 +399,13 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_StartMultipleThreadsNode_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_FailureHandlerDef_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_FailureHandlerDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_FailureHandlerDef_descriptor,
         new java.lang.String[] { "HandlerSpecName", "SpecificFailure", "AnyFailureOfType", "FailureToCatch", });
     internal_static_littlehorse_WaitForThreadsNode_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_WaitForThreadsNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WaitForThreadsNode_descriptor,
@@ -376,67 +417,67 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_WaitForThreadsNode_ThreadToWaitFor_descriptor,
         new java.lang.String[] { "ThreadRunNumber", });
     internal_static_littlehorse_ExternalEventNode_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_littlehorse_ExternalEventNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNode_descriptor,
         new java.lang.String[] { "ExternalEventDefName", "TimeoutSeconds", });
     internal_static_littlehorse_EntrypointNode_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_littlehorse_EntrypointNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_EntrypointNode_descriptor,
         new java.lang.String[] { });
     internal_static_littlehorse_ExitNode_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_littlehorse_ExitNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExitNode_descriptor,
         new java.lang.String[] { "FailureDef", "FailureDef", });
     internal_static_littlehorse_FailureDef_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_littlehorse_FailureDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_FailureDef_descriptor,
         new java.lang.String[] { "FailureName", "Message", "Content", "Content", });
     internal_static_littlehorse_Node_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_littlehorse_Node_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Node_descriptor,
         new java.lang.String[] { "OutgoingEdges", "VariableMutations", "FailureHandlers", "Entrypoint", "Exit", "Task", "ExternalEvent", "StartThread", "WaitForThreads", "Nop", "Sleep", "UserTask", "StartMultipleThreads", "Node", });
     internal_static_littlehorse_UserTaskNode_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_littlehorse_UserTaskNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskNode_descriptor,
         new java.lang.String[] { "UserTaskDefName", "UserGroup", "UserId", "Actions", "UserTaskDefVersion", "Notes", "UserGroup", "UserId", "UserTaskDefVersion", "Notes", });
     internal_static_littlehorse_EdgeCondition_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_littlehorse_EdgeCondition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_EdgeCondition_descriptor,
         new java.lang.String[] { "Comparator", "Left", "Right", });
     internal_static_littlehorse_Edge_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_littlehorse_Edge_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Edge_descriptor,
         new java.lang.String[] { "SinkNodeName", "Condition", "Condition", });
     internal_static_littlehorse_NopNode_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_littlehorse_NopNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_NopNode_descriptor,
         new java.lang.String[] { });
     internal_static_littlehorse_SleepNode_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_littlehorse_SleepNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_SleepNode_descriptor,
         new java.lang.String[] { "RawSeconds", "Timestamp", "IsoDate", "SleepLength", });
     internal_static_littlehorse_WfSpecVersionMigration_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_littlehorse_WfSpecVersionMigration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WfSpecVersionMigration_descriptor,
@@ -448,7 +489,7 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_WfSpecVersionMigration_ThreadSpecMigrationsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_ThreadSpecMigration_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_littlehorse_ThreadSpecMigration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ThreadSpecMigration_descriptor,
@@ -460,7 +501,7 @@ public final class WfSpecOuterClass {
         internal_static_littlehorse_ThreadSpecMigration_NodeMigrationsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_NodeMigration_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_littlehorse_NodeMigration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_NodeMigration_descriptor,

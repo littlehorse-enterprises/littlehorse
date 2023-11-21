@@ -52,23 +52,11 @@ message VariableMutation {
   }
 }
 
-enum IndexType {
-  LOCAL_INDEX = 0;
-  REMOTE_INDEX = 1;
-}
-
 message VariableDef {
   VariableType type = 1;
   string name = 2;
-  optional IndexType index_type = 3;
-  repeated JsonIndex json_indexes = 4;
-  VariableValue default_value = 5;
-  bool persistent = 6;
-}
-
-message JsonIndex {
-  string path = 1;
-  IndexType index_type = 2;
+  bool required = 3;
+  optional VariableValue default_value = 4;
 }
 
 enum Comparator {

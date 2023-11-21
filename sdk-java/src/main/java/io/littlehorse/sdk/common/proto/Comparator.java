@@ -139,7 +139,7 @@ public enum Comparator
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor().getEnumTypes().get(2);
+    return io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor().getEnumTypes().get(1);
   }
 
   private static final Comparator[] VALUES = values();

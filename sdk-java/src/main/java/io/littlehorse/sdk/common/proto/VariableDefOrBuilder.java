@@ -31,63 +31,23 @@ public interface VariableDefOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return Whether the indexType field is set.
+   * <code>bool required = 3;</code>
+   * @return The required.
    */
-  boolean hasIndexType();
-  /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return The enum numeric value on the wire for indexType.
-   */
-  int getIndexTypeValue();
-  /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return The indexType.
-   */
-  io.littlehorse.sdk.common.proto.IndexType getIndexType();
+  boolean getRequired();
 
   /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> 
-      getJsonIndexesList();
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.JsonIndex getJsonIndexes(int index);
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  int getJsonIndexesCount();
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> 
-      getJsonIndexesOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
-      int index);
-
-  /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
    * @return Whether the defaultValue field is set.
    */
   boolean hasDefaultValue();
   /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
    * @return The defaultValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getDefaultValue();
   /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
-
-  /**
-   * <code>bool persistent = 6;</code>
-   * @return The persistent.
-   */
-  boolean getPersistent();
 }
