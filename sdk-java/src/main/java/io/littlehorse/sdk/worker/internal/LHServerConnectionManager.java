@@ -335,11 +335,10 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 return LHErrorType.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHErrorType.VAR_SUB_ERROR;
-            case TASK_CANCELLED:
-                return LHErrorType.USER_TASK_CANCELLED;
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
+            case TASK_EXCEPTION: // TODO: TASK_EXCEPTION should have its own type.
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unexpected task status: " + status);

@@ -6,7 +6,6 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
-    IndexType,
     Comparator,
     VariableMutationType,
 )
@@ -28,8 +27,7 @@ def get_workflow() -> Workflow:
         approval = approval_thread.add_variable("INPUT", VariableType.JSON_OBJ)
         is_approved = (
             approval_thread.add_variable("did-person-approve", VariableType.BOOL)
-            .with_index(IndexType.LOCAL_INDEX)
-            .persistent()
+            .searchable()
         )
 
         def is_user_group(user_group_thread: WorkflowThread) -> None:
@@ -67,13 +65,11 @@ def get_workflow() -> Workflow:
         approvals_var = wf.add_variable("approvals", VariableType.JSON_ARR)
         (
             wf.add_variable("item-url", VariableType.STR)
-            .with_index(IndexType.REMOTE_INDEX)
-            .persistent()
+            .searchable()
         )
         (
             wf.add_variable("status", VariableType.STR, "PENDING")
-            .with_index(IndexType.LOCAL_INDEX)
-            .persistent()
+            .searchable()
         )
         spawned_thread_1 = wf.spawn_thread_for_each(
             approvals_var, one_approval, "approval"

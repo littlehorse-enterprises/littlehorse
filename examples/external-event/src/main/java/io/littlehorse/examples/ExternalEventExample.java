@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -36,7 +35,7 @@ public class ExternalEventExample {
         return new WorkflowImpl(
             "example-external-event",
             wf -> {
-                WfRunVariable name = wf.addVariable("name", VariableType.STR).withIndex(IndexType.REMOTE_INDEX);
+                WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
 
                 wf.execute("ask-for-name");
 

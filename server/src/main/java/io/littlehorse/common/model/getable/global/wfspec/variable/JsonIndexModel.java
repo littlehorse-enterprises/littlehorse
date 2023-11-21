@@ -2,9 +2,8 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JsonIndexModel extends LHSerializable<JsonIndex> {
 
-    private String path;
-    private IndexType indexType;
+    private String fieldPath;
+    private VariableType fieldType;
 
     @Override
     public Class<JsonIndex> getProtoBaseClass() {
@@ -25,7 +24,7 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
 
     @Override
     public JsonIndex.Builder toProto() {
-        JsonIndex.Builder out = JsonIndex.newBuilder().setPath(path).setIndexType(indexType);
+        JsonIndex.Builder out = JsonIndex.newBuilder().setFieldPath(fieldPath).setFieldType(fieldType);
 
         return out;
     }
@@ -33,12 +32,8 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
     @Override
     public void initFrom(Message proto) {
         JsonIndex p = (JsonIndex) proto;
-        path = p.getPath();
-        indexType = p.getIndexType();
-    }
-
-    public TagStorageType getTagStorageType() {
-        return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
+        fieldPath = p.getFieldPath();
+        fieldType = p.getFieldType();
     }
 
     @Override
@@ -50,6 +45,6 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
         }
 
         JsonIndexModel o = (JsonIndexModel) other;
-        return Objects.equals(path, o.getPath()) && Objects.equals(indexType, o.getIndexType());
+        return Objects.equals(fieldPath, o.getFieldPath()) && Objects.equals(fieldType, o.getFieldType());
     }
 }

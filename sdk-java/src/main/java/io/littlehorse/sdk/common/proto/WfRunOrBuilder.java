@@ -49,6 +49,17 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
   /**
+   * <pre>
+   * Introduced now since with ThreadRun-level retention, we can't rely upon
+   * thread_runs.size() to determine the number of ThreadRuns.
+   * </pre>
+   *
+   * <code>int32 greatest_threadrun_number = 5;</code>
+   * @return The greatestThreadrunNumber.
+   */
+  int getGreatestThreadrunNumber();
+
+  /**
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return Whether the startTime field is set.
    */
@@ -151,42 +162,26 @@ public interface WfRunOrBuilder extends
       int index);
 
   /**
-   * <pre>
-   * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns.
-   * </pre>
-   *
-   * <code>int32 greatest_threadrun_number = 11;</code>
-   * @return The greatestThreadrunNumber.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
-  int getGreatestThreadrunNumber();
-
+  java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> 
+      getOldWfSpecVersionsList();
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @return A list containing the oldWfSpecVersions.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
-  java.util.List<java.lang.Integer> getOldWfSpecVersionsList();
+  io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index);
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @return The count of oldWfSpecVersions.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
   int getOldWfSpecVersionsCount();
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @param index The index of the element to return.
-   * @return The oldWfSpecVersions at the given index.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
-  int getOldWfSpecVersions(int index);
+  java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+      getOldWfSpecVersionsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
+      int index);
 }

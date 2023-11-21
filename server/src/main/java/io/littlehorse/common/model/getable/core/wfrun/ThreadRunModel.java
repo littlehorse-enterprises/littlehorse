@@ -680,7 +680,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
             VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
             VariableAssignmentModel assn = node.variables.get(i);
-            String varName = requiredVarDef.name;
+            String varName = requiredVarDef.getName();
             VariableValueModel val;
 
             if (assn != null) {
@@ -688,10 +688,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            if (val.type != requiredVarDef.type && val.type != VariableType.NULL) {
+            if (val.type != requiredVarDef.getType() && val.type != VariableType.NULL) {
                 throw new LHVarSubError(
                         null,
-                        "Variable " + varName + " should be " + requiredVarDef.type + " but is of type " + val.type);
+                        "Variable " + varName + " should be " + requiredVarDef.getType() + " but is of type "
+                                + val.getType());
             }
             out.add(new VarNameAndValModel(varName, val));
         }

@@ -3,8 +3,8 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -12,19 +12,19 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.NonNull;
 
 @Getter
 class WfRunVariableImpl implements WfRunVariable {
 
     public String name;
     public VariableType type;
-    public String jsonPath;
     private VariableValue defaultValue;
+    private boolean required;
+    private boolean searchable;
     private Object typeOrDefaultVal;
-    private IndexType indexType;
-    private boolean persistent;
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
+
+    public String jsonPath;
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal) {
         this.name = name;
@@ -46,6 +46,7 @@ class WfRunVariableImpl implements WfRunVariable {
         }
     }
 
+    @Override
     public WfRunVariableImpl jsonPath(String path) {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
@@ -59,48 +60,45 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WfRunVariable withIndex(@NonNull IndexType indexType) {
-        this.indexType = indexType;
+    public WfRunVariable searchable() {
+        this.searchable = true;
         return this;
     }
 
     @Override
-    public WfRunVariable withJsonIndex(@NonNull String jsonPath, @NonNull IndexType indexType) {
-        if (!jsonPath.startsWith("$.")) {
-            throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", jsonPath));
+    public WfRunVariable required() {
+        this.required = true;
+        return this;
+    }
+
+    @Override
+    public WfRunVariable searchableOn(String fieldPath, VariableType fieldType) {
+        if (!fieldPath.startsWith("$.")) {
+            throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", fieldPath));
         }
         if (!type.equals(VariableType.JSON_OBJ)) {
             throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
-        this.jsonIndexes.add(
-                JsonIndex.newBuilder().setIndexType(indexType).setPath(jsonPath).build());
+        this.jsonIndexes.add(JsonIndex.newBuilder()
+                .setFieldPath(fieldPath)
+                .setFieldType(fieldType)
+                .build());
         return this;
     }
 
-    public VariableDef getSpec() {
-        VariableDef.Builder out = VariableDef.newBuilder()
-                .setType(this.getType())
-                .setName(this.getName())
-                .setPersistent(persistent);
-
-        if (this.getIndexType() != null) {
-            out.setIndexType(this.getIndexType());
-        }
-
-        for (JsonIndex jsonIndex : this.getJsonIndexes()) {
-            out.addJsonIndexes(jsonIndex);
-        }
+    public ThreadVarDef getSpec() {
+        VariableDef.Builder varDef =
+                VariableDef.newBuilder().setType(this.getType()).setName(this.getName());
 
         if (this.defaultValue != null) {
-            out.setDefaultValue(defaultValue);
+            varDef.setDefaultValue(defaultValue);
         }
 
-        return out.build();
-    }
-
-    @Override
-    public WfRunVariable persistent() {
-        this.persistent = true;
-        return this;
+        return ThreadVarDef.newBuilder()
+                .setVarDef(varDef)
+                .setRequired(required)
+                .setSearchable(searchable)
+                .addAllJsonIndexes(jsonIndexes)
+                .build();
     }
 }

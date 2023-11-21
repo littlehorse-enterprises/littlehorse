@@ -182,7 +182,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
     public List<Tag> getIndexEntries() {
         List<Tag> out = new ArrayList<>();
         for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration : this.getIndexConfigurations()) {
-            if (!indexConfiguration.isValid(this)) {
+            if (!indexConfiguration.isActiveOn(this)) {
                 continue;
             }
             Optional<TagStorageType> tagStorageType = indexConfiguration.getTagStorageType();
@@ -204,16 +204,11 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                     .toList();
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
-                TagStorageType storageType = list.stream()
-                        .map(IndexedField::getTagStorageType)
-                        .filter(tagStorageTypePb1 -> tagStorageTypePb1 == TagStorageType.REMOTE)
-                        .findAny()
-                        .orElse(TagStorageType.LOCAL);
                 List<Pair<String, String>> pairs = list.stream()
                         .map(indexedField -> Pair.of(
                                 indexedField.getKey(), indexedField.getValue().toString()))
                         .toList();
-                out.add(new Tag(this, storageType, pairs));
+                out.add(new Tag(this, TagStorageType.LOCAL, pairs));
             }
         }
         return out;

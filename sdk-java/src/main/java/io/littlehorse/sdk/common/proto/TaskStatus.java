@@ -37,10 +37,6 @@ public enum TaskStatus
    */
   TASK_INPUT_VAR_SUB_ERROR(6),
   /**
-   * <code>TASK_CANCELLED = 7;</code>
-   */
-  TASK_CANCELLED(7),
-  /**
    * <code>TASK_EXCEPTION = 8;</code>
    */
   TASK_EXCEPTION(8),
@@ -75,10 +71,6 @@ public enum TaskStatus
    * <code>TASK_INPUT_VAR_SUB_ERROR = 6;</code>
    */
   public static final int TASK_INPUT_VAR_SUB_ERROR_VALUE = 6;
-  /**
-   * <code>TASK_CANCELLED = 7;</code>
-   */
-  public static final int TASK_CANCELLED_VALUE = 7;
   /**
    * <code>TASK_EXCEPTION = 8;</code>
    */
@@ -116,7 +108,6 @@ public enum TaskStatus
       case 4: return TASK_TIMEOUT;
       case 5: return TASK_OUTPUT_SERIALIZING_ERROR;
       case 6: return TASK_INPUT_VAR_SUB_ERROR;
-      case 7: return TASK_CANCELLED;
       case 8: return TASK_EXCEPTION;
       default: return null;
     }
@@ -148,7 +139,7 @@ public enum TaskStatus
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(1);
+    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(2);
   }
 
   private static final TaskStatus[] VALUES = values();

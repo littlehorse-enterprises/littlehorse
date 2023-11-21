@@ -12,10 +12,6 @@ public enum TagStorageType
    * <code>LOCAL = 0;</code>
    */
   LOCAL(0),
-  /**
-   * <code>REMOTE = 1;</code>
-   */
-  REMOTE(1),
   UNRECOGNIZED(-1),
   ;
 
@@ -23,10 +19,6 @@ public enum TagStorageType
    * <code>LOCAL = 0;</code>
    */
   public static final int LOCAL_VALUE = 0;
-  /**
-   * <code>REMOTE = 1;</code>
-   */
-  public static final int REMOTE_VALUE = 1;
 
 
   public final int getNumber() {
@@ -54,7 +46,6 @@ public enum TagStorageType
   public static TagStorageType forNumber(int value) {
     switch (value) {
       case 0: return LOCAL;
-      case 1: return REMOTE;
       default: return null;
     }
   }

@@ -134,41 +134,41 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
 
   public static final int VARIABLE_DEFS_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> variableDefs_;
+  private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> variableDefs_;
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getVariableDefsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getVariableDefsList() {
     return variableDefs_;
   }
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
       getVariableDefsOrBuilderList() {
     return variableDefs_;
   }
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
   public int getVariableDefsCount() {
     return variableDefs_.size();
   }
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDef getVariableDefs(int index) {
+  public io.littlehorse.sdk.common.proto.ThreadVarDef getVariableDefs(int index) {
     return variableDefs_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getVariableDefsOrBuilder(
+  public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getVariableDefsOrBuilder(
       int index) {
     return variableDefs_.get(index);
   }
@@ -741,9 +741,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.VariableDef m =
+              io.littlehorse.sdk.common.proto.ThreadVarDef m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.VariableDef.parser(),
+                      io.littlehorse.sdk.common.proto.ThreadVarDef.parser(),
                       extensionRegistry);
               if (variableDefsBuilder_ == null) {
                 ensureVariableDefsIsMutable();
@@ -917,22 +917,22 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> variableDefs_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> variableDefs_ =
       java.util.Collections.emptyList();
     private void ensureVariableDefsIsMutable() {
       if (!((bitField0_ & 0x00000002) != 0)) {
-        variableDefs_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableDef>(variableDefs_);
+        variableDefs_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadVarDef>(variableDefs_);
         bitField0_ |= 0x00000002;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> variableDefsBuilder_;
+        io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> variableDefsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getVariableDefsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getVariableDefsList() {
       if (variableDefsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(variableDefs_);
       } else {
@@ -940,7 +940,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public int getVariableDefsCount() {
       if (variableDefsBuilder_ == null) {
@@ -950,9 +950,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDef getVariableDefs(int index) {
+    public io.littlehorse.sdk.common.proto.ThreadVarDef getVariableDefs(int index) {
       if (variableDefsBuilder_ == null) {
         return variableDefs_.get(index);
       } else {
@@ -960,10 +960,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder setVariableDefs(
-        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef value) {
       if (variableDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -977,10 +977,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder setVariableDefs(
-        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
       if (variableDefsBuilder_ == null) {
         ensureVariableDefsIsMutable();
         variableDefs_.set(index, builderForValue.build());
@@ -991,9 +991,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public Builder addVariableDefs(io.littlehorse.sdk.common.proto.VariableDef value) {
+    public Builder addVariableDefs(io.littlehorse.sdk.common.proto.ThreadVarDef value) {
       if (variableDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1007,10 +1007,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
-        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef value) {
       if (variableDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1024,10 +1024,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
-        io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
       if (variableDefsBuilder_ == null) {
         ensureVariableDefsIsMutable();
         variableDefs_.add(builderForValue.build());
@@ -1038,10 +1038,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
-        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
       if (variableDefsBuilder_ == null) {
         ensureVariableDefsIsMutable();
         variableDefs_.add(index, builderForValue.build());
@@ -1052,10 +1052,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addAllVariableDefs(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableDef> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ThreadVarDef> values) {
       if (variableDefsBuilder_ == null) {
         ensureVariableDefsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1067,7 +1067,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder clearVariableDefs() {
       if (variableDefsBuilder_ == null) {
@@ -1080,7 +1080,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder removeVariableDefs(int index) {
       if (variableDefsBuilder_ == null) {
@@ -1093,16 +1093,16 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder getVariableDefsBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder getVariableDefsBuilder(
         int index) {
       return getVariableDefsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getVariableDefsOrBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getVariableDefsOrBuilder(
         int index) {
       if (variableDefsBuilder_ == null) {
         return variableDefs_.get(index);  } else {
@@ -1110,9 +1110,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
          getVariableDefsOrBuilderList() {
       if (variableDefsBuilder_ != null) {
         return variableDefsBuilder_.getMessageOrBuilderList();
@@ -1121,33 +1121,33 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder addVariableDefsBuilder() {
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addVariableDefsBuilder() {
       return getVariableDefsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder addVariableDefsBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addVariableDefsBuilder(
         int index) {
       return getVariableDefsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+     * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef.Builder> 
          getVariableDefsBuilderList() {
       return getVariableDefsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
+        io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
         getVariableDefsFieldBuilder() {
       if (variableDefsBuilder_ == null) {
         variableDefsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder>(
+            io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder>(
                 variableDefs_,
                 ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),

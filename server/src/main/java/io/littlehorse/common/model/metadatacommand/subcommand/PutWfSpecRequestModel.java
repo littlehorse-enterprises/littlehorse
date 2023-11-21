@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -80,7 +79,6 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
         spec.setRetentionPolicy(retentionPolicy);
-        spec.status = LHStatus.RUNNING;
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();
             tspec.wfSpecModel = spec;

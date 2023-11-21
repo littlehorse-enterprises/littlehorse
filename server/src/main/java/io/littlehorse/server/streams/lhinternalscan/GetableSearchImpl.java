@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import lombok.Getter;
 
 @Getter
@@ -36,13 +37,13 @@ public class GetableSearchImpl implements GetableSearch {
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
         }
 
-        if (tagStorageType == TagStorageType.REMOTE) {
+        if (Tag.isLocal(tagStorageType)) {
+            out.storeName = ServerTopology.CORE_STORE;
+            out.resultType = ScanResultTypePb.OBJECT_ID;
+        } else { // remote tag
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
-        } else if (tagStorageType == TagStorageType.LOCAL) {
-            out.storeName = ServerTopology.CORE_STORE;
-            out.resultType = ScanResultTypePb.OBJECT_ID;
         }
         return out;
     }

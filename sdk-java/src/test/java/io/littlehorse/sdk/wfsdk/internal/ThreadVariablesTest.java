@@ -1,9 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
-import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.List;
@@ -16,7 +15,7 @@ public class ThreadVariablesTest {
     public void shouldThrowMisconfigurationExceptionWhenAddingJsonIndexToANonJsonVariable() {
         WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
             WfRunVariable var =
-                    thread.addVariable("my-var", VariableType.INT).withJsonIndex("$.somePath", IndexType.REMOTE_INDEX);
+                    thread.addVariable("my-var", VariableType.INT).searchableOn("$.somePath", VariableType.DOUBLE);
             thread.sleepUntil(var);
         });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
@@ -28,8 +27,8 @@ public class ThreadVariablesTest {
     @Test
     public void shouldThrowMisconfigurationExceptionForInvalidJsonPath() {
         WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            WfRunVariable var = thread.addVariable("my-var", VariableType.JSON_OBJ)
-                    .withJsonIndex("somePath", IndexType.REMOTE_INDEX);
+            WfRunVariable var =
+                    thread.addVariable("my-var", VariableType.JSON_OBJ).searchableOn("somePath", VariableType.INT);
             thread.sleepUntil(var);
         });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
@@ -39,16 +38,16 @@ public class ThreadVariablesTest {
     }
 
     @Test
-    public void shouldBeAbleToCreatePersistentVariable() {
+    public void shouldBeAbleToCreateSearchableVariable() {
         WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            thread.addVariable("my-var", VariableType.STR).persistent();
+            thread.addVariable("my-var", VariableType.STR).searchable();
         });
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
-        List<VariableDef> varDefs =
+        List<ThreadVarDef> varDefs =
                 pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefsList();
 
         Assertions.assertThat(varDefs.size()).isEqualTo(1);
-        Assertions.assertThat(varDefs.get(0).getPersistent()).isTrue();
+        Assertions.assertThat(varDefs.get(0).getSearchable()).isTrue();
     }
 }

@@ -42,27 +42,27 @@ io.littlehorse.sdk.common.proto.Node defaultValue);
       java.lang.String key);
 
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.VariableDef> 
+  java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> 
       getVariableDefsList();
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableDef getVariableDefs(int index);
+  io.littlehorse.sdk.common.proto.ThreadVarDef getVariableDefs(int index);
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   int getVariableDefsCount();
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
       getVariableDefsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VariableDef variable_defs = 2;</code>
+   * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableDefOrBuilder getVariableDefsOrBuilder(
+  io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getVariableDefsOrBuilder(
       int index);
 
   /**

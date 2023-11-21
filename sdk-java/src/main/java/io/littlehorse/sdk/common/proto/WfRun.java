@@ -22,7 +22,7 @@ private static final long serialVersionUID = 0L;
     threadRuns_ = java.util.Collections.emptyList();
     pendingInterrupts_ = java.util.Collections.emptyList();
     pendingFailures_ = java.util.Collections.emptyList();
-    oldWfSpecVersions_ = emptyIntList();
+    oldWfSpecVersions_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -151,6 +151,22 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
     io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
     return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
+  }
+
+  public static final int GREATEST_THREADRUN_NUMBER_FIELD_NUMBER = 5;
+  private int greatestThreadrunNumber_ = 0;
+  /**
+   * <pre>
+   * Introduced now since with ThreadRun-level retention, we can't rely upon
+   * thread_runs.size() to determine the number of ThreadRuns.
+   * </pre>
+   *
+   * <code>int32 greatest_threadrun_number = 5;</code>
+   * @return The greatestThreadrunNumber.
+   */
+  @java.lang.Override
+  public int getGreatestThreadrunNumber() {
+    return greatestThreadrunNumber_;
   }
 
   public static final int START_TIME_FIELD_NUMBER = 6;
@@ -328,62 +344,46 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.get(index);
   }
 
-  public static final int GREATEST_THREADRUN_NUMBER_FIELD_NUMBER = 11;
-  private int greatestThreadrunNumber_ = 0;
-  /**
-   * <pre>
-   * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns.
-   * </pre>
-   *
-   * <code>int32 greatest_threadrun_number = 11;</code>
-   * @return The greatestThreadrunNumber.
-   */
-  @java.lang.Override
-  public int getGreatestThreadrunNumber() {
-    return greatestThreadrunNumber_;
-  }
-
-  public static final int OLD_WF_SPEC_VERSIONS_FIELD_NUMBER = 12;
+  public static final int OLD_WF_SPEC_VERSIONS_FIELD_NUMBER = 11;
   @SuppressWarnings("serial")
-  private com.google.protobuf.Internal.IntList oldWfSpecVersions_;
+  private java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> oldWfSpecVersions_;
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @return A list containing the oldWfSpecVersions.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
   @java.lang.Override
-  public java.util.List<java.lang.Integer>
-      getOldWfSpecVersionsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> getOldWfSpecVersionsList() {
     return oldWfSpecVersions_;
   }
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @return The count of oldWfSpecVersions.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+      getOldWfSpecVersionsOrBuilderList() {
+    return oldWfSpecVersions_;
+  }
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+   */
+  @java.lang.Override
   public int getOldWfSpecVersionsCount() {
     return oldWfSpecVersions_.size();
   }
   /**
-   * <pre>
-   * Keeps track of old versions of the WfSpec for this WfRun
-   * </pre>
-   *
-   * <code>repeated int32 old_wf_spec_versions = 12;</code>
-   * @param index The index of the element to return.
-   * @return The oldWfSpecVersions at the given index.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
    */
-  public int getOldWfSpecVersions(int index) {
-    return oldWfSpecVersions_.getInt(index);
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index) {
+    return oldWfSpecVersions_.get(index);
   }
-  private int oldWfSpecVersionsMemoizedSerializedSize = -1;
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
+      int index) {
+    return oldWfSpecVersions_.get(index);
+  }
 
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
@@ -399,7 +399,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
@@ -411,6 +410,9 @@ private static final long serialVersionUID = 0L;
     }
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       output.writeEnum(4, status_);
+    }
+    if (greatestThreadrunNumber_ != 0) {
+      output.writeInt32(5, greatestThreadrunNumber_);
     }
     if (startTime_ != null) {
       output.writeMessage(6, getStartTime());
@@ -427,15 +429,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < pendingFailures_.size(); i++) {
       output.writeMessage(10, pendingFailures_.get(i));
     }
-    if (greatestThreadrunNumber_ != 0) {
-      output.writeInt32(11, greatestThreadrunNumber_);
-    }
-    if (getOldWfSpecVersionsList().size() > 0) {
-      output.writeUInt32NoTag(98);
-      output.writeUInt32NoTag(oldWfSpecVersionsMemoizedSerializedSize);
-    }
     for (int i = 0; i < oldWfSpecVersions_.size(); i++) {
-      output.writeInt32NoTag(oldWfSpecVersions_.getInt(i));
+      output.writeMessage(11, oldWfSpecVersions_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -460,6 +455,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, status_);
     }
+    if (greatestThreadrunNumber_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, greatestThreadrunNumber_);
+    }
     if (startTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getStartTime());
@@ -480,23 +479,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, pendingFailures_.get(i));
     }
-    if (greatestThreadrunNumber_ != 0) {
+    for (int i = 0; i < oldWfSpecVersions_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(11, greatestThreadrunNumber_);
-    }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < oldWfSpecVersions_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeInt32SizeNoTag(oldWfSpecVersions_.getInt(i));
-      }
-      size += dataSize;
-      if (!getOldWfSpecVersionsList().isEmpty()) {
-        size += 1;
-        size += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(dataSize);
-      }
-      oldWfSpecVersionsMemoizedSerializedSize = dataSize;
+        .computeMessageSize(11, oldWfSpecVersions_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -520,6 +505,8 @@ private static final long serialVersionUID = 0L;
     if (getWfSpecVersion()
         != other.getWfSpecVersion()) return false;
     if (status_ != other.status_) return false;
+    if (getGreatestThreadrunNumber()
+        != other.getGreatestThreadrunNumber()) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
     if (hasStartTime()) {
       if (!getStartTime()
@@ -536,8 +523,6 @@ private static final long serialVersionUID = 0L;
         .equals(other.getPendingInterruptsList())) return false;
     if (!getPendingFailuresList()
         .equals(other.getPendingFailuresList())) return false;
-    if (getGreatestThreadrunNumber()
-        != other.getGreatestThreadrunNumber()) return false;
     if (!getOldWfSpecVersionsList()
         .equals(other.getOldWfSpecVersionsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -559,6 +544,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getWfSpecVersion();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
+    hash = (37 * hash) + GREATEST_THREADRUN_NUMBER_FIELD_NUMBER;
+    hash = (53 * hash) + getGreatestThreadrunNumber();
     if (hasStartTime()) {
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getStartTime().hashCode();
@@ -579,8 +566,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + PENDING_FAILURES_FIELD_NUMBER;
       hash = (53 * hash) + getPendingFailuresList().hashCode();
     }
-    hash = (37 * hash) + GREATEST_THREADRUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getGreatestThreadrunNumber();
     if (getOldWfSpecVersionsCount() > 0) {
       hash = (37 * hash) + OLD_WF_SPEC_VERSIONS_FIELD_NUMBER;
       hash = (53 * hash) + getOldWfSpecVersionsList().hashCode();
@@ -720,6 +705,7 @@ private static final long serialVersionUID = 0L;
         getThreadRunsFieldBuilder();
         getPendingInterruptsFieldBuilder();
         getPendingFailuresFieldBuilder();
+        getOldWfSpecVersionsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -730,6 +716,7 @@ private static final long serialVersionUID = 0L;
       wfSpecName_ = "";
       wfSpecVersion_ = 0;
       status_ = 0;
+      greatestThreadrunNumber_ = 0;
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -746,23 +733,28 @@ private static final long serialVersionUID = 0L;
         threadRuns_ = null;
         threadRunsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000080);
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
       } else {
         pendingInterrupts_ = null;
         pendingInterruptsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
       } else {
         pendingFailures_ = null;
         pendingFailuresBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000100);
-      greatestThreadrunNumber_ = 0;
-      oldWfSpecVersions_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000200);
+      if (oldWfSpecVersionsBuilder_ == null) {
+        oldWfSpecVersions_ = java.util.Collections.emptyList();
+      } else {
+        oldWfSpecVersions_ = null;
+        oldWfSpecVersionsBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000400);
       return this;
     }
 
@@ -797,37 +789,41 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WfRun result) {
       if (threadRunsBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0)) {
+        if (((bitField0_ & 0x00000080) != 0)) {
           threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000080);
         }
         result.threadRuns_ = threadRuns_;
       } else {
         result.threadRuns_ = threadRunsBuilder_.build();
       }
       if (pendingInterruptsBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.pendingInterrupts_ = pendingInterrupts_;
       } else {
         result.pendingInterrupts_ = pendingInterruptsBuilder_.build();
       }
       if (pendingFailuresBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0)) {
+        if (((bitField0_ & 0x00000200) != 0)) {
           pendingFailures_ = java.util.Collections.unmodifiableList(pendingFailures_);
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000200);
         }
         result.pendingFailures_ = pendingFailures_;
       } else {
         result.pendingFailures_ = pendingFailuresBuilder_.build();
       }
-      if (((bitField0_ & 0x00000400) != 0)) {
-        oldWfSpecVersions_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00000400);
+      if (oldWfSpecVersionsBuilder_ == null) {
+        if (((bitField0_ & 0x00000400) != 0)) {
+          oldWfSpecVersions_ = java.util.Collections.unmodifiableList(oldWfSpecVersions_);
+          bitField0_ = (bitField0_ & ~0x00000400);
+        }
+        result.oldWfSpecVersions_ = oldWfSpecVersions_;
+      } else {
+        result.oldWfSpecVersions_ = oldWfSpecVersionsBuilder_.build();
       }
-      result.oldWfSpecVersions_ = oldWfSpecVersions_;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WfRun result) {
@@ -845,19 +841,19 @@ private static final long serialVersionUID = 0L;
         result.status_ = status_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.greatestThreadrunNumber_ = greatestThreadrunNumber_;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.startTime_ = startTimeBuilder_ == null
             ? startTime_
             : startTimeBuilder_.build();
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.endTime_ = endTimeBuilder_ == null
             ? endTime_
             : endTimeBuilder_.build();
         to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000200) != 0)) {
-        result.greatestThreadrunNumber_ = greatestThreadrunNumber_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -922,6 +918,9 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
+      if (other.getGreatestThreadrunNumber() != 0) {
+        setGreatestThreadrunNumber(other.getGreatestThreadrunNumber());
+      }
       if (other.hasStartTime()) {
         mergeStartTime(other.getStartTime());
       }
@@ -932,7 +931,7 @@ private static final long serialVersionUID = 0L;
         if (!other.threadRuns_.isEmpty()) {
           if (threadRuns_.isEmpty()) {
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000080);
           } else {
             ensureThreadRunsIsMutable();
             threadRuns_.addAll(other.threadRuns_);
@@ -945,7 +944,7 @@ private static final long serialVersionUID = 0L;
             threadRunsBuilder_.dispose();
             threadRunsBuilder_ = null;
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000080);
             threadRunsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getThreadRunsFieldBuilder() : null;
@@ -958,7 +957,7 @@ private static final long serialVersionUID = 0L;
         if (!other.pendingInterrupts_.isEmpty()) {
           if (pendingInterrupts_.isEmpty()) {
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensurePendingInterruptsIsMutable();
             pendingInterrupts_.addAll(other.pendingInterrupts_);
@@ -971,7 +970,7 @@ private static final long serialVersionUID = 0L;
             pendingInterruptsBuilder_.dispose();
             pendingInterruptsBuilder_ = null;
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
             pendingInterruptsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPendingInterruptsFieldBuilder() : null;
@@ -984,7 +983,7 @@ private static final long serialVersionUID = 0L;
         if (!other.pendingFailures_.isEmpty()) {
           if (pendingFailures_.isEmpty()) {
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000200);
           } else {
             ensurePendingFailuresIsMutable();
             pendingFailures_.addAll(other.pendingFailures_);
@@ -997,7 +996,7 @@ private static final long serialVersionUID = 0L;
             pendingFailuresBuilder_.dispose();
             pendingFailuresBuilder_ = null;
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000200);
             pendingFailuresBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPendingFailuresFieldBuilder() : null;
@@ -1006,18 +1005,31 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.getGreatestThreadrunNumber() != 0) {
-        setGreatestThreadrunNumber(other.getGreatestThreadrunNumber());
-      }
-      if (!other.oldWfSpecVersions_.isEmpty()) {
-        if (oldWfSpecVersions_.isEmpty()) {
-          oldWfSpecVersions_ = other.oldWfSpecVersions_;
-          bitField0_ = (bitField0_ & ~0x00000400);
-        } else {
-          ensureOldWfSpecVersionsIsMutable();
-          oldWfSpecVersions_.addAll(other.oldWfSpecVersions_);
+      if (oldWfSpecVersionsBuilder_ == null) {
+        if (!other.oldWfSpecVersions_.isEmpty()) {
+          if (oldWfSpecVersions_.isEmpty()) {
+            oldWfSpecVersions_ = other.oldWfSpecVersions_;
+            bitField0_ = (bitField0_ & ~0x00000400);
+          } else {
+            ensureOldWfSpecVersionsIsMutable();
+            oldWfSpecVersions_.addAll(other.oldWfSpecVersions_);
+          }
+          onChanged();
         }
-        onChanged();
+      } else {
+        if (!other.oldWfSpecVersions_.isEmpty()) {
+          if (oldWfSpecVersionsBuilder_.isEmpty()) {
+            oldWfSpecVersionsBuilder_.dispose();
+            oldWfSpecVersionsBuilder_ = null;
+            oldWfSpecVersions_ = other.oldWfSpecVersions_;
+            bitField0_ = (bitField0_ & ~0x00000400);
+            oldWfSpecVersionsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getOldWfSpecVersionsFieldBuilder() : null;
+          } else {
+            oldWfSpecVersionsBuilder_.addAllMessages(other.oldWfSpecVersions_);
+          }
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1065,18 +1077,23 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 40: {
+              greatestThreadrunNumber_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             case 50: {
               input.readMessage(
                   getStartTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getEndTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 58
             case 66: {
@@ -1118,27 +1135,19 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 82
-            case 88: {
-              greatestThreadrunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000200;
-              break;
-            } // case 88
-            case 96: {
-              int v = input.readInt32();
-              ensureOldWfSpecVersionsIsMutable();
-              oldWfSpecVersions_.addInt(v);
-              break;
-            } // case 96
-            case 98: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              ensureOldWfSpecVersionsIsMutable();
-              while (input.getBytesUntilLimit() > 0) {
-                oldWfSpecVersions_.addInt(input.readInt32());
+            case 90: {
+              io.littlehorse.sdk.common.proto.WfSpecId m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.WfSpecId.parser(),
+                      extensionRegistry);
+              if (oldWfSpecVersionsBuilder_ == null) {
+                ensureOldWfSpecVersionsIsMutable();
+                oldWfSpecVersions_.add(m);
+              } else {
+                oldWfSpecVersionsBuilder_.addMessage(m);
               }
-              input.popLimit(limit);
               break;
-            } // case 98
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1385,6 +1394,53 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private int greatestThreadrunNumber_ ;
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 5;</code>
+     * @return The greatestThreadrunNumber.
+     */
+    @java.lang.Override
+    public int getGreatestThreadrunNumber() {
+      return greatestThreadrunNumber_;
+    }
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 5;</code>
+     * @param value The greatestThreadrunNumber to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGreatestThreadrunNumber(int value) {
+
+      greatestThreadrunNumber_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearGreatestThreadrunNumber() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      greatestThreadrunNumber_ = 0;
+      onChanged();
+      return this;
+    }
+
     private com.google.protobuf.Timestamp startTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
@@ -1393,7 +1449,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
@@ -1418,7 +1474,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1432,7 +1488,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1441,7 +1497,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           startTime_ != null &&
           startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getStartTimeBuilder().mergeFrom(value);
@@ -1451,7 +1507,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1459,7 +1515,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -1472,7 +1528,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getStartTimeFieldBuilder().getBuilder();
     }
@@ -1512,7 +1568,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
@@ -1537,7 +1593,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1551,7 +1607,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1560,7 +1616,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000040) != 0) &&
           endTime_ != null &&
           endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getEndTimeBuilder().mergeFrom(value);
@@ -1570,7 +1626,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1578,7 +1634,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder clearEndTime() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       endTime_ = null;
       if (endTimeBuilder_ != null) {
         endTimeBuilder_.dispose();
@@ -1591,7 +1647,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return getEndTimeFieldBuilder().getBuilder();
     }
@@ -1626,9 +1682,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.sdk.common.proto.ThreadRun> threadRuns_ =
       java.util.Collections.emptyList();
     private void ensureThreadRunsIsMutable() {
-      if (!((bitField0_ & 0x00000040) != 0)) {
+      if (!((bitField0_ & 0x00000080) != 0)) {
         threadRuns_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadRun>(threadRuns_);
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
        }
     }
 
@@ -1778,7 +1834,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearThreadRuns() {
       if (threadRunsBuilder_ == null) {
         threadRuns_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         onChanged();
       } else {
         threadRunsBuilder_.clear();
@@ -1855,7 +1911,7 @@ private static final long serialVersionUID = 0L;
         threadRunsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.ThreadRun, io.littlehorse.sdk.common.proto.ThreadRun.Builder, io.littlehorse.sdk.common.proto.ThreadRunOrBuilder>(
                 threadRuns_,
-                ((bitField0_ & 0x00000040) != 0),
+                ((bitField0_ & 0x00000080) != 0),
                 getParentForChildren(),
                 isClean());
         threadRuns_ = null;
@@ -1866,9 +1922,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> pendingInterrupts_ =
       java.util.Collections.emptyList();
     private void ensurePendingInterruptsIsMutable() {
-      if (!((bitField0_ & 0x00000080) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingInterrupt>(pendingInterrupts_);
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -2018,7 +2074,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPendingInterrupts() {
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         pendingInterruptsBuilder_.clear();
@@ -2095,7 +2151,7 @@ private static final long serialVersionUID = 0L;
         pendingInterruptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder>(
                 pendingInterrupts_,
-                ((bitField0_ & 0x00000080) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         pendingInterrupts_ = null;
@@ -2106,9 +2162,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> pendingFailures_ =
       java.util.Collections.emptyList();
     private void ensurePendingFailuresIsMutable() {
-      if (!((bitField0_ & 0x00000100) != 0)) {
+      if (!((bitField0_ & 0x00000200) != 0)) {
         pendingFailures_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingFailureHandler>(pendingFailures_);
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
        }
     }
 
@@ -2258,7 +2314,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPendingFailures() {
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         onChanged();
       } else {
         pendingFailuresBuilder_.clear();
@@ -2335,7 +2391,7 @@ private static final long serialVersionUID = 0L;
         pendingFailuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder>(
                 pendingFailures_,
-                ((bitField0_ & 0x00000100) != 0),
+                ((bitField0_ & 0x00000200) != 0),
                 getParentForChildren(),
                 isClean());
         pendingFailures_ = null;
@@ -2343,160 +2399,244 @@ private static final long serialVersionUID = 0L;
       return pendingFailuresBuilder_;
     }
 
-    private int greatestThreadrunNumber_ ;
-    /**
-     * <pre>
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
-     * </pre>
-     *
-     * <code>int32 greatest_threadrun_number = 11;</code>
-     * @return The greatestThreadrunNumber.
-     */
-    @java.lang.Override
-    public int getGreatestThreadrunNumber() {
-      return greatestThreadrunNumber_;
-    }
-    /**
-     * <pre>
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
-     * </pre>
-     *
-     * <code>int32 greatest_threadrun_number = 11;</code>
-     * @param value The greatestThreadrunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setGreatestThreadrunNumber(int value) {
-
-      greatestThreadrunNumber_ = value;
-      bitField0_ |= 0x00000200;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
-     * </pre>
-     *
-     * <code>int32 greatest_threadrun_number = 11;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearGreatestThreadrunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000200);
-      greatestThreadrunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.Internal.IntList oldWfSpecVersions_ = emptyIntList();
+    private java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> oldWfSpecVersions_ =
+      java.util.Collections.emptyList();
     private void ensureOldWfSpecVersionsIsMutable() {
       if (!((bitField0_ & 0x00000400) != 0)) {
-        oldWfSpecVersions_ = mutableCopy(oldWfSpecVersions_);
+        oldWfSpecVersions_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WfSpecId>(oldWfSpecVersions_);
         bitField0_ |= 0x00000400;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> oldWfSpecVersionsBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> getOldWfSpecVersionsList() {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(oldWfSpecVersions_);
+      } else {
+        return oldWfSpecVersionsBuilder_.getMessageList();
       }
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @return A list containing the oldWfSpecVersions.
-     */
-    public java.util.List<java.lang.Integer>
-        getOldWfSpecVersionsList() {
-      return ((bitField0_ & 0x00000400) != 0) ?
-               java.util.Collections.unmodifiableList(oldWfSpecVersions_) : oldWfSpecVersions_;
-    }
-    /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @return The count of oldWfSpecVersions.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
     public int getOldWfSpecVersionsCount() {
-      return oldWfSpecVersions_.size();
+      if (oldWfSpecVersionsBuilder_ == null) {
+        return oldWfSpecVersions_.size();
+      } else {
+        return oldWfSpecVersionsBuilder_.getCount();
+      }
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @param index The index of the element to return.
-     * @return The oldWfSpecVersions at the given index.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
-    public int getOldWfSpecVersions(int index) {
-      return oldWfSpecVersions_.getInt(index);
+    public io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        return oldWfSpecVersions_.get(index);
+      } else {
+        return oldWfSpecVersionsBuilder_.getMessage(index);
+      }
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @param index The index to set the value at.
-     * @param value The oldWfSpecVersions to set.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
     public Builder setOldWfSpecVersions(
-        int index, int value) {
-
-      ensureOldWfSpecVersionsIsMutable();
-      oldWfSpecVersions_.setInt(index, value);
-      onChanged();
+        int index, io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.set(index, value);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @param value The oldWfSpecVersions to add.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
-    public Builder addOldWfSpecVersions(int value) {
-
-      ensureOldWfSpecVersionsIsMutable();
-      oldWfSpecVersions_.addInt(value);
-      onChanged();
+    public Builder setOldWfSpecVersions(
+        int index, io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @param values The oldWfSpecVersions to add.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public Builder addOldWfSpecVersions(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.add(value);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public Builder addOldWfSpecVersions(
+        int index, io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.add(index, value);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public Builder addOldWfSpecVersions(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.add(builderForValue.build());
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public Builder addOldWfSpecVersions(
+        int index, io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
     public Builder addAllOldWfSpecVersions(
-        java.lang.Iterable<? extends java.lang.Integer> values) {
-      ensureOldWfSpecVersionsIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, oldWfSpecVersions_);
-      onChanged();
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.WfSpecId> values) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        ensureOldWfSpecVersionsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, oldWfSpecVersions_);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.addAllMessages(values);
+      }
       return this;
     }
     /**
-     * <pre>
-     * Keeps track of old versions of the WfSpec for this WfRun
-     * </pre>
-     *
-     * <code>repeated int32 old_wf_spec_versions = 12;</code>
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
      */
     public Builder clearOldWfSpecVersions() {
-      oldWfSpecVersions_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000400);
-      onChanged();
+      if (oldWfSpecVersionsBuilder_ == null) {
+        oldWfSpecVersions_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000400);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.clear();
+      }
       return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public Builder removeOldWfSpecVersions(int index) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        ensureOldWfSpecVersionsIsMutable();
+        oldWfSpecVersions_.remove(index);
+        onChanged();
+      } else {
+        oldWfSpecVersionsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getOldWfSpecVersionsBuilder(
+        int index) {
+      return getOldWfSpecVersionsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
+        int index) {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        return oldWfSpecVersions_.get(index);  } else {
+        return oldWfSpecVersionsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+         getOldWfSpecVersionsOrBuilderList() {
+      if (oldWfSpecVersionsBuilder_ != null) {
+        return oldWfSpecVersionsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(oldWfSpecVersions_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder addOldWfSpecVersionsBuilder() {
+      return getOldWfSpecVersionsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder addOldWfSpecVersionsBuilder(
+        int index) {
+      return getOldWfSpecVersionsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.WfSpecId.Builder> 
+         getOldWfSpecVersionsBuilderList() {
+      return getOldWfSpecVersionsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        getOldWfSpecVersionsFieldBuilder() {
+      if (oldWfSpecVersionsBuilder_ == null) {
+        oldWfSpecVersionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                oldWfSpecVersions_,
+                ((bitField0_ & 0x00000400) != 0),
+                getParentForChildren(),
+                isClean());
+        oldWfSpecVersions_ = null;
+      }
+      return oldWfSpecVersionsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

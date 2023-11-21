@@ -140,7 +140,6 @@ public class TestUtil {
         spec.setName(name);
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
-        spec.setStatus(LHStatus.RUNNING);
         spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
         return spec;
     }

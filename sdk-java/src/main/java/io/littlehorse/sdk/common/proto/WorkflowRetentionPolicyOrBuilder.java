@@ -28,11 +28,5 @@ public interface WorkflowRetentionPolicyOrBuilder extends
    */
   long getSecondsAfterWfTermination();
 
-  /**
-   * <code>int32 retention_hours = 7;</code>
-   * @return The retentionHours.
-   */
-  int getRetentionHours();
-
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.WfGcPolicyCase getWfGcPolicyCase();
 }

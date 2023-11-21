@@ -32,23 +32,36 @@ public interface NodeRunOrBuilder extends
   int getPosition();
 
   /**
-   * <pre>
-   * Optional because old versions do not have the wf_spec_version migration
-   * </pre>
-   *
-   * <code>optional int32 wf_spec_version = 4;</code>
-   * @return Whether the wfSpecVersion field is set.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * @return Whether the wfSpecId field is set.
    */
-  boolean hasWfSpecVersion();
+  boolean hasWfSpecId();
   /**
-   * <pre>
-   * Optional because old versions do not have the wf_spec_version migration
-   * </pre>
-   *
-   * <code>optional int32 wf_spec_version = 4;</code>
-   * @return The wfSpecVersion.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * @return The wfSpecId.
    */
-  int getWfSpecVersion();
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <code>repeated int32 failure_handler_ids = 5;</code>
+   * @return A list containing the failureHandlerIds.
+   */
+  java.util.List<java.lang.Integer> getFailureHandlerIdsList();
+  /**
+   * <code>repeated int32 failure_handler_ids = 5;</code>
+   * @return The count of failureHandlerIds.
+   */
+  int getFailureHandlerIdsCount();
+  /**
+   * <code>repeated int32 failure_handler_ids = 5;</code>
+   * @param index The index of the element to return.
+   * @return The failureHandlerIds at the given index.
+   */
+  int getFailureHandlerIds(int index);
 
   /**
    * <code>.littlehorse.LHStatus status = 6;</code>
@@ -92,236 +105,204 @@ public interface NodeRunOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
-
-  /**
-   * <code>string thread_spec_name = 10;</code>
+   * <code>string thread_spec_name = 9;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
-   * <code>string thread_spec_name = 10;</code>
+   * <code>string thread_spec_name = 9;</code>
    * @return The bytes for threadSpecName.
    */
   com.google.protobuf.ByteString
       getThreadSpecNameBytes();
 
   /**
-   * <code>string node_name = 11;</code>
+   * <code>string node_name = 10;</code>
    * @return The nodeName.
    */
   java.lang.String getNodeName();
   /**
-   * <code>string node_name = 11;</code>
+   * <code>string node_name = 10;</code>
    * @return The bytes for nodeName.
    */
   com.google.protobuf.ByteString
       getNodeNameBytes();
 
   /**
-   * <code>optional string error_message = 13;</code>
+   * <code>optional string error_message = 11;</code>
    * @return Whether the errorMessage field is set.
    */
   boolean hasErrorMessage();
   /**
-   * <code>optional string error_message = 13;</code>
+   * <code>optional string error_message = 11;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
-   * <code>optional string error_message = 13;</code>
+   * <code>optional string error_message = 11;</code>
    * @return The bytes for errorMessage.
    */
   com.google.protobuf.ByteString
       getErrorMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.Failure failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.Failure> 
       getFailuresList();
   /**
-   * <code>repeated .littlehorse.Failure failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   io.littlehorse.sdk.common.proto.Failure getFailures(int index);
   /**
-   * <code>repeated .littlehorse.Failure failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   int getFailuresCount();
   /**
-   * <code>repeated .littlehorse.Failure failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.FailureOrBuilder> 
       getFailuresOrBuilderList();
   /**
-   * <code>repeated .littlehorse.Failure failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   io.littlehorse.sdk.common.proto.FailureOrBuilder getFailuresOrBuilder(
       int index);
 
   /**
-   * <code>.littlehorse.TaskNodeRun task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 13;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
-   * <code>.littlehorse.TaskNodeRun task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 13;</code>
    * @return The task.
    */
   io.littlehorse.sdk.common.proto.TaskNodeRun getTask();
   /**
-   * <code>.littlehorse.TaskNodeRun task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 13;</code>
    */
   io.littlehorse.sdk.common.proto.TaskNodeRunOrBuilder getTaskOrBuilder();
 
   /**
-   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
   /**
-   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    * @return The externalEvent.
    */
   io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent();
   /**
-   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder();
 
   /**
-   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    * @return Whether the entrypoint field is set.
    */
   boolean hasEntrypoint();
   /**
-   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    * @return The entrypoint.
    */
   io.littlehorse.sdk.common.proto.EntrypointRun getEntrypoint();
   /**
-   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    */
   io.littlehorse.sdk.common.proto.EntrypointRunOrBuilder getEntrypointOrBuilder();
 
   /**
-   * <code>.littlehorse.ExitRun exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 16;</code>
    * @return Whether the exit field is set.
    */
   boolean hasExit();
   /**
-   * <code>.littlehorse.ExitRun exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 16;</code>
    * @return The exit.
    */
   io.littlehorse.sdk.common.proto.ExitRun getExit();
   /**
-   * <code>.littlehorse.ExitRun exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 16;</code>
    */
   io.littlehorse.sdk.common.proto.ExitRunOrBuilder getExitOrBuilder();
 
   /**
-   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    * @return Whether the startThread field is set.
    */
   boolean hasStartThread();
   /**
-   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    * @return The startThread.
    */
   io.littlehorse.sdk.common.proto.StartThreadRun getStartThread();
   /**
-   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    */
   io.littlehorse.sdk.common.proto.StartThreadRunOrBuilder getStartThreadOrBuilder();
 
   /**
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    * @return Whether the waitThreads field is set.
    */
   boolean hasWaitThreads();
   /**
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    * @return The waitThreads.
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads();
   /**
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder();
 
   /**
-   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    * @return Whether the sleep field is set.
    */
   boolean hasSleep();
   /**
-   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    * @return The sleep.
    */
   io.littlehorse.sdk.common.proto.SleepNodeRun getSleep();
   /**
-   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    */
   io.littlehorse.sdk.common.proto.SleepNodeRunOrBuilder getSleepOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    * @return Whether the userTask field is set.
    */
   boolean hasUserTask();
   /**
-   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    * @return The userTask.
    */
   io.littlehorse.sdk.common.proto.UserTaskNodeRun getUserTask();
   /**
-   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskNodeRunOrBuilder getUserTaskOrBuilder();
 
   /**
-   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    * @return Whether the startMultipleThreads field is set.
    */
   boolean hasStartMultipleThreads();
   /**
-   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    * @return The startMultipleThreads.
    */
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRun getStartMultipleThreads();
   /**
-   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    */
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder();
-
-  /**
-   * <code>repeated int32 failure_handler_ids = 23;</code>
-   * @return A list containing the failureHandlerIds.
-   */
-  java.util.List<java.lang.Integer> getFailureHandlerIdsList();
-  /**
-   * <code>repeated int32 failure_handler_ids = 23;</code>
-   * @return The count of failureHandlerIds.
-   */
-  int getFailureHandlerIdsCount();
-  /**
-   * <code>repeated int32 failure_handler_ids = 23;</code>
-   * @param index The index of the element to return.
-   * @return The failureHandlerIds at the given index.
-   */
-  int getFailureHandlerIds(int index);
 
   io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }

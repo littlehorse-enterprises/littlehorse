@@ -47,7 +47,6 @@ message AttributePb {
 
 enum TagStorageType {
     LOCAL = 0;
-    REMOTE = 1;
 }
 
 message TagPb {
