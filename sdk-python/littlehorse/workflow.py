@@ -362,12 +362,15 @@ class WfRunVariable:
         self._searchable = True
         return self
 
-    def searchable_on(self, field_path: str, field_type: VariableType) -> "WfRunVariable":
-        """Creates an index on a specified field of a Json Path variable, allowing you to
-        search for this field using the SearchVariableRequest.
+    def searchable_on(
+            self, field_path: str, field_type: VariableType,
+    ) -> "WfRunVariable":
+        """Creates an index on a specified field of a Json Path variable,
+        allowing you to search for this field using the SearchVariableRequest.
 
         Args:
-            field_path (str): The JSON Path of the field to index, cstarting with '$.', eg: $.userId
+            field_path (str): The JSON Path of the field to index,
+                starting with '$.', eg: $.userId
             field_type (IndexType): the type of the field that is indexed.
 
         Returns:
@@ -384,7 +387,9 @@ class WfRunVariable:
                 f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
             )
 
-        self._json_indexes.append(JsonIndex(field_path=field_path, field_type=field_type))
+        self._json_indexes.append(
+            JsonIndex(field_path=field_path, field_type=field_type),
+        )
         return self
 
     def required(self) -> "WfRunVariable":

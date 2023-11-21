@@ -149,12 +149,15 @@ class TestWfRunVariable(unittest.TestCase):
     def test_compile_variable(self):
         variable = WfRunVariable("my-var", VariableType.STR)
         self.assertEqual(
-            variable.compile(), ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.STR))
+            variable.compile(),
+            ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.STR)),
         )
 
         variable = WfRunVariable("my-var", VariableType.JSON_OBJ)
         variable.searchable_on("$.myPath", VariableType.STR)
-        expected_output = ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ))
+        expected_output = ThreadVarDef(
+            var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
+        )
         expected_output.json_indexes.append(
             JsonIndex(field_path="$.myPath", field_type=VariableType.STR)
         )
@@ -170,7 +173,11 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))],
+                variable_defs=[
+                    ThreadVarDef(
+                        var_def=VariableDef(name="input-name", type=VariableType.STR),
+                        ),
+                    ],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -547,7 +554,11 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))],
+                variable_defs=[
+                    ThreadVarDef(
+                        var_def=VariableDef(name="input-name", type=VariableType.STR),
+                    )
+                ],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -705,7 +716,11 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[ThreadVarDef(var_def=VariableDef(name="value", type=VariableType.INT))],
+                variable_defs=[
+                    ThreadVarDef(
+                        var_def=VariableDef(name="value", type=VariableType.INT),
+                    ),
+                ],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -1174,7 +1189,9 @@ class TestWorkflow(unittest.TestCase):
                 thread_specs={
                     "entrypoint": ThreadSpec(
                         variable_defs=[
-                            ThreadVarDef(var_def=VariableDef(name="input-name", type=VariableType.STR))
+                            ThreadVarDef(var_def=VariableDef(
+                                name="input-name", type=VariableType.STR
+                            )),
                         ],
                         nodes={
                             "0-entrypoint-ENTRYPOINT": Node(

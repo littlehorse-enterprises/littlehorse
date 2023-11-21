@@ -36,7 +36,7 @@ public interface WfRunVariable {
     /**
      * Marks the JSON_OBJ or JSON_ARR Variable as "Searchable", and creates an
      * index on the specified field.
-     * @param jsonPath is the JSON Path to the field that we are indexing.
+     * @param fieldPath is the JSON Path to the field that we are indexing.
      * @param fieldType is the type of the field we are indexing.
      * @return same {@link WfRunVariable} instance
      */
