@@ -18,7 +18,6 @@ import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;

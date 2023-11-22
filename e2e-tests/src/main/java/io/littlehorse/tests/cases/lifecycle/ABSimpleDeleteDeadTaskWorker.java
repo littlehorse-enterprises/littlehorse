@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
-import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.tests.Test;
 import java.util.HashSet;
 import java.util.Set;

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -15,7 +16,9 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
@@ -24,25 +27,28 @@ import org.apache.commons.lang3.time.DateUtils;
 
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
-    public String wfRunId;
-    public String externalEventDefName;
+    public WfRunIdModel wfRunId;
+    public ExternalEventDefIdModel externalEventDefId;
     public String guid;
     public VariableValueModel content;
     public Integer threadRunNumber;
     public Integer nodeRunPosition;
 
+    @Override
     public String getPartitionKey() {
-        return wfRunId;
+        return wfRunId.getPartitionKey().get();
     }
 
+    @Override
     public Class<PutExternalEventRequest> getProtoBaseClass() {
         return PutExternalEventRequest.class;
     }
 
+    @Override
     public PutExternalEventRequest.Builder toProto() {
         PutExternalEventRequest.Builder out = PutExternalEventRequest.newBuilder()
-                .setWfRunId(wfRunId)
-                .setExternalEventDefName(externalEventDefName)
+                .setWfRunId(wfRunId.toProto())
+                .setExternalEventDefId(externalEventDefId.toProto())
                 .setContent(content.toProto());
 
         if (guid != null) out.setGuid(guid);
@@ -52,39 +58,38 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         return out;
     }
 
+    @Override
     public boolean hasResponse() {
         return true;
     }
 
     @Override
     public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config) {
-        ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
+        ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefId.getName());
         if (eed == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefId);
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
         ExternalEventModel evt = new ExternalEventModel();
-        evt.wfRunId = wfRunId;
-        evt.content = content;
-        evt.externalEventDefName = externalEventDefName;
-        evt.guid = guid;
-        evt.nodeRunPosition = nodeRunPosition;
-        evt.threadRunNumber = threadRunNumber;
-        evt.claimed = false;
+        evt.setId(new ExternalEventIdModel(wfRunId, externalEventDefId, guid));
+        evt.setContent(content);
+        evt.setNodeRunPosition(nodeRunPosition);
+        evt.setThreadRunNumber(threadRunNumber);
+        evt.setClaimed(false);
 
         dao.put(evt);
 
         if (eed.retentionHours != LHConstants.INFINITE_RETENTION) {
             LHTimer timer = new LHTimer();
             timer.topic = dao.getCoreCmdTopic();
-            timer.key = this.wfRunId;
+            timer.key = this.getPartitionKey();
             Date now = new Date();
             timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
 
             // Schedule the garbage collection of the event.
             DeleteExternalEventRequestModel deleteExternalEvent = new DeleteExternalEventRequestModel();
-            deleteExternalEvent.setId(new ExternalEventIdModel(wfRunId, externalEventDefName, guid));
+            deleteExternalEvent.setId(new ExternalEventIdModel(wfRunId, externalEventDefId, guid));
             CommandModel deleteExtEventCmd = new CommandModel();
             deleteExtEventCmd.setSubCommand(deleteExternalEvent);
             deleteExtEventCmd.time = timer.maturationTime;
@@ -94,7 +99,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             dao.scheduleTimer(timer);
         }
 
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        WfRunModel wfRunModel = dao.get(wfRunId);
         if (wfRunModel != null) {
             WfSpecModel spec = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
             if (spec == null) {
@@ -117,10 +122,11 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         return evt.toProto().build();
     }
 
+    @Override
     public void initFrom(Message proto) {
         PutExternalEventRequest p = (PutExternalEventRequest) proto;
-        wfRunId = p.getWfRunId();
-        externalEventDefName = p.getExternalEventDefName();
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
         content = VariableValueModel.fromProto(p.getContent());
 
         if (p.hasGuid()) guid = p.getGuid();

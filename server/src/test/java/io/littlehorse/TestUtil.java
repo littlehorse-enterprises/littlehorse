@@ -183,7 +183,7 @@ public class TestUtil {
 
     public static ExternalEventModel externalEvent() {
         ExternalEventModel externalEvent = new ExternalEventModel();
-        externalEvent.setExternalEventDefName("test-name");
+        externalEvent.setExternalEventDefId("test-name");
         externalEvent.setClaimed(true);
         externalEvent.setWfRunId("0000000");
         externalEvent.setGuid("0000001");

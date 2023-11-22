@@ -7,7 +7,6 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
 import java.util.Date;
 
 /**

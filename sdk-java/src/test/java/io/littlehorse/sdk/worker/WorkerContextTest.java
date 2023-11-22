@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
 import org.junit.jupiter.api.Test;
 
 public class WorkerContextTest {
@@ -17,7 +16,8 @@ public class WorkerContextTest {
     void checkTaskRunSourceWfRunId() {
         TaskRunSource source = TaskRunSource.newBuilder()
                 .setTaskNode(TaskNodeReference.newBuilder()
-                        .setNodeRunId(NodeRunId.newBuilder().setWfRunId(WfRunId.newBuilder().setId("hi"))))
+                        .setNodeRunId(NodeRunId.newBuilder()
+                                .setWfRunId(WfRunId.newBuilder().setId("hi"))))
                 .build();
 
         WorkerContext context =
@@ -30,7 +30,8 @@ public class WorkerContextTest {
     void checkUserTaskSourceWfRunId() {
         TaskRunSource source = TaskRunSource.newBuilder()
                 .setUserTaskTrigger(UserTaskTriggerReference.newBuilder()
-                        .setNodeRunId(NodeRunId.newBuilder().setWfRunId(WfRunId.newBuilder().setId("hi"))))
+                        .setNodeRunId(NodeRunId.newBuilder()
+                                .setWfRunId(WfRunId.newBuilder().setId("hi"))))
                 .build();
 
         WorkerContext context =

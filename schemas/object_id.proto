@@ -44,7 +44,7 @@ message VariableId {
 
 message ExternalEventId {
   WfRunId wf_run_id = 1;
-  string external_event_def_name = 2;
+  ExternalEventDefId external_event_def_id = 2;
   string guid = 3;
 }
 

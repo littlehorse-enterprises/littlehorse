@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-
 import java.io.IOException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -170,7 +169,8 @@ public class LHServerConnectionManagerTest {
 
         when(mockConfig.getAsyncStub()).thenReturn(asyncStub);
         when(mockConfig.getWorkerThreads()).thenReturn(1);
-        when(mockTaskDef.getId()).thenReturn(TaskDefId.newBuilder().setName("test").build());
+        when(mockTaskDef.getId())
+                .thenReturn(TaskDefId.newBuilder().setName("test").build());
         when(mockConfig.getClientId()).thenReturn("test-client-id");
         when(mockConfig.getConnectListener()).thenReturn("test-listener");
     }

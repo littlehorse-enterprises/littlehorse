@@ -206,7 +206,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
      */
     public void processExternalEvent(ExternalEventModel e) {
-        String extEvtName = e.externalEventDefName;
+        String extEvtName = e.externalEventDefId;
         InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtName);
         if (idef != null) {
             // trigger interrupt

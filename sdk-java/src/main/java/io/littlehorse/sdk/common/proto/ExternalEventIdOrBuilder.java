@@ -23,16 +23,19 @@ public interface ExternalEventIdOrBuilder extends
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The externalEventDefName.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
+   * @return Whether the externalEventDefId field is set.
    */
-  java.lang.String getExternalEventDefName();
+  boolean hasExternalEventDefId();
   /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The bytes for externalEventDefName.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
+   * @return The externalEventDefId.
    */
-  com.google.protobuf.ByteString
-      getExternalEventDefNameBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
+  /**
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
 
   /**
    * <code>string guid = 3;</code>

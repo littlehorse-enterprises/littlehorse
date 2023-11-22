@@ -1,10 +1,5 @@
 package io.littlehorse.tests.cases.workflow;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -27,6 +22,10 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 // We don't yet add a test to see what happens when we try to wait for non-existent
 // ThreadRun, because it's not really possible to fall into that trap given the

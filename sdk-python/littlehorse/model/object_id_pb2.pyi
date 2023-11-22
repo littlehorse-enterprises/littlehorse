@@ -57,14 +57,14 @@ class VariableId(_message.Message):
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., name: _Optional[str] = ...) -> None: ...
 
 class ExternalEventId(_message.Message):
-    __slots__ = ["wf_run_id", "external_event_def_name", "guid"]
+    __slots__ = ["wf_run_id", "external_event_def_id", "guid"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     GUID_FIELD_NUMBER: _ClassVar[int]
     wf_run_id: WfRunId
-    external_event_def_name: str
+    external_event_def_id: ExternalEventDefId
     guid: str
-    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., external_event_def_name: _Optional[str] = ..., guid: _Optional[str] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ...) -> None: ...
 
 class WfRunId(_message.Message):
     __slots__ = ["id"]

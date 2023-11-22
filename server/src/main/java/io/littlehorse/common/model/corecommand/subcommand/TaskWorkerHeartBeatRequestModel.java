@@ -13,6 +13,7 @@ import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAs
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHeartBeatRequest> {
 
     public String clientId;
-    public String taskDefName;
+    public TaskDefIdModel taskDefId;
     public String listenerName;
     private TaskWorkerAssignor assignor;
     private Set<HostModel> hosts;
@@ -47,7 +48,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
-        TaskWorkerGroupModel taskWorkerGroup = dao.get(new TaskWorkerGroupIdModel(taskDefName));
+        TaskWorkerGroupModel taskWorkerGroup = dao.get(new TaskWorkerGroupIdModel(taskDefId));
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {

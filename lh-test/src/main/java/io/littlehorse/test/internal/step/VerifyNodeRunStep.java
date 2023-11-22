@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
 import java.util.function.Consumer;
 
 public class VerifyNodeRunStep extends AbstractStep {

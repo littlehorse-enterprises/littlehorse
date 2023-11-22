@@ -10,12 +10,12 @@ import java.util.Optional;
 
 public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
 
-    public String taskDefName;
+    public TaskDefIdModel taskDefId;
 
     public TaskWorkerGroupIdModel() {}
 
-    public TaskWorkerGroupIdModel(String taskDefName) {
-        this.taskDefName = taskDefName;
+    public TaskWorkerGroupIdModel(TaskDefIdModel taskDefId) {
+        this.taskDefId = taskDefId;
     }
 
     @Override
@@ -25,29 +25,31 @@ public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, Task
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(taskDefName);
+        // taskDefId does not have a partition key, so we need to create
+        // our own rather than just do taskDefId.getPartitionKey().
+        return Optional.of(taskDefId.getName());
     }
 
     @Override
     public void initFrom(Message proto) {
         TaskWorkerGroupId p = (TaskWorkerGroupId) proto;
-        taskDefName = p.getTaskDefName();
+        taskDefId = p.getTaskDefName();
     }
 
     @Override
     public TaskWorkerGroupId.Builder toProto() {
-        TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefName(taskDefName);
+        TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefName(taskDefId);
         return out;
     }
 
     @Override
     public String toString() {
-        return taskDefName;
+        return taskDefId;
     }
 
     @Override
     public void initFromString(String storeKey) {
-        taskDefName = storeKey;
+        taskDefId = storeKey;
     }
 
     @Override

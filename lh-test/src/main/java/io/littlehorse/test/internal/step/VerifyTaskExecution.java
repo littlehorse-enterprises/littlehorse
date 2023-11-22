@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
