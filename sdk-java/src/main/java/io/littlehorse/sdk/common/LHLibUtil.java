@@ -11,10 +11,14 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
@@ -73,7 +77,7 @@ public class LHLibUtil {
         return mapper.readValue(json, cls);
     }
 
-    public static String getWfRunId(TaskRunSource taskRunSource) {
+    public static WfRunId getWfRunId(TaskRunSource taskRunSource) {
         switch (taskRunSource.getTaskRunSourceCase()) {
             case TASK_NODE:
                 return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
@@ -83,6 +87,18 @@ public class LHLibUtil {
                 // we end up returning null
         }
         return null;
+    }
+
+    public static WfRunId wfRunId(String id) {
+        return WfRunId.newBuilder().setId(id).build();
+    }
+
+    public static ExternalEventDefId externalEventDefId(String name) {
+        return ExternalEventDefId.newBuilder().setName(name).build();
+    }
+
+    public static TaskDefId taskDefId(String name) {
+        return TaskDefId.newBuilder().setName(name).build();
     }
 
     public static String taskRunIdToString(TaskRunId taskRunId) {

@@ -19,7 +19,7 @@ const TOTAL_RETRIES = 5
 
 func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 	ptd := &model.PutTaskDefRequest{
-		Name:      tw.taskDefName,
+		Name:      tw.taskDefId.Name,
 		InputVars: make([]*model.VariableDef, 0),
 	}
 
@@ -84,7 +84,7 @@ func newServerConnection(
 
 	stream.Send(&model.PollTaskRequest{
 		ClientId:          manager.tw.config.ClientId,
-		TaskDefName:       manager.tw.taskDefName,
+		TaskDefId:         manager.tw.taskDefId,
 		TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 	})
 
@@ -101,7 +101,7 @@ func newServerConnection(
 			if pollTaskReply != nil && pollTaskReply.Result != nil {
 				task := pollTaskReply.Result
 				log.Default().Print(
-					"Received a task for " + *common.GetWfRunIdFromTaskSource(task.Source),
+					"Received a task for " + common.GetWfRunIdFromTaskSource(task.Source).GetId(),
 				)
 				manager.submitTaskForExecution(task, out.grpcClient)
 			} else {
@@ -111,7 +111,7 @@ func newServerConnection(
 			if out.running {
 				req := model.PollTaskRequest{
 					ClientId:          manager.tw.config.ClientId,
-					TaskDefName:       manager.tw.taskDefName,
+					TaskDefId:         manager.tw.taskDefId,
 					TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 				}
 				log.Default().Print("Asking for another task to run")
@@ -237,7 +237,7 @@ func (m *serverConnectionManager) start() {
 		reply, err := (*m.tw.grpcStub).RegisterTaskWorker(
 			context.Background(),
 			&model.RegisterTaskWorkerRequest{
-				TaskDefName:  m.tw.taskDefName,
+				TaskDefId:    m.tw.taskDefId,
 				ClientId:     m.tw.config.ClientId,
 				ListenerName: m.tw.config.ServerConnectListener,
 			},
@@ -333,7 +333,7 @@ func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTa
 		task:         task,
 	}
 	m.taskChannel <- taskToExecution
-	log.Default().Print("Put task in channel for " + *common.GetWfRunIdFromTaskSource(task.Source))
+	log.Default().Print("Put task in channel for " + common.GetWfRunIdFromTaskSource(task.Source).Id)
 }
 
 func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {

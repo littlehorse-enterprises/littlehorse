@@ -25,7 +25,7 @@ func NewWorkerContext(
 
 }
 
-func (wc *WorkerContext) GetWfRunId() *string {
+func (wc *WorkerContext) GetWfRunId() *model.WfRunId {
 	return GetWfRunIdFromTaskSource(wc.ScheduledTask.Source)
 }
 
@@ -48,7 +48,7 @@ func (wc *WorkerContext) GetScheduledTime() *timestamppb.Timestamp {
 }
 
 func (wc *WorkerContext) GetIdempotencyKey() string {
-	return wc.ScheduledTask.TaskRunId.WfRunId + "/" + wc.ScheduledTask.TaskRunId.TaskGuid
+	return wc.ScheduledTask.TaskRunId.TaskGuid
 }
 
 func (wc *WorkerContext) Log(thing interface{}) {

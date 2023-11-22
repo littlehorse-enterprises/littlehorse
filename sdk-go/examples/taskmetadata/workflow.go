@@ -21,7 +21,7 @@ type Article struct {
 
 func GetInfo(input *InputData, context *common.WorkerContext) string {
 	context.Log("running the GetInfo()")
-	return "the id for " + input.Art.Title + " is: " + strconv.Itoa(input.Art.Id) + " and WfRunId: " + *context.GetWfRunId()
+	return "the id for " + input.Art.Title + " is: " + strconv.Itoa(input.Art.Id) + " and WfRunId: " + context.GetWfRunId().GetId()
 }
 
 func MyWorkflowGet(wf *wflib.WorkflowThread) {

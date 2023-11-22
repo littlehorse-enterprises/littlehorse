@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ExternalEventNodeTimeoutPb() {
-    wfRunId_ = "";
   }
 
   @java.lang.Override
@@ -39,91 +38,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.class, io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.Builder.class);
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  public static final int NODE_RUN_ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+   * @return Whether the nodeRunId field is set.
    */
   @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
-      return s;
-    }
+  public boolean hasNodeRunId() {
+    return nodeRunId_ != null;
   }
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+   * @return The nodeRunId.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfRunId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
-  private int threadRunNumber_ = 0;
-  /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  @java.lang.Override
-  public int getThreadRunNumber() {
-    return threadRunNumber_;
-  }
-
-  public static final int NODE_RUN_POSITION_FIELD_NUMBER = 3;
-  private int nodeRunPosition_ = 0;
-  /**
-   * <code>int32 node_run_position = 3;</code>
-   * @return The nodeRunPosition.
-   */
-  @java.lang.Override
-  public int getNodeRunPosition() {
-    return nodeRunPosition_;
-  }
-
-  public static final int TIME_FIELD_NUMBER = 4;
-  private com.google.protobuf.Timestamp time_;
-  /**
-   * <code>.google.protobuf.Timestamp time = 4;</code>
-   * @return Whether the time field is set.
-   */
-  @java.lang.Override
-  public boolean hasTime() {
-    return time_ != null;
+  public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
   /**
-   * <code>.google.protobuf.Timestamp time = 4;</code>
-   * @return The time.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.Timestamp getTime() {
-    return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp time = 4;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
-    return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
+  public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -140,17 +78,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
-      output.writeInt32(2, threadRunNumber_);
-    }
-    if (nodeRunPosition_ != 0) {
-      output.writeInt32(3, nodeRunPosition_);
-    }
-    if (time_ != null) {
-      output.writeMessage(4, getTime());
+    if (nodeRunId_ != null) {
+      output.writeMessage(1, getNodeRunId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -161,20 +90,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
+    if (nodeRunId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, threadRunNumber_);
-    }
-    if (nodeRunPosition_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, nodeRunPosition_);
-    }
-    if (time_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getTime());
+        .computeMessageSize(1, getNodeRunId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -191,16 +109,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.ExternalEventNodeTimeoutPb other = (io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) obj;
 
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
-    if (getThreadRunNumber()
-        != other.getThreadRunNumber()) return false;
-    if (getNodeRunPosition()
-        != other.getNodeRunPosition()) return false;
-    if (hasTime() != other.hasTime()) return false;
-    if (hasTime()) {
-      if (!getTime()
-          .equals(other.getTime())) return false;
+    if (hasNodeRunId() != other.hasNodeRunId()) return false;
+    if (hasNodeRunId()) {
+      if (!getNodeRunId()
+          .equals(other.getNodeRunId())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -213,15 +125,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadRunNumber();
-    hash = (37 * hash) + NODE_RUN_POSITION_FIELD_NUMBER;
-    hash = (53 * hash) + getNodeRunPosition();
-    if (hasTime()) {
-      hash = (37 * hash) + TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getTime().hashCode();
+    if (hasNodeRunId()) {
+      hash = (37 * hash) + NODE_RUN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNodeRunId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -354,13 +260,10 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfRunId_ = "";
-      threadRunNumber_ = 0;
-      nodeRunPosition_ = 0;
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
-        timeBuilder_ = null;
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
       }
       return this;
     }
@@ -396,18 +299,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.common.proto.ExternalEventNodeTimeoutPb result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.threadRunNumber_ = threadRunNumber_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.nodeRunPosition_ = nodeRunPosition_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.time_ = timeBuilder_ == null
-            ? time_
-            : timeBuilder_.build();
+        result.nodeRunId_ = nodeRunIdBuilder_ == null
+            ? nodeRunId_
+            : nodeRunIdBuilder_.build();
       }
     }
 
@@ -455,19 +349,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.ExternalEventNodeTimeoutPb other) {
       if (other == io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.getDefaultInstance()) return this;
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (other.getThreadRunNumber() != 0) {
-        setThreadRunNumber(other.getThreadRunNumber());
-      }
-      if (other.getNodeRunPosition() != 0) {
-        setNodeRunPosition(other.getNodeRunPosition());
-      }
-      if (other.hasTime()) {
-        mergeTime(other.getTime());
+      if (other.hasNodeRunId()) {
+        mergeNodeRunId(other.getNodeRunId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -496,27 +379,12 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getNodeRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              threadRunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
-            case 24: {
-              nodeRunPosition_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
-              input.readMessage(
-                  getTimeFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -534,259 +402,123 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfRunId_ = "";
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The wfRunId.
-     */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The bytes for wfRunId.
-     */
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfRunId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfRunId_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfRunId_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-
-    private int threadRunNumber_ ;
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @return The threadRunNumber.
-     */
-    @java.lang.Override
-    public int getThreadRunNumber() {
-      return threadRunNumber_;
-    }
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @param value The threadRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadRunNumber(int value) {
-
-      threadRunNumber_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadRunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      threadRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int nodeRunPosition_ ;
-    /**
-     * <code>int32 node_run_position = 3;</code>
-     * @return The nodeRunPosition.
-     */
-    @java.lang.Override
-    public int getNodeRunPosition() {
-      return nodeRunPosition_;
-    }
-    /**
-     * <code>int32 node_run_position = 3;</code>
-     * @param value The nodeRunPosition to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeRunPosition(int value) {
-
-      nodeRunPosition_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 node_run_position = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNodeRunPosition() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      nodeRunPosition_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.Timestamp time_;
+    private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> timeBuilder_;
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
-     * @return Whether the time field is set.
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+     * @return Whether the nodeRunId field is set.
      */
-    public boolean hasTime() {
-      return ((bitField0_ & 0x00000008) != 0);
+    public boolean hasNodeRunId() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
-     * @return The time.
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+     * @return The nodeRunId.
      */
-    public com.google.protobuf.Timestamp getTime() {
-      if (timeBuilder_ == null) {
-        return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
+    public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
+      if (nodeRunIdBuilder_ == null) {
+        return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
       } else {
-        return timeBuilder_.getMessage();
+        return nodeRunIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder setTime(com.google.protobuf.Timestamp value) {
-      if (timeBuilder_ == null) {
+    public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
+      if (nodeRunIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        time_ = value;
+        nodeRunId_ = value;
       } else {
-        timeBuilder_.setMessage(value);
+        nodeRunIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder setTime(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (timeBuilder_ == null) {
-        time_ = builderForValue.build();
+    public Builder setNodeRunId(
+        io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunId_ = builderForValue.build();
       } else {
-        timeBuilder_.setMessage(builderForValue.build());
+        nodeRunIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder mergeTime(com.google.protobuf.Timestamp value) {
-      if (timeBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          time_ != null &&
-          time_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getTimeBuilder().mergeFrom(value);
+    public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
+      if (nodeRunIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          nodeRunId_ != null &&
+          nodeRunId_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
+          getNodeRunIdBuilder().mergeFrom(value);
         } else {
-          time_ = value;
+          nodeRunId_ = value;
         }
       } else {
-        timeBuilder_.mergeFrom(value);
+        nodeRunIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder clearTime() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
-        timeBuilder_ = null;
+    public Builder clearNodeRunId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
-      bitField0_ |= 0x00000008;
+    public io.littlehorse.sdk.common.proto.NodeRunId.Builder getNodeRunIdBuilder() {
+      bitField0_ |= 0x00000001;
       onChanged();
-      return getTimeFieldBuilder().getBuilder();
+      return getNodeRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
-      if (timeBuilder_ != null) {
-        return timeBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
+      if (nodeRunIdBuilder_ != null) {
+        return nodeRunIdBuilder_.getMessageOrBuilder();
       } else {
-        return time_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : time_;
+        return nodeRunId_ == null ?
+            io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp time = 4;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getTimeFieldBuilder() {
-      if (timeBuilder_ == null) {
-        timeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getTime(),
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
+        getNodeRunIdFieldBuilder() {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
+                getNodeRunId(),
                 getParentForChildren(),
                 isClean());
-        time_ = null;
+        nodeRunId_ = null;
       }
-      return timeBuilder_;
+      return nodeRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

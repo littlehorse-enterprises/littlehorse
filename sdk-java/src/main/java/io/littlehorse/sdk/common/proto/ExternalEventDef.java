@@ -108,17 +108,6 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int RETENTION_HOURS_FIELD_NUMBER = 3;
-  private int retentionHours_ = 0;
-  /**
-   * <code>int32 retention_hours = 3;</code>
-   * @return The retentionHours.
-   */
-  @java.lang.Override
-  public int getRetentionHours() {
-    return retentionHours_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -139,9 +128,6 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (retentionHours_ != 0) {
-      output.writeInt32(3, retentionHours_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -157,10 +143,6 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
-    }
-    if (retentionHours_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, retentionHours_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -184,8 +166,6 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (getRetentionHours()
-        != other.getRetentionHours()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -203,8 +183,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    hash = (37 * hash) + RETENTION_HOURS_FIELD_NUMBER;
-    hash = (53 * hash) + getRetentionHours();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -346,7 +324,6 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      retentionHours_ = 0;
       return this;
     }
 
@@ -387,9 +364,6 @@ private static final long serialVersionUID = 0L;
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.retentionHours_ = retentionHours_;
       }
     }
 
@@ -445,9 +419,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.getRetentionHours() != 0) {
-        setRetentionHours(other.getRetentionHours());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -486,11 +457,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              retentionHours_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -697,38 +663,6 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
-    }
-
-    private int retentionHours_ ;
-    /**
-     * <code>int32 retention_hours = 3;</code>
-     * @return The retentionHours.
-     */
-    @java.lang.Override
-    public int getRetentionHours() {
-      return retentionHours_;
-    }
-    /**
-     * <code>int32 retention_hours = 3;</code>
-     * @param value The retentionHours to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRetentionHours(int value) {
-
-      retentionHours_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 retention_hours = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRetentionHours() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      retentionHours_ = 0;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

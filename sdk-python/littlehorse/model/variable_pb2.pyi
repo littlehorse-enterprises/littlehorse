@@ -28,17 +28,13 @@ class VariableValue(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: bool = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ...) -> None: ...
 
 class Variable(_message.Message):
-    __slots__ = ["value", "wf_run_id", "thread_run_number", "name", "date", "wf_spec_id"]
+    __slots__ = ["id", "value", "created_at", "wf_spec_id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    DATE_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.VariableId
     value: VariableValue
-    wf_run_id: str
-    thread_run_number: int
-    name: str
-    date: _timestamp_pb2.Timestamp
+    created_at: _timestamp_pb2.Timestamp
     wf_spec_id: _object_id_pb2.WfSpecId
-    def __init__(self, value: _Optional[_Union[VariableValue, _Mapping]] = ..., wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ..., name: _Optional[str] = ..., date: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...

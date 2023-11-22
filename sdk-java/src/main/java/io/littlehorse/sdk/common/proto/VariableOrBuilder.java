@@ -8,77 +8,62 @@ public interface VariableOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <code>.littlehorse.VariableId id = 1;</code>
+   * @return The id.
+   */
+  io.littlehorse.sdk.common.proto.VariableId getId();
+  /**
+   * <code>.littlehorse.VariableId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableIdOrBuilder getIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
   io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 
   /**
-   * <code>string wf_run_id = 2;</code>
-   * @return The wfRunId.
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return Whether the createdAt field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasCreatedAt();
   /**
-   * <code>string wf_run_id = 2;</code>
-   * @return The bytes for wfRunId.
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return The createdAt.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>int32 thread_run_number = 3;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>string name = 4;</code>
-   * @return The name.
-   */
-  java.lang.String getName();
-  /**
-   * <code>string name = 4;</code>
-   * @return The bytes for name.
-   */
-  com.google.protobuf.ByteString
-      getNameBytes();
-
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   * @return Whether the date field is set.
-   */
-  boolean hasDate();
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   * @return The date.
-   */
-  com.google.protobuf.Timestamp getDate();
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getDateOrBuilder();
-
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 }

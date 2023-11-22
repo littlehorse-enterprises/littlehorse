@@ -217,7 +217,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             }
         }
 
-        return client.runWf(b.build()).getId();
+        return client.runWf(b.build()).getId().getId();
     }
 
     private void assertContainsWfRun(WfRunIdList wfRuns, String id) {

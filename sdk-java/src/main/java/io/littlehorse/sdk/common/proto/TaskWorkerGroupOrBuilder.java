@@ -8,16 +8,19 @@ public interface TaskWorkerGroupOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string task_def_name = 1;</code>
-   * @return The taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return Whether the taskDefId field is set.
    */
-  java.lang.String getTaskDefName();
+  boolean hasTaskDefId();
   /**
-   * <code>string task_def_name = 1;</code>
-   * @return The bytes for taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return The taskDefId.
    */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
    * <code>.google.protobuf.Timestamp created_at = 2;</code>

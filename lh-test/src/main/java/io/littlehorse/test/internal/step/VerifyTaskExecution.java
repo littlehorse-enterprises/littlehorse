@@ -5,6 +5,8 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -38,7 +40,7 @@ public class VerifyTaskExecution extends AbstractStep {
     private NodeRun getNodeRun(
             LHPublicApiBlockingStub lhClient, String wfRunId, int threadRunNumber, int nodeRunNumber) {
         NodeRunId nodeRunId = NodeRunId.newBuilder()
-                .setWfRunId(wfRunId)
+                .setWfRunId(WfRunId.newBuilder().setId(wfRunId))
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodeRunNumber)
                 .build();

@@ -13,7 +13,12 @@ from littlehorse.exceptions import (
     LHTaskException,
 )
 from littlehorse.model.common_enums_pb2 import TaskStatus
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId, TaskRunId
+from littlehorse.model.object_id_pb2 import (
+    NodeRunId,
+    TaskDefId,
+    TaskRunId,
+    WfRunId,
+)
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
     RegisterTaskWorkerRequest,
@@ -60,7 +65,7 @@ class WorkerContext:
         return self._scheduled_task.task_run_id
 
     @property
-    def wf_run_id(self) -> str:
+    def wf_run_id(self) -> WfRunId:
         """Get the associated workflow run id.
 
         Returns:
@@ -232,7 +237,7 @@ class LHTask:
 
     @property
     def task_name(self) -> str:
-        return self.task_def.name
+        return self.task_def.id.name
 
     def has_context(self) -> bool:
         parameters = list(self._signature.parameters.values())
@@ -347,7 +352,7 @@ class LHConnection:
                     yield PollTaskRequest(
                         client_id=self._config.client_id,
                         task_worker_version=self._config.worker_version,
-                        task_def_name=self._task.task_name,
+                        task_def_id=self._task.task_def.id,
                     )
                     self._log.debug(
                         "Connection '%s' is asking for work '%s' '%s'",
@@ -481,7 +486,7 @@ class LHTaskWorker:
             request = RegisterTaskWorkerRequest(
                 client_id=self._config.client_id,
                 listener_name=self._config.server_listener,
-                task_def_name=self._task.task_name,
+                task_def_id=self._task.task_def.id,
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(

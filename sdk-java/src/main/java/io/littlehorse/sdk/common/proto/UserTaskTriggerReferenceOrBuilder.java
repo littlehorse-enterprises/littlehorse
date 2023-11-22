@@ -29,49 +29,34 @@ public interface UserTaskTriggerReferenceOrBuilder extends
   int getUserTaskEventNumber();
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
-
-  /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return The bytes for userId.
    */
   com.google.protobuf.ByteString
       getUserIdBytes();
 
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return The bytes for userGroup.
    */
   com.google.protobuf.ByteString

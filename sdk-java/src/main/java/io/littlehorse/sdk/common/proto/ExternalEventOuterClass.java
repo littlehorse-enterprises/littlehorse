@@ -24,6 +24,11 @@ public final class ExternalEventOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ExternalEventDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -35,40 +40,49 @@ public final class ExternalEventOuterClass {
     java.lang.String[] descriptorData = {
       "\n\024external_event.proto\022\013littlehorse\032\037goo" +
       "gle/protobuf/timestamp.proto\032\016variable.p" +
-      "roto\"\253\002\n\rExternalEvent\022\021\n\twf_run_id\030\001 \001(" +
-      "\t\022\037\n\027external_event_def_name\030\002 \001(\t\022\014\n\004gu" +
-      "id\030\003 \001(\t\022.\n\ncreated_at\030\004 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\022+\n\007content\030\005 \001(\0132\032.litt" +
-      "lehorse.VariableValue\022\036\n\021thread_run_numb" +
-      "er\030\006 \001(\005H\000\210\001\001\022\036\n\021node_run_position\030\007 \001(\005" +
-      "H\001\210\001\001\022\017\n\007claimed\030\010 \001(\010B\024\n\022_thread_run_nu" +
-      "mberB\024\n\022_node_run_position\"i\n\020ExternalEv" +
-      "entDef\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022\027\n\017retentio" +
-      "n_hours\030\003 \001(\005BG\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
-      ".Protob\006proto3"
+      "roto\032\017object_id.proto\"\223\002\n\rExternalEvent\022" +
+      "(\n\002id\030\001 \001(\0132\034.littlehorse.ExternalEventI" +
+      "d\022.\n\ncreated_at\030\002 \001(\0132\032.google.protobuf." +
+      "Timestamp\022+\n\007content\030\003 \001(\0132\032.littlehorse" +
+      ".VariableValue\022\036\n\021thread_run_number\030\004 \001(" +
+      "\005H\000\210\001\001\022\036\n\021node_run_position\030\005 \001(\005H\001\210\001\001\022\017" +
+      "\n\007claimed\030\006 \001(\010B\024\n\022_thread_run_numberB\024\n" +
+      "\022_node_run_position\"P\n\020ExternalEventDef\022" +
+      "\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.goog" +
+      "le.protobuf.Timestamp\"[\n\034ExternalEventRe" +
+      "tentionPolicy\022&\n\034seconds_after_wf_termin" +
+      "ation\030\001 \001(\003H\000B\023\n\021ext_evt_gc_policyBG\n\037io" +
+      ".littlehorse.sdk.common.protoP\001Z\007.;model" +
+      "\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
+          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
     internal_static_littlehorse_ExternalEvent_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_littlehorse_ExternalEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEvent_descriptor,
-        new java.lang.String[] { "WfRunId", "ExternalEventDefName", "Guid", "CreatedAt", "Content", "ThreadRunNumber", "NodeRunPosition", "Claimed", "ThreadRunNumber", "NodeRunPosition", });
+        new java.lang.String[] { "Id", "CreatedAt", "Content", "ThreadRunNumber", "NodeRunPosition", "Claimed", "ThreadRunNumber", "NodeRunPosition", });
     internal_static_littlehorse_ExternalEventDef_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_ExternalEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDef_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "RetentionHours", });
+        new java.lang.String[] { "Name", "CreatedAt", });
+    internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor,
+        new java.lang.String[] { "SecondsAfterWfTermination", "ExtEvtGcPolicy", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
+    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

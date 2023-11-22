@@ -8,16 +8,19 @@ public interface UserTaskRunIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
+   * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
+   * @return Whether the wfRunId field is set.
+   */
+  boolean hasWfRunId();
+  /**
+   * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
-  java.lang.String getWfRunId();
+  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
    * <code>string user_task_guid = 2;</code>

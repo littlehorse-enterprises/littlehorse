@@ -38,6 +38,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskRunSource.class, io.littlehorse.sdk.common.proto.TaskRunSource.Builder.class);
   }
 
+  private int bitField0_;
   private int taskRunSourceCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object taskRunSource_;
@@ -142,6 +143,32 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskTriggerReference.getDefaultInstance();
   }
 
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -162,6 +189,9 @@ private static final long serialVersionUID = 0L;
     if (taskRunSourceCase_ == 2) {
       output.writeMessage(2, (io.littlehorse.sdk.common.proto.UserTaskTriggerReference) taskRunSource_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(3, getWfSpecId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -179,6 +209,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UserTaskTriggerReference) taskRunSource_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getWfSpecId());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -194,6 +228,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TaskRunSource other = (io.littlehorse.sdk.common.proto.TaskRunSource) obj;
 
+    if (hasWfSpecId() != other.hasWfSpecId()) return false;
+    if (hasWfSpecId()) {
+      if (!getWfSpecId()
+          .equals(other.getWfSpecId())) return false;
+    }
     if (!getTaskRunSourceCase().equals(other.getTaskRunSourceCase())) return false;
     switch (taskRunSourceCase_) {
       case 1:
@@ -218,6 +257,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasWfSpecId()) {
+      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecId().hashCode();
+    }
     switch (taskRunSourceCase_) {
       case 1:
         hash = (37 * hash) + TASK_NODE_FIELD_NUMBER;
@@ -349,13 +392,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.TaskRunSource.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getWfSpecIdFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -366,6 +415,11 @@ private static final long serialVersionUID = 0L;
       }
       if (userTaskTriggerBuilder_ != null) {
         userTaskTriggerBuilder_.clear();
+      }
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
       }
       taskRunSourceCase_ = 0;
       taskRunSource_ = null;
@@ -403,6 +457,14 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TaskRunSource result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.wfSpecId_ = wfSpecIdBuilder_ == null
+            ? wfSpecId_
+            : wfSpecIdBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.TaskRunSource result) {
@@ -462,6 +524,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskRunSource other) {
       if (other == io.littlehorse.sdk.common.proto.TaskRunSource.getDefaultInstance()) return this;
+      if (other.hasWfSpecId()) {
+        mergeWfSpecId(other.getWfSpecId());
+      }
       switch (other.getTaskRunSourceCase()) {
         case TASK_NODE: {
           mergeTaskNode(other.getTaskNode());
@@ -515,6 +580,13 @@ private static final long serialVersionUID = 0L;
               taskRunSourceCase_ = 2;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  getWfSpecIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -829,6 +901,125 @@ private static final long serialVersionUID = 0L;
       taskRunSourceCase_ = 2;
       onChanged();
       return userTaskTriggerBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return Whether the wfSpecId field is set.
+     */
+    public boolean hasWfSpecId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return The wfSpecId.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+      if (wfSpecIdBuilder_ == null) {
+        return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      } else {
+        return wfSpecIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        wfSpecId_ = value;
+      } else {
+        wfSpecIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecId_ = builderForValue.build();
+      } else {
+        wfSpecIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          wfSpecId_ != null &&
+          wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getWfSpecIdBuilder().mergeFrom(value);
+        } else {
+          wfSpecId_ = value;
+        }
+      } else {
+        wfSpecIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder clearWfSpecId() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getWfSpecIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+      if (wfSpecIdBuilder_ != null) {
+        return wfSpecIdBuilder_.getMessageOrBuilder();
+      } else {
+        return wfSpecId_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        getWfSpecIdFieldBuilder() {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                getWfSpecId(),
+                getParentForChildren(),
+                isClean());
+        wfSpecId_ = null;
+      }
+      return wfSpecIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

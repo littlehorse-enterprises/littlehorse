@@ -168,7 +168,7 @@ public class LHServerConnectionManagerTest {
 
         when(mockConfig.getAsyncStub()).thenReturn(asyncStub);
         when(mockConfig.getWorkerThreads()).thenReturn(1);
-        when(mockTaskDef.getName()).thenReturn("test");
+        when(mockTaskDef.getId().getName()).thenReturn("test");
         when(mockConfig.getClientId()).thenReturn("test-client-id");
         when(mockConfig.getConnectListener()).thenReturn("test-listener");
     }

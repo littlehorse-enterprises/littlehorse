@@ -6,12 +6,12 @@ import (
 )
 
 type LHTaskWorker struct {
-	config      *common.LHConfig
-	grpcStub    *model.LHPublicApiClient
-	taskFunc    interface{}
-	taskSig     *common.TaskFuncSignature
-	manager     *serverConnectionManager
-	taskDefName string
+	config    *common.LHConfig
+	grpcStub  *model.LHPublicApiClient
+	taskFunc  interface{}
+	taskSig   *common.TaskFuncSignature
+	manager   *serverConnectionManager
+	taskDefId *model.TaskDefId
 }
 
 func NewTaskWorker(
@@ -30,11 +30,11 @@ func NewTaskWorker(
 	}
 
 	tw := &LHTaskWorker{
-		config:      config,
-		taskFunc:    taskFunction,
-		grpcStub:    stub,
-		taskDefName: taskDefName,
-		taskSig:     taskSig,
+		config:    config,
+		taskFunc:  taskFunction,
+		grpcStub:  stub,
+		taskDefId: &model.TaskDefId{Name: taskDefName},
+		taskSig:   taskSig,
 	}
 	tw.manager = newServerConnectionManager(tw)
 	return tw, nil

@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "common_wfspec.proto";
+import "object_id.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -11,7 +12,7 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message TaskDef {
-  string name = 1;
+  TaskDefId id = 1;
   repeated VariableDef input_vars = 2;
   google.protobuf.Timestamp created_at = 3;
 }

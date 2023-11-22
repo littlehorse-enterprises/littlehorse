@@ -55,9 +55,11 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 			&model.ListWfMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),
-				WfSpecName:      wfSpecName,
-				WfSpecVersion:   int32(wfSpecVersion),
-				NumWindows:      int32(numWindows),
+				WfSpecId: &model.WfSpecId{
+					Name:    wfSpecName,
+					Version: int32(wfSpecVersion),
+				},
+				NumWindows: int32(numWindows),
 			},
 		))
 

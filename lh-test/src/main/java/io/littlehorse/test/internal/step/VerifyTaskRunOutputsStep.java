@@ -6,6 +6,8 @@ import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunList;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +28,7 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
         String wfRunId = context.toString();
 
         TaskRunList taskRuns = lhClient.listTaskRuns(
-                ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId).build());
+                ListTaskRunsRequest.newBuilder().setWfRunId(WfRunId.newBuilder().setId(wfRunId)).build());
         if (expectedOutputs.size() != taskRuns.getResultsList().size()) {
             throw new StepExecutionException(
                     id,

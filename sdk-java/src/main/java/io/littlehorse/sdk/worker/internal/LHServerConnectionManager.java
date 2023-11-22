@@ -104,7 +104,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
         ReportTaskRun result = executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
-        String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
+        String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
             specificStub.reportTask(result, new ReportTaskObserver(this, result, TOTAL_RETRIES));
@@ -129,7 +129,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                             "Adding connection to: {}:{} for taskdef {}",
                             host.getHost(),
                             host.getPort(),
-                            taskDef.getName());
+                            taskDef.getId().getName());
                 } catch (IOException exn) {
                     log.error("Yikes, caught IOException in onNext", exn);
                     throw new RuntimeException(exn);
@@ -186,7 +186,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     private void doHeartbeat() {
         bootstrapStub.registerTaskWorker(
                 RegisterTaskWorkerRequest.newBuilder()
-                        .setTaskDefName(taskDef.getName())
+                        .setTaskDefId(taskDef.getId())
                         .setClientId(config.getClientId())
                         .setListenerName(config.getConnectListener())
                         .build(),

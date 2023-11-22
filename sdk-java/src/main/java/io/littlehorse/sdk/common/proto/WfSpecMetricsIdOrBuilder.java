@@ -34,20 +34,17 @@ public interface WfSpecMetricsIdOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType();
 
   /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The wfSpecName.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
    */
-  java.lang.String getWfSpecName();
+  boolean hasWfSpecId();
   /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The bytes for wfSpecName.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
    */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
-
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>int32 wf_spec_version = 4;</code>
-   * @return The wfSpecVersion.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    */
-  int getWfSpecVersion();
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 }

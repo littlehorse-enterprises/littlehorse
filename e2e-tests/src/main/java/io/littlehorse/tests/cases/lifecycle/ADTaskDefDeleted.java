@@ -73,7 +73,7 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
 
         wfRunId = client.runWf(
                         RunWfRequest.newBuilder().setWfSpecName(WF_SPEC_NAME).build())
-                .getId();
+                .getId().getId();
 
         Thread.sleep(120);
         WfRun wfRun = client.getWfRun(WfRunId.newBuilder().setId(wfRunId).build());

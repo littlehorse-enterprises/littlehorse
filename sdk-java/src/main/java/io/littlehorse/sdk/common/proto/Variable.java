@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Variable() {
-    wfRunId_ = "";
-    name_ = "";
   }
 
   @java.lang.Override
@@ -40,10 +38,36 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.Variable.class, io.littlehorse.sdk.common.proto.Variable.Builder.class);
   }
 
-  public static final int VALUE_FIELD_NUMBER = 1;
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.VariableId id_;
+  /**
+   * <code>.littlehorse.VariableId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  @java.lang.Override
+  public boolean hasId() {
+    return id_ != null;
+  }
+  /**
+   * <code>.littlehorse.VariableId id = 1;</code>
+   * @return The id.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.VariableId id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance() : id_;
+  }
+
+  public static final int VALUE_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
   @java.lang.Override
@@ -51,7 +75,7 @@ private static final long serialVersionUID = 0L;
     return value_ != null;
   }
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
   @java.lang.Override
@@ -59,132 +83,43 @@ private static final long serialVersionUID = 0L;
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
-   * <code>.littlehorse.VariableValue value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  public static final int CREATED_AT_FIELD_NUMBER = 3;
+  private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>string wf_run_id = 2;</code>
-   * @return The wfRunId.
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return Whether the createdAt field is set.
    */
   @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
-      return s;
-    }
+  public boolean hasCreatedAt() {
+    return createdAt_ != null;
   }
   /**
-   * <code>string wf_run_id = 2;</code>
-   * @return The bytes for wfRunId.
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return The createdAt.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfRunId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.google.protobuf.Timestamp getCreatedAt() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 3;
-  private int threadRunNumber_ = 0;
-  /**
-   * <code>int32 thread_run_number = 3;</code>
-   * @return The threadRunNumber.
-   */
-  @java.lang.Override
-  public int getThreadRunNumber() {
-    return threadRunNumber_;
-  }
-
-  public static final int NAME_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
-  /**
-   * <code>string name = 4;</code>
-   * @return The name.
-   */
-  @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      name_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string name = 4;</code>
-   * @return The bytes for name.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      name_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int DATE_FIELD_NUMBER = 5;
-  private com.google.protobuf.Timestamp date_;
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   * @return Whether the date field is set.
-   */
-  @java.lang.Override
-  public boolean hasDate() {
-    return date_ != null;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   * @return The date.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getDate() {
-    return date_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : date_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp date = 5;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getDateOrBuilder() {
-    return date_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : date_;
-  }
-
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 6;
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return Whether the wfSpecId field is set.
    */
   @java.lang.Override
@@ -192,7 +127,7 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return The wfSpecId.
    */
   @java.lang.Override
@@ -200,7 +135,7 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -221,23 +156,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (id_ != null) {
+      output.writeMessage(1, getId());
+    }
     if (value_ != null) {
-      output.writeMessage(1, getValue());
+      output.writeMessage(2, getValue());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
-      output.writeInt32(3, threadRunNumber_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, name_);
-    }
-    if (date_ != null) {
-      output.writeMessage(5, getDate());
+    if (createdAt_ != null) {
+      output.writeMessage(3, getCreatedAt());
     }
     if (wfSpecId_ != null) {
-      output.writeMessage(6, getWfSpecId());
+      output.writeMessage(4, getWfSpecId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -248,27 +177,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (id_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getId());
+    }
     if (value_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getValue());
+        .computeMessageSize(2, getValue());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
+    if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, threadRunNumber_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, name_);
-    }
-    if (date_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getDate());
+        .computeMessageSize(3, getCreatedAt());
     }
     if (wfSpecId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getWfSpecId());
+        .computeMessageSize(4, getWfSpecId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -285,21 +208,20 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.Variable other = (io.littlehorse.sdk.common.proto.Variable) obj;
 
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (hasValue() != other.hasValue()) return false;
     if (hasValue()) {
       if (!getValue()
           .equals(other.getValue())) return false;
     }
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
-    if (getThreadRunNumber()
-        != other.getThreadRunNumber()) return false;
-    if (!getName()
-        .equals(other.getName())) return false;
-    if (hasDate() != other.hasDate()) return false;
-    if (hasDate()) {
-      if (!getDate()
-          .equals(other.getDate())) return false;
+    if (hasCreatedAt() != other.hasCreatedAt()) return false;
+    if (hasCreatedAt()) {
+      if (!getCreatedAt()
+          .equals(other.getCreatedAt())) return false;
     }
     if (hasWfSpecId() != other.hasWfSpecId()) return false;
     if (hasWfSpecId()) {
@@ -317,19 +239,17 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     if (hasValue()) {
       hash = (37 * hash) + VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getValue().hashCode();
     }
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadRunNumber();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
-    if (hasDate()) {
-      hash = (37 * hash) + DATE_FIELD_NUMBER;
-      hash = (53 * hash) + getDate().hashCode();
+    if (hasCreatedAt()) {
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAt().hashCode();
     }
     if (hasWfSpecId()) {
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
@@ -466,18 +386,20 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       value_ = null;
       if (valueBuilder_ != null) {
         valueBuilder_.dispose();
         valueBuilder_ = null;
       }
-      wfRunId_ = "";
-      threadRunNumber_ = 0;
-      name_ = "";
-      date_ = null;
-      if (dateBuilder_ != null) {
-        dateBuilder_.dispose();
-        dateBuilder_ = null;
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
       }
       wfSpecId_ = null;
       if (wfSpecIdBuilder_ != null) {
@@ -518,25 +440,21 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.Variable result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.value_ = valueBuilder_ == null
             ? value_
             : valueBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfRunId_ = wfRunId_;
-      }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.threadRunNumber_ = threadRunNumber_;
+        result.createdAt_ = createdAtBuilder_ == null
+            ? createdAt_
+            : createdAtBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.name_ = name_;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.date_ = dateBuilder_ == null
-            ? date_
-            : dateBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.wfSpecId_ = wfSpecIdBuilder_ == null
             ? wfSpecId_
             : wfSpecIdBuilder_.build();
@@ -587,24 +505,14 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.Variable other) {
       if (other == io.littlehorse.sdk.common.proto.Variable.getDefaultInstance()) return this;
+      if (other.hasId()) {
+        mergeId(other.getId());
+      }
       if (other.hasValue()) {
         mergeValue(other.getValue());
       }
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (other.getThreadRunNumber() != 0) {
-        setThreadRunNumber(other.getThreadRunNumber());
-      }
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      if (other.hasDate()) {
-        mergeDate(other.getDate());
+      if (other.hasCreatedAt()) {
+        mergeCreatedAt(other.getCreatedAt());
       }
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
@@ -637,40 +545,32 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getValueFieldBuilder().getBuilder(),
+                  getIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 18: {
-              wfRunId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getValueFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              threadRunNumber_ = input.readInt32();
+            case 26: {
+              input.readMessage(
+                  getCreatedAtFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
             case 34: {
-              name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
-            case 42: {
-              input.readMessage(
-                  getDateFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
-            case 50: {
               input.readMessage(
                   getWfSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000008;
               break;
-            } // case 50
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -688,18 +588,137 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
+    private io.littlehorse.sdk.common.proto.VariableId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.VariableId.Builder, io.littlehorse.sdk.common.proto.VariableIdOrBuilder> idBuilder_;
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     * @return Whether the id field is set.
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.VariableId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance() : id_;
+      } else {
+        return idBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public Builder setId(io.littlehorse.sdk.common.proto.VariableId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
+      } else {
+        idBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.VariableId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.VariableId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public Builder clearId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableId.Builder getIdBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableId id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.VariableId.Builder, io.littlehorse.sdk.common.proto.VariableIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.VariableId.Builder, io.littlehorse.sdk.common.proto.VariableIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.VariableValue value_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      * @return Whether the value field is set.
      */
     public boolean hasValue() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      * @return The value.
      */
     public io.littlehorse.sdk.common.proto.VariableValue getValue() {
@@ -710,7 +729,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
@@ -721,12 +740,12 @@ private static final long serialVersionUID = 0L;
       } else {
         valueBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(
         io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
@@ -735,16 +754,16 @@ private static final long serialVersionUID = 0L;
       } else {
         valueBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           value_ != null &&
           value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getValueBuilder().mergeFrom(value);
@@ -754,15 +773,15 @@ private static final long serialVersionUID = 0L;
       } else {
         valueBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder clearValue() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       value_ = null;
       if (valueBuilder_ != null) {
         valueBuilder_.dispose();
@@ -772,15 +791,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
       if (valueBuilder_ != null) {
@@ -791,7 +810,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
@@ -807,313 +826,137 @@ private static final long serialVersionUID = 0L;
       return valueBuilder_;
     }
 
-    private java.lang.Object wfRunId_ = "";
+    private com.google.protobuf.Timestamp createdAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>string wf_run_id = 2;</code>
-     * @return The wfRunId.
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * @return Whether the createdAt field is set.
      */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
-        return s;
+    public boolean hasCreatedAt() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * @return The createdAt.
+     */
+    public com.google.protobuf.Timestamp getCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
       } else {
-        return (java.lang.String) ref;
+        return createdAtBuilder_.getMessage();
       }
     }
     /**
-     * <code>string wf_run_id = 2;</code>
-     * @return The bytes for wfRunId.
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfRunId_ = b;
-        return b;
+    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        createdAt_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        createdAtBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string wf_run_id = 2;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfRunId_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 2;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfRunId_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
-    private int threadRunNumber_ ;
-    /**
-     * <code>int32 thread_run_number = 3;</code>
-     * @return The threadRunNumber.
-     */
-    @java.lang.Override
-    public int getThreadRunNumber() {
-      return threadRunNumber_;
-    }
-    /**
-     * <code>int32 thread_run_number = 3;</code>
-     * @param value The threadRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadRunNumber(int value) {
-
-      threadRunNumber_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 thread_run_number = 3;</code>
-     * @return This builder for chaining.
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public Builder clearThreadRunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      threadRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object name_ = "";
-    /**
-     * <code>string name = 4;</code>
-     * @return The name.
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string name = 4;</code>
-     * @return The bytes for name.
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string name = 4;</code>
-     * @param value The name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      name_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string name = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearName() {
-      name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000008);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string name = 4;</code>
-     * @param value The bytes for name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      name_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.Timestamp date_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> dateBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
-     * @return Whether the date field is set.
-     */
-    public boolean hasDate() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
-     * @return The date.
-     */
-    public com.google.protobuf.Timestamp getDate() {
-      if (dateBuilder_ == null) {
-        return date_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : date_;
-      } else {
-        return dateBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
-     */
-    public Builder setDate(com.google.protobuf.Timestamp value) {
-      if (dateBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        date_ = value;
-      } else {
-        dateBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
-     */
-    public Builder setDate(
+    public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (dateBuilder_ == null) {
-        date_ = builderForValue.build();
+      if (createdAtBuilder_ == null) {
+        createdAt_ = builderForValue.build();
       } else {
-        dateBuilder_.setMessage(builderForValue.build());
+        createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public Builder mergeDate(com.google.protobuf.Timestamp value) {
-      if (dateBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
-          date_ != null &&
-          date_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getDateBuilder().mergeFrom(value);
+    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          createdAt_ != null &&
+          createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getCreatedAtBuilder().mergeFrom(value);
         } else {
-          date_ = value;
+          createdAt_ = value;
         }
       } else {
-        dateBuilder_.mergeFrom(value);
+        createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public Builder clearDate() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      date_ = null;
-      if (dateBuilder_ != null) {
-        dateBuilder_.dispose();
-        dateBuilder_ = null;
+    public Builder clearCreatedAt() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public com.google.protobuf.Timestamp.Builder getDateBuilder() {
-      bitField0_ |= 0x00000010;
+    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
+      bitField0_ |= 0x00000004;
       onChanged();
-      return getDateFieldBuilder().getBuilder();
+      return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
-    public com.google.protobuf.TimestampOrBuilder getDateOrBuilder() {
-      if (dateBuilder_ != null) {
-        return dateBuilder_.getMessageOrBuilder();
+    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+      if (createdAtBuilder_ != null) {
+        return createdAtBuilder_.getMessageOrBuilder();
       } else {
-        return date_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : date_;
+        return createdAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp date = 5;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getDateFieldBuilder() {
-      if (dateBuilder_ == null) {
-        dateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getCreatedAtFieldBuilder() {
+      if (createdAtBuilder_ == null) {
+        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getDate(),
+                getCreatedAt(),
                 getParentForChildren(),
                 isClean());
-        date_ = null;
+        createdAt_ = null;
       }
-      return dateBuilder_;
+      return createdAtBuilder_;
     }
 
     private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      * @return Whether the wfSpecId field is set.
      */
     public boolean hasWfSpecId() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      * @return The wfSpecId.
      */
     public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
@@ -1124,7 +967,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
@@ -1135,12 +978,12 @@ private static final long serialVersionUID = 0L;
       } else {
         wfSpecIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder setWfSpecId(
         io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
@@ -1149,16 +992,16 @@ private static final long serialVersionUID = 0L;
       } else {
         wfSpecIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           wfSpecId_ != null &&
           wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
           getWfSpecIdBuilder().mergeFrom(value);
@@ -1168,15 +1011,15 @@ private static final long serialVersionUID = 0L;
       } else {
         wfSpecIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder clearWfSpecId() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000008);
       wfSpecId_ = null;
       if (wfSpecIdBuilder_ != null) {
         wfSpecIdBuilder_.dispose();
@@ -1186,15 +1029,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
       if (wfSpecIdBuilder_ != null) {
@@ -1205,7 +1048,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 

@@ -8,28 +8,19 @@ public interface NodeRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.NodeRunId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.NodeRunId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
+  io.littlehorse.sdk.common.proto.NodeRunId getId();
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
+   * <code>.littlehorse.NodeRunId id = 1;</code>
    */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 position = 3;</code>
-   * @return The position.
-   */
-  int getPosition();
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getIdOrBuilder();
 
   /**
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>

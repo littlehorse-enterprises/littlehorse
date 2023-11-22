@@ -33,10 +33,4 @@ public interface ExternalEventDefOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
-
-  /**
-   * <code>int32 retention_hours = 3;</code>
-   * @return The retentionHours.
-   */
-  int getRetentionHours();
 }

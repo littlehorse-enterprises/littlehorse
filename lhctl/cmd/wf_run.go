@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 	"time"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
@@ -129,7 +130,7 @@ var stopWfRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(),
 			&model.StopWfRunRequest{
-				WfRunId:         args[0],
+				WfRunId:         &model.WfRunId{Id: args[0]},
 				ThreadRunNumber: trn,
 			},
 		))
@@ -149,7 +150,7 @@ var resumeWfRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			requestContext(),
 			&model.ResumeWfRunRequest{
-				WfRunId:         args[0],
+				WfRunId:         &model.WfRunId{Id: args[0]},
 				ThreadRunNumber: trn,
 			},
 		))

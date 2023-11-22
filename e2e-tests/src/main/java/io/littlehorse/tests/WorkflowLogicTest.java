@@ -203,14 +203,14 @@ public abstract class WorkflowLogicTest extends Test {
             }
         }
 
-        String resultingId = client.runWf(b.build()).getId();
+        WfRunId resultingId = client.runWf(b.build()).getId();
 
         log.info("Test {} launched: {}", getWorkflowName(), resultingId);
 
         // Add it so we can cleanup later
-        wfRunIds.add(resultingId);
+        wfRunIds.add(resultingId.getId());
 
-        return resultingId;
+        return resultingId.getId();
     }
 
     protected String runWithInputsAndCheckPath(LHPublicApiBlockingStub client, Object input, Object... expectedPath)
