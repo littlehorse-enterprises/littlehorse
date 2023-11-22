@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
@@ -24,7 +24,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.VariableMutation;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -112,7 +112,7 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     @Override
-    public void initFrom(Message p, ExecutionContext context) {
+    public void initFrom(Message p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         Node proto = (Node) p;
         type = proto.getNodeCase();
 
@@ -207,7 +207,7 @@ public class NodeModel extends LHSerializable<Node> {
         return out;
     }
 
-    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
+    public void validate(ExecutionContext metadataDao, LHServerConfig config) throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");

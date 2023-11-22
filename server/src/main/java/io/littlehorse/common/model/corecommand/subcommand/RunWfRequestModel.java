@@ -70,7 +70,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     @Override
     public WfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfSpecModel spec = executionContext.wfService().getWfSpec(wfSpecName, wfSpecVersion);
+        WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
@@ -78,7 +78,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (id == null) {
             id = LHUtil.generateGuid();
         } else {
-            WfRunModel oldWfRun = executionContext.wfService().getWfRun(id);
+            WfRunModel oldWfRun = executionContext.service().getWfRun(id);
             if (oldWfRun != null) {
                 throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
             }

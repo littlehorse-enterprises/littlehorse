@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
@@ -31,7 +32,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
     public WaitForThreadModel() {}
 
-    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor)
+    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor, CommandModel currentCommand)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;
@@ -49,7 +50,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
                         new FailureModel(
                                 "Determined threadrunnumber " + threadRunNumber + " is a parent!",
                                 LHConstants.VAR_SUB_ERROR),
-                        executionContext.currentCommand().getTime());
+                        currentCommand.getTime());
             }
             potentialParent = potentialParent.getParent();
         }

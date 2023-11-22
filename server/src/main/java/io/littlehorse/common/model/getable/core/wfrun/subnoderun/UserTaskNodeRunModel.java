@@ -14,6 +14,8 @@ import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +25,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     private UserTaskRunIdModel userTaskRunId;
     private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
     public UserTaskNodeRunModel() {}
 
@@ -38,6 +41,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         }
         this.executionContext = context;
+        this.processorContext = processorContext.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         UserTaskNodeModel utn = node.getUserTaskNode();
 
         UserTaskDefModel utd =
-                executionContext.wfService().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
+                processorContext.service().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
@@ -75,12 +79,12 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
-        executionContext.getStorageManager().put(out);
+        processorContext.getableManager().put(out);
     }
 
     @Override
     public void halt() {
-        UserTaskRunModel userTaskRunModel = executionContext.getStorageManager().get(getUserTaskRunId());
+        UserTaskRunModel userTaskRunModel = processorContext.getableManager().get(getUserTaskRunId());
         userTaskRunModel.setStatus(UserTaskRunStatus.CANCELLED);
     }
 }

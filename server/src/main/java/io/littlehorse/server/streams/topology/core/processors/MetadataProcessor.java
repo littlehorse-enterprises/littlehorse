@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -37,8 +37,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     private ProcessorContext<String, Bytes> ctx;
 
-    private MetadataDAOFactory daoFactory;
-
     public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
@@ -47,7 +45,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         this.ctx = ctx;
-        this.daoFactory = new MetadataDAOFactory();
     }
 
     @Override
@@ -64,7 +61,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void processHelper(final Record<String, MetadataCommandModel> record) {
         MetadataCommandModel command = record.value();
-        MetadataProcessorDAO dao = this.daoFactory.getDao(command, record.headers());
+        ExecutionContext dao = this.daoFactory.getDao(command, record.headers());
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),
@@ -95,30 +92,4 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
         }
     }
 
-    private final class MetadataDAOFactory {
-
-        private final KeyValueStore<String, Bytes> kafkaStreamsStore;
-
-        MetadataDAOFactory() {
-            kafkaStreamsStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
-        }
-
-        MetadataProcessorDAO getDao(MetadataCommandModel command, Headers metadata) {
-            String tenantId = HeadersUtil.tenantIdFromMetadata(metadata);
-            return new MetadataProcessorDAOImpl(
-                    storeFor(command, tenantId),
-                    metadataCache,
-                    new AuthorizationContextImpl(HeadersUtil.principalIdFromMetadata(metadata), tenantId, List.of()));
-        }
-
-        private ModelStore storeFor(MetadataCommandModel command, String tenantId) {
-            ModelStore store;
-            if (command.getSubCommand() instanceof ClusterLevelCommand) {
-                store = ModelStore.defaultStore(kafkaStreamsStore);
-            } else {
-                store = ModelStore.instanceFor(kafkaStreamsStore, tenantId);
-            }
-            return store;
-        }
-    }
 }

@@ -39,7 +39,7 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided WfRun");
         }

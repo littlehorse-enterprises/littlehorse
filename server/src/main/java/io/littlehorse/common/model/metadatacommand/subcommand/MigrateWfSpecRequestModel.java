@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecVersionMigrationModel;
@@ -35,10 +35,10 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext executionContext) {
         MigrateWfSpecRequest p = (MigrateWfSpecRequest) proto;
-        oldWfSpecId = LHSerializable.fromProto(p.getOldWfSpec(), WfSpecIdModel.class);
-        migration = LHSerializable.fromProto(p.getMigration(), WfSpecVersionMigrationModel.class);
+        oldWfSpecId = LHSerializable.fromProto(p.getOldWfSpec(), WfSpecIdModel.class, executionContext);
+        migration = LHSerializable.fromProto(p.getMigration(), WfSpecVersionMigrationModel.class, executionContext);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
     }
 
     @Override
-    public WfSpec process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public WfSpec process(ExecutionContext dao, LHServerConfig config) {
         WfSpecModel oldWfSpec = dao.getWfSpec(oldWfSpecId.getName(), oldWfSpecId.getVersion());
 
         if (oldWfSpec == null) {

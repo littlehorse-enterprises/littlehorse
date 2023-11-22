@@ -71,7 +71,10 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     private RequestExecutionContext contextFor(String clientId, String tenantId) {
-        return new RequestExecutionContext(clientId, tenantId, storeProvider.apply(null, ServerTopology.METADATA_STORE),  metadataCache);
+        return new RequestExecutionContext(clientId, tenantId,
+                storeProvider.apply(null, ServerTopology.GLOBAL_METADATA_STORE),
+                storeProvider.apply(null, ServerTopology.CORE_STORE),
+                metadataCache);
     }
 
     private static class AclVerifier {

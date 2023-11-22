@@ -49,6 +49,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +81,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadType type;
 
-    private GetableManager storageManager;
     private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
 
     public ThreadRunModel() {
         childThreadIds = new ArrayList<>();
@@ -125,10 +128,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
-
-        type = proto.getType();
-        storageManager = context.getStorageManager();
         executionContext = context;
+        processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        type = proto.getType();
     }
 
     public ThreadRun.Builder toProto() {
@@ -492,7 +494,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         // This also stops the children
         halt(haltReason);
-        getWfRun().advance(executionContext.currentCommand().getTime());
+        getWfRun().advance(processorContext.currentCommand().getTime());
     }
 
     public void acknowledgeXnHandlerStarted(PendingFailureHandlerModel pfh, int handlerThreadNumber) {
@@ -802,11 +804,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void putNodeRun(NodeRunModel nr) {
-        executionContext.getStorageManager().put(nr);
+        processorContext.getableManager().put(nr);
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = executionContext.getStorageManager().get(new NodeRunIdModel(wfRun.id, number, position));
+        NodeRunModel out = processorContext.getableManager().get(new NodeRunIdModel(wfRun.id, number, position));
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -852,7 +854,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
             VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpec());
-            executionContext.getStorageManager().put(variable);
+            processorContext.getableManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, createVariable);
     }
@@ -871,9 +873,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
             VariableModel variable =
-                    executionContext.getStorageManager().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
+                    processorContext.getableManager().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
             variable.setValue(var);
-            executionContext.getStorageManager().put(variable);
+            processorContext.getableManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
@@ -882,7 +884,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
         VariableModel out =
-                executionContext.getStorageManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
+                processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
         if (out != null) {
             return out;
         }

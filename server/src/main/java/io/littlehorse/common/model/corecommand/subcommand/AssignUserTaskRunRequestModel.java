@@ -86,7 +86,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         log.debug("Reassigning user task run {} to user: {}, group: {}", userTaskRunId, userId, userGroup);
         utr.assignTo(userId, userGroup, true);
 
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(getWfRunId());
+        WfRunModel wfRunModel = executionContext.service().getWfRun(getWfRunId());
         if (wfRunModel == null) {
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }

@@ -59,7 +59,8 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(source);
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        UserTaskRunModel userTaskRun = processorContext.getableManager().get(source);
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");
         }

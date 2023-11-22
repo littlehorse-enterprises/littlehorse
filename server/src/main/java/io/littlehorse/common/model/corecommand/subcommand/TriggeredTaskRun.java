@@ -74,7 +74,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         String wfRunId = source.getWfRunId();
 
         log.info("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
         if (wfRunModel == null) {
             log.info("WfRun no longer exists! Skipping the scheduled action trigger");
             return null;
@@ -90,9 +90,9 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         }
 
         // Get the NodeRun
-        NodeRunModel userTaskNR = executionContext.getStorageManager().get(source);
+        NodeRunModel userTaskNR = executionContext.getableManager().get(source);
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
-        UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(userTaskRunId);
+        UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
 
         if (userTaskNR.status != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
@@ -114,12 +114,12 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                     inputVars, new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun)), taskToSchedule);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
-            executionContext.getStorageManager().put(taskRun);
+            executionContext.getableManager().put(taskRun);
             executionContext.getTaskManager().scheduleTask(toSchedule);
 
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
 
-            executionContext.getStorageManager().put(userTaskNR); // should be unnecessary
+            executionContext.getableManager().put(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }

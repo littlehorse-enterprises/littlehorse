@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +39,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     private WaitForThreadsPolicy policy;
 
     private VariableAssignmentModel threadList;
+    private ExecutionContext context;
+    private ProcessorExecutionContext processorContext;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
@@ -84,14 +88,14 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                     .asInt()
                     .intVal
                     .intValue();
-            out.add(new WaitForThreadModel(nodeRun, threadRunNumber));
+            out.add(new WaitForThreadModel(nodeRun, threadRunNumber, processorContext.currentCommand()));
         }
 
         if (threadList != null) {
             VariableValueModel threadListVar = thread.assignVariable(threadList);
 
             for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
-                out.add(new WaitForThreadModel(nodeRun, Integer.valueOf(threadNumberObj.toString())));
+                out.add(new WaitForThreadModel(nodeRun, Integer.valueOf(threadNumberObj.toString()), processorContext.currentCommand()));
             }
         }
 

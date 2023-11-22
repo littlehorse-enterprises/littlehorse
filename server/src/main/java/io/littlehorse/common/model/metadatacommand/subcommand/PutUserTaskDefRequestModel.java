@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
@@ -14,7 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +45,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) {
+    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         PutUserTaskDefRequest p = (PutUserTaskDefRequest) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
@@ -62,7 +62,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return true;
     }
 
-    public UserTaskDef process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public UserTaskDef process(ExecutionContext dao, LHServerConfig config) {
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDefName must be a valid hostname");
         }

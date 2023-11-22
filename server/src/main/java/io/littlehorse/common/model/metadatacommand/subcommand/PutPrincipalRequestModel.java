@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     private boolean overwrite;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) throws LHSerdeError {
         PutPrincipalRequest p = (PutPrincipalRequest) proto;
         this.id = p.getId();
         this.globalAcls = LHSerializable.fromProto(p.getGlobalAcls(), ServerACLsModel.class, context);
@@ -66,7 +66,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     }
 
     @Override
-    public Principal process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public Principal process(ExecutionContext dao, LHServerConfig config) {
         PrincipalModel oldPrincipal = dao.getPrincipal(id);
 
         PrincipalModel toSave = new PrincipalModel();
@@ -108,7 +108,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         return toSave.toProto().build();
     }
 
-    private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataProcessorDAO dao) {
+    private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, ExecutionContext dao) {
         if (!old.isAdmin()) {
             // If the old isn't admin, then we aren't taking away admin privileges, so we
             // don't need to worry.

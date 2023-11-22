@@ -5,11 +5,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUserTaskDefRequest> {
 
@@ -26,7 +25,7 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) {
+    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         DeleteUserTaskDefRequest p = (DeleteUserTaskDefRequest) proto;
         id = LHSerializable.fromProto(p.getId(), UserTaskDefIdModel.class, context);
     }
@@ -36,7 +35,7 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     @Override
-    public Empty process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public Empty process(ExecutionContext dao, LHServerConfig config) {
         dao.delete(id);
         return Empty.getDefaultInstance();
     }
@@ -45,7 +44,7 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
         return true;
     }
 
-    public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p, ExecutionContext context) {
+    public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         DeleteUserTaskDefRequestModel out = new DeleteUserTaskDefRequestModel();
         out.initFrom(p, context);
         return out;

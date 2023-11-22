@@ -54,14 +54,14 @@ public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
 
         WfSpecModel wfSpecModel =
-                executionContext.wfService().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+                executionContext.service().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;

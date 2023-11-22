@@ -97,7 +97,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
-            WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+            WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
             threadRunModelDoNotUseMe = wfRunModel.getThreadRuns().get(threadRunNumber);
         }
         return threadRunModelDoNotUseMe;

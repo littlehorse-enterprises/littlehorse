@@ -20,6 +20,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -29,6 +31,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     public Date eventTime;
     public ExternalEventIdModel externalEventId;
     private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
     public Class<ExternalEventRun> getProtoBaseClass() {
         return ExternalEventRun.class;
@@ -45,6 +48,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         }
         externalEventDefName = p.getExternalEventDefName();
         this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public ExternalEventRun.Builder toProto() {
@@ -82,7 +86,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         ExternalEventNodeModel eNode = node.externalEventNode;
 
         ExternalEventModel evt =
-                executionContext.wfService().getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
+                processorContext.getableManager().getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -138,7 +142,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 cmd.time = timeoutEvt.time;
 
                 timer.payload = cmd.toProto().build().toByteArray();
-                executionContext.getTaskManager().scheduleTimer(timer);
+                processorContext.getTaskManager().scheduleTimer(timer);
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRunModel.fail(

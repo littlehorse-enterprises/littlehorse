@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -55,7 +55,7 @@ public class TenantAdministrationTest {
     private final PutTenantRequestModel putTenantRequest =
             PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class, mock());
 
-    private MetadataProcessorDAO metadataDao;
+    private ExecutionContext metadataDao;
 
     private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
 

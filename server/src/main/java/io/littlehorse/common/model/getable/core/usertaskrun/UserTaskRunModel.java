@@ -48,6 +48,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +82,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
     public UserTaskRunModel() {}
 
@@ -143,6 +146,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
         this.executionContext = context;
+        this.processorContext = processorContext.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public boolean isTerminated() {
@@ -185,7 +189,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         // Log the assigment.
         UTEAssignedModel assignedEvent = new UTEAssignedModel(oldUserId, newUserId, oldUserGroup, newUserGroup);
         events.add(new UserTaskEventModel(
-                assignedEvent, executionContext.currentCommand().getTime()));
+                assignedEvent, processorContext.currentCommand().getTime()));
 
         if (this.userId != null) {
             this.status = UserTaskRunStatus.ASSIGNED;
@@ -234,7 +238,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(executionContext.getTaskManager(), this);
+        trigger.schedule(processorContext.getTaskManager(), this);
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) throws LHApiException {
@@ -260,7 +264,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             FailureModel failure = new FailureModel(
                     "Failed calculating new assignment for UserTaskRun: " + exn.getMessage(),
                     LHErrorType.VAR_SUB_ERROR.toString());
-            getNodeRun().fail(failure, executionContext.currentCommand().getTime());
+            getNodeRun().fail(failure, processorContext.currentCommand().getTime());
             return;
         }
 
@@ -296,7 +300,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         Map<String, Object> rawNodeOutput = new HashMap<>();
         UserTaskDefModel userTaskDef = executionContext
-                .wfService()
+                .service()
                 .getUserTaskDef(getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
 
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
@@ -343,7 +347,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     public NodeRunModel getNodeRun() {
-        return executionContext.getStorageManager().get(nodeRunId);
+        return processorContext.getableManager().get(nodeRunId);
     }
 
     // TODO: LH-314

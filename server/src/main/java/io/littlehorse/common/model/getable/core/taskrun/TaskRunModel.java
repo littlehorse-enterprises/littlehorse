@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private int timeoutSeconds;
     private TaskStatus status;
     private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
 
     public Class<TaskRun> getProtoBaseClass() {
         return TaskRun.class;
@@ -70,6 +74,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
         this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskRun.Builder toProto() {
@@ -190,7 +195,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         // initialization happens here
         attempts.add(new TaskAttemptModel());
 
-        executionContext.getTaskManager().scheduleTask(scheduledTask);
+        processorContext.getTaskManager().scheduleTask(scheduledTask);
         // TODO: Update Metrics
     }
 
@@ -204,7 +209,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
         LHTimer timer = new LHTimer(timerCommand);
-        executionContext.getTaskManager().scheduleTimer(timer);
+        processorContext.getTaskManager().scheduleTimer(timer);
 
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.

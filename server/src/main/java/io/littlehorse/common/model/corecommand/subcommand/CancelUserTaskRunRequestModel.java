@@ -37,7 +37,7 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        UserTaskRunModel userTaskRun = executionContext.getStorageManager().get(userTaskRunId);
+        UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
         if (userTaskRun == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");
         }

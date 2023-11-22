@@ -17,6 +17,8 @@ import io.littlehorse.sdk.common.proto.TaskNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +28,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
     private TaskRunIdModel taskRunId;
     private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
     public Class<TaskNodeRun> getProtoBaseClass() {
         return TaskNodeRun.class;
@@ -38,6 +41,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
             taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         }
         this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskNodeRun.Builder toProto() {
@@ -90,7 +94,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         // When creating a new Getable for the first time, we need to explicitly
         // save it.
-        executionContext.getStorageManager().put(task);
+        processorContext.getableManager().put(task);
 
         // TODO: this should update metrics
         task.scheduleAttempt();

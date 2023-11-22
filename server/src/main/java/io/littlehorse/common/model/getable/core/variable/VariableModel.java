@@ -62,7 +62,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = executionContext.wfService().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+            wfSpec = executionContext.service().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
         }
         return wfSpec;
     }

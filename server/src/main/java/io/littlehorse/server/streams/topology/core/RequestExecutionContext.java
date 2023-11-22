@@ -18,24 +18,30 @@ import java.util.List;
 public class RequestExecutionContext implements ExecutionContext {
 
     private final AuthorizationContext authorization;
-    private final ReadOnlyModelStore store;
+    private final ReadOnlyModelStore coreStore;
+    private final ReadOnlyModelStore globalStore;
     private final ReadOnlyGetableManager readOnlyGetableManager;
     private String clientId;
     private String tenantId;
     private final WfService service;
 
-    public RequestExecutionContext(String clientId, String tenantId, ReadOnlyKeyValueStore<String, Bytes> nativeStore, MetadataCache metadataCache) {
+    public RequestExecutionContext(String clientId, String tenantId,
+                                   ReadOnlyKeyValueStore<String, Bytes> globalMetadataNativeStore,
+                                   ReadOnlyKeyValueStore<String, Bytes> coreNativeStore,
+                                   MetadataCache metadataCache) {
         this.clientId = clientId;
         this.tenantId = tenantId;
-        this.store = resolveStore(nativeStore);
-        this.readOnlyGetableManager = new ReadOnlyGetableManager(this.store);
-        this.service = new WfService(this.store, metadataCache, readOnlyGetableManager);
+        this.coreStore = resolveStore(coreNativeStore, tenantId);
+        this.globalStore = resolveStore(globalMetadataNativeStore, tenantId);
+        this.readOnlyGetableManager = new ReadOnlyGetableManager(this.coreStore);
+        this.service = new WfService(this.coreStore, this.globalStore, metadataCache, readOnlyGetableManager);
         this.authorization = authContextFor(clientId, tenantId);
     }
 
-    private ReadOnlyModelStore resolveStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore){
-        // Tenants are stored in the default store
-        return ModelStore.instanceFor(nativeStore, ModelStore.DEFAULT_TENANT, this);
+    private ReadOnlyModelStore resolveStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId){
+
+        // Principal and Tenants are stored in the default store
+        return ModelStore.instanceFor(nativeStore, tenantId, this);
     }
 
     public ReadOnlyGetableManager getableManager(){
@@ -82,11 +88,6 @@ public class RequestExecutionContext implements ExecutionContext {
     @Override
     public AuthorizationContext authorization() {
         return authorization;
-    }
-
-    @Override
-    public ReadOnlyModelStore store() {
-        return this.store;
     }
 
 

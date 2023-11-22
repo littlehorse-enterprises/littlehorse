@@ -34,7 +34,7 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        executionContext.getStorageManager().delete(wfRunId);
+        executionContext.getableManager().delete(wfRunId);
         return Empty.getDefaultInstance();
     }
 

@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,8 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
 
     private NodeRunIdModel nodeRunId;
     private WfSpecIdModel wfSpecId;
+    private ExecutionContext context;
+    private ProcessorExecutionContext processorContext;
 
     public TaskNodeReferenceModel() {}
 
@@ -43,16 +46,18 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
         TaskNodeReference p = (TaskNodeReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        this.context = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public void onCompleted(TaskAttemptModel successfulAttept) {
-        NodeRunModel nodeRunModel = getExecutionContext().getStorageManager().get(nodeRunId);
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
         nodeRunModel.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
     }
 
     @Override
     public void onFailed(TaskAttemptModel lastFailure) {
-        NodeRunModel nodeRunModel = getExecutionContext().getStorageManager().get(nodeRunId);
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
         FailureModel failure;
         if (!lastFailure.containsException()) {
             String message = getMessageFor(lastFailure.getStatus());

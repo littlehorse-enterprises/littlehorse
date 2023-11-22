@@ -74,7 +74,7 @@ public class SearchVariableRequestModel
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-        this.service = context.wfService();
+        this.service = context.service();
     }
 
     public SearchVariableRequest.Builder toProto() {

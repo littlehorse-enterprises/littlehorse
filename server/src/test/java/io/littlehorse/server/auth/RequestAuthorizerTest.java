@@ -18,7 +18,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
@@ -62,7 +62,7 @@ public class RequestAuthorizerTest {
             .withLoggingDisabled()
             .build();
     private ModelStore modelStore = ModelStore.defaultStore(nativeMetadataStore, mock());
-    private final MetadataProcessorDAO metadataDao = new MetadataProcessorDAOImpl(modelStore, metadataCache, context);
+    private final ExecutionContext metadataDao = new MetadataProcessorDAOImpl(modelStore, metadataCache, context);
     private final RequestAuthorizer requestAuthorizer = new RequestAuthorizer(server, daoFactory);
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata mockMetadata = mock();
@@ -229,7 +229,7 @@ public class RequestAuthorizerTest {
         }
     }
 
-    private MetadataProcessorDAO metadataDao() {
+    private ExecutionContext metadataDao() {
         ModelStore store = ModelStore.defaultStore(nativeMetadataStore, mock());
         return new MetadataProcessorDAOImpl(store, metadataCache, context);
     }

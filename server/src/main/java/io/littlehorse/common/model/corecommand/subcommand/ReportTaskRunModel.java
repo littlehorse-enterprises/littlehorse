@@ -49,7 +49,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        TaskRunModel task = executionContext.getStorageManager().get(taskRunId);
+        TaskRunModel task = executionContext.getableManager().get(taskRunId);
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }

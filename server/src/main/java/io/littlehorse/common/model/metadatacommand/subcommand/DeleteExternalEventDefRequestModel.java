@@ -5,11 +5,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<DeleteExternalEventDefRequest> {
 
@@ -36,8 +37,8 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     @Override
-    public Empty process(MetadataProcessorDAO dao, LHServerConfig config) {
-        dao.delete(id);
+    public Empty process(MetadataCommandExecution executionContext, LHServerConfig config) {
+        executionContext.getableManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
@@ -46,7 +47,7 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     public static DeleteExternalEventDefRequestModel fromProto(
-            DeleteExternalEventDefRequest p, ExecutionContext context) {
+            DeleteExternalEventDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         DeleteExternalEventDefRequestModel out = new DeleteExternalEventDefRequestModel();
         out.initFrom(p, context);
         return out;

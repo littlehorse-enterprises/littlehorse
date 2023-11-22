@@ -48,7 +48,7 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
 
         if (wfRunModel == null) {
             log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);

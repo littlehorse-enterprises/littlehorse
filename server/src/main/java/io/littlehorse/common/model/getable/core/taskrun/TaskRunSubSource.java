@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 public abstract class TaskRunSubSource<T extends Message> extends LHSerializable<T> {
 
-    private ExecutionContext executionContext;
-
     /*
      * This method is called by the TaskRun when the TaskRun has succeeded and the
      * Workflow can continue.

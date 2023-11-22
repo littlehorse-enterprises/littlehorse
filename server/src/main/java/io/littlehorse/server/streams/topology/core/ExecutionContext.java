@@ -14,20 +14,20 @@ import io.littlehorse.server.streams.util.MetadataCache;
  */
 public interface ExecutionContext {
     default <T extends ExecutionContext> T castOnSupport(Class<T> clazz){
-        if(clazz.isAssignableFrom(this.getClass())){
+        if(support(clazz)){
             return (T) this;
         }else {
-            throw new IllegalArgumentException("Not supported");
+            return null;
         }
+    }
+
+    default <T extends  ExecutionContext> boolean support(Class<T> clazz){
+        return clazz.isAssignableFrom(this.getClass());
     }
 
     AuthorizationContext authorization();
 
     default void endExecution() {}
-
-    // We should remove this direct access to the store in the future,
-    // Every interaction with the store should be via StorageManager
-    ReadOnlyModelStore store();
 
     // Utilities
     WfService service();

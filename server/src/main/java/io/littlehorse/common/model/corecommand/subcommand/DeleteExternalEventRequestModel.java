@@ -41,9 +41,9 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
     }
 
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        ExternalEventModel externalEvent = executionContext.getStorageManager().get(id);
+        ExternalEventModel externalEvent = executionContext.getableManager().get(id);
         if (!externalEvent.claimed) {
-            executionContext.getStorageManager().delete(id);
+            executionContext.getableManager().delete(id);
             return Empty.getDefaultInstance();
         } else {
             throw new LHApiException(Status.FAILED_PRECONDITION, "ExternalEvent already claimed!");

@@ -5,14 +5,13 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrincipalRequest>
         implements ClusterLevelCommand {
@@ -20,7 +19,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     private String id;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) throws LHSerdeError {
         DeletePrincipalRequest deleteRequest = (DeletePrincipalRequest) proto;
         this.id = deleteRequest.getId();
     }
@@ -41,7 +40,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     }
 
     @Override
-    public Empty process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public Empty process(ExecutionContext dao, LHServerConfig config) {
         if (id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,

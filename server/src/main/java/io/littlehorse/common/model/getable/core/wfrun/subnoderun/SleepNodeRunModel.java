@@ -14,12 +14,16 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+
 import java.util.Date;
 
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     public Date maturationTime;
     private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
 
     public SleepNodeRunModel() {}
 
@@ -32,6 +36,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public SleepNodeRun.Builder toProto() {
@@ -72,7 +77,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             timer.key = nodeRunModel.wfRunId;
             timer.payload = cmd.toProto().build().toByteArray();
 
-            executionContext.getTaskManager().scheduleTimer(timer);
+            processorContext.getTaskManager().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);

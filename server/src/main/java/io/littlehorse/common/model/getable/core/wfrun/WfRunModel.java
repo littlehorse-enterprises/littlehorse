@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -294,6 +296,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     private boolean startInterrupts(Date time) {
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         boolean somethingChanged = false;
         List<PendingInterruptModel> toHandleNow = new ArrayList<>();
         // Can only send one interrupt at a time to a thread...they need to complete
@@ -321,7 +324,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEventModel event = executionContext.getStorageManager().get(pi.externalEventId);
+                ExternalEventModel event = processorContext.getableManager().get(pi.externalEventId);
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
@@ -522,6 +525,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     private void setStatus(LHStatus status) {
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         this.status = status;
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
@@ -539,7 +543,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 deleteWfRunCmd.setSubCommand(deleteWfRun);
                 deleteWfRunCmd.time = timer.maturationTime;
                 timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
-                executionContext.getTaskManager().scheduleTimer(timer);
+                processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
     }

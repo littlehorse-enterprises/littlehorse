@@ -727,7 +727,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         RequestExecutionContext requestContext = requestContext();
         AuthorizationContext authorizationContext = requestContext.authorization();
         String principalId = authorizationContext.principalId();
-        PrincipalModel principal = requestContext.wfService().getPrincipal(principalId);
+        PrincipalModel principal = requestContext.service().getPrincipal(principalId);
         responseObserver.onNext(principal.toProto().build());
         responseObserver.onCompleted();
     }
@@ -801,7 +801,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     private WfService getServiceFromContext(){
-        return requestContext().wfService();
+        return requestContext().service();
     }
 
     private void productionCallback(

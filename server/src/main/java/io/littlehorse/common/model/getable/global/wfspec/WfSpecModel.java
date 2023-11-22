@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
@@ -26,7 +26,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     public Date createdAt;
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
-
+    private WfSpecVersionMigrationModel migration;
     public Map<String, ThreadSpecModel> threadSpecs;
 
     public String entrypointThreadName;
@@ -61,7 +61,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     private Map<String, String> varToThreadSpec;
 
     private boolean initializedVarToThreadSpec;
-    private ExecutionContext executionContext;
+    private io.littlehorse.server.streams.topology.core.ExecutionContext executionContext;
 
     public WfSpecIdModel getObjectId() {
         return new WfSpecIdModel(name, version);
@@ -113,6 +113,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         lastOffset = newOffset;
     }
 
+    @Override
     public WfSpec.Builder toProto() {
         WfSpec.Builder out = WfSpec.newBuilder()
                 .setVersion(version)
@@ -127,6 +128,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             }
         }
 
+        if (migration != null) {
+            out.setMigration(migration.toProto());
+        }
+
         if (retentionPolicy != null) {
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
@@ -135,7 +140,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     @Override
-    public void initFrom(Message pr, ExecutionContext context) {
+    public void initFrom(Message pr, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         version = proto.getVersion();
@@ -151,6 +156,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             threadSpecs.put(e.getKey(), ts);
         }
 
+        if (proto.hasMigration()) {
+            migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class, context);
+        }
+
         if (proto.hasRetentionPolicy()) {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
@@ -162,7 +171,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return WfSpec.class;
     }
 
-    public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
+    public static WfSpecModel fromProto(WfSpec proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         WfSpecModel out = new WfSpecModel();
         out.initFrom(proto, context);
         return out;
@@ -188,7 +197,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config, WfSpecModel oldVersion)
+    public void validate(ExecutionContext metadataDao, LHServerConfig config, WfSpecModel oldVersion)
             throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");

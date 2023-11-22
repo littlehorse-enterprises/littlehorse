@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
@@ -26,10 +25,8 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -40,23 +37,25 @@ import java.util.function.Supplier;
 
 public class WfService {
 
-    private final ReadOnlyModelStore modelStore;
+    private final ReadOnlyModelStore coreStore;
+    private final ReadOnlyModelStore globalStore;
     private final MetadataCache metadataCache;
     private final ReadOnlyGetableManager storageManager;
 
-    public WfService(ReadOnlyModelStore modelStore, MetadataCache metadataCache, ReadOnlyGetableManager storageManager) {
-        this.modelStore = modelStore;
+    public WfService(ReadOnlyModelStore coreStore, ReadOnlyModelStore globalStore, MetadataCache metadataCache, ReadOnlyGetableManager storageManager) {
+        this.coreStore = coreStore;
         this.metadataCache = metadataCache;
         this.storageManager = storageManager;
+        this.globalStore = globalStore;
     }
 
     public WfSpecModel getWfSpec(String name, Integer version) {
         Supplier<WfSpecModel> findWfSpec = () -> {
             final StoredGetable<WfSpec, WfSpecModel> storedResult;
             if (version != null) {
-                storedResult = modelStore.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+                storedResult = globalStore.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
             } else {
-                storedResult = modelStore.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
+                storedResult = globalStore.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
             }
             return storedResult == null ? null : storedResult.getStoredObject();
         };
@@ -68,9 +67,9 @@ public class WfService {
         if (version != null) {
             UserTaskDefIdModel id = new UserTaskDefIdModel(name, version);
             storedResult = (StoredGetable<UserTaskDef, UserTaskDefModel>)
-                    modelStore.get(id.getStoreableKey(), StoredGetable.class);
+                    globalStore.get(id.getStoreableKey(), StoredGetable.class);
         } else {
-            storedResult = modelStore.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), StoredGetable.class);
+            storedResult = globalStore.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), StoredGetable.class);
         }
 
         return storedResult == null ? null : storedResult.getStoredObject();
@@ -80,7 +79,7 @@ public class WfService {
         @SuppressWarnings("unchecked")
         StoredGetable<ExternalEventDef, ExternalEventDefModel> storedResult =
                 (StoredGetable<ExternalEventDef, ExternalEventDefModel>)
-                        modelStore.get(new ExternalEventDefIdModel(name).getStoreableKey(), StoredGetable.class);
+                        globalStore.get(new ExternalEventDefIdModel(name).getStoreableKey(), StoredGetable.class);
 
         return storedResult == null ? null : storedResult.getStoredObject();
     }
@@ -89,7 +88,7 @@ public class WfService {
         TaskDefIdModel id = new TaskDefIdModel(name);
         Supplier<TaskDefModel> findTaskDef = () -> {
             StoredGetable<TaskDef, TaskDefModel> storedResult =
-                    modelStore.get(id.getStoreableKey(), StoredGetable.class);
+                    globalStore.get(id.getStoreableKey(), StoredGetable.class);
             return storedResult == null ? null : storedResult.getStoredObject();
         };
         return (TaskDefModel) metadataCache.getOrCache(id, findTaskDef::get);
@@ -102,7 +101,7 @@ public class WfService {
 
         @SuppressWarnings("unchecked")
         StoredGetable<Principal, PrincipalModel> storedResult = (StoredGetable<Principal, PrincipalModel>)
-                modelStore.get(new PrincipalIdModel(id).getStoreableKey(), StoredGetable.class);
+                globalStore.get(new PrincipalIdModel(id).getStoreableKey(), StoredGetable.class);
 
         if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // This means that all of the following are true:
@@ -131,7 +130,7 @@ public class WfService {
         String startKey =
                 "%s/%s/__isAdmin_true".formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
         String endKey = startKey + "~";
-        LHKeyValueIterator<Tag> result = modelStore.range(startKey, endKey, Tag.class);
+        LHKeyValueIterator<Tag> result = globalStore.range(startKey, endKey, Tag.class);
         List<String> adminPrincipalIds = new ArrayList<>();
         result.forEachRemaining(tagLHIterKeyValue -> {
             adminPrincipalIds.add(tagLHIterKeyValue.getValue().getDescribedObjectId());

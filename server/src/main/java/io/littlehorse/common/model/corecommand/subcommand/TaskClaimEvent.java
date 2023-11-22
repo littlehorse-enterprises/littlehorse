@@ -73,7 +73,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
 
     @Override
     public PollTaskResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        TaskRunModel taskRun = executionContext.getStorageManager().get(taskRunId);
+        TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);

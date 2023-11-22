@@ -30,11 +30,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final LHServerConfig config;
 
     private final AuthorizationContext authContext;
-
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
-
     private final MetadataCache metadataCache;
-
     private final boolean isClusterLevelCommand;
     private LHTaskManager currentTaskManager;
     private TaskQueueManager globalTaskQueueManager;
@@ -44,6 +41,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final Headers recordMetadata;
     private final CommandModel currentCommand;
     private final ModelStore coreStore;
+    private final ModelStore globalStore;
+    private WfService service;
 
     private final KafkaStreamsServerImpl server;
 
@@ -64,6 +63,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.currentCommand = currentCommand;
         this.server = server;
         this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
+        this.globalStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeGlobalStore());
         this.authContext = this.authContextFor();
     }
 
@@ -84,6 +84,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return currentTaskManager;
     }
 
+    @Override
     public AuthorizationContext authorization() {
         return authContext;
     }
@@ -99,7 +100,11 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(this.coreStore, );
+        if(service != null){
+            return service;
+        }
+        service =  new WfService(this.coreStore, this.globalStore, metadataCache, storageManager);
+        return service;
     }
 
     public boolean hasTaskManager() {
@@ -119,10 +124,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
         }
     }
 
-    @Override
-    public ReadOnlyModelStore store() {
-        return coreStore;
-    }
 
     public CommandModel currentCommand() {
         return currentCommand;
@@ -157,6 +158,10 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     private KeyValueStore<String, Bytes> nativeCoreStore() {
         return processorContext.getStateStore(ServerTopology.CORE_STORE);
+    }
+
+    private KeyValueStore<String, Bytes> nativeGlobalStore() {
+        return processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
 
 }

@@ -60,7 +60,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
 
     @Override
     public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        ExternalEventDefModel eed = executionContext.wfService().getExternalEventDef(externalEventDefName);
+        ExternalEventDefModel eed = executionContext.service().getExternalEventDef(externalEventDefName);
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);
         }
@@ -93,9 +93,9 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             executionContext.getTaskManager().scheduleTimer(timer);
         }
 
-        WfRunModel wfRunModel = executionContext.wfService().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
         if (wfRunModel != null) {
-            WfSpecModel spec = executionContext.wfService().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+            WfSpecModel spec = executionContext.service().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
             if (spec == null) {
                 wfRunModel
                         .getThreadRun(0)

@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  * way.
  */
 @Slf4j
-public class MetadataProcessorDAOImpl extends ReadOnlyMetadataDAOImpl implements MetadataProcessorDAO {
+public class MetadataProcessorDAOImpl extends ReadOnlyMetadataDAOImpl{
 
     private MetadataCommandModel command;
     private final ModelStore lhStore;
