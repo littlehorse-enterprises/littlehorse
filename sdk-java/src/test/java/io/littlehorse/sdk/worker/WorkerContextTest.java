@@ -23,7 +23,7 @@ public class WorkerContextTest {
         WorkerContext context =
                 new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null);
 
-        assertEquals(context.getWfRunId(), "hi");
+        assertEquals(context.getWfRunId().getId(), "hi");
     }
 
     @Test
@@ -36,6 +36,6 @@ public class WorkerContextTest {
         WorkerContext context =
                 new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null);
 
-        assertEquals(context.getWfRunId(), "hi");
+        assertEquals(context.getWfRunId().getId(), "hi");
     }
 }
