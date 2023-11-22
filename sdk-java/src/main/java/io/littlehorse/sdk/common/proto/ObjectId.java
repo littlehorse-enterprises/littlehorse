@@ -109,33 +109,34 @@ public final class ObjectId {
       "\030\002 \001(\005\"\031\n\tTaskDefId\022\014\n\004name\030\001 \001(\t\"\"\n\022Ext" +
       "ernalEventDefId\022\014\n\004name\030\001 \001(\t\"&\n\026GetLate" +
       "stWfSpecRequest\022\014\n\004name\030\001 \001(\t\".\n\rUserTas" +
-      "kDefId\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\"*\n" +
-      "\021TaskWorkerGroupId\022\025\n\rtask_def_name\030\001 \001(" +
-      "\t\"^\n\nVariableId\022\'\n\twf_run_id\030\001 \001(\0132\024.lit" +
-      "tlehorse.WfRunId\022\031\n\021thread_run_number\030\002 " +
-      "\001(\005\022\014\n\004name\030\003 \001(\t\"\210\001\n\017ExternalEventId\022\'\n" +
-      "\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022>" +
-      "\n\025external_event_def_id\030\002 \001(\0132\037.littleho" +
-      "rse.ExternalEventDefId\022\014\n\004guid\030\003 \001(\t\"\025\n\007" +
-      "WfRunId\022\n\n\002id\030\001 \001(\t\"a\n\tNodeRunId\022\'\n\twf_r" +
-      "un_id\030\001 \001(\0132\024.littlehorse.WfRunId\022\031\n\021thr" +
-      "ead_run_number\030\002 \001(\005\022\020\n\010position\030\003 \001(\005\"G" +
-      "\n\tTaskRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.littleh" +
-      "orse.WfRunId\022\021\n\ttask_guid\030\002 \001(\t\"P\n\rUserT" +
-      "askRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehors" +
-      "e.WfRunId\022\026\n\016user_task_guid\030\002 \001(\t\"\250\001\n\020Ta" +
-      "skDefMetricsId\0220\n\014window_start\030\001 \001(\0132\032.g" +
-      "oogle.protobuf.Timestamp\0225\n\013window_type\030" +
-      "\002 \001(\0162 .littlehorse.MetricsWindowLength\022" +
-      "+\n\013task_def_id\030\003 \001(\0132\026.littlehorse.TaskD" +
-      "efId\"\245\001\n\017WfSpecMetricsId\0220\n\014window_start" +
-      "\030\001 \001(\0132\032.google.protobuf.Timestamp\0225\n\013wi" +
-      "ndow_type\030\002 \001(\0162 .littlehorse.MetricsWin" +
-      "dowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.littleho" +
-      "rse.WfSpecId\"\031\n\013PrincipalId\022\n\n\002id\030\001 \001(\t\"" +
-      "\026\n\010TenantId\022\n\n\002id\030\001 \001(\tBG\n\037io.littlehors" +
-      "e.sdk.common.protoP\001Z\007.;model\252\002\030LittleHo" +
-      "rse.Common.Protob\006proto3"
+      "kDefId\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\"@\n" +
+      "\021TaskWorkerGroupId\022+\n\013task_def_id\030\001 \001(\0132" +
+      "\026.littlehorse.TaskDefId\"^\n\nVariableId\022\'\n" +
+      "\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022\031" +
+      "\n\021thread_run_number\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\"" +
+      "\210\001\n\017ExternalEventId\022\'\n\twf_run_id\030\001 \001(\0132\024" +
+      ".littlehorse.WfRunId\022>\n\025external_event_d" +
+      "ef_id\030\002 \001(\0132\037.littlehorse.ExternalEventD" +
+      "efId\022\014\n\004guid\030\003 \001(\t\"\025\n\007WfRunId\022\n\n\002id\030\001 \001(" +
+      "\t\"a\n\tNodeRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.litt" +
+      "lehorse.WfRunId\022\031\n\021thread_run_number\030\002 \001" +
+      "(\005\022\020\n\010position\030\003 \001(\005\"G\n\tTaskRunId\022\'\n\twf_" +
+      "run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022\021\n\tta" +
+      "sk_guid\030\002 \001(\t\"P\n\rUserTaskRunId\022\'\n\twf_run" +
+      "_id\030\001 \001(\0132\024.littlehorse.WfRunId\022\026\n\016user_" +
+      "task_guid\030\002 \001(\t\"\250\001\n\020TaskDefMetricsId\0220\n\014" +
+      "window_start\030\001 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\0225\n\013window_type\030\002 \001(\0162 .littlehors" +
+      "e.MetricsWindowLength\022+\n\013task_def_id\030\003 \001" +
+      "(\0132\026.littlehorse.TaskDefId\"\245\001\n\017WfSpecMet" +
+      "ricsId\0220\n\014window_start\030\001 \001(\0132\032.google.pr" +
+      "otobuf.Timestamp\0225\n\013window_type\030\002 \001(\0162 ." +
+      "littlehorse.MetricsWindowLength\022)\n\nwf_sp" +
+      "ec_id\030\003 \001(\0132\025.littlehorse.WfSpecId\"\031\n\013Pr" +
+      "incipalId\022\n\n\002id\030\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030" +
+      "\001 \001(\tBG\n\037io.littlehorse.sdk.common.proto" +
+      "P\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -178,7 +179,7 @@ public final class ObjectId {
     internal_static_littlehorse_TaskWorkerGroupId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskWorkerGroupId_descriptor,
-        new java.lang.String[] { "TaskDefName", });
+        new java.lang.String[] { "TaskDefId", });
     internal_static_littlehorse_VariableId_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_VariableId_fieldAccessorTable = new

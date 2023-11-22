@@ -50,6 +50,6 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
 
     @Override
     public String getPartitionKey() {
-        return userTaskRunId.getWfRunId();
+        return userTaskRunId.getPartitionKey().get();
     }
 }

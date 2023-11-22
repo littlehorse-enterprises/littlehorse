@@ -46,18 +46,15 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 public class NodeRunModel extends CoreGetable<NodeRun> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public int position;
+    private NodeRunIdModel id;
+    private WfSpecIdModel wfSpecId;
+    private String threadSpecName;
 
     public LHStatus status;
 
     public Date arrivalTime;
     public Date endTime;
 
-    public WfSpecIdModel wfSpecId;
-    public String wfSpecName;
-    public String threadSpecName;
     public String nodeName;
 
     public String errorMessage;
@@ -95,10 +92,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
-            WfRunModel wfRunModel = getDao().getWfRun(wfRunId);
-            threadRunModelDoNotUseMe = wfRunModel.getThreadRuns().get(threadRunNumber);
+            WfRunModel wfRunModel = getDao().get(id.getWfRunId());
+            threadRunModelDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
         }
         return threadRunModelDoNotUseMe;
+    }
+
+    public int getThreadRunNumber() {
+        return id.getThreadRunNumber();
     }
 
     public void setThreadRun(ThreadRunModel threadRunModel) {
@@ -111,7 +112,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     public NodeRunIdModel getObjectId() {
-        return new NodeRunIdModel(wfRunId, threadRunNumber, position);
+        return id;
     }
 
     public Class<NodeRun> getProtoBaseClass() {
@@ -147,9 +148,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public void initFrom(Message p) {
         NodeRun proto = (NodeRun) p;
-        wfRunId = proto.getWfRunId();
-        threadRunNumber = proto.getThreadRunNumber();
-        position = proto.getPosition();
+        id = LHSerializable.fromProto(proto.getId(), NodeRunIdModel.class);
 
         arrivalTime = LHUtil.fromProtoTs(proto.getArrivalTime());
         if (proto.hasEndTime()) {
@@ -204,7 +203,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             failureHandlerIds.add(handlerId);
         }
 
-        getSubNodeRun().setNodeRunModel(this);
+        getSubNodeRun().setNodeRun(this);
     }
 
     public SubNodeRun<?> getSubNodeRun() {
@@ -265,14 +264,12 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
 
-        snr.nodeRunModel = this;
+        snr.nodeRun = this;
     }
 
     public NodeRun.Builder toProto() {
         NodeRun.Builder out = NodeRun.newBuilder()
-                .setWfRunId(wfRunId)
-                .setThreadRunNumber(threadRunNumber)
-                .setPosition(position)
+                .setId(id.toProto())
                 .setStatus(status)
                 .setArrivalTime(LHUtil.fromDate(arrivalTime))
                 .setWfSpecId(wfSpecId.toProto())

@@ -11,12 +11,12 @@ import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunReq
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
@@ -43,9 +43,9 @@ public class CommandModel extends AbstractCommand<Command> {
     public RunWfRequestModel runWf;
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
-    public SleepNodeMatured sleepNodeMatured;
+    public SleepNodeMaturedModel sleepNodeMatured;
     public DeleteWfRunRequestModel deleteWfRun;
-    public ExternalEventTimeout externalEventTimeout;
+    public ExternalEventTimeoutModel externalEventTimeout;
     public TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat;
     public DeleteExternalEventRequestModel deleteExternalEvent;
     public AssignUserTaskRunRequestModel assignUserTaskRun;
@@ -163,13 +163,13 @@ public class CommandModel extends AbstractCommand<Command> {
                 resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun());
                 break;
             case SLEEP_NODE_MATURED:
-                sleepNodeMatured = SleepNodeMatured.fromProto(p.getSleepNodeMatured());
+                sleepNodeMatured = SleepNodeMaturedModel.fromProto(p.getSleepNodeMatured());
                 break;
             case DELETE_WF_RUN:
                 deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun());
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
-                externalEventTimeout = ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
+                externalEventTimeout = ExternalEventTimeoutModel.fromProto(p.getExternalEventTimeout());
                 break;
             case TASK_WORKER_HEART_BEAT:
                 taskWorkerHeartBeat = TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat());
@@ -261,15 +261,15 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(ResumeWfRunRequestModel.class)) {
             type = CommandCase.RESUME_WF_RUN;
             resumeWfRun = (ResumeWfRunRequestModel) cmd;
-        } else if (cls.equals(SleepNodeMatured.class)) {
+        } else if (cls.equals(SleepNodeMaturedModel.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
-            sleepNodeMatured = (SleepNodeMatured) cmd;
+            sleepNodeMatured = (SleepNodeMaturedModel) cmd;
         } else if (cls.equals(DeleteWfRunRequestModel.class)) {
             type = CommandCase.DELETE_WF_RUN;
             deleteWfRun = (DeleteWfRunRequestModel) cmd;
-        } else if (cls.equals(ExternalEventTimeout.class)) {
+        } else if (cls.equals(ExternalEventTimeoutModel.class)) {
             type = CommandCase.EXTERNAL_EVENT_TIMEOUT;
-            externalEventTimeout = (ExternalEventTimeout) cmd;
+            externalEventTimeout = (ExternalEventTimeoutModel) cmd;
         } else if (cls.equals(TaskWorkerHeartBeatRequestModel.class)) {
             type = CommandCase.TASK_WORKER_HEART_BEAT;
             taskWorkerHeartBeat = (TaskWorkerHeartBeatRequestModel) cmd;

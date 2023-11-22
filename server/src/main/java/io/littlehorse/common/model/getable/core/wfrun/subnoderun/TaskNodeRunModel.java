@@ -54,22 +54,22 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // The TaskNode arrive() function should create a TaskRun. Note that
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
 
-        NodeModel node = nodeRunModel.getNode();
+        NodeModel node = nodeRun.getNode();
 
         TaskDefModel td = node.getTaskNode().getTaskDef();
         if (td == null) {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
-            nodeRunModel.fail(new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR), time);
+            nodeRun.fail(new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR), time);
             return;
         }
 
         List<VarNameAndValModel> inputVariables;
 
         try {
-            inputVariables = node.getTaskNode().assignInputVars(nodeRunModel.getThreadRun());
+            inputVariables = node.getTaskNode().assignInputVars(nodeRun.getThreadRun());
         } catch (LHVarSubError exn) {
-            nodeRunModel.fail(
+            nodeRun.fail(
                     new FailureModel(
                             "Failed calculating TaskRun Input Vars: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR),
                     time);
@@ -77,12 +77,11 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         }
 
         // Create a TaskRun
-        TaskNodeReferenceModel source =
-                new TaskNodeReferenceModel(nodeRunModel.getObjectId(), nodeRunModel.getWfSpecId());
+        TaskNodeReferenceModel source = new TaskNodeReferenceModel(nodeRun.getObjectId(), nodeRun.getWfSpecId());
 
         TaskRunModel task =
                 new TaskRunModel(getDao(), inputVariables, new TaskRunSourceModel(source), node.getTaskNode());
-        this.taskRunId = new TaskRunIdModel(nodeRunModel.getPartitionKey().get());
+        this.taskRunId = new TaskRunIdModel(nodeRun.getId().getWfRunId());
         task.setId(taskRunId);
 
         // When creating a new Getable for the first time, we need to explicitly

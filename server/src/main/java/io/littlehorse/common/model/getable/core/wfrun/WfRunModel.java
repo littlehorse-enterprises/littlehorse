@@ -11,9 +11,9 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -447,7 +447,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         threadRuns.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
     }
 
-    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
+    public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
         ThreadRunModel handler = threadRuns.get(timeout.threadRunNumber);
         handler.processExtEvtTimeout(timeout);
         advance(timeout.time);
@@ -505,7 +505,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date());
     }
 
-    public void processSleepNodeMatured(SleepNodeMatured req, Date time) throws LHValidationError {
+    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
         if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
             throw new LHValidationError(null, "Reference to nonexistent thread.");
         }

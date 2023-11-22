@@ -41,10 +41,10 @@ class UserTaskDefId(_message.Message):
     def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
 
 class TaskWorkerGroupId(_message.Message):
-    __slots__ = ["task_def_name"]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
-    task_def_name: str
-    def __init__(self, task_def_name: _Optional[str] = ...) -> None: ...
+    __slots__ = ["task_def_id"]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    task_def_id: TaskDefId
+    def __init__(self, task_def_id: _Optional[_Union[TaskDefId, _Mapping]] = ...) -> None: ...
 
 class VariableId(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number", "name"]

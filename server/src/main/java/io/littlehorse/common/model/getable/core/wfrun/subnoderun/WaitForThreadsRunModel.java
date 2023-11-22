@@ -68,18 +68,18 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     @Override
     public boolean advanceIfPossible(Date time) {
-        NodeTerminationManager nodeTerminationManager = new NodeTerminationManager(threads, nodeRunModel);
+        NodeTerminationManager nodeTerminationManager = new NodeTerminationManager(threads, nodeRun);
         return nodeTerminationManager.completeIfPossible(time);
     }
 
     public void arrive(Date time) {
         // Need to initialize all of the threads.
         WaitForThreadsNodeModel wftn = getNode().getWaitForThreadsNode();
-        nodeRunModel.setStatus(LHStatus.RUNNING);
+        nodeRun.setStatus(LHStatus.RUNNING);
         try {
-            threads.addAll(wftn.getThreadsToWaitFor(nodeRunModel));
+            threads.addAll(wftn.getThreadsToWaitFor(nodeRun));
         } catch (LHVarSubError exn) {
-            nodeRunModel.fail(
+            nodeRun.fail(
                     new FailureModel(
                             "Failed determining thread run number to wait for: " + exn.getMessage(),
                             LHConstants.VAR_SUB_ERROR),

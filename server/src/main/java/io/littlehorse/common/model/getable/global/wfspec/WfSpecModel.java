@@ -93,7 +93,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         threadSpecs.forEach((s, threadSpec) -> {
             threadSpec.getNodes().values().forEach(node -> {
                 if (node.getType() == Node.NodeCase.TASK) {
-                    names.add(node.getTaskNode().getTaskDefName());
+                    names.add(node.getTaskNode().getTaskDefId().getName());
                 }
             });
         });

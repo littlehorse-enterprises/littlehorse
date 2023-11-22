@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
@@ -33,23 +35,23 @@ public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, Task
     @Override
     public void initFrom(Message proto) {
         TaskWorkerGroupId p = (TaskWorkerGroupId) proto;
-        taskDefId = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
     }
 
     @Override
     public TaskWorkerGroupId.Builder toProto() {
-        TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefName(taskDefId);
+        TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefId(taskDefId.toProto());
         return out;
     }
 
     @Override
     public String toString() {
-        return taskDefId;
+        return taskDefId.toString();
     }
 
     @Override
     public void initFromString(String storeKey) {
-        taskDefId = storeKey;
+        taskDefId = (TaskDefIdModel) ObjectIdModel.fromString(storeKey, TaskDefIdModel.class);
     }
 
     @Override

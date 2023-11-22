@@ -18,13 +18,11 @@ import lombok.Setter;
 public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> {
 
     private NodeRunIdModel nodeRunId;
-    private WfSpecIdModel wfSpecId;
 
     public TaskNodeReferenceModel() {}
 
     public TaskNodeReferenceModel(NodeRunIdModel nodeRunId, WfSpecIdModel wfSpecId) {
         this.nodeRunId = nodeRunId;
-        this.wfSpecId = wfSpecId;
     }
 
     public Class<TaskNodeReference> getProtoBaseClass() {
@@ -32,8 +30,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     }
 
     public TaskNodeReference.Builder toProto() {
-        TaskNodeReference.Builder out =
-                TaskNodeReference.newBuilder().setWfSpecId(wfSpecId.toProto()).setNodeRunId(nodeRunId.toProto());
+        TaskNodeReference.Builder out = TaskNodeReference.newBuilder().setNodeRunId(nodeRunId.toProto());
 
         return out;
     }
@@ -41,7 +38,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     public void initFrom(Message proto) {
         TaskNodeReference p = (TaskNodeReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
     }
 
     public void onCompleted(TaskAttemptModel successfulAttept, CoreProcessorDAO dao) {

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
     private TaskRunSourceCase type;
     private TaskNodeReferenceModel taskNode;
     private UserTaskTriggerReferenceModel userTaskTrigger;
+    private WfSpecIdModel wfSpecId;
 
     public TaskRunSourceModel() {}
 
@@ -35,6 +37,9 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public void initFrom(Message proto) {
         TaskRunSource p = (TaskRunSource) proto;
+        if (p.hasWfSpecId()) {
+            wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+        }
         type = p.getTaskRunSourceCase();
         switch (type) {
             case TASK_NODE:
@@ -50,6 +55,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public TaskRunSource.Builder toProto() {
         TaskRunSource.Builder out = TaskRunSource.newBuilder();
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
         switch (type) {
             case TASK_NODE:
                 out.setTaskNode(taskNode.toProto());

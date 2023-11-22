@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -214,7 +214,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
     }
 
-    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
+    public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
         NodeRunModel nr = getNodeRun(timeout.nodeRunPosition);
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
             log.error("Impossible: got a misconfigured external event timeout: {}", nr.toJson());
@@ -223,7 +223,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         nr.externalEventRun.processExternalEventTimeout(timeout);
     }
 
-    public void processSleepNodeMatured(SleepNodeMatured e) {
+    public void processSleepNodeMatured(SleepNodeMaturedModel e) {
         NodeRunModel nr = getNodeRun(e.nodeRunPosition);
         if (nr.type != NodeTypeCase.SLEEP) {
             log.warn("Tried to mature on non-sleep node");

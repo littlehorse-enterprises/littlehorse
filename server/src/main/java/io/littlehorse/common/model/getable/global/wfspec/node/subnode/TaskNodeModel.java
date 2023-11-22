@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
@@ -17,6 +18,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -32,10 +34,10 @@ import lombok.Setter;
 @Setter
 public class TaskNodeModel extends SubNode<TaskNode> {
 
-    public String taskDefName;
-    public int retries;
-    public List<VariableAssignmentModel> variables;
-    public int timeoutSeconds;
+    private TaskDefIdModel taskDefId;
+    private int retries;
+    private List<VariableAssignmentModel> variables;
+    private int timeoutSeconds;
 
     private TaskDefModel taskDef;
     private CoreProcessorDAO dao;
@@ -46,7 +48,10 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 // Only works for when this is part of a Node, not a UTATask.
                 dao = node.getThreadSpecModel().getWfSpecModel().getDao();
             }
-            taskDef = dao.getTaskDef(taskDefName);
+
+            // TODO: When we refactor the object id and dao, we can just
+            // pass in the taskDefId, not the string.
+            taskDef = dao.getTaskDef(taskDefId.getName());
         }
         return taskDef;
     }
@@ -67,7 +72,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     public void initFrom(Message proto) {
         TaskNode p = (TaskNode) proto;
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         retries = p.getRetries();
 
         timeoutSeconds = p.getTimeoutSeconds();
@@ -82,7 +87,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     public TaskNode.Builder toProto() {
         TaskNode.Builder out = TaskNode.newBuilder()
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setTimeoutSeconds(timeoutSeconds)
                 .setRetries(retries);
 
@@ -96,9 +101,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDefModel taskDef = readOnlyDao.getTaskDef(taskDefName);
+        TaskDefModel taskDef = readOnlyDao.getTaskDef(taskDefId.getName());
         if (taskDef == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefName);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
         }
         if (retries < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "has negative " + "number of retries!");

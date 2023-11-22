@@ -11,6 +11,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import java.util.Date;
 import lombok.Getter;
@@ -50,7 +51,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         if (p.hasUserId()) userId = p.getUserId();
     }
 
-    public String getWfRunId() {
+    public WfRunIdModel getWfRunId() {
         return userTaskRunId.getWfRunId();
     }
 
@@ -83,7 +84,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         log.debug("Reassigning user task run {} to user: {}, group: {}", userTaskRunId, userId, userGroup);
         utr.assignTo(userId, userGroup, true);
 
-        WfRunModel wfRunModel = dao.getWfRun(getWfRunId());
+        WfRunModel wfRunModel = dao.get(getWfRunId());
         if (wfRunModel == null) {
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }
@@ -98,6 +99,6 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
     }
 
     public String getPartitionKey() {
-        return getWfRunId();
+        return userTaskRunId.getPartitionKey().get();
     }
 }

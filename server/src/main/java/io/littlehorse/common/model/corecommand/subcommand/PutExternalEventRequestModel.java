@@ -71,13 +71,8 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
-        ExternalEventModel evt = new ExternalEventModel();
-        evt.setId(new ExternalEventIdModel(wfRunId, externalEventDefId, guid));
-        evt.setContent(content);
-        evt.setNodeRunPosition(nodeRunPosition);
-        evt.setThreadRunNumber(threadRunNumber);
-        evt.setClaimed(false);
-
+        ExternalEventModel evt = new ExternalEventModel(content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, dao.getEventTime());
+        evt.setDao(dao);
         dao.put(evt);
 
         if (eed.retentionHours != LHConstants.INFINITE_RETENTION) {

@@ -33,7 +33,7 @@ message UserTaskDefId {
 }
 
 message TaskWorkerGroupId {
-  string task_def_name = 1;
+  TaskDefId task_def_id = 1;
 }
 
 message VariableId {

@@ -4,6 +4,7 @@ import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -24,14 +25,17 @@ import java.util.Date;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHeartBeatRequest> {
 
-    public String clientId;
-    public TaskDefIdModel taskDefId;
-    public String listenerName;
+    private String clientId;
+    private TaskDefIdModel taskDefId;
+    private String listenerName;
+
     private TaskWorkerAssignor assignor;
     private Set<HostModel> hosts;
 
@@ -54,7 +58,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         if (taskWorkerGroup == null) {
             taskWorkerGroup = new TaskWorkerGroupModel();
             taskWorkerGroup.createdAt = new Date();
-            taskWorkerGroup.taskDefName = taskDefName;
+            taskWorkerGroup.id = new TaskWorkerGroupIdModel(taskDefId);
         }
 
         // Remove inactive taskWorker
@@ -137,14 +141,14 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
 
     @Override
     public String getPartitionKey() {
-        return taskDefName;
+        return taskDefId.getPartitionKey().get();
     }
 
     @Override
     public TaskWorkerHeartBeatRequest.Builder toProto() {
         TaskWorkerHeartBeatRequest.Builder builder = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(clientId)
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setListenerName(listenerName);
         return builder;
     }
@@ -153,7 +157,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     public void initFrom(Message proto) {
         TaskWorkerHeartBeatRequest heartBeatPb = (TaskWorkerHeartBeatRequest) proto;
         clientId = heartBeatPb.getClientId();
-        taskDefName = heartBeatPb.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(heartBeatPb.getTaskDefId(), TaskDefIdModel.class);
         listenerName = heartBeatPb.getListenerName();
     }
 

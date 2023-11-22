@@ -2,7 +2,6 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
@@ -17,17 +16,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
+public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
 
     private NodeRunIdModel nodeRunId;
+
+    public SleepNodeMaturedModel() {}
+
+    public SleepNodeMaturedModel(NodeRunIdModel nodeRunId) {
+        this.nodeRunId = nodeRunId;
+    }
 
     public Class<SleepNodeMaturedPb> getProtoBaseClass() {
         return SleepNodeMaturedPb.class;
     }
 
     public SleepNodeMaturedPb.Builder toProto() {
-        SleepNodeMaturedPb.Builder out = SleepNodeMaturedPb.newBuilder()
-                .setNodeRunId(nodeRunId.toProto());
+        SleepNodeMaturedPb.Builder out = SleepNodeMaturedPb.newBuilder().setNodeRunId(nodeRunId.toProto());
         return out;
     }
 
@@ -36,8 +40,8 @@ public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
     }
 
-    public static SleepNodeMatured fromProto(SleepNodeMaturedPb proto) {
-        SleepNodeMatured out = new SleepNodeMatured();
+    public static SleepNodeMaturedModel fromProto(SleepNodeMaturedPb proto) {
+        SleepNodeMaturedModel out = new SleepNodeMaturedModel();
         out.initFrom(proto);
         return out;
     }

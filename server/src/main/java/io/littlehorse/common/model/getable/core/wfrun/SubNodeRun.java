@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
-    public NodeRunModel nodeRunModel;
+    public NodeRunModel nodeRun;
 
     public abstract boolean advanceIfPossible(Date time);
 
@@ -27,11 +27,11 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * an interrupt thread.
      */
     public boolean canBeInterrupted() {
-        return !nodeRunModel.isInProgress();
+        return !nodeRun.isInProgress();
     }
 
-    public void setNodeRunModel(NodeRunModel nodeRunModel) {
-        this.nodeRunModel = nodeRunModel;
+    public void setNodeRun(NodeRunModel nodeRunModel) {
+        this.nodeRun = nodeRunModel;
     }
 
     public WfSpecModel getWfSpec() {
@@ -39,15 +39,15 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     public WfRunModel getWfRun() {
-        return nodeRunModel.getThreadRun().getWfRun();
+        return nodeRun.getThreadRun().getWfRun();
     }
 
     public NodeModel getNode() {
-        return nodeRunModel.getNode();
+        return nodeRun.getNode();
     }
 
     public CoreProcessorDAO getDao() {
-        return nodeRunModel.getThreadRun().getWfRun().getDao();
+        return nodeRun.getThreadRun().getWfRun().getDao();
     }
 
     public void halt() {}

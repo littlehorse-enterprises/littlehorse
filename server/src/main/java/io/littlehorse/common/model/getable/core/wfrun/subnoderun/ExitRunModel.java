@@ -37,10 +37,10 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
     public boolean advanceIfPossible(Date time) {
         boolean out;
         // nothing to do
-        if (nodeRunModel.isInProgress()) {
+        if (nodeRun.isInProgress()) {
             arrive(time);
             // Return true if the status changed
-            out = !(nodeRunModel.getThreadRun().isRunning());
+            out = !(nodeRun.getThreadRun().isRunning());
         } else {
             if (alreadyNoticed) {
                 out = false;
@@ -57,14 +57,14 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         boolean allComplete = true;
         String failedChildren = "";
 
-        for (int childId : nodeRunModel.getThreadRun().getChildThreadIds()) {
+        for (int childId : nodeRun.getThreadRun().getChildThreadIds()) {
             ThreadRunModel child = getWfRun().getThreadRuns().get(childId);
             if (!child.isTerminated()) {
                 // Can't exit yet.
                 return;
             }
             if (child.status != LHStatus.COMPLETED) {
-                if (!nodeRunModel.getThreadRun().getHandledFailedChildren().contains(childId)) {
+                if (!nodeRun.getThreadRun().getHandledFailedChildren().contains(childId)) {
                     allComplete = false;
 
                     // lolz this is silly but it works:
@@ -76,16 +76,15 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         if (allComplete) {
             if (getNode().exitNode.failureDef == null) {
                 // Then this is just a regular "yay we're done!" node.
-                nodeRunModel.getThreadRun().complete(time);
-                nodeRunModel.complete(null, time);
+                nodeRun.getThreadRun().complete(time);
+                nodeRun.complete(null, time);
             } else {
                 // then this is a "yikes Throw Exception" node.
 
-                nodeRunModel.fail(getNode().exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()), time);
+                nodeRun.fail(getNode().exitNode.failureDef.getFailure(nodeRun.getThreadRun()), time);
             }
         } else {
-            nodeRunModel
-                    .getThreadRun()
+            nodeRun.getThreadRun()
                     .fail(
                             new FailureModel(
                                     "Child thread (or threads) failed:" + failedChildren, LHConstants.CHILD_FAILURE),

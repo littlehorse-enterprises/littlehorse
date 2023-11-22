@@ -50,30 +50,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskWorkerGroup.class, io.littlehorse.sdk.common.proto.TaskWorkerGroup.Builder.class);
   }
 
-  public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.TaskWorkerGroupId id_;
   /**
-   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
-   * @return Whether the taskDefId field is set.
+   * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public boolean hasTaskDefId() {
-    return taskDefId_ != null;
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
-   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
-   * @return The taskDefId.
+   * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
-    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+  public io.littlehorse.sdk.common.proto.TaskWorkerGroupId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance() : id_;
   }
   /**
-   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
-    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+  public io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance() : id_;
   }
 
   public static final int CREATED_AT_FIELD_NUMBER = 2;
@@ -195,8 +195,8 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (taskDefId_ != null) {
-      output.writeMessage(1, getTaskDefId());
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
@@ -216,9 +216,9 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (taskDefId_ != null) {
+    if (id_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getTaskDefId());
+        .computeMessageSize(1, getId());
     }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -249,10 +249,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     }
     io.littlehorse.sdk.common.proto.TaskWorkerGroup other = (io.littlehorse.sdk.common.proto.TaskWorkerGroup) obj;
 
-    if (hasTaskDefId() != other.hasTaskDefId()) return false;
-    if (hasTaskDefId()) {
-      if (!getTaskDefId()
-          .equals(other.getTaskDefId())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
     }
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
@@ -272,9 +272,9 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasTaskDefId()) {
-      hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefId().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
     }
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
@@ -437,10 +437,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      taskDefId_ = null;
-      if (taskDefIdBuilder_ != null) {
-        taskDefIdBuilder_.dispose();
-        taskDefIdBuilder_ = null;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
       }
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
@@ -482,9 +482,9 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     private void buildPartial0(io.littlehorse.sdk.common.proto.TaskWorkerGroup result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.taskDefId_ = taskDefIdBuilder_ == null
-            ? taskDefId_
-            : taskDefIdBuilder_.build();
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
@@ -541,8 +541,8 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskWorkerGroup other) {
       if (other == io.littlehorse.sdk.common.proto.TaskWorkerGroup.getDefaultInstance()) return this;
-      if (other.hasTaskDefId()) {
-        mergeTaskDefId(other.getTaskDefId());
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
@@ -578,7 +578,7 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
               break;
             case 10: {
               input.readMessage(
-                  getTaskDefIdFieldBuilder().getBuilder(),
+                  getIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
@@ -616,123 +616,123 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
+    private io.littlehorse.sdk.common.proto.TaskWorkerGroupId id_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
+        io.littlehorse.sdk.common.proto.TaskWorkerGroupId, io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder, io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder> idBuilder_;
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
-     * @return Whether the taskDefId field is set.
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public boolean hasTaskDefId() {
+    public boolean hasId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
-     * @return The taskDefId.
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
+     * @return The id.
      */
-    public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
-      if (taskDefIdBuilder_ == null) {
-        return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroupId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance() : id_;
       } else {
-        return taskDefIdBuilder_.getMessage();
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
-      if (taskDefIdBuilder_ == null) {
+    public Builder setId(io.littlehorse.sdk.common.proto.TaskWorkerGroupId value) {
+      if (idBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        taskDefId_ = value;
+        id_ = value;
       } else {
-        taskDefIdBuilder_.setMessage(value);
+        idBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public Builder setTaskDefId(
-        io.littlehorse.sdk.common.proto.TaskDefId.Builder builderForValue) {
-      if (taskDefIdBuilder_ == null) {
-        taskDefId_ = builderForValue.build();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
       } else {
-        taskDefIdBuilder_.setMessage(builderForValue.build());
+        idBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
-      if (taskDefIdBuilder_ == null) {
+    public Builder mergeId(io.littlehorse.sdk.common.proto.TaskWorkerGroupId value) {
+      if (idBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
-          taskDefId_ != null &&
-          taskDefId_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
-          getTaskDefIdBuilder().mergeFrom(value);
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
         } else {
-          taskDefId_ = value;
+          id_ = value;
         }
       } else {
-        taskDefIdBuilder_.mergeFrom(value);
+        idBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public Builder clearTaskDefId() {
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      taskDefId_ = null;
-      if (taskDefIdBuilder_ != null) {
-        taskDefIdBuilder_.dispose();
-        taskDefIdBuilder_ = null;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return getTaskDefIdFieldBuilder().getBuilder();
+      return getIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
-      if (taskDefIdBuilder_ != null) {
-        return taskDefIdBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
       } else {
-        return taskDefId_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance() : id_;
       }
     }
     /**
-     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> 
-        getTaskDefIdFieldBuilder() {
-      if (taskDefIdBuilder_ == null) {
-        taskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder>(
-                getTaskDefId(),
+        io.littlehorse.sdk.common.proto.TaskWorkerGroupId, io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder, io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TaskWorkerGroupId, io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder, io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder>(
+                getId(),
                 getParentForChildren(),
                 isClean());
-        taskDefId_ = null;
+        id_ = null;
       }
-      return taskDefIdBuilder_;
+      return idBuilder_;
     }
 
     private com.google.protobuf.Timestamp createdAt_;

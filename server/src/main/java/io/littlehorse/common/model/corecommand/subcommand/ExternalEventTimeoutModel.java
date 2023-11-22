@@ -14,9 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
+public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
 
     private NodeRunIdModel nodeRunId;
+
+    public ExternalEventTimeoutModel() {}
+
+    public ExternalEventTimeoutModel(NodeRunIdModel nodeRunId) {
+        this.nodeRunId = nodeRunId;
+    }
 
     @Override
     public Class<ExternalEventNodeTimeoutPb> getProtoBaseClass() {
@@ -59,8 +65,8 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
         return false;
     }
 
-    public static ExternalEventTimeout fromProto(ExternalEventNodeTimeoutPb p) {
-        ExternalEventTimeout out = new ExternalEventTimeout();
+    public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p) {
+        ExternalEventTimeoutModel out = new ExternalEventTimeoutModel();
         out.initFrom(p);
         return out;
     }

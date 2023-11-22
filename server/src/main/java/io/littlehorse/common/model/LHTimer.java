@@ -28,6 +28,9 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public LHTimer(CommandModel command, CoreProcessorDAO dao) {
         maturationTime = command.getTime();
+        if (maturationTime == null) {
+            throw new IllegalArgumentException("Command's time was null!");
+        }
         payload = command.toProto().build().toByteArray();
         key = command.getPartitionKey();
         topic = dao.getCoreCmdTopic();
