@@ -37,6 +37,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -48,8 +49,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -238,7 +237,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(processorContext.getTaskManager(), this);
+        trigger.schedule(this);
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) throws LHApiException {

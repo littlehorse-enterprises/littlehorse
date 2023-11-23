@@ -3,17 +3,17 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
-
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,24 +57,26 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return true;
     }
 
-    public TaskDef process(ExecutionContext dao, LHServerConfig config) {
+    public TaskDef process(MetadataCommandExecution context) {
+        MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");
         }
 
-        TaskDefModel oldVersion = dao.getTaskDef(name);
+        TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
         }
         TaskDefModel spec = new TaskDefModel();
         spec.name = name;
         spec.inputVars = inputVars;
-        dao.put(spec);
+        metadataManager.put(spec);
 
         return spec.toProto().build();
     }
 
-    public static PutTaskDefRequestModel fromProto(PutTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static PutTaskDefRequestModel fromProto(
+            PutTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p, context);
         return out;

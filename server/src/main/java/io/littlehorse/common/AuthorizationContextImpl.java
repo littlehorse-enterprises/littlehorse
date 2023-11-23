@@ -14,12 +14,16 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
     private final boolean isAdmin;
 
     public AuthorizationContextImpl(
-            final String authorizedPrincipalId, final String authorizedTenant, final List<ServerACLModel> acls, final boolean isAdmin) {
+            final String authorizedPrincipalId,
+            final String authorizedTenant,
+            final List<ServerACLModel> acls,
+            final boolean isAdmin) {
         this.authorizedTenant = Objects.requireNonNull(authorizedTenant);
         this.authorizedPrincipalId = Objects.requireNonNull(authorizedPrincipalId);
         this.acls = Objects.requireNonNull(acls);
         this.isAdmin = isAdmin;
     }
+
     @Override
     public String principalId() {
         return authorizedPrincipalId;
@@ -34,6 +38,7 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
     public Collection<ServerACLModel> acls() {
         return acls;
     }
+
     @Override
     public boolean isAdmin() {
         return isAdmin;

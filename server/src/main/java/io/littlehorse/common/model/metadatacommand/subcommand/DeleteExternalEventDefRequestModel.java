@@ -4,8 +4,6 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
@@ -37,8 +35,8 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     @Override
-    public Empty process(MetadataCommandExecution executionContext, LHServerConfig config) {
-        executionContext.getableManager().delete(id);
+    public Empty process(MetadataCommandExecution executionContext) {
+        executionContext.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }
 

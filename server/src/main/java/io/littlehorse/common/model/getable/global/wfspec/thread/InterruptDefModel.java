@@ -4,12 +4,11 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
@@ -21,6 +20,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     public ThreadSpecModel handler;
 
     public ExternalEventDefModel eed;
+    private ExecutionContext context;
 
     public Class<InterruptDef> getProtoBaseClass() {
         return InterruptDef.class;
@@ -40,14 +40,15 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         externalEventDefName = p.getExternalEventDefName();
     }
 
-    public static InterruptDefModel fromProto(InterruptDef p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static InterruptDefModel fromProto(
+            InterruptDef p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         InterruptDefModel out = new InterruptDefModel();
         out.initFrom(p, context);
         return out;
     }
 
-    public void validate(ExecutionContext metadataDao, LHServerConfig config) throws LHApiException {
-        eed = metadataDao.getExternalEventDef(externalEventDefName);
+    public void validate() throws LHApiException {
+        eed = context.service().getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
             throw new LHApiException(

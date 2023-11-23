@@ -16,9 +16,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Date;
-
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 

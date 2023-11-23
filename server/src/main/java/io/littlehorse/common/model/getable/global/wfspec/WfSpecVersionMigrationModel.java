@@ -8,10 +8,9 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.ThreadSpecMigration;
 import io.littlehorse.sdk.common.proto.WfSpecVersionMigration;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,7 +51,8 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         for (Map.Entry<String, ThreadSpecMigration> e :
                 p.getThreadSpecMigrationsMap().entrySet()) {
             threadSpecMigrations.put(
-                    e.getKey(), LHSerializable.fromProto(e.getValue(), ThreadSpecMigrationModel.class, executionContext));
+                    e.getKey(),
+                    LHSerializable.fromProto(e.getValue(), ThreadSpecMigrationModel.class, executionContext));
         }
         this.context = executionContext;
     }

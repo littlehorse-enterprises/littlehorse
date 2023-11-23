@@ -3,17 +3,17 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +33,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private List<UTActionTriggerModel> actions;
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
+    private ReadOnlyMetadataManager metadataManager;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -81,6 +82,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
+        this.metadataManager = context.metadataManager();
     }
 
     public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
@@ -93,12 +95,14 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return matchingHooks;
     }
 
+    @Override
     public UserTaskNodeRunModel createSubNodeRun(Date time) {
         return new UserTaskNodeRunModel();
     }
 
-    public void validate(ReadOnlyMetadataDAO stores, LHServerConfig config) throws LHApiException {
-        UserTaskDefModel utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
+    @Override
+    public void validate() throws LHApiException {
+        UserTaskDefModel utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
 
         if (utd == null) {
             throw new LHApiException(

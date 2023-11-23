@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
@@ -28,8 +27,11 @@ public class TagStorageManager {
     private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
 
-    public TagStorageManager(ModelStore lhStore, ProcessorContext<String, CommandProcessorOutput> context,
-                             LHServerConfig lhConfig, ExecutionContext executionContext) {
+    public TagStorageManager(
+            ModelStore lhStore,
+            ProcessorContext<String, CommandProcessorOutput> context,
+            LHServerConfig lhConfig,
+            ExecutionContext executionContext) {
         this.lhStore = lhStore;
         this.context = context;
         this.lhConfig = lhConfig;
@@ -75,8 +77,7 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
-        Headers metadata = HeadersUtil.metadataHeadersFor(
-                authContext.tenantId(), authContext.principalId());
+        Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
@@ -89,8 +90,7 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
         CreateRemoteTag command = new CreateRemoteTag(tag);
-        Headers metadata = HeadersUtil.metadataHeadersFor(
-                authContext.tenantId(), authContext.principalId());
+        Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         String partitionKey = tag.getPartitionKey();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.setPartitionKey(partitionKey);

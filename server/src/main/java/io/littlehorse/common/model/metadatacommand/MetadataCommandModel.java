@@ -3,7 +3,6 @@ package io.littlehorse.common.model.metadatacommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -20,10 +19,8 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
-
-import java.util.Date;
-
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -242,8 +239,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(MetadataCommandExecution context, LHServerConfig config) {
-        return getSubCommand().process(dao, config);
+    public Message process(MetadataCommandExecution context) {
+        return getSubCommand().process(context);
     }
 
     @Override

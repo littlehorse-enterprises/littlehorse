@@ -3,8 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -16,9 +14,11 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     private TaskDefModel taskDef;
     private WfService wfService;
+    private ReadOnlyMetadataManager metadataManager;
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
@@ -76,6 +77,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         for (VariableAssignment assn : p.getVariablesList()) {
             variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
+        this.metadataManager = context.metadataManager();
     }
 
     public TaskNode.Builder toProto() {
@@ -90,11 +92,12 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {
+    @Override
+    public void validate() throws LHApiException {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDefModel taskDef = readOnlyDao.getTaskDef(taskDefName);
+        TaskDefModel taskDef = metadataManager.get(new TaskDefIdModel(taskDefName));
         if (taskDef == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefName);
         }

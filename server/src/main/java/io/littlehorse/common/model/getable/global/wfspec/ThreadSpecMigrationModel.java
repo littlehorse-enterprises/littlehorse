@@ -4,9 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.NodeMigration;
 import io.littlehorse.sdk.common.proto.ThreadSpecMigration;
-import java.util.Map;
-
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,7 +39,8 @@ public class ThreadSpecMigrationModel extends LHSerializable<ThreadSpecMigration
         newThreadSpecName = p.getNewThreadSpecName();
 
         for (Map.Entry<String, NodeMigration> e : p.getNodeMigrationsMap().entrySet()) {
-            nodeMigrations.put(e.getKey(), LHSerializable.fromProto(e.getValue(), NodeMigrationModel.class, executionContext));
+            nodeMigrations.put(
+                    e.getKey(), LHSerializable.fromProto(e.getValue(), NodeMigrationModel.class, executionContext));
         }
         this.context = executionContext;
     }

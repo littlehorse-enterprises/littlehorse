@@ -2,12 +2,14 @@ package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.getable.CoreObjectId;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -18,24 +20,64 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
-public class GetableManager extends ReadOnlyGetableManager {
+public class GetableStorageManager {
 
     private final CommandModel command;
     private final ModelStore store;
     private final TagStorageManager tagStorageManager;
     private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
-    public GetableManager(
+    public GetableStorageManager(
             final ModelStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
             final ExecutionContext executionContext) {
-        super(store);
+
         this.store = store;
         this.uncommittedChanges = new TreeMap<>();
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
+    }
+
+    /**
+     * Gets a getable with a provided ID from the store (within a transaction). Note
+     * that if you make any modifications to the Java object returned by this
+     * method,
+     * then those changes will be persisted in the state store when the
+     * "transaction"
+     * is committed, i.e. when we call {@link LHDAO#commitChanges()}.
+     *
+     * @param <U> is the proto type of the AbstractGetable.
+     * @param <T> is the java class type of the AbstractGetable.
+     * @param id  is the ObjectId to look for.
+     * @return the specified AbstractGetable, or null if it doesn't exist.
+     */
+    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+        log.trace("Getting {} with key {}", id.getType(), id);
+        T out = null;
+
+        // First check the cache.
+        @SuppressWarnings("unchecked")
+        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
+        if (bufferedResult != null) {
+            return bufferedResult.getObjectToStore();
+        }
+
+        // Next check the store.
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(id.getStoreableKey(), StoredGetable.class);
+
+        if (storeResult == null) return null;
+
+        // If we got here, that means that:
+        // 1. The Getable exists in the store, and
+        // 2. This is the first time in this txn (eg. Command Processing) that
+        // we are getting the
+        out = storeResult.getStoredObject();
+
+        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
+        return out;
     }
 
     /**
@@ -117,16 +159,43 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     /**
+     * Accepts an ObjectId Prefix and a predicate, and returns the first ObjectId
+     * in the store+buffer, ordered by the Getable's created time, that matches
+     * the predicate.
+     *
+     * @param <U>           Is the Getable proto type
+     * @param <T>           is the Getable java type
+     * @param prefix        is the prefix to search from
+     * @param cls           is the Java class
+     * @param discriminator is a filter to apply to the result
+     * @return the first T by created time that matches discriminator, or else null.
+     */
+    public <U extends Message, T extends CoreGetable<U>> T getFirstByCreatedTimeFromPrefix(
+            String prefix, Class<T> cls, Predicate<T> discriminator) {
+        return iterateOverPrefix(prefix, cls).stream()
+                .map(GetableToStore::getObjectToStore)
+                .filter(discriminator)
+                .min(Comparator.comparing(AbstractGetable::getCreatedAt))
+                .map(entity -> {
+                    // iterateOverPrefix doesn't put in the buffer. We do that here, but only
+                    // for the one we return.
+                    put(entity);
+                    return entity;
+                })
+                .orElse(null);
+    }
+
+    /**
      * Marks a provided Getable for deletion upon the committing of the
      * "transaction"
-     * when we call {@link GetableManager#commit()}.
+     * when we call {@link GetableStorageManager#commit()}.
      *
      * @param <U> is the proto type of the Getable to delete.
      * @param <T> is the java type of the Getable to delete.
      * @param id  is the ObjectId of the Getable to delete.
      * @return the Getable we deleted, if it exists, or null otherwise.
      */
-    public <U extends Message, T extends CoreGetable<U>> T delete(CoreObjectId<?, U, T> id) {
+    public <U extends Message, T extends CoreGetable<U>> T delete(ObjectIdModel<?, U, T> id) {
 
         log.trace("Deleting {} with key {}", id.getType(), id.getStoreableKey());
         T thingToDelete = get(id);
@@ -179,41 +248,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
-    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName) {
-
-        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId, externalEventDefName);
-
-        return this.getFirstByCreatedTimeFromPrefix(
-                extEvtPrefix, ExternalEventModel.class, externalEvent -> !externalEvent.isClaimed());
-    }
-
-    /**
-     * Accepts an ObjectId Prefix and a predicate, and returns the first ObjectId
-     * in the store+buffer, ordered by the Getable's created time, that matches
-     * the predicate.
-     *
-     * @param <U>           Is the Getable proto type
-     * @param <T>           is the Getable java type
-     * @param prefix        is the prefix to search from
-     * @param cls           is the Java class
-     * @param discriminator is a filter to apply to the result
-     * @return the first T by created time that matches discriminator, or else null.
-     */
-    public <U extends Message, T extends CoreGetable<U>> T getFirstByCreatedTimeFromPrefix(
-            String prefix, Class<T> cls, Predicate<T> discriminator) {
-        return iterateOverPrefix(prefix, cls).stream()
-                .map(GetableToStore::getObjectToStore)
-                .filter(discriminator)
-                .min(Comparator.comparing(AbstractGetable::getCreatedAt))
-                .map(entity -> {
-                    // iterateOverPrefix doesn't put in the buffer. We do that here, but only
-                    // for the one we return.
-                    put(entity);
-                    return entity;
-                })
-                .orElse(null);
-    }
-
     public void commit() {
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
@@ -238,5 +272,51 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         // Note: no need to call uncommittedChanges.clear() because on every
         // Command, we create a completely new GetableStorageManager.
+    }
+
+    // Note that this is an expensive operation. It's used when deleting a WfRun.
+    private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
+            String prefix, Class<T> cls) {
+
+        List<GetableToStore<U, T>> out = iterateOverPrefix(prefix, cls);
+
+        // put everything in the buffer.
+        for (GetableToStore<U, T> thing : out) {
+            uncommittedChanges.put(thing.getObjectToStore().getObjectId().getStoreableKey(), thing);
+        }
+
+        return out;
+    }
+
+    // Note that this is an expensive operation. It's used by External Event Nodes.
+    @SuppressWarnings("unchecked")
+    private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
+            String prefix, Class<T> cls) {
+        Map<String, GetableToStore<U, T>> all = new HashMap<>();
+
+        // First iterate over what's in the store.
+        String storePrefix = StoredGetable.getRocksDBKey(prefix, AbstractGetable.getTypeEnum(cls));
+
+        try (LHKeyValueIterator<?> iterator = store.range(storePrefix, storePrefix + "~", StoredGetable.class)) {
+
+            while (iterator.hasNext()) {
+                LHIterKeyValue<? extends Storeable<?>> next = iterator.next();
+
+                StoredGetable<U, T> item = (StoredGetable<U, T>) next.getValue();
+                all.put(item.getStoreKey(), new GetableToStore<>(item, cls));
+            }
+        }
+
+        // Overwrite what's in the store with what's in the buffer.
+        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
+            if (entry.getKey().startsWith(storePrefix)) {
+                all.put(entry.getKey(), (GetableToStore<U, T>) entry.getValue());
+            }
+        }
+
+        return all.entrySet().stream()
+                .map(entry -> entry.getValue())
+                .filter(x -> x != null)
+                .toList();
     }
 }

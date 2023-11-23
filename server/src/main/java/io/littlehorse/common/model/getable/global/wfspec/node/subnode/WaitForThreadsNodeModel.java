@@ -3,8 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -20,13 +18,12 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -95,7 +92,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             VariableValueModel threadListVar = thread.assignVariable(threadList);
 
             for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
-                out.add(new WaitForThreadModel(nodeRun, Integer.valueOf(threadNumberObj.toString()), processorContext.currentCommand()));
+                out.add(new WaitForThreadModel(
+                        nodeRun, Integer.valueOf(threadNumberObj.toString()), processorContext.currentCommand()));
             }
         }
 
@@ -113,7 +111,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     @Override
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {
+    public void validate() throws LHApiException {
         for (ThreadToWaitForModel ttwf : threads) {
             if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.threadSpecModel)) {
                 throw new LHApiException(

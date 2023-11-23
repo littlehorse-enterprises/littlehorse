@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -40,7 +39,8 @@ public class ServerListener implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .addService(service)
                 .intercept(new MetricCollectingServerInterceptor(meter))
-                .intercept(new RequestAuthorizer(service, executionContextKey, metadataCache, storeProvider))
+                .intercept(new RequestAuthorizer(
+                        service, executionContextKey, metadataCache, storeProvider, config.getConfig()))
                 .intercept(config.getAuthorizer())
                 .executor(executor)
                 .build();

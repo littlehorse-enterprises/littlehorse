@@ -27,6 +27,40 @@ public class Tag extends Storeable<TagPb> {
     public Date createdAt;
     public String describedObjectId;
 
+    public Tag() {
+        attributes = new ArrayList<>();
+    }
+
+    public TagStorageType getTagStorageType() {
+        return this.tagType;
+    }
+
+    @SafeVarargs
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Pair<String, String>... atts) {
+        this(getable, type, Arrays.asList(atts));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
+        this();
+        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
+        createdAt = getable.getCreatedAt();
+        describedObjectId = getable.getObjectId().toString();
+        this.tagType = type;
+
+        for (Pair<String, String> p : atts) {
+            attributes.add(new Attribute(p.getLeft(), p.getRight()));
+        }
+    }
+
+    public Tag(TagStorageType type, GetableClassEnum objectType, Collection<Attribute> attributes) {
+        this();
+        this.tagType = type;
+        this.objectType = objectType;
+        this.createdAt = new Date();
+        this.attributes.addAll(attributes);
+    }
+
     public Class<TagPb> getProtoBaseClass() {
         return TagPb.class;
     }
@@ -98,46 +132,6 @@ public class Tag extends Storeable<TagPb> {
         builder.append("/");
         builder.append(describedObjectId);
         return builder.toString();
-    }
-
-    public Tag() {
-        attributes = new ArrayList<>();
-    }
-
-    public TagStorageType getTagStorageType() {
-        return this.tagType;
-    }
-
-    @SafeVarargs
-    public Tag(AbstractGetable<?> getable, TagStorageType type, Pair<String, String>... atts) {
-        this(getable, type, Arrays.asList(atts));
-    }
-
-    @SuppressWarnings("unchecked")
-    public Tag(AbstractGetable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
-        this();
-        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
-        createdAt = getable.getCreatedAt();
-        describedObjectId = getable.getObjectId().toString();
-        this.tagType = type;
-
-        for (Pair<String, String> p : atts) {
-            attributes.add(new Attribute(p.getLeft(), p.getRight()));
-        }
-    }
-
-    public Tag(
-            TagStorageType type,
-            GetableClassEnum objectType,
-            Collection<Attribute> attributes,
-            String describedObjectId,
-            Date createAt) {
-        this();
-        this.tagType = type;
-        this.objectType = objectType;
-        this.describedObjectId = describedObjectId;
-        this.createdAt = createAt;
-        this.attributes.addAll(attributes);
     }
 
     public int hashCode() {

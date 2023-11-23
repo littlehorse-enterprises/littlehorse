@@ -1,28 +1,20 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
-import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
-import io.littlehorse.server.streams.util.HeadersUtil;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 
 /*
  * This is the processor that validates and processes commands to update metadata,
@@ -61,7 +53,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void processHelper(final Record<String, MetadataCommandModel> record) {
         MetadataCommandModel command = record.value();
-        ExecutionContext dao = this.daoFactory.getDao(command, record.headers());
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),
@@ -69,8 +60,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
                 command.getCommandId());
 
         try {
-            dao.initCommand(command);
-            Message response = command.process(dao, config);
+            Message response = command.process(buildContext(record));
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
                         .setCommandId(command.getCommandId())
@@ -92,4 +82,9 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
         }
     }
 
+    public MetadataCommandExecution buildContext(final Record<String, MetadataCommandModel> record) {
+        Headers recordMetadata = record.headers();
+        MetadataCommandModel currentCommand = record.value();
+        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, currentCommand);
+    }
 }

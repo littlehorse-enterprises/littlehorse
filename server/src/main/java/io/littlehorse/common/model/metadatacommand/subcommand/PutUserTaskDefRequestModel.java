@@ -4,17 +4,18 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
-
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         PutUserTaskDefRequest p = (PutUserTaskDefRequest) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
@@ -62,7 +63,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return true;
     }
 
-    public UserTaskDef process(ExecutionContext dao, LHServerConfig config) {
+    @Override
+    public UserTaskDef process(MetadataCommandExecution context) {
+        MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDefName must be a valid hostname");
         }
@@ -73,15 +76,14 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         spec.fields = fields;
         spec.createdAt = new Date();
 
-        UserTaskDefModel oldVersion = dao.getUserTaskDef(name, null);
+        UserTaskDefModel oldVersion = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
         if (oldVersion != null) {
             spec.version = oldVersion.version + 1;
         } else {
             spec.version = 0;
         }
 
-        spec.validate(dao, config);
-        dao.put(spec);
+        metadataManager.put(spec);
 
         return spec.toProto().build();
     }

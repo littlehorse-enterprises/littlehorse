@@ -36,7 +36,8 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;
 
-    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
+    public ReadOnlyTenantStore(
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
         this.tenantId = tenantId;
         this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore, executionContext);
     }

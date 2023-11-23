@@ -14,7 +14,6 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
@@ -40,7 +39,11 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     private KeyValueStore<String, Bytes> nativeStore;
     private boolean partitionIsClaimed;
 
-    public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache, TaskQueueManager globalTaskQueueManager) {
+    public CommandProcessor(
+            LHServerConfig config,
+            KafkaStreamsServerImpl server,
+            MetadataCache metadataCache,
+            TaskQueueManager globalTaskQueueManager) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
@@ -116,7 +119,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     private ProcessorExecutionContext buildExecutionContext(Record<String, CommandModel> commandRecord) {
         Headers metadataHeaders = commandRecord.headers();
         CommandModel commandToProcess = commandRecord.value();
-        return new ProcessorExecutionContext(commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
+        return new ProcessorExecutionContext(
+                commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
     }
 
     private boolean isUserError(Exception exn) {

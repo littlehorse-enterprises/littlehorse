@@ -11,6 +11,13 @@ public class Attribute extends LHSerializable<AttributePb> {
     private String key;
     private String val;
 
+    public Attribute(String key, String val) {
+        this.key = key;
+        this.val = val;
+    }
+
+    public Attribute() {}
+
     public Class<AttributePb> getProtoBaseClass() {
         return AttributePb.class;
     }
@@ -42,13 +49,6 @@ public class Attribute extends LHSerializable<AttributePb> {
     public String getEscapedVal() {
         return val;
     }
-
-    public Attribute(String key, String val) {
-        this.key = key;
-        this.val = val;
-    }
-
-    public Attribute() {}
 
     public static Attribute fromProto(AttributePb p, ExecutionContext context) {
         Attribute out = new Attribute();

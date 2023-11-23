@@ -51,8 +51,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         log.debug("Processing a heartbeat");
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
-        TaskWorkerGroupModel taskWorkerGroup =
-                getableManager.get(new TaskWorkerGroupIdModel(taskDefName));
+        TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefName));
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {

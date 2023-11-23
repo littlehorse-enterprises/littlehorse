@@ -4,11 +4,11 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecRequest> {
 
@@ -24,7 +24,7 @@ public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecReq
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteWfSpecRequest p = (DeleteWfSpecRequest) proto;
         id = LHSerializable.fromProto(p.getId(), WfSpecIdModel.class, context);
     }
@@ -34,8 +34,8 @@ public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecReq
     }
 
     @Override
-    public Empty process(ExecutionContext dao, LHServerConfig config) {
-        dao.delete(id);
+    public Empty process(MetadataCommandExecution context) {
+        context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
@@ -43,7 +43,7 @@ public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecReq
         return true;
     }
 
-    public static DeleteWfSpecRequestModel fromProto(DeleteWfSpecRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static DeleteWfSpecRequestModel fromProto(DeleteWfSpecRequest p, ExecutionContext context) {
         DeleteWfSpecRequestModel out = new DeleteWfSpecRequestModel();
         out.initFrom(p, context);
         return out;

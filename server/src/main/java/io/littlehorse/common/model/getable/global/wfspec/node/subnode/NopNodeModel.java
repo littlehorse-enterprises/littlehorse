@@ -1,8 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -26,7 +24,7 @@ public class NopNodeModel extends SubNode<NopNode> {
     public void initFrom(Message proto, ExecutionContext context) {}
 
     @Override
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {}
+    public void validate() throws LHApiException {}
 
     @Override
     public EntrypointRunModel createSubNodeRun(Date time) {

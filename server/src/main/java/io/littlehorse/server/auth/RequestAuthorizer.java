@@ -9,6 +9,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
@@ -17,9 +18,6 @@ import io.littlehorse.server.Authorize;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
@@ -36,15 +36,19 @@ public class RequestAuthorizer implements ServerAuthorizer {
     private final AclVerifier aclVerifier;
     private final Context.Key<RequestExecutionContext> executionContextKey;
     private final MetadataCache metadataCache;
+    private final LHServerConfig lhConfig;
 
-    public RequestAuthorizer(BindableService service,
-                             Context.Key<RequestExecutionContext> executionContextKey,
-                             MetadataCache metadataCache,
-                             BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
+    public RequestAuthorizer(
+            BindableService service,
+            Context.Key<RequestExecutionContext> executionContextKey,
+            MetadataCache metadataCache,
+            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider,
+            LHServerConfig lhConfig) {
         this.aclVerifier = new AclVerifier(service);
         this.executionContextKey = executionContextKey;
         this.storeProvider = storeProvider;
         this.metadataCache = metadataCache;
+        this.lhConfig = lhConfig;
     }
 
     @Override
@@ -71,10 +75,13 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     private RequestExecutionContext contextFor(String clientId, String tenantId) {
-        return new RequestExecutionContext(clientId, tenantId,
+        return new RequestExecutionContext(
+                clientId,
+                tenantId,
                 storeProvider.apply(null, ServerTopology.GLOBAL_METADATA_STORE),
                 storeProvider.apply(null, ServerTopology.CORE_STORE),
-                metadataCache);
+                metadataCache,
+                lhConfig);
     }
 
     private static class AclVerifier {

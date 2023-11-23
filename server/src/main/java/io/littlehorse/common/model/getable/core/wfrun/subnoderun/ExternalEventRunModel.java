@@ -19,9 +19,8 @@ import io.littlehorse.sdk.common.proto.ExternalEventRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Date;
-
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -85,8 +84,9 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         NodeModel node = nodeRunModel.getNode();
         ExternalEventNodeModel eNode = node.externalEventNode;
 
-        ExternalEventModel evt =
-                processorContext.getableManager().getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
+        ExternalEventModel evt = processorContext
+                .getableManager()
+                .getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
         if (evt == null) {
             // It hasn't come in yet.
             return false;

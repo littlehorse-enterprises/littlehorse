@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
 
     private VariableAssignmentModel userId;
     private VariableAssignmentModel userGroup;
+    private ExecutionContext executionContext;
 
     @Override
     public UTAReassign.Builder toProto() {
@@ -40,6 +42,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         UTAReassign p = (UTAReassign) proto;
         if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup(), context);
         if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId(), context);
+        this.executionContext = context;
     }
 
     @Override
@@ -47,8 +50,9 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         return UTAReassign.class;
     }
 
-    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr, UTActionTriggerModel trigger)
-            throws LHVarSubError {
+    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger) throws LHVarSubError {
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        LHTaskManager taskManager = processorContext.getTaskManager();
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Figure out when the task should be scheduled.

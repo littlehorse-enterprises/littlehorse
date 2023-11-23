@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,13 +52,13 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         return out;
     }
 
-    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr) throws LHVarSubError {
+    public void schedule(UserTaskRunModel utr) throws LHVarSubError {
         switch (actionType) {
             case TASK:
-                task.schedule(taskManager, utr, this);
+                task.schedule(utr, this);
                 break;
             case REASSIGN:
-                reassign.schedule(taskManager, utr, this);
+                reassign.schedule(utr, this);
                 break;
             case CANCEL:
                 log.warn("Unimplemented: Cancel trigger");

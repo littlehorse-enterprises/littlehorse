@@ -30,7 +30,6 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -42,7 +41,11 @@ public class WfService {
     private final MetadataCache metadataCache;
     private final ReadOnlyGetableManager storageManager;
 
-    public WfService(ReadOnlyModelStore coreStore, ReadOnlyModelStore globalStore, MetadataCache metadataCache, ReadOnlyGetableManager storageManager) {
+    public WfService(
+            ReadOnlyModelStore coreStore,
+            ReadOnlyModelStore globalStore,
+            MetadataCache metadataCache,
+            ReadOnlyGetableManager storageManager) {
         this.coreStore = coreStore;
         this.metadataCache = metadataCache;
         this.storageManager = storageManager;

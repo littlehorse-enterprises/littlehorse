@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-
 import java.util.Date;
 
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {

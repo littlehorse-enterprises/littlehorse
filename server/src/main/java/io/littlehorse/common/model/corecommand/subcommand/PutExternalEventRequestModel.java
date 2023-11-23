@@ -19,9 +19,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Date;
-
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {

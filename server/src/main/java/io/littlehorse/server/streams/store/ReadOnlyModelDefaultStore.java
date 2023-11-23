@@ -15,7 +15,8 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;
 
-    public ReadOnlyModelDefaultStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
+    public ReadOnlyModelDefaultStore(
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
         this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore, executionContext);
     }
 

@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
@@ -26,7 +24,8 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
-
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,8 +35,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -61,7 +58,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     private Map<String, String> varToThreadSpec;
 
     private boolean initializedVarToThreadSpec;
-    private io.littlehorse.server.streams.topology.core.ExecutionContext executionContext;
+    private ExecutionContext executionContext;
 
     public WfSpecIdModel getObjectId() {
         return new WfSpecIdModel(name, version);
@@ -140,7 +137,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     @Override
-    public void initFrom(Message pr, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message pr, ExecutionContext context) {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         version = proto.getVersion();
@@ -171,7 +168,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return WfSpec.class;
     }
 
-    public static WfSpecModel fromProto(WfSpec proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
         WfSpecModel out = new WfSpecModel();
         out.initFrom(proto, context);
         return out;
@@ -197,8 +194,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(ExecutionContext metadataDao, LHServerConfig config, WfSpecModel oldVersion)
-            throws LHApiException {
+    public void validate(WfSpecModel oldVersion) throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
@@ -214,7 +210,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
-                ts.validate(metadataDao, config);
+                ts.validate();
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
@@ -315,7 +311,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public WfRunModel startNewRun(RunWfRequestModel evt) {
-        ProcessorExecutionContext processorExecutionContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        ProcessorExecutionContext processorExecutionContext =
+                executionContext.castOnSupport(ProcessorExecutionContext.class);
         CommandModel currentCommand = processorExecutionContext.currentCommand();
         GetableManager getableManager = processorExecutionContext.getableManager();
         WfRunModel out = new WfRunModel();
@@ -327,12 +324,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         out.startTime = currentCommand.getTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(
-                entrypointThreadName,
-                currentCommand.getTime(),
-                null,
-                evt.variables,
-                ThreadType.ENTRYPOINT);
+        out.startThread(entrypointThreadName, currentCommand.getTime(), null, evt.variables, ThreadType.ENTRYPOINT);
         getableManager.put(out);
         return out;
     }

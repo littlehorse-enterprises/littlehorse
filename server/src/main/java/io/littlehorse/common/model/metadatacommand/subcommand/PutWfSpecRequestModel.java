@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
@@ -16,7 +14,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
-
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +71,9 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return true;
     }
 
-    public WfSpec process(ExecutionContext dao, LHServerConfig config) {
+    @Override
+    public WfSpec process(MetadataCommandExecution executionContext) {
+        MetadataManager metadataManager = executionContext.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
         }
@@ -90,18 +91,19 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             tspec.name = entry.getKey();
         }
 
-        WfSpecModel oldVersion = dao.getWfSpec(name, null);
+        WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null);
         if (oldVersion != null) {
             spec.version = oldVersion.version + 1;
         } else {
             spec.version = 0;
         }
-        spec.validate(dao, config, oldVersion);
-        dao.put(spec);
+        spec.validate(oldVersion);
+        metadataManager.put(spec);
         return spec.toProto().build();
     }
 
-    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static PutWfSpecRequestModel fromProto(
+            PutWfSpecRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
         out.initFrom(p, context);
         return out;

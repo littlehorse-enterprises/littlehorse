@@ -2,14 +2,14 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
@@ -19,6 +19,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     public VariableAssignmentModel timeoutSeconds;
 
     public ExternalEventDefModel externalEventDef;
+    private ReadOnlyMetadataManager metadataManager;
 
     public ExternalEventNodeModel() {}
 
@@ -33,6 +34,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         if (p.hasTimeoutSeconds()) {
             timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), context);
         }
+        this.metadataManager = context.metadataManager();
     }
 
     public ExternalEventNode.Builder toProto() {
@@ -42,11 +44,12 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {
+    @Override
+    public void validate() throws LHApiException {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
-        ExternalEventDefModel eed = readOnlyDao.getExternalEventDef(externalEventDefName);
+        ExternalEventDefModel eed = this.metadataManager.get(new ExternalEventDefIdModel(externalEventDefName));
 
         // TODO: validate the timeout
 

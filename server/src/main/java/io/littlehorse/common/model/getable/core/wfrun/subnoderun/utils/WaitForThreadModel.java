@@ -32,7 +32,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
     public WaitForThreadModel() {}
 
-    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor, CommandModel currentCommand)
+    public WaitForThreadModel(
+            NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor, CommandModel currentCommand)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;

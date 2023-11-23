@@ -3,8 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec.thread;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -19,7 +17,7 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
-
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +41,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public List<InterruptDefModel> interruptDefs;
 
     private ThreadRetentionPolicyModel retentionPolicy;
+    private ExecutionContext executionContext;
 
     public ThreadSpecModel() {
         nodes = new HashMap<>();
@@ -76,7 +75,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     @Override
-    public void initFrom(Message pr, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message pr, ExecutionContext context) {
         ThreadSpec proto = (ThreadSpec) pr;
         for (Map.Entry<String, Node> p : proto.getNodesMap().entrySet()) {
             NodeModel n = new NodeModel();
@@ -106,6 +105,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class, context);
         }
+        this.executionContext = context;
     }
 
     // Below is Implementation
@@ -196,7 +196,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpecModel.lookupVarDef(name);
     }
 
-    public void validate(ExecutionContext metadataDao, LHServerConfig config) throws LHApiException {
+    public void validate() throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
         }
@@ -218,7 +218,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 seenEntrypoint = true;
             }
             try {
-                node.validate(metadataDao, config);
+                node.validate();
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Node " + node.name);
             }
@@ -226,7 +226,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
         for (InterruptDefModel idef : interruptDefs) {
             try {
-                idef.validate(metadataDao, config);
+                idef.validate();
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Interrupt Def for " + idef.externalEventDefName);
             }
@@ -366,7 +366,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public static ThreadSpecModel fromProto(ThreadSpec p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static ThreadSpecModel fromProto(
+            ThreadSpec p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         ThreadSpecModel out = new ThreadSpecModel();
         out.initFrom(p, context);
         return out;

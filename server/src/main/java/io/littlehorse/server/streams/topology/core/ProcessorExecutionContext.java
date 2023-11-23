@@ -6,24 +6,22 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.List;
+import java.util.Set;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
-
-import java.util.List;
-import java.util.Set;
 
 public class ProcessorExecutionContext implements ExecutionContext {
 
@@ -42,6 +40,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final CommandModel currentCommand;
     private final ModelStore coreStore;
     private final ModelStore globalStore;
+    private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
@@ -64,6 +63,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.server = server;
         this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
         this.globalStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeGlobalStore());
+        this.metadataManager = new ReadOnlyMetadataManager(this.globalStore);
         this.authContext = this.authContextFor();
     }
 
@@ -76,11 +76,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             return currentTaskManager;
         }
         currentTaskManager = new LHTaskManager(
-                config.getTimerTopic(),
-                authContext,
-                processorContext,
-                globalTaskQueueManager,
-                coreStore);
+                config.getTimerTopic(), authContext, processorContext, globalTaskQueueManager, coreStore);
         return currentTaskManager;
     }
 
@@ -91,7 +87,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     // Lazy loading for a getable manager
     public GetableManager getableManager() {
-        if(storageManager != null){
+        if (storageManager != null) {
             return storageManager;
         }
         storageManager = new GetableManager(coreStore, processorContext, config, currentCommand, this);
@@ -100,10 +96,10 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        if(service != null){
+        if (service != null) {
             return service;
         }
-        service =  new WfService(this.coreStore, this.globalStore, metadataCache, storageManager);
+        service = new WfService(this.coreStore, this.globalStore, metadataCache, storageManager);
         return service;
     }
 
@@ -124,7 +120,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
         }
     }
 
-
     public CommandModel currentCommand() {
         return currentCommand;
     }
@@ -139,7 +134,18 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         return server.getAdvertisedHost(host, listenerName);
     }
-    private AuthorizationContext authContextFor(){
+
+    @Override
+    public ReadOnlyMetadataManager metadataManager() {
+        return metadataManager;
+    }
+
+    @Override
+    public LHServerConfig serverConfig() {
+        return config;
+    }
+
+    private AuthorizationContext authContextFor() {
         String principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
         String tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         // TODO: get current acls for principal and isAdmin boolean. It is required for fine-grained acls verification
@@ -163,5 +169,4 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private KeyValueStore<String, Bytes> nativeGlobalStore() {
         return processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
-
 }

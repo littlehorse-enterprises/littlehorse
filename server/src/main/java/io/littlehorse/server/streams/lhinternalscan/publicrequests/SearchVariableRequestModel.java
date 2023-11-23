@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -27,10 +26,9 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVa
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
-
-import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

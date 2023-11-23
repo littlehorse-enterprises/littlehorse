@@ -76,8 +76,7 @@ public class GetableManagerTest {
     @BeforeEach
     void setup() {
         localStoreWrapper = ModelStore.instanceFor(store, tenantId);
-        getableManager =
-                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

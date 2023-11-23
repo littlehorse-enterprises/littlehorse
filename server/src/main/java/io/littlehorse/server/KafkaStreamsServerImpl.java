@@ -146,7 +146,6 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
-import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -191,7 +190,6 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -255,7 +253,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.healthService = new HealthService(config, coreStreams, timerStreams);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
-                config, this, networkThreadpool, healthService.getMeterRegistry(), metadataCache, contextKey,
+                config,
+                this,
+                networkThreadpool,
+                healthService.getMeterRegistry(),
+                metadataCache,
+                contextKey,
                 this::readOnlyStore);
 
         this.internalComms = new BackendInternalComms(
@@ -800,7 +803,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return coreStreams.store(params);
     }
 
-    private WfService getServiceFromContext(){
+    private WfService getServiceFromContext() {
         return requestContext().service();
     }
 

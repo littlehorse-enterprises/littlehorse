@@ -1,9 +1,7 @@
 package io.littlehorse.server.auth;
 
-import io.grpc.Context;
 import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
-import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
 
 public interface ServerAuthorizer extends ServerInterceptor {

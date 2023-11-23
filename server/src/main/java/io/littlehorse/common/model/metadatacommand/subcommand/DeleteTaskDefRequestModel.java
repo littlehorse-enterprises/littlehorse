@@ -4,11 +4,10 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefRequest> {
 
@@ -34,8 +33,8 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
     }
 
     @Override
-    public Empty process(ExecutionContext dao, LHServerConfig config) {
-        dao.delete(id);
+    public Empty process(MetadataCommandExecution context) {
+        context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
@@ -43,7 +42,8 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
         return true;
     }
 
-    public static DeleteTaskDefRequestModel fromProto(DeleteTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static DeleteTaskDefRequestModel fromProto(
+            DeleteTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
         DeleteTaskDefRequestModel out = new DeleteTaskDefRequestModel();
         out.initFrom(p, context);
         return out;

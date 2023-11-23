@@ -84,7 +84,10 @@ public class ServerTopology {
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
     public static Topology initCoreTopology(
-            LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache, TaskQueueManager globalTaskQueueManager) {
+            LHServerConfig config,
+            KafkaStreamsServerImpl server,
+            MetadataCache metadataCache,
+            TaskQueueManager globalTaskQueueManager) {
         Topology topo = new Topology();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
@@ -122,7 +125,10 @@ public class ServerTopology {
                 new LHDeserializer<>(CommandModel.class), // value deserializer
                 config.getCoreCmdTopicName() // source topic
                 );
-        topo.addProcessor(CORE_PROCESSOR, () -> new CommandProcessor(config, server, metadataCache), CORE_SOURCE);
+        topo.addProcessor(
+                CORE_PROCESSOR,
+                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager),
+                CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,
                 sinkTopicNameExtractor, // topic extractor
@@ -140,7 +146,9 @@ public class ServerTopology {
                 new LHDeserializer<>(RepartitionCommand.class),
                 config.getRepartitionTopicName());
         topo.addProcessor(
-                CORE_REPARTITION_PROCESSOR, () -> new RepartitionCommandProcessor(config), CORE_REPARTITION_SOURCE);
+                CORE_REPARTITION_PROCESSOR,
+                () -> new RepartitionCommandProcessor(config, metadataCache),
+                CORE_REPARTITION_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> repartitionedStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(repartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);

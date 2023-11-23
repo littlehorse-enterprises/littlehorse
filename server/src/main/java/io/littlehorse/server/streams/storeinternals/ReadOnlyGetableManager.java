@@ -4,17 +4,17 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
-import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ReadOnlyGetableManager {
@@ -22,8 +22,7 @@ public class ReadOnlyGetableManager {
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
     private final ReadOnlyModelStore store;
 
-
-    public ReadOnlyGetableManager(ReadOnlyModelStore store){
+    public ReadOnlyGetableManager(ReadOnlyModelStore store) {
         this.store = store;
     }
 
@@ -40,7 +39,7 @@ public class ReadOnlyGetableManager {
      * @param id  is the ObjectId to look for.
      * @return the specified AbstractGetable, or null if it doesn't exist.
      */
-    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends CoreGetable<U>> T get(CoreObjectId<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
 
@@ -68,7 +67,7 @@ public class ReadOnlyGetableManager {
     }
 
     // Note that this is an expensive operation. It's used when deleting a WfRun.
-    protected  <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
+    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
             String prefix, Class<T> cls) {
 
         List<GetableToStore<U, T>> out = iterateOverPrefix(prefix, cls);
@@ -83,7 +82,7 @@ public class ReadOnlyGetableManager {
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
-    protected  <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
+    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();
 
@@ -108,13 +107,8 @@ public class ReadOnlyGetableManager {
         }
 
         return all.entrySet().stream()
-                .map(entry -> entry.getValue())
-                .filter(x -> x != null)
+                .map(Map.Entry::getValue)
+                .filter(Objects::nonNull)
                 .toList();
     }
-
-
-
-
-
 }

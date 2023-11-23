@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UTATaskModel extends LHSerializable<UTATask> {
 
     public TaskNodeModel task;
     public List<VariableMutationModel> mutations;
+    private ExecutionContext executionContext;
 
     public UTATaskModel() {
         mutations = new ArrayList<>();
@@ -49,13 +51,13 @@ public class UTATaskModel extends LHSerializable<UTATask> {
         for (VariableMutation vm : p.getMutationsList()) {
             mutations.add(VariableMutationModel.fromProto(vm, context));
         }
+        this.executionContext = context;
     }
 
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(LHTaskManager taskManager, UserTaskRunModel utr, UTActionTriggerModel trigger)
-            throws LHVarSubError {
+    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger) throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Next, figure out when the task should be scheduled.
@@ -68,7 +70,9 @@ public class UTATaskModel extends LHSerializable<UTATask> {
         Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.intVal));
         LHTimer timer = new LHTimer(
                 new CommandModel(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime));
-
+        ProcessorExecutionContext processorExecutionContext =
+                this.executionContext.castOnSupport(ProcessorExecutionContext.class);
+        LHTaskManager taskManager = processorExecutionContext.getTaskManager();
         taskManager.scheduleTimer(timer);
     }
 }
