@@ -83,7 +83,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = ModelStore.instanceFor(store, tenantId);
+        storeWrapper = ModelStore.instanceFor(store, tenantId, mock());
         getableManager = new GetableManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }

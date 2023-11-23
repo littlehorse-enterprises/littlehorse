@@ -14,6 +14,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -51,6 +52,8 @@ public class PutWfSpecRequestModelTest {
     private static final String TENANT_ID_A = "A";
     private static final String TENANT_ID_B = "B";
     private static final String DEFAULT_TENANT_ID = "default";
+    @Mock
+    private ExecutionContext executionContext;
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
@@ -58,10 +61,10 @@ public class PutWfSpecRequestModelTest {
             .build();
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
-    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT_ID);
-    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
+    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT_ID, executionContext);
+    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A, executionContext);
 
-    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
+    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B, executionContext);
 
     @BeforeEach
     public void setup() {

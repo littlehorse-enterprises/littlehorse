@@ -10,6 +10,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -84,8 +85,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
 
         log.debug("Reassigning user task run {} to user: {}, group: {}", userTaskRunId, userId, userGroup);
         utr.assignTo(userId, userGroup, true);
-
-        WfRunModel wfRunModel = executionContext.service().getWfRun(getWfRunId());
+        WfRunModel wfRunModel = executionContext.getableManager().get(new WfRunIdModel(getWfRunId()));
         if (wfRunModel == null) {
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }

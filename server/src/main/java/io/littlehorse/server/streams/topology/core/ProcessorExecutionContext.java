@@ -99,7 +99,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (service != null) {
             return service;
         }
-        service = new WfService(this.coreStore, this.globalStore, metadataCache, storageManager);
+        service = new WfService(this.globalStore, metadataCache);
         return service;
     }
 

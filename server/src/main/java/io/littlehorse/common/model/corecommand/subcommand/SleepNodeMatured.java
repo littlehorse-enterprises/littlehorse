@@ -7,7 +7,11 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
@@ -54,13 +58,16 @@ public class SleepNodeMatured extends CoreSubCommand<SleepNodeMaturedPb> {
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
+        GetableManager getableManager = executionContext.getableManager();
+        ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
+        WfRunModel wfRunModel = getableManager.get(new WfRunIdModel(wfRunId));
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
 
-        WfSpecModel wfSpecModel = executionContext.service().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+        WfSpecModel wfSpecModel =
+                metadataManager.get(new WfSpecIdModel(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion));
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;

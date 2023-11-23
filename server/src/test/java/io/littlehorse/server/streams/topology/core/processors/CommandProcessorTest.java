@@ -11,7 +11,9 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
@@ -38,11 +40,15 @@ public class CommandProcessorTest {
 
     @Mock
     private KafkaStreamsServerImpl server;
+    @Mock
+    private TaskQueueManager taskQueueManager;
+    @Mock
+    private ExecutionContext executionContext;
 
     private final MetadataCache metadataCache = new MetadataCache();
 
     @InjectMocks
-    private final CommandProcessor commandProcessor = new CommandProcessor(config, server, metadataCache);
+    private final CommandProcessor commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager);
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
@@ -54,7 +60,7 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final ModelStore defaultStore = ModelStore.defaultStore(nativeInMemoryStore);
+    private final ModelStore defaultStore = ModelStore.defaultStore(nativeInMemoryStore, executionContext);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();

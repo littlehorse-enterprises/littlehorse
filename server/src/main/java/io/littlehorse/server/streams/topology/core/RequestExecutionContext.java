@@ -40,7 +40,7 @@ public class RequestExecutionContext implements ExecutionContext {
         this.coreStore = resolveStore(coreNativeStore, tenantId);
         this.globalStore = resolveStore(globalMetadataNativeStore, tenantId);
         this.readOnlyGetableManager = new ReadOnlyGetableManager(this.coreStore);
-        this.service = new WfService(this.coreStore, this.globalStore, metadataCache, readOnlyGetableManager);
+        this.service = new WfService(this.globalStore, metadataCache);
         this.metadataManager = new ReadOnlyMetadataManager(this.globalStore);
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;

@@ -7,7 +7,9 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
@@ -38,7 +40,8 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
+        GetableManager getableManager = executionContext.getableManager();
+        WfRunModel wfRunModel = getableManager.get(new WfRunIdModel(wfRunId));
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");
         }

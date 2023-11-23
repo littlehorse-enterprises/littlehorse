@@ -8,7 +8,6 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -31,6 +30,8 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.*;
 import java.util.stream.Stream;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -69,14 +70,14 @@ public class GetableManagerTest {
     private GetableManager getableManager;
 
     @Mock
-    private CoreProcessorDAO mockCoreDao;
+    private ExecutionContext executionContext;
 
-    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
-        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -182,7 +183,7 @@ public class GetableManagerTest {
 
     @Test
     void storeRemoteStringVariableWithUserDefinedStorageType() {
-        when(mockCoreDao.context()).thenReturn(testContext);
+        when(executionContext.authorization()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
@@ -246,7 +247,7 @@ public class GetableManagerTest {
 
     @Test
     void storeRemoteIntVariableWithUserDefinedStorageType() {
-        when(mockCoreDao.context()).thenReturn(testContext);
+        when(executionContext.authorization()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
@@ -310,7 +311,7 @@ public class GetableManagerTest {
 
     @Test
     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
-        when(mockCoreDao.context()).thenReturn(testContext);
+        when(executionContext.authorization()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
@@ -394,7 +395,7 @@ public class GetableManagerTest {
 
     @Test
     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
-        when(mockCoreDao.context()).thenReturn(testContext);
+        when(executionContext.authorization()).thenReturn(testContext);
         VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);

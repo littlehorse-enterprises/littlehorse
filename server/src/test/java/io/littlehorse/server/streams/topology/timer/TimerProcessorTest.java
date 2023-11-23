@@ -4,11 +4,12 @@ import static org.mockito.Mockito.*;
 
 import com.google.common.collect.ImmutableList;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -73,9 +74,9 @@ public class TimerProcessorTest {
     @Test
     public void shouldForwardTimerOnMaturationTimeReached() {
         LocalDateTime currentTime = LocalDateTime.now();
-        LHTimer tomorrowTask = buildNewTimer("tomorrowTask", "tenant1", "principal1", currentTime.plusDays(1));
-        LHTimer nextWeekTask = buildNewTimer("nextWeekTask", "tenant2", "principal2", currentTime.plusWeeks(1));
-        LHTimer nextMothTask = buildNewTimer("nextMothTask", "tenant3", "principal3", currentTime.plusMonths(1));
+        LHTimer tomorrowTask = buildNewTimer("tomorrowTask", currentTime.plusDays(1));
+        LHTimer nextWeekTask = buildNewTimer("nextWeekTask", currentTime.plusWeeks(1));
+        LHTimer nextMothTask = buildNewTimer("nextMothTask", currentTime.plusMonths(1));
         processor.process(new Record<>("tomorrowTask", tomorrowTask, 0L));
         processor.process(new Record<>("nextWeekTask", nextWeekTask, 0L));
         processor.process(new Record<>("nextMothTask", nextMothTask, 0L));
@@ -90,7 +91,7 @@ public class TimerProcessorTest {
     @Test
     public void shouldForwardTimerWithHeadersMetadata() {
         LocalDateTime currentTime = LocalDateTime.now();
-        LHTimer tomorrowTask = buildNewTimer("tomorrowTask", "tenant1", "principal1", currentTime);
+        LHTimer tomorrowTask = buildNewTimer("tomorrowTask", currentTime);
         processor.process(new Record<>("tomorrowTask", tomorrowTask, 0L));
 
         timerPunctuator.punctuate(timeToDate(currentTime.plusHours(1)).getTime());
@@ -107,7 +108,7 @@ public class TimerProcessorTest {
     @Test
     public void shouldRemoveTimerOnMaturationTimeReached() {
         LocalDateTime currentTime = LocalDateTime.now();
-        LHTimer tomorrowTask = buildNewTimer("my-task", "my-tenant", "my-principal", currentTime.plusDays(1));
+        LHTimer tomorrowTask = buildNewTimer("my-task", currentTime.plusDays(1));
         processor.process(new Record<>("my-task", tomorrowTask, 0L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(1);
         punctuateAndVerifyForwardedRecords(currentTime.plusDays(2), 1);
@@ -116,8 +117,8 @@ public class TimerProcessorTest {
 
     @Test
     public void supportTimerDistinctionByTenant() {
-        LHTimer tenantATask = buildNewTimer("my-task", "tenantA", "my-principal", LocalDateTime.now());
-        LHTimer tenantBTask = buildNewTimer("otherTask", "tenantB", "my-principal", LocalDateTime.now());
+        LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now());
+        LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now());
         processor.process(new Record<>("my-task", tenantATask, 0L));
         processor.process(new Record<>("my-task", tenantBTask, 0L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
@@ -136,15 +137,11 @@ public class TimerProcessorTest {
     }
 
     private LHTimer buildNewTimer(
-            String partitionKey, String tenantId, String principalId, LocalDateTime maturationTime) {
+            String partitionKey, LocalDateTime maturationTime) {
         CommandModel mockCommand = mock(Answers.RETURNS_DEEP_STUBS);
-        CoreProcessorDAO mockDao = mock(Answers.RETURNS_DEEP_STUBS);
         when(mockCommand.getTime()).thenReturn(timeToDate(maturationTime));
         when(mockCommand.toProto().build().toByteArray()).thenReturn("Hi!".getBytes());
         when(mockCommand.getPartitionKey()).thenReturn(partitionKey);
-        when(mockDao.getCoreCmdTopic()).thenReturn(testTopicName);
-        when(mockDao.context().tenantId()).thenReturn(tenantId);
-        when(mockDao.context().principalId()).thenReturn(principalId);
         return new LHTimer(mockCommand);
     }
 

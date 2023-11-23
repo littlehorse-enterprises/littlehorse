@@ -15,6 +15,8 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
@@ -92,9 +94,11 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             executionContext.getTaskManager().scheduleTimer(timer);
         }
 
-        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.getableManager().get(new WfRunIdModel(wfRunId));
         if (wfRunModel != null) {
-            WfSpecModel spec = executionContext.service().getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+            WfSpecModel spec = executionContext
+                    .metadataManager()
+                    .get(new WfSpecIdModel(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion));
             if (spec == null) {
                 wfRunModel
                         .getThreadRun(0)

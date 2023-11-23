@@ -12,6 +12,8 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
 import java.util.UUID;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -37,11 +39,14 @@ public class LHTenantStoreTest {
             .withLoggingDisabled()
             .build();
 
+    @Mock
+    private ExecutionContext executionContext;
+
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private final ModelStore storeForTenantA = ModelStore.instanceFor(nativeInMemoryStore, tenantA);
-    private final ModelStore storeForTenantB = ModelStore.instanceFor(nativeInMemoryStore, tenantB);
+    private final ModelStore storeForTenantA = ModelStore.instanceFor(nativeInMemoryStore, tenantA, executionContext);
+    private final ModelStore storeForTenantB = ModelStore.instanceFor(nativeInMemoryStore, tenantB, executionContext);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());

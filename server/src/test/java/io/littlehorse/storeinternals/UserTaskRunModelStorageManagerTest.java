@@ -7,7 +7,6 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -25,6 +24,8 @@ import java.util.Spliterators;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -58,9 +59,9 @@ public class UserTaskRunModelStorageManagerTest {
     private String wfRunId = "1234567890";
 
     @Mock
-    private CoreProcessorDAO mockCoreDao;
+    private ExecutionContext executionContext;
 
-    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
 
     @BeforeEach
     void setup() {
@@ -79,9 +80,9 @@ public class UserTaskRunModelStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
-        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+        when(executionContext.authorization()).thenReturn(testContext);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

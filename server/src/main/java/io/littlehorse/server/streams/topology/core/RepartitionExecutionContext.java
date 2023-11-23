@@ -41,7 +41,7 @@ public class RepartitionExecutionContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(null, globalStore, metadataCache, null);
+        return new WfService(globalStore, metadataCache);
     }
 
     @Override

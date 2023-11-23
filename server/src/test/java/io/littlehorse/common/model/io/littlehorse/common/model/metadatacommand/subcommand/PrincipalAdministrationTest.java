@@ -20,6 +20,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -51,6 +52,9 @@ public class PrincipalAdministrationTest {
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
+
+    @Mock
+    private ExecutionContext executionContext;
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
 
     private MetadataProcessor metadataProcessor;
@@ -64,7 +68,7 @@ public class PrincipalAdministrationTest {
     private final String tenantId = "test-tenant-id";
     private final String principalId = "test-principal-id";
 
-    private final ModelStore defaultStore = ModelStore.defaultStore(nativeMetadataStore);
+    private final ModelStore defaultStore = ModelStore.defaultStore(nativeMetadataStore, executionContext);
 
     @BeforeEach
     public void setup() {

@@ -48,7 +48,7 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(null, metadataStore, metadataCache, null);
+        return new WfService(metadataStore, metadataCache);
     }
 
     @Override

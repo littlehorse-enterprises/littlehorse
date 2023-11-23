@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
@@ -13,7 +12,6 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
@@ -27,7 +25,6 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
@@ -36,19 +33,11 @@ import java.util.function.Supplier;
 
 public class WfService {
 
-    private final ReadOnlyModelStore coreStore;
     private final ReadOnlyModelStore globalStore;
     private final MetadataCache metadataCache;
-    private final ReadOnlyGetableManager storageManager;
 
-    public WfService(
-            ReadOnlyModelStore coreStore,
-            ReadOnlyModelStore globalStore,
-            MetadataCache metadataCache,
-            ReadOnlyGetableManager storageManager) {
-        this.coreStore = coreStore;
+    public WfService(ReadOnlyModelStore globalStore, MetadataCache metadataCache) {
         this.metadataCache = metadataCache;
-        this.storageManager = storageManager;
         this.globalStore = globalStore;
     }
 
@@ -139,9 +128,5 @@ public class WfService {
             adminPrincipalIds.add(tagLHIterKeyValue.getValue().getDescribedObjectId());
         });
         return adminPrincipalIds;
-    }
-
-    public WfRunModel getWfRun(String id) {
-        return storageManager.get(new WfRunIdModel(id));
     }
 }

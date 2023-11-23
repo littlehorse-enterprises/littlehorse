@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -47,7 +48,7 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfRunModel wfRunModel = executionContext.service().getWfRun(wfRunId);
+        WfRunModel wfRunModel = executionContext.getableManager().get(new WfRunIdModel(wfRunId));
 
         if (wfRunModel == null) {
             log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);

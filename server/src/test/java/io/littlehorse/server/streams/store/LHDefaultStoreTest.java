@@ -9,6 +9,8 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
 import java.util.UUID;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -17,6 +19,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 public class LHDefaultStoreTest {
 
@@ -24,7 +27,10 @@ public class LHDefaultStoreTest {
                     Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-    private final ModelStore store = ModelStore.defaultStore(nativeInMemoryStore);
+
+    @Mock
+    private ExecutionContext executionContext;
+    private final ModelStore store = ModelStore.defaultStore(nativeInMemoryStore, executionContext);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();

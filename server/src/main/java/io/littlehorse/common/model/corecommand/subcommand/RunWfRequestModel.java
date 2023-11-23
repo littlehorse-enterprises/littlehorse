@@ -8,10 +8,14 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.HashMap;
@@ -69,7 +73,9 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     @Override
     public WfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, wfSpecVersion);
+        ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
+        GetableManager getableManager = executionContext.getableManager();
+        WfSpecModel spec = metadataManager.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
@@ -77,7 +83,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (id == null) {
             id = LHUtil.generateGuid();
         } else {
-            WfRunModel oldWfRun = executionContext.service().getWfRun(id);
+            WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
             if (oldWfRun != null) {
                 throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
             }

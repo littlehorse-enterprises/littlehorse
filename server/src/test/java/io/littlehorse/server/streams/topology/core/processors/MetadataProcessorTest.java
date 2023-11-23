@@ -61,7 +61,7 @@ public class MetadataProcessorTest {
         Message genericResponse = mock(Message.class, Answers.RETURNS_DEEP_STUBS);
         when(genericMetadataCommand.hasResponse()).thenReturn(true);
         when(genericMetadataCommand.getCommandId()).thenReturn(commandId);
-        when(genericMetadataCommand.process(any(), any())).thenReturn(genericResponse);
+        when(genericMetadataCommand.process(any())).thenReturn(genericResponse);
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(commandId, genericMetadataCommand, 0L, metadata));
         verify(server).onResponseReceived(eq(commandId), any());

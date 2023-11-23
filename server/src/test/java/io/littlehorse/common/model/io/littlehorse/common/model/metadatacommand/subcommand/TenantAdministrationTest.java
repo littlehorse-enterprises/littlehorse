@@ -5,16 +5,18 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ExecutionContext;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -40,6 +42,8 @@ public class TenantAdministrationTest {
 
     @Mock
     private KafkaStreamsServerImpl server;
+    @Mock
+    private ExecutionContext executionContext;
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
@@ -55,15 +59,14 @@ public class TenantAdministrationTest {
     private final PutTenantRequestModel putTenantRequest =
             PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class, mock());
 
-    private ExecutionContext metadataDao;
-
     private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
+
+    private ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(ModelStore.defaultStore(nativeMetadataStore, mock()));
 
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
         metadataProcessor = new MetadataProcessor(config, server, metadataCache);
-        metadataDao = new MetadataProcessorDAOImpl(ModelStore.defaultStore(nativeMetadataStore), metadataCache, null);
     }
 
     @Test
@@ -86,7 +89,7 @@ public class TenantAdministrationTest {
     }
 
     private TenantModel storedTenant() {
-        return metadataDao.get(new TenantIdModel(tenantId));
+        return metadataManager.get(new TenantIdModel(tenantId));
     }
 
     private PutTenantRequest putTenantRequest() {

@@ -5,12 +5,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import java.util.ArrayList;
+
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.junit.jupiter.api.Test;
 
 public class TaskRunModelTest {
@@ -21,10 +22,10 @@ public class TaskRunModelTest {
     void setTaskWorkerVersionAndIdToTaskRun() throws LHVarSubError {
         // arrange. Complex because all the dependencies needed
         TaskRunModel taskRun = new TaskRunModel();
-        CoreProcessorDAO mockDao = mock(CoreProcessorDAO.class);
+        ExecutionContext executionContext = mock(ExecutionContext.class);
         AuthorizationContext mockContext = mock(AuthorizationContext.class);
         when(mockContext.tenantId()).thenReturn(tenantId);
-        when(mockDao.context()).thenReturn(mockContext);
+        when(executionContext.authorization()).thenReturn(mockContext);
         taskRun.setId(new TaskRunIdModel("asdf"));
         taskRun.setInputVariables(new ArrayList<>());
         // taskRun.setDao(mockDao);
