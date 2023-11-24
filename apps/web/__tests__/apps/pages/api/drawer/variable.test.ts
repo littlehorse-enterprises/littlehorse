@@ -1,36 +1,26 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../pages/api/drawer/variable'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as grpcCallHandler from '../../../../../pages/api/grpcMethodCallHandler'
+import type { VariableId } from '../../../../../littlehorse-public-api/object_id'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
-
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
+jest.mock('../../../../../pages/api/grpcMethodCallHandler')
 
 describe('taskDef API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
+    it('should perform a grpc request to search for a wfRun sending the right request body', async () => {
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
+        req.body = JSON.stringify({
+            wfRunId: 'A_WFRUN_ID',
+            threadRunNumber: 0,
+            name: 'A_VARIABLE_NAME'
         })
-
-        const { req, res } = mockRequestResponse('POST')
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getVariable', req, res, {
+            wfRunId: 'A_WFRUN_ID',
+            threadRunNumber: 0,
+            name: 'A_VARIABLE_NAME'
+        } as VariableId)
     })
 })

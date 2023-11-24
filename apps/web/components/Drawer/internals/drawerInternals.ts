@@ -41,7 +41,7 @@ export const getMainDrawerData = async (name: string, setDrawerData: any) => {
     if (response.ok) {
         const content = await response.json()
 
-        setDrawerData(content.data.result)
+        setDrawerData(content)
     } else {console.error('INVALID RESPONSE FROM API')}
 }
 

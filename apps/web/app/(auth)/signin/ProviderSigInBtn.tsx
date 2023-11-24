@@ -1,16 +1,11 @@
 'use client'
 
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
 
 export function ProviderSigInBtn({ provider, num }:{ provider:any, num:number }) {
-
-    const { data: session } = useSession()
-    if (session) {redirect('/')}
-
     return (
-        <button className="login-button" onClick={() => signIn(provider.id)} type="button">
+        <button className="login-button" onClick={() => signIn(provider.id, { callbackUrl: '/' })} type="button">
             <div>
                 <Image alt="login" height={12} src="/key.svg" width={22} />
             </div>

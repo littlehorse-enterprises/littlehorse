@@ -71,7 +71,7 @@ export function MetadataSearch() {
         // setResults([])
 
         const wfSpecs = await fetchData('wfSpec', false, false)
-        if (wfSpecs.results !== undefined) {
+        if (wfSpecs !== undefined && wfSpecs.results !== undefined) {
             setWfSpecBookmark(wfSpecs.bookmark)
             setMetadataResults(_ => wfSpecs.results.map((v: any) => ({ ...v, type: 'WfSpec' })))
         }
@@ -79,16 +79,27 @@ export function MetadataSearch() {
         // setResults(prev => [...prev, ...wfSpecs.metadataResults.map((v:any) => ({...v, metadataType:'WfSpec'}))])
 
         const taskDefs = await fetchData('taskDef', false, false)
-        setTaskDefBookmark(taskDefs.bookmark)
-        setMetadataResults(prev => [ ...prev, ...taskDefs.results.map((v: any) => ({ ...v, type: 'TaskDef' })) ])
+        if (taskDefs !== undefined && taskDefs.results !== undefined) {
+
+            setTaskDefBookmark(taskDefs.bookmark)
+            setMetadataResults(prev => [ ...prev, ...taskDefs.results.map((v: any) => ({ ...v, type: 'TaskDef' })) ])
+        }
 
         const userTaskDefs = await fetchData('userTaskDef', false, false)
-        setTaskDefBookmark(userTaskDefs.bookmark)
-        setMetadataResults(prev => [ ...prev, ...userTaskDefs.results.map((v: any) => ({ ...v, type: 'UserTaskDef' })) ])
+        if (userTaskDefs !== undefined && userTaskDefs.results !== undefined) {
 
+
+            setTaskDefBookmark(userTaskDefs.bookmark)
+            setMetadataResults(prev => [ ...prev, ...userTaskDefs.results.map((v: any) => ({ ...v, type: 'UserTaskDef' })) ])
+        }
+        
+        
         const externalEventDefs = await fetchData('externalEventDef', false, false)
-        setExternalEventDefBookmark(externalEventDefs.bookmark)
-        setMetadataResults(prev => [ ...prev, ...externalEventDefs.results.map((v: any) => ({ ...v, type: 'ExternalEventDef' })) ])
+        if (externalEventDefs !== undefined && externalEventDefs.results !== undefined) {
+
+            setExternalEventDefBookmark(externalEventDefs.bookmark)
+            setMetadataResults(prev => [ ...prev, ...externalEventDefs.results.map((v: any) => ({ ...v, type: 'ExternalEventDef' })) ])
+        }
 
         setFirstLoad(true)
         setLoading(false)
@@ -108,25 +119,31 @@ export function MetadataSearch() {
         if (taskDefBookmark) {
             const taskDefs = await fetchData('taskDef', true, false)
             if (taskDefs.status !== 'done') {
-                setTaskDefBookmark(taskDefs.bookmark)
-                setMetadataResults(prev => [ ...prev, ...taskDefs.results.map((v: any) => ({ ...v, type: 'TaskDef' })) ])
+                if (taskDefs.results !== undefined) {
+                    setTaskDefBookmark(taskDefs.bookmark)
+                    setMetadataResults(prev => [ ...prev, ...taskDefs.results.map((v: any) => ({ ...v, type: 'TaskDef' })) ])
+                }
             }
         }
         if (userTaskDefBookmark) {
             const userTaskDefs = await fetchData('userTaskDef', true, false)
             if (userTaskDefs.status !== 'done') {
-                setTaskDefBookmark(userTaskDefs.bookmark)
-                setMetadataResults(prev => [ ...prev, ...userTaskDefs.results.map((v: any) => ({ ...v, type: 'UserTaskDef' })) ])
+                if (userTaskDefs.results !== undefined) {
+                    setTaskDefBookmark(userTaskDefs.bookmark)
+                    setMetadataResults(prev => [ ...prev, ...userTaskDefs.results.map((v: any) => ({ ...v, type: 'UserTaskDef' })) ])
+                }
             }
         }
         if (externalEventDefBookmark) {
             const externalEventDefs = await fetchData('externalEventDef', true, false)
             if (externalEventDefs.status !== 'done') {
-                setExternalEventDefBookmark(externalEventDefs.bookmark)
-                setMetadataResults(prev => [ ...prev, ...externalEventDefs.results.map((v: any) => ({
-                    ...v,
-                    type: 'ExternalEventDef'
-                })) ])
+                if (externalEventDefs.results !== undefined) {
+                    setExternalEventDefBookmark(externalEventDefs.bookmark)
+                    setMetadataResults(prev => [ ...prev, ...externalEventDefs.results.map((v: any) => ({
+                        ...v,
+                        type: 'ExternalEventDef'
+                    })) ])
+                }
             }
         }
 

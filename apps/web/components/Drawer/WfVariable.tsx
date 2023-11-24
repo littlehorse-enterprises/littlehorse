@@ -46,7 +46,7 @@ function WfVariable(props: WfVariableProps) {
 
         if (res.ok) {
             const content = await res.json()
-            const lhVariableValue: VariableValue = content.data.result.value
+            const lhVariableValue: VariableValue = content.value
             setWfVariableValue(lhVariableValue)
         }
     }

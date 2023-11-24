@@ -33,7 +33,7 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
     // eslint-disable-next-line react/hook-use-state -- seems is not used, analyze it further https://littlehorse.atlassian.net/browse/LH-237
     const [ errorData ] = useState<any>([])
     const [ lastSelectedNode, setLastSelectedNode ] = useState<any>()
-    const [ threadName, setThreadName ] = useState<string>()
+    const [ threadName, setThreadName ] = useState<string>('entrypoint')
 
     const setThreadHandler = (thread: string) => {
         setThreadName(thread)

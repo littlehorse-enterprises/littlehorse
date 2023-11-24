@@ -1,36 +1,22 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../pages/api/information/taskDef'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import type { TaskDefId } from '../../../../../littlehorse-public-api/object_id'
+import * as grpcCallHandler from '../../../../../pages/api/grpcMethodCallHandler'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
+jest.mock('../../../../../pages/api/grpcMethodCallHandler')
 
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
-
-describe('taskDef API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
+describe('information taskDef API', () => {
+    it('should perform a grpc request to get information for a taskDef sending the right request body', async () => {
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
+        req.body = JSON.stringify({
+            id: 'A_TASKDEF'
         })
-
-        const { req, res } = mockRequestResponse('POST')
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getTaskDef', req, res, {
+            name: 'A_TASKDEF'
+        } as TaskDefId)
     })
 })

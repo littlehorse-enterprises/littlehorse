@@ -80,12 +80,14 @@ export function WfSpecGraph({
 
             if (layoutedGraphResponse.ok) {
                 layoutedGraphResponse.json().then((layoutedGraph) => {
-                    layoutedGraph.nodes = layoutedGraph.nodes.map(node => {
-                        return { ...node, data: { ...node.data, isWfSpecVisualization } }
-                    })
+                    if (layoutedGraph !== undefined && layoutedGraph.nodes !== undefined) {
+                        layoutedGraph.nodes = layoutedGraph.nodes.map(node => {
+                            return { ...node, data: { ...node.data, isWfSpecVisualization } }
+                        })
 
-                    setReactFlowGraphLayouted(layoutedGraph)
-                    setGraphWithNodeRunPosition(layoutedGraph)
+                        setReactFlowGraphLayouted(layoutedGraph)
+                        setGraphWithNodeRunPosition(layoutedGraph)
+                    }
                 })
             }
         }

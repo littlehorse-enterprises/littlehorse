@@ -106,7 +106,7 @@ export function DrawerComponent(props: DrawerComponentProps) {
 
                 if (response.ok) {
                     response.json().then(result => {
-                        setWfRunRawData(result.data.results)
+                        setWfRunRawData(result.results)
                     })
 
                 } else {

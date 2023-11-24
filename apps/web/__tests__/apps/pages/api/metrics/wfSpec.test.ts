@@ -1,36 +1,31 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../pages/api/metrics/wfSpec'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as grpcCallHandler from '../../../../../pages/api/grpcMethodCallHandler'
+import { MetricsWindowLength } from '../../../../../littlehorse-public-api/common_enums'
+import type { ListWfMetricsRequest } from '../../../../../littlehorse-public-api/service'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
+jest.mock('../../../../../pages/api/grpcMethodCallHandler')
 
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
-
-describe('wfSpec API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
+describe('metrics wfSpec API', () => {
+    it('should perform a grpc request to get the metrics for wfSpecs sending the right request body', async () => {
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
+        req.body = JSON.stringify({
+            lastWindowStart: '2023-11-12T12:12:12Z',
+            numWindows: 24,
+            wfSpecName: 'A_WFSPEC',
+            wfSpecVersion: 0,
+            windowLength: 'HOURS_2'
         })
-
-        const { req, res } = mockRequestResponse('POST')
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('listWfSpecMetrics', req, res, {
+            lastWindowStart: '2023-11-12T12:12:12Z',
+            numWindows: 24,
+            wfSpecName: 'A_WFSPEC',
+            wfSpecVersion: 0,
+            windowLength: MetricsWindowLength.HOURS_2
+        } as ListWfMetricsRequest)
     })
 })

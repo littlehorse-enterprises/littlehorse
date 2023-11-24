@@ -1,36 +1,33 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../pages/api/search/taskDef'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as grpcCallHandler from '../../../../../pages/api/grpcMethodCallHandler'
+import type { SearchTaskDefRequest } from '../../../../../littlehorse-public-api/service'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
-
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
+jest.mock('../../../../../pages/api/grpcMethodCallHandler')
 
 describe('taskDef API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
-        })
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
 
-        const { req, res } = mockRequestResponse('POST')
+    it('should perform a grpc request to search for a taskDef sending the right request body', async () => {
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
+        req.body = JSON.stringify({
+            prefix: 'A_PREFIX',
+            bookmark: 'QV9CT09LTUFSSw==',
+            limit: 5
+        })
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('searchTaskDef', req, res, {
+            bookmark: Uint8Array.from([
+                65, 95, 66, 79, 79,
+                75, 77, 65, 82, 75
+            ]),
+            limit: 5,
+            prefix: 'A_PREFIX'
+        } as SearchTaskDefRequest)
     })
 })

@@ -1650,7 +1650,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
         } as any))
 
 
-        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance())
+        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance('ANY_TOKEN'))
         const wfSpecInReactFlowFormat: ReactFlowGraph = await mapper.getLayoutedGraphForWfRun(wfSpec, wfSpecName, WF_RUN_ID, 0, 'invalid-thread-spec')
 
         expect(wfSpecInReactFlowFormat.nodes[0].data.nodeHasRun).toEqual(true)
@@ -1745,7 +1745,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             } as any))
 
-        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance())
+        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance('ANY_TOKEN'))
         const wfSpecInReactFlowFormat: ReactFlowGraph = await mapper.getLayoutedGraphForWfRun(wfSpec, wfSpecName, WF_RUN_ID, 0, 'invalid-thread-spec')
 
         expect(wfSpecInReactFlowFormat.nodes[0]).toEqual({
@@ -1850,7 +1850,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             } as any))
 
-        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance())
+        const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor, LHClient.getInstance('ANY_TOKEN'))
         const wfSpecInReactFlowFormat: ReactFlowGraph = await mapper.getLayoutedGraphForWfRun(wfSpec, wfSpecName, WF_RUN_ID, 0)
 
         expect(wfSpecInReactFlowFormat.nodes[0]).toEqual({
@@ -2510,7 +2510,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             } as any))
 
-        const graphLayouter: GraphLayouter = new GraphLayouter(new ElkConstructor(), labelExtractor, LHClient.getInstance())
+        const graphLayouter: GraphLayouter = new GraphLayouter(new ElkConstructor(), labelExtractor, LHClient.getInstance('ANY_TOKEN'))
         const layoutedGraphForWfRun: ReactFlowGraph = await graphLayouter.getLayoutedGraphForWfRun(wfSpec, wfSpecName, WF_RUN_ID, 0)
 
         expect(layoutedGraphForWfRun.nodes).toEqual(expectedNodes)
@@ -2876,7 +2876,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             } as any))
 
-        const graphLayouter: GraphLayouter = new GraphLayouter(new ElkConstructor(), labelExtractor, LHClient.getInstance())
+        const graphLayouter: GraphLayouter = new GraphLayouter(new ElkConstructor(), labelExtractor, LHClient.getInstance('ANY_TOKEN'))
         const layoutedGraphForSpawnThreadsRun2: ReactFlowGraph = await graphLayouter.getLayoutedGraphForWfRun(wfSpec, wfSpecName, WF_RUN_ID, threadRunNumber, threadSpec)
 
         expect(layoutedGraphForSpawnThreadsRun2.nodes).toEqual(expectedNodesForSpawnThreadRun2)

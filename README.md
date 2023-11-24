@@ -102,6 +102,18 @@ root task dev (turbo run dev) looks like it invokes turbo and might cause a loop
 
 That's why in the package JSON we have fixed the version to 1.10.4 until the bug is fixed.
 
+## Environment Variables
+If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
+
+- `AUTH_SECRET` random string that will be used to encrypt the secrets and also the JWT token
+- `API_URL` the URL of the Little Horse Core, in your local it will be `localhost:2023`
+- `NEXTAUTH_URL` the url (domain) in which the dashboard will run (required for some authentication methods). For your local you can use: `http:/localhost:3001/`
+- `KEYCLOAK_CLIENT_ID` the client id configured in keycloack
+- `KEYCLOAK_CLIENT_SECRET` the client secret configured in keycloack
+- `KEYCLOAK_ISSUER_URI` the keycloack
+- `LHC_CA_CERT` To specify the path to the self signed certificate that the dashboard needs to connect to a LittleHorse server configured to work with OAuth.
+
+
 ## Linting
 We are using ESLint as the linter for project. Given that we have a mono-repo structure we have the main command for the linter in the root package.json file.
 
@@ -166,43 +178,11 @@ pnpm test --watch
 ### Environment variables
 You need to create a `env.test.local` file to contain any env variable you might for your tests.
 
-## Environment Variables
-If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
 
 ## Docker
 ### Build Docker Image
 In root rename `.env.sample` to `.env`, the values you specify in this file will be copied to `apps/web/.env`
 
-Fill the values for the variables. 
-
-The first three variables are required.
-- `AUTH_SECRET` random string 
-- `API_URL` the URL of the Little Horse Core 
-- `NEXTAUTH_URL` the url (domain) in which the dashboard will run (required for some authentication methods)
-
-The following variable blocks are required only if you want to use that Authentication Provider.
-
-```
-AUTH_SECRET=""
-API_URL=
-NEXTAUTH_URL=""
-
-
-GOOGLE_ID=""
-GOOGLE_SECRET=""
-
-GITHUB_ID=""
-GITHUB_SECRET=""
-
-# AZURE_AD_CLIENT_ID= 
-# AZURE_AD_CLIENT_SECRET= 
-# AZURE_AD_TENANT_ID= 
-
-
-# OKTA_CLIENT_ID= 
-# OKTA_CLIENT_SECRET= 
-# OKTA_ISSUER_URI=
-```
 To build the docker image execute the next script
 
 ```

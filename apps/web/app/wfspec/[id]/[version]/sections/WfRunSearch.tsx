@@ -101,40 +101,55 @@ export function WfRunSearch({ id, version }: any) {
         // setResults(prev => [...prev, ...starting.wfRunSearchResults.map((v:any) => ({...v, status:'STARTING'}))])
 
         const running = await fetchData('RUNNING', false, false)
-        setRunningBookmark(running.bookmark)
-        setWfRunSearchResults(prev => [
-            ...prev,
-            ...running.results.map((v: any) => ({ ...v, status: 'RUNNING' }))
-        ])
+        if (running !== undefined && running.results !== undefined) {
+            setRunningBookmark(running.bookmark)
+            setWfRunSearchResults(prev => [
+                ...prev,
+                ...running.results?.map((v: any) => ({ ...v, status: 'RUNNING' }))
+            ])
+        }
 
         const completed = await fetchData('COMPLETED', false, false)
-        setCompletedBookmark(completed.bookmark)
-        setWfRunSearchResults(prev => [
-            ...prev,
-            ...completed.results.map((v: any) => ({ ...v, status: 'COMPLETED' }))
-        ])
+        if (completed !== undefined && completed.results !== undefined) {
+
+
+            setCompletedBookmark(completed.bookmark)
+            setWfRunSearchResults(prev => [
+                ...prev,
+                ...completed.results.map((v: any) => ({ ...v, status: 'COMPLETED' }))
+            ])
+        }
 
         const errors = await fetchData('ERROR', false, false)
-        setErrorBookmark(errors.bookmark)
-        setWfRunSearchResults(prev => [
-            ...prev,
-            ...errors.results.map((v: any) => ({ ...v, status: 'ERROR' }))
-        ])
+        if (errors !== undefined && errors.results !== undefined) {
+
+            setErrorBookmark(errors.bookmark)
+            setWfRunSearchResults(prev => [
+                ...prev,
+                ...errors.results.map((v: any) => ({ ...v, status: 'ERROR' }))
+            ])
+        }
 
         const haltings = await fetchData('HALTING', false, false)
-        setHaltingBookmark(haltings.bookmark)
-        setWfRunSearchResults(prev => [
-            ...prev,
-            ...haltings.results.map((v: any) => ({ ...v, status: 'HALTING' }))
-        ])
+        if (haltings !== undefined && haltings.results !== undefined) {
+
+            setHaltingBookmark(haltings.bookmark)
+            setWfRunSearchResults(prev => [
+                ...prev,
+                ...haltings.results.map((v: any) => ({ ...v, status: 'HALTING' }))
+            ])
+        }
 
         const halteds = await fetchData('HALTED', false, false)
-        setHaltedBookmark(halteds.bookmark)
-        setWfRunSearchResults(prev => [
-            ...prev,
-            ...halteds.results.map((v: any) => ({ ...v, status: 'HALTED' }))
-        ])
+        if (halteds !== undefined && halteds.results !== undefined) {
 
+
+            setHaltedBookmark(halteds.bookmark)
+            setWfRunSearchResults(prev => [
+                ...prev,
+                ...halteds.results.map((v: any) => ({ ...v, status: 'HALTED' }))
+            ])
+        }
         setFirstLoad(true)
         setLoading(false)
     }

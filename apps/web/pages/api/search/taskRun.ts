@@ -1,35 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Client } from 'nice-grpc/src/client/Client'
-import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
 import { SearchTaskRunRequest } from '../../../littlehorse-public-api/service'
-import LHClient from '../LHClient'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
+import { handleGrpcCallWithNext } from '../grpcMethodCallHandler'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const session = await getServerSession(req, res, authOptions)
-
-        if (session) {
-            try {
-                const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
-
-                const response = await client.searchTaskRun(SearchTaskRunRequest.fromJSON(JSON.parse(req.body)) as any)
-
-                res.send(response) 
-
-            } catch (error) {
-                console.error(' search/taskRun - Error during GRPC call:', error)
-                res.send({
-                    error: `Something went wrong.${error}`,
-                }) 
-            }
-        } else {
-            res.status(401)
-                .json({
-                    status: 401,
-                    message: 'You need to be authenticated to access this resource.'
-                })
-        }
+        await handleGrpcCallWithNext('searchTaskRun', req, res, SearchTaskRunRequest.fromJSON(JSON.parse(req.body)))
     }
 }

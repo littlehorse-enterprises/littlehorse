@@ -1,36 +1,24 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../../../../web/pages/api/drawer/taskDef/[name]/index'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as grpcCallHandler from '../../../../../../../pages/api/grpcMethodCallHandler'
+import type { TaskDefId } from '../../../../../../../littlehorse-public-api/object_id'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
-
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
+jest.mock('../../../../../../../../../apps/web/pages/api/grpcMethodCallHandler')
 
 describe('taskDef API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
-        })
+    it('should perform a grpc request for a taskDef sending the right request body', async () => {
 
-        const { req, res } = mockRequestResponse('GET')
+
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'GET' })
+        req.query = {
+            name: 'A_TASKDEF'
+        }
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getTaskDef', req, res, {
+            name: 'A_TASKDEF'
+        } as TaskDefId)
     })
 })

@@ -1,37 +1,30 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import handler from '../../../../../../../pages/api/search/nodeRun/[number]/[position]'
+import * as grpcCallHandler from '../../../../../../../pages/api/grpcMethodCallHandler'
+import type { NodeRunId } from '../../../../../../../littlehorse-public-api/object_id'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
-
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
-
-    req.body = {}
-
-    return { req, res }
-}
+jest.mock('../../../../../../../pages/api/grpcMethodCallHandler')
 
 describe('nodeRun API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
-        })
+    it('should perform a grpc request to search for an externalEvent sending the right request body', async () => {
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
+        req.query = {
+            number: '0',
+            position: '1'
+        }
 
-        const { req, res } = mockRequestResponse('POST')
+        req.body = JSON.stringify({
+            id: 'A_WFRUN_ID',
+        })
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getNodeRun', req, res, {
+            wfRunId: 'A_WFRUN_ID',
+            threadRunNumber: 0,
+            position: 1
+        } as NodeRunId)
     })
 })

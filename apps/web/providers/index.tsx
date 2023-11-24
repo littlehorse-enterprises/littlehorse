@@ -3,27 +3,44 @@
 import { SessionProvider, useSession } from 'next-auth/react'
 import { Loader } from 'ui'
 import { LoginPage } from '../app/(auth)/signin/LoginPage'
+import { useEffect, useState } from 'react'
+import type { SessionWithJWTExpireTime } from '../pages/api/auth/[...nextauth]'
 
-interface Props {
+interface CheckSessionProps {
     children?: React.ReactNode;
 }
 
-function CheckSession({ children }: Props) {
+function CheckSession({ children }: CheckSessionProps) {
+    const { data: session } = useSession()
+    const [ sessionIsActive, setSessionIsActive ] = useState(false)
 
+    useEffect(() => {
+        if (!session) {
+            setSessionIsActive(false)
+        } else {
+            const tokenExpireTime = (session as unknown as SessionWithJWTExpireTime).expireTime
+            const tokenHasExpired = new Date() > new Date(tokenExpireTime * 1000)
 
-    const { data: session, status } = useSession()
-    if (status === 'authenticated') {
+            if (tokenHasExpired) {
+                setSessionIsActive(false)
+            } else {
+                setSessionIsActive(true)
+            }
+        }
+    }, [ session ])
+
+    if (sessionIsActive) {
         return <>
             {children}
         </>
     }
-    if (status === 'unauthenticated') {
+    if (!sessionIsActive) {
         return <LoginPage />
     }
     return <Loader />
 
 }
-export function Providers({ children }: Props) {
+export function Providers({ children }: CheckSessionProps) {
 
     return <SessionProvider>
         <CheckSession>

@@ -25,7 +25,7 @@ export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
     const [ showError, setShowError ] = useState(false)
     const [ toggleSideBar, setToggleSideBar ] = useState(false)
     const [ sideBarData, setSideBarData ] = useState('')
-    const [ threadSpec, setThreadSpec ] = useState('')
+    const [ threadSpec, setThreadSpec ] = useState('entrypoint')
     const [ graphLayout, setGraphLayout ] = useState()
 
     const setGraphWithNodeRunPosition = (graph) => {

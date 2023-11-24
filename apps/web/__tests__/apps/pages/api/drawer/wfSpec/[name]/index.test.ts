@@ -1,36 +1,24 @@
-import type { RequestMethod } from 'node-mocks-http'
 import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../../../../web/pages/api/drawer/wfSpec/[name]/index'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as grpcCallHandler from '../../../../../../../../../apps/web/pages/api/grpcMethodCallHandler'
+import type { GetLatestWfSpecRequest } from '../../../../../../../littlehorse-public-api/object_id'
 
-function mockRequestResponse (method: RequestMethod='GET') {
-    const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method })
+jest.mock('../../../../../../../../../apps/web/pages/api/grpcMethodCallHandler')
 
-    req.headers = {
-        'Content-Type': 'application/json'
-    }
+describe('wfSpec API', () => {
+    it('should perform a grpc request for a wfSpec sending the right request body', async () => {
 
-    req.body = {}
 
-    return { req, res }
-}
-
-describe('taskDef API', () => {
-    it('should reject request for unauthenticated users', async () => {
-        const serverSessionForUnAuthenticatedUser = null
-        jest.mock('next-auth/next', () => {
-            const originalModule = jest.requireActual('next-auth/next')
-            return {
-                __esModule: true,
-                ...originalModule,
-                getServerSession: serverSessionForUnAuthenticatedUser
-            }
-        })
-
-        const { req, res } = mockRequestResponse('GET')
+        const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'GET' })
+        req.query = {
+            name: 'A_WFSPEC_NAME'
+        }
 
         await handler(req, res)
 
-        expect(res.statusCode).toEqual(401)
+        expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getLatestWfSpec', req, res, {
+            name: 'A_WFSPEC_NAME'
+        } as GetLatestWfSpecRequest)
     })
 })

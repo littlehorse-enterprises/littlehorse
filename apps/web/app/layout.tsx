@@ -23,7 +23,7 @@ export default function RootLayout({
                 <link href="/littlehorse.svg" rel="icon" type="image/x-icon" />
             </Head>
             <body>
-                <Providers >
+                <Providers>
                     <HeaderBar />
                     <Container>
                         {children}
