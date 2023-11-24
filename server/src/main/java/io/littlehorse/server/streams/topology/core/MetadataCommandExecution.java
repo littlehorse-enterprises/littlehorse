@@ -69,9 +69,9 @@ public class MetadataCommandExecution implements ExecutionContext {
     }
 
     private ModelStore storeFor(String tenantId, KeyValueStore<String, Bytes> nativeStore) {
-        if(!clusterLevelCommand){
+        if (!clusterLevelCommand) {
             return ModelStore.instanceFor(nativeStore, tenantId, this);
-        }else {
+        } else {
             return ModelStore.defaultStore(nativeStore, this);
         }
     }
