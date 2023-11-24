@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
@@ -104,14 +105,14 @@ public class WorkflowThreadImplTest {
         });
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
-        List<VariableDef> varDefs =
+        List<ThreadVarDef> varDefs =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getVariableDefsList();
 
-        VariableDef intVar = varDefs.get(0);
+        VariableDef intVar = varDefs.get(0).getVarDef();
         assertThat(intVar.getDefaultValue()).isNotNull();
         assertEquals(intVar.getDefaultValue().getInt(), 123);
 
-        VariableDef objVar = varDefs.get(1);
+        VariableDef objVar = varDefs.get(1).getVarDef();
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
         assertEquals(objVar.getType(), VariableType.JSON_OBJ);
     }

@@ -68,8 +68,8 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "Handler thread " + handler.name + " should only have 'INPUT' var.");
         } else if (handler.variableDefs.size() == 1) {
-            VariableDefModel theVarDef = handler.variableDefs.get(0);
-            if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
+            VariableDefModel theVarDef = handler.getVariableDefs().get(0).getVarDef();
+            if (!theVarDef.getName().equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Handler thread "

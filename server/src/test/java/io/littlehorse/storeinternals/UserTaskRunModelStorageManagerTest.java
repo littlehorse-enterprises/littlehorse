@@ -1,11 +1,8 @@
 package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -15,17 +12,16 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Crea
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -55,13 +51,13 @@ public class UserTaskRunModelStorageManagerTest {
     private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableManager getableManager;
+    private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
 
     @Mock
     private ExecutionContext executionContext;
 
-    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
+    // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
 
     @BeforeEach
     void setup() {
@@ -74,15 +70,18 @@ public class UserTaskRunModelStorageManagerTest {
             userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(
                     new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
-            getableManager.put(userTaskRun);
-            getableManager.commit();
+            getableStorageManager.put(userTaskRun);
+            getableStorageManager.commit();
         }
     }
 
     private void initializeDependencies() {
-        when(executionContext.authorization()).thenReturn(testContext);
+        // Commented out due to "UnnecessaryStubbingException";
+
+        // when(mockCoreDao.context()).thenReturn(testContext);
         localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
-        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
+        getableStorageManager =
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -124,25 +123,26 @@ public class UserTaskRunModelStorageManagerTest {
 
     @Test
     public void indexByStatusAndUserTaskDefName_CLAIMED() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_UNASSIGNED() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_ASSIGNED_NOT_CLAIMED() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByUserIdAndUserGroupId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userId_33333__userGroup_1234567");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__userId_33333__userGroup_1234567");
     }
 
     @Test
@@ -157,49 +157,58 @@ public class UserTaskRunModelStorageManagerTest {
 
     @Test
     public void indexByStatus() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_ASSIGNED");
     }
 
     @Test
     public void indexByUserId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userId_33333");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userId_33333");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserId_DONE() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_DONE__userId_33333");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_DONE__userId_33333");
     }
 
     @Test
     public void indexByStatusAndTaskDefNameAndUserId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys())
                 .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
     public void indexByStatusAndTaskDefNameAndUserId_DONE() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys())
                 .contains("12/__status_DONE__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserGroup() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userGroup_1234567");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userGroup_1234567");
     }
 
     @Test
     public void indexByStatusUserAndTaskDefNameAndUserGroup() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys())
                 .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userGroup_1234567");
     }
 
     @Test
     public void indexByUserGroup() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userGroup_1234567");
+        // Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__userGroup_1234567");
     }
 }

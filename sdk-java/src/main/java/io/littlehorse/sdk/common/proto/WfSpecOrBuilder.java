@@ -41,15 +41,23 @@ public interface WfSpecOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.littlehorse.LHStatus status = 4;</code>
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
-   * <code>.littlehorse.LHStatus status = 4;</code>
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
    * @return The status.
    */
-  io.littlehorse.sdk.common.proto.LHStatus getStatus();
+  io.littlehorse.sdk.common.proto.MetadataStatus getStatus();
 
   /**
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
@@ -98,32 +106,56 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
       getEntrypointThreadNameBytes();
 
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return Whether the retentionPolicy field is set.
    */
   boolean hasRetentionPolicy();
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return The retentionPolicy.
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy();
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return Whether the migration field is set.
    */
   boolean hasMigration();
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return The migration.
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration();
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> 
+      getSearchableVaraiblesList();
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index);
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  int getSearchableVaraiblesCount();
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
+      getSearchableVaraiblesOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
+      int index);
 }

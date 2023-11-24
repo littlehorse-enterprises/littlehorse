@@ -22,7 +22,7 @@ func GetInputVarDefs(w *model.WfSpec) map[string]*model.VariableDef {
 	out := make(map[string]*model.VariableDef)
 
 	for _, vd := range tspec.VariableDefs {
-		out[vd.Name] = vd
+		out[vd.VarDef.Name] = vd.VarDef
 	}
 
 	return out

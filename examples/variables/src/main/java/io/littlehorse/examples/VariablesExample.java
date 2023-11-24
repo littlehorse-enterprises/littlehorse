@@ -1,10 +1,6 @@
 package io.littlehorse.examples;
 
-import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
-import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
-
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -34,26 +30,22 @@ public class VariablesExample {
         return new WorkflowImpl(
             "example-variables",
             wf -> {
-                WfRunVariable inputText = wf
-                    .addVariable("input-text", VariableType.STR)
-                    .withIndex(LOCAL_INDEX);
+                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable();
 
                 WfRunVariable addLength = wf.addVariable(
                     "add-length",
                     VariableType.BOOL
-                ).withIndex(IndexType.LOCAL_INDEX);
+                ).searchable();
 
                 WfRunVariable userId = wf
-                    .addVariable("user-id", VariableType.INT)
-                    .withIndex(REMOTE_INDEX);
+                    .addVariable("user-id", VariableType.INT).searchable();
 
                 WfRunVariable sentimentScore = wf
-                    .addVariable("sentiment-score", VariableType.DOUBLE)
-                    .withIndex(LOCAL_INDEX);
+                    .addVariable("sentiment-score", VariableType.DOUBLE).searchable();
 
                 WfRunVariable processedResult = wf
                     .addVariable("processed-result", VariableType.JSON_OBJ)
-                    .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
+                    .searchableOn("$.sentimentScore", VariableType.DOUBLE);
 
                 NodeOutput sentimentAnalysisOutput = wf.execute(
                     "sentiment-analysis",

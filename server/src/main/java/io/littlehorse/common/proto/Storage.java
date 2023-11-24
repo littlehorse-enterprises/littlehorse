@@ -74,9 +74,9 @@ public final class Storage {
       "\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC_METRI" +
       "CS\020\010\022\025\n\021TASK_WORKER_GROUP\020\t\022\021\n\rUSER_TASK" +
       "_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014\022" +
-      "\r\n\tPRINCIPAL\020\r\022\n\n\006TENANT\020\016*\'\n\016TagStorage" +
-      "Type\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001B\037\n\033io.little" +
-      "horse.common.protoP\001b\006proto3"
+      "\r\n\tPRINCIPAL\020\r\022\n\n\006TENANT\020\016*\033\n\016TagStorage" +
+      "Type\022\t\n\005LOCAL\020\000B\037\n\033io.littlehorse.common" +
+      ".protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

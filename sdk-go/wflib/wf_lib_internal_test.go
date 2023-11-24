@@ -8,13 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCanMakePersistentVariable(t *testing.T) {
+func TestCanMakeSearcjableVariable(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AddVariable(
 			"my-var", model.VariableType_BOOL,
-		).WithIndex(
-			model.IndexType_LOCAL_INDEX,
-		).Persistent()
+		).Searchable()
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -24,8 +22,8 @@ func TestCanMakePersistentVariable(t *testing.T) {
 
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	varDef := entrypoint.VariableDefs[0]
-	assert.Equal(t, "my-var", varDef.Name)
-	assert.True(t, varDef.Persistent)
+	assert.Equal(t, "my-var", varDef.VarDef.Name)
+	assert.True(t, varDef.Searchable)
 }
 
 func TestUserTaskAssignToUser(t *testing.T) {

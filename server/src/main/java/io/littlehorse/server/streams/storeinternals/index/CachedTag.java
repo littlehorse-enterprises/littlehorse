@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.storeinternals.index;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -25,7 +24,9 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
 
     public CachedTag(Tag tag) {
         this.id = tag.getStoreKey();
-        this.isRemote = tag.getTagStorageType() == TagStorageType.REMOTE;
+
+        // When we re-enable remote tags, this will be more complex.
+        this.isRemote = tag.isRemote();
     }
 
     @Override

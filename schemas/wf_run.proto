@@ -12,12 +12,14 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfRun {
-  reserved 5;
-
   string id = 1;
   string wf_spec_name = 2;
   int32 wf_spec_version = 3;
   LHStatus status = 4;
+
+  // Introduced now since with ThreadRun-level retention, we can't rely upon
+  // thread_runs.size() to determine the number of ThreadRuns.
+  int32 greatest_threadrun_number = 5;
 
   google.protobuf.Timestamp start_time = 6;
   optional google.protobuf.Timestamp end_time = 7;
@@ -25,13 +27,7 @@ message WfRun {
 
   repeated PendingInterrupt pending_interrupts = 9;
   repeated PendingFailureHandler pending_failures = 10;
-
-  // Introduced now since with ThreadRun-level retention, we can't rely upon
-  // thread_runs.size() to determine the number of ThreadRuns.
-  int32 greatest_threadrun_number = 11;
-
-  // Keeps track of old versions of the WfSpec for this WfRun
-  repeated int32 old_wf_spec_versions = 12;
+  repeated WfSpecId old_wf_spec_versions = 11;
 }
 
 enum ThreadType {
@@ -42,31 +38,28 @@ enum ThreadType {
 }
 
 message ThreadRun {
-  // If not set, then threadRun is currently on the same version as the parent
-  // wfSpec. Left as optional for compatibility purposes.
-  optional int32 wf_spec_version = 19;
+  WfSpecId wf_spec_id = 1;
   int32 number = 2;
 
   LHStatus status = 3;
-  string thread_spec_name = 6;
+  string thread_spec_name = 4;
 
-  google.protobuf.Timestamp start_time = 7;
-  optional google.protobuf.Timestamp end_time = 8;
+  google.protobuf.Timestamp start_time = 5;
+  optional google.protobuf.Timestamp end_time = 6;
 
-  optional string error_message = 9;
+  optional string error_message = 7;
 
-  repeated int32 child_thread_ids = 11;
-  optional int32 parent_thread_id = 12;
+  repeated int32 child_thread_ids = 8;
+  optional int32 parent_thread_id = 9;
 
-  repeated ThreadHaltReason halt_reasons = 13;
-  optional ExternalEventId interrupt_trigger_id = 14;
-  optional FailureBeingHandled failure_being_handled = 15;
+  repeated ThreadHaltReason halt_reasons = 10;
+  optional ExternalEventId interrupt_trigger_id = 11;
+  optional FailureBeingHandled failure_being_handled = 12;
 
-  int32 current_node_position = 16;
-  repeated int32 handled_failed_children = 17;
+  int32 current_node_position = 13;
+  repeated int32 handled_failed_children = 14;
 
-  ThreadType type = 18;
-  reserved 1, 4, 5;
+  ThreadType type = 15;
 }
 
 message FailureBeingHandled {

@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -144,7 +143,7 @@ public class TaskWorkerHeartBeatTest {
         Set<HostModel> newHost = new HashSet<>(generateHosts);
         newHost.addAll(generateHosts(1));
 
-        //when(mockExecutionContext.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
+        // when(mockExecutionContext.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
         taskWorkerHeartBeat.process(mock(), lhConfig);
 
         verify(assignor, times(2)).assign(anyCollection(), anyCollection());

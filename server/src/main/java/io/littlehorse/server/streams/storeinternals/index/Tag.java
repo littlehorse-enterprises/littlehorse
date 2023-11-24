@@ -99,6 +99,10 @@ public class Tag extends Storeable<TagPb> {
         return StoreableType.TAG;
     }
 
+    public static boolean isLocal(TagStorageType type) {
+        return type == TagStorageType.LOCAL;
+    }
+
     public String getAttributeString() {
         return getAttributeString(objectType, attributes);
     }
@@ -121,7 +125,8 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public boolean isRemote() {
-        return tagType == TagStorageType.REMOTE;
+        // When we re-enable REMOTE tags, we will need to check this.tagType;
+        return false;
     }
 
     public String getStoreKey() {

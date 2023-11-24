@@ -2,7 +2,6 @@ package io.littlehorse.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
@@ -15,23 +14,22 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Stream;
-
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -72,12 +70,14 @@ public class GetableManagerTest {
     @Mock
     private ExecutionContext executionContext;
 
-    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
+    private AuthorizationContext testContext =
+            new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
 
     @BeforeEach
     void setup() {
         localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
-        getableManager = new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
+        getableManager =
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -134,7 +134,7 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.BOOL);
-            threadSpec.setVariableDefs(List.of(variableDef1));
+            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, true, false)));
         });
 
         getableManager.put(variable);
@@ -145,9 +145,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(2)
+                .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000"));
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000"))
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_true"));
     }
 
     @Test
@@ -160,11 +161,12 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
-            variableDef1.setIndexType(IndexType.LOCAL_INDEX);
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            threadSpec.setVariableDefs(List.of(
+                    new ThreadVarDefModel(variableDef1, true, false),
+                    new ThreadVarDefModel(variableDef2, false, false)));
         });
 
         getableManager.put(variable);
@@ -175,45 +177,46 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(2)
+                .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains(
                         "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal"));
     }
 
-    @Test
-    void storeRemoteStringVariableWithUserDefinedStorageType() {
-        when(executionContext.authorization()).thenReturn(testContext);
-        VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
-        variable.getValue().setType(VariableType.STR);
-        variable.getValue().setStrVal("ThisShouldBeRemote");
-        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            VariableDefModel variableDef1 = new VariableDefModel();
-            variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.STR);
-            variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-            VariableDefModel variableDef2 = new VariableDefModel();
-            variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-        });
-        String expectedTagKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
+    //     @Test
+    //     void storeRemoteStringVariableWithUserDefinedStorageType() {
+    //         when(mockCoreDao.context()).thenReturn(testContext);
+    //         VariableModel variable = TestUtil.variable("test-id");
+    //         variable.setName("variableName");
+    //         variable.getValue().setType(VariableType.STR);
+    //         variable.getValue().setStrVal("ThisShouldBeRemote");
+    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+    //             VariableDefModel variableDef1 = new VariableDefModel();
+    //             variableDef1.setName("variableName");
+    //             variableDef1.setType(VariableType.STR);
+    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+    //             VariableDefModel variableDef2 = new VariableDefModel();
+    //             variableDef2.setName("variableName2");
+    //             variableDef2.setType(VariableType.STR);
+    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+    //         });
+    //         String expectedTagKey =
+    // "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
 
-        getableManager.put(variable);
-        getableManager.commit();
+    //         getableStorageManager.put(variable);
+    //         getableStorageManager.commit();
 
-        List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-                .toList();
-        assertThat(repartitionCommands).hasSize(1);
-        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
-    }
+    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
+    //                 .map(MockProcessorContext.CapturedForward::record)
+    //                 .map(Record::value)
+    //                 .map(CommandProcessorOutput::getPayload)
+    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
+    //                 .toList();
+    //         assertThat(repartitionCommands).hasSize(1);
+    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
+    //     }
 
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
@@ -225,11 +228,12 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.INT);
-            variableDef1.setIndexType(IndexType.LOCAL_INDEX);
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            threadSpec.setVariableDefs(List.of(
+                    new ThreadVarDefModel(variableDef1, true, false),
+                    new ThreadVarDefModel(variableDef2, false, false)));
         });
 
         getableManager.put(variable);
@@ -240,44 +244,45 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(2)
+                .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20"));
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20"))
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_20"));
     }
 
-    @Test
-    void storeRemoteIntVariableWithUserDefinedStorageType() {
-        when(executionContext.authorization()).thenReturn(testContext);
-        VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
-        variable.getValue().setType(VariableType.INT);
-        variable.getValue().setIntVal(20L);
-        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            VariableDefModel variableDef1 = new VariableDefModel();
-            variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.INT);
-            variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-            VariableDefModel variableDef2 = new VariableDefModel();
-            variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-        });
-        String expectedTagKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
+    //     @Test
+    //     void storeRemoteIntVariableWithUserDefinedStorageType() {
+    //         when(mockCoreDao.context()).thenReturn(testContext);
+    //         VariableModel variable = TestUtil.variable("test-id");
+    //         variable.setName("variableName");
+    //         variable.getValue().setType(VariableType.INT);
+    //         variable.getValue().setIntVal(20L);
+    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+    //             VariableDefModel variableDef1 = new VariableDefModel();
+    //             variableDef1.setName("variableName");
+    //             variableDef1.setType(VariableType.INT);
+    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+    //             VariableDefModel variableDef2 = new VariableDefModel();
+    //             variableDef2.setName("variableName2");
+    //             variableDef2.setType(VariableType.STR);
+    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+    //         });
+    //         String expectedTagKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
 
-        getableManager.put(variable);
-        getableManager.commit();
+    //         getableStorageManager.put(variable);
+    //         getableStorageManager.commit();
 
-        List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-                .toList();
-        assertThat(repartitionCommands).hasSize(1);
-        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
-    }
+    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
+    //                 .map(MockProcessorContext.CapturedForward::record)
+    //                 .map(Record::value)
+    //                 .map(CommandProcessorOutput::getPayload)
+    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
+    //                 .toList();
+    //         assertThat(repartitionCommands).hasSize(1);
+    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
+    //     }
 
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
@@ -289,11 +294,12 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.DOUBLE);
-            variableDef1.setIndexType(IndexType.LOCAL_INDEX);
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            threadSpec.setVariableDefs(List.of(
+                    new ThreadVarDefModel(variableDef1, true, false),
+                    new ThreadVarDefModel(variableDef2, false, false)));
         });
 
         getableManager.put(variable);
@@ -304,44 +310,45 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(2)
+                .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0"));
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0"))
+                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
-    @Test
-    void storeRemoteDoubleVariableWithUserDefinedStorageType() {
-        when(executionContext.authorization()).thenReturn(testContext);
-        VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
-        variable.getValue().setType(VariableType.DOUBLE);
-        variable.getValue().setDoubleVal(21.0);
-        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            VariableDefModel variableDef1 = new VariableDefModel();
-            variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.DOUBLE);
-            variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-            VariableDefModel variableDef2 = new VariableDefModel();
-            variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-        });
-        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
+    //     @Test
+    //     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
+    //         when(mockCoreDao.context()).thenReturn(testContext);
+    //         VariableModel variable = TestUtil.variable("test-id");
+    //         variable.setName("variableName");
+    //         variable.getValue().setType(VariableType.DOUBLE);
+    //         variable.getValue().setDoubleVal(21.0);
+    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+    //             VariableDefModel variableDef1 = new VariableDefModel();
+    //             variableDef1.setName("variableName");
+    //             variableDef1.setType(VariableType.DOUBLE);
+    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+    //             VariableDefModel variableDef2 = new VariableDefModel();
+    //             variableDef2.setName("variableName2");
+    //             variableDef2.setType(VariableType.STR);
+    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+    //         });
+    //         String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
 
-        getableManager.put(variable);
-        getableManager.commit();
+    //         getableStorageManager.put(variable);
+    //         getableStorageManager.commit();
 
-        List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-                .toList();
-        assertThat(repartitionCommands).hasSize(1);
-        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedStoreKey);
-    }
+    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
+    //                 .map(MockProcessorContext.CapturedForward::record)
+    //                 .map(Record::value)
+    //                 .map(CommandProcessorOutput::getPayload)
+    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
+    //                 .toList();
+    //         assertThat(repartitionCommands).hasSize(1);
+    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedStoreKey);
+    //     }
 
     private List<RepartitionCommand> remoteTagsCreated() {
         return mockProcessorContext.forwarded().stream()
@@ -365,15 +372,17 @@ public class GetableManagerTest {
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.JSON_OBJ);
             List<JsonIndexModel> indices = List.of(
-                    new JsonIndexModel("$.name", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.age", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.car.brand", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.car.model", IndexType.LOCAL_INDEX));
-            variableDef1.setJsonIndices(indices);
+                    new JsonIndexModel("$.name", VariableType.STR),
+                    new JsonIndexModel("$.age", VariableType.INT),
+                    new JsonIndexModel("$.car.brand", VariableType.STR),
+                    new JsonIndexModel("$.car.model", VariableType.STR));
+
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            threadSpec.setVariableDefs(List.of(
+                    new ThreadVarDefModel(variableDef1, indices, false),
+                    new ThreadVarDefModel(variableDef2, true, false)));
         });
 
         getableManager.put(variable);
@@ -384,61 +393,68 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(5)
+                .hasSize(9)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford"))
-                .anyMatch(
-                        key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape"));
+                .anyMatch(key ->
+                        key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.name_test"))
+                .anyMatch(key ->
+                        key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.age_20"))
+                .anyMatch(key -> key.contains(
+                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.car.brand_Ford"))
+                .anyMatch(key -> key.contains(
+                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.car.model_Escape"));
     }
 
-    @Test
-    void storeRemoteJsonVariablesWithUserDefinedStorageType() {
-        when(executionContext.authorization()).thenReturn(testContext);
-        VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
-        variable.getValue().setType(VariableType.JSON_OBJ);
-        variable.getValue()
-                .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
-        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            VariableDefModel variableDef1 = new VariableDefModel();
-            variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.JSON_OBJ);
-            List<JsonIndexModel> indices = List.of(
-                    new JsonIndexModel("$.name", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.age", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.car.brand", IndexType.LOCAL_INDEX),
-                    new JsonIndexModel("$.car.model", IndexType.REMOTE_INDEX));
-            variableDef1.setJsonIndices(indices);
-            VariableDefModel variableDef2 = new VariableDefModel();
-            variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-        });
+    //     @Test
+    //     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
+    //         when(mockCoreDao.context()).thenReturn(testContext);
+    //         VariableModel variable = TestUtil.variable("test-id");
+    //         variable.setName("variableName");
+    //         variable.getValue().setType(VariableType.JSON_OBJ);
+    //         variable.getValue()
+    //                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model",
+    // "Escape")));
+    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+    //             VariableDefModel variableDef1 = new VariableDefModel();
+    //             variableDef1.setName("variableName");
+    //             variableDef1.setType(VariableType.JSON_OBJ);
+    //             List<JsonIndexModel> indices = List.of(
+    //                     new JsonIndexModel("$.name", VariableType.STR),
+    //                     new JsonIndexModel("$.age", VariableType.INT),
+    //                     new JsonIndexModel("$.car.brand", VariableType.STR),
+    //                     new JsonIndexModel("$.car.model", VariableType.STR));
+    //             VariableDefModel variableDef2 = new VariableDefModel();
+    //             variableDef2.setName("variableName2");
+    //             variableDef2.setType(VariableType.STR);
 
-        getableManager.put(variable);
-        getableManager.commit();
+    //             ThreadVarDefModel tvdm1 = new ThreadVarDefModel(variableDef1, indices, false);
+    //             threadSpec.setVariableDefs(List.of(tvdm1, new ThreadVarDefModel(variableDef2, true, false)));
+    //         });
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
-                .isNotNull();
+    //         getableStorageManager.put(variable);
+    //         getableStorageManager.commit();
 
-        final var storedKeys = getAllKeys(store);
-        assertThat(storedKeys)
-                .hasSize(4)
-                .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford"));
+    //         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+    //                 .isNotNull();
 
-        List<String> remoteTagsCreated = remoteTagsCreated().stream()
-                .map(RepartitionCommand::getSubCommand)
-                .map(RepartitionSubCommand::getPartitionKey)
-                .toList();
+    //         final var storedKeys = getAllKeys(store);
+    //         assertThat(storedKeys)
+    //                 .hasSize(4)
+    //                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
+    //                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test"))
+    //                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20"))
+    //                 .anyMatch(key ->
+    // key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford"));
 
-        assertThat(remoteTagsCreated)
-                .containsExactlyInAnyOrder("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape");
-    }
+    //         List<String> remoteTagsCreated = remoteTagsCreated().stream()
+    //                 .map(RepartitionCommand::getSubCommand)
+    //                 .map(RepartitionSubCommand::getPartitionKey)
+    //                 .toList();
+
+    //         assertThat(remoteTagsCreated)
+    //
+    // .containsExactlyInAnyOrder("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape");
+    //     }
 
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
@@ -450,10 +466,11 @@ public class GetableManagerTest {
                 .map(Pair::getKey)
                 .toList();
 
-        List<String> expectedRemoteStoreKeys = expectedTagKeys.stream()
-                .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.REMOTE)
-                .map(Pair::getKey)
-                .toList();
+        // List<String> expectedRemoteStoreKeys = expectedTagKeys.stream()
+        //         .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.REMOTE)
+        //         .map(Pair::getKey)
+        //         .toList();
+        List<String> expectedRemoteStoreKeys = List.of();
 
         getableManager.put(nodeRunModel);
         getableManager.commit();
@@ -490,7 +507,7 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(variableDef1));
+            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, false, false)));
         });
         ExternalEventModel externalEvent = TestUtil.externalEvent();
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
@@ -504,7 +521,7 @@ public class GetableManagerTest {
         return Stream.of(
                 Arguments.of(wfRunModel, 3),
                 Arguments.of(taskRun, 2),
-                Arguments.of(variable, 1),
+                Arguments.of(variable, 2),
                 Arguments.of(externalEvent, 2));
     }
 }

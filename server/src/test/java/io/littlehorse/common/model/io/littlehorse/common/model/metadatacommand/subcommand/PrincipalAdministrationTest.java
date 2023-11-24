@@ -55,6 +55,7 @@ public class PrincipalAdministrationTest {
 
     @Mock
     private ExecutionContext executionContext;
+
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
 
     private MetadataProcessor metadataProcessor;

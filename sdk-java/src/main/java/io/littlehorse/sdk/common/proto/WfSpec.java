@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     name_ = "";
     status_ = 0;
     entrypointThreadName_ = "";
+    searchableVaraibles_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -133,19 +134,27 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 4;
   private int status_ = 0;
   /**
-   * <code>.littlehorse.LHStatus status = 4;</code>
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
    * @return The enum numeric value on the wire for status.
    */
   @java.lang.Override public int getStatusValue() {
     return status_;
   }
   /**
-   * <code>.littlehorse.LHStatus status = 4;</code>
+   * <pre>
+   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * </pre>
+   *
+   * <code>.littlehorse.MetadataStatus status = 4;</code>
    * @return The status.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
-    io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetadataStatus getStatus() {
+    io.littlehorse.sdk.common.proto.MetadataStatus result = io.littlehorse.sdk.common.proto.MetadataStatus.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetadataStatus.UNRECOGNIZED : result;
   }
 
   public static final int THREAD_SPECS_FIELD_NUMBER = 5;
@@ -266,10 +275,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
   }
 
-  public static final int RETENTION_POLICY_FIELD_NUMBER = 8;
+  public static final int RETENTION_POLICY_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy retentionPolicy_;
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return Whether the retentionPolicy field is set.
    */
   @java.lang.Override
@@ -277,7 +286,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return The retentionPolicy.
    */
   @java.lang.Override
@@ -285,17 +294,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
   /**
-   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
-  public static final int MIGRATION_FIELD_NUMBER = 9;
+  public static final int MIGRATION_FIELD_NUMBER = 8;
   private io.littlehorse.sdk.common.proto.WfSpecVersionMigration migration_;
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return Whether the migration field is set.
    */
   @java.lang.Override
@@ -303,7 +312,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return The migration.
    */
   @java.lang.Override
@@ -311,11 +320,52 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
   }
   /**
-   * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+   * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder() {
     return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
+  }
+
+  public static final int SEARCHABLE_VARAIBLES_FIELD_NUMBER = 9;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> searchableVaraibles_;
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> getSearchableVaraiblesList() {
+    return searchableVaraibles_;
+  }
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
+      getSearchableVaraiblesOrBuilderList() {
+    return searchableVaraibles_;
+  }
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  @java.lang.Override
+  public int getSearchableVaraiblesCount() {
+    return searchableVaraibles_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index) {
+    return searchableVaraibles_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
+      int index) {
+    return searchableVaraibles_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -341,7 +391,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (createdAt_ != null) {
       output.writeMessage(3, getCreatedAt());
     }
-    if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
+    if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
       output.writeEnum(4, status_);
     }
     com.google.protobuf.GeneratedMessageV3
@@ -354,10 +404,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, entrypointThreadName_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(8, getRetentionPolicy());
+      output.writeMessage(7, getRetentionPolicy());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(9, getMigration());
+      output.writeMessage(8, getMigration());
+    }
+    for (int i = 0; i < searchableVaraibles_.size(); i++) {
+      output.writeMessage(9, searchableVaraibles_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -379,7 +432,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getCreatedAt());
     }
-    if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
+    if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, status_);
     }
@@ -398,11 +451,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, getRetentionPolicy());
+        .computeMessageSize(7, getRetentionPolicy());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, getMigration());
+        .computeMessageSize(8, getMigration());
+    }
+    for (int i = 0; i < searchableVaraibles_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, searchableVaraibles_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -443,6 +500,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getMigration()
           .equals(other.getMigration())) return false;
     }
+    if (!getSearchableVaraiblesList()
+        .equals(other.getSearchableVaraiblesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -477,6 +536,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (hasMigration()) {
       hash = (37 * hash) + MIGRATION_FIELD_NUMBER;
       hash = (53 * hash) + getMigration().hashCode();
+    }
+    if (getSearchableVaraiblesCount() > 0) {
+      hash = (37 * hash) + SEARCHABLE_VARAIBLES_FIELD_NUMBER;
+      hash = (53 * hash) + getSearchableVaraiblesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -633,6 +696,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         getCreatedAtFieldBuilder();
         getRetentionPolicyFieldBuilder();
         getMigrationFieldBuilder();
+        getSearchableVaraiblesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -659,6 +723,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         migrationBuilder_.dispose();
         migrationBuilder_ = null;
       }
+      if (searchableVaraiblesBuilder_ == null) {
+        searchableVaraibles_ = java.util.Collections.emptyList();
+      } else {
+        searchableVaraibles_ = null;
+        searchableVaraiblesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -685,9 +756,22 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfSpec buildPartial() {
       io.littlehorse.sdk.common.proto.WfSpec result = new io.littlehorse.sdk.common.proto.WfSpec(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WfSpec result) {
+      if (searchableVaraiblesBuilder_ == null) {
+        if (((bitField0_ & 0x00000100) != 0)) {
+          searchableVaraibles_ = java.util.Collections.unmodifiableList(searchableVaraibles_);
+          bitField0_ = (bitField0_ & ~0x00000100);
+        }
+        result.searchableVaraibles_ = searchableVaraibles_;
+      } else {
+        result.searchableVaraibles_ = searchableVaraiblesBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WfSpec result) {
@@ -801,6 +885,32 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasMigration()) {
         mergeMigration(other.getMigration());
       }
+      if (searchableVaraiblesBuilder_ == null) {
+        if (!other.searchableVaraibles_.isEmpty()) {
+          if (searchableVaraibles_.isEmpty()) {
+            searchableVaraibles_ = other.searchableVaraibles_;
+            bitField0_ = (bitField0_ & ~0x00000100);
+          } else {
+            ensureSearchableVaraiblesIsMutable();
+            searchableVaraibles_.addAll(other.searchableVaraibles_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.searchableVaraibles_.isEmpty()) {
+          if (searchableVaraiblesBuilder_.isEmpty()) {
+            searchableVaraiblesBuilder_.dispose();
+            searchableVaraiblesBuilder_ = null;
+            searchableVaraibles_ = other.searchableVaraibles_;
+            bitField0_ = (bitField0_ & ~0x00000100);
+            searchableVaraiblesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getSearchableVaraiblesFieldBuilder() : null;
+          } else {
+            searchableVaraiblesBuilder_.addAllMessages(other.searchableVaraibles_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -863,18 +973,31 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000020;
               break;
             } // case 50
-            case 66: {
+            case 58: {
               input.readMessage(
                   getRetentionPolicyFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000040;
               break;
-            } // case 66
-            case 74: {
+            } // case 58
+            case 66: {
               input.readMessage(
                   getMigrationFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000080;
+              break;
+            } // case 66
+            case 74: {
+              io.littlehorse.sdk.common.proto.SearchableVariableDef m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.SearchableVariableDef.parser(),
+                      extensionRegistry);
+              if (searchableVaraiblesBuilder_ == null) {
+                ensureSearchableVaraiblesIsMutable();
+                searchableVaraibles_.add(m);
+              } else {
+                searchableVaraiblesBuilder_.addMessage(m);
+              }
               break;
             } // case 74
             default: {
@@ -1119,14 +1242,22 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     private int status_ = 0;
     /**
-     * <code>.littlehorse.LHStatus status = 4;</code>
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
      * @return The enum numeric value on the wire for status.
      */
     @java.lang.Override public int getStatusValue() {
       return status_;
     }
     /**
-     * <code>.littlehorse.LHStatus status = 4;</code>
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
      */
@@ -1137,20 +1268,28 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>.littlehorse.LHStatus status = 4;</code>
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
      * @return The status.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
-      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.MetadataStatus getStatus() {
+      io.littlehorse.sdk.common.proto.MetadataStatus result = io.littlehorse.sdk.common.proto.MetadataStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetadataStatus.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHStatus status = 4;</code>
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
      * @param value The status to set.
      * @return This builder for chaining.
      */
-    public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
+    public Builder setStatus(io.littlehorse.sdk.common.proto.MetadataStatus value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -1160,7 +1299,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>.littlehorse.LHStatus status = 4;</code>
+     * <pre>
+     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * </pre>
+     *
+     * <code>.littlehorse.MetadataStatus status = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
@@ -1373,14 +1516,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      * @return Whether the retentionPolicy field is set.
      */
     public boolean hasRetentionPolicy() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      * @return The retentionPolicy.
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy() {
@@ -1391,7 +1534,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
       if (retentionPolicyBuilder_ == null) {
@@ -1407,7 +1550,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder setRetentionPolicy(
         io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder builderForValue) {
@@ -1421,7 +1564,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
       if (retentionPolicyBuilder_ == null) {
@@ -1440,7 +1583,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder clearRetentionPolicy() {
       bitField0_ = (bitField0_ & ~0x00000040);
@@ -1453,7 +1596,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder getRetentionPolicyBuilder() {
       bitField0_ |= 0x00000040;
@@ -1461,7 +1604,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getRetentionPolicyFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
       if (retentionPolicyBuilder_ != null) {
@@ -1472,7 +1615,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder> 
@@ -1492,14 +1635,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder> migrationBuilder_;
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      * @return Whether the migration field is set.
      */
     public boolean hasMigration() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      * @return The migration.
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration() {
@@ -1510,7 +1653,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder setMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
       if (migrationBuilder_ == null) {
@@ -1526,7 +1669,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder setMigration(
         io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder builderForValue) {
@@ -1540,7 +1683,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder mergeMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
       if (migrationBuilder_ == null) {
@@ -1559,7 +1702,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder clearMigration() {
       bitField0_ = (bitField0_ & ~0x00000080);
@@ -1572,7 +1715,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder getMigrationBuilder() {
       bitField0_ |= 0x00000080;
@@ -1580,7 +1723,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getMigrationFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder() {
       if (migrationBuilder_ != null) {
@@ -1591,7 +1734,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WfSpecVersionMigration migration = 9;</code>
+     * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder> 
@@ -1605,6 +1748,246 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         migration_ = null;
       }
       return migrationBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> searchableVaraibles_ =
+      java.util.Collections.emptyList();
+    private void ensureSearchableVaraiblesIsMutable() {
+      if (!((bitField0_ & 0x00000100) != 0)) {
+        searchableVaraibles_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.SearchableVariableDef>(searchableVaraibles_);
+        bitField0_ |= 0x00000100;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> searchableVaraiblesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> getSearchableVaraiblesList() {
+      if (searchableVaraiblesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(searchableVaraibles_);
+      } else {
+        return searchableVaraiblesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public int getSearchableVaraiblesCount() {
+      if (searchableVaraiblesBuilder_ == null) {
+        return searchableVaraibles_.size();
+      } else {
+        return searchableVaraiblesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index) {
+      if (searchableVaraiblesBuilder_ == null) {
+        return searchableVaraibles_.get(index);
+      } else {
+        return searchableVaraiblesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder setSearchableVaraibles(
+        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
+      if (searchableVaraiblesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.set(index, value);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder setSearchableVaraibles(
+        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
+      if (searchableVaraiblesBuilder_ == null) {
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder addSearchableVaraibles(io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
+      if (searchableVaraiblesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.add(value);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder addSearchableVaraibles(
+        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
+      if (searchableVaraiblesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.add(index, value);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder addSearchableVaraibles(
+        io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
+      if (searchableVaraiblesBuilder_ == null) {
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.add(builderForValue.build());
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder addSearchableVaraibles(
+        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
+      if (searchableVaraiblesBuilder_ == null) {
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder addAllSearchableVaraibles(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.SearchableVariableDef> values) {
+      if (searchableVaraiblesBuilder_ == null) {
+        ensureSearchableVaraiblesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, searchableVaraibles_);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder clearSearchableVaraibles() {
+      if (searchableVaraiblesBuilder_ == null) {
+        searchableVaraibles_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000100);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public Builder removeSearchableVaraibles(int index) {
+      if (searchableVaraiblesBuilder_ == null) {
+        ensureSearchableVaraiblesIsMutable();
+        searchableVaraibles_.remove(index);
+        onChanged();
+      } else {
+        searchableVaraiblesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder getSearchableVaraiblesBuilder(
+        int index) {
+      return getSearchableVaraiblesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
+        int index) {
+      if (searchableVaraiblesBuilder_ == null) {
+        return searchableVaraibles_.get(index);  } else {
+        return searchableVaraiblesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
+         getSearchableVaraiblesOrBuilderList() {
+      if (searchableVaraiblesBuilder_ != null) {
+        return searchableVaraiblesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(searchableVaraibles_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder addSearchableVaraiblesBuilder() {
+      return getSearchableVaraiblesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.SearchableVariableDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder addSearchableVaraiblesBuilder(
+        int index) {
+      return getSearchableVaraiblesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.SearchableVariableDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder> 
+         getSearchableVaraiblesBuilderList() {
+      return getSearchableVaraiblesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
+        getSearchableVaraiblesFieldBuilder() {
+      if (searchableVaraiblesBuilder_ == null) {
+        searchableVaraiblesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder>(
+                searchableVaraibles_,
+                ((bitField0_ & 0x00000100) != 0),
+                getParentForChildren(),
+                isClean());
+        searchableVaraibles_ = null;
+      }
+      return searchableVaraiblesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

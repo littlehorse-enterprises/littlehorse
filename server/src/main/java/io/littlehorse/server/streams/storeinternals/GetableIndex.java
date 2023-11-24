@@ -13,7 +13,7 @@ public class GetableIndex<T extends AbstractGetable<?>> {
 
     private List<Pair<String, ValueType>> attributes;
     private Optional<TagStorageType> tagStorageType;
-    private Predicate<T> conditional;
+    private Predicate<T> predicate;
 
     public GetableIndex(
             List<Pair<String, ValueType>> attributes,
@@ -21,7 +21,7 @@ public class GetableIndex<T extends AbstractGetable<?>> {
             Predicate<T> conditional) {
         this.attributes = attributes;
         this.tagStorageType = tagStorageType;
-        this.conditional = conditional;
+        this.predicate = conditional;
     }
 
     public GetableIndex(List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
@@ -33,9 +33,9 @@ public class GetableIndex<T extends AbstractGetable<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public <J extends AbstractGetable<?>> boolean isValid(J getable) {
-        if (conditional != null) {
-            return conditional.test((T) getable);
+    public <J extends AbstractGetable<?>> boolean isActiveOn(J getable) {
+        if (this.predicate != null) {
+            return predicate.test((T) getable);
         } else {
             return true;
         }

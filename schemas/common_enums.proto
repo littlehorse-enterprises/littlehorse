@@ -16,6 +16,12 @@ enum LHStatus {
   EXCEPTION = 6;
 }
 
+enum MetadataStatus {
+  ACTIVE = 0;
+  ARCHIVED = 1;
+  TERMINATING = 2;
+}
+
 enum TaskStatus {
   TASK_SCHEDULED = 0;
   TASK_RUNNING = 1;
@@ -24,7 +30,6 @@ enum TaskStatus {
   TASK_TIMEOUT = 4;
   TASK_OUTPUT_SERIALIZING_ERROR = 5;
   TASK_INPUT_VAR_SUB_ERROR = 6;
-  TASK_CANCELLED = 7;
   TASK_EXCEPTION = 8;
 }
 

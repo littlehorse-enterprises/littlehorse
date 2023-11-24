@@ -41,6 +41,7 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     @Mock
     private KafkaStreamsServerImpl server;
+
     @Mock
     private ExecutionContext executionContext;
 

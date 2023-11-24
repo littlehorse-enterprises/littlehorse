@@ -1,10 +1,8 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -18,7 +16,6 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -115,20 +112,6 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    private Optional<TagStorageType> tagStorageTypePbByStatus() {
-        return Optional.ofNullable(status).map(userTaskRunStatusPb -> {
-            if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
-                return TagStorageType.REMOTE;
-            } else {
-                return TagStorageType.LOCAL;
-            }
-        });
-    }
-
-    private Optional<TagStorageType> tagStorageTypePbByUserId() {
-        return Optional.ofNullable(userId).map(userId -> TagStorageType.REMOTE);
-    }
-
     @Override
     public List<Attribute> getSearchAttributes() {
         // Ordering is important. See UserTaskRunModel#getIndexConfigurations()
@@ -153,18 +136,8 @@ public class SearchUserTaskRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        TagStorageType tagStorageType = tagStorageTypePbByUserId()
-                .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
-        if (tagStorageType == null) {
-            List<String> searchAttributes =
-                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-            Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(searchAttributes);
-            if (tagStorageTypePbOptional.isEmpty()) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "There is no index configuration for this search");
-            }
-            tagStorageType = tagStorageTypePbOptional.get();
-        }
-        return tagStorageType;
+        // Everything is local.
+        return TagStorageType.LOCAL;
     }
 
     @Override
@@ -173,15 +146,15 @@ public class SearchUserTaskRunRequestModel
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 
-    private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {
-        return new UserTaskRunModel()
-                .getIndexConfigurations().stream()
-                        .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst();
-    }
+    // private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {
+    //     return new UserTaskRunModel()
+    //             .getIndexConfigurations().stream()
+    //                     .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
+    //                     .map(GetableIndex::getTagStorageType)
+    //                     .filter(Optional::isPresent)
+    //                     .map(Optional::get)
+    //                     .findFirst();
+    // }
 
     public LHStore getStoreType() {
         return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;

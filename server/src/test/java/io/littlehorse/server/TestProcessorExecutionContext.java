@@ -17,19 +17,36 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
-    public TestProcessorExecutionContext(CommandModel currentCommand, Headers recordMetadata, LHServerConfig config, ProcessorContext<String, CommandProcessorOutput> processorContext, TaskQueueManager globalTaskQueueManager, MetadataCache metadataCache, KafkaStreamsServerImpl server) {
+
+    public TestProcessorExecutionContext(
+            CommandModel currentCommand,
+            Headers recordMetadata,
+            LHServerConfig config,
+            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            TaskQueueManager globalTaskQueueManager,
+            MetadataCache metadataCache,
+            KafkaStreamsServerImpl server) {
         super(currentCommand, recordMetadata, config, processorContext, globalTaskQueueManager, metadataCache, server);
         this.metadataCache = metadataCache;
         this.lhConfig = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
     }
 
-    public static TestProcessorExecutionContext create(CommandModel currentCommand, Headers recordMetadata, ProcessorContext<String, CommandProcessorOutput> processorContext){
+    public static TestProcessorExecutionContext create(
+            CommandModel currentCommand,
+            Headers recordMetadata,
+            ProcessorContext<String, CommandProcessorOutput> processorContext) {
         LHServerConfig lhConfig = Mockito.mock();
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         KafkaStreamsServerImpl server = Mockito.mock();
-        return new TestProcessorExecutionContext(currentCommand, recordMetadata, lhConfig, processorContext, globalTaskQueueManager, metadataCache, server);
+        return new TestProcessorExecutionContext(
+                currentCommand,
+                recordMetadata,
+                lhConfig,
+                processorContext,
+                globalTaskQueueManager,
+                metadataCache,
+                server);
     }
-
 }

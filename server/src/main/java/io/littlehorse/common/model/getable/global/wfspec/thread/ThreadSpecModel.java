@@ -14,8 +14,8 @@ import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
-import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public String name;
 
     public Map<String, NodeModel> nodes;
-    public List<VariableDefModel> variableDefs;
+    public List<ThreadVarDefModel> variableDefs;
     public List<InterruptDefModel> interruptDefs;
 
     private ThreadRetentionPolicyModel retentionPolicy;
@@ -61,8 +61,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (Map.Entry<String, NodeModel> e : nodes.entrySet()) {
             out.putNodes(e.getKey(), e.getValue().toProto().build());
         }
-        for (VariableDefModel vd : variableDefs) {
-            out.addVariableDefs(vd.toProto());
+        for (ThreadVarDefModel tvd : variableDefs) {
+            out.addVariableDefs(tvd.toProto());
         }
         for (InterruptDefModel idef : interruptDefs) {
             out.addInterruptDefs(idef.toProto());
@@ -88,11 +88,9 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
 
-        for (VariableDef vd : proto.getVariableDefsList()) {
-            VariableDefModel v = new VariableDefModel();
-            v.initFrom(vd, context);
-            v.threadSpecModel = this;
-            variableDefs.add(v);
+        for (ThreadVarDef tvd : proto.getVariableDefsList()) {
+            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
+            variableDefs.add(tvdm);
         }
 
         for (InterruptDef idefpb : proto.getInterruptDefsList()) {
@@ -118,11 +116,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
      * Returns a Map containing info for all of the variables required as parameters
      * to *start* this thread.
      */
-
-    public Map<String, VariableDefModel> getInputVariableDefs() {
-        HashMap<String, VariableDefModel> out = new HashMap<>();
-        for (VariableDefModel vd : variableDefs) {
-            out.put(vd.name, vd);
+    public Map<String, ThreadVarDefModel> getInputVariableDefs() {
+        HashMap<String, ThreadVarDefModel> out = new HashMap<>();
+        for (ThreadVarDefModel vd : variableDefs) {
+            out.put(vd.getVarDef().getName(), vd);
         }
 
         return out;
@@ -178,19 +175,26 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return out;
     }
 
-    private VariableDefModel getVd(String name) {
-        for (VariableDefModel vd : variableDefs) {
-            if (vd.name.equals(name)) {
+    private ThreadVarDefModel getVd(String name) {
+        for (ThreadVarDefModel vd : variableDefs) {
+            if (vd.getVarDef().getName().equals(name)) {
                 return vd;
             }
         }
         return null;
     }
 
-    public Pair<String, VariableDefModel> lookupVarDef(String name) {
-        VariableDefModel varDef = getVd(name);
+    /**
+     * Accepts a Variable name and returns a pair containing:
+     * - the name of the ThreadSpec that the Variable is defined in
+     * - the VariableDefModel that defines the variable.
+     * @param name is the name of the Variable to look up.
+     * @return the VariableDefModel and the name of the ThreadSpec it comes from.
+     */
+    public Pair<String, ThreadVarDefModel> lookupVarDef(String name) {
+        ThreadVarDefModel varDef = getVd(name);
         if (varDef != null) {
-            return Pair.of(name, varDef);
+            return Pair.of(this.name, varDef);
         }
 
         return wfSpecModel.lookupVarDef(name);
@@ -204,7 +208,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         boolean seenEntrypoint = false;
         for (NodeModel node : nodes.values()) {
             for (String varName : node.getRequiredVariableNames()) {
-                Pair<String, VariableDefModel> result = lookupVarDef(varName);
+                // TODO: as per popular demand, we will relax this constraint.
+                Pair<String, ThreadVarDefModel> result = lookupVarDef(varName);
                 if (result == null) {
                     throw new LHApiException(
                             Status.INVALID_ARGUMENT,
@@ -268,19 +273,21 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
+    // TODO: check input variables.
     public void validateStartVariables(Map<String, VariableValueModel> vars) throws LHValidationError {
-        Map<String, VariableDefModel> required = getInputVariableDefs();
+        Map<String, ThreadVarDefModel> required = getInputVariableDefs();
 
-        for (Map.Entry<String, VariableDefModel> e : required.entrySet()) {
+        for (Map.Entry<String, ThreadVarDefModel> e : required.entrySet()) {
             VariableValueModel val = vars.get(e.getKey());
+            VariableDefModel varDef = e.getValue().getVarDef();
             if (val == null) {
                 log.debug("Variable {} not provided, defaulting to null", e.getKey());
                 continue;
             }
 
-            if (val.type != e.getValue().type && val.type != VariableType.NULL) {
+            if (val.type != varDef.getType() && val.type != VariableType.NULL) {
                 throw new LHValidationError(
-                        null, "Var " + e.getKey() + " should be " + e.getValue().type + " but is " + val.type);
+                        null, "Var " + e.getKey() + " should be " + varDef.getType() + " but is " + val.getType());
             }
         }
 
@@ -295,7 +302,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public void validateTimeoutAssignment(String nodeName, VariableAssignmentModel timeoutSeconds)
             throws LHValidationError {
         if (timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME) {
-            Pair<String, VariableDefModel> defPair = lookupVarDef(timeoutSeconds.getVariableName());
+            Pair<String, ThreadVarDefModel> defPair = lookupVarDef(timeoutSeconds.getVariableName());
             if (defPair == null) {
                 throw new LHValidationError(
                         null,
@@ -312,18 +319,20 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars) throws LHApiException {
-        Map<String, VariableDefModel> inputVarDefs = getInputVariableDefs();
+        Map<String, ThreadVarDefModel> inputVarDefs = getInputVariableDefs();
 
-        for (Map.Entry<String, VariableDefModel> e : inputVarDefs.entrySet()) {
+        for (Map.Entry<String, ThreadVarDefModel> e : inputVarDefs.entrySet()) {
             VariableAssignmentModel assn = vars.get(e.getKey());
             if (assn == null) {
                 // It will be created as NULL for the input.
                 continue;
             }
 
-            if (!assn.canBeType(e.getValue().type, this)) {
+            if (!assn.canBeType(e.getValue().getVarDef().getType(), this)) {
                 throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Var " + e.getKey() + " should be " + e.getValue().type);
+                        Status.INVALID_ARGUMENT,
+                        "Var " + e.getKey() + " should be "
+                                + e.getValue().getVarDef().getType());
             }
         }
 
@@ -344,21 +353,21 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return null;
     }
 
-    public VariableDefModel localGetVarDef(String name) {
-        for (VariableDefModel vd : variableDefs) {
-            if (vd.name.equals(name)) {
+    public ThreadVarDefModel localGetVarDef(String name) {
+        for (ThreadVarDefModel vd : variableDefs) {
+            if (vd.getVarDef().getName().equals(name)) {
                 return vd;
             }
         }
         return null;
     }
 
-    public VariableDefModel getVarDef(String varName) {
+    public ThreadVarDefModel getVarDef(String varName) {
         // This is tricky...
-        VariableDefModel out = localGetVarDef(varName);
+        ThreadVarDefModel out = localGetVarDef(varName);
         if (out != null) return out;
 
-        Pair<String, VariableDefModel> result = wfSpecModel.lookupVarDef(varName);
+        Pair<String, ThreadVarDefModel> result = wfSpecModel.lookupVarDef(varName);
         if (result != null) {
             return result.getRight();
         } else {

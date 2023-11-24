@@ -3,7 +3,7 @@ from inspect import signature
 import inspect
 import logging
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
@@ -15,8 +15,6 @@ from littlehorse.model.common_enums_pb2 import (
 )
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
-    IndexType,
-    JsonIndex,
     TaskNode,
     UTActionTrigger,
     VariableAssignment,
@@ -39,12 +37,14 @@ from littlehorse.model.wf_spec_pb2 import (
     ExternalEventNode,
     FailureDef,
     InterruptDef,
+    JsonIndex,
     Node,
     NopNode,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
     ThreadSpec,
+    ThreadVarDef,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -300,9 +300,9 @@ class WfRunVariable:
         self.type = variable_type
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
-        self.index_type: Optional[IndexType] = None
-        self.json_indexes: list[JsonIndex] = []
-        self._persistent = False
+        self._required = False
+        self._searchable = False
+        self._json_indexes: List[JsonIndex] = []
 
         if default_value is not None:
             self.default_value = to_variable_value(default_value)
@@ -353,70 +353,64 @@ class WfRunVariable:
         out.json_path = json_path
         return out
 
-    def with_index(self, index_type: IndexType) -> "WfRunVariable":
-        """Enables the storage of variables with a Non-null. For enhanced efficiency,
-        it offers two types of indexing: Remote Index and Local Index.
-        IndexType.REMOTE_INDEX: This type of indexing is recommended for
-        variables with low cardinality, which means they have relatively
-        few distinct values. For example, storing userId. IndexType.LOCAL_INDEX:
-        Local Index is designed for variables with high cardinality.
-
-        Args:
-            index_type (IndexType): Defines Local or Remote Index.
+    def searchable(self) -> "WfRunVariable":
+        """Allows for searching for the WfRunVariable by its value.
 
         Returns:
             WfRunVariable: Same instance.
         """
-        self.index_type = index_type
+        self._searchable = True
         return self
 
-    def with_json_index(self, json_path: str, index_type: IndexType) -> "WfRunVariable":
-        """Enables the storage of specific attributes inside a Json Variable.
-        For enhanced efficiency, it offers two types of indexing:
-        Remote Index and Local Index. IndexType.REMOTE_INDEX: This
-        type of indexing is recommended for variables with low
-        cardinality, which means they have relatively few
-        distinct values. For example, storing userId. IndexType.LOCAL_INDEX:
-        Local Index is designed for variables with high cardinality.
+    def searchable_on(
+            self, field_path: str, field_type: VariableType,
+    ) -> "WfRunVariable":
+        """Creates an index on a specified field of a Json Path variable,
+        allowing you to search for this field using the SearchVariableRequest.
 
         Args:
-            json_path (str): Defines Local or Remote Index.
-            index_type (IndexType): Json Attribute path starting with $. e.g: $.userId.
+            field_path (str): The JSON Path of the field to index,
+                starting with '$.', eg: $.userId
+            field_type (IndexType): the type of the field that is indexed.
 
         Returns:
             WfRunVariable: Same instance.
         """
-        if json_path is None or index_type is None:
+        if field_path is None or field_type is None:
             raise ValueError("None is not allowed")
 
-        if not json_path.startswith("$."):
-            raise ValueError(f"Invalid JsonPath: {json_path}")
+        if not field_path.startswith("$."):
+            raise ValueError(f"Invalid JsonPath: {field_path}")
 
         if self.type != VariableType.JSON_OBJ:
             raise ValueError(
                 f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
             )
 
-        self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
+        self._json_indexes.append(
+            JsonIndex(field_path=field_path, field_type=field_type),
+        )
         return self
 
-    def persistent(self) -> "WfRunVariable":
-        self._persistent = True
+    def required(self) -> "WfRunVariable":
+        self._required = True
         return self
 
-    def compile(self) -> VariableDef:
+    def compile(self) -> ThreadVarDef:
         """Compile this into Protobuf Objects.
 
         Returns:
             VariableDef: Spec.
         """
-        return VariableDef(
-            type=self.type,
-            name=self.name,
-            index_type=self.index_type,
-            default_value=self.default_value,
-            json_indexes=self.json_indexes.copy(),
-            persistent=self._persistent,
+        return ThreadVarDef(
+            var_def=VariableDef(
+                type=self.type,
+                name=self.name,
+                default_value=self.default_value,
+            ),
+            json_indexes=self._json_indexes.copy(),
+            searchable=self._searchable,
+            required=self._required,
         )
 
     def __str__(self) -> str:

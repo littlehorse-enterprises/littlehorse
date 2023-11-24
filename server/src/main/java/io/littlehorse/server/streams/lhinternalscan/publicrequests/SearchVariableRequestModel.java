@@ -6,8 +6,9 @@ import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
@@ -24,9 +25,9 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class SearchVariableRequestModel
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
     public String wfRunId;
-    private WfService service;
+    private ReadOnlyMetadataManager metadataManager;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -72,7 +73,7 @@ public class SearchVariableRequestModel
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-        this.service = context.service();
+        this.metadataManager = context.metadataManager();
     }
 
     public SearchVariableRequest.Builder toProto() {
@@ -115,20 +116,17 @@ public class SearchVariableRequestModel
     }
 
     private TagStorageType indexTypeForSearchFromWfSpec() {
-        boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
+        Integer wfSpecVersion = value.hasWfSpecVersion() ? null : value.getWfSpecVersion();
 
-        // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
-        // that VariableDef, and it's also guaranteed that all of the VariableDef's are the same.
-        Integer wfSpecVersion = isPersistentVariableQuery ? null : value.getWfSpecVersion();
-        WfSpecModel spec = service.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+        WfSpecModel spec = metadataManager.get(new WfSpecIdModel(value.getWfSpecName(), wfSpecVersion));
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
         }
 
-        Optional<VariableDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
+        Optional<ThreadVarDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
                 .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
-                .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
+                .filter(variableDef -> variableDef.getVarDef().getName().equals(value.getVarName()))
                 .findFirst();
 
         if (!associatedVariable.isPresent()) {
@@ -136,22 +134,19 @@ public class SearchVariableRequestModel
                     Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + value.getVarName());
         }
 
-        if (isPersistentVariableQuery && !associatedVariable.get().isPersistent()) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "Variable " + value.getVarName() + " is not persistent; must provide wfSpecVersion");
-        }
-
-        VariableDefModel varDef = associatedVariable.get();
-        if (varDef.getTagStorageType() == null) {
+        ThreadVarDefModel threadVarDef = associatedVariable.get();
+        if (!threadVarDef.isSearchable()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
-        if (varDef.getType() != value.getValue().getType()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Variable has type " + varDef.getType());
+        if (threadVarDef.getVarDef().getType() != value.getValue().getType()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Specified Variable has type " + threadVarDef.getVarDef().getType());
         }
 
-        return varDef.getTagStorageType();
+        // Currently, all tags are LOCAL
+        return TagStorageType.LOCAL;
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {

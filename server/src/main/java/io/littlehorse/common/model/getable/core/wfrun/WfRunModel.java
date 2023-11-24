@@ -24,6 +24,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -247,8 +248,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
             return thread;
         }
 
-        for (VariableDefModel varDef : tspec.variableDefs) {
-            String varName = varDef.name;
+        for (ThreadVarDefModel threadVarDef : tspec.getVariableDefs()) {
+            VariableDefModel varDef = threadVarDef.getVarDef();
+            String varName = varDef.getName();
             VariableValueModel val;
 
             if (variables.containsKey(varName)) {
@@ -256,6 +258,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             } else if (varDef.getDefaultValue() != null) {
                 val = varDef.getDefaultValue();
             } else {
+                // TODO: Will need to update this when we add the required variable feature.
                 val = new VariableValueModel();
                 val.type = VariableType.NULL;
             }

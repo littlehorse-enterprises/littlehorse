@@ -52,6 +52,7 @@ public class PutWfSpecRequestModelTest {
     private static final String TENANT_ID_A = "A";
     private static final String TENANT_ID_B = "B";
     private static final String DEFAULT_TENANT_ID = "default";
+
     @Mock
     private ExecutionContext executionContext;
 

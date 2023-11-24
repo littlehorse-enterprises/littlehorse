@@ -8,8 +8,6 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -136,8 +134,7 @@ public class TimerProcessorTest {
         mockProcessorContext.resetForwards();
     }
 
-    private LHTimer buildNewTimer(
-            String partitionKey, LocalDateTime maturationTime) {
+    private LHTimer buildNewTimer(String partitionKey, LocalDateTime maturationTime) {
         CommandModel mockCommand = mock(Answers.RETURNS_DEEP_STUBS);
         when(mockCommand.getTime()).thenReturn(timeToDate(maturationTime));
         when(mockCommand.toProto().build().toByteArray()).thenReturn("Hi!".getBytes());

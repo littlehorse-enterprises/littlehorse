@@ -11,10 +11,8 @@ import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
@@ -42,6 +40,7 @@ public class TenantAdministrationTest {
 
     @Mock
     private KafkaStreamsServerImpl server;
+
     @Mock
     private ExecutionContext executionContext;
 
@@ -61,7 +60,8 @@ public class TenantAdministrationTest {
 
     private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
 
-    private ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(ModelStore.defaultStore(nativeMetadataStore, mock()));
+    private ReadOnlyMetadataManager metadataManager =
+            new ReadOnlyMetadataManager(ModelStore.defaultStore(nativeMetadataStore, mock()));
 
     @BeforeEach
     public void setup() {

@@ -40,15 +40,18 @@ public class CommandProcessorTest {
 
     @Mock
     private KafkaStreamsServerImpl server;
+
     @Mock
     private TaskQueueManager taskQueueManager;
+
     @Mock
     private ExecutionContext executionContext;
 
     private final MetadataCache metadataCache = new MetadataCache();
 
     @InjectMocks
-    private final CommandProcessor commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager);
+    private final CommandProcessor commandProcessor =
+            new CommandProcessor(config, server, metadataCache, taskQueueManager);
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())

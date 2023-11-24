@@ -14,6 +14,12 @@ class LHStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ERROR: _ClassVar[LHStatus]
     EXCEPTION: _ClassVar[LHStatus]
 
+class MetadataStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    ACTIVE: _ClassVar[MetadataStatus]
+    ARCHIVED: _ClassVar[MetadataStatus]
+    TERMINATING: _ClassVar[MetadataStatus]
+
 class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     TASK_SCHEDULED: _ClassVar[TaskStatus]
@@ -23,7 +29,6 @@ class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_TIMEOUT: _ClassVar[TaskStatus]
     TASK_OUTPUT_SERIALIZING_ERROR: _ClassVar[TaskStatus]
     TASK_INPUT_VAR_SUB_ERROR: _ClassVar[TaskStatus]
-    TASK_CANCELLED: _ClassVar[TaskStatus]
     TASK_EXCEPTION: _ClassVar[TaskStatus]
 
 class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
@@ -65,6 +70,9 @@ HALTING: LHStatus
 HALTED: LHStatus
 ERROR: LHStatus
 EXCEPTION: LHStatus
+ACTIVE: MetadataStatus
+ARCHIVED: MetadataStatus
+TERMINATING: MetadataStatus
 TASK_SCHEDULED: TaskStatus
 TASK_RUNNING: TaskStatus
 TASK_SUCCESS: TaskStatus
@@ -72,7 +80,6 @@ TASK_FAILED: TaskStatus
 TASK_TIMEOUT: TaskStatus
 TASK_OUTPUT_SERIALIZING_ERROR: TaskStatus
 TASK_INPUT_VAR_SUB_ERROR: TaskStatus
-TASK_CANCELLED: TaskStatus
 TASK_EXCEPTION: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength

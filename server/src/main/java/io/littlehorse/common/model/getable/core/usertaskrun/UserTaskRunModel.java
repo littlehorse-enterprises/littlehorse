@@ -370,7 +370,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                         List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<UserTaskRunModel>(
                         List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.REMOTE),
+                        // This might become a REMOTE tag in the future.
+                        Optional.of(TagStorageType.LOCAL),
                         userTaskRun -> userTaskRun.getUserId() != null),
                 new GetableIndex<UserTaskRunModel>(
                         List.of(
@@ -406,23 +407,20 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                         userTaskRun -> userTaskRun.getUserGroup() != null),
                 new GetableIndex<UserTaskRunModel>(
                         List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.REMOTE),
+                        // This might become REMOTE in the future.
+                        Optional.of(TagStorageType.LOCAL),
                         userTaskRun -> userTaskRun.getUserGroup() != null));
     }
 
-    public boolean isRemote() {
-        return isRemote(this.getStatus());
-    }
-
-    public static boolean isRemote(UserTaskRunStatus status) {
-        return (status == UserTaskRunStatus.ASSIGNED || status == UserTaskRunStatus.UNASSIGNED);
+    public static TagStorageType tagStorageTypeForStatus(UserTaskRunStatus status) {
+        return TagStorageType.LOCAL;
     }
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "status" -> {
-                return List.of(getIndexedStatusField(key, tagStorageType));
+                return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
             }
             case "userTaskDefName" -> {
                 return List.of(new IndexedField(
@@ -430,7 +428,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                         ));
             }
             case "userId" -> {
-                return List.of(new IndexedField(key, this.getUserId(), TagStorageType.REMOTE));
+                return List.of(new IndexedField(key, this.getUserId(), TagStorageType.LOCAL));
             }
             case "userGroup" -> {
                 return List.of(new IndexedField(key, this.getUserGroup(), tagStorageType.get()));
@@ -438,13 +436,5 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         }
         log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
-    }
-
-    private IndexedField getIndexedStatusField(String key, Optional<TagStorageType> tagStorageTypePbOptional) {
-        TagStorageType tagStorageType = tagStorageTypePbOptional.get();
-        if (this.isRemote()) {
-            tagStorageType = TagStorageType.REMOTE;
-        }
-        return new IndexedField(key, this.getStatus().toString(), tagStorageType);
     }
 }

@@ -34,9 +34,9 @@ type WfRunVariable struct {
 	Name    string
 	VarType *model.VariableType
 
-	thread   *WorkflowThread
-	jsonPath *string
-	varDef   *model.VariableDef
+	thread       *WorkflowThread
+	jsonPath     *string
+	threadVarDef *model.ThreadVarDef
 }
 
 type NodeOutput struct {
@@ -94,14 +94,16 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
-func (w *WfRunVariable) WithIndex(indexType model.IndexType) *WfRunVariable {
-	w.setIndex(indexType)
-	return w
+func (w *WfRunVariable) Searchable() *WfRunVariable {
+	return w.searchableImpl()
 }
 
-func (w *WfRunVariable) Persistent() *WfRunVariable {
-	w.varDef.Persistent = true
-	return w
+func (w *WfRunVariable) SearchableOn(fieldPath string, fieldType model.VariableType) *WfRunVariable {
+	return w.searchableOnImpl(fieldPath, fieldType)
+}
+
+func (w *WfRunVariable) Required() *WfRunVariable {
+	return w.requiredImpl()
 }
 
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {

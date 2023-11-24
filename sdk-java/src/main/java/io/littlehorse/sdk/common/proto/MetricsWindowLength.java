@@ -98,7 +98,7 @@ public enum MetricsWindowLength
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(2);
+    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(3);
   }
 
   private static final MetricsWindowLength[] VALUES = values();

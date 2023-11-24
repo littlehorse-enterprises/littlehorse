@@ -7,9 +7,9 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
-import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -66,13 +66,12 @@ public class JsonVariableStorageManagerTest {
         variable.setName("testVariable");
         VariableDefModel variableDef = TestUtil.variableDef("testVariable", VariableType.JSON_OBJ);
         List<JsonIndexModel> indices = List.of(
-                new JsonIndexModel("$.about", IndexType.LOCAL_INDEX),
-                new JsonIndexModel("$.profile.email", IndexType.LOCAL_INDEX),
-                new JsonIndexModel("$.tags", IndexType.LOCAL_INDEX),
-                new JsonIndexModel("$.balance", IndexType.LOCAL_INDEX));
-        variableDef.setJsonIndices(indices);
+                new JsonIndexModel("$.about", VariableType.STR),
+                new JsonIndexModel("$.profile.email", VariableType.STR),
+                new JsonIndexModel("$.tags", VariableType.JSON_ARR),
+                new JsonIndexModel("$.balance", VariableType.STR));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            threadSpec.setVariableDefs(List.of(variableDef));
+            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef, indices, false)));
         });
         VariableValueModel variableValue = new VariableValueModel();
         variableValue.setType(VariableType.JSON_OBJ);
@@ -108,41 +107,45 @@ public class JsonVariableStorageManagerTest {
 
     @Test
     void storeLongAttributeValueText() {
-        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.about_Consequat exercitation"
-                + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
-                + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
-                + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
-                + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
-                + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
-                + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
-                + " pariatur et excepteur id voluptate dolor.\r\n";
+        String expectedStoreKey =
+                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.about_Consequat exercitation"
+                        + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
+                        + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
+                        + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
+                        + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
+                        + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
+                        + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
+                        + " pariatur et excepteur id voluptate dolor.\r\n";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeEmailAttributeValue() {
         String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.profile.email_forbesbooth@quarex.com";
+                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.profile.email_forbesbooth@quarex.com";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeInnerArrayObject() {
-        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.tags_[ex, fugiat, id,"
-                + " labore, dolor, consectetur, veniam]";
+        String expectedStoreKey =
+                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.tags_[ex, fugiat, id,"
+                        + " labore, dolor, consectetur, veniam]";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeDoubleAttributeValue() {
-        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.balance_2759.634399439295";
+        String expectedStoreKey =
+                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.balance_2759.634399439295";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void preventStorageForNonIndexedAttributes() {
         String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.registered_2018-09-02T10:37:59" + " +05:00";
+                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.registered_2018-09-02T10:37:59"
+                        + " +05:00";
         Assertions.assertThat(storedTagPrefixStoreKeys()).doesNotContain(expectedStoreKey);
     }
 }

@@ -18,8 +18,6 @@ private static final long serialVersionUID = 0L;
   private VariableDef() {
     type_ = 0;
     name_ = "";
-    indexType_ = 0;
-    jsonIndexes_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -100,84 +98,18 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int INDEX_TYPE_FIELD_NUMBER = 3;
-  private int indexType_ = 0;
-  /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return Whether the indexType field is set.
-   */
-  @java.lang.Override public boolean hasIndexType() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return The enum numeric value on the wire for indexType.
-   */
-  @java.lang.Override public int getIndexTypeValue() {
-    return indexType_;
-  }
-  /**
-   * <code>optional .littlehorse.IndexType index_type = 3;</code>
-   * @return The indexType.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.IndexType getIndexType() {
-    io.littlehorse.sdk.common.proto.IndexType result = io.littlehorse.sdk.common.proto.IndexType.forNumber(indexType_);
-    return result == null ? io.littlehorse.sdk.common.proto.IndexType.UNRECOGNIZED : result;
-  }
-
-  public static final int JSON_INDEXES_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> jsonIndexes_;
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> getJsonIndexesList() {
-    return jsonIndexes_;
-  }
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> 
-      getJsonIndexesOrBuilderList() {
-    return jsonIndexes_;
-  }
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  @java.lang.Override
-  public int getJsonIndexesCount() {
-    return jsonIndexes_.size();
-  }
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.JsonIndex getJsonIndexes(int index) {
-    return jsonIndexes_.get(index);
-  }
-  /**
-   * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
-      int index) {
-    return jsonIndexes_.get(index);
-  }
-
-  public static final int DEFAULT_VALUE_FIELD_NUMBER = 5;
+  public static final int DEFAULT_VALUE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
   /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return Whether the defaultValue field is set.
    */
   @java.lang.Override
   public boolean hasDefaultValue() {
-    return defaultValue_ != null;
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return The defaultValue.
    */
   @java.lang.Override
@@ -185,22 +117,11 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
   /**
-   * <code>.littlehorse.VariableValue default_value = 5;</code>
+   * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
-  }
-
-  public static final int PERSISTENT_FIELD_NUMBER = 6;
-  private boolean persistent_ = false;
-  /**
-   * <code>bool persistent = 6;</code>
-   * @return The persistent.
-   */
-  @java.lang.Override
-  public boolean getPersistent() {
-    return persistent_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -224,16 +145,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeEnum(3, indexType_);
-    }
-    for (int i = 0; i < jsonIndexes_.size(); i++) {
-      output.writeMessage(4, jsonIndexes_.get(i));
-    }
-    if (defaultValue_ != null) {
-      output.writeMessage(5, getDefaultValue());
-    }
-    if (persistent_ != false) {
-      output.writeBool(6, persistent_);
+      output.writeMessage(3, getDefaultValue());
     }
     getUnknownFields().writeTo(output);
   }
@@ -253,19 +165,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, indexType_);
-    }
-    for (int i = 0; i < jsonIndexes_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, jsonIndexes_.get(i));
-    }
-    if (defaultValue_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getDefaultValue());
-    }
-    if (persistent_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(6, persistent_);
+        .computeMessageSize(3, getDefaultValue());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -285,19 +185,11 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
-    if (hasIndexType() != other.hasIndexType()) return false;
-    if (hasIndexType()) {
-      if (indexType_ != other.indexType_) return false;
-    }
-    if (!getJsonIndexesList()
-        .equals(other.getJsonIndexesList())) return false;
     if (hasDefaultValue() != other.hasDefaultValue()) return false;
     if (hasDefaultValue()) {
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
-    if (getPersistent()
-        != other.getPersistent()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -313,21 +205,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (hasIndexType()) {
-      hash = (37 * hash) + INDEX_TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + indexType_;
-    }
-    if (getJsonIndexesCount() > 0) {
-      hash = (37 * hash) + JSON_INDEXES_FIELD_NUMBER;
-      hash = (53 * hash) + getJsonIndexesList().hashCode();
-    }
     if (hasDefaultValue()) {
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
-    hash = (37 * hash) + PERSISTENT_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getPersistent());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -447,13 +328,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.VariableDef.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getDefaultValueFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -461,20 +348,11 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       type_ = 0;
       name_ = "";
-      indexType_ = 0;
-      if (jsonIndexesBuilder_ == null) {
-        jsonIndexes_ = java.util.Collections.emptyList();
-      } else {
-        jsonIndexes_ = null;
-        jsonIndexesBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000008);
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
-      persistent_ = false;
       return this;
     }
 
@@ -501,22 +379,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableDef buildPartial() {
       io.littlehorse.sdk.common.proto.VariableDef result = new io.littlehorse.sdk.common.proto.VariableDef(this);
-      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
-    }
-
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.VariableDef result) {
-      if (jsonIndexesBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0)) {
-          jsonIndexes_ = java.util.Collections.unmodifiableList(jsonIndexes_);
-          bitField0_ = (bitField0_ & ~0x00000008);
-        }
-        result.jsonIndexes_ = jsonIndexes_;
-      } else {
-        result.jsonIndexes_ = jsonIndexesBuilder_.build();
-      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableDef result) {
@@ -529,16 +394,10 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.indexType_ = indexType_;
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.persistent_ = persistent_;
+        to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -595,40 +454,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (other.hasIndexType()) {
-        setIndexType(other.getIndexType());
-      }
-      if (jsonIndexesBuilder_ == null) {
-        if (!other.jsonIndexes_.isEmpty()) {
-          if (jsonIndexes_.isEmpty()) {
-            jsonIndexes_ = other.jsonIndexes_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensureJsonIndexesIsMutable();
-            jsonIndexes_.addAll(other.jsonIndexes_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.jsonIndexes_.isEmpty()) {
-          if (jsonIndexesBuilder_.isEmpty()) {
-            jsonIndexesBuilder_.dispose();
-            jsonIndexesBuilder_ = null;
-            jsonIndexes_ = other.jsonIndexes_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-            jsonIndexesBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getJsonIndexesFieldBuilder() : null;
-          } else {
-            jsonIndexesBuilder_.addAllMessages(other.jsonIndexes_);
-          }
-        }
-      }
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
-      }
-      if (other.getPersistent() != false) {
-        setPersistent(other.getPersistent());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -666,36 +493,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              indexType_ = input.readEnum();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
-              io.littlehorse.sdk.common.proto.JsonIndex m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.JsonIndex.parser(),
-                      extensionRegistry);
-              if (jsonIndexesBuilder_ == null) {
-                ensureJsonIndexesIsMutable();
-                jsonIndexes_.add(m);
-              } else {
-                jsonIndexesBuilder_.addMessage(m);
-              }
-              break;
-            } // case 34
-            case 42: {
+            case 26: {
               input.readMessage(
                   getDefaultValueFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 42
-            case 48: {
-              persistent_ = input.readBool();
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 48
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -838,318 +642,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int indexType_ = 0;
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @return Whether the indexType field is set.
-     */
-    @java.lang.Override public boolean hasIndexType() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @return The enum numeric value on the wire for indexType.
-     */
-    @java.lang.Override public int getIndexTypeValue() {
-      return indexType_;
-    }
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @param value The enum numeric value on the wire for indexType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setIndexTypeValue(int value) {
-      indexType_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @return The indexType.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.IndexType getIndexType() {
-      io.littlehorse.sdk.common.proto.IndexType result = io.littlehorse.sdk.common.proto.IndexType.forNumber(indexType_);
-      return result == null ? io.littlehorse.sdk.common.proto.IndexType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @param value The indexType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setIndexType(io.littlehorse.sdk.common.proto.IndexType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000004;
-      indexType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.IndexType index_type = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearIndexType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      indexType_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> jsonIndexes_ =
-      java.util.Collections.emptyList();
-    private void ensureJsonIndexesIsMutable() {
-      if (!((bitField0_ & 0x00000008) != 0)) {
-        jsonIndexes_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.JsonIndex>(jsonIndexes_);
-        bitField0_ |= 0x00000008;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.JsonIndex, io.littlehorse.sdk.common.proto.JsonIndex.Builder, io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> jsonIndexesBuilder_;
-
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> getJsonIndexesList() {
-      if (jsonIndexesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(jsonIndexes_);
-      } else {
-        return jsonIndexesBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public int getJsonIndexesCount() {
-      if (jsonIndexesBuilder_ == null) {
-        return jsonIndexes_.size();
-      } else {
-        return jsonIndexesBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.JsonIndex getJsonIndexes(int index) {
-      if (jsonIndexesBuilder_ == null) {
-        return jsonIndexes_.get(index);
-      } else {
-        return jsonIndexesBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder setJsonIndexes(
-        int index, io.littlehorse.sdk.common.proto.JsonIndex value) {
-      if (jsonIndexesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.set(index, value);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder setJsonIndexes(
-        int index, io.littlehorse.sdk.common.proto.JsonIndex.Builder builderForValue) {
-      if (jsonIndexesBuilder_ == null) {
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder addJsonIndexes(io.littlehorse.sdk.common.proto.JsonIndex value) {
-      if (jsonIndexesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.add(value);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder addJsonIndexes(
-        int index, io.littlehorse.sdk.common.proto.JsonIndex value) {
-      if (jsonIndexesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.add(index, value);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder addJsonIndexes(
-        io.littlehorse.sdk.common.proto.JsonIndex.Builder builderForValue) {
-      if (jsonIndexesBuilder_ == null) {
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.add(builderForValue.build());
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder addJsonIndexes(
-        int index, io.littlehorse.sdk.common.proto.JsonIndex.Builder builderForValue) {
-      if (jsonIndexesBuilder_ == null) {
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder addAllJsonIndexes(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.JsonIndex> values) {
-      if (jsonIndexesBuilder_ == null) {
-        ensureJsonIndexesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, jsonIndexes_);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder clearJsonIndexes() {
-      if (jsonIndexesBuilder_ == null) {
-        jsonIndexes_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public Builder removeJsonIndexes(int index) {
-      if (jsonIndexesBuilder_ == null) {
-        ensureJsonIndexesIsMutable();
-        jsonIndexes_.remove(index);
-        onChanged();
-      } else {
-        jsonIndexesBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.JsonIndex.Builder getJsonIndexesBuilder(
-        int index) {
-      return getJsonIndexesFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
-        int index) {
-      if (jsonIndexesBuilder_ == null) {
-        return jsonIndexes_.get(index);  } else {
-        return jsonIndexesBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> 
-         getJsonIndexesOrBuilderList() {
-      if (jsonIndexesBuilder_ != null) {
-        return jsonIndexesBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(jsonIndexes_);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.JsonIndex.Builder addJsonIndexesBuilder() {
-      return getJsonIndexesFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.JsonIndex.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.JsonIndex.Builder addJsonIndexesBuilder(
-        int index) {
-      return getJsonIndexesFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.JsonIndex.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.JsonIndex.Builder> 
-         getJsonIndexesBuilderList() {
-      return getJsonIndexesFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.JsonIndex, io.littlehorse.sdk.common.proto.JsonIndex.Builder, io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> 
-        getJsonIndexesFieldBuilder() {
-      if (jsonIndexesBuilder_ == null) {
-        jsonIndexesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.JsonIndex, io.littlehorse.sdk.common.proto.JsonIndex.Builder, io.littlehorse.sdk.common.proto.JsonIndexOrBuilder>(
-                jsonIndexes_,
-                ((bitField0_ & 0x00000008) != 0),
-                getParentForChildren(),
-                isClean());
-        jsonIndexes_ = null;
-      }
-      return jsonIndexesBuilder_;
-    }
-
     private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> defaultValueBuilder_;
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return Whether the defaultValue field is set.
      */
     public boolean hasDefaultValue() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return The defaultValue.
      */
     public io.littlehorse.sdk.common.proto.VariableValue getDefaultValue() {
@@ -1160,7 +664,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
@@ -1171,12 +675,12 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(
         io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
@@ -1185,16 +689,16 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           defaultValue_ != null &&
           defaultValue_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getDefaultValueBuilder().mergeFrom(value);
@@ -1204,15 +708,15 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder clearDefaultValue() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000004);
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
@@ -1222,15 +726,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getDefaultValueBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getDefaultValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
       if (defaultValueBuilder_ != null) {
@@ -1241,7 +745,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.VariableValue default_value = 5;</code>
+     * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
@@ -1255,38 +759,6 @@ private static final long serialVersionUID = 0L;
         defaultValue_ = null;
       }
       return defaultValueBuilder_;
-    }
-
-    private boolean persistent_ ;
-    /**
-     * <code>bool persistent = 6;</code>
-     * @return The persistent.
-     */
-    @java.lang.Override
-    public boolean getPersistent() {
-      return persistent_;
-    }
-    /**
-     * <code>bool persistent = 6;</code>
-     * @param value The persistent to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPersistent(boolean value) {
-
-      persistent_ = value;
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool persistent = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPersistent() {
-      bitField0_ = (bitField0_ & ~0x00000020);
-      persistent_ = false;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

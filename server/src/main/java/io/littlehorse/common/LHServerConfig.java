@@ -709,6 +709,10 @@ public class LHServerConfig extends ConfigBase {
 
         props.put(StreamsConfig.ROCKSDB_CONFIG_SETTER_CLASS_CONFIG, RocksConfigSetter.class);
 
+        // 100MB record cache. This is across all stores in the Streams instance. It is a significant
+        // performance optimization that reduces the amount of data sent to the changelog topic.
+        props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 1024L * 1024L * 100);
+
         addKafkaSecuritySettings(props);
 
         return props;

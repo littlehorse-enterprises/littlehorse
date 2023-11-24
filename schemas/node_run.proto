@@ -17,33 +17,29 @@ message NodeRun {
   int32 thread_run_number = 2;
   int32 position = 3;
 
-  // Optional because old versions do not have the wf_spec_version migration
-  optional int32 wf_spec_version = 4;
-
+  WfSpecId wf_spec_id = 4;
+  repeated int32 failure_handler_ids = 5;
   LHStatus status = 6;
 
   google.protobuf.Timestamp arrival_time = 7;
   optional google.protobuf.Timestamp end_time = 8;
-  WfSpecId wf_spec_id = 9;
-  string thread_spec_name = 10;
-  string node_name = 11;
+  string thread_spec_name = 9;
+  string node_name = 10;
 
-  optional string error_message = 13;
-
-  repeated Failure failures = 14;
+  optional string error_message = 11;
+  repeated Failure failures = 12;
 
   oneof node_type {
-    TaskNodeRun task = 15;
-    ExternalEventRun external_event = 16;
-    EntrypointRun entrypoint = 17;
-    ExitRun exit = 19;
-    StartThreadRun start_thread = 20;
-    WaitForThreadsRun wait_threads = 21;
-    SleepNodeRun sleep = 22;
-    UserTaskNodeRun user_task = 24;
-    StartMultipleThreadsRun start_multiple_threads = 25;
+    TaskNodeRun task = 13;
+    ExternalEventRun external_event = 14;
+    EntrypointRun entrypoint = 15;
+    ExitRun exit = 16;
+    StartThreadRun start_thread = 17;
+    WaitForThreadsRun wait_threads = 18;
+    SleepNodeRun sleep = 19;
+    UserTaskNodeRun user_task = 20;
+    StartMultipleThreadsRun start_multiple_threads = 21;
   }
-  repeated int32 failure_handler_ids = 23;
 }
 
 message TaskNodeRun {
