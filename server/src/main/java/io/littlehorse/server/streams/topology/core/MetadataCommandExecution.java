@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -24,6 +25,7 @@ public class MetadataCommandExecution implements ExecutionContext {
     private MetadataManager metadataManager;
     private LHServerConfig lhConfig;
     private final MetadataCommandModel currentCommand;
+    private final boolean clusterLevelCommand;
 
     public MetadataCommandExecution(
             Headers recordMetadata,
@@ -31,6 +33,7 @@ public class MetadataCommandExecution implements ExecutionContext {
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommandModel currentCommand) {
+        this.clusterLevelCommand = currentCommand.getSubCommand() instanceof ClusterLevelCommand;
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
         this.metadataStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeMetadataStore());
@@ -66,7 +69,11 @@ public class MetadataCommandExecution implements ExecutionContext {
     }
 
     private ModelStore storeFor(String tenantId, KeyValueStore<String, Bytes> nativeStore) {
-        return ModelStore.instanceFor(nativeStore, tenantId, this);
+        if(!clusterLevelCommand){
+            return ModelStore.instanceFor(nativeStore, tenantId, this);
+        }else {
+            return ModelStore.defaultStore(nativeStore, this);
+        }
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
