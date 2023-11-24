@@ -5,6 +5,7 @@ import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -32,8 +33,9 @@ public class MetadataCommandExecution implements ExecutionContext {
             ProcessorContext<String, Bytes> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
-            MetadataCommandModel currentCommand) {
-        this.clusterLevelCommand = currentCommand.getSubCommand() instanceof ClusterLevelCommand;
+            MetadataCommand currentCommand) {
+        this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
+        this.clusterLevelCommand = this.currentCommand.getSubCommand() instanceof ClusterLevelCommand;
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
         this.metadataStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeMetadataStore());
@@ -41,7 +43,6 @@ public class MetadataCommandExecution implements ExecutionContext {
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
         this.lhConfig = lhConfig;
-        this.currentCommand = currentCommand;
     }
 
     @Override

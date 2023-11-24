@@ -6,6 +6,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -57,9 +58,9 @@ public class MetadataProcessorTest {
     @Test
     public void shouldProcessMetadataCommand() {
         String commandId = UUID.randomUUID().toString();
-        MetadataCommandModel genericMetadataCommand = mock();
+        MetadataCommand genericMetadataCommand = mock(Answers.RETURNS_DEEP_STUBS);
         Message genericResponse = mock(Message.class, Answers.RETURNS_DEEP_STUBS);
-        when(genericMetadataCommand.hasResponse()).thenReturn(true);
+        when(genericMetadataCommand.get).thenReturn(true);
         when(genericMetadataCommand.getCommandId()).thenReturn(commandId);
         when(genericMetadataCommand.process(any())).thenReturn(genericResponse);
         metadataProcessor.init(mockProcessorContext);

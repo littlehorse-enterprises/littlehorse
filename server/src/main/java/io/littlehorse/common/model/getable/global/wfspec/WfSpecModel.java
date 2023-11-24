@@ -102,10 +102,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return names;
     }
 
-    public WfSpecModel() {
+    public WfSpecModel(ExecutionContext executionContext) {
         threadSpecs = new HashMap<>();
         varToThreadSpec = new HashMap<>();
         initializedVarToThreadSpec = false;
+        this.executionContext = executionContext;
     }
 
     public void setLastUpdatedOffset(long newOffset) {
@@ -178,7 +179,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
-        WfSpecModel out = new WfSpecModel();
+        WfSpecModel out = new WfSpecModel(context);
         out.initFrom(proto, context);
         return out;
     }

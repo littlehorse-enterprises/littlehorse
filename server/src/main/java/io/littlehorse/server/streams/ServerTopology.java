@@ -5,8 +5,10 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
+import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
+import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -109,7 +111,7 @@ public class ServerTopology {
         topo.addSource(
                 METADATA_SOURCE, // source name
                 Serdes.String().deserializer(), // key deserializer
-                new LHDeserializer<>(MetadataCommandModel.class), // value deserializer
+                new ProtobufDeserializer<>(MetadataCommand.parser()), // value deserializer
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(

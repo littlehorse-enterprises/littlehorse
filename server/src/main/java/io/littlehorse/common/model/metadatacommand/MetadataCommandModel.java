@@ -19,6 +19,7 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import lombok.Getter;
@@ -112,7 +113,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         MetadataCommand p = (MetadataCommand) proto;
         time = LHUtil.fromProtoTs(p.getTime());
 

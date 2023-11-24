@@ -39,6 +39,7 @@ public class SearchWfSpecRequestModel
     private String name;
     private String taskDefName;
     private String prefix;
+    private ExecutionContext executionContext;
 
     public Class<SearchWfSpecRequest> getProtoBaseClass() {
         return SearchWfSpecRequest.class;
@@ -74,6 +75,7 @@ public class SearchWfSpecRequestModel
             case WFSPECCRITERIA_NOT_SET:
                 // nothing to do, we just return all the WfSpec's.
         }
+        this.executionContext = executionContext;
     }
 
     public SearchWfSpecRequest.Builder toProto() {
@@ -117,7 +119,7 @@ public class SearchWfSpecRequestModel
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
             for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration :
-                    new WfSpecModel().getIndexConfigurations()) {
+                    new WfSpecModel(executionContext).getIndexConfigurations()) {
                 if (indexConfiguration.searchAttributesMatch(attributes)
                         && indexConfiguration.getTagStorageType().isPresent()) {
                     return indexConfiguration.getTagStorageType().get();

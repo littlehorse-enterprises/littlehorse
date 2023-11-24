@@ -9,6 +9,8 @@ import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
+import io.littlehorse.common.proto.MetadataCommand;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -31,13 +33,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class PutWfSpecRequestModelTest {
 
-    private final MetadataCommandModel wfSpecToProcess = new MetadataCommandModel(testWorkflowSpec());
+    private final MetadataCommand wfSpecToProcess = MetadataCommand.newBuilder().setPutWfSpec(testWorkflowSpec()).build();
 
     @Mock
     private LHServerConfig config;
@@ -53,8 +56,7 @@ public class PutWfSpecRequestModelTest {
     private static final String TENANT_ID_B = "B";
     private static final String DEFAULT_TENANT_ID = "default";
 
-    @Mock
-    private ExecutionContext executionContext;
+    private final ExecutionContext executionContext = mock(Answers.RETURNS_DEEP_STUBS);
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
@@ -78,7 +80,7 @@ public class PutWfSpecRequestModelTest {
     void supportStoringWfSpecWithTenantIsolation(final String tenantId) {
         TaskDefModel greet = TestUtil.taskDef("greet");
         Headers recordMetadata = HeadersUtil.metadataHeadersFor(tenantId, "my-principal-id");
-        String specName = wfSpecToProcess.getPutWfSpecRequest().getName();
+        String specName = wfSpecToProcess.getPutWfSpec().getName();
         tenantAStore.put(new StoredGetable<>(greet));
         tenantBStore.put(new StoredGetable<>(greet));
         defaultStore.put(new StoredGetable<>(greet));
@@ -105,12 +107,10 @@ public class PutWfSpecRequestModelTest {
         assertThat(secondIsolatedStore.get(wfSpecToSearch)).isNull();
     }
 
-    private PutWfSpecRequestModel testWorkflowSpec() {
-        return PutWfSpecRequestModel.fromProto(
-                new WorkflowImpl("example-basic", wf -> {
-                            wf.execute("greet");
-                        })
-                        .compileWorkflow(),
-                mock()); // TODO eduwer
+    private PutWfSpecRequest testWorkflowSpec() {
+        return new WorkflowImpl("example-basic", wf -> {
+            wf.execute("greet");
+        })
+                .compileWorkflow();
     }
 }

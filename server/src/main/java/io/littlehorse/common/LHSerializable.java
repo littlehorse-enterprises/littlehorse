@@ -7,6 +7,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 
 // `P` is the proto class used to serialize.

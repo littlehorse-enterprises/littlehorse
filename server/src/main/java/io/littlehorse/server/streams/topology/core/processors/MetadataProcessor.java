@@ -2,7 +2,10 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -21,7 +24,7 @@ import org.apache.kafka.streams.processor.api.Record;
  * such as WfSpec/TaskDef/ExternalEventDef/UserTaskDef.
  */
 @Slf4j
-public class MetadataProcessor implements Processor<String, MetadataCommandModel, String, Bytes> {
+public class MetadataProcessor implements Processor<String, MetadataCommand, String, Bytes> {
 
     private final LHServerConfig config;
     private final KafkaStreamsServerImpl server;
@@ -40,7 +43,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
     }
 
     @Override
-    public void process(final Record<String, MetadataCommandModel> commandRecord) {
+    public void process(final Record<String, MetadataCommand> commandRecord) {
         // We have another wrapper here as a guard against a poison pill (even
         // though we test extensively to prevent poison pills, it's better
         // to be safe than sorry.)
@@ -51,8 +54,11 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
         }
     }
 
-    public void processHelper(final Record<String, MetadataCommandModel> record) {
-        MetadataCommandModel command = record.value();
+    public void processHelper(final Record<String, MetadataCommand> record) {
+        MetadataCommandExecution metadataContext = buildContext(record);
+        WfSpecModel sda = metadataContext.metadataManager().get(new WfSpecIdModel("sda", 123));
+        sda.startNewRun(null);
+        MetadataCommandModel command = metadataContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),
@@ -82,9 +88,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
         }
     }
 
-    public MetadataCommandExecution buildContext(final Record<String, MetadataCommandModel> record) {
+    public MetadataCommandExecution buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
-        MetadataCommandModel currentCommand = record.value();
-        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, currentCommand);
+        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, record.value());
     }
 }

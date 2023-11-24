@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
@@ -77,11 +78,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
         }
 
-        WfSpecModel spec = new WfSpecModel();
+        WfSpecModel spec = new WfSpecModel(executionContext);
         spec.name = name;
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
+
         spec.setRetentionPolicy(retentionPolicy);
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();

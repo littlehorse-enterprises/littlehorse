@@ -43,6 +43,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.mockito.Mockito;
 
 public class TestUtil {
 
@@ -141,7 +142,7 @@ public class TestUtil {
     }
 
     public static WfSpecModel wfSpec(String name) {
-        WfSpecModel spec = new WfSpecModel();
+        WfSpecModel spec = new WfSpecModel(Mockito.mock());
         spec.setName(name);
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
