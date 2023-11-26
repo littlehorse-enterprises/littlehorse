@@ -113,7 +113,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                 .build());
         UserTaskRunId userTaskRunId = null;
         for (UserTaskRunId userTaskRunIdResult : userGroupResult.getResultsList()) {
-            if (userTaskRunIdResult.getWfRunId().equals(wfRunId)) {
+            if (userTaskRunIdResult.getWfRunId().getId().equals(wfRunId)) {
                 userTaskRunId = userTaskRunIdResult;
                 break;
             }
