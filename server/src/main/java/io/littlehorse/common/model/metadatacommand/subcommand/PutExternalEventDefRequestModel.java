@@ -3,19 +3,23 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import lombok.Getter;
 
+@Getter
 public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
 
     public String name;
-    public Integer retentionHours;
+    public ExternalEventRetentionPolicyModel retentionPolicy;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -26,10 +30,8 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     }
 
     public PutExternalEventDefRequest.Builder toProto() {
-        PutExternalEventDefRequest.Builder out = PutExternalEventDefRequest.newBuilder();
-        out.setName(name);
-
-        if (retentionHours != null) out.setRetentionHours(retentionHours);
+        PutExternalEventDefRequest.Builder out =
+                PutExternalEventDefRequest.newBuilder().setName(name).setRetentionPolicy(retentionPolicy.toProto());
 
         return out;
     }
@@ -37,7 +39,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     public void initFrom(Message proto) {
         PutExternalEventDefRequest p = (PutExternalEventDefRequest) proto;
         name = p.getName();
-        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
+        retentionPolicy = LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class);
     }
 
     public boolean hasResponse() {
@@ -56,7 +58,6 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         }
         ExternalEventDefModel spec = new ExternalEventDefModel();
         spec.name = name;
-        spec.retentionHours = retentionHours == null ? config.getDefaultExternalEventRetentionHours() : retentionHours;
 
         dao.put(spec);
         return spec.toProto().build();

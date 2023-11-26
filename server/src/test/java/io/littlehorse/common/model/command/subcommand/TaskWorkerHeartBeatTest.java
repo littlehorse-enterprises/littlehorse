@@ -50,7 +50,7 @@ public class TaskWorkerHeartBeatTest {
                 taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
+        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.clientId);
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
@@ -78,7 +78,7 @@ public class TaskWorkerHeartBeatTest {
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
+        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.clientId);
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
@@ -102,7 +102,7 @@ public class TaskWorkerHeartBeatTest {
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
+        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.clientId);
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
@@ -128,7 +128,7 @@ public class TaskWorkerHeartBeatTest {
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
+        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.clientId);
 
         taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
@@ -161,7 +161,7 @@ public class TaskWorkerHeartBeatTest {
 
         TaskWorkerMetadataModel taskWorkerToBeRemoved = taskWorkerMetadatas.get(0);
         TaskWorkerMetadataModel taskWorkerToBeKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.clientId = taskWorkerToBeKeep.clientId;
+        taskWorkerHeartBeat.setClientId(taskWorkerToBeKeep.clientId);
 
         taskWorkerToBeRemoved.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 

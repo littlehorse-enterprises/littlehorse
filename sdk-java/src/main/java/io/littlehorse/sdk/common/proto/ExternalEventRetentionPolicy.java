@@ -44,7 +44,7 @@ private static final long serialVersionUID = 0L;
   public enum ExtEvtGcPolicyCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    SECONDS_AFTER_WF_TERMINATION(1),
+    SECONDS_AFTER_PUT(1),
     EXTEVTGCPOLICY_NOT_SET(0);
     private final int value;
     private ExtEvtGcPolicyCase(int value) {
@@ -62,7 +62,7 @@ private static final long serialVersionUID = 0L;
 
     public static ExtEvtGcPolicyCase forNumber(int value) {
       switch (value) {
-        case 1: return SECONDS_AFTER_WF_TERMINATION;
+        case 1: return SECONDS_AFTER_PUT;
         case 0: return EXTEVTGCPOLICY_NOT_SET;
         default: return null;
       }
@@ -78,18 +78,18 @@ private static final long serialVersionUID = 0L;
         extEvtGcPolicyCase_);
   }
 
-  public static final int SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER = 1;
+  public static final int SECONDS_AFTER_PUT_FIELD_NUMBER = 1;
   /**
    * <pre>
    * Delete such an ExternalEvent X seconds after it has been registered if it
    * has not yet been claimed by a WfRun.
    * </pre>
    *
-   * <code>int64 seconds_after_wf_termination = 1;</code>
-   * @return Whether the secondsAfterWfTermination field is set.
+   * <code>int64 seconds_after_put = 1;</code>
+   * @return Whether the secondsAfterPut field is set.
    */
   @java.lang.Override
-  public boolean hasSecondsAfterWfTermination() {
+  public boolean hasSecondsAfterPut() {
     return extEvtGcPolicyCase_ == 1;
   }
   /**
@@ -98,11 +98,11 @@ private static final long serialVersionUID = 0L;
    * has not yet been claimed by a WfRun.
    * </pre>
    *
-   * <code>int64 seconds_after_wf_termination = 1;</code>
-   * @return The secondsAfterWfTermination.
+   * <code>int64 seconds_after_put = 1;</code>
+   * @return The secondsAfterPut.
    */
   @java.lang.Override
-  public long getSecondsAfterWfTermination() {
+  public long getSecondsAfterPut() {
     if (extEvtGcPolicyCase_ == 1) {
       return (java.lang.Long) extEvtGcPolicy_;
     }
@@ -159,8 +159,8 @@ private static final long serialVersionUID = 0L;
     if (!getExtEvtGcPolicyCase().equals(other.getExtEvtGcPolicyCase())) return false;
     switch (extEvtGcPolicyCase_) {
       case 1:
-        if (getSecondsAfterWfTermination()
-            != other.getSecondsAfterWfTermination()) return false;
+        if (getSecondsAfterPut()
+            != other.getSecondsAfterPut()) return false;
         break;
       case 0:
       default:
@@ -178,9 +178,9 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     switch (extEvtGcPolicyCase_) {
       case 1:
-        hash = (37 * hash) + SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER;
+        hash = (37 * hash) + SECONDS_AFTER_PUT_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getSecondsAfterWfTermination());
+            getSecondsAfterPut());
         break;
       case 0:
       default:
@@ -404,8 +404,8 @@ private static final long serialVersionUID = 0L;
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy other) {
       if (other == io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance()) return this;
       switch (other.getExtEvtGcPolicyCase()) {
-        case SECONDS_AFTER_WF_TERMINATION: {
-          setSecondsAfterWfTermination(other.getSecondsAfterWfTermination());
+        case SECONDS_AFTER_PUT: {
+          setSecondsAfterPut(other.getSecondsAfterPut());
           break;
         }
         case EXTEVTGCPOLICY_NOT_SET: {
@@ -481,10 +481,10 @@ private static final long serialVersionUID = 0L;
      * has not yet been claimed by a WfRun.
      * </pre>
      *
-     * <code>int64 seconds_after_wf_termination = 1;</code>
-     * @return Whether the secondsAfterWfTermination field is set.
+     * <code>int64 seconds_after_put = 1;</code>
+     * @return Whether the secondsAfterPut field is set.
      */
-    public boolean hasSecondsAfterWfTermination() {
+    public boolean hasSecondsAfterPut() {
       return extEvtGcPolicyCase_ == 1;
     }
     /**
@@ -493,10 +493,10 @@ private static final long serialVersionUID = 0L;
      * has not yet been claimed by a WfRun.
      * </pre>
      *
-     * <code>int64 seconds_after_wf_termination = 1;</code>
-     * @return The secondsAfterWfTermination.
+     * <code>int64 seconds_after_put = 1;</code>
+     * @return The secondsAfterPut.
      */
-    public long getSecondsAfterWfTermination() {
+    public long getSecondsAfterPut() {
       if (extEvtGcPolicyCase_ == 1) {
         return (java.lang.Long) extEvtGcPolicy_;
       }
@@ -508,11 +508,11 @@ private static final long serialVersionUID = 0L;
      * has not yet been claimed by a WfRun.
      * </pre>
      *
-     * <code>int64 seconds_after_wf_termination = 1;</code>
-     * @param value The secondsAfterWfTermination to set.
+     * <code>int64 seconds_after_put = 1;</code>
+     * @param value The secondsAfterPut to set.
      * @return This builder for chaining.
      */
-    public Builder setSecondsAfterWfTermination(long value) {
+    public Builder setSecondsAfterPut(long value) {
 
       extEvtGcPolicyCase_ = 1;
       extEvtGcPolicy_ = value;
@@ -525,10 +525,10 @@ private static final long serialVersionUID = 0L;
      * has not yet been claimed by a WfRun.
      * </pre>
      *
-     * <code>int64 seconds_after_wf_termination = 1;</code>
+     * <code>int64 seconds_after_put = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearSecondsAfterWfTermination() {
+    public Builder clearSecondsAfterPut() {
       if (extEvtGcPolicyCase_ == 1) {
         extEvtGcPolicyCase_ = 0;
         extEvtGcPolicy_ = null;

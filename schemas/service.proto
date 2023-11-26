@@ -48,7 +48,7 @@ message PutUserTaskDefRequest {
 
 message PutExternalEventDefRequest {
   string name = 1;
-  optional int32 retention_hours = 2;
+  ExternalEventRetentionPolicy retention_policy = 2;
 }
 
 message PutExternalEventRequest {
@@ -159,7 +159,7 @@ message SearchNodeRunRequest {
   optional int32 limit = 2;
 
   oneof noderun_criteria {
-    string wf_run_id = 3;
+    WfRunId wf_run_id = 3;
   }
 }
 

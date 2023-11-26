@@ -73,12 +73,12 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_hours"]
+    __slots__ = ["name", "retention_policy"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
-    retention_hours: int
-    def __init__(self, name: _Optional[str] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
@@ -253,8 +253,8 @@ class SearchNodeRunRequest(_message.Message):
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class NodeRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

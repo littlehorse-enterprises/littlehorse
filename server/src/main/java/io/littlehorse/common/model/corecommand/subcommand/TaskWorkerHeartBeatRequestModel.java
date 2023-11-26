@@ -26,13 +26,16 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHeartBeatRequest> {
 
+    @Setter // for unit test
     private String clientId;
+
     private TaskDefIdModel taskDefId;
     private String listenerName;
 

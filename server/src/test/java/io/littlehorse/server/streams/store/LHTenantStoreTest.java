@@ -53,7 +53,7 @@ public class LHTenantStoreTest {
 
     @Test
     public void shouldSupportSaveAndDeleteWithTenantIsolation() {
-        String testId = getableToSave.getStoredObject().getId();
+        String testId = getableToSave.getStoredObject().getId().getId();
         int storedGetableTypeIndex = getableToSave.getType().getNumber();
         int objectTypeIndex =
                 getableToSave.getStoredObject().getObjectId().getType().getNumber();

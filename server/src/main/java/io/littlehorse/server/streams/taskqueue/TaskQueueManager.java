@@ -22,11 +22,11 @@ public class TaskQueueManager {
     }
 
     public void onPollRequest(PollTaskRequestObserver listener) {
-        getSubQueue(listener.getTaskDefName()).onPollRequest(listener);
+        getSubQueue(listener.getTaskDefId()).onPollRequest(listener);
     }
 
     public void onRequestDisconnected(PollTaskRequestObserver observer) {
-        getSubQueue(observer.getTaskDefName()).onRequestDisconnected(observer);
+        getSubQueue(observer.getTaskDefId()).onRequestDisconnected(observer);
     }
 
     public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask) {

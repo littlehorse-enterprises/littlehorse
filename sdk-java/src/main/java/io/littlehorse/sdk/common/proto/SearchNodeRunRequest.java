@@ -120,54 +120,33 @@ private static final long serialVersionUID = 0L;
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 3;
   /**
-   * <code>string wf_run_id = 3;</code>
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    * @return Whether the wfRunId field is set.
    */
+  @java.lang.Override
   public boolean hasWfRunId() {
     return noderunCriteriaCase_ == 3;
   }
   /**
-   * <code>string wf_run_id = 3;</code>
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    * @return The wfRunId.
    */
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = "";
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
     if (noderunCriteriaCase_ == 3) {
-      ref = noderunCriteria_;
+       return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
     }
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      if (noderunCriteriaCase_ == 3) {
-        noderunCriteria_ = s;
-      }
-      return s;
-    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
   /**
-   * <code>string wf_run_id = 3;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    */
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = "";
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
     if (noderunCriteriaCase_ == 3) {
-      ref = noderunCriteria_;
+       return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
     }
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      if (noderunCriteriaCase_ == 3) {
-        noderunCriteria_ = b;
-      }
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -191,7 +170,7 @@ private static final long serialVersionUID = 0L;
       output.writeInt32(2, limit_);
     }
     if (noderunCriteriaCase_ == 3) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, noderunCriteria_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -211,7 +190,8 @@ private static final long serialVersionUID = 0L;
         .computeInt32Size(2, limit_);
     }
     if (noderunCriteriaCase_ == 3) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, noderunCriteria_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -407,6 +387,9 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
+      if (wfRunIdBuilder_ != null) {
+        wfRunIdBuilder_.clear();
+      }
       noderunCriteriaCase_ = 0;
       noderunCriteria_ = null;
       return this;
@@ -458,6 +441,10 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchNodeRunRequest result) {
       result.noderunCriteriaCase_ = noderunCriteriaCase_;
       result.noderunCriteria_ = this.noderunCriteria_;
+      if (noderunCriteriaCase_ == 3 &&
+          wfRunIdBuilder_ != null) {
+        result.noderunCriteria_ = wfRunIdBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -512,9 +499,7 @@ private static final long serialVersionUID = 0L;
       }
       switch (other.getNoderunCriteriaCase()) {
         case WF_RUN_ID: {
-          noderunCriteriaCase_ = 3;
-          noderunCriteria_ = other.noderunCriteria_;
-          onChanged();
+          mergeWfRunId(other.getWfRunId());
           break;
         }
         case NODERUNCRITERIA_NOT_SET: {
@@ -558,9 +543,10 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+              input.readMessage(
+                  getWfRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               noderunCriteriaCase_ = 3;
-              noderunCriteria_ = s;
               break;
             } // case 26
             default: {
@@ -675,8 +661,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
-     * <code>string wf_run_id = 3;</code>
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      * @return Whether the wfRunId field is set.
      */
     @java.lang.Override
@@ -684,88 +672,135 @@ private static final long serialVersionUID = 0L;
       return noderunCriteriaCase_ == 3;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      * @return The wfRunId.
      */
     @java.lang.Override
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = "";
-      if (noderunCriteriaCase_ == 3) {
-        ref = noderunCriteria_;
-      }
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
+      if (wfRunIdBuilder_ == null) {
         if (noderunCriteriaCase_ == 3) {
-          noderunCriteria_ = s;
+          return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
         }
-        return s;
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
       } else {
-        return (java.lang.String) ref;
+        if (noderunCriteriaCase_ == 3) {
+          return wfRunIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
       }
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @return The bytes for wfRunId.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = "";
-      if (noderunCriteriaCase_ == 3) {
-        ref = noderunCriteria_;
-      }
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        if (noderunCriteriaCase_ == 3) {
-          noderunCriteria_ = b;
+    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
-        return b;
+        noderunCriteria_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        wfRunIdBuilder_.setMessage(value);
       }
+      noderunCriteriaCase_ = 3;
+      return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
     public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
+      if (wfRunIdBuilder_ == null) {
+        noderunCriteria_ = builderForValue.build();
+        onChanged();
+      } else {
+        wfRunIdBuilder_.setMessage(builderForValue.build());
+      }
       noderunCriteriaCase_ = 3;
-      noderunCriteria_ = value;
-      onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (noderunCriteriaCase_ == 3 &&
+            noderunCriteria_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
+          noderunCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.newBuilder((io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          noderunCriteria_ = value;
+        }
+        onChanged();
+      } else {
+        if (noderunCriteriaCase_ == 3) {
+          wfRunIdBuilder_.mergeFrom(value);
+        } else {
+          wfRunIdBuilder_.setMessage(value);
+        }
+      }
+      noderunCriteriaCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
     public Builder clearWfRunId() {
-      if (noderunCriteriaCase_ == 3) {
-        noderunCriteriaCase_ = 0;
-        noderunCriteria_ = null;
-        onChanged();
+      if (wfRunIdBuilder_ == null) {
+        if (noderunCriteriaCase_ == 3) {
+          noderunCriteriaCase_ = 0;
+          noderunCriteria_ = null;
+          onChanged();
+        }
+      } else {
+        if (noderunCriteriaCase_ == 3) {
+          noderunCriteriaCase_ = 0;
+          noderunCriteria_ = null;
+        }
+        wfRunIdBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
+      return getWfRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
+      if ((noderunCriteriaCase_ == 3) && (wfRunIdBuilder_ != null)) {
+        return wfRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        if (noderunCriteriaCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
+        getWfRunIdFieldBuilder() {
+      if (wfRunIdBuilder_ == null) {
+        if (!(noderunCriteriaCase_ == 3)) {
+          noderunCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+        }
+        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_,
+                getParentForChildren(),
+                isClean());
+        noderunCriteria_ = null;
+      }
       noderunCriteriaCase_ = 3;
-      noderunCriteria_ = value;
       onChanged();
-      return this;
+      return wfRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

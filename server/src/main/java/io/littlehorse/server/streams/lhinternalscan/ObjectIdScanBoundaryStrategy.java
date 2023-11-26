@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalScanPb;
 
 public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy {
@@ -10,8 +11,8 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
 
     private String objectId;
 
-    public ObjectIdScanBoundaryStrategy(String objectId) {
-        this(objectId, objectId + "/", objectId + "/~");
+    public ObjectIdScanBoundaryStrategy(WfRunIdModel objectId) {
+        this(objectId.toString(), objectId.toString() + "/", objectId.toString() + "/~");
     }
 
     public ObjectIdScanBoundaryStrategy(String objectId, String startKey, String endKey) {

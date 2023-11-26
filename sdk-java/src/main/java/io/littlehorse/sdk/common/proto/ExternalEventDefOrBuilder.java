@@ -33,4 +33,19 @@ public interface ExternalEventDefOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
+   * @return Whether the retentionPolicy field is set.
+   */
+  boolean hasRetentionPolicy();
+  /**
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
+   * @return The retentionPolicy.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy getRetentionPolicy();
+  /**
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 }

@@ -114,7 +114,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "For TaskDef "
-                            + taskDef.name
+                            + taskDef.getName()
                             + " we need "
                             + taskDef.inputVars.size()
                             + " input vars, but we have "

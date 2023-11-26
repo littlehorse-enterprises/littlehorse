@@ -13,20 +13,20 @@ public interface ExternalEventRetentionPolicyOrBuilder extends
    * has not yet been claimed by a WfRun.
    * </pre>
    *
-   * <code>int64 seconds_after_wf_termination = 1;</code>
-   * @return Whether the secondsAfterWfTermination field is set.
+   * <code>int64 seconds_after_put = 1;</code>
+   * @return Whether the secondsAfterPut field is set.
    */
-  boolean hasSecondsAfterWfTermination();
+  boolean hasSecondsAfterPut();
   /**
    * <pre>
    * Delete such an ExternalEvent X seconds after it has been registered if it
    * has not yet been claimed by a WfRun.
    * </pre>
    *
-   * <code>int64 seconds_after_wf_termination = 1;</code>
-   * @return The secondsAfterWfTermination.
+   * <code>int64 seconds_after_put = 1;</code>
+   * @return The secondsAfterPut.
    */
-  long getSecondsAfterWfTermination();
+  long getSecondsAfterPut();
 
   io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.ExtEvtGcPolicyCase getExtEvtGcPolicyCase();
 }

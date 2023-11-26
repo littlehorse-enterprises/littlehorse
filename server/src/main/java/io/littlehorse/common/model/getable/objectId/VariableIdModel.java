@@ -11,12 +11,15 @@ import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class VariableIdModel extends CoreObjectId<VariableId, Variable, VariableModel> {
 
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
+
+    @Setter // for unit test
     private String name;
 
     public Class<VariableId> getProtoBaseClass() {

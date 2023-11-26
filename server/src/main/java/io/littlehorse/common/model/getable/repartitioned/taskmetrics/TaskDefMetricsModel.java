@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.getable.repartitioned.taskmetrics;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.RepartitionedGetable;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -13,12 +15,14 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
 
     public Date windowStart;
     public MetricsWindowLength type;
-    public String taskDefName;
+    public TaskDefIdModel taskDefId;
     public long scheduleToStartMax;
     public long scheduleToStartAvg;
     public long startToCompleteMax;
@@ -36,7 +40,7 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
         TaskDefMetrics.Builder out = TaskDefMetrics.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
                 .setType(type)
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setTotalCompleted(totalCompleted)
                 .setTotalErrored(totalErrored)
                 .setTotalStarted(totalStarted)
@@ -53,7 +57,7 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
         TaskDefMetrics p = (TaskDefMetrics) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
@@ -74,11 +78,7 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
     }
 
     public TaskDefMetricsIdModel getObjectId() {
-        TaskDefMetricsIdModel out = new TaskDefMetricsIdModel();
-        out.windowStart = windowStart;
-        out.windowType = type;
-        out.taskDefName = taskDefName;
-        return out;
+        return new TaskDefMetricsIdModel(windowStart, type, taskDefId);
     }
 
     @Override
@@ -87,6 +87,6 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
-        return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreableKey();
+        return new TaskDefMetricsIdModel(time, windowType, new TaskDefIdModel(taskDefName)).getStoreableKey();
     }
 }

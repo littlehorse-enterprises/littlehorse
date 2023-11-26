@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -292,16 +293,14 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     public WfRunModel startNewRun(RunWfRequestModel evt) {
         WfRunModel out = new WfRunModel();
         out.setDao(getDao());
-        out.id = evt.id;
+        out.setId(new WfRunIdModel(evt.getId()));
 
         out.setWfSpec(this);
-        out.wfSpecVersion = version;
-        out.wfSpecName = name;
+        out.setWfSpecId(getObjectId());
         out.startTime = getDao().getEventTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.variables, ThreadType.ENTRYPOINT);
-
+        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getDao().put(out);
 
         return out;

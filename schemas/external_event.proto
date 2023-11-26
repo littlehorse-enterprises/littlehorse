@@ -24,6 +24,7 @@ message ExternalEvent {
 message ExternalEventDef {
   string name = 1;
   google.protobuf.Timestamp created_at = 2;
+  ExternalEventRetentionPolicy retention_policy = 3;
 
   // TODO: Add output schema.
   // TODO: Add ability to correlate to WfRun.
@@ -34,6 +35,6 @@ message ExternalEventRetentionPolicy {
   oneof ext_evt_gc_policy {
     // Delete such an ExternalEvent X seconds after it has been registered if it
     // has not yet been claimed by a WfRun.
-    int64 seconds_after_wf_termination = 1;
+    int64 seconds_after_put = 1;
   }
 }

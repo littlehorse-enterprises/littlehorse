@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +13,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private StreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
     private String clientId;
-    private String taskDefName;
+    private TaskDefIdModel taskDefId;
     private String taskWorkerVersion;
 
     public PollTaskRequestObserver(StreamObserver<PollTaskResponse> responseObserver, TaskQueueManager manager) {
@@ -24,8 +26,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         return taskWorkerVersion;
     }
 
-    public String getTaskDefName() {
-        return taskDefName;
+    public String getTaskDefId() {
+        return taskDefId.getName();
     }
 
     public String getClientId() {
@@ -42,7 +44,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
                 "Instance {}: Client {} disconnected from task queue {}",
                 taskQueueManager.backend.getInstanceId(),
                 clientId,
-                taskDefName);
+                taskDefId);
         taskQueueManager.onRequestDisconnected(this);
     }
 
@@ -52,13 +54,13 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             clientId = req.getClientId();
         }
 
-        if (taskDefName == null) {
-            taskDefName = req.getTaskDefName();
-        } else if (!taskDefName.equals(req.getTaskDefName())) {
-            log.error("TaskDefName not null: {} but doesnt match {}", taskDefName, req.getTaskDefName());
+        if (taskDefId == null) {
+            taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class);
+        } else if (!taskDefId.equals(req.getTaskDefId())) {
+            log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
         }
 
-        taskDefName = req.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class);
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
 

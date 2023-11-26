@@ -42,7 +42,14 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
      * @param nodeRunPosition can be null. If null, left as null.
      * @param createdAt is the event time
      */
-    public ExternalEventModel(VariableValueModel content, WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId, String guid, Integer threadRunNumber, Integer nodeRunPosition, Date createdAt) {
+    public ExternalEventModel(
+            VariableValueModel content,
+            WfRunIdModel wfRunId,
+            ExternalEventDefIdModel externalEventDefId,
+            String guid,
+            Integer threadRunNumber,
+            Integer nodeRunPosition,
+            Date createdAt) {
         this.content = content;
         if (guid == null) guid = LHUtil.generateGuid();
         this.id = new ExternalEventIdModel(wfRunId, externalEventDefId, guid);

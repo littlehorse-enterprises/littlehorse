@@ -2,7 +2,9 @@ package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
@@ -13,11 +15,14 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.ModelStore;
 import java.util.Date;
+import lombok.Getter;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
+@Getter
 public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements RepartitionSubCommand {
 
+    private TaskDefIdModel taskDefId;
     public Date windowStart;
     public MetricsWindowLength type;
     public long numEntries;
@@ -30,8 +35,6 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
     public long totalStarted;
     public long totalScheduled;
 
-    public String taskDefName;
-
     @Override
     public StoreableType getType() {
         return StoreableType.TASK_METRIC_UPDATE;
@@ -39,10 +42,10 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
 
     public TaskMetricUpdate() {}
 
-    public TaskMetricUpdate(Date windowStart, MetricsWindowLength type, String taskDefName) {
+    public TaskMetricUpdate(Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
         this.windowStart = windowStart;
         this.type = type;
-        this.taskDefName = taskDefName;
+        this.taskDefId = taskDefId;
     }
 
     public Class<TaskMetricUpdatePb> getProtoBaseClass() {
@@ -53,7 +56,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         TaskMetricUpdatePb.Builder out = TaskMetricUpdatePb.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
                 .setType(type)
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setTotalCompleted(totalCompleted)
                 .setTotalErrored(totalErrored)
                 .setTotalStarted(totalStarted)
@@ -71,7 +74,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         TaskMetricUpdatePb p = (TaskMetricUpdatePb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
@@ -114,7 +117,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         out.scheduleToStartMax = scheduleToStartMax;
         out.startToCompleteAvg = totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
-        out.taskDefName = taskDefName;
+        out.taskDefId = taskDefId;
         out.totalCompleted = totalCompleted;
         out.totalStarted = totalStarted;
         out.totalErrored = totalErrored;
@@ -126,7 +129,8 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreableKey();
+        return new TaskDefMetricsIdModel(windowStart, type, new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC))
+                .getStoreableKey();
     }
 
     @Override
@@ -145,12 +149,12 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
 
     @Override
     public String getPartitionKey() {
-        return taskDefName;
+        return taskDefId.getName();
     }
 
     @Override
     public String getStoreKey() {
-        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefId.toString());
     }
 
     public static String getStoreKey(MetricsWindowLength type, Date windowStart, String taskDefName) {

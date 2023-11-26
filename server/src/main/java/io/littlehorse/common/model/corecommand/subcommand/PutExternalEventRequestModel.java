@@ -17,13 +17,12 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import java.util.Date;
-import org.apache.commons.lang3.time.DateUtils;
+import java.util.Optional;
 
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
@@ -71,32 +70,23 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
-        ExternalEventModel evt = new ExternalEventModel(content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, dao.getEventTime());
+        ExternalEventModel evt = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, dao.getEventTime());
         evt.setDao(dao);
         dao.put(evt);
 
-        if (eed.retentionHours != LHConstants.INFINITE_RETENTION) {
-            LHTimer timer = new LHTimer();
-            timer.topic = dao.getCoreCmdTopic();
-            timer.key = this.getPartitionKey();
-            Date now = new Date();
-            timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
-
+        Optional<Date> expirationTime = eed.getRetentionPolicy().scheduleCleanup(dao.getEventTime());
+        if (expirationTime.isPresent()) {
+            DeleteExternalEventRequestModel deleteExternalEvent =
+                    new DeleteExternalEventRequestModel(evt.getObjectId());
             // Schedule the garbage collection of the event.
-            DeleteExternalEventRequestModel deleteExternalEvent = new DeleteExternalEventRequestModel();
-            deleteExternalEvent.setId(new ExternalEventIdModel(wfRunId, externalEventDefId, guid));
-            CommandModel deleteExtEventCmd = new CommandModel();
-            deleteExtEventCmd.setSubCommand(deleteExternalEvent);
-            deleteExtEventCmd.time = timer.maturationTime;
-            timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
-            timer.setTenantId(dao.context().tenantId());
-            timer.setPrincipalId(dao.context().principalId());
-            dao.scheduleTimer(timer);
+            CommandModel deleteExtEventCmd = new CommandModel(deleteExternalEvent, expirationTime.get());
+            dao.scheduleTimer(new LHTimer(deleteExtEventCmd, dao));
         }
 
         WfRunModel wfRunModel = dao.get(wfRunId);
         if (wfRunModel != null) {
-            WfSpecModel spec = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+            WfSpecModel spec = dao.getWfSpec(wfRunModel.getWfSpecName(), wfRunModel.getWfSpecVersion());
             if (spec == null) {
                 wfRunModel
                         .getThreadRun(0)

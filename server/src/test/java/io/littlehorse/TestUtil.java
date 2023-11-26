@@ -21,9 +21,13 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
@@ -43,9 +47,8 @@ public class TestUtil {
 
     public static WfRunModel wfRun(String id) {
         WfRunModel wfRunModel = new WfRunModel();
-        wfRunModel.setId(id);
-        wfRunModel.setWfSpecName("test-spec-name");
-        wfRunModel.setWfSpecVersion(0);
+        wfRunModel.setId(new WfRunIdModel(id));
+        wfRunModel.setWfSpecId(new WfSpecIdModel("test-spec-name", 0));
         wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
@@ -57,20 +60,17 @@ public class TestUtil {
 
     public static TaskDefModel taskDef(String name) {
         TaskDefModel taskDef = new TaskDefModel();
-        taskDef.setName(name);
-        taskDef.setCreatedAt(new Date());
+        taskDef.setId(new TaskDefIdModel(name));
         return taskDef;
     }
 
     public static VariableModel variable(String wfRunId) {
-        return new VariableModel("test", variableValue(), wfRunId, 0, wfSpec("testWfSpecName"));
+        return new VariableModel("test", variableValue(), new WfRunIdModel(wfRunId), 0, wfSpec("testWfSpecName"));
     }
 
     public static NodeRunModel nodeRun() {
         NodeRunModel nodeRunModel = new NodeRunModel();
-        nodeRunModel.setWfRunId("0000000");
-        nodeRunModel.setPosition(0);
-        nodeRunModel.setThreadRunNumber(1);
+        nodeRunModel.setId(new NodeRunIdModel("0000000", 1, 0));
         nodeRunModel.setStatus(LHStatus.RUNNING);
         nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
         nodeRunModel.setArrivalTime(new Date());
@@ -90,7 +90,7 @@ public class TestUtil {
 
     public static UserTaskRunModel userTaskRun(String wfRunId) {
         UserTaskRunModel userTaskRun = new UserTaskRunModel();
-        userTaskRun.setId(new UserTaskRunIdModel(wfRunId, "fdsa"));
+        userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
         userTaskRun.setUserId("33333");
@@ -116,7 +116,7 @@ public class TestUtil {
         taskRun.setId(taskRunId());
         taskRun.setTaskRunSource(
                 new TaskRunSourceModel(new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
-        taskRun.setTaskDefName("test-name");
+        taskRun.setTaskDefId(new TaskDefIdModel("test-name"));
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
@@ -124,7 +124,7 @@ public class TestUtil {
     }
 
     public static TaskRunIdModel taskRunId() {
-        TaskRunIdModel taskRunId = new TaskRunIdModel("1234", "01010");
+        TaskRunIdModel taskRunId = new TaskRunIdModel(new WfRunIdModel("1234"), "01010");
         return taskRunId;
     }
 
@@ -160,7 +160,7 @@ public class TestUtil {
 
     public static TaskNodeModel taskNode() {
         TaskNodeModel taskNode = new TaskNodeModel();
-        taskNode.setTaskDefName("test-task-def-name");
+        taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
         return taskNode;
     }
 
@@ -182,12 +182,14 @@ public class TestUtil {
     }
 
     public static ExternalEventModel externalEvent() {
-        ExternalEventModel externalEvent = new ExternalEventModel();
-        externalEvent.setExternalEventDefId("test-name");
-        externalEvent.setClaimed(true);
-        externalEvent.setWfRunId("0000000");
-        externalEvent.setGuid("0000001");
-        externalEvent.setContent(variableValue());
+        ExternalEventModel externalEvent = new ExternalEventModel(
+                variableValue(),
+                new WfRunIdModel("0000000"),
+                new ExternalEventDefIdModel("test-name"),
+                "0000001",
+                null,
+                null,
+                null);
         return externalEvent;
     }
 

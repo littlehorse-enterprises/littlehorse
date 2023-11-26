@@ -127,9 +127,9 @@ public class OneTaskQueue {
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver) {
         if (taskDefName == null) {
-            taskDefName = requestObserver.getTaskDefName();
+            taskDefName = requestObserver.getTaskDefId();
         }
-        if (!taskDefName.equals(requestObserver.getTaskDefName())) {
+        if (!taskDefName.equals(requestObserver.getTaskDefId())) {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
 

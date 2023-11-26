@@ -2,10 +2,12 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
@@ -17,14 +19,16 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class SearchNodeRunRequestModel
         extends PublicScanRequest<SearchNodeRunRequest, NodeRunIdList, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
 
-    public NoderunCriteriaCase type;
-    public String wfRunId;
+    private NoderunCriteriaCase type;
+    private WfRunIdModel wfRunId;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.NODE_RUN;
@@ -48,7 +52,7 @@ public class SearchNodeRunRequestModel
         type = p.getNoderunCriteriaCase();
         switch (type) {
             case WF_RUN_ID:
-                wfRunId = p.getWfRunId();
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing node_run_criteria");
@@ -65,7 +69,7 @@ public class SearchNodeRunRequestModel
         }
         switch (type) {
             case WF_RUN_ID:
-                out.setWfRunId(wfRunId);
+                out.setWfRunId(wfRunId.toProto());
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new LHApiException(Status.INVALID_ARGUMENT, "SearchNodeRun requires wfRunId");

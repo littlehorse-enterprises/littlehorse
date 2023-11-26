@@ -10,6 +10,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class TaskRunModelTest {
         AuthorizationContext mockContext = mock(AuthorizationContext.class);
         when(mockContext.tenantId()).thenReturn(tenantId);
         when(mockDao.context()).thenReturn(mockContext);
-        taskRun.setId(new TaskRunIdModel("asdf"));
+        taskRun.setId(new TaskRunIdModel(new WfRunIdModel("asdf")));
         taskRun.setInputVariables(new ArrayList<>());
         taskRun.setDao(mockDao);
 

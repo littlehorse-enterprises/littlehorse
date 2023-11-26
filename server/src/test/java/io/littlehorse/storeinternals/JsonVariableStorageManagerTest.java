@@ -63,7 +63,7 @@ public class JsonVariableStorageManagerTest {
                 Paths.get("./src/test/resources/json-variables-example.json").toFile(), Map.class);
 
         VariableModel variable = TestUtil.variable("wfrun-id");
-        variable.setName("testVariable");
+        variable.getId().setName("testVariable");
         VariableDefModel variableDef = TestUtil.variableDef("testVariable", VariableType.JSON_OBJ);
         List<JsonIndexModel> indices = List.of(
                 new JsonIndexModel("$.about", VariableType.STR),

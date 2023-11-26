@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.global.externaleventdef;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -13,12 +14,14 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
 
     public String name;
     public Date createdAt;
-    public Integer retentionHours;
+    private ExternalEventRetentionPolicyModel retentionPolicy;
 
     public ExternalEventDefModel() {}
 
@@ -43,8 +46,8 @@ public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
     public ExternalEventDef.Builder toProto() {
         ExternalEventDef.Builder b = ExternalEventDef.newBuilder()
                 .setName(name)
-                .setRetentionHours(retentionHours)
-                .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                .setRetentionPolicy(retentionPolicy.toProto());
         return b;
     }
 
@@ -52,7 +55,7 @@ public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
         ExternalEventDef proto = (ExternalEventDef) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        retentionHours = proto.getRetentionHours();
+        retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class);
     }
 
     public static ExternalEventDefModel fromProto(ExternalEventDef p) {
