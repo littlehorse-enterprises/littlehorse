@@ -239,7 +239,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     private TaskNode createTaskNode(String taskName, Object... args) {
-        TaskNode.Builder taskNode = TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
+        TaskNode.Builder taskNode =
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
         parent.addTaskDefName(taskName);
 
         for (Object var : args) {

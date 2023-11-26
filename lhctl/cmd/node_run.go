@@ -119,7 +119,7 @@ Choose one of the following option groups:
 		if wfRunId != "" {
 			search = &model.SearchNodeRunRequest{
 				NoderunCriteria: &model.SearchNodeRunRequest_WfRunId{
-					WfRunId: wfRunId,
+					WfRunId: &model.WfRunId{Id: wfRunId},
 				},
 			}
 		} else {

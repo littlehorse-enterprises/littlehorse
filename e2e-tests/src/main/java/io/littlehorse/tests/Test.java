@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -323,7 +324,7 @@ public abstract class Test {
         }
 
         return ExternalEventId.newBuilder()
-                .setExternalEventDefName(eventName)
+                .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(eventName))
                 .setGuid(guid)
                 .setWfRunId(LHLibUtil.wfRunId(wfRunId))
                 .build();

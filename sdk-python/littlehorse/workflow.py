@@ -22,7 +22,11 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
 )
-from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
+from littlehorse.model.object_id_pb2 import (
+    GetLatestWfSpecRequest,
+    ExternalEventDefId,
+    TaskDefId,
+)
 from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
     PutTaskDefRequest,
@@ -501,7 +505,8 @@ class WorkflowInterruption:
             InterruptDef: Spec.
         """
         return InterruptDef(
-            external_event_def_name=self.name, handler_spec_name=self.thread_name
+            external_event_def_id=ExternalEventDefId(name=self.name),
+            handler_spec_name=self.thread_name,
         )
 
     def __str__(self) -> str:
@@ -839,7 +844,7 @@ class WorkflowThread:
         """
         self._check_if_active()
         task_node = TaskNode(
-            task_def_name=task_name,
+            task_def_id=TaskDefId(name=task_name),
             variables=[to_variable_assignment(arg) for arg in args],
         )
         node_name = self.add_node(task_name, task_node)
@@ -1097,7 +1102,7 @@ class WorkflowThread:
         """
         self._check_if_active()
         wait_node = ExternalEventNode(
-            external_event_def_name=event_name,
+            external_event_def_id=ExternalEventDefId(name=event_name),
             timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
         )
         node_name = self.add_node(event_name, wait_node)
@@ -1526,7 +1531,6 @@ def create_external_event_def(
     try:
         request = PutExternalEventDefRequest(
             name=name,
-            retention_hours=None if retention_hours <= 0 else retention_hours,
         )
         stub.PutExternalEventDef(request)
         logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")

@@ -69,8 +69,8 @@ public class UserTaskRunModelStorageManagerTest {
             }
             UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
             userTaskRun.setStatus(userTaskRunStatus);
-            userTaskRun.setId(
-                    new UserTaskRunIdModel(new WfRunIdModel(wfRunId + "1"), UUID.randomUUID().toString()));
+            userTaskRun.setId(new UserTaskRunIdModel(
+                    new WfRunIdModel(wfRunId + "1"), UUID.randomUUID().toString()));
             getableStorageManager.put(userTaskRun);
             getableStorageManager.commit();
         }
