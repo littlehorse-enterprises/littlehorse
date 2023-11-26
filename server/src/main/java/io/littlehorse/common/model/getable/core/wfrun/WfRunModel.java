@@ -232,6 +232,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         ThreadRunModel thread = new ThreadRunModel();
         thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
+        thread.setWfSpecId(wfSpecId);
 
         thread.status = LHStatus.RUNNING;
         thread.threadSpecName = threadName;

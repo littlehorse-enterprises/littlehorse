@@ -94,6 +94,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class);
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -621,6 +622,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.status = LHStatus.STARTING;
         cnr.setId(new NodeRunIdModel(wfRun.getId(), number, currentNodePosition));
         cnr.setWfSpecId(wfSpecId);
+        cnr.setThreadSpecName(threadSpecName);
 
         cnr.arrivalTime = arrivalTime;
 

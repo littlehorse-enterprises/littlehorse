@@ -144,7 +144,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
 
     @Override
     public String getPartitionKey() {
-        return taskDefId.getPartitionKey().get();
+        return taskDefId.getName();
     }
 
     @Override
