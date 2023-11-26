@@ -15,6 +15,10 @@ public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEv
     private ExtEvtGcPolicyCase type;
     private Integer secondsAfterPut;
 
+    public ExternalEventRetentionPolicyModel() {
+        type = ExtEvtGcPolicyCase.EXTEVTGCPOLICY_NOT_SET;
+    }
+
     @Override
     public Class<ExternalEventRetentionPolicy> getProtoBaseClass() {
         return ExternalEventRetentionPolicy.class;
