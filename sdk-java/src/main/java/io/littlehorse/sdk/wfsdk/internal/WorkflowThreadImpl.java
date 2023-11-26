@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
@@ -20,6 +21,7 @@ import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
@@ -237,7 +239,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     private TaskNode createTaskNode(String taskName, Object... args) {
-        TaskNode.Builder taskNode = TaskNode.newBuilder().setTaskDefName(taskName);
+        TaskNode.Builder taskNode = TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
         parent.addTaskDefName(taskName);
 
         for (Object var : args) {
@@ -590,7 +592,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
-                .setExternalEventDefName(externalEventDefName)
+                .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(externalEventDefName))
                 .build();
 
         parent.addExternalEventDefName(externalEventDefName);
@@ -627,7 +629,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         parent.addExternalEventDefName(interruptName);
 
         spec.addInterruptDefs(InterruptDef.newBuilder()
-                .setExternalEventDefName(interruptName)
+                .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(interruptName))
                 .setHandlerSpecName(threadName)
                 .build());
     }

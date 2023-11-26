@@ -121,8 +121,8 @@ public class LHTenantStoreTest {
                 storeForTenantA.getLastFromPrefix("", StoredGetable.class);
         StoredGetable<WfRun, WfRunModel> lastStoredWfRunForTenantB =
                 storeForTenantB.getLastFromPrefix("", StoredGetable.class);
-        assertThat(lastStoredWfRunForTenantA.getStoredObject().getId()).isEqualTo(greatestAsciiCharacter + "A");
-        assertThat(lastStoredWfRunForTenantB.getStoredObject().getId()).isEqualTo(greatestAsciiCharacter + "B");
+        assertThat(lastStoredWfRunForTenantA.getStoredObject().getId().getId()).isEqualTo(greatestAsciiCharacter + "A");
+        assertThat(lastStoredWfRunForTenantB.getStoredObject().getId().getId()).isEqualTo(greatestAsciiCharacter + "B");
     }
 
     @Test
