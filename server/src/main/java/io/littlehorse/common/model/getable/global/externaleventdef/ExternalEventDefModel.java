@@ -23,7 +23,9 @@ public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
     public Date createdAt;
     private ExternalEventRetentionPolicyModel retentionPolicy;
 
-    public ExternalEventDefModel() {}
+    public ExternalEventDefModel() {
+        this.retentionPolicy = new ExternalEventRetentionPolicyModel();
+    }
 
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
