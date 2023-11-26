@@ -8,95 +8,74 @@ public interface ExternalEventOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventId getId();
+  /**
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The externalEventDefName.
-   */
-  java.lang.String getExternalEventDefName();
-  /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The bytes for externalEventDefName.
-   */
-  com.google.protobuf.ByteString
-      getExternalEventDefNameBytes();
-
-  /**
-   * <code>string guid = 3;</code>
-   * @return The guid.
-   */
-  java.lang.String getGuid();
-  /**
-   * <code>string guid = 3;</code>
-   * @return The bytes for guid.
-   */
-  com.google.protobuf.ByteString
-      getGuidBytes();
-
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableValue content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
-   * <code>.littlehorse.VariableValue content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
   io.littlehorse.sdk.common.proto.VariableValue getContent();
   /**
-   * <code>.littlehorse.VariableValue content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
 
   /**
-   * <code>optional int32 thread_run_number = 6;</code>
+   * <code>optional int32 thread_run_number = 4;</code>
    * @return Whether the threadRunNumber field is set.
    */
   boolean hasThreadRunNumber();
   /**
-   * <code>optional int32 thread_run_number = 6;</code>
+   * <code>optional int32 thread_run_number = 4;</code>
    * @return The threadRunNumber.
    */
   int getThreadRunNumber();
 
   /**
-   * <code>optional int32 node_run_position = 7;</code>
+   * <code>optional int32 node_run_position = 5;</code>
    * @return Whether the nodeRunPosition field is set.
    */
   boolean hasNodeRunPosition();
   /**
-   * <code>optional int32 node_run_position = 7;</code>
+   * <code>optional int32 node_run_position = 5;</code>
    * @return The nodeRunPosition.
    */
   int getNodeRunPosition();
 
   /**
-   * <code>bool claimed = 8;</code>
+   * <code>bool claimed = 6;</code>
    * @return The claimed.
    */
   boolean getClaimed();

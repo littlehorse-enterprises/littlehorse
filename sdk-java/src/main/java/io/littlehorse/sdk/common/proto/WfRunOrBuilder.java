@@ -8,34 +8,58 @@ public interface WfRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string id = 1;</code>
+   * <code>.littlehorse.WfRunId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <code>.littlehorse.WfRunId id = 1;</code>
    * @return The id.
    */
-  java.lang.String getId();
+  io.littlehorse.sdk.common.proto.WfRunId getId();
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>.littlehorse.WfRunId id = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getIdBytes();
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>string wf_spec_name = 2;</code>
-   * @return The wfSpecName.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
+   * @return Whether the wfSpecId field is set.
    */
-  java.lang.String getWfSpecName();
+  boolean hasWfSpecId();
   /**
-   * <code>string wf_spec_name = 2;</code>
-   * @return The bytes for wfSpecName.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
+   * @return The wfSpecId.
    */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <code>int32 wf_spec_version = 3;</code>
-   * @return The wfSpecVersion.
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
-  int getWfSpecVersion();
+  java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> 
+      getOldWfSpecVersionsList();
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index);
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
+   */
+  int getOldWfSpecVersionsCount();
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+      getOldWfSpecVersionsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
+      int index);
 
   /**
    * <code>.littlehorse.LHStatus status = 4;</code>
@@ -159,29 +183,5 @@ public interface WfRunOrBuilder extends
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
-      int index);
-
-  /**
-   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> 
-      getOldWfSpecVersionsList();
-  /**
-   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index);
-  /**
-   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
-   */
-  int getOldWfSpecVersionsCount();
-  /**
-   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
-      getOldWfSpecVersionsOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 11;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
       int index);
 }

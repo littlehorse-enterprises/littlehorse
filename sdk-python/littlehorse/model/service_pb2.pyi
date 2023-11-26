@@ -73,28 +73,28 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_hours"]
+    __slots__ = ["name", "retention_policy"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
-    retention_hours: int
-    def __init__(self, name: _Optional[str] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
-    __slots__ = ["wf_run_id", "external_event_def_name", "guid", "content", "thread_run_number", "node_run_position"]
+    __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     GUID_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
     NODE_RUN_POSITION_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    external_event_def_name: str
+    wf_run_id: _object_id_pb2.WfRunId
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
     guid: str
     content: _variable_pb2.VariableValue
     thread_run_number: int
     node_run_position: int
-    def __init__(self, wf_run_id: _Optional[str] = ..., external_event_def_name: _Optional[str] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
 
 class DeleteExternalEventRequest(_message.Message):
     __slots__ = ["id"]
@@ -253,8 +253,8 @@ class SearchNodeRunRequest(_message.Message):
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class NodeRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -311,9 +311,9 @@ class SearchVariableRequest(_message.Message):
     VALUE_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: str
+    wf_run_id: _object_id_pb2.WfRunId
     value: SearchVariableRequest.NameAndValueRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[str] = ..., value: _Optional[_Union[SearchVariableRequest.NameAndValueRequest, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., value: _Optional[_Union[SearchVariableRequest.NameAndValueRequest, _Mapping]] = ...) -> None: ...
 
 class VariableIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -416,9 +416,9 @@ class SearchExternalEventRequest(_message.Message):
     EXTERNAL_EVENT_DEF_NAME_AND_STATUS_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: str
+    wf_run_id: _object_id_pb2.WfRunId
     external_event_def_name_and_status: SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[str] = ..., external_event_def_name_and_status: _Optional[_Union[SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_name_and_status: _Optional[_Union[SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest, _Mapping]] = ...) -> None: ...
 
 class ExternalEventIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -431,8 +431,8 @@ class ExternalEventIdList(_message.Message):
 class ListNodeRunsRequest(_message.Message):
     __slots__ = ["wf_run_id"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class NodeRunList(_message.Message):
     __slots__ = ["results"]
@@ -443,8 +443,8 @@ class NodeRunList(_message.Message):
 class ListVariablesRequest(_message.Message):
     __slots__ = ["wf_run_id"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class VariableList(_message.Message):
     __slots__ = ["results"]
@@ -455,8 +455,8 @@ class VariableList(_message.Message):
 class ListExternalEventsRequest(_message.Message):
     __slots__ = ["wf_run_id"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class ExternalEventList(_message.Message):
     __slots__ = ["results"]
@@ -465,24 +465,24 @@ class ExternalEventList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_external_event_pb2.ExternalEvent, _Mapping]]] = ...) -> None: ...
 
 class RegisterTaskWorkerRequest(_message.Message):
-    __slots__ = ["client_id", "task_def_name", "listener_name"]
+    __slots__ = ["client_id", "task_def_id", "listener_name"]
     CLIENT_ID_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     LISTENER_NAME_FIELD_NUMBER: _ClassVar[int]
     client_id: str
-    task_def_name: str
+    task_def_id: _object_id_pb2.TaskDefId
     listener_name: str
-    def __init__(self, client_id: _Optional[str] = ..., task_def_name: _Optional[str] = ..., listener_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, client_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., listener_name: _Optional[str] = ...) -> None: ...
 
 class TaskWorkerHeartBeatRequest(_message.Message):
-    __slots__ = ["client_id", "task_def_name", "listener_name"]
+    __slots__ = ["client_id", "task_def_id", "listener_name"]
     CLIENT_ID_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     LISTENER_NAME_FIELD_NUMBER: _ClassVar[int]
     client_id: str
-    task_def_name: str
+    task_def_id: _object_id_pb2.TaskDefId
     listener_name: str
-    def __init__(self, client_id: _Optional[str] = ..., task_def_name: _Optional[str] = ..., listener_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, client_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., listener_name: _Optional[str] = ...) -> None: ...
 
 class RegisterTaskWorkerResponse(_message.Message):
     __slots__ = ["your_hosts", "is_cluster_healthy"]
@@ -511,7 +511,7 @@ class TaskWorkerMetadata(_message.Message):
     def __init__(self, client_id: _Optional[str] = ..., latest_heartbeat: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., hosts: _Optional[_Iterable[_Union[LHHostInfo, _Mapping]]] = ...) -> None: ...
 
 class TaskWorkerGroup(_message.Message):
-    __slots__ = ["task_def_name", "created_at", "task_workers"]
+    __slots__ = ["id", "created_at", "task_workers"]
     class TaskWorkersEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -519,23 +519,23 @@ class TaskWorkerGroup(_message.Message):
         key: str
         value: TaskWorkerMetadata
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[TaskWorkerMetadata, _Mapping]] = ...) -> None: ...
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     TASK_WORKERS_FIELD_NUMBER: _ClassVar[int]
-    task_def_name: str
+    id: _object_id_pb2.TaskWorkerGroupId
     created_at: _timestamp_pb2.Timestamp
     task_workers: _containers.MessageMap[str, TaskWorkerMetadata]
-    def __init__(self, task_def_name: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_workers: _Optional[_Mapping[str, TaskWorkerMetadata]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskWorkerGroupId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_workers: _Optional[_Mapping[str, TaskWorkerMetadata]] = ...) -> None: ...
 
 class PollTaskRequest(_message.Message):
-    __slots__ = ["task_def_name", "client_id", "task_worker_version"]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["task_def_id", "client_id", "task_worker_version"]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     CLIENT_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_WORKER_VERSION_FIELD_NUMBER: _ClassVar[int]
-    task_def_name: str
+    task_def_id: _object_id_pb2.TaskDefId
     client_id: str
     task_worker_version: str
-    def __init__(self, task_def_name: _Optional[str] = ..., client_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ...) -> None: ...
+    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., client_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ...) -> None: ...
 
 class ScheduledTask(_message.Message):
     __slots__ = ["task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source"]
@@ -583,17 +583,17 @@ class StopWfRunRequest(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
+    wf_run_id: _object_id_pb2.WfRunId
     thread_run_number: int
-    def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
 
 class ResumeWfRunRequest(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
+    wf_run_id: _object_id_pb2.WfRunId
     thread_run_number: int
-    def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
 
 class TaskDefMetricsQueryRequest(_message.Message):
     __slots__ = ["window_start", "window_type", "task_def_name"]
@@ -606,16 +606,16 @@ class TaskDefMetricsQueryRequest(_message.Message):
     def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., task_def_name: _Optional[str] = ...) -> None: ...
 
 class ListTaskMetricsRequest(_message.Message):
-    __slots__ = ["last_window_start", "num_windows", "task_def_name", "window_length"]
+    __slots__ = ["task_def_id", "last_window_start", "window_length", "num_windows"]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
+    task_def_id: _object_id_pb2.TaskDefId
     last_window_start: _timestamp_pb2.Timestamp
-    num_windows: int
-    task_def_name: str
     window_length: _common_enums_pb2.MetricsWindowLength
-    def __init__(self, last_window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., num_windows: _Optional[int] = ..., task_def_name: _Optional[str] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ...) -> None: ...
+    num_windows: int
+    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., last_window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ...) -> None: ...
 
 class ListTaskMetricsResponse(_message.Message):
     __slots__ = ["results"]
@@ -624,30 +624,26 @@ class ListTaskMetricsResponse(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[TaskDefMetrics, _Mapping]]] = ...) -> None: ...
 
 class WfSpecMetricsQueryRequest(_message.Message):
-    __slots__ = ["window_start", "window_type", "wf_spec_name", "wf_spec_version"]
+    __slots__ = ["wf_spec_id", "window_start", "window_length"]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_TYPE_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: _object_id_pb2.WfSpecId
     window_start: _timestamp_pb2.Timestamp
-    window_type: _common_enums_pb2.MetricsWindowLength
-    wf_spec_name: str
-    wf_spec_version: int
-    def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ...) -> None: ...
+    window_length: _common_enums_pb2.MetricsWindowLength
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ...) -> None: ...
 
 class ListWfMetricsRequest(_message.Message):
-    __slots__ = ["last_window_start", "num_windows", "wf_spec_name", "wf_spec_version", "window_length"]
+    __slots__ = ["wf_spec_id", "last_window_start", "window_length", "num_windows"]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: _object_id_pb2.WfSpecId
     last_window_start: _timestamp_pb2.Timestamp
-    num_windows: int
-    wf_spec_name: str
-    wf_spec_version: int
     window_length: _common_enums_pb2.MetricsWindowLength
-    def __init__(self, last_window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., num_windows: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ...) -> None: ...
+    num_windows: int
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., last_window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ...) -> None: ...
 
 class ListWfMetricsResponse(_message.Message):
     __slots__ = ["results"]
@@ -656,10 +652,10 @@ class ListWfMetricsResponse(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[WfSpecMetrics, _Mapping]]] = ...) -> None: ...
 
 class TaskDefMetrics(_message.Message):
-    __slots__ = ["window_start", "type", "taskDefName", "schedule_to_start_max", "schedule_to_start_avg", "start_to_complete_max", "start_to_complete_avg", "total_completed", "total_errored", "total_started", "total_scheduled"]
+    __slots__ = ["task_def_id", "window_start", "type", "schedule_to_start_max", "schedule_to_start_avg", "start_to_complete_max", "start_to_complete_avg", "total_completed", "total_errored", "total_started", "total_scheduled"]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    TASKDEFNAME_FIELD_NUMBER: _ClassVar[int]
     SCHEDULE_TO_START_MAX_FIELD_NUMBER: _ClassVar[int]
     SCHEDULE_TO_START_AVG_FIELD_NUMBER: _ClassVar[int]
     START_TO_COMPLETE_MAX_FIELD_NUMBER: _ClassVar[int]
@@ -668,9 +664,9 @@ class TaskDefMetrics(_message.Message):
     TOTAL_ERRORED_FIELD_NUMBER: _ClassVar[int]
     TOTAL_STARTED_FIELD_NUMBER: _ClassVar[int]
     TOTAL_SCHEDULED_FIELD_NUMBER: _ClassVar[int]
+    task_def_id: _object_id_pb2.TaskDefId
     window_start: _timestamp_pb2.Timestamp
     type: _common_enums_pb2.MetricsWindowLength
-    taskDefName: str
     schedule_to_start_max: int
     schedule_to_start_avg: int
     start_to_complete_max: int
@@ -679,35 +675,33 @@ class TaskDefMetrics(_message.Message):
     total_errored: int
     total_started: int
     total_scheduled: int
-    def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., taskDefName: _Optional[str] = ..., schedule_to_start_max: _Optional[int] = ..., schedule_to_start_avg: _Optional[int] = ..., start_to_complete_max: _Optional[int] = ..., start_to_complete_avg: _Optional[int] = ..., total_completed: _Optional[int] = ..., total_errored: _Optional[int] = ..., total_started: _Optional[int] = ..., total_scheduled: _Optional[int] = ...) -> None: ...
+    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., schedule_to_start_max: _Optional[int] = ..., schedule_to_start_avg: _Optional[int] = ..., start_to_complete_max: _Optional[int] = ..., start_to_complete_avg: _Optional[int] = ..., total_completed: _Optional[int] = ..., total_errored: _Optional[int] = ..., total_started: _Optional[int] = ..., total_scheduled: _Optional[int] = ...) -> None: ...
 
 class WfSpecMetrics(_message.Message):
-    __slots__ = ["window_start", "type", "wfSpecName", "wfSpecVersion", "total_started", "total_completed", "total_errored", "start_to_complete_max", "start_to_complete_avg"]
+    __slots__ = ["wf_spec_id", "window_start", "type", "total_started", "total_completed", "total_errored", "start_to_complete_max", "start_to_complete_avg"]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    WFSPECNAME_FIELD_NUMBER: _ClassVar[int]
-    WFSPECVERSION_FIELD_NUMBER: _ClassVar[int]
     TOTAL_STARTED_FIELD_NUMBER: _ClassVar[int]
     TOTAL_COMPLETED_FIELD_NUMBER: _ClassVar[int]
     TOTAL_ERRORED_FIELD_NUMBER: _ClassVar[int]
     START_TO_COMPLETE_MAX_FIELD_NUMBER: _ClassVar[int]
     START_TO_COMPLETE_AVG_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: _object_id_pb2.WfSpecId
     window_start: _timestamp_pb2.Timestamp
     type: _common_enums_pb2.MetricsWindowLength
-    wfSpecName: str
-    wfSpecVersion: int
     total_started: int
     total_completed: int
     total_errored: int
     start_to_complete_max: int
     start_to_complete_avg: int
-    def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., wfSpecName: _Optional[str] = ..., wfSpecVersion: _Optional[int] = ..., total_started: _Optional[int] = ..., total_completed: _Optional[int] = ..., total_errored: _Optional[int] = ..., start_to_complete_max: _Optional[int] = ..., start_to_complete_avg: _Optional[int] = ...) -> None: ...
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., total_started: _Optional[int] = ..., total_completed: _Optional[int] = ..., total_errored: _Optional[int] = ..., start_to_complete_max: _Optional[int] = ..., start_to_complete_avg: _Optional[int] = ...) -> None: ...
 
 class ListUserTaskRunRequest(_message.Message):
     __slots__ = ["wf_run_id"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class UserTaskRunList(_message.Message):
     __slots__ = ["results"]
@@ -718,8 +712,8 @@ class UserTaskRunList(_message.Message):
 class ListTaskRunsRequest(_message.Message):
     __slots__ = ["wf_run_id"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class TaskRunList(_message.Message):
     __slots__ = ["results"]

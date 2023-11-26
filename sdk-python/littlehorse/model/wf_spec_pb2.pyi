@@ -1,6 +1,7 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -96,12 +97,12 @@ class ThreadRetentionPolicy(_message.Message):
     def __init__(self, seconds_after_thread_termination: _Optional[int] = ...) -> None: ...
 
 class InterruptDef(_message.Message):
-    __slots__ = ["external_event_def_name", "handler_spec_name"]
-    EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["external_event_def_id", "handler_spec_name"]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     HANDLER_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    external_event_def_name: str
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
     handler_spec_name: str
-    def __init__(self, external_event_def_name: _Optional[str] = ..., handler_spec_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., handler_spec_name: _Optional[str] = ...) -> None: ...
 
 class StartThreadNode(_message.Message):
     __slots__ = ["thread_spec_name", "variables"]
@@ -167,12 +168,12 @@ class WaitForThreadsNode(_message.Message):
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
-    __slots__ = ["external_event_def_name", "timeout_seconds"]
-    EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["external_event_def_id", "timeout_seconds"]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
-    external_event_def_name: str
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
     timeout_seconds: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, external_event_def_name: _Optional[str] = ..., timeout_seconds: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., timeout_seconds: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class EntrypointNode(_message.Message):
     __slots__ = []

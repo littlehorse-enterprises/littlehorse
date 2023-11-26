@@ -8,42 +8,45 @@ public interface TaskDefMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return Whether the taskDefId field is set.
+   */
+  boolean hasTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return The taskDefId.
+   */
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
-
-  /**
-   * <code>string taskDefName = 3;</code>
-   * @return The taskDefName.
-   */
-  java.lang.String getTaskDefName();
-  /**
-   * <code>string taskDefName = 3;</code>
-   * @return The bytes for taskDefName.
-   */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
 
   /**
    * <code>int64 schedule_to_start_max = 4;</code>

@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.Date;
 
 /**
@@ -36,7 +37,7 @@ public class WorkerContext {
      *
      * @return the Id of the WfRun for the NodeRun that's being executed.
      */
-    public String getWfRunId() {
+    public WfRunId getWfRunId() {
         return LHLibUtil.getWfRunId(scheduledTask.getSource());
     }
 

@@ -50,7 +50,7 @@ var getVariableCmd = &cobra.Command{
 			getGlobalClient(cmd).GetVariable(
 				requestContext(),
 				&model.VariableId{
-					WfRunId:         args[0],
+					WfRunId:         &model.WfRunId{Id: args[0]},
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],
 				},
@@ -100,7 +100,7 @@ Choose one of the following option groups:
 		if wfRunId != "" {
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_WfRunId{
-					WfRunId: wfRunId,
+					WfRunId: &model.WfRunId{Id: wfRunId},
 				},
 			}
 		} else {
@@ -155,7 +155,7 @@ Lists all Variable's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListVariablesRequest{
-			WfRunId: wfRunId,
+			WfRunId: &model.WfRunId{Id: wfRunId},
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListVariables(

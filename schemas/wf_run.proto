@@ -12,9 +12,9 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfRun {
-  string id = 1;
-  string wf_spec_name = 2;
-  int32 wf_spec_version = 3;
+  WfRunId id = 1;
+  WfSpecId wf_spec_id = 2;
+  repeated WfSpecId old_wf_spec_versions = 3;
   LHStatus status = 4;
 
   // Introduced now since with ThreadRun-level retention, we can't rely upon
@@ -27,7 +27,6 @@ message WfRun {
 
   repeated PendingInterrupt pending_interrupts = 9;
   repeated PendingFailureHandler pending_failures = 10;
-  repeated WfSpecId old_wf_spec_versions = 11;
 }
 
 enum ThreadType {

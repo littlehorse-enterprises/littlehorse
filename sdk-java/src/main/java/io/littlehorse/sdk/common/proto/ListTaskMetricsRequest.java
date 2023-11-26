@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ListTaskMetricsRequest() {
-    taskDefName_ = "";
     windowLength_ = 0;
   }
 
@@ -40,10 +39,36 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.class, io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.Builder.class);
   }
 
-  public static final int LAST_WINDOW_START_FIELD_NUMBER = 1;
+  public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return Whether the taskDefId field is set.
+   */
+  @java.lang.Override
+  public boolean hasTaskDefId() {
+    return taskDefId_ != null;
+  }
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   * @return The taskDefId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
+    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+  }
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
+    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+  }
+
+  public static final int LAST_WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp lastWindowStart_;
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return Whether the lastWindowStart field is set.
    */
   @java.lang.Override
@@ -51,7 +76,7 @@ private static final long serialVersionUID = 0L;
     return lastWindowStart_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return The lastWindowStart.
    */
   @java.lang.Override
@@ -59,79 +84,40 @@ private static final long serialVersionUID = 0L;
     return lastWindowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastWindowStart_;
   }
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder() {
     return lastWindowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastWindowStart_;
   }
 
-  public static final int NUM_WINDOWS_FIELD_NUMBER = 2;
-  private int numWindows_ = 0;
-  /**
-   * <code>int32 num_windows = 2;</code>
-   * @return The numWindows.
-   */
-  @java.lang.Override
-  public int getNumWindows() {
-    return numWindows_;
-  }
-
-  public static final int TASK_DEF_NAME_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskDefName_ = "";
-  /**
-   * <code>string task_def_name = 3;</code>
-   * @return The taskDefName.
-   */
-  @java.lang.Override
-  public java.lang.String getTaskDefName() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskDefName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string task_def_name = 3;</code>
-   * @return The bytes for taskDefName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskDefNameBytes() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int WINDOW_LENGTH_FIELD_NUMBER = 4;
+  public static final int WINDOW_LENGTH_FIELD_NUMBER = 3;
   private int windowLength_ = 0;
   /**
-   * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   @java.lang.Override public int getWindowLengthValue() {
     return windowLength_;
   }
   /**
-   * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
   @java.lang.Override public io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowLength() {
     io.littlehorse.sdk.common.proto.MetricsWindowLength result = io.littlehorse.sdk.common.proto.MetricsWindowLength.forNumber(windowLength_);
     return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
+  }
+
+  public static final int NUM_WINDOWS_FIELD_NUMBER = 4;
+  private int numWindows_ = 0;
+  /**
+   * <code>int32 num_windows = 4;</code>
+   * @return The numWindows.
+   */
+  @java.lang.Override
+  public int getNumWindows() {
+    return numWindows_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -148,17 +134,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (taskDefId_ != null) {
+      output.writeMessage(1, getTaskDefId());
+    }
     if (lastWindowStart_ != null) {
-      output.writeMessage(1, getLastWindowStart());
-    }
-    if (numWindows_ != 0) {
-      output.writeInt32(2, numWindows_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, taskDefName_);
+      output.writeMessage(2, getLastWindowStart());
     }
     if (windowLength_ != io.littlehorse.sdk.common.proto.MetricsWindowLength.MINUTES_5.getNumber()) {
-      output.writeEnum(4, windowLength_);
+      output.writeEnum(3, windowLength_);
+    }
+    if (numWindows_ != 0) {
+      output.writeInt32(4, numWindows_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -169,20 +155,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (taskDefId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getTaskDefId());
+    }
     if (lastWindowStart_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getLastWindowStart());
-    }
-    if (numWindows_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, numWindows_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, taskDefName_);
+        .computeMessageSize(2, getLastWindowStart());
     }
     if (windowLength_ != io.littlehorse.sdk.common.proto.MetricsWindowLength.MINUTES_5.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(4, windowLength_);
+        .computeEnumSize(3, windowLength_);
+    }
+    if (numWindows_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(4, numWindows_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -199,16 +186,19 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ListTaskMetricsRequest other = (io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) obj;
 
+    if (hasTaskDefId() != other.hasTaskDefId()) return false;
+    if (hasTaskDefId()) {
+      if (!getTaskDefId()
+          .equals(other.getTaskDefId())) return false;
+    }
     if (hasLastWindowStart() != other.hasLastWindowStart()) return false;
     if (hasLastWindowStart()) {
       if (!getLastWindowStart()
           .equals(other.getLastWindowStart())) return false;
     }
+    if (windowLength_ != other.windowLength_) return false;
     if (getNumWindows()
         != other.getNumWindows()) return false;
-    if (!getTaskDefName()
-        .equals(other.getTaskDefName())) return false;
-    if (windowLength_ != other.windowLength_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -220,16 +210,18 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasTaskDefId()) {
+      hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTaskDefId().hashCode();
+    }
     if (hasLastWindowStart()) {
       hash = (37 * hash) + LAST_WINDOW_START_FIELD_NUMBER;
       hash = (53 * hash) + getLastWindowStart().hashCode();
     }
-    hash = (37 * hash) + NUM_WINDOWS_FIELD_NUMBER;
-    hash = (53 * hash) + getNumWindows();
-    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskDefName().hashCode();
     hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
     hash = (53 * hash) + windowLength_;
+    hash = (37 * hash) + NUM_WINDOWS_FIELD_NUMBER;
+    hash = (53 * hash) + getNumWindows();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -361,14 +353,18 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
+      taskDefId_ = null;
+      if (taskDefIdBuilder_ != null) {
+        taskDefIdBuilder_.dispose();
+        taskDefIdBuilder_ = null;
+      }
       lastWindowStart_ = null;
       if (lastWindowStartBuilder_ != null) {
         lastWindowStartBuilder_.dispose();
         lastWindowStartBuilder_ = null;
       }
-      numWindows_ = 0;
-      taskDefName_ = "";
       windowLength_ = 0;
+      numWindows_ = 0;
       return this;
     }
 
@@ -403,18 +399,20 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.taskDefId_ = taskDefIdBuilder_ == null
+            ? taskDefId_
+            : taskDefIdBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.lastWindowStart_ = lastWindowStartBuilder_ == null
             ? lastWindowStart_
             : lastWindowStartBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.numWindows_ = numWindows_;
-      }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.taskDefName_ = taskDefName_;
+        result.windowLength_ = windowLength_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.windowLength_ = windowLength_;
+        result.numWindows_ = numWindows_;
       }
     }
 
@@ -462,19 +460,17 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest other) {
       if (other == io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.getDefaultInstance()) return this;
+      if (other.hasTaskDefId()) {
+        mergeTaskDefId(other.getTaskDefId());
+      }
       if (other.hasLastWindowStart()) {
         mergeLastWindowStart(other.getLastWindowStart());
       }
-      if (other.getNumWindows() != 0) {
-        setNumWindows(other.getNumWindows());
-      }
-      if (!other.getTaskDefName().isEmpty()) {
-        taskDefName_ = other.taskDefName_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
       if (other.windowLength_ != 0) {
         setWindowLengthValue(other.getWindowLengthValue());
+      }
+      if (other.getNumWindows() != 0) {
+        setNumWindows(other.getNumWindows());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -504,23 +500,25 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getLastWindowStartFieldBuilder().getBuilder(),
+                  getTaskDefIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              numWindows_ = input.readInt32();
+            case 18: {
+              input.readMessage(
+                  getLastWindowStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
-            } // case 16
-            case 26: {
-              taskDefName_ = input.readStringRequireUtf8();
+            } // case 18
+            case 24: {
+              windowLength_ = input.readEnum();
               bitField0_ |= 0x00000004;
               break;
-            } // case 26
+            } // case 24
             case 32: {
-              windowLength_ = input.readEnum();
+              numWindows_ = input.readInt32();
               bitField0_ |= 0x00000008;
               break;
             } // case 32
@@ -541,18 +539,137 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
+    private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * @return Whether the taskDefId field is set.
+     */
+    public boolean hasTaskDefId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     * @return The taskDefId.
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
+      if (taskDefIdBuilder_ == null) {
+        return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+      } else {
+        return taskDefIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (taskDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        taskDefId_ = value;
+      } else {
+        taskDefIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public Builder setTaskDefId(
+        io.littlehorse.sdk.common.proto.TaskDefId.Builder builderForValue) {
+      if (taskDefIdBuilder_ == null) {
+        taskDefId_ = builderForValue.build();
+      } else {
+        taskDefIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (taskDefIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          taskDefId_ != null &&
+          taskDefId_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
+          getTaskDefIdBuilder().mergeFrom(value);
+        } else {
+          taskDefId_ = value;
+        }
+      } else {
+        taskDefIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public Builder clearTaskDefId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      taskDefId_ = null;
+      if (taskDefIdBuilder_ != null) {
+        taskDefIdBuilder_.dispose();
+        taskDefIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getTaskDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
+      if (taskDefIdBuilder_ != null) {
+        return taskDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        return taskDefId_ == null ?
+            io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> 
+        getTaskDefIdFieldBuilder() {
+      if (taskDefIdBuilder_ == null) {
+        taskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder>(
+                getTaskDefId(),
+                getParentForChildren(),
+                isClean());
+        taskDefId_ = null;
+      }
+      return taskDefIdBuilder_;
+    }
+
     private com.google.protobuf.Timestamp lastWindowStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> lastWindowStartBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      * @return Whether the lastWindowStart field is set.
      */
     public boolean hasLastWindowStart() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      * @return The lastWindowStart.
      */
     public com.google.protobuf.Timestamp getLastWindowStart() {
@@ -563,7 +680,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder setLastWindowStart(com.google.protobuf.Timestamp value) {
       if (lastWindowStartBuilder_ == null) {
@@ -574,12 +691,12 @@ private static final long serialVersionUID = 0L;
       } else {
         lastWindowStartBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder setLastWindowStart(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -588,16 +705,16 @@ private static final long serialVersionUID = 0L;
       } else {
         lastWindowStartBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder mergeLastWindowStart(com.google.protobuf.Timestamp value) {
       if (lastWindowStartBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           lastWindowStart_ != null &&
           lastWindowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getLastWindowStartBuilder().mergeFrom(value);
@@ -607,15 +724,15 @@ private static final long serialVersionUID = 0L;
       } else {
         lastWindowStartBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder clearLastWindowStart() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       lastWindowStart_ = null;
       if (lastWindowStartBuilder_ != null) {
         lastWindowStartBuilder_.dispose();
@@ -625,15 +742,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLastWindowStartBuilder() {
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getLastWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder() {
       if (lastWindowStartBuilder_ != null) {
@@ -644,7 +761,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+     * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -660,131 +777,27 @@ private static final long serialVersionUID = 0L;
       return lastWindowStartBuilder_;
     }
 
-    private int numWindows_ ;
-    /**
-     * <code>int32 num_windows = 2;</code>
-     * @return The numWindows.
-     */
-    @java.lang.Override
-    public int getNumWindows() {
-      return numWindows_;
-    }
-    /**
-     * <code>int32 num_windows = 2;</code>
-     * @param value The numWindows to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNumWindows(int value) {
-
-      numWindows_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 num_windows = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNumWindows() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      numWindows_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object taskDefName_ = "";
-    /**
-     * <code>string task_def_name = 3;</code>
-     * @return The taskDefName.
-     */
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 3;</code>
-     * @return The bytes for taskDefName.
-     */
-    public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 3;</code>
-     * @param value The taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      taskDefName_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskDefName() {
-      taskDefName_ = getDefaultInstance().getTaskDefName();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 3;</code>
-     * @param value The bytes for taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      taskDefName_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-
     private int windowLength_ = 0;
     /**
-     * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+     * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The enum numeric value on the wire for windowLength.
      */
     @java.lang.Override public int getWindowLengthValue() {
       return windowLength_;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+     * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The enum numeric value on the wire for windowLength to set.
      * @return This builder for chaining.
      */
     public Builder setWindowLengthValue(int value) {
       windowLength_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+     * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The windowLength.
      */
     @java.lang.Override
@@ -793,7 +806,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+     * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The windowLength to set.
      * @return This builder for chaining.
      */
@@ -801,18 +814,50 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       windowLength_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLength window_length = 4;</code>
+     * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearWindowLength() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       windowLength_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int numWindows_ ;
+    /**
+     * <code>int32 num_windows = 4;</code>
+     * @return The numWindows.
+     */
+    @java.lang.Override
+    public int getNumWindows() {
+      return numWindows_;
+    }
+    /**
+     * <code>int32 num_windows = 4;</code>
+     * @param value The numWindows to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNumWindows(int value) {
+
+      numWindows_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 num_windows = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNumWindows() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      numWindows_ = 0;
       onChanged();
       return this;
     }

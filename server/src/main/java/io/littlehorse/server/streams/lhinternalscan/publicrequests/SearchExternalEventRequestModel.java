@@ -2,12 +2,14 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
@@ -38,7 +40,7 @@ public class SearchExternalEventRequestModel
                 SearchExternalEventReply> {
 
     public ExtEvtCriteriaCase type;
-    public String wfRunId;
+    private WfRunIdModel wfRunId;
     private String externalEventDefName;
     private Optional<Boolean> isClaimed = Optional.empty();
 
@@ -63,7 +65,7 @@ public class SearchExternalEventRequestModel
         type = p.getExtEvtCriteriaCase();
         switch (type) {
             case WF_RUN_ID:
-                wfRunId = p.getWfRunId();
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
                 SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus =
@@ -90,7 +92,7 @@ public class SearchExternalEventRequestModel
         }
         switch (type) {
             case WF_RUN_ID:
-                out.setWfRunId(wfRunId);
+                out.setWfRunId(wfRunId.toProto());
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
                 SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb =

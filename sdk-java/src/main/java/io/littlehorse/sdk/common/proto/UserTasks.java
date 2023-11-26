@@ -125,30 +125,29 @@ public final class UserTasks {
       "\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse" +
       ".VariableValue:\0028\001\"P\n\030CancelUserTaskRunR" +
       "equest\0224\n\020user_task_run_id\030\001 \001(\0132\032.littl" +
-      "ehorse.UserTaskRunId\"\334\001\n\030UserTaskTrigger" +
+      "ehorse.UserTaskRunId\"\261\001\n\030UserTaskTrigger" +
       "Reference\022+\n\013node_run_id\030\001 \001(\0132\026.littleh" +
       "orse.NodeRunId\022\036\n\026user_task_event_number" +
-      "\030\002 \001(\005\022)\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse" +
-      ".WfSpecId\022\024\n\007user_id\030\004 \001(\tH\000\210\001\001\022\027\n\nuser_" +
-      "group\030\005 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_gr" +
-      "oup\"\222\004\n\rUserTaskEvent\022(\n\004time\030\001 \001(\0132\032.go" +
-      "ogle.protobuf.Timestamp\022C\n\rtask_executed" +
-      "\030\002 \001(\0132*.littlehorse.UserTaskEvent.UTETa" +
-      "skExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.littleh" +
-      "orse.UserTaskEvent.UTEAssignedH\000\022<\n\tcanc" +
-      "elled\030\004 \001(\0132\'.littlehorse.UserTaskEvent." +
-      "UTECancelledH\000\032\016\n\014UTECancelled\032;\n\017UTETas" +
-      "kExecuted\022(\n\010task_run\030\001 \001(\0132\026.littlehors" +
-      "e.TaskRunId\032\301\001\n\013UTEAssigned\022\030\n\013old_user_" +
-      "id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_group\030\002 \001(\tH\001\210" +
-      "\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user" +
-      "_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_idB\021\n\017_ol" +
-      "d_user_groupB\016\n\014_new_user_idB\021\n\017_new_use" +
-      "r_groupB\007\n\005event*J\n\021UserTaskRunStatus\022\016\n" +
-      "\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n" +
-      "\tCANCELLED\020\004BG\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\007.;model\252\002\030LittleHorse.Common." +
-      "Protob\006proto3"
+      "\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\nuser_gro" +
+      "up\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group" +
+      "\"\222\004\n\rUserTaskEvent\022(\n\004time\030\001 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022C\n\rtask_executed\030\002 " +
+      "\001(\0132*.littlehorse.UserTaskEvent.UTETaskE" +
+      "xecutedH\000\022:\n\010assigned\030\003 \001(\0132&.littlehors" +
+      "e.UserTaskEvent.UTEAssignedH\000\022<\n\tcancell" +
+      "ed\030\004 \001(\0132\'.littlehorse.UserTaskEvent.UTE" +
+      "CancelledH\000\032\016\n\014UTECancelled\032;\n\017UTETaskEx" +
+      "ecuted\022(\n\010task_run\030\001 \001(\0132\026.littlehorse.T" +
+      "askRunId\032\301\001\n\013UTEAssigned\022\030\n\013old_user_id\030" +
+      "\001 \001(\tH\000\210\001\001\022\033\n\016old_user_group\030\002 \001(\tH\001\210\001\001\022" +
+      "\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user_gr" +
+      "oup\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_idB\021\n\017_old_u" +
+      "ser_groupB\016\n\014_new_user_idB\021\n\017_new_user_g" +
+      "roupB\007\n\005event*J\n\021UserTaskRunStatus\022\016\n\nUN" +
+      "ASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCA" +
+      "NCELLED\020\004BG\n\037io.littlehorse.sdk.common.p" +
+      "rotoP\001Z\007.;model\252\002\030LittleHorse.Common.Pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -211,7 +210,7 @@ public final class UserTasks {
     internal_static_littlehorse_UserTaskTriggerReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskTriggerReference_descriptor,
-        new java.lang.String[] { "NodeRunId", "UserTaskEventNumber", "WfSpecId", "UserId", "UserGroup", "UserId", "UserGroup", });
+        new java.lang.String[] { "NodeRunId", "UserTaskEventNumber", "UserId", "UserGroup", "UserId", "UserGroup", });
     internal_static_littlehorse_UserTaskEvent_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_UserTaskEvent_fieldAccessorTable = new

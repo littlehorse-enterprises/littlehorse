@@ -1,19 +1,26 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class VariableIdModel extends CoreObjectId<VariableId, Variable, VariableModel> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public String name;
+    private WfRunIdModel wfRunId;
+    private int threadRunNumber;
+
+    @Setter // for unit test
+    private String name;
 
     public Class<VariableId> getProtoBaseClass() {
         return VariableId.class;
@@ -21,7 +28,7 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
 
     public VariableIdModel() {}
 
-    public VariableIdModel(String wfRunId, int threadRunNumber, String name) {
+    public VariableIdModel(WfRunIdModel wfRunId, int threadRunNumber, String name) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
         this.name = name;
@@ -29,13 +36,13 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(wfRunId);
+        return wfRunId.getPartitionKey();
     }
 
     @Override
     public void initFrom(Message proto) {
         VariableId p = (VariableId) proto;
-        wfRunId = p.getWfRunId();
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
         threadRunNumber = p.getThreadRunNumber();
         name = p.getName();
     }
@@ -43,7 +50,7 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
     @Override
     public VariableId.Builder toProto() {
         VariableId.Builder out = VariableId.newBuilder()
-                .setWfRunId(wfRunId)
+                .setWfRunId(wfRunId.toProto())
                 .setThreadRunNumber(threadRunNumber)
                 .setName(name);
         return out;
@@ -51,13 +58,13 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(wfRunId, String.valueOf(threadRunNumber), name);
+        return LHUtil.getCompositeId(wfRunId.toString(), String.valueOf(threadRunNumber), name);
     }
 
     @Override
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
-        wfRunId = split[0];
+        wfRunId = (WfRunIdModel) ObjectIdModel.fromString(split[0], WfRunIdModel.class);
         threadRunNumber = Integer.valueOf(split[1]);
         name = split[2];
     }

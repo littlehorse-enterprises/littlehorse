@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.taskworkergroup;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
 
-    public String taskDefName;
+    public TaskWorkerGroupIdModel id;
     public Date createdAt;
     public Map<String, TaskWorkerMetadataModel> taskWorkers = new HashMap<String, TaskWorkerMetadataModel>();
 
@@ -35,7 +36,7 @@ public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
 
     @Override
     public TaskWorkerGroupIdModel getObjectId() {
-        return new TaskWorkerGroupIdModel(taskDefName);
+        return id;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
     @Override
     public TaskWorkerGroup.Builder toProto() {
         return TaskWorkerGroup.newBuilder()
-                .setTaskDefName(taskDefName)
+                .setId(id.toProto())
                 .setCreatedAt(Timestamps.fromDate(createdAt))
                 .putAllTaskWorkers(taskWorkersToProto());
     }
@@ -54,7 +55,7 @@ public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
     @Override
     public void initFrom(Message p) {
         TaskWorkerGroup proto = (TaskWorkerGroup) p;
-        taskDefName = proto.getTaskDefName();
+        id = LHSerializable.fromProto(proto.getId(), TaskWorkerGroupIdModel.class);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         taskWorkers = proto.getTaskWorkersMap().entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {

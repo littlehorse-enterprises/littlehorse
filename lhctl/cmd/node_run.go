@@ -53,7 +53,7 @@ var getNodeRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
 			requestContext(),
 			&model.NodeRunId{
-				WfRunId:         args[0],
+				WfRunId:         &model.WfRunId{Id: args[0]},
 				ThreadRunNumber: int32(trn),
 				Position:        int32(pos),
 			},
@@ -77,7 +77,7 @@ Lists all NodeRun's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListNodeRunsRequest{
-			WfRunId: wfRunId,
+			WfRunId: &model.WfRunId{Id: wfRunId},
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
@@ -119,7 +119,7 @@ Choose one of the following option groups:
 		if wfRunId != "" {
 			search = &model.SearchNodeRunRequest{
 				NoderunCriteria: &model.SearchNodeRunRequest_WfRunId{
-					WfRunId: wfRunId,
+					WfRunId: &model.WfRunId{Id: wfRunId},
 				},
 			}
 		} else {

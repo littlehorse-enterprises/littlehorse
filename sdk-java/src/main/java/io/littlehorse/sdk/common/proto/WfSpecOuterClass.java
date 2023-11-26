@@ -185,68 +185,70 @@ public final class WfSpecOuterClass {
     java.lang.String[] descriptorData = {
       "\n\rwf_spec.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\022common_enums.prot" +
-      "o\032\023common_wfspec.proto\"\224\004\n\006WfSpec\022\014\n\004nam" +
-      "e\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003" +
-      " \001(\0132\032.google.protobuf.Timestamp\022+\n\006stat" +
-      "us\030\004 \001(\0162\033.littlehorse.MetadataStatus\022:\n" +
-      "\014thread_specs\030\005 \003(\0132$.littlehorse.WfSpec" +
-      ".ThreadSpecsEntry\022\036\n\026entrypoint_thread_n" +
-      "ame\030\006 \001(\t\022C\n\020retention_policy\030\007 \001(\0132$.li" +
-      "ttlehorse.WorkflowRetentionPolicyH\000\210\001\001\022;" +
-      "\n\tmigration\030\010 \001(\0132#.littlehorse.WfSpecVe" +
-      "rsionMigrationH\001\210\001\001\022@\n\024searchable_varaib" +
-      "les\030\t \003(\0132\".littlehorse.SearchableVariab" +
-      "leDef\032K\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022&" +
-      "\n\005value\030\002 \001(\0132\027.littlehorse.ThreadSpec:\002" +
-      "8\001B\023\n\021_retention_policyB\014\n\n_migration\"Q\n" +
-      "\027WorkflowRetentionPolicy\022&\n\034seconds_afte" +
-      "r_wf_termination\030\001 \001(\003H\000B\016\n\014wf_gc_policy" +
-      "\"N\n\tJsonIndex\022\022\n\nfield_path\030\001 \001(\t\022-\n\nfie" +
-      "ld_type\030\002 \001(\0162\031.littlehorse.VariableType" +
-      "\"B\n\025SearchableVariableDef\022)\n\007var_def\030\001 \001" +
-      "(\0132\030.littlehorse.VariableDef\"\215\001\n\014ThreadV" +
-      "arDef\022)\n\007var_def\030\001 \001(\0132\030.littlehorse.Var" +
-      "iableDef\022\020\n\010required\030\002 \001(\010\022\022\n\nsearchable" +
-      "\030\003 \001(\010\022,\n\014json_indexes\030\004 \003(\0132\026.littlehor" +
-      "se.JsonIndex\"\275\002\n\nThreadSpec\0221\n\005nodes\030\001 \003" +
-      "(\0132\".littlehorse.ThreadSpec.NodesEntry\0220" +
-      "\n\rvariable_defs\030\002 \003(\0132\031.littlehorse.Thre" +
-      "adVarDef\0221\n\016interrupt_defs\030\003 \003(\0132\031.littl" +
-      "ehorse.InterruptDef\022A\n\020retention_policy\030" +
-      "\004 \001(\0132\".littlehorse.ThreadRetentionPolic" +
-      "yH\000\210\001\001\032?\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022 \n\005val" +
-      "ue\030\002 \001(\0132\021.littlehorse.Node:\0028\001B\023\n\021_rete" +
-      "ntion_policy\"W\n\025ThreadRetentionPolicy\022*\n" +
-      " seconds_after_thread_termination\030\001 \001(\003H" +
-      "\000B\022\n\020thread_gc_policy\"J\n\014InterruptDef\022\037\n" +
-      "\027external_event_def_name\030\001 \001(\t\022\031\n\021handle" +
-      "r_spec_name\030\002 \001(\t\"\276\001\n\017StartThreadNode\022\030\n" +
-      "\020thread_spec_name\030\001 \001(\t\022>\n\tvariables\030\002 \003" +
-      "(\0132+.littlehorse.StartThreadNode.Variabl" +
-      "esEntry\032Q\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022." +
-      "\n\005value\030\002 \001(\0132\037.littlehorse.VariableAssi" +
-      "gnment:\0028\001\"\203\002\n\030StartMultipleThreadsNode\022" +
-      "\030\n\020thread_spec_name\030\001 \001(\t\022G\n\tvariables\030\002" +
-      " \003(\01324.littlehorse.StartMultipleThreadsN" +
-      "ode.VariablesEntry\0221\n\010iterable\030\003 \001(\0132\037.l" +
-      "ittlehorse.VariableAssignment\032Q\n\016Variabl" +
-      "esEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.li" +
-      "ttlehorse.VariableAssignment:\0028\001\"\360\001\n\021Fai" +
-      "lureHandlerDef\022\031\n\021handler_spec_name\030\002 \001(" +
-      "\t\022\032\n\020specific_failure\030\001 \001(\tH\000\022K\n\023any_fai" +
-      "lure_of_type\030\003 \001(\0162,.littlehorse.Failure" +
-      "HandlerDef.LHFailureTypeH\000\"C\n\rLHFailureT" +
-      "ype\022\026\n\022FAILURE_TYPE_ERROR\020\000\022\032\n\026FAILURE_T" +
-      "YPE_EXCEPTION\020\001B\022\n\020failure_to_catch\"\243\002\n\022" +
-      "WaitForThreadsNode\022@\n\007threads\030\001 \003(\0132/.li" +
-      "ttlehorse.WaitForThreadsNode.ThreadToWai" +
-      "tFor\0229\n\013thread_list\030\003 \001(\0132\037.littlehorse." +
-      "VariableAssignmentH\000\210\001\001\0221\n\006policy\030\002 \001(\0162" +
-      "!.littlehorse.WaitForThreadsPolicy\032M\n\017Th" +
-      "readToWaitFor\022:\n\021thread_run_number\030\001 \001(\013" +
-      "2\037.littlehorse.VariableAssignmentB\016\n\014_th" +
-      "read_list\"n\n\021ExternalEventNode\022\037\n\027extern" +
-      "al_event_def_name\030\001 \001(\t\0228\n\017timeout_secon" +
+      "o\032\023common_wfspec.proto\032\017object_id.proto\"" +
+      "\224\004\n\006WfSpec\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(" +
+      "\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.protobuf." +
+      "Timestamp\022+\n\006status\030\004 \001(\0162\033.littlehorse." +
+      "MetadataStatus\022:\n\014thread_specs\030\005 \003(\0132$.l" +
+      "ittlehorse.WfSpec.ThreadSpecsEntry\022\036\n\026en" +
+      "trypoint_thread_name\030\006 \001(\t\022C\n\020retention_" +
+      "policy\030\007 \001(\0132$.littlehorse.WorkflowReten" +
+      "tionPolicyH\000\210\001\001\022;\n\tmigration\030\010 \001(\0132#.lit" +
+      "tlehorse.WfSpecVersionMigrationH\001\210\001\001\022@\n\024" +
+      "searchable_varaibles\030\t \003(\0132\".littlehorse" +
+      ".SearchableVariableDef\032K\n\020ThreadSpecsEnt" +
+      "ry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littleh" +
+      "orse.ThreadSpec:\0028\001B\023\n\021_retention_policy" +
+      "B\014\n\n_migration\"Q\n\027WorkflowRetentionPolic" +
+      "y\022&\n\034seconds_after_wf_termination\030\001 \001(\003H" +
+      "\000B\016\n\014wf_gc_policy\"N\n\tJsonIndex\022\022\n\nfield_" +
+      "path\030\001 \001(\t\022-\n\nfield_type\030\002 \001(\0162\031.littleh" +
+      "orse.VariableType\"B\n\025SearchableVariableD" +
+      "ef\022)\n\007var_def\030\001 \001(\0132\030.littlehorse.Variab" +
+      "leDef\"\215\001\n\014ThreadVarDef\022)\n\007var_def\030\001 \001(\0132" +
+      "\030.littlehorse.VariableDef\022\020\n\010required\030\002 " +
+      "\001(\010\022\022\n\nsearchable\030\003 \001(\010\022,\n\014json_indexes\030" +
+      "\004 \003(\0132\026.littlehorse.JsonIndex\"\275\002\n\nThread" +
+      "Spec\0221\n\005nodes\030\001 \003(\0132\".littlehorse.Thread" +
+      "Spec.NodesEntry\0220\n\rvariable_defs\030\002 \003(\0132\031" +
+      ".littlehorse.ThreadVarDef\0221\n\016interrupt_d" +
+      "efs\030\003 \003(\0132\031.littlehorse.InterruptDef\022A\n\020" +
+      "retention_policy\030\004 \001(\0132\".littlehorse.Thr" +
+      "eadRetentionPolicyH\000\210\001\001\032?\n\nNodesEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022 \n\005value\030\002 \001(\0132\021.littlehorse." +
+      "Node:\0028\001B\023\n\021_retention_policy\"W\n\025ThreadR" +
+      "etentionPolicy\022*\n seconds_after_thread_t" +
+      "ermination\030\001 \001(\003H\000B\022\n\020thread_gc_policy\"i" +
+      "\n\014InterruptDef\022>\n\025external_event_def_id\030" +
+      "\001 \001(\0132\037.littlehorse.ExternalEventDefId\022\031" +
+      "\n\021handler_spec_name\030\002 \001(\t\"\276\001\n\017StartThrea" +
+      "dNode\022\030\n\020thread_spec_name\030\001 \001(\t\022>\n\tvaria" +
+      "bles\030\002 \003(\0132+.littlehorse.StartThreadNode" +
+      ".VariablesEntry\032Q\n\016VariablesEntry\022\013\n\003key" +
+      "\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.littlehorse.Vari" +
+      "ableAssignment:\0028\001\"\203\002\n\030StartMultipleThre" +
+      "adsNode\022\030\n\020thread_spec_name\030\001 \001(\t\022G\n\tvar" +
+      "iables\030\002 \003(\01324.littlehorse.StartMultiple" +
+      "ThreadsNode.VariablesEntry\0221\n\010iterable\030\003" +
+      " \001(\0132\037.littlehorse.VariableAssignment\032Q\n" +
+      "\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 " +
+      "\001(\0132\037.littlehorse.VariableAssignment:\0028\001" +
+      "\"\360\001\n\021FailureHandlerDef\022\031\n\021handler_spec_n" +
+      "ame\030\002 \001(\t\022\032\n\020specific_failure\030\001 \001(\tH\000\022K\n" +
+      "\023any_failure_of_type\030\003 \001(\0162,.littlehorse" +
+      ".FailureHandlerDef.LHFailureTypeH\000\"C\n\rLH" +
+      "FailureType\022\026\n\022FAILURE_TYPE_ERROR\020\000\022\032\n\026F" +
+      "AILURE_TYPE_EXCEPTION\020\001B\022\n\020failure_to_ca" +
+      "tch\"\243\002\n\022WaitForThreadsNode\022@\n\007threads\030\001 " +
+      "\003(\0132/.littlehorse.WaitForThreadsNode.Thr" +
+      "eadToWaitFor\0229\n\013thread_list\030\003 \001(\0132\037.litt" +
+      "lehorse.VariableAssignmentH\000\210\001\001\0221\n\006polic" +
+      "y\030\002 \001(\0162!.littlehorse.WaitForThreadsPoli" +
+      "cy\032M\n\017ThreadToWaitFor\022:\n\021thread_run_numb" +
+      "er\030\001 \001(\0132\037.littlehorse.VariableAssignmen" +
+      "tB\016\n\014_thread_list\"\215\001\n\021ExternalEventNode\022" +
+      ">\n\025external_event_def_id\030\001 \001(\0132\037.littleh" +
+      "orse.ExternalEventDefId\0228\n\017timeout_secon" +
       "ds\030\002 \001(\0132\037.littlehorse.VariableAssignmen" +
       "t\"\020\n\016EntrypointNode\"M\n\010ExitNode\0221\n\013failu" +
       "re_def\030\001 \001(\0132\027.littlehorse.FailureDefH\000\210" +
@@ -313,6 +315,7 @@ public final class WfSpecOuterClass {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
+          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
     internal_static_littlehorse_WfSpec_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -373,7 +376,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_InterruptDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InterruptDef_descriptor,
-        new java.lang.String[] { "ExternalEventDefName", "HandlerSpecName", });
+        new java.lang.String[] { "ExternalEventDefId", "HandlerSpecName", });
     internal_static_littlehorse_StartThreadNode_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_StartThreadNode_fieldAccessorTable = new
@@ -421,7 +424,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_ExternalEventNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNode_descriptor,
-        new java.lang.String[] { "ExternalEventDefName", "TimeoutSeconds", });
+        new java.lang.String[] { "ExternalEventDefId", "TimeoutSeconds", });
     internal_static_littlehorse_EntrypointNode_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_littlehorse_EntrypointNode_fieldAccessorTable = new
@@ -509,6 +512,7 @@ public final class WfSpecOuterClass {
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
+    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

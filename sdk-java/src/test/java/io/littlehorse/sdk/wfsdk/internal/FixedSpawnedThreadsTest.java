@@ -17,8 +17,8 @@ public class FixedSpawnedThreadsTest {
 
     @BeforeEach
     void setup() {
-        doReturn(new WfRunVariableImpl("thread-1", 1)).when(spawnedThread1).getThreadNumberVariable();
-        doReturn(new WfRunVariableImpl("thread-2", 2)).when(spawnedThread2).getThreadNumberVariable();
+        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1));
+        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2));
     }
 
     @Test

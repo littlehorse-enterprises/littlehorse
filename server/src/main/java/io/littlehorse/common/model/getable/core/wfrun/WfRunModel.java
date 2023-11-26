@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -11,9 +12,9 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -27,6 +28,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -37,6 +39,7 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
@@ -57,9 +60,10 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 public class WfRunModel extends CoreGetable<WfRun> {
 
-    public String id;
-    public String wfSpecName;
-    public int wfSpecVersion;
+    private WfRunIdModel id;
+    private WfSpecIdModel wfSpecId;
+    private List<WfSpecIdModel> oldWfSpecVersions;
+
     public LHStatus status;
     public Date startTime;
     public Date endTime;
@@ -69,6 +73,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfRunModel() {
         threadRuns = new ArrayList<>();
+        oldWfSpecVersions = new ArrayList<>();
         pendingInterrupts = new ArrayList<>();
         pendingFailures = new ArrayList<>();
     }
@@ -116,7 +121,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = getDao().getWfSpec(wfSpecName, wfSpecVersion);
+            // TODO: This should be cleaned up
+            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
         }
         return wfSpec;
     }
@@ -132,11 +138,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .orElse(null);
     }
 
+    @Override
     public void initFrom(Message p) {
         WfRun proto = (WfRun) p;
-        id = proto.getId();
-        wfSpecName = proto.getWfSpecName();
-        wfSpecVersion = proto.getWfSpecVersion();
+        id = LHSerializable.fromProto(proto.getId(), WfRunIdModel.class);
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class);
         status = proto.getStatus();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
 
@@ -155,10 +161,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
         for (PendingFailureHandler pfhpb : proto.getPendingFailuresList()) {
             pendingFailures.add(PendingFailureHandlerModel.fromProto(pfhpb));
         }
+
+        for (WfSpecId oldWfSpecId : proto.getOldWfSpecVersionsList()) {
+            oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class));
+        }
     }
 
+    @Override
     public WfRunIdModel getObjectId() {
-        return new WfRunIdModel(id);
+        return id;
     }
 
     /*
@@ -172,9 +183,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfRun.Builder toProto() {
         WfRun.Builder out = WfRun.newBuilder()
-                .setId(id)
-                .setWfSpecName(wfSpecName)
-                .setWfSpecVersion(wfSpecVersion)
+                .setId(id.toProto())
+                .setWfSpecId(wfSpecId.toProto())
                 .setStatus(status)
                 .setStartTime(LHUtil.fromDate(startTime));
 
@@ -192,6 +202,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (PendingFailureHandlerModel pfh : pendingFailures) {
             out.addPendingFailures(pfh.toProto());
+        }
+        for (WfSpecIdModel oldWfSpec : oldWfSpecVersions) {
+            out.addOldWfSpecVersions(oldWfSpec.toProto());
         }
 
         return out;
@@ -219,6 +232,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         ThreadRunModel thread = new ThreadRunModel();
         thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
+        thread.setWfSpecId(wfSpecId);
 
         thread.status = LHStatus.RUNNING;
         thread.threadSpecName = threadName;
@@ -270,19 +284,20 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public String getWfSpecName() {
-        return wfSpecName;
+        return wfSpecId.getName();
     }
 
     public LHStatus getStatus() {
         return status;
     }
 
+    // TODO: This will break with the semantically versioned WfSpecs
     public String getWfSpecFormattedVersion() {
-        return LHUtil.toLHDbVersionFormat(wfSpecVersion);
+        return LHUtil.toLHDbVersionFormat(wfSpecId.getVersion());
     }
 
     public int getWfSpecVersion() {
-        return wfSpecVersion;
+        return wfSpecId.getVersion();
     }
 
     private boolean startXnHandlersAndInterrupts(Date time) {
@@ -321,7 +336,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
                 ExternalEventModel event = getDao().get(pi.externalEventId);
-                vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
+                vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.getContent());
             } else {
                 vars = new HashMap<>();
             }
@@ -447,10 +462,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         threadRuns.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
     }
 
-    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
-        ThreadRunModel handler = threadRuns.get(timeout.threadRunNumber);
+    public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
+        ThreadRunModel handler = threadRuns.get(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
-        advance(timeout.time);
+        advance(getDao().getEventTime());
     }
 
     public void failDueToWfSpecDeletion() {
@@ -505,14 +520,16 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date());
     }
 
-    public void processSleepNodeMatured(SleepNodeMatured req, Date time) throws LHValidationError {
-        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
+        int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
+        int nodeRunPosition = req.getNodeRunId().getPosition();
+        if (threadRunNumber >= threadRuns.size() || threadRunNumber < 0) {
             throw new LHValidationError(null, "Reference to nonexistent thread.");
         }
 
-        ThreadRunModel thread = threadRuns.get(req.threadRunNumber);
+        ThreadRunModel thread = threadRuns.get(threadRunNumber);
 
-        if (req.nodeRunPosition > thread.currentNodePosition) {
+        if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationError(null, "Reference to nonexistent nodeRun");
         }
 
@@ -532,10 +549,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 timer.setPrincipalId(this.getDao().context().principalId());
                 timer.setTenantId(this.getDao().context().tenantId());
                 timer.topic = this.getDao().getCoreCmdTopic();
-                timer.key = id;
+                timer.key = id.getPartitionKey().get();
                 timer.maturationTime = terminationTime;
                 DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
-                deleteWfRun.wfRunId = new WfRunIdModel(id);
+                deleteWfRun.wfRunId = id;
 
                 CommandModel deleteWfRunCmd = new CommandModel();
                 deleteWfRunCmd.setSubCommand(deleteWfRun);

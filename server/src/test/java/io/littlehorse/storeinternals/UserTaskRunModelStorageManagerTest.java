@@ -7,6 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
@@ -68,8 +69,8 @@ public class UserTaskRunModelStorageManagerTest {
             }
             UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
             userTaskRun.setStatus(userTaskRunStatus);
-            userTaskRun.setId(
-                    new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
+            userTaskRun.setId(new UserTaskRunIdModel(
+                    new WfRunIdModel(wfRunId + "1"), UUID.randomUUID().toString()));
             getableStorageManager.put(userTaskRun);
             getableStorageManager.commit();
         }

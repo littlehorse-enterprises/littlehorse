@@ -23,46 +23,49 @@ public interface TaskRunOrBuilder extends
   io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>repeated .littlehorse.TaskAttempt attempts = 2;</code>
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
+   */
+  boolean hasTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return The taskDefId.
+   */
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.TaskAttempt> 
       getAttemptsList();
   /**
-   * <code>repeated .littlehorse.TaskAttempt attempts = 2;</code>
+   * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TaskAttempt getAttempts(int index);
   /**
-   * <code>repeated .littlehorse.TaskAttempt attempts = 2;</code>
+   * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   int getAttemptsCount();
   /**
-   * <code>repeated .littlehorse.TaskAttempt attempts = 2;</code>
+   * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder> 
       getAttemptsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.TaskAttempt attempts = 2;</code>
+   * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder getAttemptsOrBuilder(
       int index);
 
   /**
-   * <code>int32 max_attempts = 3;</code>
+   * <code>int32 max_attempts = 4;</code>
    * @return The maxAttempts.
    */
   int getMaxAttempts();
-
-  /**
-   * <code>string task_def_name = 4;</code>
-   * @return The taskDefName.
-   */
-  java.lang.String getTaskDefName();
-  /**
-   * <code>string task_def_name = 4;</code>
-   * @return The bytes for taskDefName.
-   */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
 
   /**
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>

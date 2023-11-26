@@ -39,7 +39,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.class, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder.class);
   }
 
-  private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
@@ -79,23 +78,30 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int RETENTION_HOURS_FIELD_NUMBER = 2;
-  private int retentionHours_ = 0;
+  public static final int RETENTION_POLICY_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy retentionPolicy_;
   /**
-   * <code>optional int32 retention_hours = 2;</code>
-   * @return Whether the retentionHours field is set.
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   * @return Whether the retentionPolicy field is set.
    */
   @java.lang.Override
-  public boolean hasRetentionHours() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public boolean hasRetentionPolicy() {
+    return retentionPolicy_ != null;
   }
   /**
-   * <code>optional int32 retention_hours = 2;</code>
-   * @return The retentionHours.
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   * @return The retentionPolicy.
    */
   @java.lang.Override
-  public int getRetentionHours() {
-    return retentionHours_;
+  public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy getRetentionPolicy() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+  }
+  /**
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -115,8 +121,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(2, retentionHours_);
+    if (retentionPolicy_ != null) {
+      output.writeMessage(2, getRetentionPolicy());
     }
     getUnknownFields().writeTo(output);
   }
@@ -130,9 +136,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (retentionPolicy_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, retentionHours_);
+        .computeMessageSize(2, getRetentionPolicy());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -151,10 +157,10 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (hasRetentionHours() != other.hasRetentionHours()) return false;
-    if (hasRetentionHours()) {
-      if (getRetentionHours()
-          != other.getRetentionHours()) return false;
+    if (hasRetentionPolicy() != other.hasRetentionPolicy()) return false;
+    if (hasRetentionPolicy()) {
+      if (!getRetentionPolicy()
+          .equals(other.getRetentionPolicy())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -169,9 +175,9 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (hasRetentionHours()) {
-      hash = (37 * hash) + RETENTION_HOURS_FIELD_NUMBER;
-      hash = (53 * hash) + getRetentionHours();
+    if (hasRetentionPolicy()) {
+      hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
+      hash = (53 * hash) + getRetentionPolicy().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -305,7 +311,11 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      retentionHours_ = 0;
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
       return this;
     }
 
@@ -342,12 +352,11 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.retentionHours_ = retentionHours_;
-        to_bitField0_ |= 0x00000001;
+        result.retentionPolicy_ = retentionPolicyBuilder_ == null
+            ? retentionPolicy_
+            : retentionPolicyBuilder_.build();
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -399,8 +408,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasRetentionHours()) {
-        setRetentionHours(other.getRetentionHours());
+      if (other.hasRetentionPolicy()) {
+        mergeRetentionPolicy(other.getRetentionPolicy());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -433,11 +442,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              retentionHours_ = input.readInt32();
+            case 18: {
+              input.readMessage(
+                  getRetentionPolicyFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
-            } // case 16
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -527,44 +538,123 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int retentionHours_ ;
+    private io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy retentionPolicy_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
-     * <code>optional int32 retention_hours = 2;</code>
-     * @return Whether the retentionHours field is set.
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     * @return Whether the retentionPolicy field is set.
      */
-    @java.lang.Override
-    public boolean hasRetentionHours() {
+    public boolean hasRetentionPolicy() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional int32 retention_hours = 2;</code>
-     * @return The retentionHours.
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     * @return The retentionPolicy.
      */
-    @java.lang.Override
-    public int getRetentionHours() {
-      return retentionHours_;
+    public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy getRetentionPolicy() {
+      if (retentionPolicyBuilder_ == null) {
+        return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      } else {
+        return retentionPolicyBuilder_.getMessage();
+      }
     }
     /**
-     * <code>optional int32 retention_hours = 2;</code>
-     * @param value The retentionHours to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
      */
-    public Builder setRetentionHours(int value) {
-
-      retentionHours_ = value;
+    public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        retentionPolicy_ = value;
+      } else {
+        retentionPolicyBuilder_.setMessage(value);
+      }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional int32 retention_hours = 2;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
      */
-    public Builder clearRetentionHours() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      retentionHours_ = 0;
+    public Builder setRetentionPolicy(
+        io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder builderForValue) {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicy_ = builderForValue.build();
+      } else {
+        retentionPolicyBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
+    }
+    /**
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     */
+    public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          retentionPolicy_ != null &&
+          retentionPolicy_ != io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance()) {
+          getRetentionPolicyBuilder().mergeFrom(value);
+        } else {
+          retentionPolicy_ = value;
+        }
+      } else {
+        retentionPolicyBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     */
+    public Builder clearRetentionPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder getRetentionPolicyBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getRetentionPolicyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+      if (retentionPolicyBuilder_ != null) {
+        return retentionPolicyBuilder_.getMessageOrBuilder();
+      } else {
+        return retentionPolicy_ == null ?
+            io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      }
+    }
+    /**
+     * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder> 
+        getRetentionPolicyFieldBuilder() {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder>(
+                getRetentionPolicy(),
+                getParentForChildren(),
+                isClean());
+        retentionPolicy_ = null;
+      }
+      return retentionPolicyBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -224,7 +225,7 @@ public abstract class Test {
         NodeRun result;
         try {
             result = client.getNodeRun(NodeRunId.newBuilder()
-                    .setWfRunId(wfRunId)
+                    .setWfRunId(LHLibUtil.wfRunId(wfRunId))
                     .setThreadRunNumber(threadRunNumber)
                     .setPosition(nodeRunPosition)
                     .build());
@@ -262,7 +263,7 @@ public abstract class Test {
 
         try {
             result = client.getVariable(VariableId.newBuilder()
-                    .setWfRunId(wfRunId)
+                    .setWfRunId(LHLibUtil.wfRunId(wfRunId))
                     .setThreadRunNumber(threadRunNumber)
                     .setName(name)
                     .build());
@@ -313,8 +314,8 @@ public abstract class Test {
         }
         PutExternalEventRequest.Builder req = PutExternalEventRequest.newBuilder()
                 .setContent(varVal)
-                .setWfRunId(wfRunId)
-                .setExternalEventDefName(eventName)
+                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId(eventName))
                 .setGuid(guid);
         try {
             client.putExternalEvent(req.build());
@@ -323,9 +324,9 @@ public abstract class Test {
         }
 
         return ExternalEventId.newBuilder()
-                .setExternalEventDefName(eventName)
+                .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(eventName))
                 .setGuid(guid)
-                .setWfRunId(wfRunId)
+                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
                 .build();
     }
 

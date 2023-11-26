@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -9,6 +10,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
@@ -35,9 +37,9 @@ public class SearchVariableRequestModel
         extends PublicScanRequest<
                 SearchVariableRequest, VariableIdList, VariableId, VariableIdModel, SearchVariableReply> {
 
-    public VariableCriteriaCase type;
-    public NameAndValueRequest value;
-    public String wfRunId;
+    private VariableCriteriaCase type;
+    private NameAndValueRequest value;
+    private WfRunIdModel wfRunId;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -64,7 +66,7 @@ public class SearchVariableRequestModel
                 value = p.getValue();
                 break;
             case WF_RUN_ID:
-                wfRunId = p.getWfRunId();
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
                 break;
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -83,7 +85,7 @@ public class SearchVariableRequestModel
             case VALUE:
                 out.setValue(value);
             case WF_RUN_ID:
-                out.setWfRunId(wfRunId);
+                out.setWfRunId(wfRunId.toProto());
                 break;
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("not possible");

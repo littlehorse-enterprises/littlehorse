@@ -51,7 +51,7 @@ taskDefName.
 			&model.ListTaskMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),
-				TaskDefName:     taskDefName,
+				TaskDefId:       &model.TaskDefId{Name: taskDefName},
 				NumWindows:      int32(numWindows),
 			},
 		))

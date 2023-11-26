@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.global.taskdef;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -20,11 +21,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class TaskDefModel extends GlobalGetable<TaskDef> {
 
-    @Getter
-    public String name;
+    @Setter
+    private TaskDefIdModel id;
 
     public Date createdAt;
     public List<VariableDefModel> inputVars;
@@ -33,6 +33,7 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
         inputVars = new ArrayList<>();
     }
 
+    @Override
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
         return createdAt;
@@ -43,8 +44,9 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
         return List.of();
     }
 
+    @Override
     public TaskDefIdModel getObjectId() {
-        return new TaskDefIdModel(name);
+        return id;
     }
 
     @Override
@@ -52,12 +54,14 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
         return List.of();
     }
 
+    @Override
     public Class<TaskDef> getProtoBaseClass() {
         return TaskDef.class;
     }
 
+    @Override
     public TaskDef.Builder toProto() {
-        TaskDef.Builder b = TaskDef.newBuilder().setName(name).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        TaskDef.Builder b = TaskDef.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
@@ -65,14 +69,19 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
         return b;
     }
 
+    @Override
     public void initFrom(Message p) {
         TaskDef proto = (TaskDef) p;
-        name = proto.getName();
+        id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
 
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry));
         }
+    }
+
+    public String getName() {
+        return id.getName();
     }
 
     public static TaskDefModel fromProto(TaskDef p) {

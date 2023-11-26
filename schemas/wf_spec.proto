@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
+import "object_id.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -73,7 +74,7 @@ message ThreadRetentionPolicy {
 }
 
 message InterruptDef {
-  string external_event_def_name = 1;
+  ExternalEventDefId external_event_def_id = 1;
   string handler_spec_name = 2;
 }
 
@@ -114,7 +115,7 @@ message WaitForThreadsNode {
 }
 
 message ExternalEventNode {
-  string external_event_def_name = 1;
+  ExternalEventDefId external_event_def_id = 1;
   VariableAssignment timeout_seconds = 2;
 }
 

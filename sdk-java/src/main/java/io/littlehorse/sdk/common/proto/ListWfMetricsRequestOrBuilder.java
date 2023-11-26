@@ -8,52 +8,49 @@ public interface ListWfMetricsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return Whether the lastWindowStart field is set.
    */
   boolean hasLastWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return The lastWindowStart.
    */
   com.google.protobuf.Timestamp getLastWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp last_window_start = 1;</code>
+   * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder();
 
   /**
-   * <code>int32 num_windows = 2;</code>
-   * @return The numWindows.
-   */
-  int getNumWindows();
-
-  /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The wfSpecName.
-   */
-  java.lang.String getWfSpecName();
-  /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The bytes for wfSpecName.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
-
-  /**
-   * <code>int32 wf_spec_version = 4;</code>
-   * @return The wfSpecVersion.
-   */
-  int getWfSpecVersion();
-
-  /**
-   * <code>.littlehorse.MetricsWindowLength window_length = 5;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   int getWindowLengthValue();
   /**
-   * <code>.littlehorse.MetricsWindowLength window_length = 5;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowLength();
+
+  /**
+   * <code>int32 num_windows = 4;</code>
+   * @return The numWindows.
+   */
+  int getNumWindows();
 }

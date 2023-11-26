@@ -422,7 +422,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(req.getClientId())
                 .setListenerName(req.getListenerName())
-                .setTaskDefName(req.getTaskDefName())
+                .setTaskDefId(req.getTaskDefId())
                 .build();
 
         TaskWorkerHeartBeatRequestModel heartBeat =

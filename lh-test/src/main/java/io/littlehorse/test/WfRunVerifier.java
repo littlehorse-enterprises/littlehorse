@@ -170,7 +170,7 @@ public class WfRunVerifier extends AbstractVerifier {
 
     private NodeRunId nodeRunIdFrom(String wfRunId, int threadRunNumber, int nodeRunNumber) {
         return NodeRunId.newBuilder()
-                .setWfRunId(wfRunId)
+                .setWfRunId(WfRunId.newBuilder().setId(wfRunId))
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodeRunNumber)
                 .build();

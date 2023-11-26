@@ -126,7 +126,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeBooleanVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.BOOL);
         variable.getValue().setBoolVal(true);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -153,7 +153,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalStringVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -220,7 +220,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -286,7 +286,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -362,7 +362,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable.getValue()
                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
@@ -499,7 +499,7 @@ public class GetableStorageManagerTest {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
         TaskRunModel taskRun = TestUtil.taskRun();
         VariableModel variable = TestUtil.variable("0000000");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -511,11 +511,11 @@ public class GetableStorageManagerTest {
         ExternalEventModel externalEvent = TestUtil.externalEvent();
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
         threadSpecModel1.getNodes().forEach((s, node) -> {
-            node.getTaskNode().setTaskDefName("input-name1");
+            node.getTaskNode().getTaskDefId().setName("input-name1");
         });
         ThreadSpecModel threadSpecModel2 = TestUtil.threadSpec();
         threadSpecModel2.getNodes().forEach((s, node) -> {
-            node.getTaskNode().setTaskDefName("input-name2");
+            node.getTaskNode().getTaskDefId().setName("input-name2");
         });
         return Stream.of(
                 Arguments.of(wfRunModel, 3),

@@ -34,14 +34,17 @@ public interface TaskDefMetricsIdOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType();
 
   /**
-   * <code>string task_def_name = 3;</code>
-   * @return The taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 3;</code>
+   * @return Whether the taskDefId field is set.
    */
-  java.lang.String getTaskDefName();
+  boolean hasTaskDefId();
   /**
-   * <code>string task_def_name = 3;</code>
-   * @return The bytes for taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 3;</code>
+   * @return The taskDefId.
    */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 }

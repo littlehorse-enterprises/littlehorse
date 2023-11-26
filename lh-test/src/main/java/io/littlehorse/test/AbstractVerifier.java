@@ -62,6 +62,6 @@ public class AbstractVerifier implements Verifier {
             }
         }
         WfRun wfRun = lhClient.runWf(req.build());
-        return wfRun.getId();
+        return wfRun.getId().getId();
     }
 }

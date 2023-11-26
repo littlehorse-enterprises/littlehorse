@@ -15,13 +15,15 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
+@Getter
 public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
-    public String wfSpecName;
-    public Integer wfSpecVersion;
-    public Map<String, VariableValueModel> variables;
-    public String id;
+    private String wfSpecName;
+    private Integer wfSpecVersion;
+    private Map<String, VariableValueModel> variables;
+    private String id;
 
     public String getPartitionKey() {
         if (id == null) {

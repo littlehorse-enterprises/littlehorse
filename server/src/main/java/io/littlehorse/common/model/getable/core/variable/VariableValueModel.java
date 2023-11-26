@@ -186,6 +186,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         throw new RuntimeException("Unsupported operation: " + operation);
     }
 
+    public boolean isNull() {
+        return type == VariableType.NULL;
+    }
+
     @SuppressWarnings("unchecked")
     public VariableValueModel jsonPath(String path) throws LHVarSubError {
         Object val;

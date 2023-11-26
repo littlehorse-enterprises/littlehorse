@@ -1,5 +1,6 @@
 package io.littlehorse.tests.cases.lifecycle;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
@@ -86,7 +87,7 @@ public class ACSimpleTaskRebalancing extends Test {
     private RegisterTaskWorkerRequest register(String clientId) {
         return RegisterTaskWorkerRequest.newBuilder()
                 .setClientId(clientId)
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(LHLibUtil.taskDefId(taskDefName))
                 .setListenerName(config.getConnectListener())
                 .build();
     }

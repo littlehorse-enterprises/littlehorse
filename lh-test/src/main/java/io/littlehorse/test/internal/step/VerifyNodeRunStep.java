@@ -3,6 +3,7 @@ package io.littlehorse.test.internal.step;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.function.Consumer;
 
 public class VerifyNodeRunStep extends AbstractStep {
@@ -21,7 +22,7 @@ public class VerifyNodeRunStep extends AbstractStep {
     @Override
     public void tryExecute(Object context, LHPublicApiBlockingStub lhClient) {
         NodeRunId id = NodeRunId.newBuilder()
-                .setWfRunId(context.toString())
+                .setWfRunId(WfRunId.newBuilder().setId(context.toString()))
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodePosition)
                 .build();

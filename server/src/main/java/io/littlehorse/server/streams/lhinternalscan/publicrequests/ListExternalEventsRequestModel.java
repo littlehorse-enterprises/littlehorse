@@ -1,10 +1,12 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
@@ -24,19 +26,19 @@ public class ListExternalEventsRequestModel
                 ExternalEventModel,
                 ListExternalEventsReply> {
 
-    public String wfRunId;
+    public WfRunIdModel wfRunId;
 
     public Class<ListExternalEventsRequest> getProtoBaseClass() {
         return ListExternalEventsRequest.class;
     }
 
     public ListExternalEventsRequest.Builder toProto() {
-        return ListExternalEventsRequest.newBuilder().setWfRunId(wfRunId);
+        return ListExternalEventsRequest.newBuilder().setWfRunId(wfRunId.toProto());
     }
 
     public void initFrom(Message proto) {
         ListExternalEventsRequest p = (ListExternalEventsRequest) proto;
-        wfRunId = p.getWfRunId();
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
     }
 
     public GetableClassEnum getObjectType() {

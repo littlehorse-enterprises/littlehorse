@@ -13,9 +13,7 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message NodeRun {
-  string wf_run_id = 1;
-  int32 thread_run_number = 2;
-  int32 position = 3;
+  NodeRunId id = 1;
 
   WfSpecId wf_spec_id = 4;
   repeated int32 failure_handler_ids = 5;
@@ -77,7 +75,7 @@ message WaitForThreadsRun {
 }
 
 message ExternalEventRun {
-  string external_event_def_name = 1;
+  ExternalEventDefId external_event_def_id = 1;
   optional google.protobuf.Timestamp event_time = 2;
   optional ExternalEventId external_event_id = 3;
 }

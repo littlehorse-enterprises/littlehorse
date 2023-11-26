@@ -1,5 +1,6 @@
 package io.littlehorse.tests.cases.lifecycle;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
@@ -7,7 +8,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
-import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.tests.Test;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,14 +77,14 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
     private RegisterTaskWorkerRequest register(String clientId) {
         return RegisterTaskWorkerRequest.newBuilder()
                 .setClientId(clientId)
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(LHLibUtil.taskDefId(taskDefName))
                 .setListenerName(config.getConnectListener())
                 .build();
     }
 
     public void cleanup() {
         client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
-                .setId(TaskDefId.newBuilder().setName(taskDefName))
+                .setId(LHLibUtil.taskDefId(taskDefName))
                 .build());
     }
 }

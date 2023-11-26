@@ -30,7 +30,8 @@ public final class TaskDefOuterClass {
     java.lang.String[] descriptorData = {
       "\n\016task_def.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\023common_wfspec.pr" +
-      "oto\"u\n\007TaskDef\022\014\n\004name\030\001 \001(\t\022,\n\ninput_va" +
+      "oto\032\017object_id.proto\"\213\001\n\007TaskDef\022\"\n\002id\030\001" +
+      " \001(\0132\026.littlehorse.TaskDefId\022,\n\ninput_va" +
       "rs\030\002 \003(\0132\030.littlehorse.VariableDef\022.\n\ncr" +
       "eated_at\030\003 \001(\0132\032.google.protobuf.Timesta" +
       "mpBG\n\037io.littlehorse.sdk.common.protoP\001Z" +
@@ -42,15 +43,17 @@ public final class TaskDefOuterClass {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
+          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
     internal_static_littlehorse_TaskDef_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_littlehorse_TaskDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskDef_descriptor,
-        new java.lang.String[] { "Name", "InputVars", "CreatedAt", });
+        new java.lang.String[] { "Id", "InputVars", "CreatedAt", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
+    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

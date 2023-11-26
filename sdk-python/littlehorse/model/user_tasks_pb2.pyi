@@ -116,18 +116,16 @@ class CancelUserTaskRunRequest(_message.Message):
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
 class UserTaskTriggerReference(_message.Message):
-    __slots__ = ["node_run_id", "user_task_event_number", "wf_spec_id", "user_id", "user_group"]
+    __slots__ = ["node_run_id", "user_task_event_number", "user_id", "user_group"]
     NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_EVENT_NUMBER_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
     node_run_id: _object_id_pb2.NodeRunId
     user_task_event_number: int
-    wf_spec_id: _object_id_pb2.WfSpecId
     user_id: str
     user_group: str
-    def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., user_task_event_number: _Optional[int] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ...) -> None: ...
+    def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., user_task_event_number: _Optional[int] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ...) -> None: ...
 
 class UserTaskEvent(_message.Message):
     __slots__ = ["time", "task_executed", "assigned", "cancelled"]

@@ -11,6 +11,10 @@ from littlehorse.model.common_wfspec_pb2 import (
 )
 from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
+from littlehorse.model.object_id_pb2 import (
+    ExternalEventDefId,
+    TaskDefId,
+)
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
     EdgeCondition,
@@ -176,8 +180,8 @@ class TestThreadBuilder(unittest.TestCase):
                 variable_defs=[
                     ThreadVarDef(
                         var_def=VariableDef(name="input-name", type=VariableType.STR),
-                        ),
-                    ],
+                    ),
+                ],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -329,11 +333,11 @@ class TestThreadBuilder(unittest.TestCase):
                         ],
                     ),
                     "2-task-a-TASK": Node(
-                        task=TaskNode(task_def_name="task-a"),
+                        task=TaskNode(task_def_id=TaskDefId(name="task-a")),
                         outgoing_edges=[Edge(sink_node_name="3-task-b-TASK")],
                     ),
                     "3-task-b-TASK": Node(
-                        task=TaskNode(task_def_name="task-b"),
+                        task=TaskNode(task_def_id=TaskDefId(name="task-b")),
                         outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
                     ),
                     "4-nop-NOP": Node(
@@ -341,11 +345,11 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[Edge(sink_node_name="7-exit-EXIT")],
                     ),
                     "5-task-c-TASK": Node(
-                        task=TaskNode(task_def_name="task-c"),
+                        task=TaskNode(task_def_id=TaskDefId(name="task-c")),
                         outgoing_edges=[Edge(sink_node_name="6-task-d-TASK")],
                     ),
                     "6-task-d-TASK": Node(
-                        task=TaskNode(task_def_name="task-d"),
+                        task=TaskNode(task_def_id=TaskDefId(name="task-d")),
                         outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
                     ),
                     "7-exit-EXIT": Node(exit=ExitNode()),
@@ -416,7 +420,7 @@ class TestThreadBuilder(unittest.TestCase):
                         ],
                     ),
                     "2-my-task-TASK": Node(
-                        task=TaskNode(task_def_name="my-task"),
+                        task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                         outgoing_edges=[Edge(sink_node_name="3-nop-NOP")],
                     ),
                     "3-nop-NOP": Node(
@@ -491,7 +495,7 @@ class TestThreadBuilder(unittest.TestCase):
                         ],
                     ),
                     "2-my-task-TASK": Node(
-                        task=TaskNode(task_def_name="my-task"),
+                        task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                         outgoing_edges=[Edge(sink_node_name="3-nop-NOP")],
                     ),
                     "3-nop-NOP": Node(
@@ -536,7 +540,7 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[Edge(sink_node_name="1-greet-TASK")],
                     ),
                     "1-greet-TASK": Node(
-                        task=TaskNode(task_def_name="greet"),
+                        task=TaskNode(task_def_id=TaskDefId(name="greet")),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                     ),
                     "2-exit-EXIT": Node(exit=ExitNode()),
@@ -566,7 +570,7 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "1-greet-TASK": Node(
                         task=TaskNode(
-                            task_def_name="greet",
+                            task_def_id=TaskDefId(name="greet"),
                             variables=[VariableAssignment(variable_name="input-name")],
                         ),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
@@ -594,7 +598,7 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "1-my-event-EXTERNAL_EVENT": Node(
                         external_event=ExternalEventNode(
-                            external_event_def_name="my-event",
+                            external_event_def_id=ExternalEventDefId(name="my-event"),
                         ),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                     ),
@@ -621,7 +625,7 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "1-my-event-EXTERNAL_EVENT": Node(
                         external_event=ExternalEventNode(
-                            external_event_def_name="my-event",
+                            external_event_def_id=ExternalEventDefId(name="my-event"),
                             timeout_seconds=to_variable_assignment(3),
                         ),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
@@ -737,7 +741,7 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "1-result-TASK": Node(
                         task=TaskNode(
-                            task_def_name="result",
+                            task_def_id=TaskDefId(name="result"),
                             variables=[VariableAssignment(variable_name="value")],
                         ),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
@@ -848,7 +852,9 @@ class TestWorkflow(unittest.TestCase):
                     "entrypoint": ThreadSpec(
                         interrupt_defs=[
                             InterruptDef(
-                                external_event_def_name="interruption-event",
+                                external_event_def_id=ExternalEventDefId(
+                                    name="interruption-event",
+                                ),
                                 handler_spec_name="interrupt-interruption-event",
                             )
                         ],
@@ -858,7 +864,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -873,7 +879,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "1-interrupt-handler-TASK": Node(
-                                task=TaskNode(task_def_name="interrupt-handler"),
+                                task=TaskNode(task_def_id=TaskDefId(name="interrupt-handler")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -906,7 +912,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
                             ),
                             "1-fail-TASK": Node(
-                                task=TaskNode(task_def_name="fail"),
+                                task=TaskNode(task_def_id=TaskDefId(name="fail")),
                                 outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
                                 failure_handlers=[
                                     FailureHandlerDef(
@@ -915,7 +921,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "2-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
                             ),
                             "3-exit-EXIT": Node(exit=ExitNode()),
@@ -928,7 +934,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -961,7 +967,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
                             ),
                             "1-fail-TASK": Node(
-                                task=TaskNode(task_def_name="fail"),
+                                task=TaskNode(task_def_id=TaskDefId(name="fail")),
                                 outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
                                 failure_handlers=[
                                     FailureHandlerDef(
@@ -971,7 +977,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "2-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
                             ),
                             "3-exit-EXIT": Node(exit=ExitNode()),
@@ -984,7 +990,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -1017,7 +1023,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
                             ),
                             "1-fail-TASK": Node(
-                                task=TaskNode(task_def_name="fail"),
+                                task=TaskNode(task_def_id=TaskDefId(name="fail")),
                                 outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
                                 failure_handlers=[
                                     FailureHandlerDef(
@@ -1027,7 +1033,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "2-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
                             ),
                             "3-exit-EXIT": Node(exit=ExitNode()),
@@ -1040,7 +1046,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -1073,7 +1079,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
                             ),
                             "1-fail-TASK": Node(
-                                task=TaskNode(task_def_name="fail"),
+                                task=TaskNode(task_def_id=TaskDefId(name="fail")),
                                 outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
                                 failure_handlers=[
                                     FailureHandlerDef(
@@ -1083,7 +1089,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "2-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
                             ),
                             "3-exit-EXIT": Node(exit=ExitNode()),
@@ -1096,7 +1102,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -1129,7 +1135,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
                             ),
                             "1-fail-TASK": Node(
-                                task=TaskNode(task_def_name="fail"),
+                                task=TaskNode(task_def_id=TaskDefId(name="fail")),
                                 outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
                                 failure_handlers=[
                                     FailureHandlerDef(
@@ -1139,7 +1145,7 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "2-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
                             ),
                             "3-exit-EXIT": Node(exit=ExitNode()),
@@ -1152,7 +1158,7 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
                             ),
                             "1-my-task-TASK": Node(
-                                task=TaskNode(task_def_name="my-task"),
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
@@ -1189,9 +1195,11 @@ class TestWorkflow(unittest.TestCase):
                 thread_specs={
                     "entrypoint": ThreadSpec(
                         variable_defs=[
-                            ThreadVarDef(var_def=VariableDef(
-                                name="input-name", type=VariableType.STR
-                            )),
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
                         ],
                         nodes={
                             "0-entrypoint-ENTRYPOINT": Node(

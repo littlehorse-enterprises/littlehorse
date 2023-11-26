@@ -4,31 +4,37 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
+import "object_id.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
-
 message ExternalEvent {
-  string wf_run_id = 1;
-  string external_event_def_name = 2;
-  string guid = 3;
-  google.protobuf.Timestamp created_at = 4;
-  VariableValue content = 5;
-  optional int32 thread_run_number = 6;
-  optional int32 node_run_position = 7;
-  bool claimed = 8;
+  ExternalEventId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  VariableValue content = 3;
+  optional int32 thread_run_number = 4;
+  optional int32 node_run_position = 5;
+  bool claimed = 6;
 }
 
 // ExternalEventDef
 message ExternalEventDef {
   string name = 1;
   google.protobuf.Timestamp created_at = 2;
-  int32 retention_hours = 3;
+  ExternalEventRetentionPolicy retention_policy = 3;
 
   // TODO: Add output schema.
   // TODO: Add ability to correlate to WfRun.
   // TODO: Add ability to auto-provision a webhook listener.
+}
+
+message ExternalEventRetentionPolicy {
+  oneof ext_evt_gc_policy {
+    // Delete such an ExternalEvent X seconds after it has been registered if it
+    // has not yet been claimed by a WfRun.
+    int64 seconds_after_put = 1;
+  }
 }

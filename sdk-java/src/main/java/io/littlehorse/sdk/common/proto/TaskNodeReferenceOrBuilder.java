@@ -21,19 +21,4 @@ public interface TaskNodeReferenceOrBuilder extends
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 }

@@ -1,10 +1,14 @@
 package io.littlehorse.common.model.getable.core.externalevent;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -14,23 +18,46 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-@Setter
 public class ExternalEventModel extends CoreGetable<ExternalEvent> {
 
-    // We want Jackson to show the full ID, not this.
-    public String guid;
-
-    public String wfRunId;
-    public String externalEventDefName;
+    private ExternalEventIdModel id;
     private Date createdAt;
-    public VariableValueModel content;
-    public Integer threadRunNumber;
-    public Integer nodeRunPosition;
-    public boolean claimed;
+    private VariableValueModel content;
+    private Integer threadRunNumber;
+    private Integer nodeRunPosition;
+    private boolean claimed;
+
+    public ExternalEventModel() {}
+
+    /**
+     * Create ExternalEvent
+     * @param content is the content of the ExternalEvent
+     * @param wfRunId is the wfRunId
+     * @param externalEventDefId doesn't need explaining, use your brain
+     * @param guid can be null. If null, it is auto-generated
+     * @param threadRunNumber can be null. If null, left as null.
+     * @param nodeRunPosition can be null. If null, left as null.
+     * @param createdAt is the event time
+     */
+    public ExternalEventModel(
+            VariableValueModel content,
+            WfRunIdModel wfRunId,
+            ExternalEventDefIdModel externalEventDefId,
+            String guid,
+            Integer threadRunNumber,
+            Integer nodeRunPosition,
+            Date createdAt) {
+        this.content = content;
+        if (guid == null) guid = LHUtil.generateGuid();
+        this.id = new ExternalEventIdModel(wfRunId, externalEventDefId, guid);
+        this.createdAt = createdAt;
+        this.threadRunNumber = threadRunNumber;
+        this.nodeRunPosition = nodeRunPosition;
+        this.claimed = false;
+    }
 
     public boolean hasResponse() {
         return true;
@@ -42,9 +69,7 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
 
     public void initFrom(Message proto) {
         ExternalEvent p = (ExternalEvent) proto;
-        wfRunId = p.getWfRunId();
-        externalEventDefName = p.getExternalEventDefName();
-        guid = p.getGuid();
+        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class);
         if (p.hasCreatedAt()) {
             createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         } else {
@@ -63,9 +88,7 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
 
     public ExternalEvent.Builder toProto() {
         ExternalEvent.Builder out = ExternalEvent.newBuilder()
-                .setWfRunId(wfRunId)
-                .setExternalEventDefName(externalEventDefName)
-                .setGuid(guid)
+                .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setContent(content.toProto())
                 .setClaimed(claimed);
@@ -113,6 +136,12 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         return List.of();
     }
 
+    public void markClaimedBy(NodeRunModel nodeRun) {
+        this.claimed = true;
+        this.threadRunNumber = nodeRun.getId().getThreadRunNumber();
+        this.nodeRunPosition = nodeRun.getId().getPosition();
+    }
+
     public static ExternalEventModel fromProto(ExternalEvent p) {
         ExternalEventModel out = new ExternalEventModel();
         out.initFrom(p);
@@ -132,6 +161,10 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
     }
 
     public ExternalEventIdModel getObjectId() {
-        return new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
+        return id;
+    }
+
+    public String getExternalEventDefName() {
+        return id.getExternalEventDefId().getName();
     }
 }

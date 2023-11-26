@@ -21,6 +21,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -165,9 +166,9 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName) {
+    public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefName) {
 
-        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId, externalEventDefName);
+        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId.toString(), externalEventDefName.toString());
 
         return storageManager.getFirstByCreatedTimeFromPrefix(
                 extEvtPrefix, ExternalEventModel.class, externalEvent -> !externalEvent.isClaimed());

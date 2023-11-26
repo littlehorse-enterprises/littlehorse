@@ -1,10 +1,12 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
@@ -19,19 +21,19 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVari
 public class ListVariablesRequestModel
         extends PublicScanRequest<ListVariablesRequest, VariableList, Variable, VariableModel, ListVariablesReply> {
 
-    public String wfRunId;
+    public WfRunIdModel wfRunId;
 
     public Class<ListVariablesRequest> getProtoBaseClass() {
         return ListVariablesRequest.class;
     }
 
     public ListVariablesRequest.Builder toProto() {
-        return ListVariablesRequest.newBuilder().setWfRunId(wfRunId);
+        return ListVariablesRequest.newBuilder().setWfRunId(wfRunId.toProto());
     }
 
     public void initFrom(Message proto) {
         ListVariablesRequest p = (ListVariablesRequest) proto;
-        wfRunId = p.getWfRunId();
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
     }
 
     public GetableClassEnum getObjectType() {

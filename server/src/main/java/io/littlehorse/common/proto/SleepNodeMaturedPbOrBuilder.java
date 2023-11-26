@@ -8,26 +8,17 @@ public interface SleepNodeMaturedPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+   * @return Whether the nodeRunId field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasNodeRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
+   * @return The nodeRunId.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
+  io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId();
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 node_run_position = 3;</code>
-   * @return The nodeRunPosition.
-   */
-  int getNodeRunPosition();
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
 }

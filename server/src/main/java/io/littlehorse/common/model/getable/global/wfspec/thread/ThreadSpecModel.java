@@ -144,7 +144,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
         interruptExternalEventDefs = new HashSet<>();
         for (InterruptDefModel idef : interruptDefs) {
-            interruptExternalEventDefs.add(idef.externalEventDefName);
+            interruptExternalEventDefs.add(idef.getExternalEventDefId().getName());
         }
         return interruptExternalEventDefs;
     }
@@ -155,7 +155,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         Set<String> out = new HashSet<>();
         for (NodeModel n : nodes.values()) {
             if (n.type == NodeCase.EXTERNAL_EVENT) {
-                out.add(n.externalEventNode.externalEventDefName);
+                out.add(n.externalEventNode.getExternalEventDefId().getName());
             }
         }
         return out;
@@ -230,7 +230,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             try {
                 idef.validate(metadataDao, config);
             } catch (LHApiException exn) {
-                throw exn.getCopyWithPrefix("Interrupt Def for " + idef.externalEventDefName);
+                throw exn.getCopyWithPrefix(
+                        "Interrupt Def for " + idef.getExternalEventDefId().getName());
             }
         }
         validateExternalEventDefUse();
@@ -252,7 +253,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     private void validateExternalEventDefUse() throws LHApiException {
         // Check that interrupts aren't used anywhere else
         for (InterruptDefModel idef : interruptDefs) {
-            String eedn = idef.externalEventDefName;
+            String eedn = idef.getExternalEventDefId().getName();
             if (wfSpecModel.getNodeExternalEventDefs().contains(eedn)) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
@@ -343,7 +344,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public InterruptDefModel getInterruptDefFor(String externalEventDefName) {
         for (InterruptDefModel idef : interruptDefs) {
-            if (idef.externalEventDefName.equals(externalEventDefName)) {
+            if (idef.getExternalEventDefId().getName().equals(externalEventDefName)) {
                 return idef;
             }
         }
