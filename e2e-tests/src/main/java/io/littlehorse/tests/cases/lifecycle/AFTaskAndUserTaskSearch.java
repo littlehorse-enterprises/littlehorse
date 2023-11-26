@@ -143,7 +143,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         assertContainsWfRun(searchUserTaskRunsUserId("obiwan", USER_TASK, UserTaskRunStatus.ASSIGNED), succeedWf);
 
         UserTaskRunId userTaskId = searchUserTaskRunsUserId("obiwan").getResultsList().stream()
-                .filter(id -> id.getWfRunId().equals(succeedWf))
+                .filter(id -> id.getWfRunId().getId().equals(succeedWf))
                 .findFirst()
                 .orElseThrow();
 
@@ -231,7 +231,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
     private void assertContainsWfRun(UserTaskRunIdList results, String id) {
         for (UserTaskRunId trid : results.getResultsList()) {
-            if (trid.getWfRunId().equals(id)) {
+            if (trid.getWfRunId().getId().equals(id)) {
                 return;
             }
         }
@@ -240,7 +240,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
     private void assertNotContainsWfRun(UserTaskRunIdList results, String id) {
         for (UserTaskRunId trid : results.getResultsList()) {
-            if (trid.getWfRunId().equals(id)) {
+            if (trid.getWfRunId().getId().equals(id)) {
                 throw new RuntimeException("Should NOT have found WfRun " + id);
             }
         }
@@ -248,7 +248,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
     private void assertNotContainsWfRun(TaskRunIdList results, String id) {
         for (TaskRunId trid : results.getResultsList()) {
-            if (trid.getWfRunId().equals(id)) {
+            if (trid.getWfRunId().getId().equals(id)) {
                 throw new RuntimeException("Should NOT have found WfRun " + id);
             }
         }
@@ -256,7 +256,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
     private void assertContainsWfRun(TaskRunIdList results, String id) {
         for (TaskRunId trid : results.getResultsList()) {
-            if (trid.getWfRunId().equals(id)) {
+            if (trid.getWfRunId().getId().equals(id)) {
                 return;
             }
         }
