@@ -106,7 +106,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                         sre.getMessage(),
                         sre.getCause());
             } else {
-                log.error("Caught exception processing command:", exn);
+                log.error("Caught exception processing {} command:", command.getType(), exn);
             }
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);

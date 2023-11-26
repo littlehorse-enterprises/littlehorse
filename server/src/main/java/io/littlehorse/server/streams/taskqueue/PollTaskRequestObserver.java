@@ -56,7 +56,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
         if (taskDefId == null) {
             taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class);
-        } else if (!taskDefId.equals(req.getTaskDefId())) {
+        } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
             log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
         }
 
