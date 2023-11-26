@@ -135,7 +135,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         UserTaskRunId found = null;
 
         for (UserTaskRunId candidate : results.getResultsList()) {
-            if (candidate.getWfRunId().equals(wfRunId)) {
+            if (candidate.getWfRunId().getId().equals(wfRunId)) {
                 found = candidate;
                 break;
             }
