@@ -15,30 +15,38 @@ function CheckSession({ children }: CheckSessionProps) {
     const [ sessionIsActive, setSessionIsActive ] = useState(false)
 
     useEffect(() => {
-        if (!session) {
-            setSessionIsActive(false)
-        } else {
-            const tokenExpireTime = (session as unknown as SessionWithJWTExpireTime).expireTime
-            const tokenHasExpired = new Date() > new Date(tokenExpireTime * 1000)
-
-            if (tokenHasExpired) {
+        if (__AUTHENTICATION_ENABLED__) {
+            if (!session) {
                 setSessionIsActive(false)
             } else {
-                setSessionIsActive(true)
+                const tokenExpireTime = (session as unknown as SessionWithJWTExpireTime).expireTime
+                const tokenHasExpired = new Date() > new Date(tokenExpireTime * 1000)
+    
+                if (tokenHasExpired) {
+                    setSessionIsActive(false)
+                } else {
+                    setSessionIsActive(true)
+                }
             }
         }
     }, [ session ])
 
-    if (sessionIsActive) {
-        return <>
-            {children}
-        </>
-    }
-    if (!sessionIsActive) {
-        return <LoginPage />
-    }
-    return <Loader />
 
+    if (__AUTHENTICATION_ENABLED__) {
+        if (sessionIsActive) {
+            return <>
+                {children}
+            </>
+        }
+        if (!sessionIsActive) {
+            return <LoginPage />
+        }
+        return <Loader />
+    }
+    
+    return <>
+        {children}
+    </>
 }
 export function Providers({ children }: CheckSessionProps) {
 

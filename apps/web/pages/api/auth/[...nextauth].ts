@@ -40,25 +40,29 @@ export const authOptions = {
     providers,
     callbacks: {
         jwt({ token, account }) {
-            if (account) {
-                token.accessToken = account.access_token
-                token.exp = account.expires_at
-                token.expireTime = account.expires_at
-                token.id_token = account.id_token
-            }
+            if (__AUTHENTICATION_ENABLED__) {
+                if (account) {
+                    token.accessToken = account.access_token
+                    token.exp = account.expires_at
+                    token.expireTime = account.expires_at
+                    token.id_token = account.id_token
+                }
                 
-            const tokenHasExpired = new Date() > new Date(token.expireTime * 1000)
+                const tokenHasExpired = new Date() > new Date(token.expireTime * 1000)
 
-            if (tokenHasExpired) {
-                logoutFromKeyCloack(token)
+                if (tokenHasExpired) {
+                    logoutFromKeyCloack(token)
+                }
             }
 
             return token as TokenWithJWTInfo
         },
         session({ session, token }) {
-            session.accessToken = token.accessToken
-            session.expireTime = token.expireTime
-            session.id_token = token.id_token
+            if (__AUTHENTICATION_ENABLED__) {
+                session.accessToken = token.accessToken
+                session.expireTime = token.expireTime
+                session.id_token = token.id_token
+            }
 
             return session as SessionWithJWTExpireTime
         },

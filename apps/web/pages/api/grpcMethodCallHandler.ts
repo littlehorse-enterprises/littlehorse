@@ -15,11 +15,11 @@ export const makeGrpcCall = async (grpcMethodToCall: string,
     req: NextApiRequest, res: NextApiResponse, grpcRequestBody: object): Promise<any> => {
     const session = await getServerSession(req, res, authOptions)
 
-    if (!session) {
+    if ( __AUTHENTICATION_ENABLED__ && !session) {
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {
-        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session.accessToken)
+        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session?.accessToken)
 
         try {
             return await client[grpcMethodToCall](grpcRequestBody)
@@ -35,11 +35,11 @@ export const handleGrpcCallWithNext = async (grpcMethodToCall: string,
 
     const session = await getServerSession(req, res, authOptions)
 
-    if (!session) {
+    if (__AUTHENTICATION_ENABLED__ && !session) {
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {
-        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session.accessToken)
+        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session?.accessToken)
 
         try {
             const response: any = await client[grpcMethodToCall](grpcRequestBody)

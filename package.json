@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "start": "turbo run start",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "node apps/web/generate-feature-toggles-types.js && turbo run build",
+    "dev": "node apps/web/generate-feature-toggles-types.js && turbo run dev",
     "test-watch": "jest --watch",
     "test": "jest",
     "lint": "turbo run lint",

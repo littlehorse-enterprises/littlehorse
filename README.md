@@ -35,6 +35,77 @@ Execute the following script to generate the TypeScript proto files.
 ./compile-proto.sh
 ```
 
+## Feature Toggles
+At this point we can configure toggles for the 2 environments defined by `process.env.NODE_ENV`, they are `test`, `development` and `production.`
+You can find the toggles in the file `apps/web/featureToggles.js`, to define a toggle please follow the next structure:
+```
+const flags = {
+    ...
+    __A_TOGGLE_ENABLED_IN_DEV_AND_PROD__: [ 'development', 'production' ], // LH-1
+    __A_TOGGLE_ENABLED_IN_DEV__: [ 'development' ], // LH-2
+    __A_TOGGLE_ENABLED_IN_PROD__: [ 'production' ], // LH-3
+    __A_TOGGLE_ENABLED_IN_TESTS__: [ 'test' ], // LH-3
+    __A_TOGGLE_THAT_IS_DISABLED_EVERYWHERE__: [ ], // LH-4
+}
+```
+The LH-X codes indicate the jira ticket that required the toggle to be created, so we can have context about that at any point in time and analyze if it is time to remove it.
+
+We are using the [Webpack Define Plugin](https://webpack.js.org/plugins/define-plugin/) which transforms the toggle into an actual `boolean` value when compiling/building the app. Also as Webpack removes deadCode, with that on the client side (browser) that code won't be available.
+
+To be able to use those toggles on our Typescript files we need to define them as global variables in the file `apps/web/globals.d.ts`. This is done automatically by the script `apps/web/generate-feature-toggles-types.js` which is executed every time you run `pnpm dev` or `pnpm build` from the root folder.
+
+### CHANGING A TOOGLE'S STATUS
+Any time you change the toogle's status, turning it ON/OFF for different environments, you *MUST*:
+#### Dev Environment
+* Stop the app and run `pnpm dev` if you are in the local machine
+
+### Prod Environment
+* Change the value of the toggle in the `featureToggles` file
+* Do a commit of the change
+* Push the code
+* If we have a pipeline, it will need to execute the necessary steps to re-deploy the app.
+  * Rebuild the app with `pnpm build` and run `pnpm start`
+
+### HOW TO USE THEM
+In the code you can use them as `boolean` values:
+
+```
+if (__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
+  console.log('toggle enabled)
+} else {
+  console.log('this is dead code')
+}
+
+if (!__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
+  console.log('toggle disabled')
+} else {
+  console.log('this is dead code')
+}
+```
+
+### Testing
+To make the feature toggles available for the tests the following has been put in place:
+* A `testGlobals.js` file which is reading the featureToggles and loading them into the jest context.
+* To turn ON/OFF a toggle for the tests, you can either: 
+
+  * Enable/Disable it in the `featureToggles` file like indicated in the above sections.
+  * In your tests you can overwrite the value of the toggle like:
+    ```
+    __A_TOGGLE__ = false
+    __ANOTHER_TOGGLE__ = true
+    ```
+  
+## SINGLE SIGN ON FOR THE DASHBOARD
+* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `__AUTHENTICATION_ENABLED__` in the needed environments. 
+
+* You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
+
+* For the needed Environment Variables please refer to the corresponding section in this README.
+
+* [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
+
+
+
 ## Compiling the protobuff files
 LHDashboard needs the Little Horse protobuff files in order to do operations against its public API. 
 To achieve that we have included Littlehorse as a submodule (more details if the above section); with those protobuff files

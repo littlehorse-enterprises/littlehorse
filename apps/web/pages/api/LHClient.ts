@@ -16,19 +16,28 @@ export default class LHClient {
             throw new Error('Not able to get the API URL from your configuration.')
         }
 
-        this.createUniqueChannel(process.env.API_URL)
+        if (__AUTHENTICATION_ENABLED__) {
+            this.createUniqueSecureChannel(process.env.API_URL)
+            
+            return createClientFactory().use((call, options) =>
+                call.next(call.request, {
+                    ...options,
+                    metadata: Metadata(options.metadata).set(
+                        'Authorization',
+                        `Bearer ${accessToken}`,
+                    ),
+                })).create(LHPublicApiDefinition, LHClient.channel)
+        } else {
+            this.createUniqueInsecureChannel(process.env.API_URL)
 
-        return createClientFactory().use((call, options) =>
-            call.next(call.request, {
-                ...options,
-                metadata: Metadata(options.metadata).set(
-                    'Authorization',
-                    `Bearer ${accessToken}`,
-                ),
-            })).create(LHPublicApiDefinition, LHClient.channel)
+            return createClientFactory().use((call, options) =>
+                call.next(call.request, {
+                    ...options,
+                })).create(LHPublicApiDefinition, LHClient.channel)
+        }
     }
 
-    private static createUniqueChannel(apiUrl: string) {
+    private static createUniqueSecureChannel(apiUrl: string) {
         const caCertificatePath: string | undefined = process.env.LHC_CA_CERT
         const applicationHasProvidedCACertificate = caCertificatePath !== undefined
 
@@ -40,6 +49,12 @@ export default class LHClient {
                 LHClient.channel = createChannel(apiUrl,
                     ChannelCredentials.createSsl())
             }
+        }
+    }
+    
+    private static createUniqueInsecureChannel(apiUrl: string) {
+        if (LHClient.channel === undefined) {
+            LHClient.channel = createChannel(apiUrl)
         }
     }
 }

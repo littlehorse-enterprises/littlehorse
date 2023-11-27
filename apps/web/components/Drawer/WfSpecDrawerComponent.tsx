@@ -41,20 +41,6 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
         setTaskType('')
     }
 
-    const getData: any = async (
-        url: string,
-        name: string,
-        handler: (data: any) => void,
-        dataPath: string
-    ) => {
-        const response = await fetch(url + name)
-
-        if (response.ok) {
-            const content = await response.json()
-
-            handler(content.data[dataPath])
-        } else {console.error('INVALID RESPONSE FROM API')}
-    }
 
 
     useEffect(() => {
@@ -89,11 +75,22 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
             const processComplexData = {
                 task: () => {
                     if (rawData === undefined) {
-                        getData(
+                        (async (
+                            url: string,
+                            name: string,
+                            handler: (data: any) => void
+                        ) => {
+                            const response = await fetch(url + name)
+
+                            if (response.ok) {
+                                const content = await response.json()
+
+                                handler(content.data)
+                            } else { console.error('INVALID RESPONSE FROM API')} 
+                        })(
                             '../../api/drawer/taskDef/',
                             selectedNode?.task.taskDefName,
-                            setRawData,
-                            'result'
+                            setRawData
                         )
                     } else {
                         const processedData = rawData.inputVars.map(

@@ -5,11 +5,13 @@ import { getToken } from 'next-auth/jwt'
 import type { JWT } from 'next-auth/jwt'
 
 export async function middleware(req: NextRequest) {
-    const token: JWT | null = await getToken({ req, secret: process.env.AUTH_SECRET })
-    const { pathname } = req.nextUrl
-    const origin = req.nextUrl.origin
+    if (__AUTHENTICATION_ENABLED__) {
 
-    const isPublicRoute =
+        const token: JWT | null = await getToken({ req, secret: process.env.AUTH_SECRET })
+        const { pathname } = req.nextUrl
+        const origin = req.nextUrl.origin
+
+        const isPublicRoute =
         pathname.includes('/api/auth') ||
         pathname.includes('/signin') ||
         pathname.includes('.png') ||
@@ -19,14 +21,15 @@ export async function middleware(req: NextRequest) {
         pathname.includes('_next') ||
         pathname.includes('/errors') 
     
-    if (isPublicRoute) {
-        return NextResponse.next()
-    }
+        if (isPublicRoute) {
+            return NextResponse.next()
+        }
 
-    const tokenHasExpired = token && new Date() > new Date((token as unknown as TokenWithJWTInfo).expireTime * 1000)
-    if (tokenHasExpired && !pathname.includes('/signin')) {
-        const response = NextResponse.redirect(new URL('/signin', origin))
-        return response
+        const tokenHasExpired = token && new Date() > new Date((token as unknown as TokenWithJWTInfo).expireTime * 1000)
+        if (tokenHasExpired && !pathname.includes('/signin')) {
+            const response = NextResponse.redirect(new URL('/signin', origin))
+            return response
+        }
     }
 
     return NextResponse.next()
