@@ -24,13 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 public class ReadOnlyMetadataManager {
 
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
-    private final ReadOnlyModelDefaultStore defaultStore;
-    private final ReadOnlyTenantStore tenantStore;
+    private final ReadOnlyModelStore defaultStore;
+    private final ReadOnlyModelStore tenantStore;
 
     public ReadOnlyMetadataManager(
             final ReadOnlyModelDefaultStore defaultStore, final ReadOnlyTenantStore tenantStore) {
         this.defaultStore = defaultStore;
-        this.tenantStore = tenantStore;
+        this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
+
     }
 
     public <U extends Message, T extends GlobalGetable<U>> T get(MetadataId<?, U, T> id) {

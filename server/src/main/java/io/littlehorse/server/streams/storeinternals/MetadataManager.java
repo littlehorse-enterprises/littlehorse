@@ -16,17 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetadataManager extends ReadOnlyMetadataManager {
 
-    private DefaultModelStore defaultStore;
-    private TenantModelStore tenantStore;
+    private ModelStore defaultStore;
+    private ModelStore tenantStore;
 
     public MetadataManager(DefaultModelStore defaultStore, TenantModelStore tenantStore) {
         super(defaultStore, tenantStore);
         this.defaultStore = defaultStore;
-        this.tenantStore = tenantStore;
+        this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
     }
 
     public <U extends Message, T extends GlobalGetable<U>> void put(T getable) {
-        ModelStore specificStore = isClusterLevelObject(getable.getObjectId()) ? defaultStore : tenantStore;
+        ModelStore specificStore = isClusterLevelObject(getable.getObjectId()) || tenantStore == null ? defaultStore : tenantStore;
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
@@ -46,7 +46,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
     }
 
     public <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
-        ModelStore specificStore = isClusterLevelObject(id) ? defaultStore : tenantStore;
+        ModelStore specificStore = isClusterLevelObject(id) || tenantStore == null ? defaultStore : tenantStore;
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = specificStore.get(id.getStoreableKey(), StoredGetable.class);
         log.trace("trying to delete " + id.getStoreableKey());

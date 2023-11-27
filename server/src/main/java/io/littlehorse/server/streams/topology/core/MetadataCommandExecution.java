@@ -2,12 +2,14 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -25,7 +27,6 @@ public class MetadataCommandExecution implements ExecutionContext {
     private MetadataManager metadataManager;
     private LHServerConfig lhConfig;
     private final MetadataCommandModel currentCommand;
-    private final boolean clusterLevelCommand;
 
     public MetadataCommandExecution(
             Headers recordMetadata,
@@ -37,9 +38,9 @@ public class MetadataCommandExecution implements ExecutionContext {
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ModelStore.defaultStore(nativeMetadataStore, this),
-                ModelStore.tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
+                tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata))
+                );
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
-        this.clusterLevelCommand = this.currentCommand.getSubCommand() instanceof ClusterLevelCommand;
         this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
@@ -72,6 +73,13 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
         return processorContext.getStateStore(ServerTopology.METADATA_STORE);
+    }
+
+    private TenantModelStore tenantStoreFor(KeyValueStore<String, Bytes> nativeMetadataStore, String tenantId) {
+        if(tenantId.equals(LHConstants.DEFAULT_TENANT)){
+            return null;
+        }
+        return ModelStore.tenantStoreFor(nativeMetadataStore, tenantId, this);
     }
 
     private AuthorizationContext authContextFor(String tenantId, String principalId) {
