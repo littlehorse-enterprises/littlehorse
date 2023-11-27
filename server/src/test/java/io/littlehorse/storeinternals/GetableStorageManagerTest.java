@@ -178,8 +178,8 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
+                .anyMatch(
+                        key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
     }
 
     //     @Test
@@ -394,14 +394,11 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(9)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.brand_Ford"))
                 .anyMatch(key ->
-                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
-                .anyMatch(key ->
-                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.brand_Ford"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.model_Escape"));
+                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.model_Escape"));
     }
 
     //     @Test
