@@ -87,7 +87,7 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
 
         assertThat(storedPrincipal().getPerTenantAcls().keySet()).containsExactly(newPrincipalTenantId);
         assertThat(storedPrincipal().getGlobalAcls().getAcls()).isEmpty();
@@ -104,7 +104,7 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
 
         assertThat(storedPrincipal().getPerTenantAcls().keySet()).isNotEmpty();
         assertThat(storedPrincipal().getGlobalAcls().getAcls()).containsExactly(TestUtil.acl());
@@ -117,12 +117,12 @@ public class PrincipalAdministrationTest {
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
 
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
 
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(true);
 
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
 
         assertThat(storedPrincipal().getPerTenantAcls()).containsOnlyKeys(tenantId);
         ServerACLsModel aclsModel = storedPrincipal().getPerTenantAcls().get(tenantId);
@@ -135,10 +135,10 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(false);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
         verify(server).sendErrorToClient(eq(command.getCommandId()), any());
     }
 
@@ -149,13 +149,13 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
         putPrincipalRequest.setId("other-principal");
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
         putPrincipalRequest.setId(principalId);
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAcl()));
         putPrincipalRequest.setOverwrite(true);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
         assertThat(storedPrincipal().getPerTenantAcls().values()).containsExactly(TestUtil.singleAcl());
     }
 
@@ -165,11 +165,12 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        metadataProcessor.process(new Record<>(principalId, command.toProto().build(), 0L, metadata));
 
         assertThat(storedPrincipal()).isNotNull();
         MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
-        metadataProcessor.process(new Record<>(principalId, deleteCommand, 0L, metadata));
+        metadataProcessor.process(
+                new Record<>(principalId, deleteCommand.toProto().build(), 0L, metadata));
         assertThat(defaultStore.get(new PrincipalIdModel(principalId))).isNull();
     }
 

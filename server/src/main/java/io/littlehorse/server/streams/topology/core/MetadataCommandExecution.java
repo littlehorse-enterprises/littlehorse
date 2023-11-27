@@ -19,7 +19,6 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
-    private final ModelStore metadataStore;
     private final ProcessorContext<String, Bytes> processorContext;
     private final MetadataCache metadataCache;
     private final AuthorizationContext authContext;
@@ -34,12 +33,14 @@ public class MetadataCommandExecution implements ExecutionContext {
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
+        this.processorContext = processorContext;
+        KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
+        this.metadataManager = new MetadataManager(
+                ModelStore.defaultStore(nativeMetadataStore, this),
+                ModelStore.tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.clusterLevelCommand = this.currentCommand.getSubCommand() instanceof ClusterLevelCommand;
-        this.processorContext = processorContext;
         this.metadataCache = metadataCache;
-        this.metadataStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeMetadataStore());
-        this.metadataManager = new MetadataManager(metadataStore);
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
         this.lhConfig = lhConfig;
@@ -52,7 +53,7 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(metadataStore, metadataCache);
+        return new WfService(this.metadataManager, metadataCache);
     }
 
     @Override
@@ -67,14 +68,6 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     public MetadataCommandModel currentCommand() {
         return currentCommand;
-    }
-
-    private ModelStore storeFor(String tenantId, KeyValueStore<String, Bytes> nativeStore) {
-        if (!clusterLevelCommand) {
-            return ModelStore.instanceFor(nativeStore, tenantId, this);
-        } else {
-            return ModelStore.defaultStore(nativeStore, this);
-        }
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {

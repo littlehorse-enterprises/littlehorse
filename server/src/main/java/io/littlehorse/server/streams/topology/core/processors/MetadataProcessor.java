@@ -2,8 +2,6 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -56,8 +54,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public void processHelper(final Record<String, MetadataCommand> record) {
         MetadataCommandExecution metadataContext = buildContext(record);
-        WfSpecModel sda = metadataContext.metadataManager().get(new WfSpecIdModel("sda", 123));
-        sda.startNewRun(null);
         MetadataCommandModel command = metadataContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
@@ -66,7 +62,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 command.getCommandId());
 
         try {
-            Message response = command.process(buildContext(record));
+            Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
                         .setCommandId(command.getCommandId())

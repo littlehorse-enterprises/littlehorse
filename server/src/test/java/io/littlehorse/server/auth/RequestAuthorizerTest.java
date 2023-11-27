@@ -26,7 +26,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.TestRequestExecutionContext;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -40,10 +39,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -56,16 +52,15 @@ public class RequestAuthorizerTest {
     private final MetadataCache metadataCache = new MetadataCache();
     private final Context.Key<RequestExecutionContext> contextKey = Context.key("test-context-key");
     private LHServerConfig lhConfig = mock();
-    private final KeyValueStore<String, Bytes> nativeMetadataStore =
-            TestUtil.testStore(ServerTopology.GLOBAL_METADATA_STORE);
-    private final RequestAuthorizer requestAuthorizer =
-            new RequestAuthorizer(server, contextKey, metadataCache, TestUtil::testReadOnlyStore, lhConfig);
-    private ServerCall<Object, Object> mockCall = mock();
-    private final Metadata mockMetadata = mock();
-    private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
 
     private final TestRequestExecutionContext requestContext = TestRequestExecutionContext.create();
-    private TestMetadataManager metadataManager = TestMetadataManager.create(mockProcessorContext, null);
+    private TestMetadataManager metadataManager =
+            TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
+    private final RequestAuthorizer requestAuthorizer =
+            new RequestAuthorizer(server, contextKey, metadataCache, requestContext::resolveStoreName, lhConfig);
+    private ServerCall<Object, Object> mockCall = mock();
+    private final Metadata mockMetadata = mock();
+
     private WfService service = requestContext.service();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
             ServerServiceDefinition.builder(LHPublicApiGrpc.getServiceDescriptor()),
@@ -75,8 +70,7 @@ public class RequestAuthorizerTest {
 
     @BeforeEach
     public void setup() {
-        nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        when(kafkaStreams.store(any())).thenReturn(nativeMetadataStore);
+        when(kafkaStreams.store(any())).thenReturn(requestContext.getCoreNativeStore());
         inMemoryAnonymousPrincipal = service.getPrincipal(null);
     }
 
@@ -233,7 +227,9 @@ public class RequestAuthorizerTest {
             ServerServiceDefinition.Builder definitionBuilder, Collection<MethodDescriptor<?, ?>> stubMethods) {
         for (MethodDescriptor<?, ?> method : stubMethods) {
             definitionBuilder = definitionBuilder.addMethod(method, (call, headers) -> {
-                resolvedAuthContext = contextKey.get().authorization();
+                if (contextKey.get() != null) {
+                    resolvedAuthContext = contextKey.get().authorization();
+                }
                 return null;
             });
         }

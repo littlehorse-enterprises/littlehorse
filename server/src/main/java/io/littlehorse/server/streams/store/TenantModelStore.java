@@ -6,7 +6,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-class TenantModelStore extends ReadOnlyTenantStore implements ModelStore {
+public class TenantModelStore extends ReadOnlyTenantStore implements ModelStore {
 
     private final SerdeModelStore serdeModelStore;
 

@@ -52,15 +52,23 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
     private WfSpecVersionMigrationModel migration;
-    public Map<String, ThreadSpecModel> threadSpecs;
+    public Map<String, ThreadSpecModel> threadSpecs = new HashMap<>();
 
     public String entrypointThreadName;
 
     // Internal, not related to Proto.
-    private Map<String, String> varToThreadSpec;
+    private Map<String, String> varToThreadSpec = new HashMap<>();
 
-    private boolean initializedVarToThreadSpec;
+    private boolean initializedVarToThreadSpec = false;
     private ExecutionContext executionContext;
+
+    public WfSpecModel() {
+        // default constructor used by LHDeserializers
+    }
+
+    public WfSpecModel(ExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
 
     public WfSpecIdModel getObjectId() {
         return new WfSpecIdModel(name, version);
@@ -100,13 +108,6 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             });
         });
         return names;
-    }
-
-    public WfSpecModel(ExecutionContext executionContext) {
-        threadSpecs = new HashMap<>();
-        varToThreadSpec = new HashMap<>();
-        initializedVarToThreadSpec = false;
-        this.executionContext = executionContext;
     }
 
     public void setLastUpdatedOffset(long newOffset) {

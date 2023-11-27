@@ -41,7 +41,6 @@ import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.mockito.Mockito;
 
@@ -242,12 +241,6 @@ public class TestUtil {
         ServerACLs acls =
                 ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
         return ServerACLsModel.fromProto(acls, ServerACLsModel.class, null);
-    }
-
-    public static ReadOnlyKeyValueStore<String, Bytes> testReadOnlyStore(Integer specificPartition, String storeName) {
-        return Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
-                .withLoggingDisabled()
-                .build();
     }
 
     public static KeyValueStore<String, Bytes> testStore(String storeName) {

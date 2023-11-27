@@ -2,10 +2,12 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -39,31 +41,32 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final Headers recordMetadata;
     private final CommandModel currentCommand;
     private final ModelStore coreStore;
-    private final ModelStore globalStore;
     private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
 
     public ProcessorExecutionContext(
-            CommandModel currentCommand,
+            Command currentCommand,
             Headers recordMetadata,
             LHServerConfig config,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             KafkaStreamsServerImpl server) {
+        KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.config = config;
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
-        this.isClusterLevelCommand = currentCommand instanceof ClusterLevelCommand;
+        this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
+        this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordMetadata;
-        this.currentCommand = currentCommand;
         this.server = server;
         this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
-        this.globalStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeGlobalStore());
-        this.metadataManager = new ReadOnlyMetadataManager(this.globalStore);
+        this.metadataManager = new ReadOnlyMetadataManager(
+                ModelStore.defaultStore(nativeGlobalStore, this),
+                ModelStore.tenantStoreFor(nativeGlobalStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.authContext = this.authContextFor();
     }
 
@@ -99,7 +102,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (service != null) {
             return service;
         }
-        service = new WfService(this.globalStore, metadataCache);
+        service = new WfService(this.metadataManager, metadataCache);
         return service;
     }
 

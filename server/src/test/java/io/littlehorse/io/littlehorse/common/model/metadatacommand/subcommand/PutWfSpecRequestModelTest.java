@@ -7,8 +7,6 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -40,7 +38,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class PutWfSpecRequestModelTest {
 
-    private final MetadataCommand wfSpecToProcess = MetadataCommand.newBuilder().setPutWfSpec(testWorkflowSpec()).build();
+    private final MetadataCommand wfSpecToProcess =
+            MetadataCommand.newBuilder().setPutWfSpec(testWorkflowSpec()).build();
 
     @Mock
     private LHServerConfig config;
@@ -109,8 +108,8 @@ public class PutWfSpecRequestModelTest {
 
     private PutWfSpecRequest testWorkflowSpec() {
         return new WorkflowImpl("example-basic", wf -> {
-            wf.execute("greet");
-        })
+                    wf.execute("greet");
+                })
                 .compileWorkflow();
     }
 }

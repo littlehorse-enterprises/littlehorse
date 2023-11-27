@@ -17,7 +17,7 @@ public class ProtobufDeserializer<T extends Message> implements Deserializer<T> 
     public T deserialize(String topic, byte[] data) {
         try {
             return protobufParser.parseFrom(data);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             throw new LHSerdeError(ex, "unable to process bytes");
         }
     }

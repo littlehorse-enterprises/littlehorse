@@ -60,8 +60,9 @@ public class TenantAdministrationTest {
 
     private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
 
-    private ReadOnlyMetadataManager metadataManager =
-            new ReadOnlyMetadataManager(ModelStore.defaultStore(nativeMetadataStore, mock()));
+    private final ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(
+            ModelStore.defaultStore(nativeMetadataStore, executionContext),
+            ModelStore.tenantStoreFor(nativeMetadataStore, "my-tenant", executionContext));
 
     @BeforeEach
     public void setup() {
@@ -73,7 +74,8 @@ public class TenantAdministrationTest {
     public void supportStoringNewTenant() {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         assertThat(storedTenant()).isNotNull();
         assertThat(storedTenant().getObjectId()).isNotNull();
     }
@@ -82,8 +84,10 @@ public class TenantAdministrationTest {
     public void shouldValidateExistingTenant() {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         verify(server, times(1)).sendErrorToClient(any(), any());
         assertThat(storedTenant()).isNotNull();
     }

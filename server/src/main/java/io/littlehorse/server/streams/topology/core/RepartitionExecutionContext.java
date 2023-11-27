@@ -4,7 +4,6 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -18,7 +17,6 @@ public class RepartitionExecutionContext implements ExecutionContext {
     private final LHServerConfig lhConfig;
     private final ProcessorContext<Void, Void> repartitionContext;
     private final MetadataCache metadataCache;
-    private final ReadOnlyModelStore globalStore;
     private final ReadOnlyMetadataManager metadataManager;
 
     public RepartitionExecutionContext(
@@ -26,12 +24,13 @@ public class RepartitionExecutionContext implements ExecutionContext {
             LHServerConfig lhConfig,
             ProcessorContext<Void, Void> repartitionContext,
             MetadataCache metadataCache) {
+        KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.lhConfig = lhConfig;
         this.repartitionContext = repartitionContext;
         this.metadataCache = metadataCache;
-        this.globalStore =
-                ModelStore.instanceFor(nativeGlobalStore(), HeadersUtil.tenantIdFromMetadata(metadataHeaders), this);
-        this.metadataManager = new ReadOnlyMetadataManager(globalStore);
+        this.metadataManager = new ReadOnlyMetadataManager(
+                ModelStore.defaultStore(nativeGlobalStore, this),
+                ModelStore.tenantStoreFor(nativeGlobalStore, HeadersUtil.tenantIdFromMetadata(metadataHeaders), this));
     }
 
     @Override
@@ -41,7 +40,7 @@ public class RepartitionExecutionContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(globalStore, metadataCache);
+        return new WfService(metadataManager, metadataCache);
     }
 
     @Override

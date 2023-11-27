@@ -16,15 +16,8 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.Principal;
-import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.sdk.common.proto.ExternalEventDef;
-import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.UserTaskDef;
-import io.littlehorse.sdk.common.proto.WfSpec;
-import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
-import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
@@ -33,56 +26,43 @@ import java.util.function.Supplier;
 
 public class WfService {
 
-    private final ReadOnlyModelStore globalStore;
+    private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
 
-    public WfService(ReadOnlyModelStore globalStore, MetadataCache metadataCache) {
+    public WfService(ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache) {
         this.metadataCache = metadataCache;
-        this.globalStore = globalStore;
+        this.metadataManager = metadataManager;
     }
 
     public WfSpecModel getWfSpec(String name, Integer version) {
         Supplier<WfSpecModel> findWfSpec = () -> {
-            final StoredGetable<WfSpec, WfSpecModel> storedResult;
+            final WfSpecModel storedResult;
             if (version != null) {
-                storedResult = globalStore.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+                storedResult = metadataManager.get(new WfSpecIdModel(name, version));
             } else {
-                storedResult = globalStore.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
+                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name));
             }
-            return storedResult == null ? null : storedResult.getStoredObject();
+            return storedResult;
         };
         return metadataCache.getOrCache(name, version, findWfSpec);
     }
 
     public UserTaskDefModel getUserTaskDef(String name, Integer version) {
-        StoredGetable<UserTaskDef, UserTaskDefModel> storedResult;
         if (version != null) {
             UserTaskDefIdModel id = new UserTaskDefIdModel(name, version);
-            storedResult = (StoredGetable<UserTaskDef, UserTaskDefModel>)
-                    globalStore.get(id.getStoreableKey(), StoredGetable.class);
+            return metadataManager.get(id);
         } else {
-            storedResult = globalStore.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), StoredGetable.class);
+            return metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
         }
-
-        return storedResult == null ? null : storedResult.getStoredObject();
     }
 
     public ExternalEventDefModel getExternalEventDef(String name) {
-        @SuppressWarnings("unchecked")
-        StoredGetable<ExternalEventDef, ExternalEventDefModel> storedResult =
-                (StoredGetable<ExternalEventDef, ExternalEventDefModel>)
-                        globalStore.get(new ExternalEventDefIdModel(name).getStoreableKey(), StoredGetable.class);
-
-        return storedResult == null ? null : storedResult.getStoredObject();
+        return metadataManager.get(new ExternalEventDefIdModel(name));
     }
 
     public TaskDefModel getTaskDef(String name) {
         TaskDefIdModel id = new TaskDefIdModel(name);
-        Supplier<TaskDefModel> findTaskDef = () -> {
-            StoredGetable<TaskDef, TaskDefModel> storedResult =
-                    globalStore.get(id.getStoreableKey(), StoredGetable.class);
-            return storedResult == null ? null : storedResult.getStoredObject();
-        };
+        Supplier<TaskDefModel> findTaskDef = () -> metadataManager.get(id);
         return (TaskDefModel) metadataCache.getOrCache(id, findTaskDef::get);
     }
 
@@ -92,8 +72,7 @@ public class WfService {
         }
 
         @SuppressWarnings("unchecked")
-        StoredGetable<Principal, PrincipalModel> storedResult = (StoredGetable<Principal, PrincipalModel>)
-                globalStore.get(new PrincipalIdModel(id).getStoreableKey(), StoredGetable.class);
+        PrincipalModel storedResult = metadataManager.get(new PrincipalIdModel(id));
 
         if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // This means that all of the following are true:
@@ -102,7 +81,7 @@ public class WfService {
             return createAnonymousPrincipal();
         }
 
-        return storedResult == null ? null : storedResult.getStoredObject();
+        return storedResult;
     }
 
     private PrincipalModel createAnonymousPrincipal() {
@@ -119,14 +98,12 @@ public class WfService {
     }
 
     public List<String> adminPrincipalIds() {
-        String startKey =
-                "%s/%s/__isAdmin_true".formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
-        String endKey = startKey + "~";
-        LHKeyValueIterator<Tag> result = globalStore.range(startKey, endKey, Tag.class);
+        List<Tag> result =
+                metadataManager.tagScan(GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
         List<String> adminPrincipalIds = new ArrayList<>();
-        result.forEachRemaining(tagLHIterKeyValue -> {
-            adminPrincipalIds.add(tagLHIterKeyValue.getValue().getDescribedObjectId());
-        });
+        for (Tag storedTag : result) {
+            adminPrincipalIds.add(storedTag.getDescribedObjectId());
+        }
         return adminPrincipalIds;
     }
 }

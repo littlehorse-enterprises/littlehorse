@@ -5,6 +5,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -28,7 +29,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class CommandProcessor implements Processor<String, CommandModel, String, CommandProcessorOutput> {
+public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHServerConfig config;
@@ -59,7 +60,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     }
 
     @Override
-    public void process(final Record<String, CommandModel> commandRecord) {
+    public void process(final Record<String, Command> commandRecord) {
         // We have another wrapper here as a guard against a poison pill (even
         // though we test extensively to prevent poison pills, it's better
         // to be safe than sorry.)
@@ -70,9 +71,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         }
     }
 
-    private void processHelper(final Record<String, CommandModel> commandRecord) {
-        CommandModel command = commandRecord.value();
+    private void processHelper(final Record<String, Command> commandRecord) {
         ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
+        CommandModel command = executionContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceId(),
@@ -116,9 +117,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         }
     }
 
-    private ProcessorExecutionContext buildExecutionContext(Record<String, CommandModel> commandRecord) {
+    private ProcessorExecutionContext buildExecutionContext(Record<String, Command> commandRecord) {
         Headers metadataHeaders = commandRecord.headers();
-        CommandModel commandToProcess = commandRecord.value();
+        Command commandToProcess = commandRecord.value();
         return new ProcessorExecutionContext(
                 commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
     }

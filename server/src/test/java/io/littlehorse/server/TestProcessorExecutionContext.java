@@ -1,7 +1,7 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -19,7 +19,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final TaskQueueManager globalTaskQueueManager;
 
     public TestProcessorExecutionContext(
-            CommandModel currentCommand,
+            Command currentCommand,
             Headers recordMetadata,
             LHServerConfig config,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
@@ -33,7 +33,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     }
 
     public static TestProcessorExecutionContext create(
-            CommandModel currentCommand,
+            Command currentCommand,
             Headers recordMetadata,
             ProcessorContext<String, CommandProcessorOutput> processorContext) {
         LHServerConfig lhConfig = Mockito.mock();

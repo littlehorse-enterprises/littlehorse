@@ -23,11 +23,12 @@ public interface ModelStore extends ReadOnlyModelStore {
 
     void delete(String storeKey, StoreableType cls);
 
-    static ModelStore defaultStore(KeyValueStore<String, Bytes> keyValueStore, ExecutionContext executionContext) {
+    static DefaultModelStore defaultStore(
+            KeyValueStore<String, Bytes> keyValueStore, ExecutionContext executionContext) {
         return new DefaultModelStore(keyValueStore, executionContext);
     }
 
-    static ReadOnlyModelStore defaultStore(
+    static ReadOnlyModelDefaultStore defaultStore(
             ReadOnlyKeyValueStore<String, Bytes> keyValueStore, ExecutionContext executionContext) {
         return new ReadOnlyModelDefaultStore(keyValueStore, executionContext);
     }
@@ -39,6 +40,16 @@ public interface ModelStore extends ReadOnlyModelStore {
         } else {
             return new TenantModelStore(nativeStore, tenantId, executionContext);
         }
+    }
+
+    static TenantModelStore tenantStoreFor(
+            KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
+        return new TenantModelStore(nativeStore, tenantId, executionContext);
+    }
+
+    static ReadOnlyTenantStore tenantStoreFor(
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
+        return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
     }
 
     static ReadOnlyModelStore instanceFor(
