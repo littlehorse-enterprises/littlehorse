@@ -88,8 +88,9 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
 
         WfSpecModel oldVersion = dao.getWfSpec(name, null, null);
+        Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
-        spec.validateAndMaybeBumpVersion(dao, config, Optional.of(oldVersion));
+        spec.validateAndMaybeBumpVersion(dao, config, optWfSpec);
         dao.put(spec);
         return spec.toProto().build();
     }

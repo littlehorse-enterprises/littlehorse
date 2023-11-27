@@ -123,8 +123,10 @@ Choose one of the following option groups:
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_Value{
 					Value: &model.SearchVariableRequest_NameAndValueRequest{
-						Value:   content,
-						VarName: name,
+						Value:              content,
+						VarName:            name,
+						WfSpecMajorVersion: nil,
+						WfSpecRevision:     nil,
 						// TODO: re-enable WfSpecVersion on Variable Search.
 						// WfSpecVersion: wfSpecVersionPtr,
 						WfSpecName: wfSpecName,

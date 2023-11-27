@@ -84,7 +84,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
                 server.onResponseReceived(command.getCommandId(), cmdReply);
             }
         } catch (Exception exn) {
-            log.error("Caught exception processing command: {}", exn);
+            log.error("Caught exception processing {} command: {}", command.getType(), exn);
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }
