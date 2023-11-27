@@ -11,10 +11,10 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase;
@@ -145,18 +145,18 @@ public class SearchVariableRequestModel
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
         if (value.hasWfSpecMajorVersion()) {
-            if (value.hasWfSpecRevision()) {
-                return List.of(
-                        new Attribute("wfSpecName", value.getWfSpecName()),
-                        new Attribute("wfSpecMV", LHUtil.toLHDbVersionFormat(value.getWfSpecMajorVersion())),
-                        new Attribute("wfSpecRev", LHUtil.toLHDbVersionFormat(value.getWfSpecRevision())),
-                        new Attribute(value.getVarName(), getVariableValue(value.getValue())));
-            } else {
-                return List.of(
-                        new Attribute("wfSpecName", value.getWfSpecName()),
-                        new Attribute("wfSpecMV", LHUtil.toLHDbVersionFormat(value.getWfSpecMajorVersion())),
-                        new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+            if (!value.hasWfSpecRevision()) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "If providing version, must also provide revision");
             }
+            return List.of(
+                    new Attribute(
+                            "wfSpecId",
+                            new WfSpecIdModel(
+                                            value.getWfSpecName(),
+                                            value.getWfSpecMajorVersion(),
+                                            value.getWfSpecRevision())
+                                    .toString()),
+                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
         } else {
             return List.of(
                     new Attribute("wfSpecName", value.getWfSpecName()),
