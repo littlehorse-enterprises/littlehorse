@@ -3,11 +3,13 @@ package io.littlehorse.server.streamsimpl.util;
 import static io.littlehorse.server.streams.util.MetadataCache.LATEST_VERSION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -23,7 +25,7 @@ class WfSpecModelCacheTest {
     class UpdateCache {
 
         @Test
-        public void shouldAddDeserializedWfSpecWithVersionToCache() throws LHSerdeError {
+        public void shouldAddDeserializedWfSpecWithVersionToCache() throws InvalidProtocolBufferException {
             final MetadataCache metadataCache = new MetadataCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
@@ -35,17 +37,14 @@ class WfSpecModelCacheTest {
 
             metadataCache.updateCache(key, value);
 
-            WfSpecModel cachedWfSpecModel =
-                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
-
-            assertThat(cachedWfSpecModel)
-                    .usingRecursiveComparison()
-                    .ignoringFields("threadSpecs")
-                    .isEqualTo(wfSpecModel);
+            StoredGetablePb cachedWfSpecModel = (StoredGetablePb) metadataCache.get(
+                    new WfSpecIdModel(wfSpecName, wfSpecVersion).toProto().build());
+            WfSpec storedWfSpec = WfSpec.parseFrom(cachedWfSpecModel.getGetablePayload());
+            assertThat(storedWfSpec).isEqualTo(wfSpecModel.toProto().build());
         }
 
         @Test
-        public void shouldAddDeserializedTaskDefToCache() throws LHSerdeError {
+        public void shouldAddDeserializedTaskDefToCache() throws LHSerdeError, InvalidProtocolBufferException {
             final MetadataCache metadataCache = new MetadataCache();
             final String taskName = "task-something";
             final TaskDefModel taskDef = TestUtil.taskDef(taskName);
@@ -55,13 +54,14 @@ class WfSpecModelCacheTest {
 
             metadataCache.updateCache(key, value);
 
-            TaskDefModel cachedTaskDef = (TaskDefModel) metadataCache.get(new TaskDefIdModel(taskName));
-
-            assertThat(cachedTaskDef).usingRecursiveComparison().isEqualTo(taskDef);
+            StoredGetablePb cachedTaskDef = (StoredGetablePb)
+                    metadataCache.get(new TaskDefIdModel(taskName).toProto().build());
+            TaskDef storedTaskDef = TaskDef.parseFrom(cachedTaskDef.getGetablePayload());
+            assertThat(storedTaskDef).isEqualTo(taskDef.toProto().build());
         }
 
         @Test
-        public void shouldAddDeserializedWfSpecWithLatestToCache() throws LHSerdeError {
+        public void shouldAddDeserializedWfSpecWithLatestToCache() throws LHSerdeError, InvalidProtocolBufferException {
             final MetadataCache metadataCache = new MetadataCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
@@ -73,13 +73,10 @@ class WfSpecModelCacheTest {
 
             metadataCache.updateCache(key, value);
 
-            WfSpecModel cachedLatestWfSpecModel =
-                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
-
-            assertThat(cachedLatestWfSpecModel)
-                    .usingRecursiveComparison()
-                    .ignoringFields("threadSpecs")
-                    .isEqualTo(wfSpecModel);
+            StoredGetablePb cachedLatestWfSpecModel = (StoredGetablePb) metadataCache.get(
+                    new WfSpecIdModel(wfSpecName, LATEST_VERSION).toProto().build());
+            WfSpec storedWfSpec = WfSpec.parseFrom(cachedLatestWfSpecModel.getGetablePayload());
+            assertThat(storedWfSpec).isEqualTo(wfSpecModel.toProto().build());
         }
 
         @Test
@@ -89,11 +86,12 @@ class WfSpecModelCacheTest {
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = null;
 
-            metadataCache.updateCache(cacheKey, TestUtil.wfSpec("WF1"));
+            metadataCache.updateCache(
+                    cacheKey.toProto().build(), TestUtil.wfSpec("WF1").toProto().build());
 
             metadataCache.updateCache(key, value);
 
-            assertThat(metadataCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey.toProto().build())).isNull();
         }
 
         @Test
@@ -103,11 +101,13 @@ class WfSpecModelCacheTest {
             final TaskDefIdModel cacheKey = new TaskDefIdModel("task-something");
             final Bytes value = null;
 
-            metadataCache.updateCache(cacheKey, TestUtil.taskDef("task-something"));
+            metadataCache.updateCache(
+                    cacheKey.toProto().build(),
+                    TestUtil.taskDef("task-something").toProto().build());
 
             metadataCache.updateCache(key, value);
 
-            assertThat(metadataCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey.toProto().build())).isNull();
         }
 
         @Test
@@ -117,11 +117,13 @@ class WfSpecModelCacheTest {
             final WfSpecIdModel latestCacheKey = new WfSpecIdModel("WF1", LATEST_VERSION);
             final Bytes value = null;
 
-            metadataCache.updateCache(latestCacheKey, TestUtil.wfSpec("WF1"));
+            metadataCache.updateCache(
+                    latestCacheKey.toProto().build(),
+                    TestUtil.wfSpec("WF1").toProto().build());
 
             metadataCache.updateCache(key, value);
 
-            assertThat(metadataCache.get(latestCacheKey)).isNull();
+            assertThat(metadataCache.get(latestCacheKey.toProto().build())).isNull();
         }
 
         @Test
@@ -133,7 +135,7 @@ class WfSpecModelCacheTest {
 
             metadataCache.updateCache(nonWfSpecKey, value);
 
-            assertThat(metadataCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey.toProto().build())).isNull();
         }
     }
 
@@ -147,10 +149,10 @@ class WfSpecModelCacheTest {
             int version = 23;
             final WfSpecIdModel cacheKey = new WfSpecIdModel(name, version);
 
-            metadataCache.getOrCache(cacheKey, () -> null);
+            metadataCache.getOrCache(cacheKey.toProto().build(), () -> null);
             metadataCache.getOrCache(name, version, () -> null);
 
-            assertThat(metadataCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey.toProto().build())).isNull();
         }
 
         @Test
@@ -160,15 +162,15 @@ class WfSpecModelCacheTest {
             Integer version = null;
             WfSpecModel wfSpecModel = TestUtil.wfSpec(name);
 
-            metadataCache.getOrCache(name, version, () -> wfSpecModel);
+            metadataCache.getOrCache(name, version, () -> wfSpecModel.toProto().build());
 
-            WfSpecModel cachedLatestWfSpecModel =
-                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(name, LATEST_VERSION));
+            WfSpec cachedLatestWfSpecModel = (WfSpec) metadataCache.get(
+                    new WfSpecIdModel(name, LATEST_VERSION).toProto().build());
 
             assertThat(cachedLatestWfSpecModel)
                     .usingRecursiveComparison()
                     .ignoringFields("threadSpecs")
-                    .isEqualTo(wfSpecModel);
+                    .isEqualTo(wfSpecModel.toProto().build());
         }
     }
 }

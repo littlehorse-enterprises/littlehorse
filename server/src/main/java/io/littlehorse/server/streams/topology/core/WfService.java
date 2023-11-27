@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
@@ -16,6 +17,8 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -28,23 +31,35 @@ public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
+    private final ExecutionContext executionContext;
 
-    public WfService(ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache) {
+    public WfService(
+            ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
         this.metadataCache = metadataCache;
         this.metadataManager = metadataManager;
+        this.executionContext = executionContext;
     }
 
     public WfSpecModel getWfSpec(String name, Integer version) {
-        Supplier<WfSpecModel> findWfSpec = () -> {
+        Supplier<WfSpec> findWfSpec = () -> {
             final WfSpecModel storedResult;
             if (version != null) {
                 storedResult = metadataManager.get(new WfSpecIdModel(name, version));
             } else {
                 storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name));
             }
-            return storedResult;
+            if (storedResult != null) {
+                return storedResult.toProto().build();
+            } else {
+                return null;
+            }
         };
-        return metadataCache.getOrCache(name, version, findWfSpec);
+        WfSpec result = metadataCache.getOrCache(name, version, findWfSpec);
+        if (result != null) {
+            return LHSerializable.fromProto(result, WfSpecModel.class, executionContext);
+        } else {
+            return null;
+        }
     }
 
     public UserTaskDefModel getUserTaskDef(String name, Integer version) {
@@ -62,8 +77,9 @@ public class WfService {
 
     public TaskDefModel getTaskDef(String name) {
         TaskDefIdModel id = new TaskDefIdModel(name);
-        Supplier<TaskDefModel> findTaskDef = () -> metadataManager.get(id);
-        return (TaskDefModel) metadataCache.getOrCache(id, findTaskDef::get);
+        Supplier<TaskDef> findTaskDef = () -> metadataManager.get(id).toProto().build();
+        TaskDef result = (TaskDef) metadataCache.getOrCache(id.toProto().build(), findTaskDef::get);
+        return LHSerializable.fromProto(result, TaskDefModel.class, executionContext);
     }
 
     public PrincipalModel getPrincipal(String id) {

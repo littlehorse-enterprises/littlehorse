@@ -105,14 +105,17 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
 
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
-            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId);
+            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
 
-            ScheduledTaskModel toSchedule =
-                    new ScheduledTaskModel(taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun);
+            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
+                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(
-                    inputVars, new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun)), taskToSchedule);
+                    inputVars,
+                    new TaskRunSourceModel(
+                            new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
+                    taskToSchedule);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
             executionContext.getableManager().put(taskRun);

@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,15 +42,19 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
      * Sets attempt number to zero.
      */
     public ScheduledTaskModel(
-            TaskDefIdModel taskDefId, List<VarNameAndValModel> variables, UserTaskRunModel userTaskRun) {
+            TaskDefIdModel taskDefId,
+            List<VarNameAndValModel> variables,
+            UserTaskRunModel userTaskRun,
+            ProcessorExecutionContext processorContext) {
         this.variables = variables;
         this.createdAt = new Date();
-        this.source = new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun));
+        this.source = new TaskRunSourceModel(
+                new UserTaskTriggerReferenceModel(userTaskRun, processorContext), processorContext);
         this.taskDefId = taskDefId;
         this.attemptNumber = 0;
 
         // This is just the wfRunId.
-        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getWfRunId());
+        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getWfRunId(), processorContext);
     }
 
     @Override

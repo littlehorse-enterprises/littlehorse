@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,7 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
 
     public UserTaskTriggerReferenceModel() {}
 
-    public UserTaskTriggerReferenceModel(UserTaskRunModel utr) {
+    public UserTaskTriggerReferenceModel(UserTaskRunModel utr, ProcessorExecutionContext processorContext) {
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();

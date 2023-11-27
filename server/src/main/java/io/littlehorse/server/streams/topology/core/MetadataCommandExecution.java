@@ -4,7 +4,6 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
@@ -38,8 +37,7 @@ public class MetadataCommandExecution implements ExecutionContext {
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ModelStore.defaultStore(nativeMetadataStore, this),
-                tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata))
-                );
+                tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata)));
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(
@@ -54,7 +52,7 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(this.metadataManager, metadataCache);
+        return new WfService(this.metadataManager, metadataCache, this);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class MetadataCommandExecution implements ExecutionContext {
     }
 
     private TenantModelStore tenantStoreFor(KeyValueStore<String, Bytes> nativeMetadataStore, String tenantId) {
-        if(tenantId.equals(LHConstants.DEFAULT_TENANT)){
+        if (tenantId.equals(LHConstants.DEFAULT_TENANT)) {
             return null;
         }
         return ModelStore.tenantStoreFor(nativeMetadataStore, tenantId, this);

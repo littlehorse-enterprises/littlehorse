@@ -8,6 +8,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Optional;
 
 public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunModel> {
@@ -22,7 +23,7 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
         this.taskGuid = guid;
     }
 
-    public TaskRunIdModel(String partitionKey) {
+    public TaskRunIdModel(String partitionKey, ProcessorExecutionContext processorContext) {
         this(partitionKey, LHUtil.generateGuid());
     }
 

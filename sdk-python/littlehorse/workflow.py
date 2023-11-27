@@ -363,7 +363,9 @@ class WfRunVariable:
         return self
 
     def searchable_on(
-            self, field_path: str, field_type: VariableType,
+        self,
+        field_path: str,
+        field_type: VariableType,
     ) -> "WfRunVariable":
         """Creates an index on a specified field of a Json Path variable,
         allowing you to search for this field using the SearchVariableRequest.

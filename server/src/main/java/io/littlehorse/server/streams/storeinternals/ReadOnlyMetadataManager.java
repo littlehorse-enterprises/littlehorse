@@ -31,7 +31,6 @@ public class ReadOnlyMetadataManager {
             final ReadOnlyModelDefaultStore defaultStore, final ReadOnlyTenantStore tenantStore) {
         this.defaultStore = defaultStore;
         this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
-
     }
 
     public <U extends Message, T extends GlobalGetable<U>> T get(MetadataId<?, U, T> id) {

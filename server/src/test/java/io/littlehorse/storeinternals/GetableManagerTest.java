@@ -106,7 +106,7 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING__wfSpecVersion_00000"));
-
+        getableManager.get(wfRunModel.getObjectId());
         getableManager.delete(wfRunModel.getObjectId());
         getableManager.commit();
 

@@ -5,13 +5,18 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.proto.Command;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +66,7 @@ public class CommandProcessorTest {
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
+    private TestProcessorExecutionContext processorContext;
 
     @BeforeEach
     public void setup() {
@@ -70,10 +76,18 @@ public class CommandProcessorTest {
 
     @Test
     void supportTaskQueueRehydrationOnInitialization() {
+        RunWfRequest runWfSubCommand =
+                RunWfRequest.newBuilder().setWfSpecName("name").build();
+        Command commandToExecute =
+                Command.newBuilder().setRunWf(runWfSubCommand).build();
+        processorContext = TestProcessorExecutionContext.create(
+                commandToExecute, HeadersUtil.metadataHeadersFor("myTenant", "myPrincipal"), mockProcessorContext);
+        NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
-                TestUtil.userTaskRun(UUID.randomUUID().toString());
-        final ScheduledTaskModel scheduledTask =
-                new ScheduledTaskModel(TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel);
+                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
+        processorContext.getableManager().put(nodeRun);
+        final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
+                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, processorContext);
         defaultStore.put(scheduledTask);
         commandProcessor.init(mockProcessorContext);
         verify(server, times(1)).onTaskScheduled(eq(scheduledTask.getTaskDefId()), any());

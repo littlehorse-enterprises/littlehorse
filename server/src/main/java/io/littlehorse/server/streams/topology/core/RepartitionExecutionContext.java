@@ -24,9 +24,9 @@ public class RepartitionExecutionContext implements ExecutionContext {
             LHServerConfig lhConfig,
             ProcessorContext<Void, Void> repartitionContext,
             MetadataCache metadataCache) {
+        this.repartitionContext = repartitionContext;
         KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.lhConfig = lhConfig;
-        this.repartitionContext = repartitionContext;
         this.metadataCache = metadataCache;
         this.metadataManager = new ReadOnlyMetadataManager(
                 ModelStore.defaultStore(nativeGlobalStore, this),
@@ -40,7 +40,7 @@ public class RepartitionExecutionContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(metadataManager, metadataCache);
+        return new WfService(metadataManager, metadataCache, this);
     }
 
     @Override

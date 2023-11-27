@@ -26,8 +26,9 @@ public class TaskRunModelTest {
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() {
         // arrange. Complex because all the dependencies needed
-        TaskRun taskRunProto =
-                TaskRun.newBuilder().setId(new TaskRunIdModel("asdf").toProto()).build();
+        TaskRun taskRunProto = TaskRun.newBuilder()
+                .setId(new TaskRunIdModel("asdf", processorContext).toProto())
+                .build();
         when(executionContext.castOnSupport(ProcessorExecutionContext.class)).thenReturn(processorContext);
 
         TaskRunModel taskRun = TaskRunModel.fromProto(taskRunProto, executionContext);

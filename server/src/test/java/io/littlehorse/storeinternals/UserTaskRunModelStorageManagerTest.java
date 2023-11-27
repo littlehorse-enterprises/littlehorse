@@ -66,7 +66,7 @@ public class UserTaskRunModelStorageManagerTest {
             if (userTaskRunStatus == UserTaskRunStatus.UNRECOGNIZED) {
                 continue;
             }
-            UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
+            UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId, mock());
             userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(
                     new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));

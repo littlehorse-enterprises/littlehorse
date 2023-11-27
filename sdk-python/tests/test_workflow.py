@@ -176,8 +176,8 @@ class TestThreadBuilder(unittest.TestCase):
                 variable_defs=[
                     ThreadVarDef(
                         var_def=VariableDef(name="input-name", type=VariableType.STR),
-                        ),
-                    ],
+                    ),
+                ],
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
@@ -1189,9 +1189,11 @@ class TestWorkflow(unittest.TestCase):
                 thread_specs={
                     "entrypoint": ThreadSpec(
                         variable_defs=[
-                            ThreadVarDef(var_def=VariableDef(
-                                name="input-name", type=VariableType.STR
-                            )),
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
                         ],
                         nodes={
                             "0-entrypoint-ENTRYPOINT": Node(

@@ -43,7 +43,7 @@ public class RequestExecutionContext implements ExecutionContext {
         this.metadataManager = new ReadOnlyMetadataManager(
                 ModelStore.defaultStore(globalMetadataNativeStore, this),
                 ModelStore.tenantStoreFor(globalMetadataNativeStore, tenantId, this));
-        this.service = new WfService(this.metadataManager, metadataCache);
+        this.service = new WfService(this.metadataManager, metadataCache, this);
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;
     }

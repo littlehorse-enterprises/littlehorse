@@ -116,7 +116,9 @@ public class TimerProcessorTest {
     @Test
     public void supportTimerDistinctionByTenant() {
         LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now());
+        tenantATask.setTenantId("tenantA");
         LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now());
+        tenantBTask.setTenantId("tenantB");
         processor.process(new Record<>("my-task", tenantATask, 0L));
         processor.process(new Record<>("my-task", tenantBTask, 0L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
@@ -139,7 +141,11 @@ public class TimerProcessorTest {
         when(mockCommand.getTime()).thenReturn(timeToDate(maturationTime));
         when(mockCommand.toProto().build().toByteArray()).thenReturn("Hi!".getBytes());
         when(mockCommand.getPartitionKey()).thenReturn(partitionKey);
-        return new LHTimer(mockCommand);
+        LHTimer timer = new LHTimer(mockCommand);
+        timer.topic = "myTopic";
+        timer.setPrincipalId("principal1");
+        timer.setTenantId("tenant1");
+        return timer;
     }
 
     private Date timeToDate(LocalDateTime maturationTime) {

@@ -83,7 +83,13 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
 
-    public UserTaskRunModel() {}
+    public UserTaskRunModel() {
+        // Used by LHSerializable
+    }
+
+    public UserTaskRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
 
     public UserTaskRunModel(UserTaskDefModel utd, UserTaskNodeModel userTaskNode, NodeRunModel nodeRunModel) {
         this.userTaskDefId = utd.getObjectId();

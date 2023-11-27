@@ -53,6 +53,10 @@ public class CreateRemoteTagRepartitionCommandTest {
                     Serdes.Bytes())
             .withLoggingDisabled()
             .build();
+    private final KeyValueStore<String, Bytes> nativeInMemoryGlobalStore = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
 
     private final MockProcessorContext<Void, Void> mockProcessorContext = new MockProcessorContext<>();
 
@@ -67,6 +71,7 @@ public class CreateRemoteTagRepartitionCommandTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
+        nativeInMemoryGlobalStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryGlobalStore);
         commandProcessor = new RepartitionCommandProcessor(config, metadataCache);
     }
 

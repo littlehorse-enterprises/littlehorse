@@ -26,7 +26,8 @@ public class MetadataManager extends ReadOnlyMetadataManager {
     }
 
     public <U extends Message, T extends GlobalGetable<U>> void put(T getable) {
-        ModelStore specificStore = isClusterLevelObject(getable.getObjectId()) || tenantStore == null ? defaultStore : tenantStore;
+        ModelStore specificStore =
+                isClusterLevelObject(getable.getObjectId()) || tenantStore == null ? defaultStore : tenantStore;
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")

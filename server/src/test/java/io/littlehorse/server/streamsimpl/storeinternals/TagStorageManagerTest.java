@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -68,9 +66,6 @@ public class TagStorageManagerTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExecutionContext executionContext;
 
-    private AuthorizationContext authorizationContext =
-            new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
-
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
 
@@ -78,7 +73,6 @@ public class TagStorageManagerTest {
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
-        when(executionContext.authorization()).thenReturn(authorizationContext);
         tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, mock());
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));

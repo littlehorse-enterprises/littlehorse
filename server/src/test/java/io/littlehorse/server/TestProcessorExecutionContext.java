@@ -8,6 +8,7 @@ import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.mockito.Mockito;
 
@@ -35,7 +36,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     public static TestProcessorExecutionContext create(
             Command currentCommand,
             Headers recordMetadata,
-            ProcessorContext<String, CommandProcessorOutput> processorContext) {
+            MockProcessorContext<String, CommandProcessorOutput> processorContext) {
         LHServerConfig lhConfig = Mockito.mock();
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();

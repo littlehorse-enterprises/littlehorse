@@ -54,9 +54,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             KafkaStreamsServerImpl server) {
+        this.processorContext = processorContext;
         KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.config = config;
-        this.processorContext = processorContext;
         this.metadataCache = metadataCache;
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
@@ -102,7 +102,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (service != null) {
             return service;
         }
-        service = new WfService(this.metadataManager, metadataCache);
+        service = new WfService(this.metadataManager, metadataCache, this);
         return service;
     }
 

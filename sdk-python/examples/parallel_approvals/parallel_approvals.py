@@ -25,10 +25,9 @@ def get_config() -> LHConfig:
 def get_workflow() -> Workflow:
     def one_approval(approval_thread: WorkflowThread) -> None:
         approval = approval_thread.add_variable("INPUT", VariableType.JSON_OBJ)
-        is_approved = (
-            approval_thread.add_variable("did-person-approve", VariableType.BOOL)
-            .searchable()
-        )
+        is_approved = approval_thread.add_variable(
+            "did-person-approve", VariableType.BOOL
+        ).searchable()
 
         def is_user_group(user_group_thread: WorkflowThread) -> None:
             user_task_output = approval_thread.assign_user_task(
@@ -63,14 +62,8 @@ def get_workflow() -> Workflow:
 
     def my_entrypoint(wf: WorkflowThread) -> None:
         approvals_var = wf.add_variable("approvals", VariableType.JSON_ARR)
-        (
-            wf.add_variable("item-url", VariableType.STR)
-            .searchable()
-        )
-        (
-            wf.add_variable("status", VariableType.STR, "PENDING")
-            .searchable()
-        )
+        (wf.add_variable("item-url", VariableType.STR).searchable())
+        (wf.add_variable("status", VariableType.STR, "PENDING").searchable())
         spawned_thread_1 = wf.spawn_thread_for_each(
             approvals_var, one_approval, "approval"
         )

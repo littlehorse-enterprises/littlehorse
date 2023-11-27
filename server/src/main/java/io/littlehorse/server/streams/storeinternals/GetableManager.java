@@ -23,7 +23,6 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final ModelStore store;
     private final TagStorageManager tagStorageManager;
-    private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
     public GetableManager(
             final ModelStore store,
@@ -33,7 +32,6 @@ public class GetableManager extends ReadOnlyGetableManager {
             final ExecutionContext executionContext) {
         super(store);
         this.store = store;
-        this.uncommittedChanges = new TreeMap<>();
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
     }

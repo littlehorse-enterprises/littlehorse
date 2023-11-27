@@ -33,6 +33,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,15 +87,15 @@ public class TestUtil {
         return nodeRunModel;
     }
 
-    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId) {
-        UserTaskRunModel utr = userTaskRun(wfRunId);
+    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
         out.setUserTaskRunId(utr.getObjectId());
         return out;
     }
 
-    public static UserTaskRunModel userTaskRun(String wfRunId) {
-        UserTaskRunModel userTaskRun = new UserTaskRunModel();
+    public static UserTaskRunModel userTaskRun(String wfRunId, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
         userTaskRun.setId(new UserTaskRunIdModel(wfRunId, "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
@@ -102,6 +103,19 @@ public class TestUtil {
         userTaskRun.setUserGroup("1234567");
         userTaskRun.setScheduledTime(new Date());
         userTaskRun.setNodeRunId(nodeRun().getObjectId());
+        return userTaskRun;
+    }
+
+    public static UserTaskRunModel userTaskRun(
+            String wfRunId, NodeRunModel nodeRun, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
+        userTaskRun.setId(new UserTaskRunIdModel(wfRunId, "fdsa"));
+        userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
+        userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
+        userTaskRun.setUserId("33333");
+        userTaskRun.setUserGroup("1234567");
+        userTaskRun.setScheduledTime(new Date());
+        userTaskRun.setNodeRunId(nodeRun.getObjectId());
         return userTaskRun;
     }
 
@@ -119,8 +133,8 @@ public class TestUtil {
     public static TaskRunModel taskRun() {
         TaskRunModel taskRun = new TaskRunModel();
         taskRun.setId(taskRunId());
-        taskRun.setTaskRunSource(
-                new TaskRunSourceModel(new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
+        taskRun.setTaskRunSource(new TaskRunSourceModel(
+                new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
         taskRun.setTaskDefName("test-name");
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
@@ -207,7 +221,8 @@ public class TestUtil {
         return new ScheduledTaskModel(
                 taskDef("my-task").getObjectId(),
                 List.of(),
-                userTaskRun(UUID.randomUUID().toString()));
+                userTaskRun(UUID.randomUUID().toString(), Mockito.mock()),
+                Mockito.mock());
     }
 
     public static ServerACLModel acl() {
