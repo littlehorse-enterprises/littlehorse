@@ -28,35 +28,24 @@ Execute the following script to generate the TypeScript proto files.
 ```
 
 ## Feature Toggles
-At this point we can configure toggles for the 2 environments defined by `process.env.NODE_ENV`, they are `test`, `development` and `production.`
+At this point you can configure the feature toggles through an environment variable that will enable/disabled the feature in any environment.
 You can find the toggles in the file `apps/web/featureToggles.js`, to define a toggle please follow the next structure:
 ```
 const flags = {
     ...
-    __A_TOGGLE_ENABLED_IN_DEV_AND_PROD__: [ 'development', 'production' ], // LH-1
-    __A_TOGGLE_ENABLED_IN_DEV__: [ 'development' ], // LH-2
-    __A_TOGGLE_ENABLED_IN_PROD__: [ 'production' ], // LH-3
-    __A_TOGGLE_ENABLED_IN_TESTS__: [ 'test' ], // LH-3
-    __A_TOGGLE_THAT_IS_DISABLED_EVERYWHERE__: [ ], // LH-4
+    __A_TOGGLE_ENABLED_IN_DEV_AND_PROD__: process.env.A_TOGGLE_ENABLED_IN_DEV_AND_PROD ?? 'true' //LH-4
 }
 ```
 The LH-X codes indicate the jira ticket that required the toggle to be created, so we can have context about that at any point in time and analyze if it is time to remove it.
+As you can see you need to define a default value, for the toggle above, it is `'true'` in the case that the ENV variable was not set.
 
 We are using the [Webpack Define Plugin](https://webpack.js.org/plugins/define-plugin/) which transforms the toggle into an actual `boolean` value when compiling/building the app. Also as Webpack removes deadCode, with that on the client side (browser) that code won't be available.
 
 To be able to use those toggles on our Typescript files we need to define them as global variables in the file `apps/web/globals.d.ts`. This is done automatically by the script `apps/web/generate-feature-toggles-types.js` which is executed every time you run `pnpm dev` or `pnpm build` from the root folder.
 
 ### CHANGING A TOOGLE'S STATUS
-Any time you change the toogle's status, turning it ON/OFF for different environments, you *MUST*:
-#### Dev Environment
-* Stop the app and run `pnpm dev` if you are in the local machine
-
-### Prod Environment
-* Change the value of the toggle in the `featureToggles` file
-* Do a commit of the change
-* Push the code
-* If we have a pipeline, it will need to execute the necessary steps to re-deploy the app.
-  * Rebuild the app with `pnpm build` and run `pnpm start`
+* You need to change the environment variable value.
+* You need to build and deploy the dashboard again.
 
 ### HOW TO USE THEM
 In the code you can use them as `boolean` values:
