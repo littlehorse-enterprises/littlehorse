@@ -59,35 +59,46 @@ private static final long serialVersionUID = 0L;
     io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return Whether the wfSpecVersion field is set.
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return Whether the wfSpecMajorVersion field is set.
      */
-    boolean hasWfSpecVersion();
+    boolean hasWfSpecMajorVersion();
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return The wfSpecVersion.
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
      */
-    int getWfSpecVersion();
+    int getWfSpecMajorVersion();
 
     /**
-     * <code>string var_name = 3;</code>
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return Whether the wfSpecRevision field is set.
+     */
+    boolean hasWfSpecRevision();
+    /**
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return The wfSpecRevision.
+     */
+    int getWfSpecRevision();
+
+    /**
+     * <code>string var_name = 4;</code>
      * @return The varName.
      */
     java.lang.String getVarName();
     /**
-     * <code>string var_name = 3;</code>
+     * <code>string var_name = 4;</code>
      * @return The bytes for varName.
      */
     com.google.protobuf.ByteString
         getVarNameBytes();
 
     /**
-     * <code>string wf_spec_name = 4;</code>
+     * <code>string wf_spec_name = 5;</code>
      * @return The wfSpecName.
      */
     java.lang.String getWfSpecName();
     /**
-     * <code>string wf_spec_name = 4;</code>
+     * <code>string wf_spec_name = 5;</code>
      * @return The bytes for wfSpecName.
      */
     com.google.protobuf.ByteString
@@ -157,30 +168,49 @@ private static final long serialVersionUID = 0L;
       return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
     }
 
-    public static final int WF_SPEC_VERSION_FIELD_NUMBER = 2;
-    private int wfSpecVersion_ = 0;
+    public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
+    private int wfSpecMajorVersion_ = 0;
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return Whether the wfSpecVersion field is set.
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return Whether the wfSpecMajorVersion field is set.
      */
     @java.lang.Override
-    public boolean hasWfSpecVersion() {
+    public boolean hasWfSpecMajorVersion() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return The wfSpecVersion.
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
      */
     @java.lang.Override
-    public int getWfSpecVersion() {
-      return wfSpecVersion_;
+    public int getWfSpecMajorVersion() {
+      return wfSpecMajorVersion_;
     }
 
-    public static final int VAR_NAME_FIELD_NUMBER = 3;
+    public static final int WF_SPEC_REVISION_FIELD_NUMBER = 3;
+    private int wfSpecRevision_ = 0;
+    /**
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return Whether the wfSpecRevision field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecRevision() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return The wfSpecRevision.
+     */
+    @java.lang.Override
+    public int getWfSpecRevision() {
+      return wfSpecRevision_;
+    }
+
+    public static final int VAR_NAME_FIELD_NUMBER = 4;
     @SuppressWarnings("serial")
     private volatile java.lang.Object varName_ = "";
     /**
-     * <code>string var_name = 3;</code>
+     * <code>string var_name = 4;</code>
      * @return The varName.
      */
     @java.lang.Override
@@ -197,7 +227,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string var_name = 3;</code>
+     * <code>string var_name = 4;</code>
      * @return The bytes for varName.
      */
     @java.lang.Override
@@ -215,11 +245,11 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    public static final int WF_SPEC_NAME_FIELD_NUMBER = 4;
+    public static final int WF_SPEC_NAME_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
     private volatile java.lang.Object wfSpecName_ = "";
     /**
-     * <code>string wf_spec_name = 4;</code>
+     * <code>string wf_spec_name = 5;</code>
      * @return The wfSpecName.
      */
     @java.lang.Override
@@ -236,7 +266,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string wf_spec_name = 4;</code>
+     * <code>string wf_spec_name = 5;</code>
      * @return The bytes for wfSpecName.
      */
     @java.lang.Override
@@ -272,13 +302,16 @@ private static final long serialVersionUID = 0L;
         output.writeMessage(1, getValue());
       }
       if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeInt32(2, wfSpecVersion_);
+        output.writeInt32(2, wfSpecMajorVersion_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(3, wfSpecRevision_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, varName_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, varName_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, wfSpecName_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, wfSpecName_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -295,13 +328,17 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, wfSpecVersion_);
+          .computeInt32Size(2, wfSpecMajorVersion_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, wfSpecRevision_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, varName_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, varName_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, wfSpecName_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, wfSpecName_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -323,10 +360,15 @@ private static final long serialVersionUID = 0L;
         if (!getValue()
             .equals(other.getValue())) return false;
       }
-      if (hasWfSpecVersion() != other.hasWfSpecVersion()) return false;
-      if (hasWfSpecVersion()) {
-        if (getWfSpecVersion()
-            != other.getWfSpecVersion()) return false;
+      if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
+      if (hasWfSpecMajorVersion()) {
+        if (getWfSpecMajorVersion()
+            != other.getWfSpecMajorVersion()) return false;
+      }
+      if (hasWfSpecRevision() != other.hasWfSpecRevision()) return false;
+      if (hasWfSpecRevision()) {
+        if (getWfSpecRevision()
+            != other.getWfSpecRevision()) return false;
       }
       if (!getVarName()
           .equals(other.getVarName())) return false;
@@ -347,9 +389,13 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getValue().hashCode();
       }
-      if (hasWfSpecVersion()) {
-        hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getWfSpecVersion();
+      if (hasWfSpecMajorVersion()) {
+        hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecMajorVersion();
+      }
+      if (hasWfSpecRevision()) {
+        hash = (37 * hash) + WF_SPEC_REVISION_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecRevision();
       }
       hash = (37 * hash) + VAR_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getVarName().hashCode();
@@ -491,7 +537,8 @@ private static final long serialVersionUID = 0L;
           valueBuilder_.dispose();
           valueBuilder_ = null;
         }
-        wfSpecVersion_ = 0;
+        wfSpecMajorVersion_ = 0;
+        wfSpecRevision_ = 0;
         varName_ = "";
         wfSpecName_ = "";
         return this;
@@ -534,13 +581,17 @@ private static final long serialVersionUID = 0L;
         }
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.wfSpecVersion_ = wfSpecVersion_;
+          result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
           to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.varName_ = varName_;
+          result.wfSpecRevision_ = wfSpecRevision_;
+          to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.varName_ = varName_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
           result.wfSpecName_ = wfSpecName_;
         }
         result.bitField0_ |= to_bitField0_;
@@ -593,17 +644,20 @@ private static final long serialVersionUID = 0L;
         if (other.hasValue()) {
           mergeValue(other.getValue());
         }
-        if (other.hasWfSpecVersion()) {
-          setWfSpecVersion(other.getWfSpecVersion());
+        if (other.hasWfSpecMajorVersion()) {
+          setWfSpecMajorVersion(other.getWfSpecMajorVersion());
+        }
+        if (other.hasWfSpecRevision()) {
+          setWfSpecRevision(other.getWfSpecRevision());
         }
         if (!other.getVarName().isEmpty()) {
           varName_ = other.varName_;
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000008;
           onChanged();
         }
         if (!other.getWfSpecName().isEmpty()) {
           wfSpecName_ = other.wfSpecName_;
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000010;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -640,20 +694,25 @@ private static final long serialVersionUID = 0L;
                 break;
               } // case 10
               case 16: {
-                wfSpecVersion_ = input.readInt32();
+                wfSpecMajorVersion_ = input.readInt32();
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
-              case 26: {
-                varName_ = input.readStringRequireUtf8();
+              case 24: {
+                wfSpecRevision_ = input.readInt32();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 26
+              } // case 24
               case 34: {
-                wfSpecName_ = input.readStringRequireUtf8();
+                varName_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
+              case 42: {
+                wfSpecName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -790,49 +849,89 @@ private static final long serialVersionUID = 0L;
         return valueBuilder_;
       }
 
-      private int wfSpecVersion_ ;
+      private int wfSpecMajorVersion_ ;
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
-       * @return Whether the wfSpecVersion field is set.
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @return Whether the wfSpecMajorVersion field is set.
        */
       @java.lang.Override
-      public boolean hasWfSpecVersion() {
+      public boolean hasWfSpecMajorVersion() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
-       * @return The wfSpecVersion.
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @return The wfSpecMajorVersion.
        */
       @java.lang.Override
-      public int getWfSpecVersion() {
-        return wfSpecVersion_;
+      public int getWfSpecMajorVersion() {
+        return wfSpecMajorVersion_;
       }
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
-       * @param value The wfSpecVersion to set.
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @param value The wfSpecMajorVersion to set.
        * @return This builder for chaining.
        */
-      public Builder setWfSpecVersion(int value) {
+      public Builder setWfSpecMajorVersion(int value) {
 
-        wfSpecVersion_ = value;
+        wfSpecMajorVersion_ = value;
         bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
+       * <code>optional int32 wf_spec_major_version = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearWfSpecVersion() {
+      public Builder clearWfSpecMajorVersion() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        wfSpecVersion_ = 0;
+        wfSpecMajorVersion_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wfSpecRevision_ ;
+      /**
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return Whether the wfSpecRevision field is set.
+       */
+      @java.lang.Override
+      public boolean hasWfSpecRevision() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return The wfSpecRevision.
+       */
+      @java.lang.Override
+      public int getWfSpecRevision() {
+        return wfSpecRevision_;
+      }
+      /**
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @param value The wfSpecRevision to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecRevision(int value) {
+
+        wfSpecRevision_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWfSpecRevision() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        wfSpecRevision_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object varName_ = "";
       /**
-       * <code>string var_name = 3;</code>
+       * <code>string var_name = 4;</code>
        * @return The varName.
        */
       public java.lang.String getVarName() {
@@ -848,7 +947,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>string var_name = 3;</code>
+       * <code>string var_name = 4;</code>
        * @return The bytes for varName.
        */
       public com.google.protobuf.ByteString
@@ -865,7 +964,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>string var_name = 3;</code>
+       * <code>string var_name = 4;</code>
        * @param value The varName to set.
        * @return This builder for chaining.
        */
@@ -873,22 +972,22 @@ private static final long serialVersionUID = 0L;
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         varName_ = value;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>string var_name = 3;</code>
+       * <code>string var_name = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearVarName() {
         varName_ = getDefaultInstance().getVarName();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
       }
       /**
-       * <code>string var_name = 3;</code>
+       * <code>string var_name = 4;</code>
        * @param value The bytes for varName to set.
        * @return This builder for chaining.
        */
@@ -897,14 +996,14 @@ private static final long serialVersionUID = 0L;
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         varName_ = value;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
 
       private java.lang.Object wfSpecName_ = "";
       /**
-       * <code>string wf_spec_name = 4;</code>
+       * <code>string wf_spec_name = 5;</code>
        * @return The wfSpecName.
        */
       public java.lang.String getWfSpecName() {
@@ -920,7 +1019,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>string wf_spec_name = 4;</code>
+       * <code>string wf_spec_name = 5;</code>
        * @return The bytes for wfSpecName.
        */
       public com.google.protobuf.ByteString
@@ -937,7 +1036,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>string wf_spec_name = 4;</code>
+       * <code>string wf_spec_name = 5;</code>
        * @param value The wfSpecName to set.
        * @return This builder for chaining.
        */
@@ -945,22 +1044,22 @@ private static final long serialVersionUID = 0L;
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         wfSpecName_ = value;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>string wf_spec_name = 4;</code>
+       * <code>string wf_spec_name = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearWfSpecName() {
         wfSpecName_ = getDefaultInstance().getWfSpecName();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
       }
       /**
-       * <code>string wf_spec_name = 4;</code>
+       * <code>string wf_spec_name = 5;</code>
        * @param value The bytes for wfSpecName to set.
        * @return This builder for chaining.
        */
@@ -969,7 +1068,7 @@ private static final long serialVersionUID = 0L;
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         wfSpecName_ = value;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }

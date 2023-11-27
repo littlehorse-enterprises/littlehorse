@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
@@ -264,7 +265,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
+        WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class);
+        WfSpecModel wfSpec = metadataDao().getWfSpec(wfSpecId);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -281,7 +283,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), null);
+        Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), majorVersion, null);
+
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -742,8 +746,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         command.setCommandId(LHUtil.generateGuid());
         AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
-        String tenant;
-        String principalId;
 
         // TODO: TaskQueueManager multitenancy
         // The only reason for this validation is that

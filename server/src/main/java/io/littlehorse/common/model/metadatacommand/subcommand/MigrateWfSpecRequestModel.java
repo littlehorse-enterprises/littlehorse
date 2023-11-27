@@ -48,21 +48,19 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
 
     @Override
     public WfSpec process(MetadataProcessorDAO dao, LHServerConfig config) {
-        WfSpecModel oldWfSpec = dao.getWfSpec(oldWfSpecId.getName(), oldWfSpecId.getVersion());
+        WfSpecModel oldWfSpec = dao.getWfSpec(oldWfSpecId);
 
         if (oldWfSpec == null) {
             throw new LHApiException(
-                    Status.NOT_FOUND,
-                    "Migration refers to nonexisting WfSpec %s version %d"
-                            .formatted(oldWfSpecId.getName(), oldWfSpecId.getVersion()));
+                    Status.NOT_FOUND, "Migration refers to nonexisting WfSpec %s".formatted(oldWfSpecId.toString()));
         }
 
-        WfSpecModel newWfSpec = dao.getWfSpec(oldWfSpecId.getName(), migration.getNewWfSpecVersion());
+        WfSpecModel newWfSpec = dao.getWfSpec(getNewWfSpecId());
         if (newWfSpec == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
                     "Migration refers to nonexisting WfSpec %s version %d"
-                            .formatted(oldWfSpecId.getName(), migration.getNewWfSpecVersion()));
+                            .formatted(oldWfSpecId.getName(), migration.getNewMajorVersion()));
         }
 
         migration.validate(oldWfSpec, newWfSpec);
@@ -74,5 +72,9 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
         dao.put(newWfSpec);
         // return newWfSpec.toProto().build();
         throw new LHApiException(Status.UNIMPLEMENTED, "WfSpec Version Migration is ongoing");
+    }
+
+    public WfSpecIdModel getNewWfSpecId() {
+        return new WfSpecIdModel(oldWfSpecId.getName(), migration.getNewMajorVersion(), migration.getNewRevision());
     }
 }

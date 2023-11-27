@@ -5,14 +5,12 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.StoredGetable;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +45,11 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
         switch (getableType) {
             case WF_SPEC -> {
                 WfSpecIdModel id = (WfSpecIdModel) ObjectIdModel.fromString(key, WfSpecIdModel.class);
-                WfSpecIdModel latestVersionId = new WfSpecIdModel(id.getName(), LATEST_VERSION);
+
+                // TODO: This will not always return the latest WfSpec when we allow modifying an old version.
+                // As of this commit, this is safe to do.
+                WfSpecIdModel latestVersionId = new WfSpecIdModel(id.getName(), LATEST_VERSION, LATEST_VERSION);
+
                 evictOrUpdate(value, id);
                 evictOrUpdate(value, latestVersionId);
             }
@@ -76,11 +78,11 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
         }
     }
 
-    public WfSpecModel getOrCache(String name, Integer version, Supplier<WfSpecModel> cacheable) {
-        if (version == null) {
-            version = LATEST_VERSION;
-        }
-        WfSpecIdModel cachedId = new WfSpecIdModel(name, version);
-        return (WfSpecModel) getOrCache(cachedId, cacheable::get);
-    }
+    // public WfSpecModel getOrCache(String name, Integer version, Supplier<WfSpecModel> cacheable) {
+    //     if (version == null) {
+    //         version = LATEST_VERSION;
+    //     }
+    //     WfSpecIdModel cachedId = new WfSpecIdModel(name, version);
+    //     return (WfSpecModel) getOrCache(cachedId, cacheable::get);
+    // }
 }

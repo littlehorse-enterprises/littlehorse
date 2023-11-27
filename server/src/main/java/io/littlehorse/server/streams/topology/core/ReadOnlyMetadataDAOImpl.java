@@ -64,17 +64,24 @@ public class ReadOnlyMetadataDAOImpl implements ReadOnlyMetadataDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public WfSpecModel getWfSpec(String name, Integer version) {
+    public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
         Supplier<WfSpecModel> findWfSpec = () -> {
             final StoredGetable<WfSpec, WfSpecModel> storedResult;
-            if (version != null) {
-                storedResult = lhStore.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+
+            if (majorVersion != null && revision != null) {
+                storedResult = lhStore.get(
+                        new WfSpecIdModel(name, majorVersion, revision).getStoreableKey(), StoredGetable.class);
+            } else if (majorVersion != null) {
+                storedResult =
+                        lhStore.getLastFromPrefix(WfSpecIdModel.getPrefix(name, majorVersion), StoredGetable.class);
             } else {
                 storedResult = lhStore.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
             }
+
             return storedResult == null ? null : storedResult.getStoredObject();
         };
-        return metadataCache.getOrCache(name, version, findWfSpec);
+        // return metadataCache.getOrCache(name, majorVersion, findWfSpec);
+        return findWfSpec.get();
     }
 
     @SuppressWarnings("unchecked")

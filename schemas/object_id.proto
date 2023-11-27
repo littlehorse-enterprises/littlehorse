@@ -12,7 +12,8 @@ option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfSpecId {
   string name = 1;
-  int32 version = 2;
+  int32 major_version = 2;
+  int32 revision = 3;
 }
 
 message TaskDefId {
@@ -20,10 +21,6 @@ message TaskDefId {
 }
 
 message ExternalEventDefId {
-  string name = 1;
-}
-
-message GetLatestWfSpecRequest {
   string name = 1;
 }
 

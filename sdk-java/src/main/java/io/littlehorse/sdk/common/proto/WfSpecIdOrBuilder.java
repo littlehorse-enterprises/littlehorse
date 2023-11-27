@@ -20,8 +20,14 @@ public interface WfSpecIdOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>int32 major_version = 2;</code>
+   * @return The majorVersion.
    */
-  int getVersion();
+  int getMajorVersion();
+
+  /**
+   * <code>int32 revision = 3;</code>
+   * @return The revision.
+   */
+  int getRevision();
 }

@@ -17,7 +17,8 @@ import lombok.Setter;
 @Setter
 public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMigration> {
 
-    private int newWfSpecVersion;
+    private int newMajorVersion;
+    private int newRevision;
     private Map<String, ThreadSpecMigrationModel> threadSpecMigrations;
 
     public WfSpecVersionMigrationModel() {
@@ -31,7 +32,9 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
 
     @Override
     public WfSpecVersionMigration.Builder toProto() {
-        WfSpecVersionMigration.Builder out = WfSpecVersionMigration.newBuilder().setNewWfSpecVersion(newWfSpecVersion);
+        WfSpecVersionMigration.Builder out = WfSpecVersionMigration.newBuilder()
+                .setNewMajorVersion(newMajorVersion)
+                .setNewRevision(newRevision);
 
         for (Map.Entry<String, ThreadSpecMigrationModel> entry : threadSpecMigrations.entrySet()) {
             out.putThreadSpecMigrations(
@@ -44,7 +47,8 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
     @Override
     public void initFrom(Message proto) {
         WfSpecVersionMigration p = (WfSpecVersionMigration) proto;
-        newWfSpecVersion = p.getNewWfSpecVersion();
+        newMajorVersion = p.getNewMajorVersion();
+        newRevision = p.getNewRevision();
 
         for (Map.Entry<String, ThreadSpecMigration> e :
                 p.getThreadSpecMigrationsMap().entrySet()) {

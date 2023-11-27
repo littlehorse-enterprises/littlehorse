@@ -62,7 +62,7 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
             return null;
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.getWfSpecName(), wfRunModel.getWfSpecVersion());
+        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.getWfSpecId());
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;

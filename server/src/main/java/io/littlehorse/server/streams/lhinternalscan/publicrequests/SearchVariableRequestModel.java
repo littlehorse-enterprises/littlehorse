@@ -113,8 +113,10 @@ public class SearchVariableRequestModel
     }
 
     private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
-        Integer wfSpecVersion = value.hasWfSpecVersion() ? null : value.getWfSpecVersion();
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+        Integer majorVersion = value.hasWfSpecMajorVersion() ? null : value.getWfSpecMajorVersion();
+        Integer revision = value.hasWfSpecRevision() ? null : value.getWfSpecRevision();
+
+        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), majorVersion, revision);
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
@@ -146,11 +148,19 @@ public class SearchVariableRequestModel
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
-        if (value.hasWfSpecVersion()) {
-            return List.of(
-                    new Attribute("wfSpecName", value.getWfSpecName()),
-                    new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(value.getWfSpecVersion())),
-                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+        if (value.hasWfSpecMajorVersion()) {
+            if (value.hasWfSpecRevision()) {
+                return List.of(
+                        new Attribute("wfSpecName", value.getWfSpecName()),
+                        new Attribute("wfSpecMV", LHUtil.toLHDbVersionFormat(value.getWfSpecMajorVersion())),
+                        new Attribute("wfSpecRev", LHUtil.toLHDbVersionFormat(value.getWfSpecRevision())),
+                        new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+            } else {
+                return List.of(
+                        new Attribute("wfSpecName", value.getWfSpecName()),
+                        new Attribute("wfSpecMV", LHUtil.toLHDbVersionFormat(value.getWfSpecMajorVersion())),
+                        new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+            }
         } else {
             return List.of(
                     new Attribute("wfSpecName", value.getWfSpecName()),

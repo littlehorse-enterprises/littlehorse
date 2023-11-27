@@ -11,7 +11,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpec(_message.Message):
-    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "searchable_varaibles"]
+    __slots__ = ["id", "created_at", "frozen_variables", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -19,25 +19,23 @@ class WfSpec(_message.Message):
         key: str
         value: ThreadSpec
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ThreadSpec, _Mapping]] = ...) -> None: ...
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    VERSION_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    FROZEN_VARIABLES_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     MIGRATION_FIELD_NUMBER: _ClassVar[int]
-    SEARCHABLE_VARAIBLES_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    version: int
+    id: _object_id_pb2.WfSpecId
     created_at: _timestamp_pb2.Timestamp
+    frozen_variables: _containers.RepeatedCompositeFieldContainer[ThreadVarDef]
     status: _common_enums_pb2.MetadataStatus
     thread_specs: _containers.MessageMap[str, ThreadSpec]
     entrypoint_thread_name: str
     retention_policy: WorkflowRetentionPolicy
     migration: WfSpecVersionMigration
-    searchable_varaibles: _containers.RepeatedCompositeFieldContainer[SearchableVariableDef]
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.MetadataStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ..., searchable_varaibles: _Optional[_Iterable[_Union[SearchableVariableDef, _Mapping]]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., frozen_variables: _Optional[_Iterable[_Union[ThreadVarDef, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.MetadataStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ...) -> None: ...
 
 class WorkflowRetentionPolicy(_message.Message):
     __slots__ = ["seconds_after_wf_termination"]
@@ -274,7 +272,7 @@ class SleepNode(_message.Message):
     def __init__(self, raw_seconds: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., timestamp: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., iso_date: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class WfSpecVersionMigration(_message.Message):
-    __slots__ = ["new_wf_spec_version", "thread_spec_migrations"]
+    __slots__ = ["new_major_version", "new_revision", "thread_spec_migrations"]
     class ThreadSpecMigrationsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -282,11 +280,13 @@ class WfSpecVersionMigration(_message.Message):
         key: str
         value: ThreadSpecMigration
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ThreadSpecMigration, _Mapping]] = ...) -> None: ...
-    NEW_WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
+    NEW_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    NEW_REVISION_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPEC_MIGRATIONS_FIELD_NUMBER: _ClassVar[int]
-    new_wf_spec_version: int
+    new_major_version: int
+    new_revision: int
     thread_spec_migrations: _containers.MessageMap[str, ThreadSpecMigration]
-    def __init__(self, new_wf_spec_version: _Optional[int] = ..., thread_spec_migrations: _Optional[_Mapping[str, ThreadSpecMigration]] = ...) -> None: ...
+    def __init__(self, new_major_version: _Optional[int] = ..., new_revision: _Optional[int] = ..., thread_spec_migrations: _Optional[_Mapping[str, ThreadSpecMigration]] = ...) -> None: ...
 
 class ThreadSpecMigration(_message.Message):
     __slots__ = ["new_thread_spec_name", "node_migrations"]
