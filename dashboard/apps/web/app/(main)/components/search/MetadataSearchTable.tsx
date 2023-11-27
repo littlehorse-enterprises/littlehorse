@@ -35,4 +35,3 @@ export function MetadataSearchTable({ results }:MetadataSearchTableProps) {
         </table> : null }
     </div>
 }
-

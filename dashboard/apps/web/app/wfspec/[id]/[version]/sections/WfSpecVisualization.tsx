@@ -9,7 +9,7 @@ export function WfSpecVisualization({ id, version }:any) {
             <h2>WfSpec visualization</h2>
             <VersionChanger id={id} version={version} />
         </div>
-       
+
 
         <WfSpecVisualizer id={id} version={version} />
     </section>

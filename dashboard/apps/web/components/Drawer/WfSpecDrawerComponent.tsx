@@ -86,7 +86,7 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
                                 const content = await response.json()
 
                                 handler(content.data)
-                            } else { console.error('INVALID RESPONSE FROM API')} 
+                            } else { console.error('INVALID RESPONSE FROM API')}
                         })(
                             '../../api/drawer/taskDef/',
                             selectedNode?.task.taskDefName,
@@ -242,7 +242,7 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
                         return (
                         // eslint-disable-next-line react/no-array-index-key -- we are using the name + index
                             <div key={name + index}>
-                
+
                                 {/* eslint-disable-next-line react/no-array-index-key -- we are using the name + index */}
                                 <div className={`grid-2 `} key={name + index}>
                                     <p className="center">{name}</p>
@@ -341,5 +341,5 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
             }
         </div>
     )
-        
+
 }

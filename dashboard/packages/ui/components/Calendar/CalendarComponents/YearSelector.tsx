@@ -11,7 +11,7 @@ export interface YearSelectorProps {
   date: string;
 }
 export function YearSelector({
-  prevMonth, 
+  prevMonth,
   nextMonth,
   date
 }: YearSelectorProps) {

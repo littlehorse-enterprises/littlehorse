@@ -7,16 +7,16 @@ import { WorkflowsChart } from '../../../../components/Charts/WorkflowsChart'
 import { LatencyChart } from '../../../../components/Charts/LatencyChart'
 
 export interface TaskDefMetric {
-    windowStart: Date 
-    type: string 
+    windowStart: Date
+    type: string
     totalStarted: string
     totalScheduled: string
     totalErrored: string
-    totalCompelted: string 
+    totalCompelted: string
     taskDefName: string
-    startToCompleteMax: string 
-    startToCompleteAvg: string 
-    scheduleToStartMax: string 
+    startToCompleteMax: string
+    startToCompleteAvg: string
+    scheduleToStartMax: string
     ScheduleToStartAvg: string
 }
 
@@ -39,7 +39,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
             firstDate = lastWindowStartAsMoment.clone().subtract(windowsNotOverpassing300,'days')
         } else {
             const fact = (Number(lastWindowStartAsMoment.format('mm')))%5
-   
+
             lastWindowStartAsMoment.subtract(fact,'minutes')
             firstDate = lastWindowStartAsMoment.clone().subtract(windowsNotOverpassing300*5,'minutes')
         }
@@ -87,7 +87,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
             while (curr.format('YMMDDHHmm') > firstDate.format('YMMDDHHmm')){
                 out.push({ label:curr.toString() ,data:metrics?.find( d => {
                     return utc(d.windowStart).format('YMMDDHHmm') === curr.format('YMMDDHHmm')
-                    
+
                 }) || {
                     'windowStart': curr.toString(),
                     type,
@@ -102,8 +102,8 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
                     'totalScheduled': '0'
                 } })
                 curr.subtract(5,'minutes')
-                
-                
+
+
             }
         }
 
@@ -115,7 +115,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
         const res = await fetch('./api/metrics/wfSpec',{
             method:'POST',
             body: JSON.stringify({
-                lastWindowStart, 
+                lastWindowStart,
                 numWindows: windowsNotOverpassing300,
                 wfSpecName: 'CLUSTER_LEVEL_METRIC',
                 wfSpecVersion: 0,
@@ -144,7 +144,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
                     <Button className={`btn btn-dark ${chart === 'latency' && 'active-dark'}`} onClick={() => { setChart('latency') }}>Latency</Button>
                 </div>
             </header>
-        
+
             <div className={`${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`} style={{
                 height: data.length === 0 ? '400px' : 'auto'
             }}>

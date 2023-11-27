@@ -6,13 +6,13 @@
 This Turborepo includes the following packages/apps:
 
 ## Requirements
-* `NodeJS`. The version 20 is required. In case you need multiple versions of node on you machine, you can install [NVM](https://github.com/nvm-sh/nvm) on your machine. Then you can run:
-  `nvm use`
-  * Previous command will use the node version defined in the .nvmrc file on the root folder of this project.
+* `NodeJS`. The version 20 is required. In case you need multiple versions of node on you machine, you can install
+  [NVM](https://github.com/nvm-sh/nvm) on your machine. Then you can run: `nvm use`
+* Previous command will use the node version defined in the .nvmrc file on the root folder of this project.
 
 * Install pnpm globally
 ```
-npm install pnpm --global 
+npm install pnpm --global
 ```
 
 * Install the node packages:
@@ -20,19 +20,11 @@ npm install pnpm --global
 pnpm install
 ```
 
-### Initializing Sub Modules
-We have configured littlehorse core project as a submodule to have access to the protobuff definitions that we need to make GRPC calls to the LittheHorse public API.
-
-If the littlehorse folder is empty, please execute:
-
-```
-g submodule init
-g submodule update
-```
+### Compiling Protobuf classes
 
 Execute the following script to generate the TypeScript proto files.
 ```
-./compile-proto.sh
+./local-dev/compile-proto.sh
 ```
 
 ## Feature Toggles
@@ -86,7 +78,7 @@ if (!__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
 ### Testing
 To make the feature toggles available for the tests the following has been put in place:
 * A `testGlobals.js` file which is reading the featureToggles and loading them into the jest context.
-* To turn ON/OFF a toggle for the tests, you can either: 
+* To turn ON/OFF a toggle for the tests, you can either:
 
   * Enable/Disable it in the `featureToggles` file like indicated in the above sections.
   * In your tests you can overwrite the value of the toggle like:
@@ -94,9 +86,9 @@ To make the feature toggles available for the tests the following has been put i
     __A_TOGGLE__ = false
     __ANOTHER_TOGGLE__ = true
     ```
-  
+
 ## SINGLE SIGN ON FOR THE DASHBOARD
-* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `__AUTHENTICATION_ENABLED__` in the needed environments. 
+* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `__AUTHENTICATION_ENABLED__` in the needed environments.
 
 * You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
 
@@ -107,7 +99,7 @@ To make the feature toggles available for the tests the following has been put i
 
 
 ## Compiling the protobuff files
-LHDashboard needs the Little Horse protobuff files in order to do operations against its public API. 
+LHDashboard needs the Little Horse protobuff files in order to do operations against its public API.
 To achieve that we have included Littlehorse as a submodule (more details if the above section); with those protobuff files
 we need to generate TypeScript code to be used in the NextJS application.
 
@@ -219,7 +211,7 @@ pnpm run lint -- --fix
 * Configure the VSCode IDE with the following options:
 ```
 {
-    "files.autoSave": "afterDelay",    
+    "files.autoSave": "afterDelay",
     "eslint.format.enable": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
@@ -265,12 +257,9 @@ Note: The Docker file will copy the `.env` file from the root folder to apps/web
 ### Run Docker Image
 
 ```
-docker run -p 80:80 -d lhd 
+docker run -p 80:80 -d lhd
 ```
 Remap the port
 ```
-docker run -p 3001:80 -d lhd 
+docker run -p 3001:80 -d lhd
 ```
-
-
- 

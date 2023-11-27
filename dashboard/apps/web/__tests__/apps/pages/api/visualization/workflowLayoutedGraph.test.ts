@@ -15,7 +15,7 @@ describe('Layouted Graph API', () => {
     beforeEach(() => {
         (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({}))
     })
-    
+
     it('should perform a grpc request to get the wfSpec sending the right request body', async () => {
         jest.spyOn(nextAuth, 'getServerSession').mockResolvedValue({ accessToken: 'ANY_ACCESS_TOKEN' })
 

@@ -13,4 +13,3 @@ export function ProviderSigInBtn({ provider, num }:{ provider:any, num:number })
         </button>
     )
 }
-

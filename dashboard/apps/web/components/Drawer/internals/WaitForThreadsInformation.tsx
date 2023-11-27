@@ -107,7 +107,7 @@ export function WaitForThreadsInformation({
                 <DrawerSection title="Related ThreadSpec">
                     {data?.lhNode?.waitForThreads?.threads && data?.lhNode?.waitForThreads?.threads.length > 0 ?
                         data?.lhNode?.waitForThreads?.threads?.map((t: any, ix: number) =>
-                        // eslint-disable-next-line react/no-array-index-key -- using index 
+                        // eslint-disable-next-line react/no-array-index-key -- using index
                             <DrawerThreadSpecLink key={ix}
                                 label={nodename(t.threadRunNumber?.variableName)}
                                 name={nodename(t.threadRunNumber?.variableName)}

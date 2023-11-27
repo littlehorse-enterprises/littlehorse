@@ -7,16 +7,16 @@ import { TaskChart } from '../../../../components/Charts/TaskChart'
 import { LatencyTaskChart } from '../../../../components/Charts/LatencyTaskChart'
 
 export interface TaskDefMetric {
-    windowStart: Date 
-    type: string 
+    windowStart: Date
+    type: string
     totalStarted: string
     totalScheduled: string
     totalErrored: string
-    totalCompelted: string 
+    totalCompelted: string
     taskDefName: string
-    startToCompleteMax: string 
-    startToCompleteAvg: string 
-    scheduleToStartMax: string 
+    startToCompleteMax: string
+    startToCompleteAvg: string
+    scheduleToStartMax: string
     ScheduleToStartAvg: string
 }
 
@@ -30,7 +30,7 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
     const [ chart, setChart ] = useState('tasks')
 
     const windowsNotOverpassing300 = windows > 300 ? 300 : windows
-    
+
     function timeoutP (_lastWindowStart:Date, metrics:any[]) {
         const lastWindowStartAsMoment = moment(_lastWindowStart)
         let firstDate:moment.Moment
@@ -87,7 +87,7 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
             while (curr.format('YMMDDHHmm') > firstDate.format('YMMDDHHmm')){
                 out.push({ label:curr.toString() ,data:metrics?.find(d => {
                     return utc(d.windowStart).format('YMMDDHHmm') === curr.format('YMMDDHHmm')
-                    
+
                 }) || {
                     'windowStart': curr.toString(),
                     type,
@@ -102,8 +102,8 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
                     'totalScheduled': '0'
                 } })
                 curr.subtract(5,'minutes')
-                
-                
+
+
             }
         }
 

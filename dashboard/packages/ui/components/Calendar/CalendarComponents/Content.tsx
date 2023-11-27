@@ -98,7 +98,7 @@ export function Content({
 
     moment(selected).format('mm')
   }
-  
+
   return (
     <div
       className="flex"
@@ -142,7 +142,7 @@ export function Content({
           <div className="flex flex-1" key={ix}>
             {week.map((day: any) => (
               <div
-                className={`flex  flex-1 w-10 h-10 align-middle day 
+                className={`flex  flex-1 w-10 h-10 align-middle day
             ${day.otherMonth ? 'otherMonth' : ''}
             ${day.today ? 'currentDay' : ''}
             ${day.endsRange ? 'endsRange' : ''}

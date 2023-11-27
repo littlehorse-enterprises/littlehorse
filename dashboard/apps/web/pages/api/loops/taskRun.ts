@@ -5,7 +5,7 @@ import { makeGrpcCall } from '../grpcMethodCallHandler'
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if (req.method === 'POST') {
         // const session = await getServerSession(req, res, authOptions)
-        
+
         // if (session) {
         // - TASK_SCHEDULED
         // - TASK_RUNNING

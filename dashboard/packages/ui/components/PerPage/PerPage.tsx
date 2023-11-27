@@ -6,7 +6,7 @@ import { useOutsideClick } from '../../utils'
 export interface PerPageProps {
   icon:string
   values:number[]
-  value:number 
+  value:number
   onChange: (v:number) => void
 }
 

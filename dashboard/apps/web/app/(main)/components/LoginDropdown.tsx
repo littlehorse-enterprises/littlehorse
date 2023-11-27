@@ -1,6 +1,6 @@
 'use client'
 
- 
+
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
 import { useState, useRef } from 'react'
@@ -44,7 +44,7 @@ export function LoginDropdown() {
                 </div> : null}
             </div>
         )
-    } 
+    }
 
     return <div />
 }

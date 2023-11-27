@@ -9,7 +9,7 @@ const fromLHNode = (lhNodeName: string): ElkNode => {
 
     /*
         These values have been stablished by seeing what was the rendered width on the screen for each node type
-        the width for each one is defined in the _visualizer.scss file, then the parent elements adds extra width to it, 
+        the width for each one is defined in the _visualizer.scss file, then the parent elements adds extra width to it,
         you should pick the viznode-canvas computed width to be here.
         That will help ELK algorithm to determine the correct position of the nodes on the screen because that depends
         on the node width.

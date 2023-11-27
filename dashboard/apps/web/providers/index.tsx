@@ -21,7 +21,7 @@ function CheckSession({ children }: CheckSessionProps) {
             } else {
                 const tokenExpireTime = (session as unknown as SessionWithJWTExpireTime).expireTime
                 const tokenHasExpired = new Date() > new Date(tokenExpireTime * 1000)
-    
+
                 if (tokenHasExpired) {
                     setSessionIsActive(false)
                 } else {
@@ -43,7 +43,7 @@ function CheckSession({ children }: CheckSessionProps) {
         }
         return <Loader />
     }
-    
+
     return <>
         {children}
     </>

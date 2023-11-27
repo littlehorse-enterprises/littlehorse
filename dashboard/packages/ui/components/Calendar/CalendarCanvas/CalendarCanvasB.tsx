@@ -7,7 +7,7 @@ import { Content } from '../CalendarComponents'
 interface CalendarCanvasBProps {
   earlyDate:Date,
   lastDate:Date,
-  setEndDT:(dt?:Date) => void, 
+  setEndDT:(dt?:Date) => void,
   setStartDT:(dt?:Date) => void,
   onApply:() => void,
   outsideCalendarClickRef: React.LegacyRef<HTMLDivElement>
@@ -18,7 +18,7 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
   const [ date, setDate ] = useState<Date>(moment().toDate())
   const [ selected, setSelected ] = useState<Date | undefined>(earlyDate)
   const [ endSelected, setEndSelected ] = useState<Date | undefined>(lastDate)
-    
+
   const updateEndSelectedH = (H:string) => {
     setEndSelected(endSelected ? moment(endSelected).set('hour',Number(H)).toDate() : moment(selected).set('hour',Number(H)).toDate() )
   }
@@ -51,7 +51,7 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
       setSelected(date)
       setStartDT(date)
     }
-       
+
   }
   useEffect(()=> {
     setEndDT(endSelected)
@@ -68,11 +68,11 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
 
   return (
     <div className="flex float" ref={outsideCalendarClickRef}>
-      <Content 
-        endSelected={endSelected} 
-        init={date} 
-        nextMonth={nextMonth} 
-        onApply={onApply} 
+      <Content
+        endSelected={endSelected}
+        init={date}
+        nextMonth={nextMonth}
+        onApply={onApply}
         prevMonth={prevMonth}
         selectDay={selectDate}
         selected={selected}
@@ -83,5 +83,5 @@ export function CalendarCanvasB({ earlyDate, setEndDT, setStartDT, onApply, last
         updateSelectedM={updateSelectedM}
       />
     </div>
-  )  
+  )
 }

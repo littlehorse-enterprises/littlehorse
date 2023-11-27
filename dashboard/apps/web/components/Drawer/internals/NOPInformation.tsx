@@ -87,7 +87,7 @@ export function NOPInformation(props: NOPInformationProps) {
                             ) => {
                                 return (
                                     element.condition &&
-                    
+
                                     // eslint-disable-next-line react/no-array-index-key -- no unique attr for condition, then using index
                                     <div className='grid-4' key={index}>
                                         <p className='center'>

@@ -19,8 +19,8 @@ export async function middleware(req: NextRequest) {
         pathname.includes('/favicon.ico') ||
         pathname.includes('jpg') ||
         pathname.includes('_next') ||
-        pathname.includes('/errors') 
-    
+        pathname.includes('/errors')
+
         if (isPublicRoute) {
             return NextResponse.next()
         }

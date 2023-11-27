@@ -10,7 +10,7 @@ export function Loading({
   // return (<div className={`flex grid content-center justify-center ${className || ''}`} style={style}>
   //     <div className="flex gap gap-2 items-center loading">
   //         Loading
-  //         
+  //
   //         {/* <span className="sr-only">Loading...</span>  */}
   //     </div>
   // </div>);

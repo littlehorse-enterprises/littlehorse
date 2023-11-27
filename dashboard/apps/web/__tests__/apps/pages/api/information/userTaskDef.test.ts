@@ -17,8 +17,8 @@ describe('information userTaskDef API', () => {
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getUserTaskDef', req, res, {
-            name: 'A_TASKDEF', 
-            version: 0 
+            name: 'A_TASKDEF',
+            version: 0
         } as UserTaskDefId)
     })
 })

@@ -37,6 +37,13 @@ repos:
         pass_filenames: false
         entry: poetry -C ./sdk-python install
 
+      - id: install-node
+        name: Install Node Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: bash -c 'npm install pnpm --global && cd ./dashboard && pnpm install'
+
       # Formatters
 
       - id: format-java
@@ -112,3 +119,10 @@ repos:
         always_run: true
         pass_filenames: false
         entry: poetry -C ./sdk-python run python -m unittest discover -s sdk-python/
+
+      - id: js-tests
+        name: Running Dashboard Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: bash -c 'cd ./dashboard && pnpm test'

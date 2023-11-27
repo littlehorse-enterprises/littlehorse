@@ -26,7 +26,7 @@ function Breadcrumbs() {
 
             if ([ 'wfspec', 'taskdef','usertaskdef' ].includes(typeExtractedFromPathName)){
                 sessionStorage.setItem('prev',pathname)
-                
+
             } else {
                 setRun(true)
                 setPrev(sessionStorage.getItem('prev') || '')

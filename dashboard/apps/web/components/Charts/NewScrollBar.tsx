@@ -22,7 +22,7 @@ export function NewScrollBar({ width=1000, windows=3, onChange=() => {} }:{
 
     // eslint-disable-next-line react/hook-use-state -- seems is not used, analyze it further https://littlehorse.atlassian.net/browse/LH-236
     const [ _, setPercent ] = useState(0)
-    
+
     useEffect( () => {
         const factor = thumbLeftP/(width-thumbWidth)
         const calculatedPercent = Math.ceil((thumbLeftP*100)/(width-thumbWidth))
@@ -72,7 +72,7 @@ export function NewScrollBar({ width=1000, windows=3, onChange=() => {} }:{
         if (scrollThumbRef.current) {setInitialThumbLeft(parseInt(scrollThumbRef.current?.style.left || '0px', 10))}
         setIsDragging(true)
     }, [])
-    
+
     const handleThumbMouseup = useCallback(
         (e:any) => {
             e.preventDefault()
@@ -110,7 +110,7 @@ export function NewScrollBar({ width=1000, windows=3, onChange=() => {} }:{
     }, [ handleThumbMousemove, handleThumbMouseup ])
 
     return <div className="scrollBar">
-    
+
         <div className="scrollBar__Canvas" style={{
             width:`${width}px`,
         }}>
@@ -118,11 +118,11 @@ export function NewScrollBar({ width=1000, windows=3, onChange=() => {} }:{
                 className="scrollBar__Track"
                 onClick={handleTrackClick}
                 ref={scrollTrackRef}
-                style={{ 
+                style={{
                     cursor: isDragging ? 'grabbing' : 'pointer'
                 }}
             />
-            <div 
+            <div
                 className="scrollBar__Thumb"
                 onMouseDown={handleThumbMousedown}
                 ref={scrollThumbRef}

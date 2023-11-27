@@ -49,7 +49,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
     const onMoveScroll = (ix:number) => {
         if (!svg) {return null}
         const num = (ix+1)
-        
+
 
         ///YELLOW LINE
 
@@ -63,10 +63,10 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
         //  } )
 
 
-    
+
         svg.selectAll('.line-complete-yellow')
             .data(datam)
-        // eslint-disable-next-line @typescript-eslint/no-shadow -- rework is needed in this code to make this rule to pass    
+        // eslint-disable-next-line @typescript-eslint/no-shadow -- rework is needed in this code to make this rule to pass
             .attr('stroke', (_d, ix) => {
                 const val = (((ix-1-(num-1))) * (maxWBar + gap))+(maxWBar/2)
                 if (val > (width-20)) {return 'transparent'}
@@ -129,7 +129,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
         svg.selectAll('.shadow')
             .data(datam)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i-(num-1))) 
+                const val = ((maxWBar+gap) * (i-(num-1)))
                 return val < 0 ? -800 : val
             })
     }
@@ -137,7 +137,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
 
 
     const drawChart = useCallback((dataForChart:any[], windowType:string) => {
-       
+
 
         datam = dataForChart.map(d => ({
             a:Number(d.data.totalScheduled) || 0,
@@ -162,7 +162,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
         maxH = maxH * 1.1
 
         // const groups = ["1","2","3","4"]
-    
+
 
         // append the svg object to the body of the page
         _d3.select('svg').remove()
@@ -189,7 +189,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
             .style('opacity', 0)
             .attr('fill', ShadowLight100)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i)) 
+                const val = ((maxWBar+gap) * (i))
                 return val < 10 ? -800 : val
             })
             .attr('y', 0 )
@@ -199,13 +199,13 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
         const dotg = svg.append('g').classed('dots', true)
             .style('pointer-events', 'none')
             .selectAll('g')
-            
+
 
 
         dotg.data(datam)
             .enter().append('line').classed('line-complete', true)
             .attr('stroke', '#FFCC00')
-            .style('stroke-dasharray', ('6, 4')) 
+            .style('stroke-dasharray', ('6, 4'))
             .attr('x1', (_d, ix) => {
                 const val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                 return val < 0 ? -800 : val
@@ -243,7 +243,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
             })
         // .attr("y2", d => y(d.startToCompleteMax) )
             .attr('y2', d => y(d.startToCompleteAvg) )
-            
+
         dotg.data(datam)
             .enter().append('circle').classed('dot-complete-max', true)
             .attr('fill', '#FDBB45')
@@ -297,7 +297,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
                 return val < 0 ? -800 : val
             } )
             .attr('y', height+15)
-        
+
         if (windowType !== 'DAYS_1'){
             svg.select('.xa').append('g').selectAll('text')
                 .data(groups)
@@ -310,9 +310,9 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
                     const val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                     return val < 0 ? -800 : val
                 } )
-                .attr('y', height+30)   
+                .attr('y', height+30)
         }
-        
+
         d3.select('#wf-latency-chart-tooltip').html(updateToolTipContent({},ttTemplate))
 
 
@@ -345,7 +345,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
             })
 
     },[])
- 
+
 
     const setD3 = useCallback((latencyData:any[], windowType:string) => {
         _d3 = d3.select('#wf-latency-chart')
@@ -355,7 +355,7 @@ export function LatencyChart({ data, type }:LatencyChartProps) {
     useEffect( () => {
         setD3(data, type)
     },[ data, setD3, type ])
-    
+
     useEffect( () => {
         return () => {
             _d3.select('svg').remove()

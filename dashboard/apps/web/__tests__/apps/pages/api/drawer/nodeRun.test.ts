@@ -11,7 +11,7 @@ describe('nodeRun API', () => {
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
         req.body = JSON.stringify({
             wfRunId: 'A_WFRUN_ID',
-            threadRunNumber: 0, 
+            threadRunNumber: 0,
             name: '1'
         })
 

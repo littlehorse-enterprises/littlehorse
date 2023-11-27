@@ -101,7 +101,7 @@ export function Calendar({ type, changeType, lastDate, changeLastDate, noWindows
           {showWL ? <div className="float" ref={outsideClickRef}>
             {wl.map((w) => (
               <div className="option" key={w.value} onClick={(e) => { setTypeHandler(e, w) }}>
-                {w.label}    
+                {w.label}
               </div>
             ))}
           </div> : null}

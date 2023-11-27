@@ -70,7 +70,7 @@ export function ExternalEventInformation({ isWFRun,run,data,wfRunId,errorData,se
     },[ isWFRun, data ])
 
     return (
-        <>	
+        <>
             <DrawerHeader image="EXTERNAL_EVENT" name={data?.id} title="ExternalEvent Node Information" />
 
             {isWFRun ? (
@@ -87,7 +87,7 @@ export function ExternalEventInformation({ isWFRun,run,data,wfRunId,errorData,se
                             <p className="drawer__nodeData__data">{node?.status}</p>
                         </div>
                     </DrawerSection>
-					
+
                     {/* <pre>{JSON.stringify(node, null, 2)}</pre> */}
 
                     {/* <pre>{JSON.stringify(externalEventRun, null, 2)}</pre> */}

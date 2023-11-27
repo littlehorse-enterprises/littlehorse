@@ -128,4 +128,3 @@ public enum ACLAction
 
   // @@protoc_insertion_point(enum_scope:littlehorse.ACLAction)
 }
-

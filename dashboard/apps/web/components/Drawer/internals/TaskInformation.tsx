@@ -129,7 +129,7 @@ export function TaskInformation({ isWFRun, data, wfRunId, run }: TaskInformation
                     <div className='version_select'>
                         {/* <select  value={attemptNo} onChange={ e => setAttemptNo(+e.target.value)}> */}
                         <select onChange={e => { setGuid(e.target.value) }}>
-                            {loops?.map((loop) => 
+                            {loops?.map((loop) =>
                                 <option key={loop.wfRunId + loop.taskGuid} value={loop.taskGuid}> {loop.taskGuid}</option>)}
                             {/* {taskRun?.attempts?.map( (_, ix:number) => <option key={ix} value={ix}> {taskRun?.taskDefName} [{ix}]</option>)} */}
                         </select>
@@ -154,7 +154,7 @@ export function TaskInformation({ isWFRun, data, wfRunId, run }: TaskInformation
                             <tbody>
                                 {(taskRun?.inputVariables !== undefined && taskRun?.inputVariables.length > 0) ?
                                     taskRun?.inputVariables?.map((r: any, ix: number) =>
-                      
+
                                     // eslint-disable-next-line react/no-array-index-key -- using name and index
                                         <tr key={r.varName + ix}>
                                             <td>{r.varName}</td>

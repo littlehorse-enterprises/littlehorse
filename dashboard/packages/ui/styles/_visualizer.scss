@@ -76,40 +76,40 @@
       &.tTASK{
         width: 250px;
       }
-      
+
       &.tEXIT {
         width: 57px;
         border-radius: 64px;
         border: 1px solid var(--color-success, #34c759);
         background: rgba(52, 199, 89, 0.2);
       }
-      
+
       &.tNOP {
         width: 200px;
         flex-direction: column;
         gap: 0px;
       }
-      
+
       &.tSTART_THREAD {
         width: 200px;
       }
-      
+
       &.tWAIT_FOR_THREADS {
         width: 84px;
       }
-      
+
       &.tEXTERNAL_EVENT {
         width: 200px;
       }
-      
+
       &.tSLEEP {
         width: 200px;
       }
-      
+
       &.tSTART_MULTIPLE_THREADS {
         width: 200px;
       }
-      
+
       &.tUSER_TASK {
         width: 250px;
       }

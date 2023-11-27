@@ -19,7 +19,7 @@ export function LoginPage() {
                 <Suspense fallback={<Loader />}>
                     <LoginButtons />
                 </Suspense>
-          
+
             </form>
             <div className="legals">Copyright © 2023 LittleHorse Enterprises LLC. </div>
         </div>
@@ -32,7 +32,7 @@ export function LoginPage() {
     //         backgroundPosition: "center center",
     //         backgroundSize: "cover",
     //         flex:1,
-            
+
     //     }}></div>
     //     <div className="flex flex-col justify-between flex-1 gap-4 py-4 pt-4 pr-4 mt-4 mr-4 justify-self-center gap login">
     //         <div className="grid justify-items-end">

@@ -25,7 +25,7 @@ export function SleepNodeInformation({ isWFRun, data, wfRunId, run }:SleepNodeIn
                 setNodeRun(result)
             })
         }
-       
+
     }
     useEffect( () => {
         if (isWFRun) {getNodeRun()}
@@ -63,7 +63,7 @@ export function SleepNodeInformation({ isWFRun, data, wfRunId, run }:SleepNodeIn
                                 {SleepLabelExtractor.extract(data?.lhNode?.sleep)}
                             </p>
                         </div>
-       
+
                     </div>
                 </div>
             )}

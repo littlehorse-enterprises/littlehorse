@@ -138,7 +138,7 @@
 
 .metricsCalendar .day {
     /* color-brightLight */
-    color: #EDEEF0; 
+    color: #EDEEF0;
     padding: 2px;
     display: flex;
     user-select: none;
@@ -149,9 +149,9 @@
     border-radius: 8px 0px 0px 8px !important;
     cursor: pointer;
     /* color-primary */
-    background-color: #7F7AFF !important; 
+    background-color: #7F7AFF !important;
     /* color-brightLight */
-    color: #EDEEF0 !important; 
+    color: #EDEEF0 !important;
     margin-right: -2px;
     padding-right: 2px;
     box-sizing: border-box;
@@ -165,7 +165,7 @@
     /* color-primary */
     background-color: #7F7AFF !important;
     /* color-brightLight */
-    color: #EDEEF0 !important; 
+    color: #EDEEF0 !important;
     margin-left: -2px;
     padding-left: 2px;
     box-sizing: border-box;
@@ -185,9 +185,9 @@
     border-radius: 0px 0px 0px 0px !important;
     cursor: pointer;
     /* color-primary */
-    background-color: #6363B9 !important; 
+    background-color: #6363B9 !important;
     /* color-brightLight */
-    color: #EDEEF0 !important; 
+    color: #EDEEF0 !important;
     margin-left: -2px;
     margin-right: -2px;
     box-sizing: border-box;
@@ -195,7 +195,7 @@
 
 .metricsCalendar .endsRange.currentDay>div, .metricsCalendar .startRange.currentDay>div, .metricsCalendar .inRange.currentDay>div {
     /* color-brightLight */
-    color: #EDEEF0 !important; 
+    color: #EDEEF0 !important;
 }
 .metricsCalendar .day>div {
     display: flex;
@@ -205,30 +205,30 @@
 }
 .metricsCalendar .day>div:hover {
     /* color-gray */
-    background-color: #4D5461; 
+    background-color: #4D5461;
 }
 .metricsCalendar .otherMonth * {
     /* color-mildLight */
-    color: #9098A0; 
+    color: #9098A0;
 }
 
 .metricsCalendar .afterPresent * {
     /* color-mildLightDarker */
-    color: #6D717F; 
+    color: #6D717F;
 }
 .metricsCalendar .afterPresent>div:hover {
-    background-color: transparent; 
+    background-color: transparent;
     cursor: default;
 }
 .metricsCalendar .currentDay * {
     /* color-primary */
-    color: #7F7AFF !important; 
+    color: #7F7AFF !important;
     position: relative;
 }
 
 .metricsCalendar .currentDay .dot {
     /* color-primary */
-    background-color: #7F7AFF; 
+    background-color: #7F7AFF;
     height: 4px;
     width: 4px;
     position: absolute;
@@ -239,7 +239,7 @@
 }
 .metricsCalendar .currentDay.endsRange .dot, .metricsCalendar .currentDay.startRange .dot, .metricsCalendar .currentDay.inRange .dot {
     /* color-primary */
-    background-color: #EDEEF0; 
+    background-color: #EDEEF0;
 }
 
 .mcToolTip{
@@ -291,7 +291,7 @@
     border-radius: 12px;
     background: #E6527F;
 }
-.mcToolTip main>div .title, .mcToolTip .title{ 
+.mcToolTip main>div .title, .mcToolTip .title{
     color: #FFF;
     font-size: 14px;
     font-family: 'Inter', sans-serif;
@@ -365,7 +365,7 @@
 .timePickerCanvas{
     display: flex;
     flex:1;
-    padding:10px; 
+    padding:10px;
     margin-left:10px;
     border-left: 1px solid #4D5461;
     flex-direction: column;
@@ -397,7 +397,7 @@
         .month{
             font-size: 14px;
             line-height: 21px;
-        }   
+        }
         .year{
             font-size: 16px;
             line-height: 24px;

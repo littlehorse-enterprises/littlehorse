@@ -71,7 +71,7 @@ export function FailureInformation(props: FailureInformationProps) {
                         })}
                     </div>
 
-					
+
                 </>
             )}
         </>

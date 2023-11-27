@@ -64,7 +64,7 @@ export function TaskChart({ data, type }:TaskChartProps) {
             .selectAll('rect')
             .data((d:any) => d )
             .attr('x',(_d, ix)  =>  {
-                const val = ((maxWBar+gap) * (ix-(num-1))) 
+                const val = ((maxWBar+gap) * (ix-(num-1)))
                 return val < 0 ? -800 : val
             })
 
@@ -83,7 +83,7 @@ export function TaskChart({ data, type }:TaskChartProps) {
         svg.selectAll('.shadow')
             .data(datam)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i-(num-1))) 
+                const val = ((maxWBar+gap) * (i-(num-1)))
                 return val < 0 ? -800 : val
             })
 
@@ -157,7 +157,7 @@ export function TaskChart({ data, type }:TaskChartProps) {
             .style('opacity', 0)
             .attr('fill', ShadowLight100)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i)) 
+                const val = ((maxWBar+gap) * (i))
                 return val < 0 ? -800 : val
             })
             .attr('y', 0 )
@@ -178,7 +178,7 @@ export function TaskChart({ data, type }:TaskChartProps) {
             .enter().append('rect')
         // .attr("x", (_d, i)  =>  ((maxWBar+gap) * (i-(windows-visibleWindows))) || 0 )
             .attr('x',(_d, ix)  =>  {
-                const val = ((maxWBar+gap) * (ix)) 
+                const val = ((maxWBar+gap) * (ix))
                 return val < 0 ? -800 : val
             })
             .attr('y', (d:any) => y(d[1]) )
@@ -227,10 +227,10 @@ export function TaskChart({ data, type }:TaskChartProps) {
                     const val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                     return val < 0 ? -800 : val
                 } )
-                .attr('y', height+30)   
+                .attr('y', height+30)
         }
 
-        
+
         d3.select('#task-chart-tooltip').html(updateToolTipContent({},ttTemplate, type))
 
 
@@ -263,17 +263,17 @@ export function TaskChart({ data, type }:TaskChartProps) {
             })
 
     },[])
- 
+
 
     const setD3 = useCallback((data:any[], type:string) => {
         _d3 = d3.select('#task-chart')
-        drawChart(data,type) 
+        drawChart(data,type)
     },[ drawChart ])
 
     useEffect( () => {
         setD3(data, type)
     },[ data, setD3, type ])
-    
+
     useEffect( () => {
         return () => {
             _d3.select('svg').remove()
@@ -281,7 +281,7 @@ export function TaskChart({ data, type }:TaskChartProps) {
     },[])
 
     return <>
-       
+
         <div className="relative" id="task-chart">
             <div className="mcToolTip" id="task-chart-tooltip" />
         </div>

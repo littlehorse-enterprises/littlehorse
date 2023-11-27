@@ -20,7 +20,7 @@ if (process.env.KEYCLOAK_CLIENT_ID &&
 
 async function logoutFromKeyCloack(jwt: JWT) {
     const { id_token } = jwt
-    
+
     try {
         const params = new URLSearchParams()
         params.append('id_token_hint', id_token as string)
@@ -47,7 +47,7 @@ export const authOptions = {
                     token.expireTime = account.expires_at
                     token.id_token = account.id_token
                 }
-                
+
                 const tokenHasExpired = new Date() > new Date(token.expireTime * 1000)
 
                 if (tokenHasExpired) {

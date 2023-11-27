@@ -28,7 +28,7 @@ export const makeGrpcCall = async (grpcMethodToCall: string,
             _handleError(error, res)
         }
     }
-    
+
 }
 export const handleGrpcCallWithNext = async (grpcMethodToCall: string,
     req: NextApiRequest, res: NextApiResponse, grpcRequestBody: object) => {

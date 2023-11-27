@@ -50,7 +50,7 @@ interface WorkflowsChartProps {
 
 export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
 
-    
+
     const onMoveScroll = (ix:number) => {
         if (!svg) {return null}
         // console.log('ix',ix)
@@ -64,7 +64,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
             .selectAll('rect')
             .data((d:any) => d )
             .attr('x',(_d, ix)  =>  {
-                const val = ((maxWBar+gap) * (ix-(num-1))) 
+                const val = ((maxWBar+gap) * (ix-(num-1)))
                 return val < 0 ? -800 : val
             })
 
@@ -83,13 +83,13 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
         svg.selectAll('.shadow')
             .data(datam)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i-(num-1))) 
+                const val = ((maxWBar+gap) * (i-(num-1)))
                 return val < 0 ? -800 : val
             })
 
     }
     // set the dimensions and margins of the graph
-    
+
     // console.log('visibleWindows', visibleWindows)
 
 
@@ -99,7 +99,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
     // console.log('firstWindowDt',firstWindowDt.format())
 
     const drawChart = useCallback((data:any[], type:string) => {
-       
+
         datam = data.map(d => ({
             a:Number(d.data.totalScheduled) || 0,
             b:Number(d.data.totalStarted) || 0,
@@ -113,7 +113,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
         // data = data.slice(-visibleWindows)
 
         // let  groups = dates.reverse()
-        
+
         // let  groups = dates.reverse()
         groups = data.map(d => ({
             l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
@@ -127,7 +127,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
         const maxH = Math.max(...he) > (minYAxisValue*.9) ? Math.max(...he)+(minYAxisValue*.1) : minYAxisValue
 
         // const groups = ["1","2","3","4"]
-        
+
         // d3.select(".rangeInput")
         // .property("min", 1)
         // .property("max", windows-visibleWindows+1)
@@ -197,7 +197,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
             .style('opacity', 0)
             .attr('fill', ShadowLight100)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i)) 
+                const val = ((maxWBar+gap) * (i))
                 return val < 0 ? -800 : val
             })
             .attr('y', 0 )
@@ -218,7 +218,7 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
             .enter().append('rect')
         // .attr("x", (_d, i)  =>  ((maxWBar+gap) * (i-(windows-visibleWindows))) || 0 )
             .attr('x',(_d, ix)  =>  {
-                const val = ((maxWBar+gap) * (ix)) 
+                const val = ((maxWBar+gap) * (ix))
                 return val < 0 ? -800 : val
             })
             .attr('y', (d:any) => y(d[1]) )
@@ -269,10 +269,10 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
                     const val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                     return val < 0 ? -800 : val
                 } )
-                .attr('y', height+35)   
+                .attr('y', height+35)
         }
 
-        
+
         d3.select('#workflows-chart-tooltip').html(updateToolTipContent({},ttTemplate))
 
 
@@ -306,22 +306,22 @@ export function WorkflowsChart({ data, type }:WorkflowsChartProps) {
 
 
     },[])
- 
+
     const setD3 = useCallback((data:any[], type:string) => {
         _d3 = d3.select('#workflows-chart')
-        drawChart(data,type) 
+        drawChart(data,type)
     },[ drawChart ])
 
     useEffect( () => {
         setD3(data, type)
     },[ data, setD3, type ])
-    
+
     useEffect( () => {
         return () => {
             _d3.select('svg').remove()
         }
     },[])
-    
+
     return <>
         <div className="relative select-none" id="workflows-chart">
             <div className="mcToolTip" id="workflows-chart-tooltip" />

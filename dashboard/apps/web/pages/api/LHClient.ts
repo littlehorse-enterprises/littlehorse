@@ -18,7 +18,7 @@ export default class LHClient {
 
         if (__AUTHENTICATION_ENABLED__) {
             this.createUniqueSecureChannel(process.env.API_URL)
-            
+
             return createClientFactory().use((call, options) =>
                 call.next(call.request, {
                     ...options,
@@ -51,7 +51,7 @@ export default class LHClient {
             }
         }
     }
-    
+
     private static createUniqueInsecureChannel(apiUrl: string) {
         if (LHClient.channel === undefined) {
             LHClient.channel = createChannel(apiUrl)

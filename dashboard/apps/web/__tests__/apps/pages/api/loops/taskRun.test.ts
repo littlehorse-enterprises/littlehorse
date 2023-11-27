@@ -68,9 +68,9 @@ describe('taskRun API', () => {
 
         const sendMock = jest.fn()
         res.send = sendMock
-        
+
         await handler(req, res)
-        
+
         expect(sendMock).toHaveBeenCalledWith([
             { wfRunId: 'A_WFRUN_ID', taskGuid: 'A_SCHEDULED_TASK_GUID' },
             { wfRunId: 'A_WFRUN_ID', taskGuid: 'A_RUNNING_TASK_GUID' },

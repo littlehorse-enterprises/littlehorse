@@ -14,7 +14,7 @@ export function TaskNode({ d, run }:{ d:any, run?:any }) {
             <div className={`node c${d.name} t${d.type} ${d.position<=run.currentNodePosition ? '' : 'opacity50'}`} >
                 <img alt={d.type} src={`/${d.type}.svg`} />
                 {Boolean(d.node?.failureHandlers?.length) && <img alt={d.type} src="/EXCEPTION.svg" />}
-                
+
                 <div>
                     {d.name?.split('-').slice(1,-1).join('-')}
                 </div>
@@ -26,4 +26,4 @@ export function TaskNode({ d, run }:{ d:any, run?:any }) {
         </div>
         {/* {JSON.stringify(d)} */}
     </div>
-} 
+}

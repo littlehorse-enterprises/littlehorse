@@ -5,7 +5,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { stackoverflowDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 function Snippet({ value, language='json' }) {
-    
+
     const [ snippetLanguage, setSnippetLanguage ] = useState('json')
 
     useEffect(() => {

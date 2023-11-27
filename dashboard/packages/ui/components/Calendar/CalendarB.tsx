@@ -33,7 +33,7 @@ export function CalendarB({ earlyDate, changeEarlyDate, lastDate, changeLastDate
   const onApply = () => {
     changeEarlyDate(startDt || moment().toDate())
     changeLastDate(endDt || moment().toDate())
-    setShowCalendar(false)     
+    setShowCalendar(false)
   }
 
   // ref used to locate the ancestor Ref so the handler doesn't reopen the calendar
@@ -51,21 +51,21 @@ export function CalendarB({ earlyDate, changeEarlyDate, lastDate, changeLastDate
             ) : (
               <>{(Boolean(startDt) && !endDt) ? (
                 <div className="color-mild-light">
-                  <span className="text-white"> {moment(startDt).format(`MMM DD, HH:mm`)}</span> 
+                  <span className="text-white"> {moment(startDt).format(`MMM DD, HH:mm`)}</span>
                 </div>
               ) : (
-                <div className="color-mild-light"> Early Started:  
-                  <span className="text-white" style={{ marginRight: '10px' }}> {moment(startDt).format(`MMM DD, HH:mm`)}</span> 
-                                    Latest Started 
-                  <span className="text-white"> {moment(endDt).format(`MMM DD, HH:mm`)}</span> 
+                <div className="color-mild-light"> Early Started:
+                  <span className="text-white" style={{ marginRight: '10px' }}> {moment(startDt).format(`MMM DD, HH:mm`)}</span>
+                                    Latest Started
+                  <span className="text-white"> {moment(endDt).format(`MMM DD, HH:mm`)}</span>
                 </div>
-              ) } 
+              ) }
               </>
             )}
             <span className="material-icons">expand_more</span>
-            <span className="material-icons-outlined">calendar_month</span>   
+            <span className="material-icons-outlined">calendar_month</span>
           </div>
-          {showCalendar ? <CalendarCanvasB earlyDate={earlyDate} lastDate={lastDate} onApply={onApply} outsideCalendarClickRef={outsideCalendarClickRef} setEndDT={setEndDTHandler} setStartDT={setStartDTHandler} /> : null}     
+          {showCalendar ? <CalendarCanvasB earlyDate={earlyDate} lastDate={lastDate} onApply={onApply} outsideCalendarClickRef={outsideCalendarClickRef} setEndDT={setEndDTHandler} setStartDT={setStartDTHandler} /> : null}
         </CInput>
       </div>
     </div>

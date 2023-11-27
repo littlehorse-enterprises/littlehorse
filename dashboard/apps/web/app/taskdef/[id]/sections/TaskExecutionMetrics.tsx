@@ -5,7 +5,7 @@ import moment from 'moment'
 import { TaskExecutionMetrics as TaskExecutionM } from '../components/metrics/TaskExecutionMetrics'
 
 interface TaskExecutionMetricsProps {
-    id:string 
+    id:string
 }
 export function TaskExecutionMetrics({ id }:TaskExecutionMetricsProps) {
     const [ windowLength, setWindowLength ] = useState('HOURS_2')
@@ -14,7 +14,7 @@ export function TaskExecutionMetrics({ id }:TaskExecutionMetricsProps) {
 
     return <section>
         <div className="between">
-            <h2>Task Execution metrics</h2> 
+            <h2>Task Execution metrics</h2>
             <Calendar
                 changeLastDate={setLastDate} changeNoWindows={setWindows}
                 changeType={setWindowLength} lastDate={lastDate}

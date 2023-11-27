@@ -5,7 +5,7 @@ import moment from 'moment'
 import { WorkflowExecutionMetrics as WorkflowExecutionM } from '../components/metrics/WorkflowExecutionMetrics'
 
 interface WorkflowExecutionMetricsProps {
-    id:string 
+    id:string
     version?: number
 }
 export function WorkflowExecutionMetrics({ id,version }:WorkflowExecutionMetricsProps) {
@@ -15,7 +15,7 @@ export function WorkflowExecutionMetrics({ id,version }:WorkflowExecutionMetrics
 
     return <section>
         <div className="between">
-            <h2>Workflow Execution metrics</h2> 
+            <h2>Workflow Execution metrics</h2>
             <Calendar
                 changeLastDate={setLastDate} changeNoWindows={setWindows}
                 changeType={setWindowLength} lastDate={lastDate}

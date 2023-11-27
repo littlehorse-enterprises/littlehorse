@@ -43,7 +43,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                 guid:node?.userTask?.userTaskRunId?.userTaskGuid
             })
         })
-        
+
         if (res.ok) {
             res.json().then((result) => {
                 setUserTaskRun(result)
@@ -63,7 +63,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
             const { result } = await res.json()
             setInfo(result)
         }
-       
+
     }
     useEffect( () => {
         if (isWFRun) {getNodeRun()}
@@ -97,15 +97,15 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
 
                             {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) ? <p className="drawer__nodeData__header">USER GROUP</p> : null}
                             {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) ? <p className="drawer__nodeData__data">{userTaskRun?.user?.userGroup?.id || userTaskRun?.userGroup?.id }</p> : null}
-                    
+
 
                             {userTaskRun?.user ? <p className="drawer__nodeData__header">SPECIFIC USER</p> : null}
                             {userTaskRun?.user ? <p className="drawer__nodeData__data">{userTaskRun?.user?.id }</p> : null}
-                    
+
                             {_.orderBy(userTaskRun?.events, [ 'time' ],[ 'desc' ])?.find( e => e.reassigned?.oldUser) ? <p className="drawer__nodeData__header">REASSIGNED TO</p> : null}
                             {_.orderBy(userTaskRun?.events, [ 'time' ],[ 'desc' ])?.find( e => e.reassigned?.oldUser) ? <p className="drawer__nodeData__data">{_.orderBy(userTaskRun?.events, [ 'time' ],[ 'desc' ])?.find( e => e.reassigned).reassigned.oldUser?.id} {`->`} {_.orderBy(userTaskRun?.events, [ 'time' ],[ 'desc' ])?.find( e => e.reassigned).reassigned.newUser?.id}</p> : null}
 
-                   
+
                             {userTaskRun?.notes ? <p className="drawer__nodeData__header">NOTES</p> : null}
                             {userTaskRun?.notes ? <p className="drawer__nodeData__data">{userTaskRun?.notes }</p> : null}
                         </div>
@@ -126,12 +126,12 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                                         <td>isApproved</td>
                                         <td>{userTaskRun?.results?.isApproved?.type}</td>
                                         <td>{`${userTaskRun?.results?.isApproved?.bool}`}</td>
-                                    </tr> 
+                                    </tr>
                                 }
                             </tbody>
                         </table>
                     </DrawerSection>
-            
+
                     <DrawerSection title="UserTaskDef Link" >
                         <Link
                             className="drawer-link"
@@ -151,7 +151,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                             setToggleSideBar(true)
                             setCode(userTaskRun?.events || '')
                         }}>
-                            audit log      
+                            audit log
                         </div>
                     </DrawerSection>
 

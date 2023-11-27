@@ -92,8 +92,8 @@ export function MetadataSearch() {
             setTaskDefBookmark(userTaskDefs.bookmark)
             setMetadataResults(prev => [ ...prev, ...userTaskDefs.results.map((v: any) => ({ ...v, type: 'UserTaskDef' })) ])
         }
-        
-        
+
+
         const externalEventDefs = await fetchData('externalEventDef', false, false)
         if (externalEventDefs !== undefined && externalEventDefs.results !== undefined) {
 

@@ -57,7 +57,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
     const onMoveScroll = (ix:number) => {
         if (!svg) {return null}
         const num = (ix+1)
-        
+
         svg.selectAll('.line-start')
             .data(datam)
             .attr('x1', (_d, ix) => {
@@ -121,7 +121,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
         svg.selectAll('.shadow')
             .data(datam)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i-(num-1))) 
+                const val = ((maxWBar+gap) * (i-(num-1)))
                 return val < 0 ? -800 : val
             })
     }
@@ -129,7 +129,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
 
 
     const drawChart = useCallback((data:any[], type:string) => {
-       
+
 
         datam = data.map(d => ({
             a:Number(d.data.totalScheduled) || 0,
@@ -143,7 +143,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
             startToCompleteAvg: Number(d.data.startToCompleteAvg) ? Number(d.data.startToCompleteAvg)/1000 : 0
         }))
 
-        
+
         groups = data.map(d => ({
             l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
             l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
@@ -155,7 +155,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
         maxH = maxH * 1.1
 
         // const groups = ["1","2","3","4"]
-    
+
 
         // append the svg object to the body of the page
         _d3.select('svg').remove()
@@ -182,7 +182,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
             .style('opacity', 0)
             .attr('fill', ShadowLight100)
             .attr('x', (_d, i)  =>  {
-                const val = ((maxWBar+gap) * (i)) 
+                const val = ((maxWBar+gap) * (i))
                 return val < 10 ? -800 : val
             })
             .attr('y', 0 )
@@ -192,7 +192,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
         const dotg = svg.append('g').classed('dots', true)
             .style('pointer-events', 'none')
             .selectAll('g')
-            
+
 
 
         // xA.append("line")
@@ -205,7 +205,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
         dotg.data(datam)
             .enter().append('line').classed('line-start', true)
             .attr('stroke', '#FFCC00')
-            .style('stroke-dasharray', ('6, 4')) 
+            .style('stroke-dasharray', ('6, 4'))
             .attr('x1', (_d, ix) => {
                 const val = ((ix) * (maxWBar + gap))+(maxWBar/2)-16
                 return val < 0 ? -800 : val
@@ -220,7 +220,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
         dotg.data(datam)
             .enter().append('line').classed('line-complete', true)
             .attr('stroke', '#E6527F')
-            .style('stroke-dasharray', ('6, 4')) 
+            .style('stroke-dasharray', ('6, 4'))
             .attr('x1', (_d, ix) => {
                 const val = ((ix) * (maxWBar + gap))+(maxWBar/2)+16
                 return val < 0 ? -800 : val
@@ -231,7 +231,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
             } )
             .attr('y1', d => y(d.startToCompleteMax) )
             .attr('y2', d => y(d.startToCompleteAvg) )
-            
+
         dotg.data(datam)
             .enter().append('circle').classed('dot-start-max', true)
             .attr('fill', '#FDBB45')
@@ -304,7 +304,7 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
                 return val < 0 ? -800 : val
             } )
             .attr('y', height+15)
-        
+
         if (type !== 'DAYS_1'){
             svg.select('.xa').append('g').selectAll('text')
                 .data(groups)
@@ -317,9 +317,9 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
                     const val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                     return val < 0 ? -800 : val
                 } )
-                .attr('y', height+30) 
-        } 
-        
+                .attr('y', height+30)
+        }
+
         d3.select('#latency-chart-tooltip').html(updateToolTipContent({},ttTemplate))
 
 
@@ -352,16 +352,16 @@ export function LatencyTaskChart({ data, type }:LatencyTaskChartProps) {
             })
 
     },[])
- 
+
     const setD3 = useCallback((data:any[], type:string) => {
         _d3 = d3.select('#latency-chart')
-        drawChart(data,type) 
+        drawChart(data,type)
     },[ drawChart ])
 
     useEffect( () => {
         setD3(data, type)
     },[ data, setD3, type ])
-    
+
     useEffect( () => {
         return () => {
             _d3.select('svg').remove()

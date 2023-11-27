@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Label } from 'ui'
 
 interface VersionChangerProps{
-    version:string 
+    version:string
     id: string
 }
 export function VersionChanger({ version, id }:VersionChangerProps) {
@@ -22,7 +22,7 @@ export function VersionChanger({ version, id }:VersionChangerProps) {
             const { results } = await res.json()
             setVersions(results.map( (r:any) => r.version))
         }
-        
+
     }
     const changeV = (selectedVersion: string) => {
         router.push(`/usertaskdef/${id}/${selectedVersion}`)

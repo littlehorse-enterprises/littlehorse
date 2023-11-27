@@ -12,7 +12,7 @@ export function Metrics() {
 
     return <section>
         <div className="between">
-            <h2>Metrics</h2> 
+            <h2>Metrics</h2>
             <Calendar
                 changeLastDate={setLastDate} changeNoWindows={setWindows}
                 changeType={setWindowLength} lastDate={lastDate}
