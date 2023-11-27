@@ -48,9 +48,10 @@ public class AbstractVerifier implements Verifier {
 
     private String runWf(WfSpec wfSpec, String wfId, Collection<Arg> args) throws StatusRuntimeException {
         RunWfRequest.Builder req = RunWfRequest.newBuilder()
-                .setWfSpecName(wfSpec.getName())
-                .setId(wfId)
-                .setWfSpecVersion(wfSpec.getVersion());
+                .setWfSpecName(wfSpec.getId().getName())
+                .setMajorVersion(wfSpec.getId().getMajorVersion())
+                .setRevision(wfSpec.getId().getRevision())
+                .setId(wfId);
 
         for (Arg arg : args) {
             try {

@@ -55,7 +55,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision());
         }
         return wfSpec;
     }
@@ -96,13 +96,14 @@ public class VariableModel extends CoreGetable<Variable> {
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(
+                // with WfSPecId
                 new GetableIndex<>(
                         List.of(
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
+                                Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
                         variable -> ((VariableModel) variable).isIndexable()),
+                // with workflow name only
                 new GetableIndex<>(
                         List.of(
                                 Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
@@ -125,9 +126,8 @@ public class VariableModel extends CoreGetable<Variable> {
             case "wfSpecName" -> {
                 return List.of(new IndexedField(key, this.getWfSpec().getName(), TagStorageType.LOCAL));
             }
-            case "wfSpecVersion" -> {
-                return List.of(new IndexedField(
-                        key, LHUtil.toLHDbVersionFormat(this.getWfSpec().version), TagStorageType.LOCAL));
+            case "wfSpecId" -> {
+                return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
             case "variable" -> {
                 return getDynamicFields();

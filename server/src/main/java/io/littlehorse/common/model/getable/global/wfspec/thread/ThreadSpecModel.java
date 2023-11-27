@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -125,12 +126,29 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     /*
      * Returns a set of all variable names *used* during thread execution.
      */
-    public Set<String> getRequiredVariableNames() {
+    public Set<String> getNamesOfVariablesUsed() {
         HashSet<String> out = new HashSet<>();
         for (NodeModel n : nodes.values()) {
             out.addAll(n.getRequiredVariableNames());
         }
         return out;
+    }
+
+    /**
+     * Returns a set of all ThreadVarDef's for variables that are required as
+     * input to start a ThreadRun of this ThreadSpec.
+     * @return all required ThreadVarDefs.
+     */
+    public Set<ThreadVarDefModel> getRequiredVarDefs() {
+        return variableDefs.stream().filter(varDef -> varDef.isRequired()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of all ThreadVarDef's for searchable variables.
+     * @return all searchable ThreadVarDefs.
+     */
+    public Set<ThreadVarDefModel> getSearchableVarDefs() {
+        return variableDefs.stream().filter(varDef -> varDef.isSearchable()).collect(Collectors.toSet());
     }
 
     // Returns all the external event def names used for **interrupts**

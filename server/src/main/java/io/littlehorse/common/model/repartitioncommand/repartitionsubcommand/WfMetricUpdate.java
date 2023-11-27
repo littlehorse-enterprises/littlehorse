@@ -114,7 +114,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     }
 
     public String getClusterLevelWindow() {
-        return new WfSpecMetricsIdModel(windowStart, type, new WfSpecIdModel(LHConstants.CLUSTER_LEVEL_METRIC, 0))
+        return new WfSpecMetricsIdModel(windowStart, type, new WfSpecIdModel(LHConstants.CLUSTER_LEVEL_METRIC, 0, 0))
                 .getStoreableKey();
     }
 

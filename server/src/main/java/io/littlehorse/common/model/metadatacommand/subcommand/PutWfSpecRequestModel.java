@@ -10,6 +10,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -18,6 +19,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import lombok.Getter;
 
 @Getter
@@ -74,7 +76,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
 
         WfSpecModel spec = new WfSpecModel();
-        spec.name = name;
+        spec.setId(new WfSpecIdModel(name, 0, 0)); // version gets set later, don't worry
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
@@ -85,13 +87,10 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             tspec.name = entry.getKey();
         }
 
-        WfSpecModel oldVersion = dao.getWfSpec(name, null);
-        if (oldVersion != null) {
-            spec.version = oldVersion.version + 1;
-        } else {
-            spec.version = 0;
-        }
-        spec.validate(dao, config, oldVersion);
+        WfSpecModel oldVersion = dao.getWfSpec(name, null, null);
+        Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
+
+        spec.validateAndMaybeBumpVersion(dao, config, optWfSpec);
         dao.put(spec);
         return spec.toProto().build();
     }

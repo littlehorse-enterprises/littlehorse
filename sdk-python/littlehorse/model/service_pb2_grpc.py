@@ -57,7 +57,7 @@ class LHPublicApiStub(object):
                 )
         self.GetLatestWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetLatestWfSpec',
-                request_serializer=object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+                request_serializer=service__pb2.GetLatestWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.MigrateWfSpec = channel.unary_unary(
@@ -659,7 +659,7 @@ def add_LHPublicApiServicer_to_server(servicer, server):
             ),
             'GetLatestWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetLatestWfSpec,
-                    request_deserializer=object__id__pb2.GetLatestWfSpecRequest.FromString,
+                    request_deserializer=service__pb2.GetLatestWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'MigrateWfSpec': grpc.unary_unary_rpc_method_handler(
@@ -1021,7 +1021,7 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestWfSpec',
-            object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+            service__pb2.GetLatestWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

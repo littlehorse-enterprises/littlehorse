@@ -187,15 +187,18 @@ public abstract class Workflow {
      * Checks if the WfSpec exists for a given version
      *
      * @param client is an LHClient.
-     * @param version workflow version
-     * @return true if the workflow spec is registered for this version or false otherwise
+     * @param majorVersion the workflow Major Version
+     * @return true if the workflow spec is registered for this Major Version or false otherwise
      */
-    public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer version) {
-        if (version == null) return doesWfSpecExist(client);
+    public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer majorVersion) {
+        // TODO: LH-282, support revision versioning here.
+        if (majorVersion == null) return doesWfSpecExist(client);
 
         try {
-            client.getWfSpec(
-                    WfSpecId.newBuilder().setName(name).setVersion(version).build());
+            client.getWfSpec(WfSpecId.newBuilder()
+                    .setName(name)
+                    .setMajorVersion(majorVersion)
+                    .build());
             return true;
         } catch (StatusRuntimeException exn) {
             if (exn.getStatus().getCode() == Code.NOT_FOUND) {

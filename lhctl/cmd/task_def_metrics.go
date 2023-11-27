@@ -59,5 +59,6 @@ taskDefName.
 }
 
 func init() {
-	rootCmd.AddCommand(taskDefMetrics)
+	// Do not add this command until we re-implement Metrics:
+	// rootCmd.AddCommand(taskDefMetrics)
 }

@@ -96,9 +96,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                         Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
                         List.of(
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE)),
+                                Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
+                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)));
     }
 
@@ -111,9 +110,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
             case "status" -> {
                 return List.of(new IndexedField(key, this.getStatus().toString(), tagStorageType.get()));
             }
-            case "wfSpecVersion" -> {
-                return List.of(new IndexedField(
-                        key, LHUtil.toLHDbVersionFormat(this.getWfSpecVersion()), TagStorageType.LOCAL));
+            case "wfSpecId" -> {
+                return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
         }
         return List.of();
@@ -122,7 +120,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
             // TODO: This should be cleaned up
-            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision());
         }
         return wfSpec;
     }
@@ -289,15 +287,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public LHStatus getStatus() {
         return status;
-    }
-
-    // TODO: This will break with the semantically versioned WfSpecs
-    public String getWfSpecFormattedVersion() {
-        return LHUtil.toLHDbVersionFormat(wfSpecId.getVersion());
-    }
-
-    public int getWfSpecVersion() {
-        return wfSpecId.getVersion();
     }
 
     private boolean startXnHandlersAndInterrupts(Date time) {

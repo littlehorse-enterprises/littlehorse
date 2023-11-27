@@ -56,8 +56,8 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),
 				WfSpecId: &model.WfSpecId{
-					Name:    wfSpecName,
-					Version: int32(wfSpecVersion),
+					Name:         wfSpecName,
+					MajorVersion: int32(wfSpecVersion),
 				},
 				NumWindows: int32(numWindows),
 			},
@@ -67,5 +67,6 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 }
 
 func init() {
-	rootCmd.AddCommand(wfSpecMetrics)
+	// Do not add this command until we re-implement metrics:
+	// rootCmd.AddCommand(wfSpecMetrics)
 }

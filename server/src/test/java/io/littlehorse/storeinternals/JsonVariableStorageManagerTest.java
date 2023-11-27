@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
@@ -100,52 +101,54 @@ public class JsonVariableStorageManagerTest {
     private List<String> storedTagPrefixStoreKeys() {
         return storedTags().stream()
                 .map(Tag::getStoreKey)
-                .map(s -> s.split("/"))
-                .map(strings -> strings[0] + "/" + strings[1])
+                .map(storeKey -> {
+                    String[] split = storeKey.split("/");
+                    List<String> out = new ArrayList<>();
+                    for (int i = 0; i < split.length - 4; i++) {
+                        out.add(split[i]);
+                    }
+                    return String.join("/", out);
+                })
                 .toList();
     }
 
     @Test
     void storeLongAttributeValueText() {
-        String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.about_Consequat exercitation"
-                        + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
-                        + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
-                        + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
-                        + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
-                        + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
-                        + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
-                        + " pariatur et excepteur id voluptate dolor.\r\n";
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_Consequat exercitation"
+                + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
+                + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
+                + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
+                + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
+                + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
+                + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
+                + " pariatur et excepteur id voluptate dolor.\r\n";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeEmailAttributeValue() {
         String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.profile.email_forbesbooth@quarex.com";
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.profile.email_forbesbooth@quarex.com";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeInnerArrayObject() {
-        String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.tags_[ex, fugiat, id,"
-                        + " labore, dolor, consectetur, veniam]";
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_[ex, fugiat, id,"
+                + " labore, dolor, consectetur, veniam]";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeDoubleAttributeValue() {
-        String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.balance_2759.634399439295";
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.balance_2759.634399439295";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void preventStorageForNonIndexedAttributes() {
         String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__testVariable_$.registered_2018-09-02T10:37:59"
-                        + " +05:00";
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.registered_2018-09-02T10:37:59" + " +05:00";
         Assertions.assertThat(storedTagPrefixStoreKeys()).doesNotContain(expectedStoreKey);
     }
 }

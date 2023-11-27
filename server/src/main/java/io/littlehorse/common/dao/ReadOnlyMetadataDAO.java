@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import java.util.List;
 
 public interface ReadOnlyMetadataDAO {
@@ -20,7 +21,11 @@ public interface ReadOnlyMetadataDAO {
 
     TaskDefModel getTaskDef(String name);
 
-    WfSpecModel getWfSpec(String name, Integer version);
+    WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision);
+
+    default WfSpecModel getWfSpec(WfSpecIdModel id) {
+        return getWfSpec(id.getName(), id.getMajorVersion(), id.getRevision());
+    }
 
     <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id);
 

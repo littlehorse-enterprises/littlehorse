@@ -78,15 +78,26 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int VERSION_FIELD_NUMBER = 2;
-  private int version_ = 0;
+  public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
+  private int majorVersion_ = 0;
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>int32 major_version = 2;</code>
+   * @return The majorVersion.
    */
   @java.lang.Override
-  public int getVersion() {
-    return version_;
+  public int getMajorVersion() {
+    return majorVersion_;
+  }
+
+  public static final int REVISION_FIELD_NUMBER = 3;
+  private int revision_ = 0;
+  /**
+   * <code>int32 revision = 3;</code>
+   * @return The revision.
+   */
+  @java.lang.Override
+  public int getRevision() {
+    return revision_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -106,8 +117,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (version_ != 0) {
-      output.writeInt32(2, version_);
+    if (majorVersion_ != 0) {
+      output.writeInt32(2, majorVersion_);
+    }
+    if (revision_ != 0) {
+      output.writeInt32(3, revision_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -121,9 +135,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (version_ != 0) {
+    if (majorVersion_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, version_);
+        .computeInt32Size(2, majorVersion_);
+    }
+    if (revision_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, revision_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -142,8 +160,10 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (getVersion()
-        != other.getVersion()) return false;
+    if (getMajorVersion()
+        != other.getMajorVersion()) return false;
+    if (getRevision()
+        != other.getRevision()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -157,8 +177,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getVersion();
+    hash = (37 * hash) + MAJOR_VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getMajorVersion();
+    hash = (37 * hash) + REVISION_FIELD_NUMBER;
+    hash = (53 * hash) + getRevision();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -291,7 +313,8 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      version_ = 0;
+      majorVersion_ = 0;
+      revision_ = 0;
       return this;
     }
 
@@ -329,7 +352,10 @@ private static final long serialVersionUID = 0L;
         result.name_ = name_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.version_ = version_;
+        result.majorVersion_ = majorVersion_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.revision_ = revision_;
       }
     }
 
@@ -382,8 +408,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.getVersion() != 0) {
-        setVersion(other.getVersion());
+      if (other.getMajorVersion() != 0) {
+        setMajorVersion(other.getMajorVersion());
+      }
+      if (other.getRevision() != 0) {
+        setRevision(other.getRevision());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -417,10 +446,15 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              version_ = input.readInt32();
+              majorVersion_ = input.readInt32();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
+            case 24: {
+              revision_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -510,34 +544,66 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int version_ ;
+    private int majorVersion_ ;
     /**
-     * <code>int32 version = 2;</code>
-     * @return The version.
+     * <code>int32 major_version = 2;</code>
+     * @return The majorVersion.
      */
     @java.lang.Override
-    public int getVersion() {
-      return version_;
+    public int getMajorVersion() {
+      return majorVersion_;
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @param value The version to set.
+     * <code>int32 major_version = 2;</code>
+     * @param value The majorVersion to set.
      * @return This builder for chaining.
      */
-    public Builder setVersion(int value) {
+    public Builder setMajorVersion(int value) {
 
-      version_ = value;
+      majorVersion_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 version = 2;</code>
+     * <code>int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearVersion() {
+    public Builder clearMajorVersion() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      version_ = 0;
+      majorVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int revision_ ;
+    /**
+     * <code>int32 revision = 3;</code>
+     * @return The revision.
+     */
+    @java.lang.Override
+    public int getRevision() {
+      return revision_;
+    }
+    /**
+     * <code>int32 revision = 3;</code>
+     * @param value The revision to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRevision(int value) {
+
+      revision_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 revision = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRevision() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      revision_ = 0;
       onChanged();
       return this;
     }

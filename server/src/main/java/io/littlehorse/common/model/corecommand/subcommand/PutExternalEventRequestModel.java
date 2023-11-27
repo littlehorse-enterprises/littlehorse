@@ -84,21 +84,20 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             dao.scheduleTimer(new LHTimer(deleteExtEventCmd, dao));
         }
 
-        WfRunModel wfRunModel = dao.get(wfRunId);
-        if (wfRunModel != null) {
-            WfSpecModel spec = dao.getWfSpec(wfRunModel.getWfSpecName(), wfRunModel.getWfSpecVersion());
+        WfRunModel wfRun = dao.get(wfRunId);
+        if (wfRun != null) {
+            WfSpecModel spec = dao.getWfSpec(wfRun.getWfSpecId());
             if (spec == null) {
-                wfRunModel
-                        .getThreadRun(0)
+                wfRun.getThreadRun(0)
                         .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
 
                 // NOTE: need to commit the dao before we throw the exception.
                 dao.commit();
                 throw new LHApiException(Status.DATA_LOSS, "Appears wfSpec was deleted");
             } else {
-                wfRunModel.processExternalEvent(evt);
+                wfRun.processExternalEvent(evt);
             }
-            dao.put(wfRunModel);
+            dao.put(wfRun);
             dao.put(evt);
         } else {
             // it's a pre-emptive event.

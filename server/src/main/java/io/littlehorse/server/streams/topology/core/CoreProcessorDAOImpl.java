@@ -145,8 +145,8 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public WfSpecModel getWfSpec(String name, Integer version) {
-        WfSpecModel wfSpec = super.getWfSpec(name, version);
+    public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
+        WfSpecModel wfSpec = super.getWfSpec(name, majorVersion, revision);
         if (wfSpec != null) {
             wfSpec.setDao(this);
         }

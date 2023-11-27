@@ -13,10 +13,10 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfSpec {
-  string name = 1;
-  int32 version = 2;
-  google.protobuf.Timestamp created_at = 3;
-  
+  WfSpecId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  repeated ThreadVarDef frozen_variables = 3;
+
   // to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
   MetadataStatus status = 4;
 
@@ -25,7 +25,6 @@ message WfSpec {
 
   optional WorkflowRetentionPolicy retention_policy = 7;
   optional WfSpecVersionMigration migration = 8;
-  repeated SearchableVariableDef searchable_varaibles = 9;
 }
 
 message WorkflowRetentionPolicy {
@@ -196,8 +195,9 @@ message SleepNode {
 }
 
 message WfSpecVersionMigration {
-  int32 new_wf_spec_version = 1;
-  map<string, ThreadSpecMigration> thread_spec_migrations = 2;
+  int32 new_major_version = 1;
+  int32 new_revision = 2;
+  map<string, ThreadSpecMigration> thread_spec_migrations = 3;
 }
 
 message ThreadSpecMigration {

@@ -35,7 +35,7 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapField internalGetMapField(
       int number) {
     switch (number) {
-      case 2:
+      case 3:
         return internalGetThreadSpecMigrations();
       default:
         throw new RuntimeException(
@@ -50,18 +50,29 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WfSpecVersionMigration.class, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder.class);
   }
 
-  public static final int NEW_WF_SPEC_VERSION_FIELD_NUMBER = 1;
-  private int newWfSpecVersion_ = 0;
+  public static final int NEW_MAJOR_VERSION_FIELD_NUMBER = 1;
+  private int newMajorVersion_ = 0;
   /**
-   * <code>int32 new_wf_spec_version = 1;</code>
-   * @return The newWfSpecVersion.
+   * <code>int32 new_major_version = 1;</code>
+   * @return The newMajorVersion.
    */
   @java.lang.Override
-  public int getNewWfSpecVersion() {
-    return newWfSpecVersion_;
+  public int getNewMajorVersion() {
+    return newMajorVersion_;
   }
 
-  public static final int THREAD_SPEC_MIGRATIONS_FIELD_NUMBER = 2;
+  public static final int NEW_REVISION_FIELD_NUMBER = 2;
+  private int newRevision_ = 0;
+  /**
+   * <code>int32 new_revision = 2;</code>
+   * @return The newRevision.
+   */
+  @java.lang.Override
+  public int getNewRevision() {
+    return newRevision_;
+  }
+
+  public static final int THREAD_SPEC_MIGRATIONS_FIELD_NUMBER = 3;
   private static final class ThreadSpecMigrationsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
         java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration> defaultEntry =
@@ -88,7 +99,7 @@ private static final long serialVersionUID = 0L;
     return internalGetThreadSpecMigrations().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   @java.lang.Override
   public boolean containsThreadSpecMigrations(
@@ -105,14 +116,14 @@ private static final long serialVersionUID = 0L;
     return getThreadSpecMigrationsMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   @java.lang.Override
   public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration> getThreadSpecMigrationsMap() {
     return internalGetThreadSpecMigrations().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   @java.lang.Override
   public /* nullable */
@@ -126,7 +137,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrThrow(
@@ -154,15 +165,18 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (newWfSpecVersion_ != 0) {
-      output.writeInt32(1, newWfSpecVersion_);
+    if (newMajorVersion_ != 0) {
+      output.writeInt32(1, newMajorVersion_);
+    }
+    if (newRevision_ != 0) {
+      output.writeInt32(2, newRevision_);
     }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
         internalGetThreadSpecMigrations(),
         ThreadSpecMigrationsDefaultEntryHolder.defaultEntry,
-        2);
+        3);
     getUnknownFields().writeTo(output);
   }
 
@@ -172,9 +186,13 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (newWfSpecVersion_ != 0) {
+    if (newMajorVersion_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, newWfSpecVersion_);
+        .computeInt32Size(1, newMajorVersion_);
+    }
+    if (newRevision_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, newRevision_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration> entry
          : internalGetThreadSpecMigrations().getMap().entrySet()) {
@@ -184,7 +202,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, threadSpecMigrations__);
+          .computeMessageSize(3, threadSpecMigrations__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -201,8 +219,10 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     }
     io.littlehorse.sdk.common.proto.WfSpecVersionMigration other = (io.littlehorse.sdk.common.proto.WfSpecVersionMigration) obj;
 
-    if (getNewWfSpecVersion()
-        != other.getNewWfSpecVersion()) return false;
+    if (getNewMajorVersion()
+        != other.getNewMajorVersion()) return false;
+    if (getNewRevision()
+        != other.getNewRevision()) return false;
     if (!internalGetThreadSpecMigrations().equals(
         other.internalGetThreadSpecMigrations())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -216,8 +236,10 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NEW_WF_SPEC_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getNewWfSpecVersion();
+    hash = (37 * hash) + NEW_MAJOR_VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getNewMajorVersion();
+    hash = (37 * hash) + NEW_REVISION_FIELD_NUMBER;
+    hash = (53 * hash) + getNewRevision();
     if (!internalGetThreadSpecMigrations().getMap().isEmpty()) {
       hash = (37 * hash) + THREAD_SPEC_MIGRATIONS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetThreadSpecMigrations().hashCode();
@@ -335,7 +357,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 2:
+        case 3:
           return internalGetThreadSpecMigrations();
         default:
           throw new RuntimeException(
@@ -346,7 +368,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     protected com.google.protobuf.MapField internalGetMutableMapField(
         int number) {
       switch (number) {
-        case 2:
+        case 3:
           return internalGetMutableThreadSpecMigrations();
         default:
           throw new RuntimeException(
@@ -375,7 +397,8 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      newWfSpecVersion_ = 0;
+      newMajorVersion_ = 0;
+      newRevision_ = 0;
       internalGetMutableThreadSpecMigrations().clear();
       return this;
     }
@@ -411,9 +434,12 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     private void buildPartial0(io.littlehorse.sdk.common.proto.WfSpecVersionMigration result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.newWfSpecVersion_ = newWfSpecVersion_;
+        result.newMajorVersion_ = newMajorVersion_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.newRevision_ = newRevision_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.threadSpecMigrations_ = internalGetThreadSpecMigrations();
         result.threadSpecMigrations_.makeImmutable();
       }
@@ -463,12 +489,15 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.WfSpecVersionMigration other) {
       if (other == io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance()) return this;
-      if (other.getNewWfSpecVersion() != 0) {
-        setNewWfSpecVersion(other.getNewWfSpecVersion());
+      if (other.getNewMajorVersion() != 0) {
+        setNewMajorVersion(other.getNewMajorVersion());
+      }
+      if (other.getNewRevision() != 0) {
+        setNewRevision(other.getNewRevision());
       }
       internalGetMutableThreadSpecMigrations().mergeFrom(
           other.internalGetThreadSpecMigrations());
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -496,19 +525,24 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
               done = true;
               break;
             case 8: {
-              newWfSpecVersion_ = input.readInt32();
+              newMajorVersion_ = input.readInt32();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
-            case 18: {
+            case 16: {
+              newRevision_ = input.readInt32();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 26: {
               com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
               threadSpecMigrations__ = input.readMessage(
                   ThreadSpecMigrationsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableThreadSpecMigrations().getMutableMap().put(
                   threadSpecMigrations__.getKey(), threadSpecMigrations__.getValue());
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 18
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -526,34 +560,66 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     }
     private int bitField0_;
 
-    private int newWfSpecVersion_ ;
+    private int newMajorVersion_ ;
     /**
-     * <code>int32 new_wf_spec_version = 1;</code>
-     * @return The newWfSpecVersion.
+     * <code>int32 new_major_version = 1;</code>
+     * @return The newMajorVersion.
      */
     @java.lang.Override
-    public int getNewWfSpecVersion() {
-      return newWfSpecVersion_;
+    public int getNewMajorVersion() {
+      return newMajorVersion_;
     }
     /**
-     * <code>int32 new_wf_spec_version = 1;</code>
-     * @param value The newWfSpecVersion to set.
+     * <code>int32 new_major_version = 1;</code>
+     * @param value The newMajorVersion to set.
      * @return This builder for chaining.
      */
-    public Builder setNewWfSpecVersion(int value) {
+    public Builder setNewMajorVersion(int value) {
 
-      newWfSpecVersion_ = value;
+      newMajorVersion_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 new_wf_spec_version = 1;</code>
+     * <code>int32 new_major_version = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearNewWfSpecVersion() {
+    public Builder clearNewMajorVersion() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      newWfSpecVersion_ = 0;
+      newMajorVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int newRevision_ ;
+    /**
+     * <code>int32 new_revision = 2;</code>
+     * @return The newRevision.
+     */
+    @java.lang.Override
+    public int getNewRevision() {
+      return newRevision_;
+    }
+    /**
+     * <code>int32 new_revision = 2;</code>
+     * @param value The newRevision to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNewRevision(int value) {
+
+      newRevision_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 new_revision = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNewRevision() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      newRevision_ = 0;
       onChanged();
       return this;
     }
@@ -577,7 +643,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       if (!threadSpecMigrations_.isMutable()) {
         threadSpecMigrations_ = threadSpecMigrations_.copy();
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return threadSpecMigrations_;
     }
@@ -585,7 +651,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       return internalGetThreadSpecMigrations().getMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     @java.lang.Override
     public boolean containsThreadSpecMigrations(
@@ -602,14 +668,14 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       return getThreadSpecMigrationsMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     @java.lang.Override
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration> getThreadSpecMigrationsMap() {
       return internalGetThreadSpecMigrations().getMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     @java.lang.Override
     public /* nullable */
@@ -623,7 +689,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrThrow(
@@ -637,13 +703,13 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       return map.get(key);
     }
     public Builder clearThreadSpecMigrations() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       internalGetMutableThreadSpecMigrations().getMutableMap()
           .clear();
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     public Builder removeThreadSpecMigrations(
         java.lang.String key) {
@@ -658,11 +724,11 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
         getMutableThreadSpecMigrations() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return internalGetMutableThreadSpecMigrations().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     public Builder putThreadSpecMigrations(
         java.lang.String key,
@@ -671,17 +737,17 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableThreadSpecMigrations().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
      */
     public Builder putAllThreadSpecMigrations(
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration> values) {
       internalGetMutableThreadSpecMigrations().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     @java.lang.Override

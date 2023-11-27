@@ -7,12 +7,14 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpecId(_message.Message):
-    __slots__ = ["name", "version"]
+    __slots__ = ["name", "major_version", "revision"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    VERSION_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
     name: str
-    version: int
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+    major_version: int
+    revision: int
+    def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ...) -> None: ...
 
 class TaskDefId(_message.Message):
     __slots__ = ["name"]
@@ -21,12 +23,6 @@ class TaskDefId(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class ExternalEventDefId(_message.Message):
-    __slots__ = ["name"]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    def __init__(self, name: _Optional[str] = ...) -> None: ...
-
-class GetLatestWfSpecRequest(_message.Message):
     __slots__ = ["name"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     name: str

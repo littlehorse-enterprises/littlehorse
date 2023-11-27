@@ -133,7 +133,7 @@ class DeleteExternalEventDefRequest(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class RunWfRequest(_message.Message):
-    __slots__ = ["wf_spec_name", "wf_spec_version", "variables", "id"]
+    __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id"]
     class VariablesEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -142,30 +142,30 @@ class RunWfRequest(_message.Message):
         value: _variable_pb2.VariableValue
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     ID_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
-    wf_spec_version: int
+    major_version: int
+    revision: int
     variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
     id: str
-    def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "status_and_spec", "name", "status_and_name"]
     class StatusAndSpecRequest(_message.Message):
-        __slots__ = ["wf_spec_name", "status", "wf_spec_version", "earliest_start", "latest_start"]
-        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+        __slots__ = ["wf_spec_id", "status", "earliest_start", "latest_start"]
+        WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
         STATUS_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
         EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
         LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        wf_spec_name: str
+        wf_spec_id: _object_id_pb2.WfSpecId
         status: _common_enums_pb2.LHStatus
-        wf_spec_version: int
         earliest_start: _timestamp_pb2.Timestamp
         latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, wf_spec_name: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., wf_spec_version: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+        def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
     class NameRequest(_message.Message):
         __slots__ = ["wf_spec_name", "earliest_start", "latest_start"]
         WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -295,16 +295,18 @@ class UserTaskRunIdList(_message.Message):
 class SearchVariableRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_run_id", "value"]
     class NameAndValueRequest(_message.Message):
-        __slots__ = ["value", "wf_spec_version", "var_name", "wf_spec_name"]
+        __slots__ = ["value", "wf_spec_major_version", "wf_spec_revision", "var_name", "wf_spec_name"]
         VALUE_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
+        WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+        WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
         VAR_NAME_FIELD_NUMBER: _ClassVar[int]
         WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
         value: _variable_pb2.VariableValue
-        wf_spec_version: int
+        wf_spec_major_version: int
+        wf_spec_revision: int
         var_name: str
         wf_spec_name: str
-        def __init__(self, value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., wf_spec_version: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
+        def __init__(self, value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -728,3 +730,11 @@ class MigrateWfSpecRequest(_message.Message):
     old_wf_spec: _object_id_pb2.WfSpecId
     migration: _wf_spec_pb2.WfSpecVersionMigration
     def __init__(self, old_wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., migration: _Optional[_Union[_wf_spec_pb2.WfSpecVersionMigration, _Mapping]] = ...) -> None: ...
+
+class GetLatestWfSpecRequest(_message.Message):
+    __slots__ = ["name", "major_version"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    major_version: int
+    def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ...) -> None: ...

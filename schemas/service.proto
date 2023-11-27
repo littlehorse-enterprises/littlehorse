@@ -87,9 +87,10 @@ message DeleteExternalEventDefRequest {
 
 message RunWfRequest {
   string wf_spec_name = 1;
-  optional int32 wf_spec_version = 2;
-  map<string, VariableValue> variables = 3;
-  optional string id = 4;
+  optional int32 major_version = 2;
+  optional int32 revision = 3;
+  map<string, VariableValue> variables = 4;
+  optional string id = 5;
 }
 
 message SearchWfRunRequest {
@@ -97,11 +98,10 @@ message SearchWfRunRequest {
   optional int32 limit = 2;
 
   message StatusAndSpecRequest {
-    string wf_spec_name = 1;
+    WfSpecId wf_spec_id = 1;
     LHStatus status = 2;
-    int32 wf_spec_version = 3;
-    optional google.protobuf.Timestamp earliest_start = 4;
-    optional google.protobuf.Timestamp latest_start = 5;
+    optional google.protobuf.Timestamp earliest_start = 3;
+    optional google.protobuf.Timestamp latest_start = 4;
   }
   message NameRequest {
     string wf_spec_name = 1;
@@ -193,9 +193,10 @@ message SearchVariableRequest {
 
   message NameAndValueRequest {
     VariableValue value = 1;
-    optional int32 wf_spec_version = 2;
-    string var_name = 3;
-    string wf_spec_name = 4;
+    optional int32 wf_spec_major_version = 2;
+    optional int32 wf_spec_revision = 3;
+    string var_name = 4;
+    string wf_spec_name = 5;
   }
 
   oneof variable_criteria {
@@ -467,6 +468,11 @@ message TaskRunList {
 message MigrateWfSpecRequest {
   WfSpecId old_wf_spec = 1;
   WfSpecVersionMigration migration = 2;
+}
+
+message GetLatestWfSpecRequest {
+  string name = 1;
+  optional int32 major_version = 2;
 }
 
 service LHPublicApi {

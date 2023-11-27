@@ -37,7 +37,7 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapField internalGetMapField(
       int number) {
     switch (number) {
-      case 3:
+      case 4:
         return internalGetVariables();
       default:
         throw new RuntimeException(
@@ -92,26 +92,45 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int WF_SPEC_VERSION_FIELD_NUMBER = 2;
-  private int wfSpecVersion_ = 0;
+  public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
+  private int majorVersion_ = 0;
   /**
-   * <code>optional int32 wf_spec_version = 2;</code>
-   * @return Whether the wfSpecVersion field is set.
+   * <code>optional int32 major_version = 2;</code>
+   * @return Whether the majorVersion field is set.
    */
   @java.lang.Override
-  public boolean hasWfSpecVersion() {
+  public boolean hasMajorVersion() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional int32 wf_spec_version = 2;</code>
-   * @return The wfSpecVersion.
+   * <code>optional int32 major_version = 2;</code>
+   * @return The majorVersion.
    */
   @java.lang.Override
-  public int getWfSpecVersion() {
-    return wfSpecVersion_;
+  public int getMajorVersion() {
+    return majorVersion_;
   }
 
-  public static final int VARIABLES_FIELD_NUMBER = 3;
+  public static final int REVISION_FIELD_NUMBER = 3;
+  private int revision_ = 0;
+  /**
+   * <code>optional int32 revision = 3;</code>
+   * @return Whether the revision field is set.
+   */
+  @java.lang.Override
+  public boolean hasRevision() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional int32 revision = 3;</code>
+   * @return The revision.
+   */
+  @java.lang.Override
+  public int getRevision() {
+    return revision_;
+  }
+
+  public static final int VARIABLES_FIELD_NUMBER = 4;
   private static final class VariablesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
         java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
@@ -138,7 +157,7 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
   public boolean containsVariables(
@@ -155,14 +174,14 @@ private static final long serialVersionUID = 0L;
     return getVariablesMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
   public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVariablesMap() {
     return internalGetVariables().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
   public /* nullable */
@@ -176,7 +195,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
@@ -190,19 +209,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.get(key);
   }
 
-  public static final int ID_FIELD_NUMBER = 4;
+  public static final int ID_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return Whether the id field is set.
    */
   @java.lang.Override
   public boolean hasId() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return The id.
    */
   @java.lang.Override
@@ -219,7 +238,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return The bytes for id.
    */
   @java.lang.Override
@@ -255,16 +274,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfSpecName_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(2, wfSpecVersion_);
+      output.writeInt32(2, majorVersion_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeInt32(3, revision_);
     }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
         internalGetVariables(),
         VariablesDefaultEntryHolder.defaultEntry,
-        3);
-    if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, id_);
+        4);
+    if (((bitField0_ & 0x00000004) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, id_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -280,7 +302,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, wfSpecVersion_);
+        .computeInt32Size(2, majorVersion_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, revision_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> entry
          : internalGetVariables().getMap().entrySet()) {
@@ -290,10 +316,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, variables__);
+          .computeMessageSize(4, variables__);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, id_);
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, id_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -312,10 +338,15 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     if (!getWfSpecName()
         .equals(other.getWfSpecName())) return false;
-    if (hasWfSpecVersion() != other.hasWfSpecVersion()) return false;
-    if (hasWfSpecVersion()) {
-      if (getWfSpecVersion()
-          != other.getWfSpecVersion()) return false;
+    if (hasMajorVersion() != other.hasMajorVersion()) return false;
+    if (hasMajorVersion()) {
+      if (getMajorVersion()
+          != other.getMajorVersion()) return false;
+    }
+    if (hasRevision() != other.hasRevision()) return false;
+    if (hasRevision()) {
+      if (getRevision()
+          != other.getRevision()) return false;
     }
     if (!internalGetVariables().equals(
         other.internalGetVariables())) return false;
@@ -337,9 +368,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getWfSpecName().hashCode();
-    if (hasWfSpecVersion()) {
-      hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecVersion();
+    if (hasMajorVersion()) {
+      hash = (37 * hash) + MAJOR_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getMajorVersion();
+    }
+    if (hasRevision()) {
+      hash = (37 * hash) + REVISION_FIELD_NUMBER;
+      hash = (53 * hash) + getRevision();
     }
     if (!internalGetVariables().getMap().isEmpty()) {
       hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
@@ -462,7 +497,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 3:
+        case 4:
           return internalGetVariables();
         default:
           throw new RuntimeException(
@@ -473,7 +508,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     protected com.google.protobuf.MapField internalGetMutableMapField(
         int number) {
       switch (number) {
-        case 3:
+        case 4:
           return internalGetMutableVariables();
         default:
           throw new RuntimeException(
@@ -503,7 +538,8 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       super.clear();
       bitField0_ = 0;
       wfSpecName_ = "";
-      wfSpecVersion_ = 0;
+      majorVersion_ = 0;
+      revision_ = 0;
       internalGetMutableVariables().clear();
       id_ = "";
       return this;
@@ -544,16 +580,20 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfSpecVersion_ = wfSpecVersion_;
+        result.majorVersion_ = majorVersion_;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.revision_ = revision_;
+        to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.variables_ = internalGetVariables();
         result.variables_.makeImmutable();
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.id_ = id_;
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -607,15 +647,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasWfSpecVersion()) {
-        setWfSpecVersion(other.getWfSpecVersion());
+      if (other.hasMajorVersion()) {
+        setMajorVersion(other.getMajorVersion());
+      }
+      if (other.hasRevision()) {
+        setRevision(other.getRevision());
       }
       internalGetMutableVariables().mergeFrom(
           other.internalGetVariables());
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       if (other.hasId()) {
         id_ = other.id_;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -650,24 +693,29 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               break;
             } // case 10
             case 16: {
-              wfSpecVersion_ = input.readInt32();
+              majorVersion_ = input.readInt32();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 26: {
+            case 24: {
+              revision_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
+            case 34: {
               com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
               variables__ = input.readMessage(
                   VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableVariables().getMutableMap().put(
                   variables__.getKey(), variables__.getValue());
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
-            case 34: {
-              id_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 42: {
+              id_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -757,42 +805,82 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
 
-    private int wfSpecVersion_ ;
+    private int majorVersion_ ;
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return Whether the wfSpecVersion field is set.
+     * <code>optional int32 major_version = 2;</code>
+     * @return Whether the majorVersion field is set.
      */
     @java.lang.Override
-    public boolean hasWfSpecVersion() {
+    public boolean hasMajorVersion() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return The wfSpecVersion.
+     * <code>optional int32 major_version = 2;</code>
+     * @return The majorVersion.
      */
     @java.lang.Override
-    public int getWfSpecVersion() {
-      return wfSpecVersion_;
+    public int getMajorVersion() {
+      return majorVersion_;
     }
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @param value The wfSpecVersion to set.
+     * <code>optional int32 major_version = 2;</code>
+     * @param value The majorVersion to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecVersion(int value) {
+    public Builder setMajorVersion(int value) {
 
-      wfSpecVersion_ = value;
+      majorVersion_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
+     * <code>optional int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWfSpecVersion() {
+    public Builder clearMajorVersion() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      wfSpecVersion_ = 0;
+      majorVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int revision_ ;
+    /**
+     * <code>optional int32 revision = 3;</code>
+     * @return Whether the revision field is set.
+     */
+    @java.lang.Override
+    public boolean hasRevision() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional int32 revision = 3;</code>
+     * @return The revision.
+     */
+    @java.lang.Override
+    public int getRevision() {
+      return revision_;
+    }
+    /**
+     * <code>optional int32 revision = 3;</code>
+     * @param value The revision to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRevision(int value) {
+
+      revision_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 revision = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRevision() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      revision_ = 0;
       onChanged();
       return this;
     }
@@ -816,7 +904,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (!variables_.isMutable()) {
         variables_ = variables_.copy();
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return variables_;
     }
@@ -824,7 +912,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetVariables().getMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
     public boolean containsVariables(
@@ -841,14 +929,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getVariablesMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVariablesMap() {
       return internalGetVariables().getMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
     public /* nullable */
@@ -862,7 +950,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
@@ -876,13 +964,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.get(key);
     }
     public Builder clearVariables() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       internalGetMutableVariables().getMutableMap()
           .clear();
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder removeVariables(
         java.lang.String key) {
@@ -897,11 +985,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
         getMutableVariables() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return internalGetMutableVariables().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder putVariables(
         java.lang.String key,
@@ -910,30 +998,30 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableVariables().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder putAllVariables(
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> values) {
       internalGetMutableVariables().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
 
     private java.lang.Object id_ = "";
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @return Whether the id field is set.
      */
     public boolean hasId() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @return The id.
      */
     public java.lang.String getId() {
@@ -949,7 +1037,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @return The bytes for id.
      */
     public com.google.protobuf.ByteString
@@ -966,7 +1054,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @param value The id to set.
      * @return This builder for chaining.
      */
@@ -974,22 +1062,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       id_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearId() {
       id_ = getDefaultInstance().getId();
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string id = 4;</code>
+     * <code>optional string id = 5;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
      */
@@ -998,7 +1086,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       id_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }

@@ -34,7 +34,7 @@ var searchWfRunCmd = &cobra.Command{
 	Long: `
 Search for WfRuns. You may provide any of the following option groups:
 
-[wfSpecName, wfSpecVersion, status]
+[wfSpecName, majorVersion, revision, status]
 [wfSpecName, status]
 [wfSpecName]
 
@@ -47,7 +47,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 		status, _ := cmd.Flags().GetString("status")
-		version, _ := cmd.Flags().GetInt32("wfSpecVersion")
+		majorVersion, _ := cmd.Flags().GetInt32("majorVersion")
+		revision, _ := cmd.Flags().GetInt32("revision")
 
 		earliestMinutesAgo, _ := cmd.Flags().GetInt("earliestMinutesAgo")
 		latestMinutesAgo, _ := cmd.Flags().GetInt32("latestMinutesAgo")
@@ -82,12 +83,15 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			Limit:    &limit,
 		}
 
-		if version != -1 && status != "" {
+		if majorVersion != -1 && status != "" {
 			search.WfrunCriteria = &model.SearchWfRunRequest_StatusAndSpec{
 				StatusAndSpec: &model.SearchWfRunRequest_StatusAndSpecRequest{
-					Status:        model.LHStatus(model.LHStatus_value[status]),
-					WfSpecName:    wfSpecName,
-					WfSpecVersion: version,
+					Status: model.LHStatus(model.LHStatus_value[status]),
+					WfSpecId: &model.WfSpecId{
+						Name:         wfSpecName,
+						MajorVersion: majorVersion,
+						Revision:     revision,
+					},
 					LatestStart:   latestStartTime,
 					EarliestStart: earliestStartTime,
 				},
@@ -101,7 +105,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 				},
 			}
 		} else {
-			if version != -1 {
+			if majorVersion != -1 {
 				log.Fatal("--wfSpecVersion provided without --status")
 			}
 			search.WfrunCriteria = &model.SearchWfRunRequest_Name{
@@ -186,10 +190,12 @@ func init() {
 
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
 	searchWfRunCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
-	searchWfRunCmd.Flags().Int32("wfSpecVersion", -1, "wfSpecVersion to search for")
+	searchWfRunCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
+	searchWfRunCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
 	searchWfRunCmd.MarkFlagRequired("wfSpecName")
+	searchWfRunCmd.MarkFlagsRequiredTogether("revision", "majorVersion")
 
 	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
 	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")

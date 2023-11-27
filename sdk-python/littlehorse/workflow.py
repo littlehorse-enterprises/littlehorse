@@ -23,11 +23,11 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutationType,
 )
 from littlehorse.model.object_id_pb2 import (
-    GetLatestWfSpecRequest,
     ExternalEventDefId,
     TaskDefId,
 )
 from littlehorse.model.service_pb2 import (
+    GetLatestWfSpecRequest,
     PutExternalEventDefRequest,
     PutTaskDefRequest,
     PutWfSpecRequest,

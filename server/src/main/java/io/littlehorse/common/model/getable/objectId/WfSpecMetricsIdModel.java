@@ -65,7 +65,8 @@ public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpe
     public void initFromString(String storeKey) {
         // TODO: Check this when we have composite wfSpecVersions
         String[] split = storeKey.split("/");
-        wfSpecId = (WfSpecIdModel) ObjectIdModel.fromString(split[0] + "/" + split[1], WfSpecIdModel.class); // outch
+        wfSpecId = (WfSpecIdModel)
+                ObjectIdModel.fromString(split[0] + "/" + split[1] + "/" + split[2], WfSpecIdModel.class); // ouch
         windowType = MetricsWindowLength.valueOf(split[2]);
         windowStart = new Date(Long.valueOf(split[3]));
     }

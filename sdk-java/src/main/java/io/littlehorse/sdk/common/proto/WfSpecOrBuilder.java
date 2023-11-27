@@ -8,37 +8,58 @@ public interface WfSpecOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getName();
+  boolean hasId();
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getNameBytes();
+  io.littlehorse.sdk.common.proto.WfSpecId getId();
+  /**
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
-   */
-  int getVersion();
-
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> 
+      getFrozenVariablesList();
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThreadVarDef getFrozenVariables(int index);
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  int getFrozenVariablesCount();
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
+      getFrozenVariablesOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getFrozenVariablesOrBuilder(
+      int index);
 
   /**
    * <pre>
@@ -134,28 +155,4 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();
-
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> 
-      getSearchableVaraiblesList();
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index);
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  int getSearchableVaraiblesCount();
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
-      getSearchableVaraiblesOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
-      int index);
 }

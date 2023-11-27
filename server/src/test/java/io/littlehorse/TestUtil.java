@@ -48,7 +48,7 @@ public class TestUtil {
     public static WfRunModel wfRun(String id) {
         WfRunModel wfRunModel = new WfRunModel();
         wfRunModel.setId(new WfRunIdModel(id));
-        wfRunModel.setWfSpecId(new WfSpecIdModel("test-spec-name", 0));
+        wfRunModel.setWfSpecId(new WfSpecIdModel("test-spec-name", 0, 0));
         wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
@@ -101,7 +101,7 @@ public class TestUtil {
     }
 
     public static WfSpecIdModel wfSpecId() {
-        WfSpecIdModel wfSpecId = new WfSpecIdModel("testName", 0);
+        WfSpecIdModel wfSpecId = new WfSpecIdModel("testName", 0, 0);
         return wfSpecId;
     }
 
@@ -137,7 +137,7 @@ public class TestUtil {
 
     public static WfSpecModel wfSpec(String name) {
         WfSpecModel spec = new WfSpecModel();
-        spec.setName(name);
+        spec.setId(new WfSpecIdModel(name, 0, 0));
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
         spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));

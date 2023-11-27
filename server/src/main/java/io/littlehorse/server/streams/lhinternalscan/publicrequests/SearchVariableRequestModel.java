@@ -11,10 +11,10 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase;
@@ -113,32 +113,30 @@ public class SearchVariableRequestModel
     }
 
     private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
-        Integer wfSpecVersion = value.hasWfSpecVersion() ? null : value.getWfSpecVersion();
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+        Integer majorVersion = value.hasWfSpecMajorVersion() ? value.getWfSpecMajorVersion() : null;
+        Integer revision = value.hasWfSpecRevision() ? value.getWfSpecRevision() : null;
+
+        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), majorVersion, revision);
+        log.error("Major: {}, Revision: {}", majorVersion, revision);
 
         if (spec == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
         }
 
-        Optional<ThreadVarDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
-                .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
-                .filter(variableDef -> variableDef.getVarDef().getName().equals(value.getVarName()))
-                .findFirst();
-
-        if (!associatedVariable.isPresent()) {
+        ThreadVarDefModel varDef = spec.getAllVariables().get(value.getVarName());
+        if (varDef == null) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + value.getVarName());
         }
 
-        ThreadVarDefModel threadVarDef = associatedVariable.get();
-        if (!threadVarDef.isSearchable()) {
+        if (!varDef.isSearchable()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
-        if (threadVarDef.getVarDef().getType() != value.getValue().getType()) {
+        if (varDef.getVarDef().getType() != value.getValue().getType()) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    "Specified Variable has type " + threadVarDef.getVarDef().getType());
+                    "Specified Variable has type " + varDef.getVarDef().getType());
         }
 
         // Currently, all tags are LOCAL
@@ -146,10 +144,18 @@ public class SearchVariableRequestModel
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
-        if (value.hasWfSpecVersion()) {
+        if (value.hasWfSpecMajorVersion()) {
+            if (!value.hasWfSpecRevision()) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "If providing version, must also provide revision");
+            }
             return List.of(
-                    new Attribute("wfSpecName", value.getWfSpecName()),
-                    new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(value.getWfSpecVersion())),
+                    new Attribute(
+                            "wfSpecId",
+                            new WfSpecIdModel(
+                                            value.getWfSpecName(),
+                                            value.getWfSpecMajorVersion(),
+                                            value.getWfSpecRevision())
+                                    .toString()),
                     new Attribute(value.getVarName(), getVariableValue(value.getValue())));
         } else {
             return List.of(
@@ -173,7 +179,9 @@ public class SearchVariableRequestModel
             case WF_RUN_ID:
                 return LHStore.CORE;
             case VALUE:
-                return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+                // This will become more complex when we re-enable REMOTE tags. We will
+                // likely need to pass in a DAO.
+                return LHStore.CORE;
             case VARIABLECRITERIA_NOT_SET:
         }
         throw new LHApiException(Status.INVALID_ARGUMENT, "Didn't provide variable criteria");
