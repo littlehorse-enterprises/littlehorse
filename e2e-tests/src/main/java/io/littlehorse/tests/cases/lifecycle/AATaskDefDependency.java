@@ -79,7 +79,10 @@ public class AATaskDefDependency extends Test {
                 .setId(TaskDefId.newBuilder().setName(taskDefName))
                 .build());
         client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
-                .setId(WfSpecId.newBuilder().setName(wfSpecName).setMajorVersion(0).setRevision(0))
+                .setId(WfSpecId.newBuilder()
+                        .setName(wfSpecName)
+                        .setMajorVersion(0)
+                        .setRevision(0))
                 .build());
     }
 }
