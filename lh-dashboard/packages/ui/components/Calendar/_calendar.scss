@@ -1,0 +1,437 @@
+.metricsCalendar *{
+    font-family: 'Inter', sans-serif;
+}
+.metricsCalendar .header{
+    /* color-gray */
+    background-color: #4D5461;
+    border-radius: 4px 4px 0px 0px;
+    display: flex;
+    height: 41px;
+    justify-content: space-between;
+
+}
+.metricsCalendar .header .lfBtn{
+    width: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.metricsCalendar .header .lfBtn:first-child{
+    border-radius: 4px 0px 0px 0px;
+}
+.metricsCalendar .header .lfBtn:last-child{
+    border-radius: 0px 4px 0px 0px;
+}
+.metricsCalendar .header .lfBtn:active{
+    /* color-ghostLight */
+    background-color: #363A41;
+}
+
+
+.metricsCalendar .controls{
+    display: inline-flex;
+    gap: 40px;
+}
+.metricsCalendar .label{
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: center;
+    /* color-brightLight */
+    color: #EDEEF0;
+    text-transform: none;
+    position: relative;
+
+}
+.metricsCalendar .input{
+    /* color-gray */
+    border: 1px solid #4D5461;
+    border-radius: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    /* color-ghostLight */
+    background-color: #363A41;
+    align-items: center;
+    min-width: 140px;
+    position: relative;
+}
+.metricsCalendar .input .inputWrapper{
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    /* color-ghostLight */
+    align-items: center;
+    min-width: 140px;
+    position: relative;
+}
+.metricsCalendar .input .float{
+    position: absolute;
+    z-index: 80;
+    top: 36px;
+    right: 0px;
+    background: #394150;
+    padding: 4px 0px 4px 0px;
+    border-radius: 4px;
+    min-width: 100%;
+
+}
+.metricsCalendar .input .option{
+    padding: 8px 12px 8px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+    cursor: pointer;
+}
+.metricsCalendar .input .option.selected, .metricsCalendar .input .option:hover{
+    /* color-gray */
+    background-color: #4D5461;
+
+}
+.metricsCalendar .input>.material-icons-outlined, .metricsCalendar .input .inputWrapper>.material-icons-outlined{
+    font-size: 16px;
+    user-select: none;
+}
+.metricsCalendar .input>.material-icons, .metricsCalendar .input .inputWrapper>.material-icons{
+    font-size: 16px;
+    margin-left: 20px;
+    user-select: none;
+}
+.metricsCalendar .input .placeholder{
+    /* color-mildLight */
+    color: #9098A0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.94px;
+    user-select: none;
+}
+.metricsCalendar .input .text{
+    /* color-brightLight */
+    color: #EDEEF0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+.metricsCalendar .weeks, .metricsCalendar .weeks *{
+    /* color-mildLight */
+    color: #9098A0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+}
+
+.metricsCalendar .day {
+    /* color-brightLight */
+    color: #EDEEF0; 
+    padding: 2px;
+    display: flex;
+    user-select: none;
+}
+.metricsCalendar .startRange>div {
+    display: flex;
+    flex:1;
+    border-radius: 8px 0px 0px 8px !important;
+    cursor: pointer;
+    /* color-primary */
+    background-color: #7F7AFF !important; 
+    /* color-brightLight */
+    color: #EDEEF0 !important; 
+    margin-right: -2px;
+    padding-right: 2px;
+    box-sizing: border-box;
+}
+
+.metricsCalendar .endsRange>div {
+    display: flex;
+    flex:1;
+    border-radius: 0px 8px 8px 0px !important;
+    cursor: pointer;
+    /* color-primary */
+    background-color: #7F7AFF !important;
+    /* color-brightLight */
+    color: #EDEEF0 !important; 
+    margin-left: -2px;
+    padding-left: 2px;
+    box-sizing: border-box;
+}
+.metricsCalendar .endsRange.startRange>div {
+
+    border-radius: 8px 8px 8px 8px !important;
+    margin-left: 0px;
+    margin-right: 0px;
+    box-sizing: border-box;
+
+
+}
+.metricsCalendar .inRange>div {
+    display: flex;
+    flex:1;
+    border-radius: 0px 0px 0px 0px !important;
+    cursor: pointer;
+    /* color-primary */
+    background-color: #6363B9 !important; 
+    /* color-brightLight */
+    color: #EDEEF0 !important; 
+    margin-left: -2px;
+    margin-right: -2px;
+    box-sizing: border-box;
+}
+
+.metricsCalendar .endsRange.currentDay>div, .metricsCalendar .startRange.currentDay>div, .metricsCalendar .inRange.currentDay>div {
+    /* color-brightLight */
+    color: #EDEEF0 !important; 
+}
+.metricsCalendar .day>div {
+    display: flex;
+    flex:1;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.metricsCalendar .day>div:hover {
+    /* color-gray */
+    background-color: #4D5461; 
+}
+.metricsCalendar .otherMonth * {
+    /* color-mildLight */
+    color: #9098A0; 
+}
+
+.metricsCalendar .afterPresent * {
+    /* color-mildLightDarker */
+    color: #6D717F; 
+}
+.metricsCalendar .afterPresent>div:hover {
+    background-color: transparent; 
+    cursor: default;
+}
+.metricsCalendar .currentDay * {
+    /* color-primary */
+    color: #7F7AFF !important; 
+    position: relative;
+}
+
+.metricsCalendar .currentDay .dot {
+    /* color-primary */
+    background-color: #7F7AFF; 
+    height: 4px;
+    width: 4px;
+    position: absolute;
+    left: 50%;
+    margin-left: -2px;
+    top: 30px;
+    border-radius: 100%;
+}
+.metricsCalendar .currentDay.endsRange .dot, .metricsCalendar .currentDay.startRange .dot, .metricsCalendar .currentDay.inRange .dot {
+    /* color-primary */
+    background-color: #EDEEF0; 
+}
+
+.mcToolTip{
+    position: absolute;
+    visibility: hidden;
+    z-index: 50;
+    border-radius: 8px;
+    border: 1px solid #6D717F;
+    pointer-events: none;
+
+
+    /* shadow-darkbox01 */
+    box-shadow: 0px 27px 8px 0px rgba(0, 0, 0, 0.00), 0px 17px 7px 0px rgba(0, 0, 0, 0.01), 0px 10px 6px 0px rgba(0, 0, 0, 0.05), 0px 4px 4px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.10), 0px 0px 0px 0px rgba(0, 0, 0, 0.10);
+}
+.mcToolTip header{
+    display: flex;
+    padding: 8px 12px;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 8px 8px 0px 0px;
+
+    border-bottom: 1px solid #6D717F;
+    background: #4D5461;
+
+    color: #EDEEF0;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    line-height: 16px;
+}
+.mcToolTip main{
+    display: flex;
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    background: #394150;
+    border-radius: 0px 0px 8px 8px ;
+}
+.mcToolTip main>div{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.mcToolTip main>div .dot{
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background: #E6527F;
+}
+.mcToolTip main>div .title, .mcToolTip .title{ 
+    color: #FFF;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+}
+.mcToolTip main>div label{
+    color: #A2A7B8;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    line-height: 16px;
+    text-transform: none;
+}
+.mcToolTip main>div .value{
+    color: #A2A7B8;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    line-height: 16px;
+    text-transform: none;
+}
+
+.applyButton{
+    display: flex;
+    height: 32px;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 4px;
+    border: 1px solid var(--color-primary-light, #AAA7FF);
+    background: var(--color-primary, #7F7AFF);
+
+    color: var(--color-bright-light, #EDEEF0);
+    text-align: center;
+    font-size: 14px;
+    font-family: "Inter";
+    font-weight: 600;
+    width: 100%;
+    white-space: nowrap;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.metricsCalendar .header .yearSelector{
+    display: flex;
+}
+.calMonth{
+    display: flex;
+    flex:1;
+    width: 96px;
+    height: 41px;
+    padding: 10px;
+    justify-content: center;
+    // justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+.calYear{
+    display: flex;
+    flex:1;
+    width: 96px;
+    height: 41px;
+    padding: 10px;
+    justify-content: center;
+    // justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+.timePickerCanvas{
+    display: flex;
+    flex:1;
+    padding:10px; 
+    margin-left:10px;
+    border-left: 1px solid #4D5461;
+    flex-direction: column;
+    justify-content: space-between;
+    .block{
+        display: flex;
+        flex-direction: column;
+        gap:5px;
+        padding: 12px;
+    }
+    .label{
+        color: var(--color-mild-light, #9098A0);
+        font-size: 12px;
+        font-family: "Inter";
+        font-weight: 500;
+        line-height: 150%;
+    }
+    .monthAndYear{
+        color: var(--color-bright-light, #EDEEF0);
+        font-family: "Inter";
+        font-weight: 500;
+        display: flex;
+        gap: 5px;
+        align-items: baseline;
+        .day{
+            font-size: 20px;
+            line-height: 30px;
+        }
+        .month{
+            font-size: 14px;
+            line-height: 21px;
+        }   
+        .year{
+            font-size: 16px;
+            line-height: 24px;
+        }
+    }
+    .pickers{
+        display: flex;
+        gap:5px;
+        align-items: center;
+        .dots{
+            color: var(--color-bright-light, #EDEEF0);
+            text-align: center;
+            font-size: 16px;
+            font-family: "Roboto";
+            font-weight: 500;
+            line-height: 100%;
+        }
+        select{
+            display: flex;
+            outline: none;
+            width: 62px;
+            height: 28px;
+            padding: 0px 8px 0px 12px;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+            border: 1px solid var(--color-gray, #4D5461);
+            background: var(--color-ghost-light, #363A41);
+            color: var(--color-bright-light, #EDEEF0);
+            text-align: center;
+            font-size: 16px;
+            font-family: "Inter";
+            font-weight: 500;
+            line-height: 100%;
+        }
+    }
+}

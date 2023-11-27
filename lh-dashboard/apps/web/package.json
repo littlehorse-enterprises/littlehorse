@@ -1,0 +1,48 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 80",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "d3": "^7.8.5",
+    "lodash": "^4.17.21",
+    "material-icons": "^1.13.12",
+    "moment": "^2.29.4",
+    "next": "^13.5.5",
+    "next-auth": "^4.24.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "sass": "^1.63.6",
+    "ui": "workspace:*",
+    "nice-grpc": "^2.1.5",
+    "protobufjs": "^7.2.5",
+    "long": "^5.2.3",
+    "nice-grpc-common": "^2.0.2",
+    "reactflow": "^11.9.3",
+    "@tisoap/react-flow-smart-edge": "^3.0.0",
+    "elkjs": "^0.8.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.197",
+    "@types/node": "^17.0.12",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
+    "@types/react-syntax-highlighter": "^15.5.7",
+    "@types/jest": "^29.5.8",
+    "eslint-config-custom": "workspace:*",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.5.3",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.1",
+    "@faker-js/faker": "^8.2.0"
+  }
+}
