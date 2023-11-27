@@ -3,11 +3,13 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
@@ -188,8 +190,10 @@ public class SearchWfRunRequestModel
 
     private List<Attribute> buildStatusAndSpecAttributesPb() {
         return Arrays.asList(
-                new Attribute("wfSpecName", statusAndSpec.getWfSpecName()),
-                new Attribute("status", statusAndSpec.getStatus().toString()),
-                new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())));
+                new Attribute(
+                        "wfSpecId",
+                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class)
+                                .toString()),
+                new Attribute("status", statusAndSpec.getStatus().toString()));
     }
 }

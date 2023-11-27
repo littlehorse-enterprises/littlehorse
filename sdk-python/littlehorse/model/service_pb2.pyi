@@ -156,18 +156,16 @@ class RunWfRequest(_message.Message):
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "status_and_spec", "name", "status_and_name"]
     class StatusAndSpecRequest(_message.Message):
-        __slots__ = ["wf_spec_name", "status", "wf_spec_version", "earliest_start", "latest_start"]
-        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+        __slots__ = ["wf_spec_id", "status", "earliest_start", "latest_start"]
+        WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
         STATUS_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
         EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
         LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        wf_spec_name: str
+        wf_spec_id: _object_id_pb2.WfSpecId
         status: _common_enums_pb2.LHStatus
-        wf_spec_version: int
         earliest_start: _timestamp_pb2.Timestamp
         latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, wf_spec_name: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., wf_spec_version: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+        def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
     class NameRequest(_message.Message):
         __slots__ = ["wf_spec_name", "earliest_start", "latest_start"]
         WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
