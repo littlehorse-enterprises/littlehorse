@@ -124,6 +124,7 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -715,6 +716,17 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         PrincipalModel principal = metadataDao().getPrincipal(principalId);
         responseObserver.onNext(principal.toProto().build());
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
+        ctx.onNext(ServerVersionResponse.newBuilder()
+                .setMajorVersion(0)
+                .setMinorVersion(7)
+                .setMajorVersion(0)
+                .setPreReleaseIdentifier("alpha.1")
+                .build());
+        ctx.onCompleted();
     }
 
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {

@@ -475,6 +475,13 @@ message GetLatestWfSpecRequest {
   optional int32 major_version = 2;
 }
 
+message ServerVersionResponse {
+  int32 major_version = 1;
+  int32 minor_version = 2;
+  int32 patch_version = 3;
+  optional string pre_release_identifier = 4;
+}
+
 service LHPublicApi {
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
@@ -546,4 +553,6 @@ service LHPublicApi {
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
+
+  rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersionResponse) {}
 }
