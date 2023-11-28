@@ -100,6 +100,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
         spec.validate(oldVersion);
         metadataManager.put(spec);
+        WfSpecModel wfSpecModel = metadataManager.get(spec.getObjectId());
         return spec.toProto().build();
     }
 

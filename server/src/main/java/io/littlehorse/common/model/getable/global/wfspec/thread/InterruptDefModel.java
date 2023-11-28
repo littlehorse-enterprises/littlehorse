@@ -34,10 +34,11 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
         externalEventDefName = p.getExternalEventDefName();
+        this.context = context;
     }
 
     public static InterruptDefModel fromProto(

@@ -76,7 +76,12 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     public WfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
         GetableManager getableManager = executionContext.getableManager();
-        WfSpecModel spec = metadataManager.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
+        WfSpecModel spec;
+        if (wfSpecVersion != null) {
+            spec = metadataManager.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
+        } else {
+            spec = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(wfSpecName));
+        }
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }

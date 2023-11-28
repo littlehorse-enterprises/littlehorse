@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -155,7 +156,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     public void onPartitionClaimed() {
-        ModelStore coreDefaultStore = ModelStore.defaultStore(this.nativeStore, null);
+        ModelStore coreDefaultStore = ModelStore.defaultStore(this.nativeStore, new BackgroundContext());
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }

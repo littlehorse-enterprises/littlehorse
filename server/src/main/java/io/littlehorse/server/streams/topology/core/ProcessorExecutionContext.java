@@ -58,16 +58,16 @@ public class ProcessorExecutionContext implements ExecutionContext {
         KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.config = config;
         this.metadataCache = metadataCache;
-        this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
-        this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordMetadata;
         this.server = server;
-        this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
         this.metadataManager = new ReadOnlyMetadataManager(
                 ModelStore.defaultStore(nativeGlobalStore, this),
                 ModelStore.tenantStoreFor(nativeGlobalStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.authContext = this.authContextFor();
+        this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
+        this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
+        this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
     }
 
     /**

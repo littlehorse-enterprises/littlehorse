@@ -53,6 +53,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         log.trace("trying to delete " + id.getStoreableKey());
 
         if (storeResult == null) {
+            specificStore.get(id.getStoreableKey(), StoredGetable.class);
             throw new LHApiException(
                     Status.NOT_FOUND,
                     "Couldn't find provided " + id.getObjectClass().getSimpleName());

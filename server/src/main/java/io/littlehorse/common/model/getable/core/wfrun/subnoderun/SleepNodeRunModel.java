@@ -24,7 +24,13 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
 
-    public SleepNodeRunModel() {}
+    public SleepNodeRunModel() {
+        // used by lhdeserializer
+    }
+
+    public SleepNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
 
     public Class<SleepNodeRun> getProtoBaseClass() {
         return SleepNodeRun.class;

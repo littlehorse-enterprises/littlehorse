@@ -36,6 +36,9 @@ public abstract class LHSerializable<T extends Message> {
     public static <U extends Message, T extends LHSerializable<U>> T fromProto(
             U proto, Class<T> cls, ExecutionContext context) {
         try {
+            if (context == null) {
+                System.out.println("m");
+            }
             T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto, context);
             return out;

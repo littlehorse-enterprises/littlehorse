@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Instant;
 import java.util.Date;
 
@@ -19,6 +20,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     public VariableAssignmentModel rawSeconds;
     public VariableAssignmentModel timestamp;
     public VariableAssignmentModel isoDate;
+    private ProcessorExecutionContext processorContext;
 
     public Class<SleepNode> getProtoBaseClass() {
         return SleepNode.class;
@@ -61,6 +63,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
             case SLEEPLENGTH_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
 
     @Override
     public SleepNodeRunModel createSubNodeRun(Date time) {
-        return new SleepNodeRunModel();
+        return new SleepNodeRunModel(processorContext);
     }
 
     public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {
