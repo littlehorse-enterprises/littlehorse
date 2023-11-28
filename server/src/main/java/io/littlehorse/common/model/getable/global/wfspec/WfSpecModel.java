@@ -310,7 +310,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
                 executionContext.castOnSupport(ProcessorExecutionContext.class);
         CommandModel currentCommand = processorExecutionContext.currentCommand();
         GetableManager getableManager = processorExecutionContext.getableManager();
-        WfRunModel out = new WfRunModel();
+        WfRunModel out = new WfRunModel(processorExecutionContext);
         out.id = evt.id;
 
         out.setWfSpec(this);

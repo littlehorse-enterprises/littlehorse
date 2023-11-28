@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
 public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
@@ -20,6 +21,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
 
     public ExternalEventDefModel externalEventDef;
     private ReadOnlyMetadataManager metadataManager;
+    private ProcessorExecutionContext processorContext;
 
     public ExternalEventNodeModel() {}
 
@@ -35,6 +37,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
             timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), context);
         }
         this.metadataManager = context.metadataManager();
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public ExternalEventNode.Builder toProto() {
@@ -60,7 +63,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     public ExternalEventRunModel createSubNodeRun(Date time) {
-        ExternalEventRunModel out = new ExternalEventRunModel();
+        ExternalEventRunModel out = new ExternalEventRunModel(processorContext);
         out.externalEventDefName = externalEventDefName;
 
         return out;

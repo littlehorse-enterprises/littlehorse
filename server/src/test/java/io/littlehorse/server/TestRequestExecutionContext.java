@@ -62,6 +62,11 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 lhConfig);
     }
 
+    public void resetNativeStore() {
+        coreNativeStore.init(processorContext.getStateStoreContext(), coreNativeStore);
+        globalMetadataNativeStore.init(processorContext.getStateStoreContext(), globalMetadataNativeStore);
+    }
+
     public ReadOnlyKeyValueStore<String, Bytes> resolveStoreName(Integer partition, String storeName) {
         if (storeName.equals(ServerTopology.GLOBAL_METADATA_STORE)) {
             return globalMetadataNativeStore;

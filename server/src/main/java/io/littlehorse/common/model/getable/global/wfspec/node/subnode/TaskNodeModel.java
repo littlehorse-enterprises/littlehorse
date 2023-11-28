@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,10 +42,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     private TaskDefModel taskDef;
     private WfService wfService;
     private ReadOnlyMetadataManager metadataManager;
+    private ProcessorExecutionContext processorContext;
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
-            taskDef = wfService.getTaskDef(taskDefName);
+            taskDef = metadataManager.get(new TaskDefIdModel(taskDefName));
         }
         return taskDef;
     }
@@ -78,6 +80,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
         this.metadataManager = context.metadataManager();
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskNode.Builder toProto() {
@@ -177,7 +180,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     @Override
     public TaskNodeRunModel createSubNodeRun(Date time) {
-        TaskNodeRunModel out = new TaskNodeRunModel();
+        TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
     }

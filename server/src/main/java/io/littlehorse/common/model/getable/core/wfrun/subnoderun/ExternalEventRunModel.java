@@ -32,6 +32,15 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
 
+    public ExternalEventRunModel() {
+        // used by lh deserializer
+    }
+
+    public ExternalEventRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
+    }
+
     public Class<ExternalEventRun> getProtoBaseClass() {
         return ExternalEventRun.class;
     }

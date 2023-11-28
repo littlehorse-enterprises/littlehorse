@@ -56,6 +56,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         if (p.hasThreadList()) {
             threadList = VariableAssignmentModel.fromProto(p.getThreadList(), context);
         }
+        this.context = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public WaitForThreadsNode.Builder toProto() {

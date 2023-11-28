@@ -27,6 +27,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -65,15 +66,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public LHStatus status;
     public Date startTime;
     public Date endTime;
-    private List<ThreadRunModel> threadRuns;
-    public List<PendingInterruptModel> pendingInterrupts;
-    public List<PendingFailureHandlerModel> pendingFailures;
+    private List<ThreadRunModel> threadRuns = new ArrayList<>();
+    public List<PendingInterruptModel> pendingInterrupts = new ArrayList<>();
+    public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ExecutionContext executionContext;
 
-    public WfRunModel() {
-        threadRuns = new ArrayList<>();
-        pendingInterrupts = new ArrayList<>();
-        pendingFailures = new ArrayList<>();
+    public WfRunModel() {}
+
+    public WfRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
     }
 
     public Date getCreatedAt() {
@@ -119,7 +120,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = executionContext.service().getWfSpec(wfSpecName, wfSpecVersion);
+            wfSpec = executionContext.metadataManager().get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
         }
         return wfSpec;
     }
@@ -216,12 +217,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
             ThreadType type) {
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         ThreadSpecModel tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
-        ThreadRunModel thread = new ThreadRunModel();
+        ThreadRunModel thread = new ThreadRunModel(processorContext);
         thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
 

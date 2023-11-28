@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
+    private ProcessorExecutionContext processorContext;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -83,6 +85,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
@@ -97,12 +100,17 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     @Override
     public UserTaskNodeRunModel createSubNodeRun(Date time) {
-        return new UserTaskNodeRunModel();
+        return new UserTaskNodeRunModel(processorContext);
     }
 
     @Override
     public void validate() throws LHApiException {
-        UserTaskDefModel utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        UserTaskDefModel utd;
+        if (userTaskDefVersion == null) {
+            utd = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(userTaskDefName));
+        } else {
+            utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        }
 
         if (utd == null) {
             throw new LHApiException(

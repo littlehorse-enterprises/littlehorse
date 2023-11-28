@@ -44,12 +44,20 @@ public interface ModelStore extends ReadOnlyModelStore {
 
     static TenantModelStore tenantStoreFor(
             KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        return new TenantModelStore(nativeStore, tenantId, executionContext);
+        if (tenantId != null && !tenantId.equals(LHConstants.DEFAULT_TENANT)) {
+            return new TenantModelStore(nativeStore, tenantId, executionContext);
+        } else {
+            return null;
+        }
     }
 
     static ReadOnlyTenantStore tenantStoreFor(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
+        if (tenantId != null && !tenantId.equals(LHConstants.DEFAULT_TENANT)) {
+            return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
+        } else {
+            return null;
+        }
     }
 
     static ReadOnlyModelStore instanceFor(

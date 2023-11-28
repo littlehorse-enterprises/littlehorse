@@ -45,6 +45,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
@@ -272,7 +273,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getServiceFromContext().getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = requestContext().metadataManager().get(new WfSpecIdModel(req.getName(), req.getVersion()));
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -290,7 +291,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getServiceFromContext().getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = requestContext().metadataManager().lastFromPrefix(WfSpecIdModel.getPrefix(req.getName()));
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -763,17 +764,17 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-        AuthorizationContext authContext = requestContext().authorization();
-        String tenant;
-        String principalId;
+        RequestExecutionContext requestContext = requestContext();
 
         // TODO: TaskQueueManager multitenancy
         // The only reason for this validation is that
         // TaskQueueManager does not support multi-tenancy yet.
         // In the future this will change
         Headers commandMetadata;
-        if (authContext != null) {
-            commandMetadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
+        if (requestContext != null) {
+            commandMetadata = HeadersUtil.metadataHeadersFor(
+                    requestContext.authorization().tenantId(),
+                    requestContext.authorization().principalId());
         } else {
             commandMetadata =
                     HeadersUtil.metadataHeadersFor(ModelStore.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);

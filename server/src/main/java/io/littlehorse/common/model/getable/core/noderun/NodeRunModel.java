@@ -65,7 +65,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public String errorMessage;
 
-    public List<FailureModel> failures;
+    public List<FailureModel> failures = new ArrayList<>();
 
     public ExternalEventRunModel externalEventRun;
     public TaskNodeRunModel taskRun;
@@ -78,12 +78,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public SleepNodeRunModel sleepNodeRun;
     public UserTaskNodeRunModel userTaskRun;
 
-    public List<Integer> failureHandlerIds;
+    public List<Integer> failureHandlerIds = new ArrayList<>();
     private ExecutionContext executionContext;
 
-    public NodeRunModel() {
-        failures = new ArrayList<>();
-        failureHandlerIds = new ArrayList<>();
+    public NodeRunModel() {}
+
+    public NodeRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
     }
 
     public Object getEntrypointRunForJacksonOnly() {

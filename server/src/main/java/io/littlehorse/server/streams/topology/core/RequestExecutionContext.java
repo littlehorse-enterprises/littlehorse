@@ -23,8 +23,6 @@ public class RequestExecutionContext implements ExecutionContext {
     private final ReadOnlyModelStore globalStore;
     private final ReadOnlyGetableManager readOnlyGetableManager;
     private final ReadOnlyMetadataManager metadataManager;
-    private String clientId;
-    private String tenantId;
     private final WfService service;
     private final LHServerConfig lhConfig;
 
@@ -35,8 +33,12 @@ public class RequestExecutionContext implements ExecutionContext {
             ReadOnlyKeyValueStore<String, Bytes> coreNativeStore,
             MetadataCache metadataCache,
             LHServerConfig lhConfig) {
-        this.clientId = clientId;
-        this.tenantId = tenantId;
+        if (tenantId == null) {
+            tenantId = LHConstants.DEFAULT_TENANT;
+        }
+        if (clientId == null) {
+            clientId = LHConstants.ANONYMOUS_PRINCIPAL;
+        }
         this.coreStore = resolveStore(coreNativeStore, tenantId);
         this.globalStore = resolveStore(globalMetadataNativeStore, tenantId);
         this.readOnlyGetableManager = new ReadOnlyGetableManager(this.coreStore);
@@ -98,9 +100,6 @@ public class RequestExecutionContext implements ExecutionContext {
 
     private AuthorizationContext authContextFor(String clientId, String tenantId) {
         PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
-        if (tenantId == null) {
-            tenantId = LHConstants.DEFAULT_TENANT;
-        }
         List<ServerACLModel> currentAcls;
         if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId)) {
             currentAcls = resolvedPrincipal.getPerTenantAcls().get(tenantId).getAcls();

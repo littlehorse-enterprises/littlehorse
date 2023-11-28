@@ -91,12 +91,18 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.processorContext = processorContext;
     }
 
-    public UserTaskRunModel(UserTaskDefModel utd, UserTaskNodeModel userTaskNode, NodeRunModel nodeRunModel) {
+    public UserTaskRunModel(
+            UserTaskDefModel utd,
+            UserTaskNodeModel userTaskNode,
+            NodeRunModel nodeRunModel,
+            ProcessorExecutionContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.userTaskNode = userTaskNode;
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
     public Class<UserTaskRun> getProtoBaseClass() {
@@ -151,7 +157,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
         this.executionContext = context;
-        this.processorContext = processorContext.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public boolean isTerminated() {
@@ -305,8 +311,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         Map<String, Object> rawNodeOutput = new HashMap<>();
         UserTaskDefModel userTaskDef = executionContext
-                .service()
-                .getUserTaskDef(getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
+                .metadataManager()
+                .get(new UserTaskDefIdModel(
+                        getUserTaskDefId().getName(), getUserTaskDefId().getVersion()));
 
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));

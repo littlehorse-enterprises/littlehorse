@@ -8,6 +8,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -91,7 +92,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             tspec.name = entry.getKey();
         }
 
-        WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null);
+        WfSpecModel oldVersion = executionContext.metadataManager().lastFromPrefix(WfSpecIdModel.getPrefix(name));
         if (oldVersion != null) {
             spec.version = oldVersion.version + 1;
         } else {

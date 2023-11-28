@@ -59,7 +59,9 @@ public class VariableModel extends CoreGetable<Variable> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = executionContext.service().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+            wfSpec = executionContext
+                    .metadataManager()
+                    .get(new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getVersion()));
         }
         return wfSpec;
     }
@@ -77,6 +79,7 @@ public class VariableModel extends CoreGetable<Variable> {
         threadRunNumber = p.getThreadRunNumber();
         date = LHUtil.fromProtoTs(p.getDate());
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        this.executionContext = context;
     }
 
     public Variable.Builder toProto() {

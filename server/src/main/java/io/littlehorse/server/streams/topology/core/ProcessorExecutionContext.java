@@ -79,7 +79,12 @@ public class ProcessorExecutionContext implements ExecutionContext {
             return currentTaskManager;
         }
         currentTaskManager = new LHTaskManager(
-                config.getTimerTopic(), authContext, processorContext, globalTaskQueueManager, coreStore);
+                config.getTimerTopic(),
+                config.getCoreCmdTopicName(),
+                authContext,
+                processorContext,
+                globalTaskQueueManager,
+                coreStore);
         return currentTaskManager;
     }
 

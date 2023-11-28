@@ -69,13 +69,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public String errorMessage;
 
-    public List<Integer> childThreadIds;
+    public List<Integer> childThreadIds = new ArrayList<>();
     public Integer parentThreadId;
 
-    public List<ThreadHaltReasonModel> haltReasons;
+    public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
     public ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
-    public List<Integer> handledFailedChildren;
+    public List<Integer> handledFailedChildren = new ArrayList<>();
 
     public ThreadType type;
 
@@ -83,10 +83,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
 
-    public ThreadRunModel() {
-        childThreadIds = new ArrayList<>();
-        haltReasons = new ArrayList<>();
-        handledFailedChildren = new ArrayList<>();
+    public ThreadRunModel() {}
+
+    public ThreadRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
     @Override
@@ -619,7 +620,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         currentNodePosition++;
 
-        NodeRunModel cnr = new NodeRunModel();
+        NodeRunModel cnr = new NodeRunModel(processorContext);
         cnr.setThreadRun(this);
         cnr.nodeName = node.name;
         cnr.status = LHStatus.STARTING;

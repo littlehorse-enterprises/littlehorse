@@ -1,31 +1,25 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class WfService {
 
@@ -40,8 +34,9 @@ public class WfService {
         this.executionContext = executionContext;
     }
 
-    public WfSpecModel getWfSpec(String name, Integer version) {
-        Supplier<WfSpec> findWfSpec = () -> {
+    // TODO: re-enable when we implement metadataCache
+    /*public WfSpecModel getWfSpec(String name, Integer version) {
+        Supplier<WfSpecModel> findWfSpec = () -> {
             final WfSpecModel storedResult;
             if (version != null) {
                 storedResult = metadataManager.get(new WfSpecIdModel(name, version));
@@ -60,7 +55,7 @@ public class WfService {
         } else {
             return null;
         }
-    }
+    }*/
 
     public UserTaskDefModel getUserTaskDef(String name, Integer version) {
         if (version != null) {
@@ -76,10 +71,28 @@ public class WfService {
     }
 
     public TaskDefModel getTaskDef(String name) {
+        /*TaskDefIdModel id = new TaskDefIdModel(name);
+        Supplier<TaskDef> findTaskDef = () -> {
+            TaskDefModel result = metadataManager.get(id);
+            if (result != null) {
+                return result.toProto().build();
+            }
+            return null;
+        };
+        StoredGetablePb result = (StoredGetablePb) metadataCache.getOrCache(id.toProto().build(), findTaskDef::get);
+
+        if(result != null) {
+            try {
+                TaskDef taskDef = TaskDef.parseFrom(result.getGetablePayload());
+                return LHSerializable.fromProto(taskDef, TaskDefModel.class, executionContext);
+            } catch (Exception ex){
+                return null;
+            }
+        }else {
+            return null;
+        }*/
         TaskDefIdModel id = new TaskDefIdModel(name);
-        Supplier<TaskDef> findTaskDef = () -> metadataManager.get(id).toProto().build();
-        TaskDef result = (TaskDef) metadataCache.getOrCache(id.toProto().build(), findTaskDef::get);
-        return LHSerializable.fromProto(result, TaskDefModel.class, executionContext);
+        return metadataManager.get(id);
     }
 
     public PrincipalModel getPrincipal(String id) {

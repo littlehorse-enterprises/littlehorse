@@ -140,7 +140,11 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempts = new ArrayList<>();
     }
 
-    public TaskRunModel(List<VarNameAndValModel> inputVars, TaskRunSourceModel source, TaskNodeModel node) {
+    public TaskRunModel(
+            List<VarNameAndValModel> inputVars,
+            TaskRunSourceModel source,
+            TaskNodeModel node,
+            ProcessorExecutionContext processorContext) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
@@ -148,6 +152,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.maxAttempts = node.getRetries() + 1;
         this.status = TaskStatus.TASK_SCHEDULED;
         this.timeoutSeconds = node.getTimeoutSeconds();
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
     @Override

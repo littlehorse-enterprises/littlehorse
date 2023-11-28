@@ -1,17 +1,17 @@
 package io.littlehorse.server.streams.util;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetadataCache extends LHCache<Message, Message> {
+public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>> {
 
     private static final Pattern CACHEABLE_KEY_PATTERN =
             Pattern.compile(StoreableType.STORED_GETABLE_VALUE + "\\/(?<getableType>\\d+)\\/(?<key>.+)");
@@ -64,26 +64,24 @@ public class MetadataCache extends LHCache<Message, Message> {
     private <U extends Message, V extends GlobalGetable<U>> void evictOrUpdate(
             Bytes value, MetadataId<?, U, V> cacheKey) throws LHSerdeError {
         String keyType = cacheKey.getObjectClass().getSimpleName();
-        Message key = cacheKey.toProto().build();
         if (value == null) {
-            log.trace("Evicting cache for {} with key {}", cacheKey, cacheKey);
-            evictCache(key);
+            log.trace("Evicting cache for {} with key {}", keyType, cacheKey);
+            evictCache(cacheKey);
         } else {
             log.trace("Updating cache for {} with key {}", keyType, cacheKey);
 
-            try {
-                updateCache(key, StoredGetablePb.parseFrom(value.get()));
-            } catch (InvalidProtocolBufferException e) {
-                log.error("Cache cannot be updated at this time.");
-            }
+            // Passing null as context, this will be removed once we have MetadataCache with protobuf instead of models
+            @SuppressWarnings("unchecked")
+            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class, null);
+            updateCache(cacheKey, storedGetable.getStoredObject());
         }
     }
 
-    public WfSpec getOrCache(String name, Integer version, Supplier<WfSpec> cacheable) {
+    public WfSpecModel getOrCache(String name, Integer version, Supplier<WfSpecModel> cacheable) {
         if (version == null) {
             version = LATEST_VERSION;
         }
         WfSpecIdModel cachedId = new WfSpecIdModel(name, version);
-        return (WfSpec) getOrCache(cachedId.toProto().build(), cacheable::get);
+        return (WfSpecModel) getOrCache(cachedId, cacheable::get);
     }
 }

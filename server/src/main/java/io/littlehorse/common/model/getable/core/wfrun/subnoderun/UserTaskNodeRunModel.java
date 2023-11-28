@@ -26,7 +26,14 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
 
-    public UserTaskNodeRunModel() {}
+    public UserTaskNodeRunModel() {
+        // used by lh deserializer
+    }
+
+    public UserTaskNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
+    }
 
     @Override
     public Class<UserTaskNodeRun> getProtoBaseClass() {
@@ -40,7 +47,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         }
         this.executionContext = context;
-        this.processorContext = processorContext.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -73,7 +80,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             nodeRunModel.fail(new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR), time);
             return;
         }
-        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel());
+        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel(), processorContext);
         // Now we create a new UserTaskRun.
 
         userTaskRunId = out.getObjectId();

@@ -46,7 +46,7 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
     @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String fullKey, Class<T> cls) {
         return new LHKeyValueIterator<>(
-                nativeStore.prefixScan(fullKey, Serdes.String().serializer()), cls);
+                nativeStore.prefixScan(fullKey, Serdes.String().serializer()), cls, executionContext);
     }
 
     @Override
@@ -56,11 +56,11 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(
             String startKey, String endKey, Class<T> cls) {
-        return new LHKeyValueIterator<>(nativeStore.reverseRange(startKey, endKey), cls);
+        return new LHKeyValueIterator<>(nativeStore.reverseRange(startKey, endKey), cls, executionContext);
     }
 
     @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(nativeStore.range(start, end), cls);
+        return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
 }

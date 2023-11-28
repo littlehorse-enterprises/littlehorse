@@ -115,7 +115,8 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                     inputVars,
                     new TaskRunSourceModel(
                             new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
-                    taskToSchedule);
+                    taskToSchedule,
+                    executionContext);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
             executionContext.getableManager().put(taskRun);

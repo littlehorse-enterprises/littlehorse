@@ -33,6 +33,14 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         return TaskNodeRun.class;
     }
 
+    public TaskNodeRunModel() {
+        // used by lh deserializer
+    }
+
+    public TaskNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeRun p = (TaskNodeRun) proto;
@@ -87,8 +95,8 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         TaskNodeReferenceModel source =
                 new TaskNodeReferenceModel(nodeRunModel.getObjectId(), nodeRunModel.getWfSpecId());
 
-        TaskRunModel task =
-                new TaskRunModel(inputVariables, new TaskRunSourceModel(source, processorContext), node.getTaskNode());
+        TaskRunModel task = new TaskRunModel(
+                inputVariables, new TaskRunSourceModel(source, processorContext), node.getTaskNode(), processorContext);
         this.taskRunId = new TaskRunIdModel(nodeRunModel.getPartitionKey().get(), processorContext);
         task.setId(taskRunId);
 

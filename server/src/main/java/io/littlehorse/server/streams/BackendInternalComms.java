@@ -193,7 +193,7 @@ public class BackendInternalComms implements Closeable {
                             .getResponse()
                             .toByteArray(),
                     clazz,
-                    context); // TODO eduwer
+                    context);
         }
     }
 

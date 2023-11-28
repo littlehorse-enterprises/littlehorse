@@ -125,7 +125,7 @@ public class TestUtil {
     }
 
     public static TaskNodeRunModel taskNodeRun() {
-        TaskNodeRunModel taskNodeRun = new TaskNodeRunModel();
+        TaskNodeRunModel taskNodeRun = new TaskNodeRunModel(Mockito.mock());
         taskNodeRun.setTaskRunId(taskRunId());
         return taskNodeRun;
     }

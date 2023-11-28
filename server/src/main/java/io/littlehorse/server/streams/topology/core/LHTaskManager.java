@@ -26,6 +26,7 @@ public class LHTaskManager {
     private final Map<String, ScheduledTaskModel> scheduledTaskPuts = new HashMap<>();
 
     private final String timerTopicName;
+    private final String commandTopicName;
     private final AuthorizationContext authContext;
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
@@ -34,11 +35,13 @@ public class LHTaskManager {
 
     public LHTaskManager(
             String timerTopicName,
+            String commandTopicName,
             AuthorizationContext authContext,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager taskQueueManager,
             ModelStore coreStore) {
         this.timerTopicName = timerTopicName;
+        this.commandTopicName = commandTopicName;
         this.authContext = authContext;
         this.processorContext = processorContext;
         this.taskQueueManager = taskQueueManager;
@@ -92,6 +95,9 @@ public class LHTaskManager {
     }
 
     void forwardTimer(LHTimer timer) {
+        timer.setTenantId(authContext.tenantId());
+        timer.setPrincipalId(authContext.principalId());
+        timer.topic = commandTopicName;
         CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.key);
         Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         processorContext.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
