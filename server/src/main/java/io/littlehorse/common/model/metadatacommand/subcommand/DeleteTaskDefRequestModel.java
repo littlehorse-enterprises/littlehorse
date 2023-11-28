@@ -7,6 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefRequest> {
@@ -23,7 +24,7 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
     }
 
     @Override
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteTaskDefRequest p = (DeleteTaskDefRequest) proto;
         id = LHSerializable.fromProto(p.getId(), TaskDefIdModel.class, context);
     }
@@ -42,8 +43,7 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
         return true;
     }
 
-    public static DeleteTaskDefRequestModel fromProto(
-            DeleteTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static DeleteTaskDefRequestModel fromProto(DeleteTaskDefRequest p, ExecutionContext context) {
         DeleteTaskDefRequestModel out = new DeleteTaskDefRequestModel();
         out.initFrom(p, context);
         return out;

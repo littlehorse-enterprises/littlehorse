@@ -100,12 +100,10 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
         spec.validate(oldVersion);
         metadataManager.put(spec);
-        WfSpecModel wfSpecModel = metadataManager.get(spec.getObjectId());
         return spec.toProto().build();
     }
 
-    public static PutWfSpecRequestModel fromProto(
-            PutWfSpecRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p, ExecutionContext context) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
         out.initFrom(p, context);
         return out;

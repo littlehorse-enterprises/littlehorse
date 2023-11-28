@@ -45,7 +45,7 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     public static DeleteExternalEventDefRequestModel fromProto(
-            DeleteExternalEventDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+            DeleteExternalEventDefRequest p, ExecutionContext context) {
         DeleteExternalEventDefRequestModel out = new DeleteExternalEventDefRequestModel();
         out.initFrom(p, context);
         return out;

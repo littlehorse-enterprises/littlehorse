@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,8 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return out;
     }
 
-    public void initFrom(Message proto, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutTaskDefRequest p = (PutTaskDefRequest) proto;
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
@@ -75,8 +77,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return spec.toProto().build();
     }
 
-    public static PutTaskDefRequestModel fromProto(
-            PutTaskDefRequest p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static PutTaskDefRequestModel fromProto(PutTaskDefRequest p, ExecutionContext context) {
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p, context);
         return out;

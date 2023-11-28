@@ -41,8 +41,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         this.context = context;
     }
 
-    public static InterruptDefModel fromProto(
-            InterruptDef p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static InterruptDefModel fromProto(InterruptDef p, ExecutionContext context) {
         InterruptDefModel out = new InterruptDefModel();
         out.initFrom(p, context);
         return out;

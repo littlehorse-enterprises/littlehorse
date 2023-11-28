@@ -22,6 +22,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.VariableMutation;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -109,7 +110,7 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     @Override
-    public void initFrom(Message p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public void initFrom(Message p, ExecutionContext context) {
         Node proto = (Node) p;
         type = proto.getNodeCase();
 

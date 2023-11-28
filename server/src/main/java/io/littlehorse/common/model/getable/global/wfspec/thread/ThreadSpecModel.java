@@ -375,8 +375,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public static ThreadSpecModel fromProto(
-            ThreadSpec p, io.littlehorse.server.streams.topology.core.ExecutionContext context) {
+    public static ThreadSpecModel fromProto(ThreadSpec p, ExecutionContext context) {
         ThreadSpecModel out = new ThreadSpecModel();
         out.initFrom(p, context);
         return out;
