@@ -738,3 +738,15 @@ class GetLatestWfSpecRequest(_message.Message):
     name: str
     major_version: int
     def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ...) -> None: ...
+
+class ServerVersionResponse(_message.Message):
+    __slots__ = ["major_version", "minor_version", "patch_version", "pre_release_identifier"]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    MINOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    PATCH_VERSION_FIELD_NUMBER: _ClassVar[int]
+    PRE_RELEASE_IDENTIFIER_FIELD_NUMBER: _ClassVar[int]
+    major_version: int
+    minor_version: int
+    patch_version: int
+    pre_release_identifier: str
+    def __init__(self, major_version: _Optional[int] = ..., minor_version: _Optional[int] = ..., patch_version: _Optional[int] = ..., pre_release_identifier: _Optional[str] = ...) -> None: ...

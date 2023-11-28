@@ -1689,6 +1689,37 @@ public final class LHPublicApiGrpc {
     return getWhoamiMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetServerVersion",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = io.littlehorse.sdk.common.proto.ServerVersionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod;
+    if ((getGetServerVersionMethod = LHPublicApiGrpc.getGetServerVersionMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getGetServerVersionMethod = LHPublicApiGrpc.getGetServerVersionMethod) == null) {
+          LHPublicApiGrpc.getGetServerVersionMethod = getGetServerVersionMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetServerVersion"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ServerVersionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetServerVersion"))
+              .build();
+        }
+      }
+    }
+    return getGetServerVersionMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -2113,6 +2144,13 @@ public final class LHPublicApiGrpc {
     default void whoami(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWhoamiMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void getServerVersion(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
     }
   }
 
@@ -2574,6 +2612,14 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWhoamiMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getServerVersion(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -2961,6 +3007,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.Principal whoami(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWhoamiMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.ServerVersionResponse getServerVersion(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
   }
 
@@ -3403,6 +3456,14 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getWhoamiMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ServerVersionResponse> getServerVersion(
+        com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -3458,7 +3519,8 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_PUT_TENANT = 50;
   private static final int METHODID_PUT_PRINCIPAL = 51;
   private static final int METHODID_WHOAMI = 52;
-  private static final int METHODID_POLL_TASK = 53;
+  private static final int METHODID_GET_SERVER_VERSION = 53;
+  private static final int METHODID_POLL_TASK = 54;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3688,6 +3750,10 @@ public final class LHPublicApiGrpc {
         case METHODID_WHOAMI:
           serviceImpl.whoami((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal>) responseObserver);
+          break;
+        case METHODID_GET_SERVER_VERSION:
+          serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -4088,6 +4154,13 @@ public final class LHPublicApiGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.common.proto.Principal>(
                 service, METHODID_WHOAMI)))
+        .addMethod(
+          getGetServerVersionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.google.protobuf.Empty,
+              io.littlehorse.sdk.common.proto.ServerVersionResponse>(
+                service, METHODID_GET_SERVER_VERSION)))
         .build();
   }
 
@@ -4190,6 +4263,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getPutTenantMethod())
               .addMethod(getPutPrincipalMethod())
               .addMethod(getWhoamiMethod())
+              .addMethod(getGetServerVersionMethod())
               .build();
         }
       }
