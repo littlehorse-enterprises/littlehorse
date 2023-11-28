@@ -17,8 +17,10 @@ describe('WFRun API', () => {
         req.body = JSON.stringify({
             statusAndSpec: {
                 status: 'RUNNING',
-                wfSpecName: 'any_wfSpec_name',
-                wfSpecVersion: 0,
+                wfSpecId: {
+                    name: 'any_wfSpec_name',
+                    majorVersion: 0
+                },
                 earliestStart: '2023-11-11T12:12:12Z',
                 latestStart: '2023-11-11T14:12:12Z'
             },
@@ -30,9 +32,12 @@ describe('WFRun API', () => {
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('searchWfRun', req, res, {
             statusAndSpec: {
+                wfSpecId: {
+                    name: 'any_wfSpec_name',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 status: LHStatus.RUNNING,
-                wfSpecName: 'any_wfSpec_name',
-                wfSpecVersion: 0,
                 earliestStart: '2023-11-11T12:12:12Z',
                 latestStart: '2023-11-11T14:12:12Z'
             },

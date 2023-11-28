@@ -10,16 +10,24 @@ describe('externalEvent API', () => {
     it('should perform a grpc request for a externalEvent sending the right request body', async () => {
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
         req.body = JSON.stringify({
-            wfRunId: 'A_WFRUN_ID',
-            externalEventDefName: 'AN_EXTERNAL_EVENT_NAME',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
+            externalEventDefId: {
+                name: 'AN_EXTERNAL_EVENT_NAME'
+            },
             guid: 'A_GUID'
         })
 
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getExternalEvent', req, res, {
-            wfRunId: 'A_WFRUN_ID',
-            externalEventDefName: 'AN_EXTERNAL_EVENT_NAME',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
+            externalEventDefId: {
+                name: 'AN_EXTERNAL_EVENT_NAME'
+            },
             guid: 'A_GUID'
         } as ExternalEventId)
     })

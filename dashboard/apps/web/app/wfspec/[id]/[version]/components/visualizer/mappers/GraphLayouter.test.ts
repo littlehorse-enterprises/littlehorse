@@ -1,25 +1,22 @@
 import type { Edge, Node } from 'reactflow'
 import { MarkerType } from 'reactflow'
 import ElkConstructor from 'elkjs/lib/elk.bundled.js'
+import type { WfSpec } from '../../../../../../../littlehorse-public-api/wf_spec'
+import { FailureHandlerDef_LHFailureType, Node as LHNode } from '../../../../../../../littlehorse-public-api/wf_spec'
 import {
-    /*
-   eslint-disable-next-line camelcase
-   */
-    FailureHandlerDef_LHFailureType,
-    Node as LHNode
-} from '../../../../../../../littlehorse-public-api/wf_spec'
-import type {
-    WfSpec
-} from '../../../../../../../littlehorse-public-api/wf_spec'
-import { LHStatus, VariableType, WaitForThreadsPolicy } from '../../../../../../../littlehorse-public-api/common_enums'
+    LHStatus,
+    MetadataStatus,
+    VariableType,
+    WaitForThreadsPolicy
+} from '../../../../../../../littlehorse-public-api/common_enums'
 import { Comparator, VariableMutationType } from '../../../../../../../littlehorse-public-api/common_wfspec'
 import EdgeLabelExtractor from '../extractors/EdgeLabelExtractor'
 import type { WfRun } from '../../../../../../../littlehorse-public-api/wf_run'
 import { ThreadType } from '../../../../../../../littlehorse-public-api/wf_run'
 import { NodeRun } from '../../../../../../../littlehorse-public-api/node_run'
 import LHClient from '../../../../../../../pages/api/LHClient'
-import GraphLayouter from './GraphLayouter'
 import type { ReactFlowGraph, ReactFlowNodeWithLHInfo } from './GraphLayouter'
+import GraphLayouter from './GraphLayouter'
 
 jest.mock('../../../../../../../pages/api/LHClient')
 
@@ -30,10 +27,14 @@ const wfSpecName = '123'
 describe('mapping WfSpec nodes from proto to react flow structure', () => {
     it('should return a graph for the entrypoint thread spec if the provided one was not found', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -49,7 +50,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -68,10 +69,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should return a graph for the entrypoint thread spec when thread spec was not provided at all', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -87,7 +92,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -106,10 +111,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should return the graph for the provided threadSpec', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status': MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -147,7 +156,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const expectedNodesForAnotherThreadSpec: ReactFlowNodeWithLHInfo[] = [
@@ -207,10 +216,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('each node should have its LHNode information', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -226,7 +239,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -245,10 +258,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should map an entry point with no edges when a single threadSpec was provided', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -264,7 +281,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -297,10 +314,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should map an entry point with an edge', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -326,7 +347,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -385,10 +406,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should map nodes that have edges each one', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -424,7 +449,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -508,10 +533,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should map nodes that have more than one edge', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            frozenVariables: [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -540,7 +569,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             ],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'evaluate-risk-of-decision',
+                                'taskDefId': {
+                                    'name': 'evaluate-risk-of-decision',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -596,7 +627,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'save-risk-evaluation-results',
+                                'taskDefId': {
+                                    'name': 'save-risk-evaluation-results',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -656,7 +689,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'save-risk-evaluation-results',
+                                'taskDefId': {
+                                    'name': 'save-risk-evaluation-results',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -678,32 +713,41 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                     },
                     'variableDefs': [
                         {
-                            'type': VariableType.STR,
-                            'name': 'request-id',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.STR,
+                                'name': 'request-id',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.BOOL,
-                            'name': 'was-it-a-risky-decision',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.BOOL,
+                                'name': 'was-it-a-risky-decision',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.BOOL,
-                            'name': 'is-risk-approved',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.BOOL,
+                                'name': 'is-risk-approved',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         }
                     ],
                     'interruptDefs': []
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
 
@@ -1006,10 +1050,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should layout the graph in vertical position having nodes that dont overlap with each other', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1086,7 +1134,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const expectedReactFlowNodes: ReactFlowNodeWithLHInfo[] = [
@@ -1227,10 +1275,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
     })
     it('should set failure handlers property on node if present', async () => {
         const wfSpec: WfSpec = {
-            'name': 'example-exception-handler',
-            'version': 0,
+            id: {
+                'name': 'example-exception-handler',
+                'majorVersion': 0,
+                'revision': 0  
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-17T17:02:53.770Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1261,7 +1313,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                 }
                             ],
                             'task': {
-                                'taskDefName': 'fail',
+                                'taskDefId': {
+                                    'name': 'fail',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': []
@@ -1276,7 +1330,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'my-task',
+                                'taskDefId': {
+                                    'name': 'my-task',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': []
@@ -1313,7 +1369,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'my-task',
+                                'taskDefId': {
+                                    'name': 'my-task',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': []
@@ -1331,7 +1389,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -1352,10 +1410,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
 
     it('should map a while loop flow edges correctly positioned including their labels', async () => {
         const wfSpec: WfSpec = {
-            'name': 'example-conditionals-while',
-            'version': 0,
+            id: {
+                'name': 'example-conditionals-while',
+                'majorVersion': 0,
+                'revision': 0,
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-16T16:37:18.380Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1424,7 +1486,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                             ],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'eating-donut',
+                                'taskDefId': {
+                                    'name': 'eating-donut',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -1468,18 +1532,21 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                     },
                     'variableDefs': [
                         {
-                            'type': VariableType.INT,
-                            'name': 'number-of-donuts',
+                            'varDef': {
+                                'type': VariableType.INT,
+                                'name': 'number-of-donuts',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
+                            required: true,
+                            searchable: true
                         }
                     ],
                     'interruptDefs': []
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -1559,10 +1626,14 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
         const WF_RUN_ID = '61e8c3cdba664d929c3c99d2d1a4e91a'
 
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1586,19 +1657,31 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const wfRun: WfRun = {
-            'id': WF_RUN_ID,
-            'wfSpecName': 'example-interrupt-handler',
-            'wfSpecVersion': 1,
+            'id': {
+                'id': WF_RUN_ID
+            },
+            'wfSpecId': {
+                'name': 'example-interrupt-handler', 
+                'majorVersion': 0 ,
+                'revision': 0
+            },
+            'greatestThreadrunNumber': 0,
+            'oldWfSpecVersions': [],
             'status': LHStatus.ERROR,
             'startTime': '2023-10-26T19:26:59.700Z',
             'endTime': '2023-10-26T19:26:59.701Z',
             'threadRuns': [
                 {
                     'number': 0,
+                    'wfSpecId': {
+                        'name': 'example-interrupt-handler',
+                        'majorVersion': 0 ,
+                        'revision': 0
+                    },
                     'status': LHStatus.ERROR,
                     'threadSpecName': 'entrypoint',
                     'startTime': '2023-10-26T19:26:59.701Z',
@@ -1661,10 +1744,14 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
         const WF_RUN_ID = '61e8c3cdba664d929c3c99d2c1a4e91a'
 
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1680,18 +1767,30 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const wfRun: WfRun = {
-            'id': WF_RUN_ID,
-            'wfSpecName': 'example-child-thread',
-            'wfSpecVersion': 0,
+            'id': {
+                'id': WF_RUN_ID
+            },
+            'wfSpecId': {
+                'name': 'example-interrupt-handler',
+                'majorVersion': 0 ,
+                'revision': 0
+            },
+            'oldWfSpecVersions': [],
+            'greatestThreadrunNumber': 0,
             'status': LHStatus.COMPLETED,
             'startTime': '2023-10-24T16:56:36.161Z',
             'endTime': '2023-10-24T16:56:36.211Z',
             'threadRuns': [
                 {
+                    'wfSpecId': {
+                        'name': 'example-child-thread',
+                        'majorVersion': 0 ,
+                        'revision': 0
+                    },
                     'number': 0,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': 'entrypoint',
@@ -1767,10 +1866,14 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
         const WF_RUN_ID = '61e8c3cdba664d929c3c99d2c1a4e91a'
 
         const wfSpec: WfSpec = {
-            'name': 'evaluate-transaction',
-            'version': 1,
+            'id': {
+                'name': 'evaluate-transaction',
+                'majorVersion': 1,
+                'revision': 0
+            },
+            'frozenVariables': [],
             'createdAt': '2023-10-12T15:40:16.573Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1786,18 +1889,30 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const wfRun: WfRun = {
-            'id': WF_RUN_ID,
-            'wfSpecName': 'example-child-thread',
-            'wfSpecVersion': 0,
+            'id': {
+                'id': WF_RUN_ID
+            },
+            'wfSpecId': {
+                'name': 'example-child-threadr',
+                'majorVersion': 0 ,
+                'revision': 0
+            },
+            'oldWfSpecVersions': [],
+            'greatestThreadrunNumber': 0,
             'status': LHStatus.COMPLETED,
             'startTime': '2023-10-24T16:56:36.161Z',
             'endTime': '2023-10-24T16:56:36.211Z',
             'threadRuns': [
                 {
+                    'wfSpecId': {
+                        'name': 'example-child-thread',
+                        'majorVersion': 0,
+                        'revision': 0 
+                    },
                     'number': 0,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': 'entrypoint',
@@ -1870,10 +1985,14 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
 
     it('nodes that were already executed for the wfRun should be marked as so on a RUNNING task', async () => {
         const wfSpec: WfSpec = {
-            'name': 'evaluate-ai-decision',
-            'version': 0,
+            id: {
+                'name': 'evaluate-ai-decision',
+                majorVersion: 0,
+                revision: 0 
+            },
+            frozenVariables: [],
             'createdAt': '2023-10-23T19:50:53.488Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -1902,7 +2021,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             ],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'evaluate-risk-of-decision',
+                                'taskDefId': {
+                                    'name': 'evaluate-risk-of-decision',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -1958,7 +2079,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'save-risk-evaluation-results',
+                                'taskDefId': {
+                                    'name': 'save-risk-evaluation-results',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -1996,7 +2119,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             ],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'explain-decision',
+                                'taskDefId': {
+                                    'name': 'explain-decision',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -2043,7 +2168,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'save-risk-evaluation-results',
+                                'taskDefId': {
+                                    'name': 'save-risk-evaluation-results',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -2065,53 +2192,77 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     },
                     'variableDefs': [
                         {
-                            'type': VariableType.STR,
-                            'name': 'request-id',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.STR,
+                                'name': 'request-id',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.BOOL,
-                            'name': 'was-it-a-risky-decision',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.BOOL,
+                                'name': 'was-it-a-risky-decision',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.STR,
-                            'name': 'decision-explanation',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.STR,
+                                'name': 'decision-explanation',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.BOOL,
-                            'name': 'is-risk-approved',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.BOOL,
+                                'name': 'is-risk-approved',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         }
                     ],
                     'interruptDefs': []
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const CURRENT_NODE_POSITION = 4
         const WF_RUN_ID = '61e8c3cdba664d929c3c99d2c1a4e91a'
 
         const wfRun: WfRun = {
-            'id': WF_RUN_ID,
-            'wfSpecName': 'evaluate-ai-decision',
-            'wfSpecVersion': 0,
+            'id': {
+                'id': WF_RUN_ID
+            },
+            'wfSpecId': {
+                'name': 'evaluate-ai-decision',
+                'majorVersion': 0,
+                'revision': 0
+            },
+            'greatestThreadrunNumber': 0,
+            'oldWfSpecVersions': [],
             'status': LHStatus.COMPLETED,
             'startTime': '2023-10-23T19:55:42.243Z',
             'endTime': '2023-10-23T19:56:38.251Z',
             'threadRuns': [
                 {
+                    'wfSpecId': {
+                        'name': 'evaluate-ai-decision',
+                        'majorVersion': 0,
+                        'revision': 0
+                    },
                     'number': 0,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': 'entrypoint',
@@ -2519,10 +2670,14 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
     it('should mark the nodes that has run for the desired Thread Spec + Thread Run Number combination', async () => {
         const threadSpec = 'spawned-thread'
         const wfSpec: WfSpec = {
-            'name': 'example-child-thread',
-            'version': 0,
+            id: {
+                name: 'example-child-thread',
+                majorVersion: 0,
+                revision: 0
+            },
+            frozenVariables: [],
             'createdAt': '2023-10-24T16:54:56.181Z',
-            'status': LHStatus.RUNNING,
+            'status':  MetadataStatus.ACTIVE,
             'threadSpecs': {
                 'entrypoint': {
                     'nodes': {
@@ -2551,7 +2706,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             ],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'parent-task-1',
+                                'taskDefId': {
+                                    'name': 'parent-task-1',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -2612,7 +2769,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'parent-task-2',
+                                'taskDefId': {
+                                    'name': 'parent-task-2',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': []
@@ -2627,18 +2786,24 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     },
                     'variableDefs': [
                         {
-                            'type': VariableType.INT,
-                            'name': 'parent-var',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.INT,
+                                'name': 'parent-var',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         },
                         {
-                            'type': VariableType.INT,
-                            'name': '2-spawned-thread-START_THREAD',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.INT,
+                                'name': '2-spawned-thread-START_THREAD',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
                         }
                     ],
                     'interruptDefs': []
@@ -2664,7 +2829,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             'variableMutations': [],
                             'failureHandlers': [],
                             'task': {
-                                'taskDefName': 'child-task',
+                                'taskDefId': {
+                                    'name': 'child-task',
+                                },
                                 'timeoutSeconds': 15,
                                 'retries': 0,
                                 'variables': [
@@ -2683,18 +2850,21 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     },
                     'variableDefs': [
                         {
-                            'type': VariableType.INT,
-                            'name': 'child-var',
+                            searchable: true,
+                            required: true,
+                            'varDef': {
+                                'type': VariableType.INT,
+                                'name': 'child-var',
+                                'defaultValue': undefined,
+                            },
                             'jsonIndexes': [],
-                            'defaultValue': undefined,
-                            'persistent': false
-                        }
+                        },
                     ],
                     'interruptDefs': []
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            'retentionHours': 168
+            
         }
 
         const CURRENT_NODE_POSITION = 1
@@ -2702,14 +2872,26 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
 
         const threadRunNumber = 2
         const wfRun: WfRun = {
-            'id': '56021fd8a2054563b25b595e6162b00c',
-            'wfSpecName': 'example-child-thread',
-            'wfSpecVersion': 0,
+            'id': {
+                'id': '56021fd8a2054563b25b595e6162b00c'
+            },
+            'oldWfSpecVersions': [],
+            'greatestThreadrunNumber': 2,
+            'wfSpecId': {
+                'name': 'example-child-thread',
+                'majorVersion': 0,
+                'revision': 0,
+            },
             'status': LHStatus.COMPLETED,
             'startTime': '2023-10-24T16:56:36.161Z',
             'endTime': '2023-10-24T16:56:36.211Z',
             'threadRuns': [
                 {
+                    'wfSpecId': {
+                        'name': 'example-child-thread',
+                        'majorVersion': 0,
+                        'revision': 0,
+                    },
                     'number': 0,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': 'entrypoint',
@@ -2724,6 +2906,11 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'type': ThreadType.ENTRYPOINT
                 },
                 {
+                    'wfSpecId': {
+                        'name': 'example-child-thread',
+                        'majorVersion': 0,
+                        'revision': 0,
+                    },
                     'number': 1,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': threadSpec,
@@ -2737,6 +2924,11 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'type': ThreadType.CHILD
                 },
                 {
+                    'wfSpecId': {
+                        'name': 'example-child-thread',
+                        'majorVersion': 0,
+                        'revision': 0,
+                    },
                     'number': threadRunNumber,
                     'status': LHStatus.COMPLETED,
                     'threadSpecName': threadSpec,

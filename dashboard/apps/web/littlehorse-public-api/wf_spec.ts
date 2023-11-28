@@ -27,22 +27,20 @@ import {
   VariableMutation,
 } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { ExternalEventDefId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
 export interface WfSpec {
-  name: string;
-  version: number;
-  createdAt:
-    | string
-    | undefined;
+  id: WfSpecId | undefined;
+  createdAt: string | undefined;
+  frozenVariables: ThreadVarDef[];
   /** to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED */
   status: MetadataStatus;
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
   migration?: WfSpecVersionMigration | undefined;
-  searchableVaraibles: SearchableVariableDef[];
 }
 
 export interface WfSpec_ThreadSpecsEntry {
@@ -96,7 +94,7 @@ export interface ThreadRetentionPolicy {
 }
 
 export interface InterruptDef {
-  externalEventDefName: string;
+  externalEventDefId: ExternalEventDefId | undefined;
   handlerSpecName: string;
 }
 
@@ -187,7 +185,7 @@ export interface WaitForThreadsNode_ThreadToWaitFor {
 }
 
 export interface ExternalEventNode {
-  externalEventDefName: string;
+  externalEventDefId: ExternalEventDefId | undefined;
   timeoutSeconds: VariableAssignment | undefined;
 }
 
@@ -266,7 +264,8 @@ export interface SleepNode {
 }
 
 export interface WfSpecVersionMigration {
-  newWfSpecVersion: number;
+  newMajorVersion: number;
+  newRevision: number;
   threadSpecMigrations: { [key: string]: ThreadSpecMigration };
 }
 
@@ -291,28 +290,27 @@ export interface NodeMigration {
 
 function createBaseWfSpec(): WfSpec {
   return {
-    name: "",
-    version: 0,
+    id: undefined,
     createdAt: undefined,
+    frozenVariables: [],
     status: MetadataStatus.ACTIVE,
     threadSpecs: {},
     entrypointThreadName: "",
     retentionPolicy: undefined,
     migration: undefined,
-    searchableVaraibles: [],
   };
 }
 
 export const WfSpec = {
   encode(message: WfSpec, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.version !== 0) {
-      writer.uint32(16).int32(message.version);
+    if (message.id !== undefined) {
+      WfSpecId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.frozenVariables) {
+      ThreadVarDef.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     if (message.status !== MetadataStatus.ACTIVE) {
       writer.uint32(32).int32(metadataStatusToNumber(message.status));
@@ -329,9 +327,6 @@ export const WfSpec = {
     if (message.migration !== undefined) {
       WfSpecVersionMigration.encode(message.migration, writer.uint32(66).fork()).ldelim();
     }
-    for (const v of message.searchableVaraibles) {
-      SearchableVariableDef.encode(v!, writer.uint32(74).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -347,21 +342,21 @@ export const WfSpec = {
             break;
           }
 
-          message.name = reader.string();
+          message.id = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.version = reader.int32();
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.frozenVariables.push(ThreadVarDef.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 32) {
@@ -401,13 +396,6 @@ export const WfSpec = {
 
           message.migration = WfSpecVersionMigration.decode(reader, reader.uint32());
           continue;
-        case 9:
-          if (tag !== 74) {
-            break;
-          }
-
-          message.searchableVaraibles.push(SearchableVariableDef.decode(reader, reader.uint32()));
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -419,9 +407,11 @@ export const WfSpec = {
 
   fromJSON(object: any): WfSpec {
     return {
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
-      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
+      id: isSet(object.id) ? WfSpecId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
+      frozenVariables: globalThis.Array.isArray(object?.frozenVariables)
+        ? object.frozenVariables.map((e: any) => ThreadVarDef.fromJSON(e))
+        : [],
       status: isSet(object.status) ? metadataStatusFromJSON(object.status) : MetadataStatus.ACTIVE,
       threadSpecs: isObject(object.threadSpecs)
         ? Object.entries(object.threadSpecs).reduce<{ [key: string]: ThreadSpec }>((acc, [key, value]) => {
@@ -434,22 +424,19 @@ export const WfSpec = {
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
       migration: isSet(object.migration) ? WfSpecVersionMigration.fromJSON(object.migration) : undefined,
-      searchableVaraibles: globalThis.Array.isArray(object?.searchableVaraibles)
-        ? object.searchableVaraibles.map((e: any) => SearchableVariableDef.fromJSON(e))
-        : [],
     };
   },
 
   toJSON(message: WfSpec): unknown {
     const obj: any = {};
-    if (message.name !== "") {
-      obj.name = message.name;
-    }
-    if (message.version !== 0) {
-      obj.version = Math.round(message.version);
+    if (message.id !== undefined) {
+      obj.id = WfSpecId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
+    }
+    if (message.frozenVariables?.length) {
+      obj.frozenVariables = message.frozenVariables.map((e) => ThreadVarDef.toJSON(e));
     }
     if (message.status !== MetadataStatus.ACTIVE) {
       obj.status = metadataStatusToJSON(message.status);
@@ -472,9 +459,6 @@ export const WfSpec = {
     if (message.migration !== undefined) {
       obj.migration = WfSpecVersionMigration.toJSON(message.migration);
     }
-    if (message.searchableVaraibles?.length) {
-      obj.searchableVaraibles = message.searchableVaraibles.map((e) => SearchableVariableDef.toJSON(e));
-    }
     return obj;
   },
 
@@ -483,9 +467,9 @@ export const WfSpec = {
   },
   fromPartial<I extends Exact<DeepPartial<WfSpec>, I>>(object: I): WfSpec {
     const message = createBaseWfSpec();
-    message.name = object.name ?? "";
-    message.version = object.version ?? 0;
+    message.id = (object.id !== undefined && object.id !== null) ? WfSpecId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.frozenVariables = object.frozenVariables?.map((e) => ThreadVarDef.fromPartial(e)) || [];
     message.status = object.status ?? MetadataStatus.ACTIVE;
     message.threadSpecs = Object.entries(object.threadSpecs ?? {}).reduce<{ [key: string]: ThreadSpec }>(
       (acc, [key, value]) => {
@@ -503,7 +487,6 @@ export const WfSpec = {
     message.migration = (object.migration !== undefined && object.migration !== null)
       ? WfSpecVersionMigration.fromPartial(object.migration)
       : undefined;
-    message.searchableVaraibles = object.searchableVaraibles?.map((e) => SearchableVariableDef.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1153,13 +1136,13 @@ export const ThreadRetentionPolicy = {
 };
 
 function createBaseInterruptDef(): InterruptDef {
-  return { externalEventDefName: "", handlerSpecName: "" };
+  return { externalEventDefId: undefined, handlerSpecName: "" };
 }
 
 export const InterruptDef = {
   encode(message: InterruptDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.externalEventDefName !== "") {
-      writer.uint32(10).string(message.externalEventDefName);
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(10).fork()).ldelim();
     }
     if (message.handlerSpecName !== "") {
       writer.uint32(18).string(message.handlerSpecName);
@@ -1179,7 +1162,7 @@ export const InterruptDef = {
             break;
           }
 
-          message.externalEventDefName = reader.string();
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -1199,15 +1182,17 @@ export const InterruptDef = {
 
   fromJSON(object: any): InterruptDef {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      externalEventDefId: isSet(object.externalEventDefId)
+        ? ExternalEventDefId.fromJSON(object.externalEventDefId)
+        : undefined,
       handlerSpecName: isSet(object.handlerSpecName) ? globalThis.String(object.handlerSpecName) : "",
     };
   },
 
   toJSON(message: InterruptDef): unknown {
     const obj: any = {};
-    if (message.externalEventDefName !== "") {
-      obj.externalEventDefName = message.externalEventDefName;
+    if (message.externalEventDefId !== undefined) {
+      obj.externalEventDefId = ExternalEventDefId.toJSON(message.externalEventDefId);
     }
     if (message.handlerSpecName !== "") {
       obj.handlerSpecName = message.handlerSpecName;
@@ -1220,7 +1205,9 @@ export const InterruptDef = {
   },
   fromPartial<I extends Exact<DeepPartial<InterruptDef>, I>>(object: I): InterruptDef {
     const message = createBaseInterruptDef();
-    message.externalEventDefName = object.externalEventDefName ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
     message.handlerSpecName = object.handlerSpecName ?? "";
     return message;
   },
@@ -1843,13 +1830,13 @@ export const WaitForThreadsNode_ThreadToWaitFor = {
 };
 
 function createBaseExternalEventNode(): ExternalEventNode {
-  return { externalEventDefName: "", timeoutSeconds: undefined };
+  return { externalEventDefId: undefined, timeoutSeconds: undefined };
 }
 
 export const ExternalEventNode = {
   encode(message: ExternalEventNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.externalEventDefName !== "") {
-      writer.uint32(10).string(message.externalEventDefName);
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(10).fork()).ldelim();
     }
     if (message.timeoutSeconds !== undefined) {
       VariableAssignment.encode(message.timeoutSeconds, writer.uint32(18).fork()).ldelim();
@@ -1869,7 +1856,7 @@ export const ExternalEventNode = {
             break;
           }
 
-          message.externalEventDefName = reader.string();
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -1889,15 +1876,17 @@ export const ExternalEventNode = {
 
   fromJSON(object: any): ExternalEventNode {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      externalEventDefId: isSet(object.externalEventDefId)
+        ? ExternalEventDefId.fromJSON(object.externalEventDefId)
+        : undefined,
       timeoutSeconds: isSet(object.timeoutSeconds) ? VariableAssignment.fromJSON(object.timeoutSeconds) : undefined,
     };
   },
 
   toJSON(message: ExternalEventNode): unknown {
     const obj: any = {};
-    if (message.externalEventDefName !== "") {
-      obj.externalEventDefName = message.externalEventDefName;
+    if (message.externalEventDefId !== undefined) {
+      obj.externalEventDefId = ExternalEventDefId.toJSON(message.externalEventDefId);
     }
     if (message.timeoutSeconds !== undefined) {
       obj.timeoutSeconds = VariableAssignment.toJSON(message.timeoutSeconds);
@@ -1910,7 +1899,9 @@ export const ExternalEventNode = {
   },
   fromPartial<I extends Exact<DeepPartial<ExternalEventNode>, I>>(object: I): ExternalEventNode {
     const message = createBaseExternalEventNode();
-    message.externalEventDefName = object.externalEventDefName ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
     message.timeoutSeconds = (object.timeoutSeconds !== undefined && object.timeoutSeconds !== null)
       ? VariableAssignment.fromPartial(object.timeoutSeconds)
       : undefined;
@@ -2843,16 +2834,19 @@ export const SleepNode = {
 };
 
 function createBaseWfSpecVersionMigration(): WfSpecVersionMigration {
-  return { newWfSpecVersion: 0, threadSpecMigrations: {} };
+  return { newMajorVersion: 0, newRevision: 0, threadSpecMigrations: {} };
 }
 
 export const WfSpecVersionMigration = {
   encode(message: WfSpecVersionMigration, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.newWfSpecVersion !== 0) {
-      writer.uint32(8).int32(message.newWfSpecVersion);
+    if (message.newMajorVersion !== 0) {
+      writer.uint32(8).int32(message.newMajorVersion);
+    }
+    if (message.newRevision !== 0) {
+      writer.uint32(16).int32(message.newRevision);
     }
     Object.entries(message.threadSpecMigrations).forEach(([key, value]) => {
-      WfSpecVersionMigration_ThreadSpecMigrationsEntry.encode({ key: key as any, value }, writer.uint32(18).fork())
+      WfSpecVersionMigration_ThreadSpecMigrationsEntry.encode({ key: key as any, value }, writer.uint32(26).fork())
         .ldelim();
     });
     return writer;
@@ -2870,16 +2864,23 @@ export const WfSpecVersionMigration = {
             break;
           }
 
-          message.newWfSpecVersion = reader.int32();
+          message.newMajorVersion = reader.int32();
           continue;
         case 2:
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
 
-          const entry2 = WfSpecVersionMigration_ThreadSpecMigrationsEntry.decode(reader, reader.uint32());
-          if (entry2.value !== undefined) {
-            message.threadSpecMigrations[entry2.key] = entry2.value;
+          message.newRevision = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = WfSpecVersionMigration_ThreadSpecMigrationsEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.threadSpecMigrations[entry3.key] = entry3.value;
           }
           continue;
       }
@@ -2893,7 +2894,8 @@ export const WfSpecVersionMigration = {
 
   fromJSON(object: any): WfSpecVersionMigration {
     return {
-      newWfSpecVersion: isSet(object.newWfSpecVersion) ? globalThis.Number(object.newWfSpecVersion) : 0,
+      newMajorVersion: isSet(object.newMajorVersion) ? globalThis.Number(object.newMajorVersion) : 0,
+      newRevision: isSet(object.newRevision) ? globalThis.Number(object.newRevision) : 0,
       threadSpecMigrations: isObject(object.threadSpecMigrations)
         ? Object.entries(object.threadSpecMigrations).reduce<{ [key: string]: ThreadSpecMigration }>(
           (acc, [key, value]) => {
@@ -2908,8 +2910,11 @@ export const WfSpecVersionMigration = {
 
   toJSON(message: WfSpecVersionMigration): unknown {
     const obj: any = {};
-    if (message.newWfSpecVersion !== 0) {
-      obj.newWfSpecVersion = Math.round(message.newWfSpecVersion);
+    if (message.newMajorVersion !== 0) {
+      obj.newMajorVersion = Math.round(message.newMajorVersion);
+    }
+    if (message.newRevision !== 0) {
+      obj.newRevision = Math.round(message.newRevision);
     }
     if (message.threadSpecMigrations) {
       const entries = Object.entries(message.threadSpecMigrations);
@@ -2928,7 +2933,8 @@ export const WfSpecVersionMigration = {
   },
   fromPartial<I extends Exact<DeepPartial<WfSpecVersionMigration>, I>>(object: I): WfSpecVersionMigration {
     const message = createBaseWfSpecVersionMigration();
-    message.newWfSpecVersion = object.newWfSpecVersion ?? 0;
+    message.newMajorVersion = object.newMajorVersion ?? 0;
+    message.newRevision = object.newRevision ?? 0;
     message.threadSpecMigrations = Object.entries(object.threadSpecMigrations ?? {}).reduce<
       { [key: string]: ThreadSpecMigration }
     >((acc, [key, value]) => {

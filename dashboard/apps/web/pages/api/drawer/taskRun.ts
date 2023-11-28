@@ -7,6 +7,12 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === 'POST') {
-        await handleGrpcCallWithNext('getTaskRun', req, res, TaskRunId.fromJSON(JSON.parse(req.body)))
+        const httpRequestBody = JSON.parse(req.body)
+        const grpcRequestBody = {
+            wfRunId: httpRequestBody.wfRunId,
+            taskGuid: httpRequestBody.taskGuid
+        } as TaskRunId
+
+        await handleGrpcCallWithNext('getTaskRun', req, res, TaskRunId.fromJSON(grpcRequestBody))
     }
 }

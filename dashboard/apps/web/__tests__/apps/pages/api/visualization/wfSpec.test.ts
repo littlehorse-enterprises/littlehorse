@@ -17,7 +17,8 @@ describe('WfSpec API', () => {
             .toHaveBeenCalledWith('getWfSpec',
                 req, res, {
                     name: 'any_wf_spec',
-                    version: 0
+                    majorVersion: 0,
+                    revision: 0 // TODO: OSS - bring this from the UI
                 } as WfSpecId)
     })
 })

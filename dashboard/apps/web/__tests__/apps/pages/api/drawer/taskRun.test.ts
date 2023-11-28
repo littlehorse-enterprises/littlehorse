@@ -10,14 +10,18 @@ describe('taskRun API', () => {
     it('should perform a grpc request for a taskRun sending the right request body', async () => {
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
         req.body = JSON.stringify({
-            wfRunId: 'A_WFRUN_ID',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
             taskGuid: 'A_GUID'
         })
 
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getTaskRun', req, res, {
-            wfRunId: 'A_WFRUN_ID',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
             taskGuid: 'A_GUID'
         } as TaskRunId)
     })

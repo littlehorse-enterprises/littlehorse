@@ -74,7 +74,7 @@ private static final long serialVersionUID = 0L;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       id_ = s;
@@ -96,7 +96,7 @@ private static final long serialVersionUID = 0L;
       getIdBytes() {
     java.lang.Object ref = id_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       id_ = b;
@@ -138,7 +138,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.common.proto.ServerACLs> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.common.proto.ServerACLs>newDefaultInstance(
-                io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor,
+                io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -769,7 +769,7 @@ io.littlehorse.common.proto.ServerACLs defaultValue) {
         getIdBytes() {
       java.lang.Object ref = id_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         id_ = b;
@@ -940,7 +940,7 @@ io.littlehorse.common.proto.ServerACLs defaultValue) {
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
         getCreatedAtFieldBuilder() {
       if (createdAtBuilder_ == null) {
         createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1257,7 +1257,7 @@ io.littlehorse.common.proto.ServerACLs defaultValue) {
      * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder>
+        io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder> 
         getGlobalAclsFieldBuilder() {
       if (globalAclsBuilder_ == null) {
         globalAclsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1332,3 +1332,4 @@ io.littlehorse.common.proto.ServerACLs defaultValue) {
   }
 
 }
+

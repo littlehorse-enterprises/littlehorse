@@ -30,7 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const wfSpec: WfSpec = await makeGrpcCall('getWfSpec', req, res, WfSpecId.fromJSON({
                 name: parsedRequestBody.wfSpecName,
-                version: parsedRequestBody.version
+                majorVersion: parsedRequestBody.version,
+                revision: 0 // TODO: OSS - bring this from the UI
             }))
 
             const elkInstance = new ElkConstructor()

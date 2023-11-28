@@ -57,18 +57,23 @@ class GraphLayouter {
         const layoutedWfSpec: ReactFlowGraph = await this.getLayoutedGraph(wfSpec, wfSpecName, threadSpecWithValidValue)
         const nodeRuns: NodeRun[] = await this.getNodeRuns(wfRunCurrentPosition, wfRun, threadRunForThreadSpec)
 
+        this.markNodeInWfSpecAsAlreadyExecuted(nodeRuns, layoutedWfSpec)
+
+        return Promise.resolve(layoutedWfSpec)
+    }
+
+    private markNodeInWfSpecAsAlreadyExecuted(nodeRuns: NodeRun[], layoutedWfSpec: ReactFlowGraph) {
         nodeRuns.forEach((nodeRun: NodeRun) => {
             const nodeRunName: string = nodeRun.nodeName
             layoutedWfSpec.nodes.forEach(node => {
                 if (nodeRunName === node.id) {
                     node.data.nodeHasRun = true
-                    node.positionInThreadRun = nodeRun.position
+                    node.positionInThreadRun = nodeRun.id?.position
                 }
             })
         })
-
-        return Promise.resolve(layoutedWfSpec)
     }
+
     async getLayoutedGraph(wfSpec: WfSpec, wfSpecName: string, desiredThreadSpec: string = defaultThreadSpec): Promise<ReactFlowGraph> {
         const layoutOptions = {
             'elk.algorithm': 'layered',

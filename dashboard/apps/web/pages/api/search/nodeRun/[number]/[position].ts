@@ -14,7 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } = req.query
 
         await handleGrpcCallWithNext('getNodeRun', req, res, NodeRunId.fromJSON({
-            wfRunId: id,
+            wfRunId: {
+                id
+            },
             threadRunNumber: Number(number),
             position: Number(position)
         } as NodeRunId))

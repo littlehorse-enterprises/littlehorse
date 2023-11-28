@@ -2,7 +2,7 @@
 import * as _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, WfSpecId } from "./object_id";
+import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
@@ -68,9 +68,9 @@ export function threadTypeToNumber(object: ThreadType): number {
 }
 
 export interface WfRun {
-  id: string;
-  wfSpecName: string;
-  wfSpecVersion: number;
+  id: WfRunId | undefined;
+  wfSpecId: WfSpecId | undefined;
+  oldWfSpecVersions: WfSpecId[];
   status: LHStatus;
   /**
    * Introduced now since with ThreadRun-level retention, we can't rely upon
@@ -82,7 +82,6 @@ export interface WfRun {
   threadRuns: ThreadRun[];
   pendingInterrupts: PendingInterrupt[];
   pendingFailures: PendingFailureHandler[];
-  oldWfSpecVersions: WfSpecId[];
 }
 
 export interface ThreadRun {
@@ -156,9 +155,9 @@ export interface ThreadHaltReason {
 
 function createBaseWfRun(): WfRun {
   return {
-    id: "",
-    wfSpecName: "",
-    wfSpecVersion: 0,
+    id: undefined,
+    wfSpecId: undefined,
+    oldWfSpecVersions: [],
     status: LHStatus.STARTING,
     greatestThreadrunNumber: 0,
     startTime: undefined,
@@ -166,20 +165,19 @@ function createBaseWfRun(): WfRun {
     threadRuns: [],
     pendingInterrupts: [],
     pendingFailures: [],
-    oldWfSpecVersions: [],
   };
 }
 
 export const WfRun = {
   encode(message: WfRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      WfRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
-    if (message.wfSpecName !== "") {
-      writer.uint32(18).string(message.wfSpecName);
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(18).fork()).ldelim();
     }
-    if (message.wfSpecVersion !== 0) {
-      writer.uint32(24).int32(message.wfSpecVersion);
+    for (const v of message.oldWfSpecVersions) {
+      WfSpecId.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     if (message.status !== LHStatus.STARTING) {
       writer.uint32(32).int32(lHStatusToNumber(message.status));
@@ -202,9 +200,6 @@ export const WfRun = {
     for (const v of message.pendingFailures) {
       PendingFailureHandler.encode(v!, writer.uint32(82).fork()).ldelim();
     }
-    for (const v of message.oldWfSpecVersions) {
-      WfSpecId.encode(v!, writer.uint32(90).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -220,21 +215,21 @@ export const WfRun = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = WfRunId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.wfSpecName = reader.string();
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.wfSpecVersion = reader.int32();
+          message.oldWfSpecVersions.push(WfSpecId.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 32) {
@@ -285,13 +280,6 @@ export const WfRun = {
 
           message.pendingFailures.push(PendingFailureHandler.decode(reader, reader.uint32()));
           continue;
-        case 11:
-          if (tag !== 90) {
-            break;
-          }
-
-          message.oldWfSpecVersions.push(WfSpecId.decode(reader, reader.uint32()));
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -303,9 +291,11 @@ export const WfRun = {
 
   fromJSON(object: any): WfRun {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
+      id: isSet(object.id) ? WfRunId.fromJSON(object.id) : undefined,
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
+      oldWfSpecVersions: globalThis.Array.isArray(object?.oldWfSpecVersions)
+        ? object.oldWfSpecVersions.map((e: any) => WfSpecId.fromJSON(e))
+        : [],
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
       greatestThreadrunNumber: isSet(object.greatestThreadrunNumber)
         ? globalThis.Number(object.greatestThreadrunNumber)
@@ -321,22 +311,19 @@ export const WfRun = {
       pendingFailures: globalThis.Array.isArray(object?.pendingFailures)
         ? object.pendingFailures.map((e: any) => PendingFailureHandler.fromJSON(e))
         : [],
-      oldWfSpecVersions: globalThis.Array.isArray(object?.oldWfSpecVersions)
-        ? object.oldWfSpecVersions.map((e: any) => WfSpecId.fromJSON(e))
-        : [],
     };
   },
 
   toJSON(message: WfRun): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
+    if (message.id !== undefined) {
+      obj.id = WfRunId.toJSON(message.id);
     }
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
-    if (message.wfSpecVersion !== 0) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
+    if (message.oldWfSpecVersions?.length) {
+      obj.oldWfSpecVersions = message.oldWfSpecVersions.map((e) => WfSpecId.toJSON(e));
     }
     if (message.status !== LHStatus.STARTING) {
       obj.status = lHStatusToJSON(message.status);
@@ -359,9 +346,6 @@ export const WfRun = {
     if (message.pendingFailures?.length) {
       obj.pendingFailures = message.pendingFailures.map((e) => PendingFailureHandler.toJSON(e));
     }
-    if (message.oldWfSpecVersions?.length) {
-      obj.oldWfSpecVersions = message.oldWfSpecVersions.map((e) => WfSpecId.toJSON(e));
-    }
     return obj;
   },
 
@@ -370,9 +354,11 @@ export const WfRun = {
   },
   fromPartial<I extends Exact<DeepPartial<WfRun>, I>>(object: I): WfRun {
     const message = createBaseWfRun();
-    message.id = object.id ?? "";
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.wfSpecVersion = object.wfSpecVersion ?? 0;
+    message.id = (object.id !== undefined && object.id !== null) ? WfRunId.fromPartial(object.id) : undefined;
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.oldWfSpecVersions = object.oldWfSpecVersions?.map((e) => WfSpecId.fromPartial(e)) || [];
     message.status = object.status ?? LHStatus.STARTING;
     message.greatestThreadrunNumber = object.greatestThreadrunNumber ?? 0;
     message.startTime = object.startTime ?? undefined;
@@ -380,7 +366,6 @@ export const WfRun = {
     message.threadRuns = object.threadRuns?.map((e) => ThreadRun.fromPartial(e)) || [];
     message.pendingInterrupts = object.pendingInterrupts?.map((e) => PendingInterrupt.fromPartial(e)) || [];
     message.pendingFailures = object.pendingFailures?.map((e) => PendingFailureHandler.fromPartial(e)) || [];
-    message.oldWfSpecVersions = object.oldWfSpecVersions?.map((e) => WfSpecId.fromPartial(e)) || [];
     return message;
   },
 };

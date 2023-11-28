@@ -11,7 +11,7 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { NodeRunId, TaskRunId, WfSpecId } from "./object_id";
+import { NodeRunId, TaskDefId, TaskRunId, WfSpecId } from "./object_id";
 import { UserTaskTriggerReference } from "./user_tasks";
 import { VariableValue } from "./variable";
 
@@ -19,9 +19,9 @@ export const protobufPackage = "littlehorse";
 
 export interface TaskRun {
   id: TaskRunId | undefined;
+  taskDefId: TaskDefId | undefined;
   attempts: TaskAttempt[];
   maxAttempts: number;
-  taskDefName: string;
   inputVariables: VarNameAndVal[];
   source: TaskRunSource | undefined;
   scheduledAt: string | undefined;
@@ -50,11 +50,11 @@ export interface TaskAttempt {
 export interface TaskRunSource {
   taskNode?: TaskNodeReference | undefined;
   userTaskTrigger?: UserTaskTriggerReference | undefined;
+  wfSpecId?: WfSpecId | undefined;
 }
 
 export interface TaskNodeReference {
   nodeRunId: NodeRunId | undefined;
-  wfSpecId: WfSpecId | undefined;
 }
 
 export interface LHTaskError {
@@ -70,9 +70,9 @@ export interface LHTaskException {
 function createBaseTaskRun(): TaskRun {
   return {
     id: undefined,
+    taskDefId: undefined,
     attempts: [],
     maxAttempts: 0,
-    taskDefName: "",
     inputVariables: [],
     source: undefined,
     scheduledAt: undefined,
@@ -86,14 +86,14 @@ export const TaskRun = {
     if (message.id !== undefined) {
       TaskRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(18).fork()).ldelim();
+    }
     for (const v of message.attempts) {
-      TaskAttempt.encode(v!, writer.uint32(18).fork()).ldelim();
+      TaskAttempt.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     if (message.maxAttempts !== 0) {
-      writer.uint32(24).int32(message.maxAttempts);
-    }
-    if (message.taskDefName !== "") {
-      writer.uint32(34).string(message.taskDefName);
+      writer.uint32(32).int32(message.maxAttempts);
     }
     for (const v of message.inputVariables) {
       VarNameAndVal.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -132,21 +132,21 @@ export const TaskRun = {
             break;
           }
 
-          message.attempts.push(TaskAttempt.decode(reader, reader.uint32()));
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.attempts.push(TaskAttempt.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 32) {
             break;
           }
 
           message.maxAttempts = reader.int32();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.taskDefName = reader.string();
           continue;
         case 5:
           if (tag !== 42) {
@@ -195,11 +195,11 @@ export const TaskRun = {
   fromJSON(object: any): TaskRun {
     return {
       id: isSet(object.id) ? TaskRunId.fromJSON(object.id) : undefined,
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       attempts: globalThis.Array.isArray(object?.attempts)
         ? object.attempts.map((e: any) => TaskAttempt.fromJSON(e))
         : [],
       maxAttempts: isSet(object.maxAttempts) ? globalThis.Number(object.maxAttempts) : 0,
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
       inputVariables: globalThis.Array.isArray(object?.inputVariables)
         ? object.inputVariables.map((e: any) => VarNameAndVal.fromJSON(e))
         : [],
@@ -215,14 +215,14 @@ export const TaskRun = {
     if (message.id !== undefined) {
       obj.id = TaskRunId.toJSON(message.id);
     }
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
+    }
     if (message.attempts?.length) {
       obj.attempts = message.attempts.map((e) => TaskAttempt.toJSON(e));
     }
     if (message.maxAttempts !== 0) {
       obj.maxAttempts = Math.round(message.maxAttempts);
-    }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
     }
     if (message.inputVariables?.length) {
       obj.inputVariables = message.inputVariables.map((e) => VarNameAndVal.toJSON(e));
@@ -248,9 +248,11 @@ export const TaskRun = {
   fromPartial<I extends Exact<DeepPartial<TaskRun>, I>>(object: I): TaskRun {
     const message = createBaseTaskRun();
     message.id = (object.id !== undefined && object.id !== null) ? TaskRunId.fromPartial(object.id) : undefined;
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.attempts = object.attempts?.map((e) => TaskAttempt.fromPartial(e)) || [];
     message.maxAttempts = object.maxAttempts ?? 0;
-    message.taskDefName = object.taskDefName ?? "";
     message.inputVariables = object.inputVariables?.map((e) => VarNameAndVal.fromPartial(e)) || [];
     message.source = (object.source !== undefined && object.source !== null)
       ? TaskRunSource.fromPartial(object.source)
@@ -552,7 +554,7 @@ export const TaskAttempt = {
 };
 
 function createBaseTaskRunSource(): TaskRunSource {
-  return { taskNode: undefined, userTaskTrigger: undefined };
+  return { taskNode: undefined, userTaskTrigger: undefined, wfSpecId: undefined };
 }
 
 export const TaskRunSource = {
@@ -562,6 +564,9 @@ export const TaskRunSource = {
     }
     if (message.userTaskTrigger !== undefined) {
       UserTaskTriggerReference.encode(message.userTaskTrigger, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -587,6 +592,13 @@ export const TaskRunSource = {
 
           message.userTaskTrigger = UserTaskTriggerReference.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -602,6 +614,7 @@ export const TaskRunSource = {
       userTaskTrigger: isSet(object.userTaskTrigger)
         ? UserTaskTriggerReference.fromJSON(object.userTaskTrigger)
         : undefined,
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
     };
   },
 
@@ -612,6 +625,9 @@ export const TaskRunSource = {
     }
     if (message.userTaskTrigger !== undefined) {
       obj.userTaskTrigger = UserTaskTriggerReference.toJSON(message.userTaskTrigger);
+    }
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
     return obj;
   },
@@ -627,21 +643,21 @@ export const TaskRunSource = {
     message.userTaskTrigger = (object.userTaskTrigger !== undefined && object.userTaskTrigger !== null)
       ? UserTaskTriggerReference.fromPartial(object.userTaskTrigger)
       : undefined;
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     return message;
   },
 };
 
 function createBaseTaskNodeReference(): TaskNodeReference {
-  return { nodeRunId: undefined, wfSpecId: undefined };
+  return { nodeRunId: undefined };
 }
 
 export const TaskNodeReference = {
   encode(message: TaskNodeReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nodeRunId !== undefined) {
       NodeRunId.encode(message.nodeRunId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -660,13 +676,6 @@ export const TaskNodeReference = {
 
           message.nodeRunId = NodeRunId.decode(reader, reader.uint32());
           continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -677,19 +686,13 @@ export const TaskNodeReference = {
   },
 
   fromJSON(object: any): TaskNodeReference {
-    return {
-      nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined,
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-    };
+    return { nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined };
   },
 
   toJSON(message: TaskNodeReference): unknown {
     const obj: any = {};
     if (message.nodeRunId !== undefined) {
       obj.nodeRunId = NodeRunId.toJSON(message.nodeRunId);
-    }
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
     return obj;
   },
@@ -701,9 +704,6 @@ export const TaskNodeReference = {
     const message = createBaseTaskNodeReference();
     message.nodeRunId = (object.nodeRunId !== undefined && object.nodeRunId !== null)
       ? NodeRunId.fromPartial(object.nodeRunId)
-      : undefined;
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
     return message;
   },

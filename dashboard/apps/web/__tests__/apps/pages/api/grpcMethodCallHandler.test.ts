@@ -31,7 +31,7 @@ describe('AUTHENTICATION ENABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -43,7 +43,7 @@ describe('AUTHENTICATION ENABLED', () => {
             })
 
             expect(wfRun).toEqual({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
 
@@ -294,7 +294,7 @@ describe('AUTHENTICATION ENABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -306,7 +306,7 @@ describe('AUTHENTICATION ENABLED', () => {
             })
 
             expect(wfRunResponse).toEqual({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
     })
@@ -334,7 +334,7 @@ describe('AUTHENTICATION ENABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -346,7 +346,7 @@ describe('AUTHENTICATION ENABLED', () => {
             })
 
             expect(sendMock).toHaveBeenCalledWith({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
 
@@ -602,7 +602,7 @@ describe('AUTHENTICATION DISABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -614,7 +614,7 @@ describe('AUTHENTICATION DISABLED', () => {
             })
 
             expect(wfRun).toEqual({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
 
@@ -720,7 +720,7 @@ describe('AUTHENTICATION DISABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -732,7 +732,7 @@ describe('AUTHENTICATION DISABLED', () => {
             })
 
             expect(wfRunResponse).toEqual({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
     })
@@ -758,7 +758,7 @@ describe('AUTHENTICATION DISABLED', () => {
             (LHClient.getInstance as unknown as jest.Mock).mockImplementation(() => ({
                 searchWfSpec: (_: SearchWfSpecRequest): Promise<WfSpecIdList> => {
                     return Promise.resolve({
-                        results: [ { name: 'ANY_SPEC', version: 0 } ]
+                        results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
                     } as WfSpecIdList)
                 }
             }))
@@ -770,7 +770,7 @@ describe('AUTHENTICATION DISABLED', () => {
             })
 
             expect(sendMock).toHaveBeenCalledWith({
-                results: [ { name: 'ANY_SPEC', version: 0 } ]
+                results: [ { name: 'ANY_SPEC', majorVersion: 0, revision: 0 } ]
             })
         })
 

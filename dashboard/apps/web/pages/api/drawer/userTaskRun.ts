@@ -8,6 +8,13 @@ export default async function handler(
 ) {
     if (req.method === 'POST') {
         const { wfRunId, guid } = JSON.parse(req.body)
-        await handleGrpcCallWithNext('getUserTaskRun', req, res, UserTaskRunId.fromJSON({ wfRunId, userTaskGuid: guid }))
+        const grpcRequestBody = {
+            wfRunId: {
+                id: wfRunId
+            },
+            userTaskGuid: guid
+        } as UserTaskRunId
+
+        await handleGrpcCallWithNext('getUserTaskRun', req, res, UserTaskRunId.fromJSON(grpcRequestBody))
     }
 }

@@ -1,14 +1,14 @@
 /* eslint-disable */
+import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
 export interface ExternalEvent {
-  wfRunId: string;
-  externalEventDefName: string;
-  guid: string;
+  id: ExternalEventId | undefined;
   createdAt: string | undefined;
   content: VariableValue | undefined;
   threadRunNumber?: number | undefined;
@@ -20,14 +20,20 @@ export interface ExternalEvent {
 export interface ExternalEventDef {
   name: string;
   createdAt: string | undefined;
-  retentionHours: number;
+  retentionPolicy: ExternalEventRetentionPolicy | undefined;
+}
+
+export interface ExternalEventRetentionPolicy {
+  /**
+   * Delete such an ExternalEvent X seconds after it has been registered if it
+   * has not yet been claimed by a WfRun.
+   */
+  secondsAfterPut?: number | undefined;
 }
 
 function createBaseExternalEvent(): ExternalEvent {
   return {
-    wfRunId: "",
-    externalEventDefName: "",
-    guid: "",
+    id: undefined,
     createdAt: undefined,
     content: undefined,
     threadRunNumber: undefined,
@@ -38,29 +44,23 @@ function createBaseExternalEvent(): ExternalEvent {
 
 export const ExternalEvent = {
   encode(message: ExternalEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
-    }
-    if (message.externalEventDefName !== "") {
-      writer.uint32(18).string(message.externalEventDefName);
-    }
-    if (message.guid !== "") {
-      writer.uint32(26).string(message.guid);
+    if (message.id !== undefined) {
+      ExternalEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(34).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
     if (message.content !== undefined) {
-      VariableValue.encode(message.content, writer.uint32(42).fork()).ldelim();
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
     }
     if (message.threadRunNumber !== undefined) {
-      writer.uint32(48).int32(message.threadRunNumber);
+      writer.uint32(32).int32(message.threadRunNumber);
     }
     if (message.nodeRunPosition !== undefined) {
-      writer.uint32(56).int32(message.nodeRunPosition);
+      writer.uint32(40).int32(message.nodeRunPosition);
     }
     if (message.claimed === true) {
-      writer.uint32(64).bool(message.claimed);
+      writer.uint32(48).bool(message.claimed);
     }
     return writer;
   },
@@ -77,52 +77,38 @@ export const ExternalEvent = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.id = ExternalEventId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.externalEventDefName = reader.string();
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.guid = reader.string();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.content = VariableValue.decode(reader, reader.uint32());
           continue;
-        case 6:
-          if (tag !== 48) {
+        case 4:
+          if (tag !== 32) {
             break;
           }
 
           message.threadRunNumber = reader.int32();
           continue;
-        case 7:
-          if (tag !== 56) {
+        case 5:
+          if (tag !== 40) {
             break;
           }
 
           message.nodeRunPosition = reader.int32();
           continue;
-        case 8:
-          if (tag !== 64) {
+        case 6:
+          if (tag !== 48) {
             break;
           }
 
@@ -139,9 +125,7 @@ export const ExternalEvent = {
 
   fromJSON(object: any): ExternalEvent {
     return {
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
-      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
-      guid: isSet(object.guid) ? globalThis.String(object.guid) : "",
+      id: isSet(object.id) ? ExternalEventId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : undefined,
@@ -152,14 +136,8 @@ export const ExternalEvent = {
 
   toJSON(message: ExternalEvent): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
-    }
-    if (message.externalEventDefName !== "") {
-      obj.externalEventDefName = message.externalEventDefName;
-    }
-    if (message.guid !== "") {
-      obj.guid = message.guid;
+    if (message.id !== undefined) {
+      obj.id = ExternalEventId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
@@ -184,9 +162,7 @@ export const ExternalEvent = {
   },
   fromPartial<I extends Exact<DeepPartial<ExternalEvent>, I>>(object: I): ExternalEvent {
     const message = createBaseExternalEvent();
-    message.wfRunId = object.wfRunId ?? "";
-    message.externalEventDefName = object.externalEventDefName ?? "";
-    message.guid = object.guid ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? ExternalEventId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.content = (object.content !== undefined && object.content !== null)
       ? VariableValue.fromPartial(object.content)
@@ -199,7 +175,7 @@ export const ExternalEvent = {
 };
 
 function createBaseExternalEventDef(): ExternalEventDef {
-  return { name: "", createdAt: undefined, retentionHours: 0 };
+  return { name: "", createdAt: undefined, retentionPolicy: undefined };
 }
 
 export const ExternalEventDef = {
@@ -210,8 +186,8 @@ export const ExternalEventDef = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.retentionHours !== 0) {
-      writer.uint32(24).int32(message.retentionHours);
+    if (message.retentionPolicy !== undefined) {
+      ExternalEventRetentionPolicy.encode(message.retentionPolicy, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -238,11 +214,11 @@ export const ExternalEventDef = {
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.retentionHours = reader.int32();
+          message.retentionPolicy = ExternalEventRetentionPolicy.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -257,7 +233,9 @@ export const ExternalEventDef = {
     return {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
-      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : 0,
+      retentionPolicy: isSet(object.retentionPolicy)
+        ? ExternalEventRetentionPolicy.fromJSON(object.retentionPolicy)
+        : undefined,
     };
   },
 
@@ -269,8 +247,8 @@ export const ExternalEventDef = {
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
     }
-    if (message.retentionHours !== 0) {
-      obj.retentionHours = Math.round(message.retentionHours);
+    if (message.retentionPolicy !== undefined) {
+      obj.retentionPolicy = ExternalEventRetentionPolicy.toJSON(message.retentionPolicy);
     }
     return obj;
   },
@@ -282,7 +260,66 @@ export const ExternalEventDef = {
     const message = createBaseExternalEventDef();
     message.name = object.name ?? "";
     message.createdAt = object.createdAt ?? undefined;
-    message.retentionHours = object.retentionHours ?? 0;
+    message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
+      ? ExternalEventRetentionPolicy.fromPartial(object.retentionPolicy)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseExternalEventRetentionPolicy(): ExternalEventRetentionPolicy {
+  return { secondsAfterPut: undefined };
+}
+
+export const ExternalEventRetentionPolicy = {
+  encode(message: ExternalEventRetentionPolicy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.secondsAfterPut !== undefined) {
+      writer.uint32(8).int64(message.secondsAfterPut);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExternalEventRetentionPolicy {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExternalEventRetentionPolicy();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.secondsAfterPut = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ExternalEventRetentionPolicy {
+    return { secondsAfterPut: isSet(object.secondsAfterPut) ? globalThis.Number(object.secondsAfterPut) : undefined };
+  },
+
+  toJSON(message: ExternalEventRetentionPolicy): unknown {
+    const obj: any = {};
+    if (message.secondsAfterPut !== undefined) {
+      obj.secondsAfterPut = Math.round(message.secondsAfterPut);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ExternalEventRetentionPolicy>, I>>(base?: I): ExternalEventRetentionPolicy {
+    return ExternalEventRetentionPolicy.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ExternalEventRetentionPolicy>, I>>(object: I): ExternalEventRetentionPolicy {
+    const message = createBaseExternalEventRetentionPolicy();
+    message.secondsAfterPut = object.secondsAfterPut ?? undefined;
     return message;
   },
 };
@@ -310,6 +347,18 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function longToNumber(long: Long): number {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {

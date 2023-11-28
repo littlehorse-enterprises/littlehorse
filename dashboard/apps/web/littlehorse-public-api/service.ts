@@ -18,17 +18,17 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { VariableDef } from "./common_wfspec";
-import { ExternalEvent, ExternalEventDef } from "./external_event";
+import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
   ExternalEventDefId,
   ExternalEventId,
-  GetLatestWfSpecRequest,
   NodeRunId,
   TaskDefId,
   TaskRunId,
+  TaskWorkerGroupId,
   UserTaskDefId,
   UserTaskRunId,
   VariableId,
@@ -137,12 +137,12 @@ export interface PutUserTaskDefRequest {
 
 export interface PutExternalEventDefRequest {
   name: string;
-  retentionHours?: number | undefined;
+  retentionPolicy: ExternalEventRetentionPolicy | undefined;
 }
 
 export interface PutExternalEventRequest {
-  wfRunId: string;
-  externalEventDefName: string;
+  wfRunId: WfRunId | undefined;
+  externalEventDefId: ExternalEventDefId | undefined;
   guid?: string | undefined;
   content: VariableValue | undefined;
   threadRunNumber?: number | undefined;
@@ -175,7 +175,8 @@ export interface DeleteExternalEventDefRequest {
 
 export interface RunWfRequest {
   wfSpecName: string;
-  wfSpecVersion?: number | undefined;
+  majorVersion?: number | undefined;
+  revision?: number | undefined;
   variables: { [key: string]: VariableValue };
   id?: string | undefined;
 }
@@ -194,9 +195,8 @@ export interface SearchWfRunRequest {
 }
 
 export interface SearchWfRunRequest_StatusAndSpecRequest {
-  wfSpecName: string;
+  wfSpecId: WfSpecId | undefined;
   status: LHStatus;
-  wfSpecVersion: number;
   earliestStart?: string | undefined;
   latestStart?: string | undefined;
 }
@@ -247,7 +247,7 @@ export interface TaskRunIdList {
 export interface SearchNodeRunRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  wfRunId?: string | undefined;
+  wfRunId?: WfRunId | undefined;
 }
 
 export interface NodeRunIdList {
@@ -274,13 +274,14 @@ export interface UserTaskRunIdList {
 export interface SearchVariableRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  wfRunId?: string | undefined;
+  wfRunId?: WfRunId | undefined;
   value?: SearchVariableRequest_NameAndValueRequest | undefined;
 }
 
 export interface SearchVariableRequest_NameAndValueRequest {
   value: VariableValue | undefined;
-  wfSpecVersion?: number | undefined;
+  wfSpecMajorVersion?: number | undefined;
+  wfSpecRevision?: number | undefined;
   varName: string;
   wfSpecName: string;
 }
@@ -340,7 +341,7 @@ export interface ExternalEventDefIdList {
 export interface SearchExternalEventRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  wfRunId?: string | undefined;
+  wfRunId?: WfRunId | undefined;
   externalEventDefNameAndStatus?: SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest | undefined;
 }
 
@@ -355,7 +356,7 @@ export interface ExternalEventIdList {
 }
 
 export interface ListNodeRunsRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
 }
 
 export interface NodeRunList {
@@ -363,7 +364,7 @@ export interface NodeRunList {
 }
 
 export interface ListVariablesRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
 }
 
 export interface VariableList {
@@ -371,7 +372,7 @@ export interface VariableList {
 }
 
 export interface ListExternalEventsRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
 }
 
 export interface ExternalEventList {
@@ -380,13 +381,13 @@ export interface ExternalEventList {
 
 export interface RegisterTaskWorkerRequest {
   clientId: string;
-  taskDefName: string;
+  taskDefId: TaskDefId | undefined;
   listenerName: string;
 }
 
 export interface TaskWorkerHeartBeatRequest {
   clientId: string;
-  taskDefName: string;
+  taskDefId: TaskDefId | undefined;
   listenerName: string;
 }
 
@@ -407,7 +408,7 @@ export interface TaskWorkerMetadata {
 }
 
 export interface TaskWorkerGroup {
-  taskDefName: string;
+  id: TaskWorkerGroupId | undefined;
   createdAt: string | undefined;
   taskWorkers: { [key: string]: TaskWorkerMetadata };
 }
@@ -418,7 +419,7 @@ export interface TaskWorkerGroup_TaskWorkersEntry {
 }
 
 export interface PollTaskRequest {
-  taskDefName: string;
+  taskDefId: TaskDefId | undefined;
   clientId: string;
   taskWorkerVersion?: string | undefined;
 }
@@ -448,12 +449,12 @@ export interface ReportTaskRun {
 }
 
 export interface StopWfRunRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
   threadRunNumber: number;
 }
 
 export interface ResumeWfRunRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
   threadRunNumber: number;
 }
 
@@ -464,10 +465,10 @@ export interface TaskDefMetricsQueryRequest {
 }
 
 export interface ListTaskMetricsRequest {
+  taskDefId: TaskDefId | undefined;
   lastWindowStart: string | undefined;
-  numWindows: number;
-  taskDefName: string;
   windowLength: MetricsWindowLength;
+  numWindows: number;
 }
 
 export interface ListTaskMetricsResponse {
@@ -475,18 +476,16 @@ export interface ListTaskMetricsResponse {
 }
 
 export interface WfSpecMetricsQueryRequest {
+  wfSpecId: WfSpecId | undefined;
   windowStart: string | undefined;
-  windowType: MetricsWindowLength;
-  wfSpecName: string;
-  wfSpecVersion: number;
+  windowLength: MetricsWindowLength;
 }
 
 export interface ListWfMetricsRequest {
+  wfSpecId: WfSpecId | undefined;
   lastWindowStart: string | undefined;
-  numWindows: number;
-  wfSpecName: string;
-  wfSpecVersion: number;
   windowLength: MetricsWindowLength;
+  numWindows: number;
 }
 
 export interface ListWfMetricsResponse {
@@ -494,9 +493,9 @@ export interface ListWfMetricsResponse {
 }
 
 export interface TaskDefMetrics {
+  taskDefId: TaskDefId | undefined;
   windowStart: string | undefined;
   type: MetricsWindowLength;
-  taskDefName: string;
   scheduleToStartMax: number;
   scheduleToStartAvg: number;
   startToCompleteMax: number;
@@ -508,10 +507,9 @@ export interface TaskDefMetrics {
 }
 
 export interface WfSpecMetrics {
+  wfSpecId: WfSpecId | undefined;
   windowStart: string | undefined;
   type: MetricsWindowLength;
-  wfSpecName: string;
-  wfSpecVersion: number;
   totalStarted: number;
   totalCompleted: number;
   totalErrored: number;
@@ -520,7 +518,7 @@ export interface WfSpecMetrics {
 }
 
 export interface ListUserTaskRunRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
 }
 
 export interface UserTaskRunList {
@@ -528,7 +526,7 @@ export interface UserTaskRunList {
 }
 
 export interface ListTaskRunsRequest {
-  wfRunId: string;
+  wfRunId: WfRunId | undefined;
 }
 
 export interface TaskRunList {
@@ -538,6 +536,18 @@ export interface TaskRunList {
 export interface MigrateWfSpecRequest {
   oldWfSpec: WfSpecId | undefined;
   migration: WfSpecVersionMigration | undefined;
+}
+
+export interface GetLatestWfSpecRequest {
+  name: string;
+  majorVersion?: number | undefined;
+}
+
+export interface ServerVersionResponse {
+  majorVersion: number;
+  minorVersion: number;
+  patchVersion: number;
+  preReleaseIdentifier?: string | undefined;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -973,7 +983,7 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionHours: undefined };
+  return { name: "", retentionPolicy: undefined };
 }
 
 export const PutExternalEventDefRequest = {
@@ -981,8 +991,8 @@ export const PutExternalEventDefRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.retentionHours !== undefined) {
-      writer.uint32(16).int32(message.retentionHours);
+    if (message.retentionPolicy !== undefined) {
+      ExternalEventRetentionPolicy.encode(message.retentionPolicy, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1002,11 +1012,11 @@ export const PutExternalEventDefRequest = {
           message.name = reader.string();
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.retentionHours = reader.int32();
+          message.retentionPolicy = ExternalEventRetentionPolicy.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1020,7 +1030,9 @@ export const PutExternalEventDefRequest = {
   fromJSON(object: any): PutExternalEventDefRequest {
     return {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
-      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : undefined,
+      retentionPolicy: isSet(object.retentionPolicy)
+        ? ExternalEventRetentionPolicy.fromJSON(object.retentionPolicy)
+        : undefined,
     };
   },
 
@@ -1029,8 +1041,8 @@ export const PutExternalEventDefRequest = {
     if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.retentionHours !== undefined) {
-      obj.retentionHours = Math.round(message.retentionHours);
+    if (message.retentionPolicy !== undefined) {
+      obj.retentionPolicy = ExternalEventRetentionPolicy.toJSON(message.retentionPolicy);
     }
     return obj;
   },
@@ -1041,15 +1053,17 @@ export const PutExternalEventDefRequest = {
   fromPartial<I extends Exact<DeepPartial<PutExternalEventDefRequest>, I>>(object: I): PutExternalEventDefRequest {
     const message = createBasePutExternalEventDefRequest();
     message.name = object.name ?? "";
-    message.retentionHours = object.retentionHours ?? undefined;
+    message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
+      ? ExternalEventRetentionPolicy.fromPartial(object.retentionPolicy)
+      : undefined;
     return message;
   },
 };
 
 function createBasePutExternalEventRequest(): PutExternalEventRequest {
   return {
-    wfRunId: "",
-    externalEventDefName: "",
+    wfRunId: undefined,
+    externalEventDefId: undefined,
     guid: undefined,
     content: undefined,
     threadRunNumber: undefined,
@@ -1059,11 +1073,11 @@ function createBasePutExternalEventRequest(): PutExternalEventRequest {
 
 export const PutExternalEventRequest = {
   encode(message: PutExternalEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
-    if (message.externalEventDefName !== "") {
-      writer.uint32(18).string(message.externalEventDefName);
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
     }
     if (message.guid !== undefined) {
       writer.uint32(26).string(message.guid);
@@ -1092,14 +1106,14 @@ export const PutExternalEventRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.externalEventDefName = reader.string();
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -1140,8 +1154,10 @@ export const PutExternalEventRequest = {
 
   fromJSON(object: any): PutExternalEventRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
-      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      externalEventDefId: isSet(object.externalEventDefId)
+        ? ExternalEventDefId.fromJSON(object.externalEventDefId)
+        : undefined,
       guid: isSet(object.guid) ? globalThis.String(object.guid) : undefined,
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : undefined,
@@ -1151,11 +1167,11 @@ export const PutExternalEventRequest = {
 
   toJSON(message: PutExternalEventRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
-    if (message.externalEventDefName !== "") {
-      obj.externalEventDefName = message.externalEventDefName;
+    if (message.externalEventDefId !== undefined) {
+      obj.externalEventDefId = ExternalEventDefId.toJSON(message.externalEventDefId);
     }
     if (message.guid !== undefined) {
       obj.guid = message.guid;
@@ -1177,8 +1193,12 @@ export const PutExternalEventRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<PutExternalEventRequest>, I>>(object: I): PutExternalEventRequest {
     const message = createBasePutExternalEventRequest();
-    message.wfRunId = object.wfRunId ?? "";
-    message.externalEventDefName = object.externalEventDefName ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
     message.guid = object.guid ?? undefined;
     message.content = (object.content !== undefined && object.content !== null)
       ? VariableValue.fromPartial(object.content)
@@ -1536,7 +1556,7 @@ export const DeleteExternalEventDefRequest = {
 };
 
 function createBaseRunWfRequest(): RunWfRequest {
-  return { wfSpecName: "", wfSpecVersion: undefined, variables: {}, id: undefined };
+  return { wfSpecName: "", majorVersion: undefined, revision: undefined, variables: {}, id: undefined };
 }
 
 export const RunWfRequest = {
@@ -1544,14 +1564,17 @@ export const RunWfRequest = {
     if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
     }
-    if (message.wfSpecVersion !== undefined) {
-      writer.uint32(16).int32(message.wfSpecVersion);
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(24).int32(message.revision);
     }
     Object.entries(message.variables).forEach(([key, value]) => {
-      RunWfRequest_VariablesEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).ldelim();
+      RunWfRequest_VariablesEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).ldelim();
     });
     if (message.id !== undefined) {
-      writer.uint32(34).string(message.id);
+      writer.uint32(42).string(message.id);
     }
     return writer;
   },
@@ -1575,20 +1598,27 @@ export const RunWfRequest = {
             break;
           }
 
-          message.wfSpecVersion = reader.int32();
+          message.majorVersion = reader.int32();
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          const entry3 = RunWfRequest_VariablesEntry.decode(reader, reader.uint32());
-          if (entry3.value !== undefined) {
-            message.variables[entry3.key] = entry3.value;
-          }
+          message.revision = reader.int32();
           continue;
         case 4:
           if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = RunWfRequest_VariablesEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.variables[entry4.key] = entry4.value;
+          }
+          continue;
+        case 5:
+          if (tag !== 42) {
             break;
           }
 
@@ -1606,7 +1636,8 @@ export const RunWfRequest = {
   fromJSON(object: any): RunWfRequest {
     return {
       wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : undefined,
+      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : undefined,
+      revision: isSet(object.revision) ? globalThis.Number(object.revision) : undefined,
       variables: isObject(object.variables)
         ? Object.entries(object.variables).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
           acc[key] = VariableValue.fromJSON(value);
@@ -1622,8 +1653,11 @@ export const RunWfRequest = {
     if (message.wfSpecName !== "") {
       obj.wfSpecName = message.wfSpecName;
     }
-    if (message.wfSpecVersion !== undefined) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
+    if (message.majorVersion !== undefined) {
+      obj.majorVersion = Math.round(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      obj.revision = Math.round(message.revision);
     }
     if (message.variables) {
       const entries = Object.entries(message.variables);
@@ -1646,7 +1680,8 @@ export const RunWfRequest = {
   fromPartial<I extends Exact<DeepPartial<RunWfRequest>, I>>(object: I): RunWfRequest {
     const message = createBaseRunWfRequest();
     message.wfSpecName = object.wfSpecName ?? "";
-    message.wfSpecVersion = object.wfSpecVersion ?? undefined;
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
     message.variables = Object.entries(object.variables ?? {}).reduce<{ [key: string]: VariableValue }>(
       (acc, [key, value]) => {
         if (value !== undefined) {
@@ -1867,31 +1902,22 @@ export const SearchWfRunRequest = {
 };
 
 function createBaseSearchWfRunRequest_StatusAndSpecRequest(): SearchWfRunRequest_StatusAndSpecRequest {
-  return {
-    wfSpecName: "",
-    status: LHStatus.STARTING,
-    wfSpecVersion: 0,
-    earliestStart: undefined,
-    latestStart: undefined,
-  };
+  return { wfSpecId: undefined, status: LHStatus.STARTING, earliestStart: undefined, latestStart: undefined };
 }
 
 export const SearchWfRunRequest_StatusAndSpecRequest = {
   encode(message: SearchWfRunRequest_StatusAndSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
     }
     if (message.status !== LHStatus.STARTING) {
       writer.uint32(16).int32(lHStatusToNumber(message.status));
     }
-    if (message.wfSpecVersion !== 0) {
-      writer.uint32(24).int32(message.wfSpecVersion);
-    }
     if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(34).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
     }
     if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(42).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -1908,7 +1934,7 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
             break;
           }
 
-          message.wfSpecName = reader.string();
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -1918,21 +1944,14 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
           message.status = lHStatusFromJSON(reader.int32());
           continue;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.wfSpecVersion = reader.int32();
-          continue;
-        case 4:
-          if (tag !== 34) {
+          if (tag !== 26) {
             break;
           }
 
           message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
-        case 5:
-          if (tag !== 42) {
+        case 4:
+          if (tag !== 34) {
             break;
           }
 
@@ -1949,9 +1968,8 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
 
   fromJSON(object: any): SearchWfRunRequest_StatusAndSpecRequest {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
       earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
       latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
@@ -1959,14 +1977,11 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
 
   toJSON(message: SearchWfRunRequest_StatusAndSpecRequest): unknown {
     const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
     if (message.status !== LHStatus.STARTING) {
       obj.status = lHStatusToJSON(message.status);
-    }
-    if (message.wfSpecVersion !== 0) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
     }
     if (message.earliestStart !== undefined) {
       obj.earliestStart = message.earliestStart;
@@ -1986,9 +2001,10 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
     object: I,
   ): SearchWfRunRequest_StatusAndSpecRequest {
     const message = createBaseSearchWfRunRequest_StatusAndSpecRequest();
-    message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     message.status = object.status ?? LHStatus.STARTING;
-    message.wfSpecVersion = object.wfSpecVersion ?? 0;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     return message;
@@ -2666,7 +2682,7 @@ export const SearchNodeRunRequest = {
       writer.uint32(16).int32(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      writer.uint32(26).string(message.wfRunId);
+      WfRunId.encode(message.wfRunId, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2697,7 +2713,7 @@ export const SearchNodeRunRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2712,7 +2728,7 @@ export const SearchNodeRunRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
     };
   },
 
@@ -2725,7 +2741,7 @@ export const SearchNodeRunRequest = {
       obj.limit = Math.round(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      obj.wfRunId = message.wfRunId;
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -2737,7 +2753,9 @@ export const SearchNodeRunRequest = {
     const message = createBaseSearchNodeRunRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.wfRunId = object.wfRunId ?? undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -3078,7 +3096,7 @@ export const SearchVariableRequest = {
       writer.uint32(16).int32(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      writer.uint32(26).string(message.wfRunId);
+      WfRunId.encode(message.wfRunId, writer.uint32(26).fork()).ldelim();
     }
     if (message.value !== undefined) {
       SearchVariableRequest_NameAndValueRequest.encode(message.value, writer.uint32(34).fork()).ldelim();
@@ -3112,7 +3130,7 @@ export const SearchVariableRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
@@ -3134,7 +3152,7 @@ export const SearchVariableRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
       value: isSet(object.value) ? SearchVariableRequest_NameAndValueRequest.fromJSON(object.value) : undefined,
     };
   },
@@ -3148,7 +3166,7 @@ export const SearchVariableRequest = {
       obj.limit = Math.round(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      obj.wfRunId = message.wfRunId;
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     if (message.value !== undefined) {
       obj.value = SearchVariableRequest_NameAndValueRequest.toJSON(message.value);
@@ -3163,7 +3181,9 @@ export const SearchVariableRequest = {
     const message = createBaseSearchVariableRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.wfRunId = object.wfRunId ?? undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     message.value = (object.value !== undefined && object.value !== null)
       ? SearchVariableRequest_NameAndValueRequest.fromPartial(object.value)
       : undefined;
@@ -3172,7 +3192,7 @@ export const SearchVariableRequest = {
 };
 
 function createBaseSearchVariableRequest_NameAndValueRequest(): SearchVariableRequest_NameAndValueRequest {
-  return { value: undefined, wfSpecVersion: undefined, varName: "", wfSpecName: "" };
+  return { value: undefined, wfSpecMajorVersion: undefined, wfSpecRevision: undefined, varName: "", wfSpecName: "" };
 }
 
 export const SearchVariableRequest_NameAndValueRequest = {
@@ -3180,14 +3200,17 @@ export const SearchVariableRequest_NameAndValueRequest = {
     if (message.value !== undefined) {
       VariableValue.encode(message.value, writer.uint32(10).fork()).ldelim();
     }
-    if (message.wfSpecVersion !== undefined) {
-      writer.uint32(16).int32(message.wfSpecVersion);
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(24).int32(message.wfSpecRevision);
     }
     if (message.varName !== "") {
-      writer.uint32(26).string(message.varName);
+      writer.uint32(34).string(message.varName);
     }
     if (message.wfSpecName !== "") {
-      writer.uint32(34).string(message.wfSpecName);
+      writer.uint32(42).string(message.wfSpecName);
     }
     return writer;
   },
@@ -3211,17 +3234,24 @@ export const SearchVariableRequest_NameAndValueRequest = {
             break;
           }
 
-          message.wfSpecVersion = reader.int32();
+          message.wfSpecMajorVersion = reader.int32();
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.wfSpecRevision = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 34) {
             break;
           }
 
           message.varName = reader.string();
           continue;
-        case 4:
-          if (tag !== 34) {
+        case 5:
+          if (tag !== 42) {
             break;
           }
 
@@ -3239,7 +3269,8 @@ export const SearchVariableRequest_NameAndValueRequest = {
   fromJSON(object: any): SearchVariableRequest_NameAndValueRequest {
     return {
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : undefined,
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
       varName: isSet(object.varName) ? globalThis.String(object.varName) : "",
       wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
     };
@@ -3250,8 +3281,11 @@ export const SearchVariableRequest_NameAndValueRequest = {
     if (message.value !== undefined) {
       obj.value = VariableValue.toJSON(message.value);
     }
-    if (message.wfSpecVersion !== undefined) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
     }
     if (message.varName !== "") {
       obj.varName = message.varName;
@@ -3274,7 +3308,8 @@ export const SearchVariableRequest_NameAndValueRequest = {
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;
-    message.wfSpecVersion = object.wfSpecVersion ?? undefined;
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
     message.varName = object.varName ?? "";
     message.wfSpecName = object.wfSpecName ?? "";
     return message;
@@ -4071,7 +4106,7 @@ export const SearchExternalEventRequest = {
       writer.uint32(16).int32(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      writer.uint32(26).string(message.wfRunId);
+      WfRunId.encode(message.wfRunId, writer.uint32(26).fork()).ldelim();
     }
     if (message.externalEventDefNameAndStatus !== undefined) {
       SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest.encode(
@@ -4108,7 +4143,7 @@ export const SearchExternalEventRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
@@ -4133,7 +4168,7 @@ export const SearchExternalEventRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
       externalEventDefNameAndStatus: isSet(object.externalEventDefNameAndStatus)
         ? SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest.fromJSON(object.externalEventDefNameAndStatus)
         : undefined,
@@ -4149,7 +4184,7 @@ export const SearchExternalEventRequest = {
       obj.limit = Math.round(message.limit);
     }
     if (message.wfRunId !== undefined) {
-      obj.wfRunId = message.wfRunId;
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     if (message.externalEventDefNameAndStatus !== undefined) {
       obj.externalEventDefNameAndStatus = SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest.toJSON(
@@ -4166,7 +4201,9 @@ export const SearchExternalEventRequest = {
     const message = createBaseSearchExternalEventRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.wfRunId = object.wfRunId ?? undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     message.externalEventDefNameAndStatus =
       (object.externalEventDefNameAndStatus !== undefined && object.externalEventDefNameAndStatus !== null)
         ? SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest.fromPartial(object.externalEventDefNameAndStatus)
@@ -4333,13 +4370,13 @@ export const ExternalEventIdList = {
 };
 
 function createBaseListNodeRunsRequest(): ListNodeRunsRequest {
-  return { wfRunId: "" };
+  return { wfRunId: undefined };
 }
 
 export const ListNodeRunsRequest = {
   encode(message: ListNodeRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -4356,7 +4393,7 @@ export const ListNodeRunsRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4368,13 +4405,13 @@ export const ListNodeRunsRequest = {
   },
 
   fromJSON(object: any): ListNodeRunsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
   },
 
   toJSON(message: ListNodeRunsRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -4384,7 +4421,9 @@ export const ListNodeRunsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListNodeRunsRequest>, I>>(object: I): ListNodeRunsRequest {
     const message = createBaseListNodeRunsRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -4449,13 +4488,13 @@ export const NodeRunList = {
 };
 
 function createBaseListVariablesRequest(): ListVariablesRequest {
-  return { wfRunId: "" };
+  return { wfRunId: undefined };
 }
 
 export const ListVariablesRequest = {
   encode(message: ListVariablesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -4472,7 +4511,7 @@ export const ListVariablesRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4484,13 +4523,13 @@ export const ListVariablesRequest = {
   },
 
   fromJSON(object: any): ListVariablesRequest {
-    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
   },
 
   toJSON(message: ListVariablesRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -4500,7 +4539,9 @@ export const ListVariablesRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListVariablesRequest>, I>>(object: I): ListVariablesRequest {
     const message = createBaseListVariablesRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -4565,13 +4606,13 @@ export const VariableList = {
 };
 
 function createBaseListExternalEventsRequest(): ListExternalEventsRequest {
-  return { wfRunId: "" };
+  return { wfRunId: undefined };
 }
 
 export const ListExternalEventsRequest = {
   encode(message: ListExternalEventsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -4588,7 +4629,7 @@ export const ListExternalEventsRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4600,13 +4641,13 @@ export const ListExternalEventsRequest = {
   },
 
   fromJSON(object: any): ListExternalEventsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
   },
 
   toJSON(message: ListExternalEventsRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -4616,7 +4657,9 @@ export const ListExternalEventsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListExternalEventsRequest>, I>>(object: I): ListExternalEventsRequest {
     const message = createBaseListExternalEventsRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -4683,7 +4726,7 @@ export const ExternalEventList = {
 };
 
 function createBaseRegisterTaskWorkerRequest(): RegisterTaskWorkerRequest {
-  return { clientId: "", taskDefName: "", listenerName: "" };
+  return { clientId: "", taskDefId: undefined, listenerName: "" };
 }
 
 export const RegisterTaskWorkerRequest = {
@@ -4691,8 +4734,8 @@ export const RegisterTaskWorkerRequest = {
     if (message.clientId !== "") {
       writer.uint32(10).string(message.clientId);
     }
-    if (message.taskDefName !== "") {
-      writer.uint32(18).string(message.taskDefName);
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(18).fork()).ldelim();
     }
     if (message.listenerName !== "") {
       writer.uint32(26).string(message.listenerName);
@@ -4719,7 +4762,7 @@ export const RegisterTaskWorkerRequest = {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -4740,7 +4783,7 @@ export const RegisterTaskWorkerRequest = {
   fromJSON(object: any): RegisterTaskWorkerRequest {
     return {
       clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       listenerName: isSet(object.listenerName) ? globalThis.String(object.listenerName) : "",
     };
   },
@@ -4750,8 +4793,8 @@ export const RegisterTaskWorkerRequest = {
     if (message.clientId !== "") {
       obj.clientId = message.clientId;
     }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
     }
     if (message.listenerName !== "") {
       obj.listenerName = message.listenerName;
@@ -4765,14 +4808,16 @@ export const RegisterTaskWorkerRequest = {
   fromPartial<I extends Exact<DeepPartial<RegisterTaskWorkerRequest>, I>>(object: I): RegisterTaskWorkerRequest {
     const message = createBaseRegisterTaskWorkerRequest();
     message.clientId = object.clientId ?? "";
-    message.taskDefName = object.taskDefName ?? "";
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.listenerName = object.listenerName ?? "";
     return message;
   },
 };
 
 function createBaseTaskWorkerHeartBeatRequest(): TaskWorkerHeartBeatRequest {
-  return { clientId: "", taskDefName: "", listenerName: "" };
+  return { clientId: "", taskDefId: undefined, listenerName: "" };
 }
 
 export const TaskWorkerHeartBeatRequest = {
@@ -4780,8 +4825,8 @@ export const TaskWorkerHeartBeatRequest = {
     if (message.clientId !== "") {
       writer.uint32(10).string(message.clientId);
     }
-    if (message.taskDefName !== "") {
-      writer.uint32(18).string(message.taskDefName);
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(18).fork()).ldelim();
     }
     if (message.listenerName !== "") {
       writer.uint32(26).string(message.listenerName);
@@ -4808,7 +4853,7 @@ export const TaskWorkerHeartBeatRequest = {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -4829,7 +4874,7 @@ export const TaskWorkerHeartBeatRequest = {
   fromJSON(object: any): TaskWorkerHeartBeatRequest {
     return {
       clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       listenerName: isSet(object.listenerName) ? globalThis.String(object.listenerName) : "",
     };
   },
@@ -4839,8 +4884,8 @@ export const TaskWorkerHeartBeatRequest = {
     if (message.clientId !== "") {
       obj.clientId = message.clientId;
     }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
     }
     if (message.listenerName !== "") {
       obj.listenerName = message.listenerName;
@@ -4854,7 +4899,9 @@ export const TaskWorkerHeartBeatRequest = {
   fromPartial<I extends Exact<DeepPartial<TaskWorkerHeartBeatRequest>, I>>(object: I): TaskWorkerHeartBeatRequest {
     const message = createBaseTaskWorkerHeartBeatRequest();
     message.clientId = object.clientId ?? "";
-    message.taskDefName = object.taskDefName ?? "";
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.listenerName = object.listenerName ?? "";
     return message;
   },
@@ -5100,13 +5147,13 @@ export const TaskWorkerMetadata = {
 };
 
 function createBaseTaskWorkerGroup(): TaskWorkerGroup {
-  return { taskDefName: "", createdAt: undefined, taskWorkers: {} };
+  return { id: undefined, createdAt: undefined, taskWorkers: {} };
 }
 
 export const TaskWorkerGroup = {
   encode(message: TaskWorkerGroup, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefName !== "") {
-      writer.uint32(10).string(message.taskDefName);
+    if (message.id !== undefined) {
+      TaskWorkerGroupId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
@@ -5129,7 +5176,7 @@ export const TaskWorkerGroup = {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.id = TaskWorkerGroupId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -5159,7 +5206,7 @@ export const TaskWorkerGroup = {
 
   fromJSON(object: any): TaskWorkerGroup {
     return {
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      id: isSet(object.id) ? TaskWorkerGroupId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       taskWorkers: isObject(object.taskWorkers)
         ? Object.entries(object.taskWorkers).reduce<{ [key: string]: TaskWorkerMetadata }>((acc, [key, value]) => {
@@ -5172,8 +5219,8 @@ export const TaskWorkerGroup = {
 
   toJSON(message: TaskWorkerGroup): unknown {
     const obj: any = {};
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
+    if (message.id !== undefined) {
+      obj.id = TaskWorkerGroupId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
@@ -5195,7 +5242,7 @@ export const TaskWorkerGroup = {
   },
   fromPartial<I extends Exact<DeepPartial<TaskWorkerGroup>, I>>(object: I): TaskWorkerGroup {
     const message = createBaseTaskWorkerGroup();
-    message.taskDefName = object.taskDefName ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? TaskWorkerGroupId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.taskWorkers = Object.entries(object.taskWorkers ?? {}).reduce<{ [key: string]: TaskWorkerMetadata }>(
       (acc, [key, value]) => {
@@ -5291,13 +5338,13 @@ export const TaskWorkerGroup_TaskWorkersEntry = {
 };
 
 function createBasePollTaskRequest(): PollTaskRequest {
-  return { taskDefName: "", clientId: "", taskWorkerVersion: undefined };
+  return { taskDefId: undefined, clientId: "", taskWorkerVersion: undefined };
 }
 
 export const PollTaskRequest = {
   encode(message: PollTaskRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefName !== "") {
-      writer.uint32(10).string(message.taskDefName);
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
     }
     if (message.clientId !== "") {
       writer.uint32(18).string(message.clientId);
@@ -5320,7 +5367,7 @@ export const PollTaskRequest = {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -5347,7 +5394,7 @@ export const PollTaskRequest = {
 
   fromJSON(object: any): PollTaskRequest {
     return {
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
       taskWorkerVersion: isSet(object.taskWorkerVersion) ? globalThis.String(object.taskWorkerVersion) : undefined,
     };
@@ -5355,8 +5402,8 @@ export const PollTaskRequest = {
 
   toJSON(message: PollTaskRequest): unknown {
     const obj: any = {};
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
     }
     if (message.clientId !== "") {
       obj.clientId = message.clientId;
@@ -5372,7 +5419,9 @@ export const PollTaskRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<PollTaskRequest>, I>>(object: I): PollTaskRequest {
     const message = createBasePollTaskRequest();
-    message.taskDefName = object.taskDefName ?? "";
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.clientId = object.clientId ?? "";
     message.taskWorkerVersion = object.taskWorkerVersion ?? undefined;
     return message;
@@ -5771,13 +5820,13 @@ export const ReportTaskRun = {
 };
 
 function createBaseStopWfRunRequest(): StopWfRunRequest {
-  return { wfRunId: "", threadRunNumber: 0 };
+  return { wfRunId: undefined, threadRunNumber: 0 };
 }
 
 export const StopWfRunRequest = {
   encode(message: StopWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     if (message.threadRunNumber !== 0) {
       writer.uint32(16).int32(message.threadRunNumber);
@@ -5797,7 +5846,7 @@ export const StopWfRunRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -5817,15 +5866,15 @@ export const StopWfRunRequest = {
 
   fromJSON(object: any): StopWfRunRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
     };
   },
 
   toJSON(message: StopWfRunRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     if (message.threadRunNumber !== 0) {
       obj.threadRunNumber = Math.round(message.threadRunNumber);
@@ -5838,20 +5887,22 @@ export const StopWfRunRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<StopWfRunRequest>, I>>(object: I): StopWfRunRequest {
     const message = createBaseStopWfRunRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     message.threadRunNumber = object.threadRunNumber ?? 0;
     return message;
   },
 };
 
 function createBaseResumeWfRunRequest(): ResumeWfRunRequest {
-  return { wfRunId: "", threadRunNumber: 0 };
+  return { wfRunId: undefined, threadRunNumber: 0 };
 }
 
 export const ResumeWfRunRequest = {
   encode(message: ResumeWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     if (message.threadRunNumber !== 0) {
       writer.uint32(16).int32(message.threadRunNumber);
@@ -5871,7 +5922,7 @@ export const ResumeWfRunRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -5891,15 +5942,15 @@ export const ResumeWfRunRequest = {
 
   fromJSON(object: any): ResumeWfRunRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
     };
   },
 
   toJSON(message: ResumeWfRunRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     if (message.threadRunNumber !== 0) {
       obj.threadRunNumber = Math.round(message.threadRunNumber);
@@ -5912,7 +5963,9 @@ export const ResumeWfRunRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ResumeWfRunRequest>, I>>(object: I): ResumeWfRunRequest {
     const message = createBaseResumeWfRunRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     message.threadRunNumber = object.threadRunNumber ?? 0;
     return message;
   },
@@ -6010,22 +6063,27 @@ export const TaskDefMetricsQueryRequest = {
 };
 
 function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
-  return { lastWindowStart: undefined, numWindows: 0, taskDefName: "", windowLength: MetricsWindowLength.MINUTES_5 };
+  return {
+    taskDefId: undefined,
+    lastWindowStart: undefined,
+    windowLength: MetricsWindowLength.MINUTES_5,
+    numWindows: 0,
+  };
 }
 
 export const ListTaskMetricsRequest = {
   encode(message: ListTaskMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
+    }
     if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(10).fork()).ldelim();
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(16).int32(message.numWindows);
-    }
-    if (message.taskDefName !== "") {
-      writer.uint32(26).string(message.taskDefName);
+      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
     }
     if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(32).int32(metricsWindowLengthToNumber(message.windowLength));
+      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
+    }
+    if (message.numWindows !== 0) {
+      writer.uint32(32).int32(message.numWindows);
     }
     return writer;
   },
@@ -6042,28 +6100,28 @@ export const ListTaskMetricsRequest = {
             break;
           }
 
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.numWindows = reader.int32();
+          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
           continue;
         case 4:
           if (tag !== 32) {
             break;
           }
 
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
+          message.numWindows = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6076,28 +6134,28 @@ export const ListTaskMetricsRequest = {
 
   fromJSON(object: any): ListTaskMetricsRequest {
     return {
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
       windowLength: isSet(object.windowLength)
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
+      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
     };
   },
 
   toJSON(message: ListTaskMetricsRequest): unknown {
     const obj: any = {};
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
+    }
     if (message.lastWindowStart !== undefined) {
       obj.lastWindowStart = message.lastWindowStart;
     }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
-    }
     if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
       obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
+    }
+    if (message.numWindows !== 0) {
+      obj.numWindows = Math.round(message.numWindows);
     }
     return obj;
   },
@@ -6107,10 +6165,12 @@ export const ListTaskMetricsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListTaskMetricsRequest>, I>>(object: I): ListTaskMetricsRequest {
     const message = createBaseListTaskMetricsRequest();
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.numWindows = object.numWindows ?? 0;
-    message.taskDefName = object.taskDefName ?? "";
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
+    message.numWindows = object.numWindows ?? 0;
     return message;
   },
 };
@@ -6177,22 +6237,19 @@ export const ListTaskMetricsResponse = {
 };
 
 function createBaseWfSpecMetricsQueryRequest(): WfSpecMetricsQueryRequest {
-  return { windowStart: undefined, windowType: MetricsWindowLength.MINUTES_5, wfSpecName: "", wfSpecVersion: 0 };
+  return { wfSpecId: undefined, windowStart: undefined, windowLength: MetricsWindowLength.MINUTES_5 };
 }
 
 export const WfSpecMetricsQueryRequest = {
   encode(message: WfSpecMetricsQueryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
     if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(10).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
     }
-    if (message.windowType !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(16).int32(metricsWindowLengthToNumber(message.windowType));
-    }
-    if (message.wfSpecName !== "") {
-      writer.uint32(26).string(message.wfSpecName);
-    }
-    if (message.wfSpecVersion !== 0) {
-      writer.uint32(32).int32(message.wfSpecVersion);
+    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
+      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
     }
     return writer;
   },
@@ -6209,28 +6266,21 @@ export const WfSpecMetricsQueryRequest = {
             break;
           }
 
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.windowType = metricsWindowLengthFromJSON(reader.int32());
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.wfSpecName = reader.string();
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.wfSpecVersion = reader.int32();
+          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6243,28 +6293,24 @@ export const WfSpecMetricsQueryRequest = {
 
   fromJSON(object: any): WfSpecMetricsQueryRequest {
     return {
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
-      windowType: isSet(object.windowType)
-        ? metricsWindowLengthFromJSON(object.windowType)
+      windowLength: isSet(object.windowLength)
+        ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
     };
   },
 
   toJSON(message: WfSpecMetricsQueryRequest): unknown {
     const obj: any = {};
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
+    }
     if (message.windowStart !== undefined) {
       obj.windowStart = message.windowStart;
     }
-    if (message.windowType !== MetricsWindowLength.MINUTES_5) {
-      obj.windowType = metricsWindowLengthToJSON(message.windowType);
-    }
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.wfSpecVersion !== 0) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
+    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
+      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
     }
     return obj;
   },
@@ -6274,40 +6320,37 @@ export const WfSpecMetricsQueryRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<WfSpecMetricsQueryRequest>, I>>(object: I): WfSpecMetricsQueryRequest {
     const message = createBaseWfSpecMetricsQueryRequest();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     message.windowStart = object.windowStart ?? undefined;
-    message.windowType = object.windowType ?? MetricsWindowLength.MINUTES_5;
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.wfSpecVersion = object.wfSpecVersion ?? 0;
+    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
     return message;
   },
 };
 
 function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
   return {
+    wfSpecId: undefined,
     lastWindowStart: undefined,
-    numWindows: 0,
-    wfSpecName: "",
-    wfSpecVersion: 0,
     windowLength: MetricsWindowLength.MINUTES_5,
+    numWindows: 0,
   };
 }
 
 export const ListWfMetricsRequest = {
   encode(message: ListWfMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
     if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(10).fork()).ldelim();
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(16).int32(message.numWindows);
-    }
-    if (message.wfSpecName !== "") {
-      writer.uint32(26).string(message.wfSpecName);
-    }
-    if (message.wfSpecVersion !== 0) {
-      writer.uint32(32).int32(message.wfSpecVersion);
+      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
     }
     if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(40).int32(metricsWindowLengthToNumber(message.windowLength));
+      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
+    }
+    if (message.numWindows !== 0) {
+      writer.uint32(32).int32(message.numWindows);
     }
     return writer;
   },
@@ -6324,35 +6367,28 @@ export const ListWfMetricsRequest = {
             break;
           }
 
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.numWindows = reader.int32();
+          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.wfSpecName = reader.string();
+          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
           continue;
         case 4:
           if (tag !== 32) {
             break;
           }
 
-          message.wfSpecVersion = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
+          message.numWindows = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6365,32 +6401,28 @@ export const ListWfMetricsRequest = {
 
   fromJSON(object: any): ListWfMetricsRequest {
     return {
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
       windowLength: isSet(object.windowLength)
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
+      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
     };
   },
 
   toJSON(message: ListWfMetricsRequest): unknown {
     const obj: any = {};
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
+    }
     if (message.lastWindowStart !== undefined) {
       obj.lastWindowStart = message.lastWindowStart;
     }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.wfSpecVersion !== 0) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
-    }
     if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
       obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
+    }
+    if (message.numWindows !== 0) {
+      obj.numWindows = Math.round(message.numWindows);
     }
     return obj;
   },
@@ -6400,11 +6432,12 @@ export const ListWfMetricsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListWfMetricsRequest>, I>>(object: I): ListWfMetricsRequest {
     const message = createBaseListWfMetricsRequest();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.numWindows = object.numWindows ?? 0;
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.wfSpecVersion = object.wfSpecVersion ?? 0;
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
+    message.numWindows = object.numWindows ?? 0;
     return message;
   },
 };
@@ -6472,9 +6505,9 @@ export const ListWfMetricsResponse = {
 
 function createBaseTaskDefMetrics(): TaskDefMetrics {
   return {
+    taskDefId: undefined,
     windowStart: undefined,
     type: MetricsWindowLength.MINUTES_5,
-    taskDefName: "",
     scheduleToStartMax: 0,
     scheduleToStartAvg: 0,
     startToCompleteMax: 0,
@@ -6488,14 +6521,14 @@ function createBaseTaskDefMetrics(): TaskDefMetrics {
 
 export const TaskDefMetrics = {
   encode(message: TaskDefMetrics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
+    }
     if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(10).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
     }
     if (message.type !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(16).int32(metricsWindowLengthToNumber(message.type));
-    }
-    if (message.taskDefName !== "") {
-      writer.uint32(26).string(message.taskDefName);
+      writer.uint32(24).int32(metricsWindowLengthToNumber(message.type));
     }
     if (message.scheduleToStartMax !== 0) {
       writer.uint32(32).int64(message.scheduleToStartMax);
@@ -6536,21 +6569,21 @@ export const TaskDefMetrics = {
             break;
           }
 
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
             break;
           }
 
           message.type = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.taskDefName = reader.string();
           continue;
         case 4:
           if (tag !== 32) {
@@ -6619,9 +6652,9 @@ export const TaskDefMetrics = {
 
   fromJSON(object: any): TaskDefMetrics {
     return {
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       type: isSet(object.type) ? metricsWindowLengthFromJSON(object.type) : MetricsWindowLength.MINUTES_5,
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
       scheduleToStartMax: isSet(object.scheduleToStartMax) ? globalThis.Number(object.scheduleToStartMax) : 0,
       scheduleToStartAvg: isSet(object.scheduleToStartAvg) ? globalThis.Number(object.scheduleToStartAvg) : 0,
       startToCompleteMax: isSet(object.startToCompleteMax) ? globalThis.Number(object.startToCompleteMax) : 0,
@@ -6635,14 +6668,14 @@ export const TaskDefMetrics = {
 
   toJSON(message: TaskDefMetrics): unknown {
     const obj: any = {};
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
+    }
     if (message.windowStart !== undefined) {
       obj.windowStart = message.windowStart;
     }
     if (message.type !== MetricsWindowLength.MINUTES_5) {
       obj.type = metricsWindowLengthToJSON(message.type);
-    }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
     }
     if (message.scheduleToStartMax !== 0) {
       obj.scheduleToStartMax = Math.round(message.scheduleToStartMax);
@@ -6676,9 +6709,11 @@ export const TaskDefMetrics = {
   },
   fromPartial<I extends Exact<DeepPartial<TaskDefMetrics>, I>>(object: I): TaskDefMetrics {
     const message = createBaseTaskDefMetrics();
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.type = object.type ?? MetricsWindowLength.MINUTES_5;
-    message.taskDefName = object.taskDefName ?? "";
     message.scheduleToStartMax = object.scheduleToStartMax ?? 0;
     message.scheduleToStartAvg = object.scheduleToStartAvg ?? 0;
     message.startToCompleteMax = object.startToCompleteMax ?? 0;
@@ -6693,10 +6728,9 @@ export const TaskDefMetrics = {
 
 function createBaseWfSpecMetrics(): WfSpecMetrics {
   return {
+    wfSpecId: undefined,
     windowStart: undefined,
     type: MetricsWindowLength.MINUTES_5,
-    wfSpecName: "",
-    wfSpecVersion: 0,
     totalStarted: 0,
     totalCompleted: 0,
     totalErrored: 0,
@@ -6707,32 +6741,29 @@ function createBaseWfSpecMetrics(): WfSpecMetrics {
 
 export const WfSpecMetrics = {
   encode(message: WfSpecMetrics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
     if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(10).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
     }
     if (message.type !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(16).int32(metricsWindowLengthToNumber(message.type));
-    }
-    if (message.wfSpecName !== "") {
-      writer.uint32(26).string(message.wfSpecName);
-    }
-    if (message.wfSpecVersion !== 0) {
-      writer.uint32(32).int32(message.wfSpecVersion);
+      writer.uint32(24).int32(metricsWindowLengthToNumber(message.type));
     }
     if (message.totalStarted !== 0) {
-      writer.uint32(40).int64(message.totalStarted);
+      writer.uint32(32).int64(message.totalStarted);
     }
     if (message.totalCompleted !== 0) {
-      writer.uint32(48).int64(message.totalCompleted);
+      writer.uint32(40).int64(message.totalCompleted);
     }
     if (message.totalErrored !== 0) {
-      writer.uint32(56).int64(message.totalErrored);
+      writer.uint32(48).int64(message.totalErrored);
     }
     if (message.startToCompleteMax !== 0) {
-      writer.uint32(64).int64(message.startToCompleteMax);
+      writer.uint32(56).int64(message.startToCompleteMax);
     }
     if (message.startToCompleteAvg !== 0) {
-      writer.uint32(72).int64(message.startToCompleteAvg);
+      writer.uint32(64).int64(message.startToCompleteAvg);
     }
     return writer;
   },
@@ -6749,59 +6780,52 @@ export const WfSpecMetrics = {
             break;
           }
 
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
             break;
           }
 
           message.type = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.wfSpecName = reader.string();
           continue;
         case 4:
           if (tag !== 32) {
             break;
           }
 
-          message.wfSpecVersion = reader.int32();
+          message.totalStarted = longToNumber(reader.int64() as Long);
           continue;
         case 5:
           if (tag !== 40) {
             break;
           }
 
-          message.totalStarted = longToNumber(reader.int64() as Long);
+          message.totalCompleted = longToNumber(reader.int64() as Long);
           continue;
         case 6:
           if (tag !== 48) {
             break;
           }
 
-          message.totalCompleted = longToNumber(reader.int64() as Long);
+          message.totalErrored = longToNumber(reader.int64() as Long);
           continue;
         case 7:
           if (tag !== 56) {
             break;
           }
 
-          message.totalErrored = longToNumber(reader.int64() as Long);
+          message.startToCompleteMax = longToNumber(reader.int64() as Long);
           continue;
         case 8:
           if (tag !== 64) {
-            break;
-          }
-
-          message.startToCompleteMax = longToNumber(reader.int64() as Long);
-          continue;
-        case 9:
-          if (tag !== 72) {
             break;
           }
 
@@ -6818,10 +6842,9 @@ export const WfSpecMetrics = {
 
   fromJSON(object: any): WfSpecMetrics {
     return {
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       type: isSet(object.type) ? metricsWindowLengthFromJSON(object.type) : MetricsWindowLength.MINUTES_5,
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
       totalStarted: isSet(object.totalStarted) ? globalThis.Number(object.totalStarted) : 0,
       totalCompleted: isSet(object.totalCompleted) ? globalThis.Number(object.totalCompleted) : 0,
       totalErrored: isSet(object.totalErrored) ? globalThis.Number(object.totalErrored) : 0,
@@ -6832,17 +6855,14 @@ export const WfSpecMetrics = {
 
   toJSON(message: WfSpecMetrics): unknown {
     const obj: any = {};
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
+    }
     if (message.windowStart !== undefined) {
       obj.windowStart = message.windowStart;
     }
     if (message.type !== MetricsWindowLength.MINUTES_5) {
       obj.type = metricsWindowLengthToJSON(message.type);
-    }
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.wfSpecVersion !== 0) {
-      obj.wfSpecVersion = Math.round(message.wfSpecVersion);
     }
     if (message.totalStarted !== 0) {
       obj.totalStarted = Math.round(message.totalStarted);
@@ -6867,10 +6887,11 @@ export const WfSpecMetrics = {
   },
   fromPartial<I extends Exact<DeepPartial<WfSpecMetrics>, I>>(object: I): WfSpecMetrics {
     const message = createBaseWfSpecMetrics();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.type = object.type ?? MetricsWindowLength.MINUTES_5;
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.wfSpecVersion = object.wfSpecVersion ?? 0;
     message.totalStarted = object.totalStarted ?? 0;
     message.totalCompleted = object.totalCompleted ?? 0;
     message.totalErrored = object.totalErrored ?? 0;
@@ -6881,13 +6902,13 @@ export const WfSpecMetrics = {
 };
 
 function createBaseListUserTaskRunRequest(): ListUserTaskRunRequest {
-  return { wfRunId: "" };
+  return { wfRunId: undefined };
 }
 
 export const ListUserTaskRunRequest = {
   encode(message: ListUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -6904,7 +6925,7 @@ export const ListUserTaskRunRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6916,13 +6937,13 @@ export const ListUserTaskRunRequest = {
   },
 
   fromJSON(object: any): ListUserTaskRunRequest {
-    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
   },
 
   toJSON(message: ListUserTaskRunRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -6932,7 +6953,9 @@ export const ListUserTaskRunRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListUserTaskRunRequest>, I>>(object: I): ListUserTaskRunRequest {
     const message = createBaseListUserTaskRunRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -6997,13 +7020,13 @@ export const UserTaskRunList = {
 };
 
 function createBaseListTaskRunsRequest(): ListTaskRunsRequest {
-  return { wfRunId: "" };
+  return { wfRunId: undefined };
 }
 
 export const ListTaskRunsRequest = {
   encode(message: ListTaskRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -7020,7 +7043,7 @@ export const ListTaskRunsRequest = {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -7032,13 +7055,13 @@ export const ListTaskRunsRequest = {
   },
 
   fromJSON(object: any): ListTaskRunsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
   },
 
   toJSON(message: ListTaskRunsRequest): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
     return obj;
   },
@@ -7048,7 +7071,9 @@ export const ListTaskRunsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<ListTaskRunsRequest>, I>>(object: I): ListTaskRunsRequest {
     const message = createBaseListTaskRunsRequest();
-    message.wfRunId = object.wfRunId ?? "";
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };
@@ -7186,6 +7211,186 @@ export const MigrateWfSpecRequest = {
     message.migration = (object.migration !== undefined && object.migration !== null)
       ? WfSpecVersionMigration.fromPartial(object.migration)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseGetLatestWfSpecRequest(): GetLatestWfSpecRequest {
+  return { name: "", majorVersion: undefined };
+}
+
+export const GetLatestWfSpecRequest = {
+  encode(message: GetLatestWfSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestWfSpecRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetLatestWfSpecRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetLatestWfSpecRequest {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : undefined,
+    };
+  },
+
+  toJSON(message: GetLatestWfSpecRequest): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.majorVersion !== undefined) {
+      obj.majorVersion = Math.round(message.majorVersion);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetLatestWfSpecRequest>, I>>(base?: I): GetLatestWfSpecRequest {
+    return GetLatestWfSpecRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetLatestWfSpecRequest>, I>>(object: I): GetLatestWfSpecRequest {
+    const message = createBaseGetLatestWfSpecRequest();
+    message.name = object.name ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    return message;
+  },
+};
+
+function createBaseServerVersionResponse(): ServerVersionResponse {
+  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+}
+
+export const ServerVersionResponse = {
+  encode(message: ServerVersionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.majorVersion !== 0) {
+      writer.uint32(8).int32(message.majorVersion);
+    }
+    if (message.minorVersion !== 0) {
+      writer.uint32(16).int32(message.minorVersion);
+    }
+    if (message.patchVersion !== 0) {
+      writer.uint32(24).int32(message.patchVersion);
+    }
+    if (message.preReleaseIdentifier !== undefined) {
+      writer.uint32(34).string(message.preReleaseIdentifier);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseServerVersionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.minorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.patchVersion = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.preReleaseIdentifier = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ServerVersionResponse {
+    return {
+      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
+      minorVersion: isSet(object.minorVersion) ? globalThis.Number(object.minorVersion) : 0,
+      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : 0,
+      preReleaseIdentifier: isSet(object.preReleaseIdentifier)
+        ? globalThis.String(object.preReleaseIdentifier)
+        : undefined,
+    };
+  },
+
+  toJSON(message: ServerVersionResponse): unknown {
+    const obj: any = {};
+    if (message.majorVersion !== 0) {
+      obj.majorVersion = Math.round(message.majorVersion);
+    }
+    if (message.minorVersion !== 0) {
+      obj.minorVersion = Math.round(message.minorVersion);
+    }
+    if (message.patchVersion !== 0) {
+      obj.patchVersion = Math.round(message.patchVersion);
+    }
+    if (message.preReleaseIdentifier !== undefined) {
+      obj.preReleaseIdentifier = message.preReleaseIdentifier;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServerVersionResponse>, I>>(base?: I): ServerVersionResponse {
+    return ServerVersionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ServerVersionResponse>, I>>(object: I): ServerVersionResponse {
+    const message = createBaseServerVersionResponse();
+    message.majorVersion = object.majorVersion ?? 0;
+    message.minorVersion = object.minorVersion ?? 0;
+    message.patchVersion = object.patchVersion ?? 0;
+    message.preReleaseIdentifier = object.preReleaseIdentifier ?? undefined;
     return message;
   },
 };
@@ -7627,6 +7832,14 @@ export const LHPublicApiDefinition = {
       responseStream: false,
       options: {},
     },
+    getServerVersion: {
+      name: "GetServerVersion",
+      requestType: Empty,
+      requestStream: false,
+      responseType: ServerVersionResponse,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -7769,6 +7982,7 @@ export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
+  getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersionResponse>>;
 }
 
 export interface LHPublicApiClient<CallOptionsExt = {}> {
@@ -7916,6 +8130,7 @@ export interface LHPublicApiClient<CallOptionsExt = {}> {
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
+  getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersionResponse>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

@@ -17,7 +17,9 @@ describe('drawer userTaskRun API', () => {
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getUserTaskRun', req, res, {
-            wfRunId: 'A_WFRUN_ID',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
             userTaskGuid: 'A_GUID'
         } as UserTaskRunId)
     })

@@ -10,7 +10,7 @@ public interface ServerACLsOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ServerACL>
+  java.util.List<io.littlehorse.common.proto.ServerACL> 
       getAclsList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
@@ -23,7 +23,7 @@ public interface ServerACLsOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>

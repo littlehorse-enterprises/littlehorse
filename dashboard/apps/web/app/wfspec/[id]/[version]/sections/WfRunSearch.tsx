@@ -59,8 +59,10 @@ export function WfRunSearch({ id, version }: any) {
             body: JSON.stringify({
                 statusAndSpec: {
                     status: wfRunStatus,
-                    wfSpecName: id,
-                    wfSpecVersion: version,
+                    wfSpecId: {
+                        name: id,
+                        majorVersion: version
+                    },
                     earliestStart: startDt,
                     latestStart: endDt
                 },

@@ -2,23 +2,24 @@
 import * as _m0 from "protobufjs/minimal";
 import { VariableDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { TaskDefId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
 export interface TaskDef {
-  name: string;
+  id: TaskDefId | undefined;
   inputVars: VariableDef[];
   createdAt: string | undefined;
 }
 
 function createBaseTaskDef(): TaskDef {
-  return { name: "", inputVars: [], createdAt: undefined };
+  return { id: undefined, inputVars: [], createdAt: undefined };
 }
 
 export const TaskDef = {
   encode(message: TaskDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== undefined) {
+      TaskDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.inputVars) {
       VariableDef.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -41,7 +42,7 @@ export const TaskDef = {
             break;
           }
 
-          message.name = reader.string();
+          message.id = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -68,7 +69,7 @@ export const TaskDef = {
 
   fromJSON(object: any): TaskDef {
     return {
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      id: isSet(object.id) ? TaskDefId.fromJSON(object.id) : undefined,
       inputVars: globalThis.Array.isArray(object?.inputVars)
         ? object.inputVars.map((e: any) => VariableDef.fromJSON(e))
         : [],
@@ -78,8 +79,8 @@ export const TaskDef = {
 
   toJSON(message: TaskDef): unknown {
     const obj: any = {};
-    if (message.name !== "") {
-      obj.name = message.name;
+    if (message.id !== undefined) {
+      obj.id = TaskDefId.toJSON(message.id);
     }
     if (message.inputVars?.length) {
       obj.inputVars = message.inputVars.map((e) => VariableDef.toJSON(e));
@@ -95,7 +96,7 @@ export const TaskDef = {
   },
   fromPartial<I extends Exact<DeepPartial<TaskDef>, I>>(object: I): TaskDef {
     const message = createBaseTaskDef();
-    message.name = object.name ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? TaskDefId.fromPartial(object.id) : undefined;
     message.inputVars = object.inputVars?.map((e) => VariableDef.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? undefined;
     return message;

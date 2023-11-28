@@ -6,7 +6,7 @@ const path = require('path')
 // Write typescript definitions for global variables
 console.log('Writing types for the feature toggles.')
 const definitions = Object.keys(flags)
-    .map(name => `declare const ${name}: boolean`)
+    .map(name => `declare let ${name}: boolean`)
     .join('\n')
 
 fs.writeFileSync(

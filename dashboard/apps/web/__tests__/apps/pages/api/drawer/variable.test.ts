@@ -18,7 +18,9 @@ describe('taskDef API', () => {
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('getVariable', req, res, {
-            wfRunId: 'A_WFRUN_ID',
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            },
             threadRunNumber: 0,
             name: 'A_VARIABLE_NAME'
         } as VariableId)

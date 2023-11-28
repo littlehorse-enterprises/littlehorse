@@ -28,7 +28,8 @@ describe('Layouted Graph API', () => {
             .toHaveBeenCalledWith('getWfSpec',
                 req, res, {
                     name: 'ANY_WF_SPEC',
-                    version: 0
+                    majorVersion: 0,
+                    revision: 0
                 } as WfSpecId)
     })
 

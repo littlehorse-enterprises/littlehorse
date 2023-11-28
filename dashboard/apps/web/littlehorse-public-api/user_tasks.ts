@@ -2,7 +2,7 @@
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId, WfSpecId } from "./object_id";
+import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -142,7 +142,6 @@ export interface CancelUserTaskRunRequest {
 export interface UserTaskTriggerReference {
   nodeRunId: NodeRunId | undefined;
   userTaskEventNumber: number;
-  wfSpecId: WfSpecId | undefined;
   userId?: string | undefined;
   userGroup?: string | undefined;
 }
@@ -1078,7 +1077,7 @@ export const CancelUserTaskRunRequest = {
 };
 
 function createBaseUserTaskTriggerReference(): UserTaskTriggerReference {
-  return { nodeRunId: undefined, userTaskEventNumber: 0, wfSpecId: undefined, userId: undefined, userGroup: undefined };
+  return { nodeRunId: undefined, userTaskEventNumber: 0, userId: undefined, userGroup: undefined };
 }
 
 export const UserTaskTriggerReference = {
@@ -1089,14 +1088,11 @@ export const UserTaskTriggerReference = {
     if (message.userTaskEventNumber !== 0) {
       writer.uint32(16).int32(message.userTaskEventNumber);
     }
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
-    }
     if (message.userId !== undefined) {
-      writer.uint32(34).string(message.userId);
+      writer.uint32(26).string(message.userId);
     }
     if (message.userGroup !== undefined) {
-      writer.uint32(42).string(message.userGroup);
+      writer.uint32(34).string(message.userGroup);
     }
     return writer;
   },
@@ -1127,17 +1123,10 @@ export const UserTaskTriggerReference = {
             break;
           }
 
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          message.userId = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
-            break;
-          }
-
-          message.userId = reader.string();
-          continue;
-        case 5:
-          if (tag !== 42) {
             break;
           }
 
@@ -1156,7 +1145,6 @@ export const UserTaskTriggerReference = {
     return {
       nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined,
       userTaskEventNumber: isSet(object.userTaskEventNumber) ? globalThis.Number(object.userTaskEventNumber) : 0,
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       userId: isSet(object.userId) ? globalThis.String(object.userId) : undefined,
       userGroup: isSet(object.userGroup) ? globalThis.String(object.userGroup) : undefined,
     };
@@ -1169,9 +1157,6 @@ export const UserTaskTriggerReference = {
     }
     if (message.userTaskEventNumber !== 0) {
       obj.userTaskEventNumber = Math.round(message.userTaskEventNumber);
-    }
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
     if (message.userId !== undefined) {
       obj.userId = message.userId;
@@ -1191,9 +1176,6 @@ export const UserTaskTriggerReference = {
       ? NodeRunId.fromPartial(object.nodeRunId)
       : undefined;
     message.userTaskEventNumber = object.userTaskEventNumber ?? 0;
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
     message.userId = object.userId ?? undefined;
     message.userGroup = object.userGroup ?? undefined;
     return message;

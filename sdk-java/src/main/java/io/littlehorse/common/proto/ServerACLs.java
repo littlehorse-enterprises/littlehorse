@@ -53,7 +53,7 @@ private static final long serialVersionUID = 0L;
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList() {
     return acls_;
   }
@@ -390,7 +390,7 @@ private static final long serialVersionUID = 0L;
             aclsBuilder_ = null;
             acls_ = other.acls_;
             bitField0_ = (bitField0_ & ~0x00000001);
-            aclsBuilder_ =
+            aclsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getAclsFieldBuilder() : null;
           } else {
@@ -649,7 +649,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 1;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
          getAclsOrBuilderList() {
       if (aclsBuilder_ != null) {
         return aclsBuilder_.getMessageOrBuilderList();
@@ -675,12 +675,12 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 1;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder>
+    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder> 
          getAclsBuilderList() {
       return getAclsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder>
+        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder> 
         getAclsFieldBuilder() {
       if (aclsBuilder_ == null) {
         aclsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -756,3 +756,4 @@ private static final long serialVersionUID = 0L;
   }
 
 }
+

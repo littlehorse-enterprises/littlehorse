@@ -11,15 +11,13 @@ import {
   waitForThreadsPolicyToNumber,
 } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
+import { ExternalEventDefId, ExternalEventId, NodeRunId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
 export interface NodeRun {
-  wfRunId: string;
-  threadRunNumber: number;
-  position: number;
+  id: NodeRunId | undefined;
   wfSpecId: WfSpecId | undefined;
   failureHandlerIds: number[];
   status: LHStatus;
@@ -76,7 +74,7 @@ export interface WaitForThreadsRun_WaitForThread {
 }
 
 export interface ExternalEventRun {
-  externalEventDefName: string;
+  externalEventDefId: ExternalEventDefId | undefined;
   eventTime?: string | undefined;
   externalEventId?: ExternalEventId | undefined;
 }
@@ -94,9 +92,7 @@ export interface Failure {
 
 function createBaseNodeRun(): NodeRun {
   return {
-    wfRunId: "",
-    threadRunNumber: 0,
-    position: 0,
+    id: undefined,
     wfSpecId: undefined,
     failureHandlerIds: [],
     status: LHStatus.STARTING,
@@ -120,14 +116,8 @@ function createBaseNodeRun(): NodeRun {
 
 export const NodeRun = {
   encode(message: NodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfRunId !== "") {
-      writer.uint32(10).string(message.wfRunId);
-    }
-    if (message.threadRunNumber !== 0) {
-      writer.uint32(16).int32(message.threadRunNumber);
-    }
-    if (message.position !== 0) {
-      writer.uint32(24).int32(message.position);
+    if (message.id !== undefined) {
+      NodeRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.wfSpecId !== undefined) {
       WfSpecId.encode(message.wfSpecId, writer.uint32(34).fork()).ldelim();
@@ -200,21 +190,7 @@ export const NodeRun = {
             break;
           }
 
-          message.wfRunId = reader.string();
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.threadRunNumber = reader.int32();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.position = reader.int32();
+          message.id = NodeRunId.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
@@ -363,9 +339,7 @@ export const NodeRun = {
 
   fromJSON(object: any): NodeRun {
     return {
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
-      position: isSet(object.position) ? globalThis.Number(object.position) : 0,
+      id: isSet(object.id) ? NodeRunId.fromJSON(object.id) : undefined,
       wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
       failureHandlerIds: globalThis.Array.isArray(object?.failureHandlerIds)
         ? object.failureHandlerIds.map((e: any) => globalThis.Number(e))
@@ -393,14 +367,8 @@ export const NodeRun = {
 
   toJSON(message: NodeRun): unknown {
     const obj: any = {};
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
-    }
-    if (message.threadRunNumber !== 0) {
-      obj.threadRunNumber = Math.round(message.threadRunNumber);
-    }
-    if (message.position !== 0) {
-      obj.position = Math.round(message.position);
+    if (message.id !== undefined) {
+      obj.id = NodeRunId.toJSON(message.id);
     }
     if (message.wfSpecId !== undefined) {
       obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
@@ -464,9 +432,7 @@ export const NodeRun = {
   },
   fromPartial<I extends Exact<DeepPartial<NodeRun>, I>>(object: I): NodeRun {
     const message = createBaseNodeRun();
-    message.wfRunId = object.wfRunId ?? "";
-    message.threadRunNumber = object.threadRunNumber ?? 0;
-    message.position = object.position ?? 0;
+    message.id = (object.id !== undefined && object.id !== null) ? NodeRunId.fromPartial(object.id) : undefined;
     message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
@@ -1025,13 +991,13 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventRun(): ExternalEventRun {
-  return { externalEventDefName: "", eventTime: undefined, externalEventId: undefined };
+  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined };
 }
 
 export const ExternalEventRun = {
   encode(message: ExternalEventRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.externalEventDefName !== "") {
-      writer.uint32(10).string(message.externalEventDefName);
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(10).fork()).ldelim();
     }
     if (message.eventTime !== undefined) {
       Timestamp.encode(toTimestamp(message.eventTime), writer.uint32(18).fork()).ldelim();
@@ -1054,7 +1020,7 @@ export const ExternalEventRun = {
             break;
           }
 
-          message.externalEventDefName = reader.string();
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -1081,7 +1047,9 @@ export const ExternalEventRun = {
 
   fromJSON(object: any): ExternalEventRun {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      externalEventDefId: isSet(object.externalEventDefId)
+        ? ExternalEventDefId.fromJSON(object.externalEventDefId)
+        : undefined,
       eventTime: isSet(object.eventTime) ? globalThis.String(object.eventTime) : undefined,
       externalEventId: isSet(object.externalEventId) ? ExternalEventId.fromJSON(object.externalEventId) : undefined,
     };
@@ -1089,8 +1057,8 @@ export const ExternalEventRun = {
 
   toJSON(message: ExternalEventRun): unknown {
     const obj: any = {};
-    if (message.externalEventDefName !== "") {
-      obj.externalEventDefName = message.externalEventDefName;
+    if (message.externalEventDefId !== undefined) {
+      obj.externalEventDefId = ExternalEventDefId.toJSON(message.externalEventDefId);
     }
     if (message.eventTime !== undefined) {
       obj.eventTime = message.eventTime;
@@ -1106,7 +1074,9 @@ export const ExternalEventRun = {
   },
   fromPartial<I extends Exact<DeepPartial<ExternalEventRun>, I>>(object: I): ExternalEventRun {
     const message = createBaseExternalEventRun();
-    message.externalEventDefName = object.externalEventDefName ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
     message.eventTime = object.eventTime ?? undefined;
     message.externalEventId = (object.externalEventId !== undefined && object.externalEventId !== null)
       ? ExternalEventId.fromPartial(object.externalEventId)

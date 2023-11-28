@@ -3,7 +3,7 @@ import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { WfSpecId } from "./object_id";
+import { VariableId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
@@ -19,11 +19,9 @@ export interface VariableValue {
 }
 
 export interface Variable {
+  id: VariableId | undefined;
   value: VariableValue | undefined;
-  wfRunId: string;
-  threadRunNumber: number;
-  name: string;
-  date: string | undefined;
+  createdAt: string | undefined;
   wfSpecId: WfSpecId | undefined;
 }
 
@@ -201,28 +199,22 @@ export const VariableValue = {
 };
 
 function createBaseVariable(): Variable {
-  return { value: undefined, wfRunId: "", threadRunNumber: 0, name: "", date: undefined, wfSpecId: undefined };
+  return { id: undefined, value: undefined, createdAt: undefined, wfSpecId: undefined };
 }
 
 export const Variable = {
   encode(message: Variable, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      VariableId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
     if (message.value !== undefined) {
-      VariableValue.encode(message.value, writer.uint32(10).fork()).ldelim();
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
     }
-    if (message.wfRunId !== "") {
-      writer.uint32(18).string(message.wfRunId);
-    }
-    if (message.threadRunNumber !== 0) {
-      writer.uint32(24).int32(message.threadRunNumber);
-    }
-    if (message.name !== "") {
-      writer.uint32(34).string(message.name);
-    }
-    if (message.date !== undefined) {
-      Timestamp.encode(toTimestamp(message.date), writer.uint32(42).fork()).ldelim();
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
     }
     if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(50).fork()).ldelim();
+      WfSpecId.encode(message.wfSpecId, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -239,38 +231,24 @@ export const Variable = {
             break;
           }
 
-          message.value = VariableValue.decode(reader, reader.uint32());
+          message.id = VariableId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.wfRunId = reader.string();
+          message.value = VariableValue.decode(reader, reader.uint32());
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.threadRunNumber = reader.int32();
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 34) {
-            break;
-          }
-
-          message.name = reader.string();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.date = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 6:
-          if (tag !== 50) {
             break;
           }
 
@@ -287,31 +265,23 @@ export const Variable = {
 
   fromJSON(object: any): Variable {
     return {
+      id: isSet(object.id) ? VariableId.fromJSON(object.id) : undefined,
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
-      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
-      date: isSet(object.date) ? globalThis.String(object.date) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
     };
   },
 
   toJSON(message: Variable): unknown {
     const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = VariableId.toJSON(message.id);
+    }
     if (message.value !== undefined) {
       obj.value = VariableValue.toJSON(message.value);
     }
-    if (message.wfRunId !== "") {
-      obj.wfRunId = message.wfRunId;
-    }
-    if (message.threadRunNumber !== 0) {
-      obj.threadRunNumber = Math.round(message.threadRunNumber);
-    }
-    if (message.name !== "") {
-      obj.name = message.name;
-    }
-    if (message.date !== undefined) {
-      obj.date = message.date;
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt;
     }
     if (message.wfSpecId !== undefined) {
       obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
@@ -324,13 +294,11 @@ export const Variable = {
   },
   fromPartial<I extends Exact<DeepPartial<Variable>, I>>(object: I): Variable {
     const message = createBaseVariable();
+    message.id = (object.id !== undefined && object.id !== null) ? VariableId.fromPartial(object.id) : undefined;
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;
-    message.wfRunId = object.wfRunId ?? "";
-    message.threadRunNumber = object.threadRunNumber ?? 0;
-    message.name = object.name ?? "";
-    message.date = object.date ?? undefined;
+    message.createdAt = object.createdAt ?? undefined;
     message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;

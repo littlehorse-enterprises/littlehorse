@@ -2,12 +2,12 @@ import { createMocks } from 'node-mocks-http'
 import handler from '../../../../../../../../web/pages/api/drawer/wfSpec/[name]/index'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as grpcCallHandler from '../../../../../../../../../apps/web/pages/api/grpcMethodCallHandler'
-import type { GetLatestWfSpecRequest } from '../../../../../../../littlehorse-public-api/object_id'
+import type { GetLatestWfSpecRequest } from '../../../../../../../littlehorse-public-api/service'
 
 jest.mock('../../../../../../../../../apps/web/pages/api/grpcMethodCallHandler')
 
 describe('wfSpec API', () => {
-    it('should perform a grpc request for a wfSpec sending the right request body', async () => {
+    it('should perform a grpc request for a drawer wfSpec sending the right request body', async () => {
 
 
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'GET' })

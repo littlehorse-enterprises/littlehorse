@@ -18,7 +18,9 @@ describe('wfRun API', () => {
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('listNodeRuns', req, res, {
-            wfRunId: 'A_WFRUN_ID'
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            }
         } as ListNodeRunsRequest)
     })
 })

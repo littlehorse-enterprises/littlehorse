@@ -27,7 +27,9 @@ describe('nodeRun API', () => {
                 75, 77, 65, 82, 75
             ]),
             limit: 5,
-            wfRunId: 'A_WFRUN_ID'
+            wfRunId: {
+                id: 'A_WFRUN_ID'
+            }
         } as SearchNodeRunRequest)
     })
 })

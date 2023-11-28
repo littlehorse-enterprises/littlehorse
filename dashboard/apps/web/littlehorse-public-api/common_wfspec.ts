@@ -1,6 +1,7 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
+import { TaskDefId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -314,7 +315,7 @@ export interface UTActionTrigger_UTAReassign {
 }
 
 export interface TaskNode {
-  taskDefName: string;
+  taskDefId: TaskDefId | undefined;
   timeoutSeconds: number;
   retries: number;
   variables: VariableAssignment[];
@@ -1138,13 +1139,13 @@ export const UTActionTrigger_UTAReassign = {
 };
 
 function createBaseTaskNode(): TaskNode {
-  return { taskDefName: "", timeoutSeconds: 0, retries: 0, variables: [] };
+  return { taskDefId: undefined, timeoutSeconds: 0, retries: 0, variables: [] };
 }
 
 export const TaskNode = {
   encode(message: TaskNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefName !== "") {
-      writer.uint32(10).string(message.taskDefName);
+    if (message.taskDefId !== undefined) {
+      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
     }
     if (message.timeoutSeconds !== 0) {
       writer.uint32(16).int32(message.timeoutSeconds);
@@ -1170,7 +1171,7 @@ export const TaskNode = {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -1204,7 +1205,7 @@ export const TaskNode = {
 
   fromJSON(object: any): TaskNode {
     return {
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       timeoutSeconds: isSet(object.timeoutSeconds) ? globalThis.Number(object.timeoutSeconds) : 0,
       retries: isSet(object.retries) ? globalThis.Number(object.retries) : 0,
       variables: globalThis.Array.isArray(object?.variables)
@@ -1215,8 +1216,8 @@ export const TaskNode = {
 
   toJSON(message: TaskNode): unknown {
     const obj: any = {};
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
+    if (message.taskDefId !== undefined) {
+      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
     }
     if (message.timeoutSeconds !== 0) {
       obj.timeoutSeconds = Math.round(message.timeoutSeconds);
@@ -1235,7 +1236,9 @@ export const TaskNode = {
   },
   fromPartial<I extends Exact<DeepPartial<TaskNode>, I>>(object: I): TaskNode {
     const message = createBaseTaskNode();
-    message.taskDefName = object.taskDefName ?? "";
+    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
+      ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
     message.retries = object.retries ?? 0;
     message.variables = object.variables?.map((e) => VariableAssignment.fromPartial(e)) || [];

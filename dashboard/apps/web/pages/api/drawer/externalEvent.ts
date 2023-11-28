@@ -7,6 +7,13 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === 'POST') {
-        await handleGrpcCallWithNext('getExternalEvent', req, res, ExternalEventId.fromJSON(JSON.parse(req.body)))
+        const httpRequestBody = JSON.parse(req.body)
+        const grpcRequestBody = {
+            wfRunId: httpRequestBody.wfRunId,
+            externalEventDefId: httpRequestBody.externalEventDefId,
+            guid: httpRequestBody.guid
+        } as ExternalEventId
+
+        await handleGrpcCallWithNext('getExternalEvent', req, res, ExternalEventId.fromJSON(grpcRequestBody))
     }
 }

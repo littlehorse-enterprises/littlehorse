@@ -9,8 +9,13 @@ export default async function handler(
     if (req.method === 'POST') {
         const body = JSON.parse(req.body)
         const { wfRunId, threadRunNumber, name } = body
-        await handleGrpcCallWithNext('getNodeRun', req, res, NodeRunId.fromJSON({
-            wfRunId, threadRunNumber, position: Number(name)
-        } as NodeRunId))
+        await handleGrpcCallWithNext('getNodeRun', req, res, NodeRunId.fromJSON(
+            {
+                wfRunId: {
+                    id: wfRunId
+                },
+                threadRunNumber: threadRunNumber,
+                position: Number(name)
+            } as NodeRunId))
     }
 }

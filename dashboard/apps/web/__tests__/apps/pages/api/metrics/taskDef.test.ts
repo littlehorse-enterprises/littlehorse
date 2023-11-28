@@ -22,7 +22,9 @@ describe('metrics taskDef API', () => {
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('listTaskDefMetrics', req, res, {
             lastWindowStart: '2023-11-12T12:12:12Z',
             numWindows: 24,
-            taskDefName: 'A_TASKDEF',
+            taskDefId: {
+                name:  'A_TASKDEF'
+            },
             windowLength: MetricsWindowLength.HOURS_2
         } as ListTaskMetricsRequest)
     })

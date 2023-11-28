@@ -7,6 +7,10 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === 'GET') {
-        await handleGrpcCallWithNext('listNodeRuns', req, res, ListNodeRunsRequest.fromJSON({ wfRunId: req.query.id }))
+        await handleGrpcCallWithNext('listNodeRuns', req, res, ListNodeRunsRequest.fromJSON({
+            wfRunId: {
+                id: req.query.id
+            } 
+        }))
     }
 }
