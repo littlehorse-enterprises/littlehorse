@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
+import "object_id.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -12,9 +13,9 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message WfSpec {
-  string name = 1;
-  int32 version = 2;
-  google.protobuf.Timestamp created_at = 3;
+  WfSpecId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  repeated ThreadVarDef frozen_variables = 3;
 
   // to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
   MetadataStatus status = 4;
@@ -24,7 +25,6 @@ message WfSpec {
 
   optional WorkflowRetentionPolicy retention_policy = 7;
   optional WfSpecVersionMigration migration = 8;
-  repeated SearchableVariableDef searchable_varaibles = 9;
 }
 
 message WorkflowRetentionPolicy {
@@ -73,7 +73,7 @@ message ThreadRetentionPolicy {
 }
 
 message InterruptDef {
-  string external_event_def_name = 1;
+  ExternalEventDefId external_event_def_id = 1;
   string handler_spec_name = 2;
 }
 
@@ -114,7 +114,7 @@ message WaitForThreadsNode {
 }
 
 message ExternalEventNode {
-  string external_event_def_name = 1;
+  ExternalEventDefId external_event_def_id = 1;
   VariableAssignment timeout_seconds = 2;
 }
 
@@ -195,8 +195,9 @@ message SleepNode {
 }
 
 message WfSpecVersionMigration {
-  int32 new_wf_spec_version = 1;
-  map<string, ThreadSpecMigration> thread_spec_migrations = 2;
+  int32 new_major_version = 1;
+  int32 new_revision = 2;
+  map<string, ThreadSpecMigration> thread_spec_migrations = 3;
 }
 
 message ThreadSpecMigration {

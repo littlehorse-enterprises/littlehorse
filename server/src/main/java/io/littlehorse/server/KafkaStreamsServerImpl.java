@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
@@ -123,6 +124,7 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -264,7 +266,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
+        WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class);
+        WfSpecModel wfSpec = metadataDao().getWfSpec(wfSpecId);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -281,7 +284,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), null);
+        Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), majorVersion, null);
+
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -422,7 +427,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(req.getClientId())
                 .setListenerName(req.getListenerName())
-                .setTaskDefName(req.getTaskDefName())
+                .setTaskDefId(req.getTaskDefId())
                 .build();
 
         TaskWorkerHeartBeatRequestModel heartBeat =
@@ -713,6 +718,17 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
+        ctx.onNext(ServerVersionResponse.newBuilder()
+                .setMajorVersion(0)
+                .setMinorVersion(7)
+                .setMajorVersion(0)
+                .setPreReleaseIdentifier("alpha.1")
+                .build());
+        ctx.onCompleted();
+    }
+
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(new CommandModel(claimEvent), client.getResponseObserver(), PollTaskResponse.class, false);
@@ -742,8 +758,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         command.setCommandId(LHUtil.generateGuid());
         AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
-        String tenant;
-        String principalId;
 
         // TODO: TaskQueueManager multitenancy
         // The only reason for this validation is that

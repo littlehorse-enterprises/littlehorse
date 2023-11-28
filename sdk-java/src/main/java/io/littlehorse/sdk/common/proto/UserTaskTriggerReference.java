@@ -78,37 +78,11 @@ private static final long serialVersionUID = 0L;
     return userTaskEventNumber_;
   }
 
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfSpecId() {
-    return wfSpecId_ != null;
-  }
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   * @return The wfSpecId.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
-    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
-  }
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
-  }
-
-  public static final int USER_ID_FIELD_NUMBER = 4;
+  public static final int USER_ID_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return Whether the userId field is set.
    */
   @java.lang.Override
@@ -116,7 +90,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return The userId.
    */
   @java.lang.Override
@@ -133,7 +107,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string user_id = 4;</code>
+   * <code>optional string user_id = 3;</code>
    * @return The bytes for userId.
    */
   @java.lang.Override
@@ -151,11 +125,11 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int USER_GROUP_FIELD_NUMBER = 5;
+  public static final int USER_GROUP_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userGroup_ = "";
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
   @java.lang.Override
@@ -163,7 +137,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return The userGroup.
    */
   @java.lang.Override
@@ -180,7 +154,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string user_group = 5;</code>
+   * <code>optional string user_group = 4;</code>
    * @return The bytes for userGroup.
    */
   @java.lang.Override
@@ -218,14 +192,11 @@ private static final long serialVersionUID = 0L;
     if (userTaskEventNumber_ != 0) {
       output.writeInt32(2, userTaskEventNumber_);
     }
-    if (wfSpecId_ != null) {
-      output.writeMessage(3, getWfSpecId());
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userId_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, userGroup_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userGroup_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -244,15 +215,11 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, userTaskEventNumber_);
     }
-    if (wfSpecId_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getWfSpecId());
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userId_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, userGroup_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userGroup_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -276,11 +243,6 @@ private static final long serialVersionUID = 0L;
     }
     if (getUserTaskEventNumber()
         != other.getUserTaskEventNumber()) return false;
-    if (hasWfSpecId() != other.hasWfSpecId()) return false;
-    if (hasWfSpecId()) {
-      if (!getWfSpecId()
-          .equals(other.getWfSpecId())) return false;
-    }
     if (hasUserId() != other.hasUserId()) return false;
     if (hasUserId()) {
       if (!getUserId()
@@ -308,10 +270,6 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + USER_TASK_EVENT_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getUserTaskEventNumber();
-    if (hasWfSpecId()) {
-      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecId().hashCode();
-    }
     if (hasUserId()) {
       hash = (37 * hash) + USER_ID_FIELD_NUMBER;
       hash = (53 * hash) + getUserId().hashCode();
@@ -457,11 +415,6 @@ private static final long serialVersionUID = 0L;
         nodeRunIdBuilder_ = null;
       }
       userTaskEventNumber_ = 0;
-      wfSpecId_ = null;
-      if (wfSpecIdBuilder_ != null) {
-        wfSpecIdBuilder_.dispose();
-        wfSpecIdBuilder_ = null;
-      }
       userId_ = "";
       userGroup_ = "";
       return this;
@@ -505,17 +458,12 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.userTaskEventNumber_ = userTaskEventNumber_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.wfSpecId_ = wfSpecIdBuilder_ == null
-            ? wfSpecId_
-            : wfSpecIdBuilder_.build();
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.userId_ = userId_;
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.userGroup_ = userGroup_;
         to_bitField0_ |= 0x00000002;
       }
@@ -572,17 +520,14 @@ private static final long serialVersionUID = 0L;
       if (other.getUserTaskEventNumber() != 0) {
         setUserTaskEventNumber(other.getUserTaskEventNumber());
       }
-      if (other.hasWfSpecId()) {
-        mergeWfSpecId(other.getWfSpecId());
-      }
       if (other.hasUserId()) {
         userId_ = other.userId_;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (other.hasUserGroup()) {
         userGroup_ = other.userGroup_;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -624,22 +569,15 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              input.readMessage(
-                  getWfSpecIdFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              userId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000004;
               break;
             } // case 26
             case 34: {
-              userId_ = input.readStringRequireUtf8();
+              userGroup_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              userGroup_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -808,135 +746,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     * @return Whether the wfSpecId field is set.
-     */
-    public boolean hasWfSpecId() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     * @return The wfSpecId.
-     */
-    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
-      if (wfSpecIdBuilder_ == null) {
-        return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
-      } else {
-        return wfSpecIdBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecIdBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        wfSpecId_ = value;
-      } else {
-        wfSpecIdBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public Builder setWfSpecId(
-        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
-      if (wfSpecIdBuilder_ == null) {
-        wfSpecId_ = builderForValue.build();
-      } else {
-        wfSpecIdBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
-          wfSpecId_ != null &&
-          wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
-          getWfSpecIdBuilder().mergeFrom(value);
-        } else {
-          wfSpecId_ = value;
-        }
-      } else {
-        wfSpecIdBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public Builder clearWfSpecId() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      wfSpecId_ = null;
-      if (wfSpecIdBuilder_ != null) {
-        wfSpecIdBuilder_.dispose();
-        wfSpecIdBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return getWfSpecIdFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-      if (wfSpecIdBuilder_ != null) {
-        return wfSpecIdBuilder_.getMessageOrBuilder();
-      } else {
-        return wfSpecId_ == null ?
-            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
-      }
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
-        getWfSpecIdFieldBuilder() {
-      if (wfSpecIdBuilder_ == null) {
-        wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
-                getWfSpecId(),
-                getParentForChildren(),
-                isClean());
-        wfSpecId_ = null;
-      }
-      return wfSpecIdBuilder_;
-    }
-
     private java.lang.Object userId_ = "";
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @return Whether the userId field is set.
      */
     public boolean hasUserId() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @return The userId.
      */
     public java.lang.String getUserId() {
@@ -952,7 +771,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @return The bytes for userId.
      */
     public com.google.protobuf.ByteString
@@ -969,7 +788,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
      */
@@ -977,22 +796,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       userId_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearUserId() {
       userId_ = getDefaultInstance().getUserId();
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string user_id = 4;</code>
+     * <code>optional string user_id = 3;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.
      */
@@ -1001,21 +820,21 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       userId_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
 
     private java.lang.Object userGroup_ = "";
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @return Whether the userGroup field is set.
      */
     public boolean hasUserGroup() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @return The userGroup.
      */
     public java.lang.String getUserGroup() {
@@ -1031,7 +850,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @return The bytes for userGroup.
      */
     public com.google.protobuf.ByteString
@@ -1048,7 +867,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @param value The userGroup to set.
      * @return This builder for chaining.
      */
@@ -1056,22 +875,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       userGroup_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearUserGroup() {
       userGroup_ = getDefaultInstance().getUserGroup();
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string user_group = 5;</code>
+     * <code>optional string user_group = 4;</code>
      * @param value The bytes for userGroup to set.
      * @return This builder for chaining.
      */
@@ -1080,7 +899,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       userGroup_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }

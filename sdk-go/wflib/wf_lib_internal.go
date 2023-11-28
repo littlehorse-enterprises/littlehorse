@@ -91,8 +91,8 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 
 func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
 	taskNode := &model.TaskNode{
-		TaskDefName: taskDefName,
-		Variables:   make([]*model.VariableAssignment, 0),
+		TaskDefId: &model.TaskDefId{Name: taskDefName},
+		Variables: make([]*model.VariableAssignment, 0),
 	}
 
 	for _, arg := range args {
@@ -874,7 +874,7 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 
 	node.Node = &model.Node_ExternalEvent{
 		ExternalEvent: &model.ExternalEventNode{
-			ExternalEventDefName: eventName,
+			ExternalEventDefId: &model.ExternalEventDefId{Name: eventName},
 		},
 	}
 
@@ -947,8 +947,8 @@ func (t *WorkflowThread) handleInterrupt(interruptName string, handler ThreadFun
 	t.checkIfIsActive()
 	handlerName := t.wf.addSubThread("interrupt-"+interruptName, handler)
 	t.spec.InterruptDefs = append(t.spec.InterruptDefs, &model.InterruptDef{
-		ExternalEventDefName: interruptName,
-		HandlerSpecName:      handlerName,
+		ExternalEventDefId: &model.ExternalEventDefId{Name: interruptName},
+		HandlerSpecName:    handlerName,
 	})
 }
 

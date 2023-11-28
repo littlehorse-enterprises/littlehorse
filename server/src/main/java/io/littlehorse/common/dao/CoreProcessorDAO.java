@@ -8,6 +8,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -52,7 +53,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataDAOImpl {
      * One-off operations related to WfRun Processing
      */
 
-    public abstract ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
+    public abstract ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel extEvtId);
 
     public abstract void scheduleTask(ScheduledTaskModel scheduledTask);
 

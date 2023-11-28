@@ -50,7 +50,8 @@ public abstract class WorkflowLogicTest extends Test {
     private Workflow workflow;
     private List<LHTaskWorker> workers;
     private List<String> wfRunIds;
-    private int wfSpecVersion; // usually will be 0
+    private int majorVersion; // usually will be 0
+    private int revision; // usually will be 0
 
     public WorkflowLogicTest(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
@@ -87,7 +88,10 @@ public abstract class WorkflowLogicTest extends Test {
         }
 
         client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
-                .setId(WfSpecId.newBuilder().setName(getWorkflowName()).setVersion(wfSpecVersion))
+                .setId(WfSpecId.newBuilder()
+                        .setName(getWorkflowName())
+                        .setMajorVersion(majorVersion)
+                        .setRevision(revision))
                 .build());
     }
 
@@ -159,10 +163,17 @@ public abstract class WorkflowLogicTest extends Test {
         } catch (Exception ignored) {
         }
 
-        wfSpecVersion = client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
+        majorVersion = client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
                         .setName(getWorkflowName())
                         .build())
-                .getVersion();
+                .getId()
+                .getMajorVersion();
+
+        revision = client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
+                        .setName(getWorkflowName())
+                        .build())
+                .getId()
+                .getRevision();
 
         log.info("Done deploying for testCase " + getWorkflowName());
     }
@@ -188,8 +199,10 @@ public abstract class WorkflowLogicTest extends Test {
     }
 
     protected String runWf(String id, LHPublicApiBlockingStub client, Arg... params) throws TestFailure, IOException {
-        RunWfRequest.Builder b =
-                RunWfRequest.newBuilder().setWfSpecName(getWorkflowName()).setWfSpecVersion(wfSpecVersion);
+        RunWfRequest.Builder b = RunWfRequest.newBuilder()
+                .setWfSpecName(getWorkflowName())
+                .setMajorVersion(majorVersion)
+                .setRevision(revision);
 
         if (id != null) {
             b.setId(id);
@@ -203,14 +216,14 @@ public abstract class WorkflowLogicTest extends Test {
             }
         }
 
-        String resultingId = client.runWf(b.build()).getId();
+        WfRunId resultingId = client.runWf(b.build()).getId();
 
         log.info("Test {} launched: {}", getWorkflowName(), resultingId);
 
         // Add it so we can cleanup later
-        wfRunIds.add(resultingId);
+        wfRunIds.add(resultingId.getId());
 
-        return resultingId;
+        return resultingId.getId();
     }
 
     protected String runWithInputsAndCheckPath(LHPublicApiBlockingStub client, Object input, Object... expectedPath)

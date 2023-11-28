@@ -113,7 +113,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                 .build());
         UserTaskRunId userTaskRunId = null;
         for (UserTaskRunId userTaskRunIdResult : userGroupResult.getResultsList()) {
-            if (userTaskRunIdResult.getWfRunId().equals(wfRunId)) {
+            if (userTaskRunIdResult.getWfRunId().getId().equals(wfRunId)) {
                 userTaskRunId = userTaskRunIdResult;
                 break;
             }
@@ -135,7 +135,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         UserTaskRunId found = null;
 
         for (UserTaskRunId candidate : results.getResultsList()) {
-            if (candidate.getWfRunId().equals(wfRunId)) {
+            if (candidate.getWfRunId().getId().equals(wfRunId)) {
                 found = candidate;
                 break;
             }

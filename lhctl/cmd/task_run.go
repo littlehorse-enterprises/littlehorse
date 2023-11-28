@@ -36,7 +36,7 @@ var getTaskRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
 			requestContext(),
 			&model.TaskRunId{
-				WfRunId:  args[0],
+				WfRunId:  &model.WfRunId{Id: args[0]},
 				TaskGuid: args[1],
 			},
 		))
@@ -131,7 +131,7 @@ Lists all TaskRun's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListTaskRunsRequest{
-			WfRunId: wfRunId,
+			WfRunId: &model.WfRunId{Id: wfRunId},
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskRuns(

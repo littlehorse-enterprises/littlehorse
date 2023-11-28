@@ -2,10 +2,12 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
@@ -21,17 +23,17 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTask
 public class ListTaskRunsRequestModel
         extends PublicScanRequest<ListTaskRunsRequest, TaskRunList, TaskRun, TaskRunModel, ListTaskRunsReply> {
 
-    private String wfRunId;
+    private WfRunIdModel wfRunId;
 
     @Override
     public GeneratedMessageV3.Builder<?> toProto() {
-        return ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId);
+        return ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         ListTaskRunsRequest p = (ListTaskRunsRequest) proto;
-        wfRunId = p.getWfRunId();
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
     }
 
     @Override

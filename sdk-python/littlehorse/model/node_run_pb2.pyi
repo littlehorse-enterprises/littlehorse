@@ -10,10 +10,8 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class NodeRun(_message.Message):
-    __slots__ = ["wf_run_id", "thread_run_number", "position", "wf_spec_id", "failure_handler_ids", "status", "arrival_time", "end_time", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_threads", "sleep", "user_task", "start_multiple_threads"]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
-    POSITION_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["id", "wf_spec_id", "failure_handler_ids", "status", "arrival_time", "end_time", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_threads", "sleep", "user_task", "start_multiple_threads"]
+    ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLER_IDS_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
@@ -32,9 +30,7 @@ class NodeRun(_message.Message):
     SLEEP_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_FIELD_NUMBER: _ClassVar[int]
     START_MULTIPLE_THREADS_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
-    thread_run_number: int
-    position: int
+    id: _object_id_pb2.NodeRunId
     wf_spec_id: _object_id_pb2.WfSpecId
     failure_handler_ids: _containers.RepeatedScalarFieldContainer[int]
     status: _common_enums_pb2.LHStatus
@@ -53,7 +49,7 @@ class NodeRun(_message.Message):
     sleep: SleepNodeRun
     user_task: UserTaskNodeRun
     start_multiple_threads: StartMultipleThreadsRun
-    def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ..., position: _Optional[int] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ...) -> None: ...
 
 class TaskNodeRun(_message.Message):
     __slots__ = ["task_run_id"]
@@ -109,14 +105,14 @@ class WaitForThreadsRun(_message.Message):
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ...) -> None: ...
 
 class ExternalEventRun(_message.Message):
-    __slots__ = ["external_event_def_name", "event_time", "external_event_id"]
-    EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["external_event_def_id", "event_time", "external_event_id"]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     EVENT_TIME_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_ID_FIELD_NUMBER: _ClassVar[int]
-    external_event_def_name: str
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
     event_time: _timestamp_pb2.Timestamp
     external_event_id: _object_id_pb2.ExternalEventId
-    def __init__(self, external_event_def_name: _Optional[str] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
 
 class SleepNodeRun(_message.Message):
     __slots__ = ["maturation_time"]

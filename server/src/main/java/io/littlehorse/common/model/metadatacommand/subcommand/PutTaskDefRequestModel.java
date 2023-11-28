@@ -8,6 +8,7 @@ import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
@@ -66,7 +67,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
             throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
         }
         TaskDefModel spec = new TaskDefModel();
-        spec.name = name;
+        spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
         dao.put(spec);
 

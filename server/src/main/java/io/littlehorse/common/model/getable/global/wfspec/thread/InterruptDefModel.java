@@ -9,12 +9,15 @@ import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
+import lombok.Getter;
 
+@Getter
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
+    private ExternalEventDefIdModel externalEventDefId;
     public String handlerSpecName;
-    public String externalEventDefName;
 
     public ThreadSpecModel ownerThreadSpecModel;
 
@@ -28,7 +31,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
     public InterruptDef.Builder toProto() {
         InterruptDef.Builder out = InterruptDef.newBuilder()
-                .setExternalEventDefName(externalEventDefName)
+                .setExternalEventDefId(externalEventDefId.toProto())
                 .setHandlerSpecName(handlerSpecName);
         return out;
     }
@@ -36,7 +39,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     public void initFrom(Message proto) {
         InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
-        externalEventDefName = p.getExternalEventDefName();
+        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
     }
 
     public static InterruptDefModel fromProto(InterruptDef p) {
@@ -46,11 +49,12 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     }
 
     public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
-        eed = metadataDao.getExternalEventDef(externalEventDefName);
+        // TODO: refactor DAO to allow passing in the object id.
+        eed = metadataDao.getExternalEventDef(externalEventDefId.getName());
 
         if (eed == null) {
             throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Refers to missing ExternalEventDef " + externalEventDefName);
+                    Status.INVALID_ARGUMENT, "Refers to missing ExternalEventDef " + externalEventDefId);
         }
 
         handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);

@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
@@ -14,43 +13,36 @@ import (
 )
 
 var getWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name>",
-	Short: "Get a WfSpec by Name and optionally Version.",
+	Use:   "wfSpec <name> [<major version> [<minor version>]]",
+	Short: "Get a WfSpec by Name and optionally Major Version and Revision.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the ID of WfSpec to get.")
 		}
 
-		rawNameStr := args[0]
-		var name string
-		var version int32
-		hasVersion := false
+		name := args[0]
 
-		if strings.Contains(rawNameStr, "/") {
-			name = strings.Split(rawNameStr, "/")[0]
-			versionStr := strings.Split(rawNameStr, "/")[1]
-
-			vversionInt, err := strconv.ParseInt(versionStr, 10, 32)
-			if err != nil {
-				log.Fatal(err)
-			}
-			version = int32(vversionInt)
-			hasVersion = true
+		var majorVersion *int32
+		if raw, _ := cmd.Flags().GetInt32("majorVersion"); raw == -1 {
+			majorVersion = nil
 		} else {
-			name = rawNameStr
-			versionRaw, _ := cmd.Flags().GetInt32("v")
-			if versionRaw != -1 {
-				version = versionRaw
-				hasVersion = true
-			}
+			majorVersion = &raw
 		}
 
-		if !hasVersion {
+		var revision *int32
+		if raw, _ := cmd.Flags().GetInt32("revision"); raw == -1 {
+			revision = nil
+		} else {
+			revision = &raw
+		}
+
+		if majorVersion == nil || revision == nil {
 			common.PrintResp(
 				getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(),
 					&model.GetLatestWfSpecRequest{
-						Name: name,
+						Name:         name,
+						MajorVersion: majorVersion,
 					},
 				),
 			)
@@ -59,8 +51,9 @@ var getWfSpecCmd = &cobra.Command{
 				getGlobalClient(cmd).GetWfSpec(
 					requestContext(),
 					&model.WfSpecId{
-						Name:    name,
-						Version: version,
+						Name:         name,
+						MajorVersion: *majorVersion,
+						Revision:     *revision,
 					},
 				),
 			)
@@ -153,16 +146,21 @@ var deleteWfSpecCmd = &cobra.Command{
 WfSpec to delete.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("You must provide two arguments: Name and Version of WfSpec to Delete")
+		if len(args) != 3 {
+			log.Fatal("You must provide three arguments: Name, Major Version, and Revision of WfSpec to Delete")
 		}
 
 		name := args[0]
-		versionRaw := args[1]
+		majorVersionRaw := args[1]
+		revisionRaw := args[2]
 
-		version, err := strconv.Atoi(versionRaw)
+		majorVersion, err := strconv.Atoi(majorVersionRaw)
 		if err != nil {
-			log.Fatal("Couldn't convert version to int: ", err)
+			log.Fatal("Couldn't convert major version to int: ", err)
+		}
+		revision, err := strconv.Atoi(revisionRaw)
+		if err != nil {
+			log.Fatal("Couldn't convert revision to int: ", err)
 		}
 
 		common.PrintResp(
@@ -170,8 +168,9 @@ WfSpec to delete.
 				requestContext(),
 				&model.DeleteWfSpecRequest{
 					Id: &model.WfSpecId{
-						Name:    name,
-						Version: int32(version),
+						Name:         name,
+						MajorVersion: int32(majorVersion),
+						Revision:     int32(revision),
 					},
 				},
 			),
@@ -180,7 +179,8 @@ WfSpec to delete.
 }
 
 func init() {
-	getWfSpecCmd.Flags().Int32("v", -1, "Optionally provide specific version.")
+	getWfSpecCmd.Flags().Int32("majorVersion", -1, "Set specific WfSpec Major Version to get")
+	getWfSpecCmd.Flags().Int32("revision", -1, "Set specific WfSpec Revision to get")
 	getCmd.AddCommand(getWfSpecCmd)
 
 	deployCmd.AddCommand(deployWfSpecCmd)

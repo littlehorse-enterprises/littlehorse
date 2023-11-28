@@ -10,10 +10,12 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -21,6 +23,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -36,36 +39,34 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-@Slf4j
 public class WfSpecModel extends GlobalGetable<WfSpec> {
 
-    public String name;
-    public int version;
+    private WfSpecIdModel id;
+
     public Date createdAt;
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
 
     public Map<String, ThreadSpecModel> threadSpecs;
+    private Map<String, ThreadVarDefModel> frozenVariables;
 
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
 
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec;
-
     private boolean initializedVarToThreadSpec;
 
     public WfSpecIdModel getObjectId() {
-        return new WfSpecIdModel(name, version);
+        return id;
     }
 
     public String getName() {
-        return name;
+        return id.getName();
     }
 
     public Date getCreatedAt() {
@@ -93,7 +94,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         threadSpecs.forEach((s, threadSpec) -> {
             threadSpec.getNodes().values().forEach(node -> {
                 if (node.getType() == Node.NodeCase.TASK) {
-                    names.add(node.getTaskNode().getTaskDefName());
+                    names.add(node.getTaskNode().getTaskDefId().getName());
                 }
             });
         });
@@ -101,9 +102,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public WfSpecModel() {
+        this.id = new WfSpecIdModel();
         threadSpecs = new HashMap<>();
         varToThreadSpec = new HashMap<>();
         initializedVarToThreadSpec = false;
+        frozenVariables = new HashMap<>();
     }
 
     public void setLastUpdatedOffset(long newOffset) {
@@ -112,10 +115,9 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public WfSpec.Builder toProto() {
         WfSpec.Builder out = WfSpec.newBuilder()
-                .setVersion(version)
+                .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
-                .setEntrypointThreadName(entrypointThreadName)
-                .setName(name);
+                .setEntrypointThreadName(entrypointThreadName);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpecModel> p : threadSpecs.entrySet()) {
@@ -131,15 +133,18 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             out.setMigration(migration.toProto());
         }
 
+        for (ThreadVarDefModel tvdm : frozenVariables.values()) {
+            out.addFrozenVariables(tvdm.toProto());
+        }
+
         return out;
     }
 
     public void initFrom(Message pr) {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        version = proto.getVersion();
         entrypointThreadName = proto.getEntrypointThreadName();
-        name = proto.getName();
+        id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class);
 
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
             ThreadSpecModel ts = new ThreadSpecModel();
@@ -155,6 +160,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
         if (proto.hasMigration()) {
             migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class);
+        }
+
+        for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
+            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class);
+            frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
         }
     }
 
@@ -188,18 +198,13 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config, WfSpecModel oldVersion)
+    public void validateAndMaybeBumpVersion(
+            MetadataProcessorDAO metadataDao, LHServerConfig config, Optional<WfSpecModel> oldVersion)
             throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
 
-        if (oldVersion != null) {
-            log.warn("UNIMPLEMENTED: Enforce WfSpec Compatibility Rules");
-        }
-
-        // Validate the variable definitions.
-        // This will get tricky with interrupts, but...
         validateVariablesHelper();
 
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
@@ -209,6 +214,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
+        }
+
+        if (oldVersion.isPresent()) {
+            checkCompatibilityAndSetVersion(oldVersion.get());
         }
     }
 
@@ -231,6 +240,16 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         Set<String> out = new HashSet<>();
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             out.addAll(tspec.getNodeExternalEventDefs());
+        }
+        return out;
+    }
+
+    public Map<String, ThreadVarDefModel> getSearchableVariables() {
+        Map<String, ThreadVarDefModel> out = new HashMap<>();
+        for (ThreadSpecModel thread : threadSpecs.values()) {
+            for (ThreadVarDefModel tvdm : thread.getSearchableVarDefs()) {
+                out.put(tvdm.getVarDef().getName(), tvdm);
+            }
         }
         return out;
     }
@@ -264,54 +283,130 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
                     if (!varName.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                         throw new LHApiException(
                                 Status.INVALID_ARGUMENT,
-                                "Var name "
-                                        + varName
-                                        + " defined in threads "
-                                        + tspec.name
-                                        + " and "
-                                        + varToThreadSpec.get(varName));
+                                "Var name %s defined in threads %s and %s"
+                                        .formatted(varName, tspec.getName(), varToThreadSpec.get(varName)));
                     }
                 }
-                varToThreadSpec.put(varName, name);
+                varToThreadSpec.put(varName, tspec.getName());
             }
         }
-
         // Seen Vars is now loaded.
-        initializeVarToThreadSpec();
+        initializedVarToThreadSpec = true;
 
         for (ThreadSpecModel tspec : threadSpecs.values()) {
-            for (String varName : tspec.getRequiredVariableNames()) {
+            for (String varName : tspec.getNamesOfVariablesUsed()) {
                 if (!varToThreadSpec.containsKey(varName)) {
                     throw new LHApiException(
                             Status.INVALID_ARGUMENT, "Thread " + tspec.name + " refers to missing var " + varName);
                 }
             }
         }
+
+        // Now we curate the list of variables which are "frozen" in time and cannot
+        // change their types.
+        for (ThreadSpecModel thread : threadSpecs.values()) {
+            for (ThreadVarDefModel tvd : thread.getRequiredVarDefs()) {
+                frozenVariables.put(tvd.getVarDef().getName(), tvd);
+            }
+            for (ThreadVarDefModel tvd : thread.getRequiredVarDefs()) {
+                frozenVariables.put(tvd.getVarDef().getName(), tvd);
+            }
+        }
+    }
+
+    private void checkCompatibilityAndSetVersion(WfSpecModel old) {
+        // First, for every previously-frozen variable, we need to check that either:
+        // - the variable isn't included, or
+        // - the variable has the same type.
+        for (Map.Entry<String, ThreadVarDefModel> frozenVarDef :
+                old.getFrozenVariables().entrySet()) {
+            String varName = frozenVarDef.getKey();
+            ThreadVarDefModel oldDef = frozenVarDef.getValue();
+            ThreadVarDefModel currentVarDef = getAllVariables().get(varName);
+
+            if (currentVarDef != null) {
+                // We check that the current one is compatible with the old.
+                // TODO: validate jsonpath stuff.
+                if (oldDef.getVarDef().getType() != currentVarDef.getVarDef().getType()) {
+                    throw new LHApiException(
+                            Status.FAILED_PRECONDITION,
+                            "Variable %s must be of type %s not %s"
+                                    .formatted(
+                                            varName,
+                                            oldDef.getVarDef().getType(),
+                                            currentVarDef.getVarDef().getType()));
+                }
+            } else {
+                // We need to propagate the information forwards.
+                frozenVariables.put(varName, oldDef);
+            }
+        }
+
+        // Now, what we need to do is determine whether we have a new major version
+        // or a new minor revision.
+        boolean breakingChange = false;
+
+        // Rules for minor revision:
+        // - set of searchable variables matches previous version
+        // - set of required variables matches previous version
+        //
+        // If that's not satisfied, then we have a "major" version update.
+        //
+        // TODO: This is an O(N^3) implementation (I think...? Dunno, I'm tired)
+        // TODO: This would fail a LeetCode interview.
+        for (String requiredVar : old.getRequiredVariables().keySet()) {
+            if (!getRequiredVariables().containsKey(requiredVar)) {
+                breakingChange = true;
+                break;
+            }
+        }
+        for (String requiredVar : getRequiredVariables().keySet()) {
+            if (!old.getRequiredVariables().containsKey(requiredVar)) {
+                breakingChange = true;
+                break;
+            }
+        }
+        for (String searchableVar : old.getSearchableVariables().keySet()) {
+            if (!getSearchableVariables().containsKey(searchableVar)) {
+                breakingChange = true;
+                break;
+            }
+        }
+        for (String searchableVar : getSearchableVariables().keySet()) {
+            if (!old.getSearchableVariables().containsKey(searchableVar)) {
+                breakingChange = true;
+                break;
+            }
+        }
+
+        if (breakingChange) {
+            id.setMajorVersion(old.getId().getMajorVersion() + 1);
+            id.setRevision(0);
+        } else {
+            id.setMajorVersion(old.getId().getMajorVersion());
+            id.setRevision(old.getId().getRevision() + 1);
+        }
     }
 
     public WfRunModel startNewRun(RunWfRequestModel evt) {
         WfRunModel out = new WfRunModel();
         out.setDao(getDao());
-        out.id = evt.id;
+        out.setId(new WfRunIdModel(evt.getId()));
 
         out.setWfSpec(this);
-        out.wfSpecVersion = version;
-        out.wfSpecName = name;
+        out.setWfSpecId(getObjectId());
         out.startTime = getDao().getEventTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.variables, ThreadType.ENTRYPOINT);
-
+        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getDao().put(out);
 
         return out;
     }
 
     public static WfSpecId parseId(String fullId) {
-        String[] split = fullId.split("/");
-        return WfSpecId.newBuilder()
-                .setName(split[0])
-                .setVersion(Integer.valueOf(split[1]))
+        return ((WfSpecIdModel) ObjectIdModel.fromString(fullId, WfSpecIdModel.class))
+                .toProto()
                 .build();
     }
 }

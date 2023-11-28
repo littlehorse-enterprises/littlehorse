@@ -40,20 +40,22 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
     private int maxAttempts;
-    private String taskDefName;
+    private TaskDefIdModel taskDefId;
     private List<VarNameAndValModel> inputVariables;
     private TaskRunSourceModel taskRunSource;
     private Date scheduledAt;
     private int timeoutSeconds;
     private TaskStatus status;
 
+    @Override
     public Class<TaskRun> getProtoBaseClass() {
         return TaskRun.class;
     }
 
+    @Override
     public void initFrom(Message proto) {
         TaskRun p = (TaskRun) proto;
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class);
@@ -71,7 +73,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     public TaskRun.Builder toProto() {
         TaskRun.Builder out = TaskRun.newBuilder()
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setMaxAttempts(maxAttempts)
                 .setScheduledAt(LHUtil.fromDate(scheduledAt))
                 .setStatus(status)
@@ -117,7 +119,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "taskDefName" -> {
-                return List.of(new IndexedField(key, this.getTaskDefName(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(key, this.taskDefId.getName(), TagStorageType.LOCAL));
             }
             case "status" -> {
                 return List.of(new IndexedField(key, this.status.toString(), TagStorageType.LOCAL));
@@ -142,7 +144,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.inputVariables = inputVars;
         this.taskRunSource = source;
         this.setDao(dao);
-        this.taskDefName = node.getTaskDefName();
+        this.taskDefId = node.getTaskDefId();
         this.maxAttempts = node.getRetries() + 1;
         this.status = TaskStatus.TASK_SCHEDULED;
         this.timeoutSeconds = node.getTimeoutSeconds();
@@ -186,7 +188,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         scheduledTask.setAttemptNumber(attempts.size());
         scheduledTask.setCreatedAt(new Date());
         scheduledTask.setSource(taskRunSource);
-        scheduledTask.setTaskDefId(new TaskDefIdModel(taskDefName));
+        scheduledTask.setTaskDefId(taskDefId);
         scheduledTask.setTaskRunId(id);
 
         // initialization happens here

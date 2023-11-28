@@ -16,10 +16,9 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private WfSpec() {
-    name_ = "";
+    frozenVariables_ = java.util.Collections.emptyList();
     status_ = 0;
     entrypointThreadName_ = "";
-    searchableVaraibles_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -55,60 +54,36 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.WfSpecId id_;
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      name_ = s;
-      return s;
-    }
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      name_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.WfSpecId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
   }
 
-  public static final int VERSION_FIELD_NUMBER = 2;
-  private int version_ = 0;
-  /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
-   */
-  @java.lang.Override
-  public int getVersion() {
-    return version_;
-  }
-
-  public static final int CREATED_AT_FIELD_NUMBER = 3;
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -116,7 +91,7 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -124,11 +99,52 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int FROZEN_VARIABLES_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> frozenVariables_;
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getFrozenVariablesList() {
+    return frozenVariables_;
+  }
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
+      getFrozenVariablesOrBuilderList() {
+    return frozenVariables_;
+  }
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  @java.lang.Override
+  public int getFrozenVariablesCount() {
+    return frozenVariables_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThreadVarDef getFrozenVariables(int index) {
+    return frozenVariables_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getFrozenVariablesOrBuilder(
+      int index) {
+    return frozenVariables_.get(index);
   }
 
   public static final int STATUS_FIELD_NUMBER = 4;
@@ -327,47 +343,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
   }
 
-  public static final int SEARCHABLE_VARAIBLES_FIELD_NUMBER = 9;
-  @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> searchableVaraibles_;
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> getSearchableVaraiblesList() {
-    return searchableVaraibles_;
-  }
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
-      getSearchableVaraiblesOrBuilderList() {
-    return searchableVaraibles_;
-  }
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  @java.lang.Override
-  public int getSearchableVaraiblesCount() {
-    return searchableVaraibles_.size();
-  }
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index) {
-    return searchableVaraibles_.get(index);
-  }
-  /**
-   * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
-      int index) {
-    return searchableVaraibles_.get(index);
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -382,14 +357,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-    }
-    if (version_ != 0) {
-      output.writeInt32(2, version_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     if (createdAt_ != null) {
-      output.writeMessage(3, getCreatedAt());
+      output.writeMessage(2, getCreatedAt());
+    }
+    for (int i = 0; i < frozenVariables_.size(); i++) {
+      output.writeMessage(3, frozenVariables_.get(i));
     }
     if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
       output.writeEnum(4, status_);
@@ -409,9 +384,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(8, getMigration());
     }
-    for (int i = 0; i < searchableVaraibles_.size(); i++) {
-      output.writeMessage(9, searchableVaraibles_.get(i));
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -421,16 +393,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-    }
-    if (version_ != 0) {
+    if (id_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, version_);
+        .computeMessageSize(1, getId());
     }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getCreatedAt());
+        .computeMessageSize(2, getCreatedAt());
+    }
+    for (int i = 0; i < frozenVariables_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, frozenVariables_.get(i));
     }
     if (status_ != io.littlehorse.sdk.common.proto.MetadataStatus.ACTIVE.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
@@ -457,10 +430,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getMigration());
     }
-    for (int i = 0; i < searchableVaraibles_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, searchableVaraibles_.get(i));
-    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -476,15 +445,18 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     io.littlehorse.sdk.common.proto.WfSpec other = (io.littlehorse.sdk.common.proto.WfSpec) obj;
 
-    if (!getName()
-        .equals(other.getName())) return false;
-    if (getVersion()
-        != other.getVersion()) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (!getFrozenVariablesList()
+        .equals(other.getFrozenVariablesList())) return false;
     if (status_ != other.status_) return false;
     if (!internalGetThreadSpecs().equals(
         other.internalGetThreadSpecs())) return false;
@@ -500,8 +472,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getMigration()
           .equals(other.getMigration())) return false;
     }
-    if (!getSearchableVaraiblesList()
-        .equals(other.getSearchableVaraiblesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -513,13 +483,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getVersion();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (getFrozenVariablesCount() > 0) {
+      hash = (37 * hash) + FROZEN_VARIABLES_FIELD_NUMBER;
+      hash = (53 * hash) + getFrozenVariablesList().hashCode();
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
@@ -536,10 +510,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (hasMigration()) {
       hash = (37 * hash) + MIGRATION_FIELD_NUMBER;
       hash = (53 * hash) + getMigration().hashCode();
-    }
-    if (getSearchableVaraiblesCount() > 0) {
-      hash = (37 * hash) + SEARCHABLE_VARAIBLES_FIELD_NUMBER;
-      hash = (53 * hash) + getSearchableVaraiblesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -693,23 +663,34 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getIdFieldBuilder();
         getCreatedAtFieldBuilder();
+        getFrozenVariablesFieldBuilder();
         getRetentionPolicyFieldBuilder();
         getMigrationFieldBuilder();
-        getSearchableVaraiblesFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      name_ = "";
-      version_ = 0;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
+      if (frozenVariablesBuilder_ == null) {
+        frozenVariables_ = java.util.Collections.emptyList();
+      } else {
+        frozenVariables_ = null;
+        frozenVariablesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000004);
       status_ = 0;
       internalGetMutableThreadSpecs().clear();
       entrypointThreadName_ = "";
@@ -723,13 +704,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         migrationBuilder_.dispose();
         migrationBuilder_ = null;
       }
-      if (searchableVaraiblesBuilder_ == null) {
-        searchableVaraibles_ = java.util.Collections.emptyList();
-      } else {
-        searchableVaraibles_ = null;
-        searchableVaraiblesBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -763,26 +737,25 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WfSpec result) {
-      if (searchableVaraiblesBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0)) {
-          searchableVaraibles_ = java.util.Collections.unmodifiableList(searchableVaraibles_);
-          bitField0_ = (bitField0_ & ~0x00000100);
+      if (frozenVariablesBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          frozenVariables_ = java.util.Collections.unmodifiableList(frozenVariables_);
+          bitField0_ = (bitField0_ & ~0x00000004);
         }
-        result.searchableVaraibles_ = searchableVaraibles_;
+        result.frozenVariables_ = frozenVariables_;
       } else {
-        result.searchableVaraibles_ = searchableVaraiblesBuilder_.build();
+        result.frozenVariables_ = frozenVariablesBuilder_.build();
       }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WfSpec result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.name_ = name_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.version_ = version_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
@@ -857,16 +830,37 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.WfSpec other) {
       if (other == io.littlehorse.sdk.common.proto.WfSpec.getDefaultInstance()) return this;
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (other.getVersion() != 0) {
-        setVersion(other.getVersion());
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
+      }
+      if (frozenVariablesBuilder_ == null) {
+        if (!other.frozenVariables_.isEmpty()) {
+          if (frozenVariables_.isEmpty()) {
+            frozenVariables_ = other.frozenVariables_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureFrozenVariablesIsMutable();
+            frozenVariables_.addAll(other.frozenVariables_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.frozenVariables_.isEmpty()) {
+          if (frozenVariablesBuilder_.isEmpty()) {
+            frozenVariablesBuilder_.dispose();
+            frozenVariablesBuilder_ = null;
+            frozenVariables_ = other.frozenVariables_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            frozenVariablesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getFrozenVariablesFieldBuilder() : null;
+          } else {
+            frozenVariablesBuilder_.addAllMessages(other.frozenVariables_);
+          }
+        }
       }
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
@@ -884,32 +878,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
       if (other.hasMigration()) {
         mergeMigration(other.getMigration());
-      }
-      if (searchableVaraiblesBuilder_ == null) {
-        if (!other.searchableVaraibles_.isEmpty()) {
-          if (searchableVaraibles_.isEmpty()) {
-            searchableVaraibles_ = other.searchableVaraibles_;
-            bitField0_ = (bitField0_ & ~0x00000100);
-          } else {
-            ensureSearchableVaraiblesIsMutable();
-            searchableVaraibles_.addAll(other.searchableVaraibles_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.searchableVaraibles_.isEmpty()) {
-          if (searchableVaraiblesBuilder_.isEmpty()) {
-            searchableVaraiblesBuilder_.dispose();
-            searchableVaraiblesBuilder_ = null;
-            searchableVaraibles_ = other.searchableVaraibles_;
-            bitField0_ = (bitField0_ & ~0x00000100);
-            searchableVaraiblesBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getSearchableVaraiblesFieldBuilder() : null;
-          } else {
-            searchableVaraiblesBuilder_.addAllMessages(other.searchableVaraibles_);
-          }
-        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -938,20 +906,30 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               done = true;
               break;
             case 10: {
-              name_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              version_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
-            case 26: {
+            case 18: {
               input.readMessage(
                   getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
+            case 26: {
+              io.littlehorse.sdk.common.proto.ThreadVarDef m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.ThreadVarDef.parser(),
+                      extensionRegistry);
+              if (frozenVariablesBuilder_ == null) {
+                ensureFrozenVariablesIsMutable();
+                frozenVariables_.add(m);
+              } else {
+                frozenVariablesBuilder_.addMessage(m);
+              }
               break;
             } // case 26
             case 32: {
@@ -987,19 +965,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000080;
               break;
             } // case 66
-            case 74: {
-              io.littlehorse.sdk.common.proto.SearchableVariableDef m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.SearchableVariableDef.parser(),
-                      extensionRegistry);
-              if (searchableVaraiblesBuilder_ == null) {
-                ensureSearchableVaraiblesIsMutable();
-                searchableVaraibles_.add(m);
-              } else {
-                searchableVaraiblesBuilder_.addMessage(m);
-              }
-              break;
-            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1017,122 +982,137 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     private int bitField0_;
 
-    private java.lang.Object name_ = "";
+    private io.littlehorse.sdk.common.proto.WfSpecId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> idBuilder_;
     /**
-     * <code>string name = 1;</code>
-     * @return The name.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.WfSpecId id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @param value The name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      name_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
      */
-    public Builder clearName() {
-      name_ = getDefaultInstance().getName();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId id = 1;</code>
+     */
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
-     * @param value The bytes for name to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
      */
-    public Builder setNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      name_ = value;
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
-    }
-
-    private int version_ ;
-    /**
-     * <code>int32 version = 2;</code>
-     * @return The version.
-     */
-    @java.lang.Override
-    public int getVersion() {
-      return version_;
+      return getIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @param value The version to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
      */
-    public Builder setVersion(int value) {
-
-      version_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
+      }
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfSpecId id = 1;</code>
      */
-    public Builder clearVersion() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      version_ = 0;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
     }
 
     private com.google.protobuf.Timestamp createdAt_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -1143,7 +1123,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -1154,12 +1134,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         createdAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1168,16 +1148,16 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           createdAt_ != null &&
           createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getCreatedAtBuilder().mergeFrom(value);
@@ -1187,15 +1167,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       } else {
         createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -1205,15 +1185,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -1224,7 +1204,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1238,6 +1218,246 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> frozenVariables_ =
+      java.util.Collections.emptyList();
+    private void ensureFrozenVariablesIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        frozenVariables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadVarDef>(frozenVariables_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> frozenVariablesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getFrozenVariablesList() {
+      if (frozenVariablesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(frozenVariables_);
+      } else {
+        return frozenVariablesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public int getFrozenVariablesCount() {
+      if (frozenVariablesBuilder_ == null) {
+        return frozenVariables_.size();
+      } else {
+        return frozenVariablesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadVarDef getFrozenVariables(int index) {
+      if (frozenVariablesBuilder_ == null) {
+        return frozenVariables_.get(index);
+      } else {
+        return frozenVariablesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder setFrozenVariables(
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef value) {
+      if (frozenVariablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.set(index, value);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder setFrozenVariables(
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
+      if (frozenVariablesBuilder_ == null) {
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder addFrozenVariables(io.littlehorse.sdk.common.proto.ThreadVarDef value) {
+      if (frozenVariablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.add(value);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder addFrozenVariables(
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef value) {
+      if (frozenVariablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.add(index, value);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder addFrozenVariables(
+        io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
+      if (frozenVariablesBuilder_ == null) {
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.add(builderForValue.build());
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder addFrozenVariables(
+        int index, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder builderForValue) {
+      if (frozenVariablesBuilder_ == null) {
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder addAllFrozenVariables(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ThreadVarDef> values) {
+      if (frozenVariablesBuilder_ == null) {
+        ensureFrozenVariablesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, frozenVariables_);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder clearFrozenVariables() {
+      if (frozenVariablesBuilder_ == null) {
+        frozenVariables_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public Builder removeFrozenVariables(int index) {
+      if (frozenVariablesBuilder_ == null) {
+        ensureFrozenVariablesIsMutable();
+        frozenVariables_.remove(index);
+        onChanged();
+      } else {
+        frozenVariablesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder getFrozenVariablesBuilder(
+        int index) {
+      return getFrozenVariablesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getFrozenVariablesOrBuilder(
+        int index) {
+      if (frozenVariablesBuilder_ == null) {
+        return frozenVariables_.get(index);  } else {
+        return frozenVariablesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
+         getFrozenVariablesOrBuilderList() {
+      if (frozenVariablesBuilder_ != null) {
+        return frozenVariablesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(frozenVariables_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addFrozenVariablesBuilder() {
+      return getFrozenVariablesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addFrozenVariablesBuilder(
+        int index) {
+      return getFrozenVariablesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef.Builder> 
+         getFrozenVariablesBuilderList() {
+      return getFrozenVariablesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
+        getFrozenVariablesFieldBuilder() {
+      if (frozenVariablesBuilder_ == null) {
+        frozenVariablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder>(
+                frozenVariables_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        frozenVariables_ = null;
+      }
+      return frozenVariablesBuilder_;
     }
 
     private int status_ = 0;
@@ -1748,246 +1968,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         migration_ = null;
       }
       return migrationBuilder_;
-    }
-
-    private java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> searchableVaraibles_ =
-      java.util.Collections.emptyList();
-    private void ensureSearchableVaraiblesIsMutable() {
-      if (!((bitField0_ & 0x00000100) != 0)) {
-        searchableVaraibles_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.SearchableVariableDef>(searchableVaraibles_);
-        bitField0_ |= 0x00000100;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> searchableVaraiblesBuilder_;
-
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef> getSearchableVaraiblesList() {
-      if (searchableVaraiblesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(searchableVaraibles_);
-      } else {
-        return searchableVaraiblesBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public int getSearchableVaraiblesCount() {
-      if (searchableVaraiblesBuilder_ == null) {
-        return searchableVaraibles_.size();
-      } else {
-        return searchableVaraiblesBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchableVariableDef getSearchableVaraibles(int index) {
-      if (searchableVaraiblesBuilder_ == null) {
-        return searchableVaraibles_.get(index);
-      } else {
-        return searchableVaraiblesBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder setSearchableVaraibles(
-        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
-      if (searchableVaraiblesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.set(index, value);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder setSearchableVaraibles(
-        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
-      if (searchableVaraiblesBuilder_ == null) {
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder addSearchableVaraibles(io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
-      if (searchableVaraiblesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.add(value);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder addSearchableVaraibles(
-        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef value) {
-      if (searchableVaraiblesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.add(index, value);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder addSearchableVaraibles(
-        io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
-      if (searchableVaraiblesBuilder_ == null) {
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.add(builderForValue.build());
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder addSearchableVaraibles(
-        int index, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder builderForValue) {
-      if (searchableVaraiblesBuilder_ == null) {
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder addAllSearchableVaraibles(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.SearchableVariableDef> values) {
-      if (searchableVaraiblesBuilder_ == null) {
-        ensureSearchableVaraiblesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, searchableVaraibles_);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder clearSearchableVaraibles() {
-      if (searchableVaraiblesBuilder_ == null) {
-        searchableVaraibles_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000100);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public Builder removeSearchableVaraibles(int index) {
-      if (searchableVaraiblesBuilder_ == null) {
-        ensureSearchableVaraiblesIsMutable();
-        searchableVaraibles_.remove(index);
-        onChanged();
-      } else {
-        searchableVaraiblesBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder getSearchableVaraiblesBuilder(
-        int index) {
-      return getSearchableVaraiblesFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder getSearchableVaraiblesOrBuilder(
-        int index) {
-      if (searchableVaraiblesBuilder_ == null) {
-        return searchableVaraibles_.get(index);  } else {
-        return searchableVaraiblesBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
-         getSearchableVaraiblesOrBuilderList() {
-      if (searchableVaraiblesBuilder_ != null) {
-        return searchableVaraiblesBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(searchableVaraibles_);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder addSearchableVaraiblesBuilder() {
-      return getSearchableVaraiblesFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.SearchableVariableDef.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder addSearchableVaraiblesBuilder(
-        int index) {
-      return getSearchableVaraiblesFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.SearchableVariableDef.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.SearchableVariableDef searchable_varaibles = 9;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder> 
-         getSearchableVaraiblesBuilderList() {
-      return getSearchableVaraiblesFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder> 
-        getSearchableVaraiblesFieldBuilder() {
-      if (searchableVaraiblesBuilder_ == null) {
-        searchableVaraiblesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SearchableVariableDef, io.littlehorse.sdk.common.proto.SearchableVariableDef.Builder, io.littlehorse.sdk.common.proto.SearchableVariableDefOrBuilder>(
-                searchableVaraibles_,
-                ((bitField0_ & 0x00000100) != 0),
-                getParentForChildren(),
-                isClean());
-        searchableVaraibles_ = null;
-      }
-      return searchableVaraiblesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

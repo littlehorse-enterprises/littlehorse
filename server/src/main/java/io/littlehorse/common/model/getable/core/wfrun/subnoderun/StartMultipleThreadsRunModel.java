@@ -61,46 +61,44 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
         StartMultipleThreadsNodeModel nodeModel = getNode().getStartMultipleThreadsNode();
         List<Integer> createdThreads = new ArrayList<>();
         try {
-            VariableValueModel iterable = nodeRunModel
-                    .getThreadRun()
+            VariableValueModel iterable = nodeRun.getThreadRun()
                     .assignVariable(nodeModel.getIterable())
                     .asArr();
             for (Object threadInput : iterable.getJsonArrVal()) {
                 VariableValueModel iterInput =
                         LHSerializable.fromProto(LHLibUtil.objToVarVal(threadInput), VariableValueModel.class);
 
-                StartMultipleThreadsNodeModel node = nodeRunModel.getNode().getStartMultipleThreadsNode();
+                StartMultipleThreadsNodeModel node = nodeRun.getNode().getStartMultipleThreadsNode();
 
                 // Construct input variables
                 Map<String, VariableValueModel> inputs = new HashMap<>();
 
                 for (Map.Entry<String, VariableAssignmentModel> inputVar :
                         node.getVariables().entrySet()) {
-                    inputs.put(inputVar.getKey(), nodeRunModel.getThreadRun().assignVariable(inputVar.getValue()));
+                    inputs.put(inputVar.getKey(), nodeRun.getThreadRun().assignVariable(inputVar.getValue()));
                 }
 
                 String threadSpecName = node.getThreadSpecName();
-                int parentThreadNumber = nodeRunModel.getThreadRunNumber();
+                int parentThreadNumber = nodeRun.getId().getThreadRunNumber();
                 ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
                 if (threadSpec.getInputVariableDefs().containsKey(WorkflowThread.HANDLER_INPUT_VAR)) {
                     inputs.put(WorkflowThread.HANDLER_INPUT_VAR, iterInput);
                 }
 
-                ThreadRunModel child = nodeRunModel
-                        .getThreadRun()
+                ThreadRunModel child = nodeRun.getThreadRun()
                         .getWfRun()
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 createdThreads.add(child.getNumber());
-                nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
+                nodeRun.getThreadRun().getChildThreadIds().add(child.number);
             }
             VariableValueModel nodeOutput =
                     LHSerializable.fromProto(LHLibUtil.objToVarVal(createdThreads), VariableValueModel.class);
-            nodeRunModel.complete(nodeOutput, time);
+            nodeRun.complete(nodeOutput, time);
         } catch (LHVarSubError | LHSerdeError e) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed constructing input variables for thread: " + e.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;
-            nodeRunModel.fail(failure, time);
+            nodeRun.fail(failure, time);
         }
     }
 }

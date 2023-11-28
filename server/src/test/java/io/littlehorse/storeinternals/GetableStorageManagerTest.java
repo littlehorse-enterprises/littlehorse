@@ -104,7 +104,7 @@ public class GetableStorageManagerTest {
                 .anyMatch(key -> key.contains("0/3/0000000"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
-                .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING__wfSpecVersion_00000"));
+                .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000__status_RUNNING"));
 
         getableStorageManager.delete(wfRunModel.getObjectId());
         getableStorageManager.commit();
@@ -126,7 +126,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeBooleanVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.BOOL);
         variable.getValue().setBoolVal(true);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -146,14 +146,14 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_true"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_true"));
     }
 
     @Test
     void storeLocalStringVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -178,8 +178,8 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal"));
+                .anyMatch(
+                        key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
     }
 
     //     @Test
@@ -220,7 +220,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -245,7 +245,7 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_20"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_20"));
     }
 
@@ -286,7 +286,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -311,7 +311,7 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(3)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_21.0"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
@@ -362,7 +362,7 @@ public class GetableStorageManagerTest {
     @Test
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable.getValue()
                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
@@ -394,14 +394,11 @@ public class GetableStorageManagerTest {
         assertThat(keys)
                 .hasSize(9)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.brand_Ford"))
                 .anyMatch(key ->
-                        key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.name_test"))
-                .anyMatch(key ->
-                        key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.age_20"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.car.brand_Ford"))
-                .anyMatch(key -> key.contains(
-                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_$.car.model_Escape"));
+                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.model_Escape"));
     }
 
     //     @Test
@@ -499,7 +496,7 @@ public class GetableStorageManagerTest {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
         TaskRunModel taskRun = TestUtil.taskRun();
         VariableModel variable = TestUtil.variable("0000000");
-        variable.setName("variableName");
+        variable.getId().setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
@@ -511,11 +508,11 @@ public class GetableStorageManagerTest {
         ExternalEventModel externalEvent = TestUtil.externalEvent();
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
         threadSpecModel1.getNodes().forEach((s, node) -> {
-            node.getTaskNode().setTaskDefName("input-name1");
+            node.getTaskNode().getTaskDefId().setName("input-name1");
         });
         ThreadSpecModel threadSpecModel2 = TestUtil.threadSpec();
         threadSpecModel2.getNodes().forEach((s, node) -> {
-            node.getTaskNode().setTaskDefName("input-name2");
+            node.getTaskNode().getTaskDefId().setName("input-name2");
         });
         return Stream.of(
                 Arguments.of(wfRunModel, 3),

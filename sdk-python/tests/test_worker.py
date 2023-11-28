@@ -5,7 +5,7 @@ import time
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableDef
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId, WfRunId
 from littlehorse.model.service_pb2 import ScheduledTask
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
@@ -21,7 +21,7 @@ class TestWorkerContext(unittest.TestCase):
         wf_id = str(uuid.uuid4())
         task_id = str(uuid.uuid4())
         scheduled_task = ScheduledTask(
-            task_run_id=TaskRunId(task_guid=task_id, wf_run_id=wf_id)
+            task_run_id=TaskRunId(task_guid=task_id, wf_run_id=WfRunId(id=wf_id))
         )
         ctx = WorkerContext(scheduled_task)
         self.assertEqual(ctx.idempotency_key, f"{task_id}")
@@ -39,7 +39,7 @@ class TestWorkerContext(unittest.TestCase):
 
     def test_get_right_node(self):
         wf_id = str(uuid.uuid4())
-        node_run_task = NodeRunId(wf_run_id=wf_id)
+        node_run_task = NodeRunId(wf_run_id=WfRunId(id=wf_id))
         scheduled_task_task = ScheduledTask(
             source=TaskRunSource(task_node=TaskNodeReference(node_run_id=node_run_task))
         )
@@ -48,7 +48,7 @@ class TestWorkerContext(unittest.TestCase):
         self.assertEqual(ctx.node_run_id, node_run_task)
 
         wf_id = str(uuid.uuid4())
-        node_run_user = NodeRunId(wf_run_id=wf_id)
+        node_run_user = NodeRunId(wf_run_id=WfRunId(id=wf_id))
         scheduled_task_user = ScheduledTask(
             source=TaskRunSource(
                 user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)

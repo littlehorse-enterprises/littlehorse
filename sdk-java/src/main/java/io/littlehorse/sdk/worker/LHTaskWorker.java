@@ -153,7 +153,7 @@ public class LHTaskWorker implements Closeable {
             this.taskDef = grpcClient.getTaskDef(
                     TaskDefId.newBuilder().setName(taskDefName).build());
         }
-        LHTaskSignature signature = new LHTaskSignature(taskDef.getName(), executable);
+        LHTaskSignature signature = new LHTaskSignature(taskDef.getId().getName(), executable);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();

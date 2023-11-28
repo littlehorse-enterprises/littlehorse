@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskDef() {
-    name_ = "";
     inputVars_ = java.util.Collections.emptyList();
   }
 
@@ -40,43 +39,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskDef.class, io.littlehorse.sdk.common.proto.TaskDef.Builder.class);
   }
 
-  public static final int NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.TaskDefId id_;
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>.littlehorse.TaskDefId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      name_ = s;
-      return s;
-    }
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>.littlehorse.TaskDefId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      name_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.TaskDefId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.TaskDefId id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : id_;
   }
 
   public static final int INPUT_VARS_FIELD_NUMBER = 2;
@@ -160,8 +146,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     for (int i = 0; i < inputVars_.size(); i++) {
       output.writeMessage(2, inputVars_.get(i));
@@ -178,8 +164,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    if (id_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getId());
     }
     for (int i = 0; i < inputVars_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -204,8 +191,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TaskDef other = (io.littlehorse.sdk.common.proto.TaskDef) obj;
 
-    if (!getName()
-        .equals(other.getName())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (!getInputVarsList()
         .equals(other.getInputVarsList())) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
@@ -224,8 +214,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     if (getInputVarsCount() > 0) {
       hash = (37 * hash) + INPUT_VARS_FIELD_NUMBER;
       hash = (53 * hash) + getInputVarsList().hashCode();
@@ -365,7 +357,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      name_ = "";
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       if (inputVarsBuilder_ == null) {
         inputVars_ = java.util.Collections.emptyList();
       } else {
@@ -425,7 +421,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.TaskDef result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.name_ = name_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
@@ -478,10 +476,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskDef other) {
       if (other == io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance()) return this;
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000001;
-        onChanged();
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       if (inputVarsBuilder_ == null) {
         if (!other.inputVars_.isEmpty()) {
@@ -539,7 +535,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              name_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
@@ -580,76 +578,123 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object name_ = "";
+    private io.littlehorse.sdk.common.proto.TaskDefId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> idBuilder_;
     /**
-     * <code>string name = 1;</code>
-     * @return The name.
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
+     * <code>.littlehorse.TaskDefId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @param value The name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      name_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.TaskDefId id = 1;</code>
      */
-    public Builder clearName() {
-      name_ = getDefaultInstance().getName();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.TaskDefId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     */
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
-     * @param value The bytes for name to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TaskDefId id = 1;</code>
      */
-    public Builder setNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      name_ = value;
+    public io.littlehorse.sdk.common.proto.TaskDefId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskDefId id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
     }
 
     private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_ =

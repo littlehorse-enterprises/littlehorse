@@ -53,7 +53,7 @@ public class LHTenantStoreTest {
 
     @Test
     public void shouldSupportSaveAndDeleteWithTenantIsolation() {
-        String testId = getableToSave.getStoredObject().getId();
+        String testId = getableToSave.getStoredObject().getId().getId();
         int storedGetableTypeIndex = getableToSave.getType().getNumber();
         int objectTypeIndex =
                 getableToSave.getStoredObject().getObjectId().getType().getNumber();
@@ -121,8 +121,8 @@ public class LHTenantStoreTest {
                 storeForTenantA.getLastFromPrefix("", StoredGetable.class);
         StoredGetable<WfRun, WfRunModel> lastStoredWfRunForTenantB =
                 storeForTenantB.getLastFromPrefix("", StoredGetable.class);
-        assertThat(lastStoredWfRunForTenantA.getStoredObject().getId()).isEqualTo(greatestAsciiCharacter + "A");
-        assertThat(lastStoredWfRunForTenantB.getStoredObject().getId()).isEqualTo(greatestAsciiCharacter + "B");
+        assertThat(lastStoredWfRunForTenantA.getStoredObject().getId().getId()).isEqualTo(greatestAsciiCharacter + "A");
+        assertThat(lastStoredWfRunForTenantB.getStoredObject().getId().getId()).isEqualTo(greatestAsciiCharacter + "B");
     }
 
     @Test

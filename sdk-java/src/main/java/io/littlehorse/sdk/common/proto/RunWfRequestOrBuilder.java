@@ -20,22 +20,33 @@ public interface RunWfRequestOrBuilder extends
       getWfSpecNameBytes();
 
   /**
-   * <code>optional int32 wf_spec_version = 2;</code>
-   * @return Whether the wfSpecVersion field is set.
+   * <code>optional int32 major_version = 2;</code>
+   * @return Whether the majorVersion field is set.
    */
-  boolean hasWfSpecVersion();
+  boolean hasMajorVersion();
   /**
-   * <code>optional int32 wf_spec_version = 2;</code>
-   * @return The wfSpecVersion.
+   * <code>optional int32 major_version = 2;</code>
+   * @return The majorVersion.
    */
-  int getWfSpecVersion();
+  int getMajorVersion();
 
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>optional int32 revision = 3;</code>
+   * @return Whether the revision field is set.
+   */
+  boolean hasRevision();
+  /**
+   * <code>optional int32 revision = 3;</code>
+   * @return The revision.
+   */
+  int getRevision();
+
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -46,12 +57,12 @@ public interface RunWfRequestOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariables();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariablesMap();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getVariablesOrDefault(
@@ -59,23 +70,23 @@ io.littlehorse.sdk.common.proto.VariableValue getVariablesOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
       java.lang.String key);
 
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
-   * <code>optional string id = 4;</code>
+   * <code>optional string id = 5;</code>
    * @return The bytes for id.
    */
   com.google.protobuf.ByteString

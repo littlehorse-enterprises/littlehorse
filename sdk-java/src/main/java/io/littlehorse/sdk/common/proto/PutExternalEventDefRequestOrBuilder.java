@@ -20,13 +20,17 @@ public interface PutExternalEventDefRequestOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>optional int32 retention_hours = 2;</code>
-   * @return Whether the retentionHours field is set.
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   * @return Whether the retentionPolicy field is set.
    */
-  boolean hasRetentionHours();
+  boolean hasRetentionPolicy();
   /**
-   * <code>optional int32 retention_hours = 2;</code>
-   * @return The retentionHours.
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   * @return The retentionPolicy.
    */
-  int getRetentionHours();
+  io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy getRetentionPolicy();
+  /**
+   * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 }

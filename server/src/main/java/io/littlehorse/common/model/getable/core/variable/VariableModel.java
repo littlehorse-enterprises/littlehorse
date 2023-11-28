@@ -8,6 +8,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -31,10 +32,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class VariableModel extends CoreGetable<Variable> {
 
     private VariableValueModel value;
-    private String wfRunId;
-    private int threadRunNumber;
-    private String name;
-    private Date date;
+    private VariableIdModel id;
+    private Date createdAt;
     private WfSpecIdModel wfSpecId;
 
     private WfSpecModel wfSpec;
@@ -42,12 +41,11 @@ public class VariableModel extends CoreGetable<Variable> {
     public VariableModel() {}
 
     public VariableModel(
-            String name, VariableValueModel value, String wfRunId, int threadRunNumber, WfSpecModel wfSpec) {
-        this.name = name;
+            String name, VariableValueModel value, WfRunIdModel wfRunId, int threadRunNumber, WfSpecModel wfSpec) {
+
+        this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
         this.value = value;
-        this.wfRunId = wfRunId;
         this.wfSpec = wfSpec;
-        this.threadRunNumber = threadRunNumber;
         this.wfSpecId = wfSpec.getObjectId();
     }
 
@@ -57,7 +55,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision());
         }
         return wfSpec;
     }
@@ -69,19 +67,15 @@ public class VariableModel extends CoreGetable<Variable> {
     public void initFrom(Message proto) {
         Variable p = (Variable) proto;
         value = VariableValueModel.fromProto(p.getValue());
-        wfRunId = p.getWfRunId();
-        name = p.getName();
-        threadRunNumber = p.getThreadRunNumber();
-        date = LHUtil.fromProtoTs(p.getDate());
+        id = LHSerializable.fromProto(p.getId(), VariableIdModel.class);
+        createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
     }
 
     public Variable.Builder toProto() {
         Variable.Builder out = Variable.newBuilder()
-                .setName(name)
-                .setThreadRunNumber(threadRunNumber)
-                .setWfRunId(wfRunId)
-                .setDate(LHUtil.fromDate(getCreatedAt()))
+                .setId(id.toProto())
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setValue(value.toProto())
                 .setWfSpecId(wfSpecId.toProto());
 
@@ -89,26 +83,27 @@ public class VariableModel extends CoreGetable<Variable> {
     }
 
     public VariableIdModel getObjectId() {
-        return new VariableIdModel(wfRunId, threadRunNumber, name);
+        return id;
     }
 
     public Date getCreatedAt() {
-        if (date == null) {
-            date = new Date();
+        if (createdAt == null) {
+            createdAt = new Date();
         }
-        return date;
+        return createdAt;
     }
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(
+                // with WfSPecId
                 new GetableIndex<>(
                         List.of(
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
+                                Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
                         variable -> ((VariableModel) variable).isIndexable()),
+                // with workflow name only
                 new GetableIndex<>(
                         List.of(
                                 Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
@@ -117,8 +112,12 @@ public class VariableModel extends CoreGetable<Variable> {
                         variable -> ((VariableModel) variable).isIndexable()));
     }
 
+    public String getName() {
+        return id.getName();
+    }
+
     private boolean isIndexable() {
-        return !name.equals(LHConstants.EXT_EVT_HANDLER_VAR) && value.getType() != VariableType.NULL;
+        return !getName().equals(LHConstants.EXT_EVT_HANDLER_VAR) && !value.isNull();
     }
 
     @Override
@@ -127,9 +126,8 @@ public class VariableModel extends CoreGetable<Variable> {
             case "wfSpecName" -> {
                 return List.of(new IndexedField(key, this.getWfSpec().getName(), TagStorageType.LOCAL));
             }
-            case "wfSpecVersion" -> {
-                return List.of(new IndexedField(
-                        key, LHUtil.toLHDbVersionFormat(this.getWfSpec().version), TagStorageType.LOCAL));
+            case "wfSpecId" -> {
+                return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
             case "variable" -> {
                 return getDynamicFields();
@@ -141,7 +139,7 @@ public class VariableModel extends CoreGetable<Variable> {
     private List<IndexedField> getDynamicFields() {
         VariableValueModel value = getValue();
         WfSpecModel wfSpec = getWfSpec();
-        ThreadVarDefModel threadVarDef = wfSpec.getAllVariables().get(name);
+        ThreadVarDefModel threadVarDef = wfSpec.getAllVariables().get(this.getName());
 
         TagStorageType indexType = TagStorageType.LOCAL;
 

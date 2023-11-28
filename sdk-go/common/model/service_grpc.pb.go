@@ -74,6 +74,7 @@ const (
 	LHPublicApi_PutTenant_FullMethodName               = "/littlehorse.LHPublicApi/PutTenant"
 	LHPublicApi_PutPrincipal_FullMethodName            = "/littlehorse.LHPublicApi/PutPrincipal"
 	LHPublicApi_Whoami_FullMethodName                  = "/littlehorse.LHPublicApi/Whoami"
+	LHPublicApi_GetServerVersion_FullMethodName        = "/littlehorse.LHPublicApi/GetServerVersion"
 )
 
 // LHPublicApiClient is the client API for LHPublicApi service.
@@ -134,6 +135,7 @@ type LHPublicApiClient interface {
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
+	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersionResponse, error)
 }
 
 type lHPublicApiClient struct {
@@ -652,6 +654,15 @@ func (c *lHPublicApiClient) Whoami(ctx context.Context, in *emptypb.Empty, opts 
 	return out, nil
 }
 
+func (c *lHPublicApiClient) GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersionResponse, error) {
+	out := new(ServerVersionResponse)
+	err := c.cc.Invoke(ctx, LHPublicApi_GetServerVersion_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LHPublicApiServer is the server API for LHPublicApi service.
 // All implementations must embed UnimplementedLHPublicApiServer
 // for forward compatibility
@@ -710,6 +721,7 @@ type LHPublicApiServer interface {
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
+	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersionResponse, error)
 	mustEmbedUnimplementedLHPublicApiServer()
 }
 
@@ -878,6 +890,9 @@ func (UnimplementedLHPublicApiServer) PutPrincipal(context.Context, *PutPrincipa
 }
 func (UnimplementedLHPublicApiServer) Whoami(context.Context, *emptypb.Empty) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
+}
+func (UnimplementedLHPublicApiServer) GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
 }
 func (UnimplementedLHPublicApiServer) mustEmbedUnimplementedLHPublicApiServer() {}
 
@@ -1872,6 +1887,24 @@ func _LHPublicApi_Whoami_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_GetServerVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).GetServerVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_GetServerVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).GetServerVersion(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LHPublicApi_ServiceDesc is the grpc.ServiceDesc for LHPublicApi service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2090,6 +2123,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Whoami",
 			Handler:    _LHPublicApi_Whoami_Handler,
+		},
+		{
+			MethodName: "GetServerVersion",
+			Handler:    _LHPublicApi_GetServerVersion_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

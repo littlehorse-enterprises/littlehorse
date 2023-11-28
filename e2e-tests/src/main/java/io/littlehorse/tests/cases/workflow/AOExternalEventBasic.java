@@ -1,5 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -62,7 +63,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         assertVarEqual(client, wfRunId, 0, "evt-output", "evt-content");
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
         ExternalEvent evt = getExternalEvent(client, extEvtId);
-        if (!evt.getWfRunId().equals(wfRunId)) {
+        if (!evt.getId().getWfRunId().getId().equals(wfRunId)) {
             throw new TestFailure(this, "Failed to associate evt with wfRun " + wfRunId);
         }
 
@@ -127,7 +128,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
 
         // This is so that we can delete it in the cleanup() method.
         client.stopWfRun(StopWfRunRequest.newBuilder()
-                .setWfRunId(wfRunId)
+                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
                 .setThreadRunNumber(0)
                 .build());
         return wfRunId;

@@ -67,7 +67,7 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
     }
 
     public String getWfRunId() {
-        return userTaskRunId.getWfRunId();
+        return userTaskRunId.getPartitionKey().get();
     }
 
     public String getPartitionKey() {

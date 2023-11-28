@@ -48,7 +48,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         this.attemptNumber = 0;
 
         // This is just the wfRunId.
-        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getWfRunId());
+        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getId().getWfRunId());
     }
 
     @Override

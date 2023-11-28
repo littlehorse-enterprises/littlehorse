@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.getable.repartitioned.workflowmetrics;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.RepartitionedGetable;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -15,13 +17,18 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
 
     public Date windowStart;
     public MetricsWindowLength type;
-    public String wfSpecName;
-    public int wfSpecVersion;
+
+    @Setter
+    private WfSpecIdModel wfSpecId;
+
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
@@ -36,8 +43,7 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         WfSpecMetrics.Builder out = WfSpecMetrics.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
                 .setType(type)
-                .setWfSpecName(wfSpecName)
-                .setWfSpecVersion(wfSpecVersion)
+                .setWfSpecId(wfSpecId.toProto())
                 .setTotalCompleted(totalCompleted)
                 .setTotalErrored(totalErrored)
                 .setTotalStarted(totalStarted)
@@ -51,8 +57,7 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         WfSpecMetrics p = (WfSpecMetrics) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
-        wfSpecName = p.getWfSpecName();
-        wfSpecVersion = p.getWfSpecVersion();
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
@@ -69,21 +74,20 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         return List.of();
     }
 
-    public static String getObjectId(MetricsWindowLength windowType, Date time, String wfSpecName, int wfSpecVersion) {
-        return new WfSpecMetricsIdModel(time, windowType, wfSpecName, wfSpecVersion).getStoreableKey();
+    public static String getObjectId(MetricsWindowLength windowType, Date time, WfSpecIdModel wfSpecId) {
+        return new WfSpecMetricsIdModel(time, windowType, wfSpecId).getStoreableKey();
     }
 
     public static String getObjectId(WfSpecMetricsQueryRequest request) {
         return new WfSpecMetricsIdModel(
-                        LHUtil.getWindowStart(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
-                        request.getWindowType(),
-                        request.getWfSpecName(),
-                        request.getWfSpecVersion())
+                        LHUtil.getWindowStart(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowLength()),
+                        request.getWindowLength(),
+                        LHSerializable.fromProto(request.getWfSpecId(), WfSpecIdModel.class))
                 .getStoreableKey();
     }
 
     public WfSpecMetricsIdModel getObjectId() {
-        return new WfSpecMetricsIdModel(windowStart, type, wfSpecName, wfSpecVersion);
+        return new WfSpecMetricsIdModel(windowStart, type, wfSpecId);
     }
 
     @Override

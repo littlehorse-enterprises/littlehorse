@@ -16,13 +16,15 @@ import lombok.Setter;
 public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
 
     private String name;
-    private int version;
+    private int majorVersion;
+    private int revision;
 
     public WfSpecIdModel() {}
 
-    public WfSpecIdModel(String name, int version) {
+    public WfSpecIdModel(String name, int majorVersion, int revision) {
         this.name = name;
-        this.version = version;
+        this.majorVersion = majorVersion;
+        this.revision = revision;
     }
 
     @Override
@@ -33,30 +35,40 @@ public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
     @Override
     public void initFrom(Message proto) {
         WfSpecId p = (WfSpecId) proto;
-        version = p.getVersion();
+        majorVersion = p.getMajorVersion();
+        revision = p.getRevision();
         name = p.getName();
     }
 
     @Override
     public WfSpecId.Builder toProto() {
-        WfSpecId.Builder out = WfSpecId.newBuilder().setVersion(version).setName(name);
+        WfSpecId.Builder out = WfSpecId.newBuilder()
+                .setMajorVersion(majorVersion)
+                .setName(name)
+                .setRevision(revision);
         return out;
     }
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
+        return LHUtil.getCompositeId(
+                name, LHUtil.toLHDbVersionFormat(majorVersion), LHUtil.toLHDbVersionFormat(revision));
     }
 
     public void initFromString(String key) {
         String[] split = key.split("/");
         name = split[0];
-        version = Integer.valueOf(split[1]);
+        majorVersion = Integer.valueOf(split[1]);
+        revision = Integer.valueOf(split[2]);
     }
 
     // TODO: This leaks from Storeable.java
     public static String getPrefix(String name) {
         return GetableClassEnum.WF_SPEC.getNumber() + "/" + name + "/";
+    }
+
+    public static String getPrefix(String name, int majorVersion) {
+        return GetableClassEnum.WF_SPEC.getNumber() + "/" + name + "/" + LHUtil.toLHDbVersionFormat(majorVersion) + "/";
     }
 
     public GetableClassEnum getType() {

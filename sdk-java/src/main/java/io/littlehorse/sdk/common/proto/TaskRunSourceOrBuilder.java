@@ -37,5 +37,20 @@ public interface TaskRunSourceOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskTriggerReferenceOrBuilder getUserTaskTriggerOrBuilder();
 
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
   io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase getTaskRunSourceCase();
 }

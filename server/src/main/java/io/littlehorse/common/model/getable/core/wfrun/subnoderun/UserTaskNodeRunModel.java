@@ -56,17 +56,17 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     @Override
     public void arrive(Date time) {
         // The UserTaskNode arrive() function should create a UserTaskRun.
-        NodeModel node = getNodeRunModel().getNode();
+        NodeModel node = getNodeRun().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();
 
         UserTaskDefModel utd = getDao().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
-            nodeRunModel.fail(new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR), time);
+            nodeRun.fail(new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR), time);
             return;
         }
-        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel());
+        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun());
         // Now we create a new UserTaskRun.
 
         out.setDao(getDao());

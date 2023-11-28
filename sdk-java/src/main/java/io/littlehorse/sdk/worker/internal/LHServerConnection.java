@@ -52,7 +52,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
     public void onNext(PollTaskResponse taskToDo) {
         if (taskToDo.hasResult()) {
             ScheduledTask scheduledTask = taskToDo.getResult();
-            String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
+            String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
             log.info("Received task schedule request for wfRun {}", wfRunId);
 
             manager.submitTaskForExecution(scheduledTask, this.stub);
@@ -83,7 +83,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(PollTaskRequest.newBuilder()
                 .setClientId(manager.config.getClientId())
-                .setTaskDefName(manager.taskDef.getName())
+                .setTaskDefId(manager.taskDef.getId())
                 .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
                 .build());
     }

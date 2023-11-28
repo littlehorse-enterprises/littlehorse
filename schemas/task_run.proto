@@ -15,16 +15,16 @@ option csharp_namespace = "LittleHorse.Common.Proto";
 
 message TaskRun {
   TaskRunId id = 1;
-  repeated TaskAttempt attempts = 2;
-  int32 max_attempts = 3;
-  string task_def_name = 4;
+  TaskDefId task_def_id = 2;
+
+  repeated TaskAttempt attempts = 3;
+  int32 max_attempts = 4;
   repeated VarNameAndVal input_variables = 5;
 
   TaskRunSource source = 6;
   google.protobuf.Timestamp scheduled_at = 7;
 
   TaskStatus status = 8;
-
   int32 timeout_seconds = 9;
 }
 
@@ -56,11 +56,11 @@ message TaskRunSource {
     TaskNodeReference task_node = 1;
     UserTaskTriggerReference user_task_trigger = 2;
   }
+  optional WfSpecId wf_spec_id = 3;
 }
 
 message TaskNodeReference {
   NodeRunId node_run_id = 1;
-  WfSpecId wf_spec_id = 2;
 }
 
 message LHTaskError {

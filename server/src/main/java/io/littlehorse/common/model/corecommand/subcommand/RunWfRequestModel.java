@@ -15,13 +15,16 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
+@Getter
 public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
-    public String wfSpecName;
-    public Integer wfSpecVersion;
-    public Map<String, VariableValueModel> variables;
-    public String id;
+    private String wfSpecName;
+    private Integer majorVersion;
+    private Integer revision;
+    private Map<String, VariableValueModel> variables;
+    private String id;
 
     public String getPartitionKey() {
         if (id == null) {
@@ -41,7 +44,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     public RunWfRequest.Builder toProto() {
         RunWfRequest.Builder out = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
         if (id != null) out.setId(id);
-        if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
+        if (majorVersion != null) out.setMajorVersion(majorVersion);
+        if (revision != null) out.setRevision(revision);
 
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -53,7 +57,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         RunWfRequest p = (RunWfRequest) proto;
         wfSpecName = p.getWfSpecName();
         if (p.hasId()) id = p.getId();
-        if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
+        if (p.hasMajorVersion()) majorVersion = p.getMajorVersion();
+        if (p.hasRevision()) revision = p.getRevision();
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue()));
@@ -66,7 +71,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     @Override
     public WfRun process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
+        WfSpecModel spec = dao.getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }

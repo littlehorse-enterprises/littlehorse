@@ -35,13 +35,21 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 		wfSpecName := args[0]
 		runReq.WfSpecName = wfSpecName
 
-		var wfSpecVersion *int32
-		if raw, _ := cmd.Flags().GetInt32("wfSpecVersion"); raw == -1 {
-			wfSpecVersion = nil
+		var majorVersion *int32
+		if raw, _ := cmd.Flags().GetInt32("majorVersion"); raw == -1 {
+			majorVersion = nil
 		} else {
-			wfSpecVersion = &raw
+			majorVersion = &raw
 		}
-		runReq.WfSpecVersion = wfSpecVersion
+		runReq.MajorVersion = majorVersion
+
+		var revision *int32
+		if raw, _ := cmd.Flags().GetInt32("revision"); raw == -1 {
+			revision = nil
+		} else {
+			revision = &raw
+		}
+		runReq.Revision = revision
 
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		if wfRunId != "" {
@@ -61,17 +69,21 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			var wfSpec *model.WfSpec
 			var err error
 
-			if wfSpecVersion == nil {
+			if revision == nil {
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(),
-					&model.GetLatestWfSpecRequest{Name: args[0]},
+					&model.GetLatestWfSpecRequest{
+						Name:         args[0],
+						MajorVersion: majorVersion,
+					},
 				)
 			} else {
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					requestContext(),
 					&model.WfSpecId{
-						Name:    args[0],
-						Version: *wfSpecVersion,
+						Name:         args[0],
+						MajorVersion: *majorVersion,
+						Revision:     *revision,
 					})
 			}
 
@@ -108,6 +120,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 func init() {
 	runCmd.Flags().String("wfRunId", "", "Set the id of the WfRun (for idempotence)")
-	runCmd.Flags().Int32("wfSpecVersion", -1, "Set specific WfSpec version to run")
+	runCmd.Flags().Int32("majorVersion", -1, "Set specific WfSpec Major Version to run")
+	runCmd.Flags().Int32("revision", -1, "Set specific WfSpec Revision to run")
 	rootCmd.AddCommand(runCmd)
 }

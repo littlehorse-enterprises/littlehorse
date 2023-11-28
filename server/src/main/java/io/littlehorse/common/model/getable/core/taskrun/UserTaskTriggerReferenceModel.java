@@ -5,7 +5,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,6 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
 
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
-    private WfSpecIdModel wfSpecId;
 
     private String userId;
     private String userGroup;
@@ -27,7 +25,6 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
-        wfSpecId = utr.getNodeRun().getWfSpecId();
 
         this.userId = utr.getUserId();
         this.userGroup = utr.getUserGroup();
@@ -39,7 +36,6 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
 
     public UserTaskTriggerReference.Builder toProto() {
         UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
-                .setWfSpecId(wfSpecId.toProto())
                 .setNodeRunId(nodeRunId.toProto())
                 .setUserTaskEventNumber(userTaskEventNumber);
 
@@ -49,7 +45,6 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
     public void initFrom(Message proto) {
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
         userTaskEventNumber = p.getUserTaskEventNumber();
     }
 

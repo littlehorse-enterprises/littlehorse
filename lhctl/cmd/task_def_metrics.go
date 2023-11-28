@@ -51,7 +51,7 @@ taskDefName.
 			&model.ListTaskMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),
-				TaskDefName:     taskDefName,
+				TaskDefId:       &model.TaskDefId{Name: taskDefName},
 				NumWindows:      int32(numWindows),
 			},
 		))
@@ -59,5 +59,6 @@ taskDefName.
 }
 
 func init() {
-	rootCmd.AddCommand(taskDefMetrics)
+	// Do not add this command until we re-implement Metrics:
+	// rootCmd.AddCommand(taskDefMetrics)
 }

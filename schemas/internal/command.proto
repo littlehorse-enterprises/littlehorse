@@ -76,33 +76,33 @@ message RepartitionCommandPb {
 }
 
 message TaskMetricUpdatePb {
-    google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLength type = 2;
-    int64 num_entries = 3;
-    int64 schedule_to_start_max = 4;
-    int64 schedule_to_start_total = 5;
-    int64 start_to_complete_max = 6;
-    int64 start_to_complete_total = 7;
-    int64 total_completed = 8;
-    int64 total_errored = 9;
-    int64 total_started = 10;
+    TaskDefId task_def_id = 1;
+    google.protobuf.Timestamp window_start = 2;
+    MetricsWindowLength type = 3;
 
-    string task_def_name = 11;
+    int64 num_entries = 4;
+    int64 schedule_to_start_max = 5;
+    int64 schedule_to_start_total = 6;
+    int64 start_to_complete_max = 7;
+    int64 start_to_complete_total = 8;
+    int64 total_completed = 9;
+    int64 total_errored = 10;
+    int64 total_started = 11;
     int64 total_scheduled = 12;
+
 }
 
 message WfMetricUpdatePb {
-    google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLength type = 2;
-    int64 num_entries = 3;
-    int64 start_to_complete_max = 6;
-    int64 start_to_complete_total = 7;
-    int64 total_completed = 8;
-    int64 total_errored = 9;
-    int64 total_started = 10;
+    WfSpecId wf_spec_id = 1;
+    google.protobuf.Timestamp window_start = 2;
+    MetricsWindowLength type = 3;
 
-    string wf_spec_name = 11;
-    int32 wf_spec_version = 12;
+    int64 num_entries = 4;
+    int64 start_to_complete_max = 5;
+    int64 start_to_complete_total = 6;
+    int64 total_completed = 7;
+    int64 total_errored = 8;
+    int64 total_started = 9;
 }
 
 message CreateRemoteTagPb {
@@ -124,19 +124,14 @@ message TaskClaimEventPb {
 }
 
 message ExternalEventNodeTimeoutPb {
-    string wf_run_id = 1;
-    int32 thread_run_number = 2;
-    int32 node_run_position = 3;
-    google.protobuf.Timestamp time = 4;
+    NodeRunId node_run_id = 1;
 }
 
 // This section contains commands that originate from the gRPC api. Perhaps they
 // could also go in service.proto...?
 
 message SleepNodeMaturedPb {
-    string wf_run_id = 1;
-    int32 thread_run_number = 2;
-    int32 node_run_position = 3;
+    NodeRunId node_run_id = 1;
 }
 
 // This is currently used by the UserTaskRun ActionTrigger, it could be potentially

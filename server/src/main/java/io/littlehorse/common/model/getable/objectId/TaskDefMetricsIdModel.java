@@ -1,6 +1,8 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.RepartitionedId;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -10,24 +12,27 @@ import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsId;
 import java.util.Date;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
 
-    public Date windowStart;
-    public MetricsWindowLength windowType;
-    public String taskDefName;
+    private Date windowStart;
+    private MetricsWindowLength windowType;
+    private TaskDefIdModel taskDefId;
 
     public TaskDefMetricsIdModel() {}
 
-    public TaskDefMetricsIdModel(Date w, MetricsWindowLength t, String tdn) {
+    public TaskDefMetricsIdModel(Date w, MetricsWindowLength t, TaskDefIdModel tdid) {
         windowStart = w;
         windowType = t;
-        taskDefName = tdn;
+        taskDefId = tdid;
     }
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(taskDefName);
+        // group it by task def name
+        return Optional.of(taskDefId.getName());
     }
 
     @Override
@@ -38,7 +43,7 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     @Override
     public void initFrom(Message proto) {
         TaskDefMetricsId p = (TaskDefMetricsId) proto;
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         windowType = p.getWindowType();
         windowStart = LHUtil.fromProtoTs(p.getWindowStart());
     }
@@ -46,7 +51,7 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     @Override
     public TaskDefMetricsId.Builder toProto() {
         TaskDefMetricsId.Builder out = TaskDefMetricsId.newBuilder()
-                .setTaskDefName(taskDefName)
+                .setTaskDefId(taskDefId.toProto())
                 .setWindowType(windowType)
                 .setWindowStart(LHUtil.fromDate(windowStart));
         return out;
@@ -54,13 +59,13 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(taskDefName, windowType.toString(), LHUtil.toLhDbFormat(windowStart));
+        return LHUtil.getCompositeId(taskDefId.toString(), windowType.toString(), LHUtil.toLhDbFormat(windowStart));
     }
 
     @Override
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
-        taskDefName = split[0];
+        taskDefId = (TaskDefIdModel) ObjectIdModel.fromString(split[0], TaskDefIdModel.class);
         windowType = MetricsWindowLength.valueOf(split[1]);
         windowStart = new Date(Long.valueOf(split[2]));
     }

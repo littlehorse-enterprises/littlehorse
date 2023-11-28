@@ -80,7 +80,7 @@ public class PutWfSpecRequestModelTest {
         String commandId = UUID.randomUUID().toString();
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(commandId, wfSpecToProcess, 0L, recordMetadata));
-        WfSpecIdModel wfSpecToSearch = new WfSpecIdModel(specName, 0);
+        WfSpecIdModel wfSpecToSearch = new WfSpecIdModel(specName, 0, 0);
         if (Objects.equals(tenantId, TENANT_ID_A)) {
             ensureTenantIsolation(wfSpecToSearch, tenantAStore, tenantBStore, defaultStore);
         } else if (Objects.equals(tenantId, TENANT_ID_B)) {

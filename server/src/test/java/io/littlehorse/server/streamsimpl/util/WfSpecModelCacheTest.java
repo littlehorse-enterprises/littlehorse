@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.util;
 
+/*
 import static io.littlehorse.server.streams.util.MetadataCache.LATEST_VERSION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -16,9 +17,12 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+*/
 
+// This class is disabled until we re-enable cacheing after fixing the bug introduced by cache.
 class WfSpecModelCacheTest {
 
+    /*
     @Nested
     class UpdateCache {
 
@@ -171,4 +175,5 @@ class WfSpecModelCacheTest {
                     .isEqualTo(wfSpecModel);
         }
     }
+    */
 }

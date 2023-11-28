@@ -1,9 +1,11 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -18,7 +20,9 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import java.util.Date;
+import lombok.Getter;
 
+@Getter
 public class ListTaskMetricsRequestModel
         extends PublicScanRequest<
                 ListTaskMetricsRequest,
@@ -27,8 +31,8 @@ public class ListTaskMetricsRequestModel
                 TaskDefMetricsModel,
                 ListTaskMetricsReply> {
 
+    private TaskDefIdModel taskDefId;
     public Date lastWindowStart;
-    public String taskDefName;
     public int numWindows;
     public MetricsWindowLength windowLength;
 
@@ -46,7 +50,7 @@ public class ListTaskMetricsRequestModel
                 .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
                 .setNumWindows(numWindows)
                 .setWindowLength(windowLength)
-                .setTaskDefName(taskDefName);
+                .setTaskDefId(taskDefId.toProto());
 
         return out;
     }
@@ -56,7 +60,7 @@ public class ListTaskMetricsRequestModel
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();
         windowLength = p.getWindowLength();
-        taskDefName = p.getTaskDefName();
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         limit = numWindows;
     }
 
@@ -76,11 +80,11 @@ public class ListTaskMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = TaskDefMetricsModel.getObjectId(windowLength, lastWindowStart, taskDefName);
+        String endKey = TaskDefMetricsModel.getObjectId(windowLength, lastWindowStart, taskDefId.toString());
         String startKey = TaskDefMetricsModel.getObjectId(
                 windowLength,
                 new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows)),
-                taskDefName);
-        return new ObjectIdScanBoundaryStrategy(taskDefName, startKey, endKey);
+                taskDefId.toString());
+        return new ObjectIdScanBoundaryStrategy(taskDefId.toString(), startKey, endKey);
     }
 }

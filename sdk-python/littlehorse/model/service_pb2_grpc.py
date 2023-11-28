@@ -57,7 +57,7 @@ class LHPublicApiStub(object):
                 )
         self.GetLatestWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetLatestWfSpec',
-                request_serializer=object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+                request_serializer=service__pb2.GetLatestWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.MigrateWfSpec = channel.unary_unary(
@@ -294,6 +294,11 @@ class LHPublicApiStub(object):
                 '/littlehorse.LHPublicApi/Whoami',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=acls__pb2.Principal.FromString,
+                )
+        self.GetServerVersion = channel.unary_unary(
+                '/littlehorse.LHPublicApi/GetServerVersion',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=service__pb2.ServerVersionResponse.FromString,
                 )
 
 
@@ -624,6 +629,12 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetServerVersion(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LHPublicApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -659,7 +670,7 @@ def add_LHPublicApiServicer_to_server(servicer, server):
             ),
             'GetLatestWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetLatestWfSpec,
-                    request_deserializer=object__id__pb2.GetLatestWfSpecRequest.FromString,
+                    request_deserializer=service__pb2.GetLatestWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'MigrateWfSpec': grpc.unary_unary_rpc_method_handler(
@@ -897,6 +908,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=acls__pb2.Principal.SerializeToString,
             ),
+            'GetServerVersion': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetServerVersion,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=service__pb2.ServerVersionResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'littlehorse.LHPublicApi', rpc_method_handlers)
@@ -1021,7 +1037,7 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestWfSpec',
-            object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+            service__pb2.GetLatestWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -1822,5 +1838,22 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/Whoami',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             acls__pb2.Principal.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetServerVersion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetServerVersion',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            service__pb2.ServerVersionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -32,9 +32,9 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
     }
 
     public void arrive(Date time) {
-        nodeRunModel.setStatus(LHStatus.COMPLETED);
+        nodeRun.setStatus(LHStatus.COMPLETED);
         VariableValueModel result = new VariableValueModel();
         result.setType(VariableType.NULL);
-        nodeRunModel.complete(result, time);
+        nodeRun.complete(result, time);
     }
 }

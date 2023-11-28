@@ -50,7 +50,7 @@ var getVariableCmd = &cobra.Command{
 			getGlobalClient(cmd).GetVariable(
 				requestContext(),
 				&model.VariableId{
-					WfRunId:         args[0],
+					WfRunId:         &model.WfRunId{Id: args[0]},
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],
 				},
@@ -88,19 +88,21 @@ Choose one of the following option groups:
 		varTypeStr, _ := cmd.Flags().GetString("varType")
 		valueStr, _ := cmd.Flags().GetString("value")
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
-		wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
 
-		var wfSpecVersionPtr *int32
-		if wfSpecVersion == -1 {
-			wfSpecVersionPtr = nil
-		} else {
-			wfSpecVersionPtr = &wfSpecVersion
-		}
+		// TODO: re-enable WfSpecVersion on variable search
+
+		// wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
+		// var wfSpecVersionPtr *int32 = nil
+		// if wfSpecVersion == -1 {
+		// 	wfSpecVersionPtr = nil
+		// } else {
+		// 	wfSpecVersionPtr = &wfSpecVersion
+		// }
 
 		if wfRunId != "" {
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_WfRunId{
-					WfRunId: wfRunId,
+					WfRunId: &model.WfRunId{Id: wfRunId},
 				},
 			}
 		} else {
@@ -121,10 +123,13 @@ Choose one of the following option groups:
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_Value{
 					Value: &model.SearchVariableRequest_NameAndValueRequest{
-						Value:         content,
-						VarName:       name,
-						WfSpecVersion: wfSpecVersionPtr,
-						WfSpecName:    wfSpecName,
+						Value:              content,
+						VarName:            name,
+						WfSpecMajorVersion: nil,
+						WfSpecRevision:     nil,
+						// TODO: re-enable WfSpecVersion on Variable Search.
+						// WfSpecVersion: wfSpecVersionPtr,
+						WfSpecName: wfSpecName,
 					},
 				},
 			}
@@ -155,7 +160,7 @@ Lists all Variable's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListVariablesRequest{
-			WfRunId: wfRunId,
+			WfRunId: &model.WfRunId{Id: wfRunId},
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListVariables(

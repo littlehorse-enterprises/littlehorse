@@ -58,41 +58,40 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
         try {
             for (Map.Entry<String, VariableAssignmentModel> e : stn.variables.entrySet()) {
-                variables.put(e.getKey(), nodeRunModel.getThreadRun().assignVariable(e.getValue()));
+                variables.put(e.getKey(), nodeRun.getThreadRun().assignVariable(e.getValue()));
             }
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed constructing input variables for thread: " + exn.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;
 
-            nodeRunModel.fail(failure, time);
+            nodeRun.fail(failure, time);
         }
 
-        ThreadRunModel child = nodeRunModel
-                .getThreadRun()
+        ThreadRunModel child = nodeRun.getThreadRun()
                 .getWfRun()
                 .startThread(
-                        nodeRunModel.getNode().startThreadNode.threadSpecName,
+                        nodeRun.getNode().startThreadNode.threadSpecName,
                         time,
-                        nodeRunModel.threadRunNumber,
+                        nodeRun.getThreadRunNumber(),
                         variables,
                         ThreadType.CHILD);
 
-        nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
+        nodeRun.getThreadRun().getChildThreadIds().add(child.number);
 
         if (child.status == LHStatus.ERROR) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed launching child thread. See child for details, id: " + child.number;
 
             failure.failureName = LHConstants.CHILD_FAILURE;
-            nodeRunModel.fail(failure, time);
+            nodeRun.fail(failure, time);
         } else {
             // Then the variable output of this node is just the int thread id.
             VariableValueModel output = new VariableValueModel();
             output.type = VariableType.INT;
             output.intVal = Long.valueOf(child.number);
 
-            nodeRunModel.complete(output, time);
+            nodeRun.complete(output, time);
         }
     }
 }

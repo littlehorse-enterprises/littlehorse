@@ -127,8 +127,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         assertThat(thread1.getStatus() == LHStatus.RUNNING, "Thread1 should be running! Wf: " + id);
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", 5))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-1-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-1-event"))
                 .build());
         // There is a Task Node after the External Event Node, so we wait
         // for it to finish.
@@ -152,8 +152,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // Now we complete the second thread.
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", 10))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-2-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-2-event"))
                 .build());
         Thread.sleep(200);
         wfRun = getWfRun(client, id);
@@ -174,8 +174,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // that the child thread expects $.myInt to be an int, not a string)
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", "some-string"))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-1-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-1-event"))
                 .build());
 
         // There is a Task Node after the External Event Node, so we wait
@@ -213,8 +213,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // Now we complete the second thread.
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", 10))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-2-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-2-event"))
                 .build());
         Thread.sleep(200);
         wfRun = getWfRun(client, id);
@@ -235,8 +235,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // Now we make the first thread complete
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", 137))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-1-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-1-event"))
                 .build());
 
         // There is a Task Node after the External Event Node, so we wait
@@ -259,8 +259,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // Now we fail the second thread.
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setContent(generateEvent("myInt", "not-an-integer"))
-                .setWfRunId(id)
-                .setExternalEventDefName("thread-2-event")
+                .setWfRunId(LHLibUtil.wfRunId(id))
+                .setExternalEventDefId(LHLibUtil.externalEventDefId("thread-2-event"))
                 .build());
         Thread.sleep(200);
         wfRun = getWfRun(client, id);

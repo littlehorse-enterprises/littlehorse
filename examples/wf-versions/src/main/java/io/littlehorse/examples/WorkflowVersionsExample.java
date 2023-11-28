@@ -147,7 +147,7 @@ public class WorkflowVersionsExample {
         WfSpec wfSpec = client.getWfSpec(WfSpecId.newBuilder().setName("example-wf-versions").build());
         log.info(
             "The latest version of example-wf-versions is {}",
-            wfSpec.getVersion()
+            wfSpec.getId()
         );
 
         // Run the workers

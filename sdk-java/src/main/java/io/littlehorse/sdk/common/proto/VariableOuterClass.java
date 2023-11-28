@@ -42,14 +42,13 @@ public final class VariableOuterClass {
       "\003\210\001\001\022\020\n\003str\030\006 \001(\tH\004\210\001\001\022\020\n\003int\030\007 \001(\003H\005\210\001\001" +
       "\022\022\n\005bytes\030\010 \001(\014H\006\210\001\001B\013\n\t_json_objB\013\n\t_js" +
       "on_arrB\t\n\007_doubleB\007\n\005_boolB\006\n\004_strB\006\n\004_i" +
-      "ntB\010\n\006_bytes\"\306\001\n\010Variable\022)\n\005value\030\001 \001(\013" +
-      "2\032.littlehorse.VariableValue\022\021\n\twf_run_i" +
-      "d\030\002 \001(\t\022\031\n\021thread_run_number\030\003 \001(\005\022\014\n\004na" +
-      "me\030\004 \001(\t\022(\n\004date\030\005 \001(\0132\032.google.protobuf" +
-      ".Timestamp\022)\n\nwf_spec_id\030\006 \001(\0132\025.littleh" +
-      "orse.WfSpecIdBG\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
-      ".Protob\006proto3"
+      "ntB\010\n\006_bytes\"\265\001\n\010Variable\022#\n\002id\030\001 \001(\0132\027." +
+      "littlehorse.VariableId\022)\n\005value\030\002 \001(\0132\032." +
+      "littlehorse.VariableValue\022.\n\ncreated_at\030" +
+      "\003 \001(\0132\032.google.protobuf.Timestamp\022)\n\nwf_" +
+      "spec_id\030\004 \001(\0132\025.littlehorse.WfSpecIdBG\n\037" +
+      "io.littlehorse.sdk.common.protoP\001Z\007.;mod" +
+      "el\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -69,7 +68,7 @@ public final class VariableOuterClass {
     internal_static_littlehorse_Variable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Variable_descriptor,
-        new java.lang.String[] { "Value", "WfRunId", "ThreadRunNumber", "Name", "Date", "WfSpecId", });
+        new java.lang.String[] { "Id", "Value", "CreatedAt", "WfSpecId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

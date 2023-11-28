@@ -20,16 +20,19 @@ public interface RegisterTaskWorkerRequestOrBuilder extends
       getClientIdBytes();
 
   /**
-   * <code>string task_def_name = 2;</code>
-   * @return The taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
    */
-  java.lang.String getTaskDefName();
+  boolean hasTaskDefId();
   /**
-   * <code>string task_def_name = 2;</code>
-   * @return The bytes for taskDefName.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return The taskDefId.
    */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
    * <code>string listener_name = 3;</code>

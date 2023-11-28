@@ -1,5 +1,6 @@
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -136,13 +137,13 @@ class UTActionTrigger(_message.Message):
     def __init__(self, task: _Optional[_Union[UTActionTrigger.UTATask, _Mapping]] = ..., cancel: _Optional[_Union[UTActionTrigger.UTACancel, _Mapping]] = ..., reassign: _Optional[_Union[UTActionTrigger.UTAReassign, _Mapping]] = ..., delay_seconds: _Optional[_Union[VariableAssignment, _Mapping]] = ..., hook: _Optional[_Union[UTActionTrigger.UTHook, str]] = ...) -> None: ...
 
 class TaskNode(_message.Message):
-    __slots__ = ["task_def_name", "timeout_seconds", "retries", "variables"]
-    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["task_def_id", "timeout_seconds", "retries", "variables"]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
     RETRIES_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
-    task_def_name: str
+    task_def_id: _object_id_pb2.TaskDefId
     timeout_seconds: int
     retries: int
     variables: _containers.RepeatedCompositeFieldContainer[VariableAssignment]
-    def __init__(self, task_def_name: _Optional[str] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
+    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...

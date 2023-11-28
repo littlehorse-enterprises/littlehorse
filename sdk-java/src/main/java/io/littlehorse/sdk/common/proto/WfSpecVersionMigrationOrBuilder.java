@@ -8,17 +8,23 @@ public interface WfSpecVersionMigrationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 new_wf_spec_version = 1;</code>
-   * @return The newWfSpecVersion.
+   * <code>int32 new_major_version = 1;</code>
+   * @return The newMajorVersion.
    */
-  int getNewWfSpecVersion();
+  int getNewMajorVersion();
 
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>int32 new_revision = 2;</code>
+   * @return The newRevision.
+   */
+  int getNewRevision();
+
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   int getThreadSpecMigrationsCount();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   boolean containsThreadSpecMigrations(
       java.lang.String key);
@@ -29,12 +35,12 @@ public interface WfSpecVersionMigrationOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
   getThreadSpecMigrations();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
   getThreadSpecMigrationsMap();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   /* nullable */
 io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrDefault(
@@ -42,7 +48,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrDef
       /* nullable */
 io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 2;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrThrow(
       java.lang.String key);

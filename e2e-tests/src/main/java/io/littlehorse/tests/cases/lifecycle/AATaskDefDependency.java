@@ -69,7 +69,7 @@ public class AATaskDefDependency extends Test {
         // Now, create the TaskDef and see that we can actually deploy the WfSpec.
         client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build());
         WfSpec result = client.putWfSpec(request);
-        if (result.getVersion() != 0) {
+        if (result.getId().getMajorVersion() != 0) {
             throw new RuntimeException("Somehow the version wasn't zero!");
         }
     }
@@ -79,7 +79,10 @@ public class AATaskDefDependency extends Test {
                 .setId(TaskDefId.newBuilder().setName(taskDefName))
                 .build());
         client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
-                .setId(WfSpecId.newBuilder().setName(wfSpecName).setVersion(0))
+                .setId(WfSpecId.newBuilder()
+                        .setName(wfSpecName)
+                        .setMajorVersion(0)
+                        .setRevision(0))
                 .build());
     }
 }

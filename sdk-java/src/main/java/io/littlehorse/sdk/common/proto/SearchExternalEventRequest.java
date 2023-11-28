@@ -777,54 +777,33 @@ private static final long serialVersionUID = 0L;
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 3;
   /**
-   * <code>string wf_run_id = 3;</code>
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    * @return Whether the wfRunId field is set.
    */
+  @java.lang.Override
   public boolean hasWfRunId() {
     return extEvtCriteriaCase_ == 3;
   }
   /**
-   * <code>string wf_run_id = 3;</code>
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    * @return The wfRunId.
    */
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = "";
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
     if (extEvtCriteriaCase_ == 3) {
-      ref = extEvtCriteria_;
+       return (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_;
     }
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      if (extEvtCriteriaCase_ == 3) {
-        extEvtCriteria_ = s;
-      }
-      return s;
-    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
   /**
-   * <code>string wf_run_id = 3;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
    */
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = "";
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
     if (extEvtCriteriaCase_ == 3) {
-      ref = extEvtCriteria_;
+       return (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_;
     }
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      if (extEvtCriteriaCase_ == 3) {
-        extEvtCriteria_ = b;
-      }
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
 
   public static final int EXTERNAL_EVENT_DEF_NAME_AND_STATUS_FIELD_NUMBER = 4;
@@ -879,7 +858,7 @@ private static final long serialVersionUID = 0L;
       output.writeInt32(2, limit_);
     }
     if (extEvtCriteriaCase_ == 3) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, extEvtCriteria_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_);
     }
     if (extEvtCriteriaCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest) extEvtCriteria_);
@@ -902,7 +881,8 @@ private static final long serialVersionUID = 0L;
         .computeInt32Size(2, limit_);
     }
     if (extEvtCriteriaCase_ == 3) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, extEvtCriteria_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_);
     }
     if (extEvtCriteriaCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
@@ -1110,6 +1090,9 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
+      if (wfRunIdBuilder_ != null) {
+        wfRunIdBuilder_.clear();
+      }
       if (externalEventDefNameAndStatusBuilder_ != null) {
         externalEventDefNameAndStatusBuilder_.clear();
       }
@@ -1164,6 +1147,10 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchExternalEventRequest result) {
       result.extEvtCriteriaCase_ = extEvtCriteriaCase_;
       result.extEvtCriteria_ = this.extEvtCriteria_;
+      if (extEvtCriteriaCase_ == 3 &&
+          wfRunIdBuilder_ != null) {
+        result.extEvtCriteria_ = wfRunIdBuilder_.build();
+      }
       if (extEvtCriteriaCase_ == 4 &&
           externalEventDefNameAndStatusBuilder_ != null) {
         result.extEvtCriteria_ = externalEventDefNameAndStatusBuilder_.build();
@@ -1222,9 +1209,7 @@ private static final long serialVersionUID = 0L;
       }
       switch (other.getExtEvtCriteriaCase()) {
         case WF_RUN_ID: {
-          extEvtCriteriaCase_ = 3;
-          extEvtCriteria_ = other.extEvtCriteria_;
-          onChanged();
+          mergeWfRunId(other.getWfRunId());
           break;
         }
         case EXTERNAL_EVENT_DEF_NAME_AND_STATUS: {
@@ -1272,9 +1257,10 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+              input.readMessage(
+                  getWfRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               extEvtCriteriaCase_ = 3;
-              extEvtCriteria_ = s;
               break;
             } // case 26
             case 34: {
@@ -1396,8 +1382,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
-     * <code>string wf_run_id = 3;</code>
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      * @return Whether the wfRunId field is set.
      */
     @java.lang.Override
@@ -1405,88 +1393,135 @@ private static final long serialVersionUID = 0L;
       return extEvtCriteriaCase_ == 3;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      * @return The wfRunId.
      */
     @java.lang.Override
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = "";
-      if (extEvtCriteriaCase_ == 3) {
-        ref = extEvtCriteria_;
-      }
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
+      if (wfRunIdBuilder_ == null) {
         if (extEvtCriteriaCase_ == 3) {
-          extEvtCriteria_ = s;
+          return (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_;
         }
-        return s;
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
       } else {
-        return (java.lang.String) ref;
+        if (extEvtCriteriaCase_ == 3) {
+          return wfRunIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
       }
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @return The bytes for wfRunId.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = "";
-      if (extEvtCriteriaCase_ == 3) {
-        ref = extEvtCriteria_;
-      }
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        if (extEvtCriteriaCase_ == 3) {
-          extEvtCriteria_ = b;
+    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
-        return b;
+        extEvtCriteria_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        wfRunIdBuilder_.setMessage(value);
       }
+      extEvtCriteriaCase_ = 3;
+      return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
     public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
+      if (wfRunIdBuilder_ == null) {
+        extEvtCriteria_ = builderForValue.build();
+        onChanged();
+      } else {
+        wfRunIdBuilder_.setMessage(builderForValue.build());
+      }
       extEvtCriteriaCase_ = 3;
-      extEvtCriteria_ = value;
-      onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (extEvtCriteriaCase_ == 3 &&
+            extEvtCriteria_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
+          extEvtCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.newBuilder((io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          extEvtCriteria_ = value;
+        }
+        onChanged();
+      } else {
+        if (extEvtCriteriaCase_ == 3) {
+          wfRunIdBuilder_.mergeFrom(value);
+        } else {
+          wfRunIdBuilder_.setMessage(value);
+        }
+      }
+      extEvtCriteriaCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
     public Builder clearWfRunId() {
-      if (extEvtCriteriaCase_ == 3) {
-        extEvtCriteriaCase_ = 0;
-        extEvtCriteria_ = null;
-        onChanged();
+      if (wfRunIdBuilder_ == null) {
+        if (extEvtCriteriaCase_ == 3) {
+          extEvtCriteriaCase_ = 0;
+          extEvtCriteria_ = null;
+          onChanged();
+        }
+      } else {
+        if (extEvtCriteriaCase_ == 3) {
+          extEvtCriteriaCase_ = 0;
+          extEvtCriteria_ = null;
+        }
+        wfRunIdBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>string wf_run_id = 3;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
      */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
+      return getWfRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
+      if ((extEvtCriteriaCase_ == 3) && (wfRunIdBuilder_ != null)) {
+        return wfRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        if (extEvtCriteriaCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_;
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
+        getWfRunIdFieldBuilder() {
+      if (wfRunIdBuilder_ == null) {
+        if (!(extEvtCriteriaCase_ == 3)) {
+          extEvtCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+        }
+        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WfRunId) extEvtCriteria_,
+                getParentForChildren(),
+                isClean());
+        extEvtCriteria_ = null;
+      }
       extEvtCriteriaCase_ = 3;
-      extEvtCriteria_ = value;
       onChanged();
-      return this;
+      return wfRunIdBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

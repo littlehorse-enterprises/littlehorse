@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -30,9 +30,12 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -56,6 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
+    private WfSpecIdModel wfSpecId;
     public int number;
 
     public LHStatus status;
@@ -90,6 +94,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class);
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -206,16 +211,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
      */
     public void processExternalEvent(ExternalEventModel e) {
-        String extEvtName = e.externalEventDefName;
-        InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtName);
+        ExternalEventDefIdModel extEvtId = e.getId().getExternalEventDefId();
+        InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtId.getName());
         if (idef != null) {
             // trigger interrupt
             initializeInterrupt(e, idef);
         }
     }
 
-    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
-        NodeRunModel nr = getNodeRun(timeout.nodeRunPosition);
+    public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
+        NodeRunModel nr = getNodeRun(timeout.getNodeRunId().getPosition());
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
             log.error("Impossible: got a misconfigured external event timeout: {}", nr.toJson());
             return;
@@ -223,8 +228,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         nr.externalEventRun.processExternalEventTimeout(timeout);
     }
 
-    public void processSleepNodeMatured(SleepNodeMatured e) {
-        NodeRunModel nr = getNodeRun(e.nodeRunPosition);
+    public void processSleepNodeMatured(SleepNodeMaturedModel e) {
+        NodeRunModel nr = getNodeRun(e.getNodeRunId().getPosition());
         if (nr.type != NodeTypeCase.SLEEP) {
             log.warn("Tried to mature on non-sleep node");
             // TODO: how do we wanna handle exceptions?
@@ -584,7 +589,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     break;
                 }
             } catch (LHVarSubError exn) {
-                log.error("Failing threadrun due to VarSubError {} {}", wfRun.id, currentNodePosition, exn);
+                log.error("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
                 fail(
                         new FailureModel(
                                 "Failed evaluating outgoing edge: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
@@ -615,14 +620,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.setThreadRun(this);
         cnr.nodeName = node.name;
         cnr.status = LHStatus.STARTING;
-
-        cnr.wfRunId = wfRun.getId();
-        cnr.threadRunNumber = number;
-        cnr.position = currentNodePosition;
-        cnr.threadSpecName = threadSpecName;
+        cnr.setId(new NodeRunIdModel(wfRun.getId(), number, currentNodePosition));
+        cnr.setWfSpecId(wfSpecId);
+        cnr.setThreadSpecName(threadSpecName);
 
         cnr.arrivalTime = arrivalTime;
-        cnr.wfSpecId = wfRun.getWfSpec().getObjectId();
 
         cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
 
@@ -673,13 +675,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         List<VarNameAndValModel> out = new ArrayList<>();
         TaskDefModel taskDef = node.getTaskDef();
 
-        if (taskDef.inputVars.size() != node.variables.size()) {
+        if (taskDef.inputVars.size() != node.getVariables().size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
         }
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
             VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
-            VariableAssignmentModel assn = node.variables.get(i);
+            VariableAssignmentModel assn = node.getVariables().get(i);
             String varName = requiredVarDef.getName();
             VariableValueModel val;
 
@@ -799,7 +801,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = wfRun.getDao().get(new NodeRunIdModel(wfRun.id, number, position));
+        NodeRunModel out = wfRun.getDao().get(new NodeRunIdModel(wfRun.getId(), number, position));
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -899,7 +901,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
          *                        variable
          * @param wfRunModel      the wfRun of the ThreadRun that owns the variable
          */
-        void apply(String wfRunId, int threadRunNumber, WfRunModel wfRunModel);
+        void apply(WfRunIdModel wfRunId, int threadRunNumber, WfRunModel wfRunModel);
     }
 }
 

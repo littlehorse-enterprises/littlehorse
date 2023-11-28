@@ -2,54 +2,57 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
-import io.littlehorse.common.util.LHUtil;
-import java.util.Date;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
+@Getter
+public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public int nodeRunPosition;
-    public Date time;
+    private NodeRunIdModel nodeRunId;
 
+    public ExternalEventTimeoutModel() {}
+
+    public ExternalEventTimeoutModel(NodeRunIdModel nodeRunId) {
+        this.nodeRunId = nodeRunId;
+    }
+
+    @Override
     public Class<ExternalEventNodeTimeoutPb> getProtoBaseClass() {
         return ExternalEventNodeTimeoutPb.class;
     }
 
+    @Override
     public ExternalEventNodeTimeoutPb.Builder toProto() {
-        ExternalEventNodeTimeoutPb.Builder out = ExternalEventNodeTimeoutPb.newBuilder()
-                .setWfRunId(wfRunId)
-                .setThreadRunNumber(threadRunNumber)
-                .setNodeRunPosition(nodeRunPosition)
-                .setTime(LHUtil.fromDate(time));
+        ExternalEventNodeTimeoutPb.Builder out =
+                ExternalEventNodeTimeoutPb.newBuilder().setNodeRunId(nodeRunId.toProto());
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         ExternalEventNodeTimeoutPb p = (ExternalEventNodeTimeoutPb) proto;
-        wfRunId = p.getWfRunId();
-        threadRunNumber = p.getThreadRunNumber();
-        nodeRunPosition = p.getNodeRunPosition();
-        time = LHUtil.fromProtoTs(p.getTime());
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
     }
 
+    @Override
     public String getPartitionKey() {
-        return wfRunId;
+        return nodeRunId.getPartitionKey().get();
     }
 
     @Override
     public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        WfRunModel wfRunModel = dao.get(nodeRunId.getWfRunId());
 
         if (wfRunModel == null) {
-            log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);
+            log.warn("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
             return null;
         }
 
@@ -62,8 +65,8 @@ public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeou
         return false;
     }
 
-    public static ExternalEventTimeout fromProto(ExternalEventNodeTimeoutPb p) {
-        ExternalEventTimeout out = new ExternalEventTimeout();
+    public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p) {
+        ExternalEventTimeoutModel out = new ExternalEventTimeoutModel();
         out.initFrom(p);
         return out;
     }
