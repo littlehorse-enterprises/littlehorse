@@ -26,6 +26,7 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,7 +67,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         // default constructor used by LHDeserializers
     }
 
-    public WfSpecModel(ExecutionContext executionContext) {
+    public WfSpecModel(MetadataCommandExecution executionContext) {
         this.executionContext = executionContext;
     }
 
@@ -180,7 +181,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
-        WfSpecModel out = new WfSpecModel(context);
+        WfSpecModel out = new WfSpecModel();
         out.initFrom(proto, context);
         return out;
     }

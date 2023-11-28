@@ -119,7 +119,7 @@ public class SearchWfSpecRequestModel
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
             for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration :
-                    new WfSpecModel(executionContext).getIndexConfigurations()) {
+                    new WfSpecModel().getIndexConfigurations()) {
                 if (indexConfiguration.searchAttributesMatch(attributes)
                         && indexConfiguration.getTagStorageType().isPresent()) {
                     return indexConfiguration.getTagStorageType().get();
