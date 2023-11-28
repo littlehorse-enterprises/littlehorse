@@ -47,7 +47,7 @@ services:
       AUTHENTICATION_ENABLED: "false"
     restart: on-failure
     healthcheck:
-      test: curl -f localhost:80
+      test: curl -f localhost:8080
       interval: 5s
     ports:
-      - "8080:80"
+      - "8080:8080"
