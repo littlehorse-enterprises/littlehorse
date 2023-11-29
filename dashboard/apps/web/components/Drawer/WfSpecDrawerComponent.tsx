@@ -55,9 +55,12 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
                     selectedThread
                 }
 
-                setThreadSpecVariableDefs(
-                    props.data.threadSpecs[selectedThread || threadName].variableDefs
-                )
+                const varDefs = props.data.threadSpecs[selectedThread || threadName].variableDefs.map(varDef => ({
+                    name: varDef.varDef.name,
+                    type: varDef.varDef.type
+                }))
+
+                setThreadSpecVariableDefs(varDefs)
             }
 
             if (props.nodeName && props.nodeName !== lastSelectedNode) {
