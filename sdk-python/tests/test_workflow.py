@@ -879,7 +879,9 @@ class TestWorkflow(unittest.TestCase):
                                 ],
                             ),
                             "1-interrupt-handler-TASK": Node(
-                                task=TaskNode(task_def_id=TaskDefId(name="interrupt-handler")),
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="interrupt-handler")
+                                ),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
