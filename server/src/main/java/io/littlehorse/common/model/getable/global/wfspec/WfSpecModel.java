@@ -306,7 +306,12 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         }
     }
 
-    public WfRunModel startNewRun(RunWfRequestModel evt) {
+    /*
+    1. direct pass method argument
+    2. setDAO :(
+    3. implicitly pass context
+     */
+    public WfRunModel startNewRun(RunWfRequestModel evt, ProcessorExecutionContext processorContext) {
         ProcessorExecutionContext processorExecutionContext =
                 executionContext.castOnSupport(ProcessorExecutionContext.class);
         CommandModel currentCommand = processorExecutionContext.currentCommand();

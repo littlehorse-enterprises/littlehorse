@@ -97,7 +97,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRunModel newRun = spec.startNewRun(this);
+        WfRunModel newRun = spec.startNewRun(this, executionContext);
         newRun.advance(executionContext.currentCommand().getTime());
 
         return newRun.toProto().build();
