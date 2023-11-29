@@ -312,11 +312,9 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     3. implicitly pass context
      */
     public WfRunModel startNewRun(RunWfRequestModel evt, ProcessorExecutionContext processorContext) {
-        ProcessorExecutionContext processorExecutionContext =
-                executionContext.castOnSupport(ProcessorExecutionContext.class);
-        CommandModel currentCommand = processorExecutionContext.currentCommand();
-        GetableManager getableManager = processorExecutionContext.getableManager();
-        WfRunModel out = new WfRunModel(processorExecutionContext);
+        CommandModel currentCommand = processorContext.currentCommand();
+        GetableManager getableManager = processorContext.getableManager();
+        WfRunModel out = new WfRunModel(processorContext);
         out.id = evt.id;
 
         out.setWfSpec(this);
