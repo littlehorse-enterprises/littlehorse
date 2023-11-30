@@ -11,6 +11,7 @@ import { UserTaskNodeInformation } from './internals/UserTaskNodeInformation'
 import { WaitForThreadsInformation } from './internals/WaitForThreadsInformation'
 import { TaskInformation } from './internals/TaskInformation'
 import ThreadRunsHandler from './internals/ThreadRunsHandler'
+import type { ThreadVarDef } from '../../littlehorse-public-api/wf_spec'
 
 export interface ThreadRunNameWithRunNumber {
     threadSpecName: string,
@@ -44,7 +45,7 @@ export function DrawerComponent(props: DrawerComponentProps) {
     const [ wfRunRawData, setWfRunRawData ] = useState<any>()
     const [ selectedNodeData, setSelectedNodeData ] = useState<any>()
     const [ threadSpecVariableDefs, setThreadSpecVariableDefs ] =
-        useState<{ name: string; type: string; value?: string }[]>()
+        useState<ThreadVarDef[]>()
     const [ selectedNode, setSelectedNode ] = useState<any>()
     const [ wfRunData, setWfRunData ] = useState<any>()
     const [ errorData, setErrorData ] = useState<any>([])
@@ -445,18 +446,19 @@ export function DrawerComponent(props: DrawerComponentProps) {
                     {currentRun ? <p className="center">VALUE</p> : null}
                 </div>
                 {(threadSpecVariableDefs !== undefined && threadSpecVariableDefs.length > 0) ?
-                    threadSpecVariableDefs.map(({ name, type }, index) => {
+                    threadSpecVariableDefs.map((threadSpecVarDef, index) => {
                         return (
-                        // eslint-disable-next-line react/no-array-index-key -- we are using the name + index
-                            <div key={name + index}>
+                            threadSpecVarDef.varDef &&
+                            // eslint-disable-next-line react/no-array-index-key -- we are using the name + index
+                            <div key={threadSpecVarDef.varDef.name + index}>
                                 <WfVariable
                                     errorData={errorData}
                                     index={index}
-                                    name={name}
+                                    name={threadSpecVarDef.varDef.name}
                                     run={props.run}
                                     setToggleSideBar={setToggleSideBar}
                                     threadRunNumber={currentRun.number}
-                                    type={type}
+                                    type={threadSpecVarDef.varDef.type}
                                     wfRunId={props.wfRunId}
                                 />
                             </div>
