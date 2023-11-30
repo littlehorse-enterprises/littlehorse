@@ -75,12 +75,10 @@ class TaskRunSource(_message.Message):
     def __init__(self, task_node: _Optional[_Union[TaskNodeReference, _Mapping]] = ..., user_task_trigger: _Optional[_Union[_user_tasks_pb2.UserTaskTriggerReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
 
 class TaskNodeReference(_message.Message):
-    __slots__ = ["node_run_id", "wf_spec_id"]
+    __slots__ = ["node_run_id"]
     NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     node_run_id: _object_id_pb2.NodeRunId
-    wf_spec_id: _object_id_pb2.WfSpecId
-    def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+    def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
 
 class LHTaskError(_message.Message):
     __slots__ = ["type", "message"]

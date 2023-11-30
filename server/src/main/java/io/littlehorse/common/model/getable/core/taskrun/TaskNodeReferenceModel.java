@@ -19,7 +19,6 @@ import lombok.Setter;
 public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> {
 
     private NodeRunIdModel nodeRunId;
-    private WfSpecIdModel wfSpecId;
     private ExecutionContext context;
     private ProcessorExecutionContext processorContext;
 
@@ -43,7 +42,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeReference p = (TaskNodeReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.context = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }

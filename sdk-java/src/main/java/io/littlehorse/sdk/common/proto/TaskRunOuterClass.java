@@ -92,14 +92,13 @@ public final class TaskRunOuterClass {
       " \001(\0132%.littlehorse.UserTaskTriggerRefere" +
       "nceH\000\022.\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse." +
       "WfSpecIdH\001\210\001\001B\021\n\017task_run_sourceB\r\n\013_wf_" +
-      "spec_id\"k\n\021TaskNodeReference\022+\n\013node_run" +
-      "_id\030\001 \001(\0132\026.littlehorse.NodeRunId\022)\n\nwf_" +
-      "spec_id\030\002 \001(\0132\025.littlehorse.WfSpecId\"F\n\013" +
-      "LHTaskError\022&\n\004type\030\001 \001(\0162\030.littlehorse." +
-      "LHErrorType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTaskEx" +
-      "ception\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tBG" +
-      "\n\037io.littlehorse.sdk.common.protoP\001Z\007.;m" +
-      "odel\252\002\030LittleHorse.Common.Protob\006proto3"
+      "spec_id\"@\n\021TaskNodeReference\022+\n\013node_run" +
+      "_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"F\n\013LHT" +
+      "askError\022&\n\004type\030\001 \001(\0162\030.littlehorse.LHE" +
+      "rrorType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTaskExcep" +
+      "tion\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tBG\n\037i" +
+      "o.littlehorse.sdk.common.protoP\001Z\007.;mode" +
+      "l\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -139,7 +138,7 @@ public final class TaskRunOuterClass {
     internal_static_littlehorse_TaskNodeReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskNodeReference_descriptor,
-        new java.lang.String[] { "NodeRunId", "WfSpecId", });
+        new java.lang.String[] { "NodeRunId", });
     internal_static_littlehorse_LHTaskError_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_LHTaskError_fieldAccessorTable = new
