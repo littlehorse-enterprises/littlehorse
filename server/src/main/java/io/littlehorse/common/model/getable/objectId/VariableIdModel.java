@@ -43,7 +43,7 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         VariableId p = (VariableId) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         threadRunNumber = p.getThreadRunNumber();
         name = p.getName();
     }

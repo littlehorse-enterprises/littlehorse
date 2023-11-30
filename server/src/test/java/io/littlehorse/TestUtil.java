@@ -109,7 +109,7 @@ public class TestUtil {
     public static UserTaskRunModel userTaskRun(
             String wfRunId, NodeRunModel nodeRun, ProcessorExecutionContext processorContext) {
         UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
-        userTaskRun.setId(new UserTaskRunIdModel(wfRunId, "fdsa"));
+        userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
         userTaskRun.setUserId("33333");

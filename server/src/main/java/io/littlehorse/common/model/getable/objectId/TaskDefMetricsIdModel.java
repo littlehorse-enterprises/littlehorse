@@ -44,7 +44,7 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskDefMetricsId p = (TaskDefMetricsId) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         windowType = p.getWindowType();
         windowStart = LHUtil.fromProtoTs(p.getWindowStart());
     }

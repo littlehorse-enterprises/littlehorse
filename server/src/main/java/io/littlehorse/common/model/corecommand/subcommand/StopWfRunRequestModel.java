@@ -31,7 +31,7 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
 
     public void initFrom(Message proto, ExecutionContext context) {
         StopWfRunRequest p = (StopWfRunRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         threadRunNumber = p.getThreadRunNumber();
     }
 

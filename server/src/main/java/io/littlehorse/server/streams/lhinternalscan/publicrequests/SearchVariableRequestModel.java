@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -27,9 +26,9 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class SearchVariableRequestModel
     private VariableCriteriaCase type;
     private NameAndValueRequest value;
     private WfRunIdModel wfRunId;
-    private ReadOnlyMetadataManager metadataManager;
+    private WfService service;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -70,12 +69,12 @@ public class SearchVariableRequestModel
                 value = p.getValue();
                 break;
             case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-        this.metadataManager = context.metadataManager();
+        this.service = context.service();
     }
 
     public SearchVariableRequest.Builder toProto() {
@@ -117,11 +116,11 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
+    private TagStorageType indexTypeForSearchFromWfSpec() {
         Integer majorVersion = value.hasWfSpecMajorVersion() ? value.getWfSpecMajorVersion() : null;
         Integer revision = value.hasWfSpecRevision() ? value.getWfSpecRevision() : null;
 
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), majorVersion, revision);
+        WfSpecModel spec = service.getWfSpec(value.getWfSpecName(), majorVersion, revision);
         log.error("Major: {}, Revision: {}", majorVersion, revision);
 
         if (spec == null) {

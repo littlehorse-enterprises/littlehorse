@@ -47,7 +47,7 @@ public class NodeRunIdModel extends CoreObjectId<NodeRunId, NodeRun, NodeRunMode
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         NodeRunId p = (NodeRunId) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         threadRunNumber = p.getThreadRunNumber();
         position = p.getPosition();
     }

@@ -48,18 +48,17 @@ import org.apache.commons.lang3.tuple.Pair;
 @Setter
 public class WfSpecModel extends GlobalGetable<WfSpec> {
 
-    private WfSpecIdModel id;
+    private WfSpecIdModel id = new WfSpecIdModel();
 
     public Date createdAt;
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
 
-    public Map<String, ThreadSpecModel> threadSpecs;
-    private Map<String, ThreadVarDefModel> frozenVariables;
+    public Map<String, ThreadSpecModel> threadSpecs = new HashMap<>();
+    private Map<String, ThreadVarDefModel> frozenVariables = new HashMap<>();
 
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
-
 
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
@@ -114,14 +113,6 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return names;
     }
 
-    public WfSpecModel() {
-        this.id = new WfSpecIdModel();
-        threadSpecs = new HashMap<>();
-        varToThreadSpec = new HashMap<>();
-        initializedVarToThreadSpec = false;
-        frozenVariables = new HashMap<>();
-    }
-
     public void setLastUpdatedOffset(long newOffset) {
         lastOffset = newOffset;
     }
@@ -159,7 +150,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         entrypointThreadName = proto.getEntrypointThreadName();
-        id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class);
+        id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class, context);
 
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
             ThreadSpecModel ts = new ThreadSpecModel();
@@ -185,7 +176,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         this.executionContext = context;
 
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
-            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class);
+            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
         }
     }
@@ -220,9 +211,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(
-            MetadataProcessorDAO metadataDao, LHServerConfig config, Optional<WfSpecModel> oldVersion)
-            throws LHApiException {
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion) throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
@@ -426,7 +415,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         out.startTime = currentCommand.getTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        out.startThread(
+                entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getableManager.put(out);
         return out;
     }

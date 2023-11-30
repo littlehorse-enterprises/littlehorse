@@ -71,8 +71,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
             SleepNodeMaturedModel snm = new SleepNodeMaturedModel(nodeRun.getId());
             CommandModel command = new CommandModel(snm, maturationTime);
-            CoreProcessorDAO dao = nodeRun.getThreadRun().getWfRun().getDao();
-            dao.scheduleTimer(new LHTimer(command, dao));
+            processorContext.getTaskManager().scheduleTimer(new LHTimer(command));
 
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(

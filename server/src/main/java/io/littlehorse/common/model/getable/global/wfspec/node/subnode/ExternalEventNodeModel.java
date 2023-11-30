@@ -3,8 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -38,7 +36,8 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventNode p = (ExternalEventNode) proto;
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+        externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         if (p.hasTimeoutSeconds()) {
             timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), context);
         }
@@ -70,6 +69,6 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     public ExternalEventRunModel createSubNodeRun(Date time) {
-        return new ExternalEventRunModel(externalEventDefId);
+        return new ExternalEventRunModel(externalEventDefId, processorContext);
     }
 }

@@ -9,8 +9,8 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
-import lombok.Getter;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 @Getter
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
@@ -40,7 +40,8 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     public void initFrom(Message proto, ExecutionContext context) {
         InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+        externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         this.context = context;
     }
 

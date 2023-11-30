@@ -274,8 +274,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class);
-        WfSpecModel wfSpec = requestContext().metadataManager().get(new WfSpecIdModel(wfSpecId));
+        WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class, requestContext());
+        WfSpecModel wfSpec = requestContext().metadataManager().get(wfSpecId);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -294,9 +294,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
-        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), majorVersion, null);
+        WfSpecModel wfSpec = requestContext().service().getWfSpec(req.getName(), majorVersion, null);
 
-        WfSpecModel wfSpec = requestContext().metadataManager().lastFromPrefix(WfSpecIdModel.getPrefix(req.getName()));
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -428,7 +427,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
-        return new PollTaskRequestObserver(ctx, taskQueueManager);
+        return new PollTaskRequestObserver(ctx, taskQueueManager, requestContext());
     }
 
     @Override

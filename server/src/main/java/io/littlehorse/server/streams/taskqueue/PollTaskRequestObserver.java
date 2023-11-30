@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -15,11 +16,16 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String clientId;
     private TaskDefIdModel taskDefId;
     private String taskWorkerVersion;
+    private final RequestExecutionContext requestContext;
 
-    public PollTaskRequestObserver(StreamObserver<PollTaskResponse> responseObserver, TaskQueueManager manager) {
+    public PollTaskRequestObserver(
+            StreamObserver<PollTaskResponse> responseObserver,
+            TaskQueueManager manager,
+            RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
+        this.requestContext = requestContext;
     }
 
     public String getTaskWorkerVersion() {
@@ -55,12 +61,12 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         }
 
         if (taskDefId == null) {
-            taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class);
+            taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
         } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
             log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
         }
 
-        taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
 

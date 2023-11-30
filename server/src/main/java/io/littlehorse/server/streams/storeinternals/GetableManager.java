@@ -7,6 +7,8 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -177,9 +179,9 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
-    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName) {
+    public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefName) {
 
-        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId, externalEventDefName);
+        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId.toString(), externalEventDefName.toString());
 
         return this.getFirstByCreatedTimeFromPrefix(
                 extEvtPrefix, ExternalEventModel.class, externalEvent -> !externalEvent.isClaimed());

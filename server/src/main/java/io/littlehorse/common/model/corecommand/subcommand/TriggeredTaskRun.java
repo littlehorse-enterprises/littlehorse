@@ -25,7 +25,6 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -72,11 +71,10 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        taskToSchedule.setDao(dao);
         WfRunIdModel wfRunId = source.getWfRunId();
 
         log.info("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);
-        WfRunModel wfRunModel = dao.get(wfRunId);
+        WfRunModel wfRunModel = executionContext.getableManager().get(wfRunId);
         if (wfRunModel == null) {
             log.info("WfRun no longer exists! Skipping the scheduled action trigger");
             return null;

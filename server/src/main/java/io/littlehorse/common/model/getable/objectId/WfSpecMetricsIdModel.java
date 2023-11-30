@@ -45,7 +45,7 @@ public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpe
         WfSpecMetricsId p = (WfSpecMetricsId) proto;
         windowType = p.getWindowType();
         windowStart = LHUtil.fromProtoTs(p.getWindowStart());
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
     }
 
     @Override

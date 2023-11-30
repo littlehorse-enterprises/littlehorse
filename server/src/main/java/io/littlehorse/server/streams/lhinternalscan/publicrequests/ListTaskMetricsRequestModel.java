@@ -61,7 +61,7 @@ public class ListTaskMetricsRequestModel
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();
         windowLength = p.getWindowLength();
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         limit = numWindows;
     }
 

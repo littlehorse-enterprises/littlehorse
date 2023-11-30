@@ -33,7 +33,7 @@ public class ListTaskRunsRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ListTaskRunsRequest p = (ListTaskRunsRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
     @Override

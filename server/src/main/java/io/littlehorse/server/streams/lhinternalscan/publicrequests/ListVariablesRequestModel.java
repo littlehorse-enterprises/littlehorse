@@ -34,7 +34,7 @@ public class ListVariablesRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListVariablesRequest p = (ListVariablesRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
     public GetableClassEnum getObjectType() {

@@ -56,7 +56,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         if (p.hasExternalEventId()) {
             externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class, context);
         }
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
+        externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
@@ -99,7 +100,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
 
         ExternalEventModel evt = processorContext
                 .getableManager()
-                .getUnclaimedEvent(nodeRun.getId().getWfRunId(), eNode.getExternalEventDef().getName());
+                .getUnclaimedEvent(nodeRun.getId().getWfRunId(), eNode.getExternalEventDefId());
         if (evt == null) {
             // It hasn't come in yet.
             return false;

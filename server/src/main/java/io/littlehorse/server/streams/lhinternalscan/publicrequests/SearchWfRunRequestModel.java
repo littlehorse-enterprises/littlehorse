@@ -40,6 +40,7 @@ public class SearchWfRunRequestModel
     public StatusAndSpecRequest statusAndSpec;
     private NameRequest namePb;
     private StatusAndNameRequest statusAndName;
+    private ExecutionContext executionContext;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
@@ -75,6 +76,7 @@ public class SearchWfRunRequestModel
             case WFRUNCRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.executionContext = context;
     }
 
     public SearchWfRunRequest.Builder toProto() {
@@ -193,7 +195,7 @@ public class SearchWfRunRequestModel
         return Arrays.asList(
                 new Attribute(
                         "wfSpecId",
-                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class)
+                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class, executionContext)
                                 .toString()),
                 new Attribute("status", statusAndSpec.getStatus().toString()));
     }

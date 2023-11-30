@@ -59,7 +59,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskRun p = (TaskRun) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class, context);

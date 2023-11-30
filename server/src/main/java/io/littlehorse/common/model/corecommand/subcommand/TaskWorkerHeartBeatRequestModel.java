@@ -165,7 +165,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerHeartBeatRequest heartBeatPb = (TaskWorkerHeartBeatRequest) proto;
         clientId = heartBeatPb.getClientId();
-        taskDefId = LHSerializable.fromProto(heartBeatPb.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(heartBeatPb.getTaskDefId(), TaskDefIdModel.class, context);
         listenerName = heartBeatPb.getListenerName();
     }
 

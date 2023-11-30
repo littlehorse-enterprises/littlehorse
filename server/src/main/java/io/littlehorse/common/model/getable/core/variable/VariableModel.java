@@ -72,7 +72,7 @@ public class VariableModel extends CoreGetable<Variable> {
     public void initFrom(Message proto, ExecutionContext context) {
         Variable p = (Variable) proto;
         value = VariableValueModel.fromProto(p.getValue(), context);
-        id = LHSerializable.fromProto(p.getId(), VariableIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), VariableIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.executionContext = context;

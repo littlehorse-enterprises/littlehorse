@@ -41,7 +41,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
     public void initFrom(Message proto, ExecutionContext context) {
         TaskRunSource p = (TaskRunSource) proto;
         if (p.hasWfSpecId()) {
-            wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+            wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         }
         type = p.getTaskRunSourceCase();
         switch (type) {

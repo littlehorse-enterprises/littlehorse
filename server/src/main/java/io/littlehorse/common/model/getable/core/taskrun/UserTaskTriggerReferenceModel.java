@@ -46,7 +46,7 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
     }
 

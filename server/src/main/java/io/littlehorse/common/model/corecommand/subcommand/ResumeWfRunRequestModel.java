@@ -31,7 +31,7 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
 
     public void initFrom(Message proto, ExecutionContext context) {
         ResumeWfRunRequest p = (ResumeWfRunRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         threadRunNumber = p.getThreadRunNumber();
     }
 

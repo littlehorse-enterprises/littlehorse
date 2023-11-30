@@ -45,9 +45,10 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventId p = (ExternalEventId) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         guid = p.getGuid();
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
+        externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
     }
 
     @Override

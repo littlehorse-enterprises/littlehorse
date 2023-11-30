@@ -121,8 +121,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            // wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision());
-            wfSpec = executionContext.metadataManager().get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
+            wfSpec = executionContext.service().getWfSpec(wfSpecId);
         }
         return wfSpec;
     }

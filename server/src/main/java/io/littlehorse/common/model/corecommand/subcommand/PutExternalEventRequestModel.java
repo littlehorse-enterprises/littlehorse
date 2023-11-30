@@ -17,13 +17,13 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.Optional;
 
@@ -67,29 +67,32 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
 
     @Override
     public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        ExternalEventDefModel eed = executionContext.service().getExternalEventDef(externalEventDefId.getName());
+        WfService service = executionContext.service();
+        ExternalEventDefModel eed = service.getExternalEventDef(externalEventDefId.getName());
+        Date eventTime = executionContext.currentCommand().getTime();
+        GetableManager getableManager = executionContext.getableManager();
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefId);
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
-        ExternalEventModel evt = new ExternalEventModel(
-                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, dao.getEventTime());
-        evt.setDao(dao);
-        dao.put(evt);
 
-        Optional<Date> expirationTime = eed.getRetentionPolicy().scheduleCleanup(dao.getEventTime());
+        ExternalEventModel evt = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, eventTime);
+        getableManager.put(evt);
+
+        Optional<Date> expirationTime = eed.getRetentionPolicy().scheduleCleanup(eventTime);
         if (expirationTime.isPresent()) {
             DeleteExternalEventRequestModel deleteExternalEvent =
                     new DeleteExternalEventRequestModel(evt.getObjectId());
             // Schedule the garbage collection of the event.
             CommandModel deleteExtEventCmd = new CommandModel(deleteExternalEvent, expirationTime.get());
-            dao.scheduleTimer(new LHTimer(deleteExtEventCmd, dao));
+            executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteExtEventCmd));
         }
 
-        WfRunModel wfRun = dao.get(wfRunId);
+        WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun != null) {
-            WfSpecModel spec = dao.getWfSpec(wfRun.getWfSpecId());
+            WfSpecModel spec = service.getWfSpec(wfRun.getWfSpecId());
             if (spec == null) {
                 wfRun.getThreadRun(0)
                         .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
@@ -112,8 +115,9 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         PutExternalEventRequest p = (PutExternalEventRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
+        externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         content = VariableValueModel.fromProto(p.getContent(), context);
 
         if (p.hasGuid()) guid = p.getGuid();

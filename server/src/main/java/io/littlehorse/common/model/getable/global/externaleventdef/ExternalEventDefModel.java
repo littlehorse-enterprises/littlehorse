@@ -59,7 +59,8 @@ public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
         ExternalEventDef proto = (ExternalEventDef) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class);
+        retentionPolicy =
+                LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
     }
 
     public static ExternalEventDefModel fromProto(ExternalEventDef p, ExecutionContext context) {

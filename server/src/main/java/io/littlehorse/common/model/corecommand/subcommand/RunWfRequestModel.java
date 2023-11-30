@@ -9,19 +9,17 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Setter;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -78,8 +76,9 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     }
 
     @Override
-    public WfRun process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfSpecModel spec = dao.getWfSpec(wfSpecName, majorVersion, revision);
+    public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
+        GetableManager getableManager = processorContext.getableManager();
+        WfSpecModel spec = processorContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
@@ -95,8 +94,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRunModel newRun = spec.startNewRun(this, executionContext);
-        newRun.advance(executionContext.currentCommand().getTime());
+        WfRunModel newRun = spec.startNewRun(this, processorContext);
+        newRun.advance(processorContext.currentCommand().getTime());
 
         return newRun.toProto().build();
     }

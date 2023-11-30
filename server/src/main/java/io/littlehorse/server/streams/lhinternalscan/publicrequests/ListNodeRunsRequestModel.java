@@ -34,7 +34,7 @@ public class ListNodeRunsRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListNodeRunsRequest p = (ListNodeRunsRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
     public GetableClassEnum getObjectType() {

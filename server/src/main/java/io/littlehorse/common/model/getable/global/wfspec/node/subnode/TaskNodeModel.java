@@ -4,9 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -50,14 +47,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
-            if (dao == null && node != null) {
-                // Only works for when this is part of a Node, not a UTATask.
-                dao = node.getThreadSpecModel().getWfSpecModel().getDao();
-            }
-
-            // TODO: When we refactor the object id and dao, we can just
-            // pass in the taskDefId, not the string.
-            taskDef = dao.getTaskDef(taskDefId.getName());
+            taskDef = metadataManager.get(taskDefId);
         }
         return taskDef;
     }
@@ -79,7 +69,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         retries = p.getRetries();
 
         timeoutSeconds = p.getTimeoutSeconds();

@@ -66,7 +66,7 @@ public class SearchExternalEventRequestModel
         type = p.getExtEvtCriteriaCase();
         switch (type) {
             case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
                 SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus =

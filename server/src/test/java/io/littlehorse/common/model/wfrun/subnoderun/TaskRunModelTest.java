@@ -10,6 +10,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -27,7 +28,7 @@ public class TaskRunModelTest {
     void setTaskWorkerVersionAndIdToTaskRun() {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRunProto = TaskRun.newBuilder()
-                .setId(new TaskRunIdModel("asdf", processorContext).toProto())
+                .setId(new TaskRunIdModel(new WfRunIdModel("asdf"), processorContext).toProto())
                 .build();
         when(executionContext.castOnSupport(ProcessorExecutionContext.class)).thenReturn(processorContext);
 

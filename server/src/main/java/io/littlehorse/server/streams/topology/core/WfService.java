@@ -6,11 +6,13 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -20,6 +22,7 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class WfService {
 
@@ -34,28 +37,27 @@ public class WfService {
         this.executionContext = executionContext;
     }
 
-    // TODO: re-enable when we implement metadataCache
-    /*public WfSpecModel getWfSpec(String name, Integer version) {
+    public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
         Supplier<WfSpecModel> findWfSpec = () -> {
             final WfSpecModel storedResult;
-            if (version != null) {
-                storedResult = metadataManager.get(new WfSpecIdModel(name, version));
+
+            if (majorVersion != null && revision != null) {
+                storedResult = metadataManager.get(new WfSpecIdModel(name, majorVersion, revision));
+            } else if (majorVersion != null) {
+                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name, majorVersion));
             } else {
                 storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name));
             }
-            if (storedResult != null) {
-                return storedResult.toProto().build();
-            } else {
-                return null;
-            }
+
+            return storedResult;
         };
-        WfSpec result = metadataCache.getOrCache(name, version, findWfSpec);
-        if (result != null) {
-            return LHSerializable.fromProto(result, WfSpecModel.class, executionContext);
-        } else {
-            return null;
-        }
-    }*/
+        // return metadataCache.getOrCache(name, majorVersion, findWfSpec);
+        return findWfSpec.get();
+    }
+
+    public WfSpecModel getWfSpec(WfSpecIdModel id) {
+        return getWfSpec(id.getName(), id.getMajorVersion(), id.getRevision());
+    }
 
     public UserTaskDefModel getUserTaskDef(String name, Integer version) {
         if (version != null) {

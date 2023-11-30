@@ -39,7 +39,7 @@ public class ListExternalEventsRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListExternalEventsRequest p = (ListExternalEventsRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
     public GetableClassEnum getObjectType() {

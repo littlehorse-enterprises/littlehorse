@@ -20,7 +20,6 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRun
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -97,7 +96,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
-            WfRunModel wfRunModel = getDao().get(id.getWfRunId());
+            ProcessorExecutionContext processorContext =
+                    executionContext.castOnSupport(ProcessorExecutionContext.class);
+            WfRunModel wfRunModel = processorContext.getableManager().get(id.getWfRunId());
             threadRunModelDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
         }
         return threadRunModelDoNotUseMe;

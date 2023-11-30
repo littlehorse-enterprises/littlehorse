@@ -4,20 +4,18 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import lombok.Getter;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import lombok.Getter;
 
 @Getter
 public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
@@ -44,7 +42,8 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     public void initFrom(Message proto, ExecutionContext context) {
         PutExternalEventDefRequest p = (PutExternalEventDefRequest) proto;
         name = p.getName();
-        retentionPolicy = LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class);
+        retentionPolicy =
+                LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
     }
 
     public boolean hasResponse() {

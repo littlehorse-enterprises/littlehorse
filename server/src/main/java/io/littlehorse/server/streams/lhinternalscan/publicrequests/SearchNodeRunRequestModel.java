@@ -18,8 +18,8 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
-import lombok.Getter;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -53,7 +53,7 @@ public class SearchNodeRunRequestModel
         type = p.getNoderunCriteriaCase();
         switch (type) {
             case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing node_run_criteria");

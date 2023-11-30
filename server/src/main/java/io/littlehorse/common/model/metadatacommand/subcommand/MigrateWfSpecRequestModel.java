@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.Getter;
 
 @Getter
@@ -48,15 +49,17 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
     }
 
     @Override
-    public WfSpec process(MetadataProcessorDAO dao, LHServerConfig config) {
-        WfSpecModel oldWfSpec = dao.getWfSpec(oldWfSpecId);
+    public WfSpec process(MetadataCommandExecution metadataContext) {
+        WfService service = metadataContext.service();
+        MetadataManager metadataManager = metadataContext.metadataManager();
+        WfSpecModel oldWfSpec = service.getWfSpec(oldWfSpecId);
 
         if (oldWfSpec == null) {
             throw new LHApiException(
                     Status.NOT_FOUND, "Migration refers to nonexisting WfSpec %s".formatted(oldWfSpecId.toString()));
         }
 
-        WfSpecModel newWfSpec = dao.getWfSpec(getNewWfSpecId());
+        WfSpecModel newWfSpec = service.getWfSpec(getNewWfSpecId());
         if (newWfSpec == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,

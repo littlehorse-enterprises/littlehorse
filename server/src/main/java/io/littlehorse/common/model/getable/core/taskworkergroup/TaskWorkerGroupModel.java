@@ -56,7 +56,7 @@ public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
     @Override
     public void initFrom(Message p, ExecutionContext context) {
         TaskWorkerGroup proto = (TaskWorkerGroup) p;
-        id = LHSerializable.fromProto(proto.getId(), TaskWorkerGroupIdModel.class);
+        id = LHSerializable.fromProto(proto.getId(), TaskWorkerGroupIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         taskWorkers = proto.getTaskWorkersMap().entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {

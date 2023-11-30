@@ -49,7 +49,7 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         UserTaskRunId p = (UserTaskRunId) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         userTaskGuid = p.getUserTaskGuid();
     }
 

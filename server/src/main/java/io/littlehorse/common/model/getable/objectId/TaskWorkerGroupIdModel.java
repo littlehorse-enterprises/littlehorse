@@ -36,7 +36,7 @@ public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, Task
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerGroupId p = (TaskWorkerGroupId) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
     }
 
     @Override

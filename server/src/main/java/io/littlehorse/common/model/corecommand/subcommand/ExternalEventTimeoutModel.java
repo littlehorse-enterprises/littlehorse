@@ -7,13 +7,10 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
-import lombok.Getter;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Date;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,7 +40,7 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventNodeTimeoutPb p = (ExternalEventNodeTimeoutPb) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
     }
 
     @Override
