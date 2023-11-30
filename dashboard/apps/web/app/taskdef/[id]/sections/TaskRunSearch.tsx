@@ -10,9 +10,10 @@ import {
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { TaskRunSearchTable } from '../components/search/TaskRunSearchTable'
+import type { WfRunId } from '../../../../littlehorse-public-api/object_id'
 
 export interface Result {
-    wfRunId: string;
+    wfRunId: WfRunId;
     status?: string;
 }
 

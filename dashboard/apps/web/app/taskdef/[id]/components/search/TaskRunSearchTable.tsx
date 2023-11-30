@@ -27,10 +27,10 @@ export function TaskRunSearchTable({ results }: TaskRunSearchTableProps) {
                     }}
                 >
                     {results.map((r: Result) => (
-                        <tr className='flex w-full' key={r.wfRunId}>
+                        <tr className='flex w-full' key={r.wfRunId.id}>
                             <td>
-                                <Link href={`/wfrun/${r.wfRunId}`}>
-                                    {r.wfRunId}
+                                <Link href={`/wfrun/${r.wfRunId.id}`}>
+                                    {r.wfRunId.id}
                                 </Link>
                             </td>
                             <td className='text-center '> {r.status}</td>

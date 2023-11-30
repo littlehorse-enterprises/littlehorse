@@ -55,8 +55,8 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
         const res = await fetch('/api/information/userTaskDef', {
             method: 'POST',
             body: JSON.stringify({
-                id:data?.lhNode?.userTask?.userTaskDefName,
-                version:data?.lhNode?.userTask?.userTaskDefVersion
+                id:data?.lhNode?.userTask?.userTaskDefId.name,
+                version:data?.lhNode?.userTask?.userTaskDefId.version
             })
         })
         if (res.ok) {
@@ -136,7 +136,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                         <Link
                             className="drawer-link"
                             href={
-                                `/usertaskdef/${data?.lhNode?.userTask?.userTaskDefName}/${data?.lhNode?.userTask?.userTaskDefVersion}`
+                                `/usertaskdef/${data?.lhNode?.userTask?.userTaskDefId.name}/${data?.lhNode?.userTask?.userTaskDefId.version}`
                             }
                         >
                             <Image alt="link" height={10} src={linkSvg} width={20} />
