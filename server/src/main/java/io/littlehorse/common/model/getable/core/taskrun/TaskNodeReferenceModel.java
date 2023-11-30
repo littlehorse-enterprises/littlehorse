@@ -3,13 +3,14 @@ package io.littlehorse.common.model.getable.core.taskrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,9 @@ import lombok.Setter;
 public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> {
 
     private NodeRunIdModel nodeRunId;
+    private WfSpecIdModel wfSpecId;
+    private ExecutionContext context;
+    private ProcessorExecutionContext processorContext;
 
     public TaskNodeReferenceModel() {}
 
@@ -35,18 +39,23 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeReference p = (TaskNodeReference) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        this.context = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
-    public void onCompleted(TaskAttemptModel successfulAttept, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
+    public void onCompleted(TaskAttemptModel successfulAttept) {
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
         nodeRunModel.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
     }
 
-    public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
+    @Override
+    public void onFailed(TaskAttemptModel lastFailure) {
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
         FailureModel failure;
         if (!lastFailure.containsException()) {
             String message = getMessageFor(lastFailure.getStatus());

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerMetadata metadataPb = (TaskWorkerMetadata) proto;
         clientId = metadataPb.getClientId();
         latestHeartbeat = LHUtil.fromProtoTs(metadataPb.getLatestHeartbeat());

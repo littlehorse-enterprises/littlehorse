@@ -4,7 +4,6 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -26,6 +25,9 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;
@@ -62,14 +64,14 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TriggeredTaskRunPb p = (TriggeredTaskRunPb) proto;
-        taskToSchedule = LHSerializable.fromProto(p.getTaskToSchedule(), TaskNodeModel.class);
-        source = LHSerializable.fromProto(p.getSource(), NodeRunIdModel.class);
+        taskToSchedule = LHSerializable.fromProto(p.getTaskToSchedule(), TaskNodeModel.class, context);
+        source = LHSerializable.fromProto(p.getSource(), NodeRunIdModel.class, context);
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         taskToSchedule.setDao(dao);
         WfRunIdModel wfRunId = source.getWfRunId();
 
@@ -90,9 +92,9 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         }
 
         // Get the NodeRun
-        NodeRunModel userTaskNR = dao.get(source);
+        NodeRunModel userTaskNR = executionContext.getableManager().get(source);
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
-        UserTaskRunModel userTaskRun = dao.get(userTaskRunId);
+        UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
 
         if (userTaskNR.status != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
@@ -104,25 +106,26 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
 
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
-            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId);
+            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
 
-            ScheduledTaskModel toSchedule =
-                    new ScheduledTaskModel(taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun);
+            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
+                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(
-                    dao,
                     inputVars,
-                    new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun)),
-                    taskToSchedule);
+                    new TaskRunSourceModel(
+                            new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
+                    taskToSchedule,
+                    executionContext);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
-            dao.put(taskRun);
-            dao.scheduleTask(toSchedule);
+            executionContext.getableManager().put(taskRun);
+            executionContext.getTaskManager().scheduleTask(toSchedule);
 
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
 
-            dao.put(userTaskNR); // should be unnecessary
+            executionContext.getableManager().put(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }

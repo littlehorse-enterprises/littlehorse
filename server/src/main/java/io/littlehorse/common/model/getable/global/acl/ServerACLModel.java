@@ -6,6 +6,7 @@ import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.ServerACL;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ServerACL serverACL = (ServerACL) proto;
         if (serverACL.hasName()) {
             this.name = Optional.of(serverACL.getName());

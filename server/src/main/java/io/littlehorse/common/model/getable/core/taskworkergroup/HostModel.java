@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class HostModel extends LHSerializable<LHHostInfo> implements Comparable<HostModel> {
 
@@ -23,7 +24,7 @@ public class HostModel extends LHSerializable<LHHostInfo> implements Comparable<
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         LHHostInfo hostInfo = (LHHostInfo) proto;
         host = hostInfo.getHost();
         port = hostInfo.getPort();

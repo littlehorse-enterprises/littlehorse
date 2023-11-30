@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,12 +21,13 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return VariableDef.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         VariableDef p = (VariableDef) proto;
         type = p.getType();
         name = p.getName();
         if (p.hasDefaultValue()) {
-            defaultValue = VariableValueModel.fromProto(p.getDefaultValue());
+            defaultValue = VariableValueModel.fromProto(p.getDefaultValue(), context);
         }
     }
 
@@ -36,9 +38,9 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return out;
     }
 
-    public static VariableDefModel fromProto(VariableDef proto) {
+    public static VariableDefModel fromProto(VariableDef proto, ExecutionContext context) {
         VariableDefModel o = new VariableDefModel();
-        o.initFrom(proto);
+        o.initFrom(proto, context);
         return o;
     }
 

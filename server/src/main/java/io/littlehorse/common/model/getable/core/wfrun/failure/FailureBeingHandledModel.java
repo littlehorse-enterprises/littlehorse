@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.failure;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureBeingHandled;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,16 +27,17 @@ public class FailureBeingHandledModel extends LHSerializable<FailureBeingHandled
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         FailureBeingHandled p = (FailureBeingHandled) proto;
         failureNumber = p.getFailureNumber();
         nodeRunPosition = p.getNodeRunPosition();
         threadRunNumber = p.getThreadRunNumber();
     }
 
-    public static FailureBeingHandledModel fromProto(FailureBeingHandled p) {
+    public static FailureBeingHandledModel fromProto(FailureBeingHandled p, ExecutionContext context) {
         FailureBeingHandledModel out = new FailureBeingHandledModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

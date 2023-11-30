@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import lombok.Getter;
 import lombok.Setter;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, Exte
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventDefId p = (ExternalEventDefId) proto;
         name = p.getName();
     }

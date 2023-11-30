@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -24,6 +23,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -52,7 +52,8 @@ public class SearchExternalEventRequestModel
         return SearchExternalEventRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchExternalEventRequest p = (SearchExternalEventRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -117,7 +118,7 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         List<String> searchAttributes =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =

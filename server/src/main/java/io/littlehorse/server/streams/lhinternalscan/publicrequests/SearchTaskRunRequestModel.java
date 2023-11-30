@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -22,6 +21,7 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -46,7 +46,8 @@ public class SearchTaskRunRequestModel
         return SearchTaskRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchTaskRunRequest p = (SearchTaskRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -91,9 +92,9 @@ public class SearchTaskRunRequestModel
         return out;
     }
 
-    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto) {
+    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto, ExecutionContext context) {
         SearchTaskRunRequestModel out = new SearchTaskRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -135,7 +136,7 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

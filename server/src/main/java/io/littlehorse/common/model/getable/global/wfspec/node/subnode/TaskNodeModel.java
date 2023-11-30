@@ -22,6 +22,10 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -40,7 +44,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     private int timeoutSeconds;
 
     private TaskDefModel taskDef;
-    private CoreProcessorDAO dao;
+    private WfService wfService;
+    private ReadOnlyMetadataManager metadataManager;
+    private ProcessorExecutionContext processorContext;
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
@@ -70,7 +76,8 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return TaskNode.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         retries = p.getRetries();
@@ -81,8 +88,10 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
 
         for (VariableAssignment assn : p.getVariablesList()) {
-            variables.add(VariableAssignmentModel.fromProto(assn));
+            variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
+        this.metadataManager = context.metadataManager();
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskNode.Builder toProto() {
@@ -97,11 +106,12 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {
+    @Override
+    public void validate() throws LHApiException {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDefModel taskDef = readOnlyDao.getTaskDef(taskDefId.getName());
+        TaskDefModel taskDef = metadataManager.get(new TaskDefIdModel(taskDefId.getName()));
         if (taskDef == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
         }
@@ -181,7 +191,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     @Override
     public TaskNodeRunModel createSubNodeRun(Date time) {
-        TaskNodeRunModel out = new TaskNodeRunModel();
+        TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
     }

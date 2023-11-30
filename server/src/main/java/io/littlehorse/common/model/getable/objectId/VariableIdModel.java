@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         VariableId p = (VariableId) proto;
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
         threadRunNumber = p.getThreadRunNumber();

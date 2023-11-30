@@ -4,14 +4,13 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import lombok.Getter;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 @Getter
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
@@ -24,6 +23,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     public ThreadSpecModel handler;
 
     public ExternalEventDefModel eed;
+    private ExecutionContext context;
 
     public Class<InterruptDef> getProtoBaseClass() {
         return InterruptDef.class;
@@ -36,21 +36,23 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
-        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class);
+        externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+        this.context = context;
     }
 
-    public static InterruptDefModel fromProto(InterruptDef p) {
+    public static InterruptDefModel fromProto(InterruptDef p, ExecutionContext context) {
         InterruptDefModel out = new InterruptDefModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
-    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
+    public void validate() throws LHApiException {
         // TODO: refactor DAO to allow passing in the object id.
-        eed = metadataDao.getExternalEventDef(externalEventDefId.getName());
+        eed = context.service().getExternalEventDef(externalEventDefId.getName());
 
         if (eed == null) {
             throw new LHApiException(

@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,8 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskDefMetrics p = (TaskDefMetrics) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();

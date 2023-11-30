@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class VariableModel extends CoreGetable<Variable> {
     private WfSpecIdModel wfSpecId;
 
     private WfSpecModel wfSpec;
+    private ExecutionContext executionContext;
 
     public VariableModel() {}
 
@@ -55,7 +57,9 @@ public class VariableModel extends CoreGetable<Variable> {
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision());
+            wfSpec = executionContext
+                    .metadataManager()
+                    .get(new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
         }
         return wfSpec;
     }
@@ -64,12 +68,14 @@ public class VariableModel extends CoreGetable<Variable> {
         this.wfSpec = spec;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         Variable p = (Variable) proto;
-        value = VariableValueModel.fromProto(p.getValue());
+        value = VariableValueModel.fromProto(p.getValue(), context);
         id = LHSerializable.fromProto(p.getId(), VariableIdModel.class);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        this.executionContext = context;
     }
 
     public Variable.Builder toProto() {

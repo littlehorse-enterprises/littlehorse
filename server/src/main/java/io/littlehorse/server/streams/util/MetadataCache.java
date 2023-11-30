@@ -72,8 +72,9 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
         } else {
             log.trace("Updating cache for {} with key {}", keyType, cacheKey);
 
+            // Passing null as context, this will be removed once we have MetadataCache with protobuf instead of models
             @SuppressWarnings("unchecked")
-            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class);
+            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class, null);
             updateCache(cacheKey, storedGetable.getStoredObject());
         }
     }

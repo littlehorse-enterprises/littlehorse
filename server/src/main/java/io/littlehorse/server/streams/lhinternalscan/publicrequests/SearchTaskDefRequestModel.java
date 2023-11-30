@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -16,6 +15,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,7 +37,8 @@ public class SearchTaskDefRequestModel
         return GetableClassEnum.TASK_DEF;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchTaskDefRequest p = (SearchTaskDefRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -63,14 +64,14 @@ public class SearchTaskDefRequestModel
         return out;
     }
 
-    public static SearchTaskDefRequestModel fromProto(SearchTaskDefRequest proto) {
+    public static SearchTaskDefRequestModel fromProto(SearchTaskDefRequest proto, ExecutionContext context) {
         SearchTaskDefRequestModel out = new SearchTaskDefRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

@@ -10,6 +10,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpe
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WfSpecMetricsId p = (WfSpecMetricsId) proto;
         windowType = p.getWindowType();
         windowStart = LHUtil.fromProtoTs(p.getWindowStart());

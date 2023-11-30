@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,9 +35,9 @@ public class FailureModel extends LHSerializable<Failure> {
         this.content = new VariableValueModel();
     }
 
-    public static FailureModel fromProto(Failure p) {
+    public static FailureModel fromProto(Failure p, ExecutionContext context) {
         FailureModel out = new FailureModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -55,14 +56,15 @@ public class FailureModel extends LHSerializable<Failure> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         Failure p = (Failure) proto;
         failureName = p.getFailureName();
         message = p.getMessage();
         properlyHandled = p.getWasProperlyHandled();
 
         if (p.hasContent()) {
-            content = VariableValueModel.fromProto(p.getContent());
+            content = VariableValueModel.fromProto(p.getContent(), context);
         }
     }
 

@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
@@ -19,6 +18,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ListWfMetricsRequestModel
@@ -49,7 +49,8 @@ public class ListWfMetricsRequestModel
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();
@@ -63,7 +64,7 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return null;
     }
 

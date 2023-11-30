@@ -10,6 +10,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -41,7 +42,7 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskDefMetricsId p = (TaskDefMetricsId) proto;
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
         windowType = p.getWindowType();

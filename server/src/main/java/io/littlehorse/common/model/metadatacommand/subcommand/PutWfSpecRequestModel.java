@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
@@ -16,6 +14,9 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,14 +56,16 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         if (p.hasRetentionPolicy())
-            retentionPolicy = LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
+            retentionPolicy =
+                    LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
-            threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue()));
+            threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue(), context));
         }
     }
 
@@ -70,16 +73,19 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return true;
     }
 
-    public WfSpec process(MetadataProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public WfSpec process(MetadataCommandExecution executionContext) {
+        MetadataManager metadataManager = executionContext.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
         }
 
-        WfSpecModel spec = new WfSpecModel();
+        WfSpecModel spec = new WfSpecModel(executionContext);
         spec.setId(new WfSpecIdModel(name, 0, 0)); // version gets set later, don't worry
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
+
         spec.setRetentionPolicy(retentionPolicy);
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();
@@ -95,9 +101,9 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return spec.toProto().build();
     }
 
-    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p) {
+    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p, ExecutionContext context) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

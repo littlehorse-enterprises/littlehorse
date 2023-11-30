@@ -2,8 +2,6 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -12,13 +10,16 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
     private String id;
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutTenantRequest putTenantRequest = (PutTenantRequest) proto;
         this.id = putTenantRequest.getId();
     }
@@ -39,11 +40,12 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     }
 
     @Override
-    public Tenant process(MetadataProcessorDAO dao, LHServerConfig config) {
-        if (dao.get(new TenantIdModel(id)) == null) {
+    public Tenant process(MetadataCommandExecution context) {
+        MetadataManager metadataManager = context.metadataManager();
+        if (metadataManager.get(new TenantIdModel(id)) == null) {
             TenantModel toSave = new TenantModel(id);
-            toSave.setCreatedAt(dao.getCommand().getTime());
-            dao.put(toSave);
+            toSave.setCreatedAt(context.currentCommand().getTime());
+            metadataManager.put(toSave);
             return toSave.toProto().build();
         } else {
             throw new LHApiException(Status.ALREADY_EXISTS, "Tenant %s already exists".formatted(id));

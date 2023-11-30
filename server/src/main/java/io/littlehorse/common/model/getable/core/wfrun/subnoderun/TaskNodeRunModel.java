@@ -14,6 +14,8 @@ import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeRun;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;
@@ -24,16 +26,29 @@ import lombok.Setter;
 public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
     private TaskRunIdModel taskRunId;
+    private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
     public Class<TaskNodeRun> getProtoBaseClass() {
         return TaskNodeRun.class;
     }
 
-    public void initFrom(Message proto) {
+    public TaskNodeRunModel() {
+        // used by lh deserializer
+    }
+
+    public TaskNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
+
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeRun p = (TaskNodeRun) proto;
         if (p.hasTaskRunId()) {
-            taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
+            taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         }
+        this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskNodeRun.Builder toProto() {
@@ -86,7 +101,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         // When creating a new Getable for the first time, we need to explicitly
         // save it.
-        getDao().put(task);
+        processorContext.getableManager().put(task);
 
         // TODO: this should update metrics
         task.scheduleAttempt();

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -48,7 +49,7 @@ public class VariableValueModelTest {
     @Test
     void asObjShouldReturnCopy() throws LHVarSubError, LHSerdeError {
         ObjVarThing thing = new ObjVarThing("Hi There");
-        VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing));
+        VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing), mock());
 
         assertThat(first.type).isEqualTo(VariableType.JSON_OBJ);
         assertThat(first.jsonObjVal.get("foo")).isEqualTo("Hi There");

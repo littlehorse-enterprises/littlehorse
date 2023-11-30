@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -42,7 +43,7 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventId p = (ExternalEventId) proto;
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
         guid = p.getGuid();

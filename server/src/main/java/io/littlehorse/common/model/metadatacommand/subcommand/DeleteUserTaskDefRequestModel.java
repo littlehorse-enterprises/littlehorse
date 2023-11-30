@@ -4,11 +4,11 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUserTaskDefRequest> {
 
@@ -24,9 +24,10 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteUserTaskDefRequest p = (DeleteUserTaskDefRequest) proto;
-        id = LHSerializable.fromProto(p.getId(), UserTaskDefIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), UserTaskDefIdModel.class, context);
     }
 
     public String getPartitionKey() {
@@ -34,8 +35,8 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     @Override
-    public Empty process(MetadataProcessorDAO dao, LHServerConfig config) {
-        dao.delete(id);
+    public Empty process(MetadataCommandExecution context) {
+        context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
@@ -43,9 +44,9 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
         return true;
     }
 
-    public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p) {
+    public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p, ExecutionContext context) {
         DeleteUserTaskDefRequestModel out = new DeleteUserTaskDefRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

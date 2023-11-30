@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -22,8 +21,7 @@ public class GetableSearchImpl implements GetableSearch {
     }
 
     @Override
-    public InternalScan buildInternalScan(ReadOnlyMetadataDAO readOnlyDao, TagStorageType tagStorageType)
-            throws LHApiException {
+    public InternalScan buildInternalScan(TagStorageType tagStorageType) throws LHApiException {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;
         if (isTagScan()) {

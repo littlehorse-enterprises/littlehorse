@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,10 +33,13 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     @Setter
     private String threadSpecName;
 
+    private ExecutionContext context;
+
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         StartMultipleThreadsRun nodeRun = (StartMultipleThreadsRun) proto;
         threadSpecName = nodeRun.getThreadSpecName();
+        this.context = context;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                     .asArr();
             for (Object threadInput : iterable.getJsonArrVal()) {
                 VariableValueModel iterInput =
-                        LHSerializable.fromProto(LHLibUtil.objToVarVal(threadInput), VariableValueModel.class);
+                        LHSerializable.fromProto(LHLibUtil.objToVarVal(threadInput), VariableValueModel.class, context);
 
                 StartMultipleThreadsNodeModel node = nodeRun.getNode().getStartMultipleThreadsNode();
 
@@ -92,7 +96,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 nodeRun.getThreadRun().getChildThreadIds().add(child.number);
             }
             VariableValueModel nodeOutput =
-                    LHSerializable.fromProto(LHLibUtil.objToVarVal(createdThreads), VariableValueModel.class);
+                    LHSerializable.fromProto(LHLibUtil.objToVarVal(createdThreads), VariableValueModel.class, context);
             nodeRun.complete(nodeOutput, time);
         } catch (LHVarSubError | LHSerdeError e) {
             FailureModel failure = new FailureModel();

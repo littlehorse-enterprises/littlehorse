@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -57,13 +58,13 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext executionContext) {
         ThreadVarDef p = (ThreadVarDef) proto;
-        varDef = LHSerializable.fromProto(p.getVarDef(), VariableDefModel.class);
+        varDef = LHSerializable.fromProto(p.getVarDef(), VariableDefModel.class, executionContext);
         searchable = p.getSearchable();
         required = p.getRequired();
         for (JsonIndex ji : p.getJsonIndexesList()) {
-            jsonIndexes.add(LHSerializable.fromProto(ji, JsonIndexModel.class));
+            jsonIndexes.add(LHSerializable.fromProto(ji, JsonIndexModel.class, executionContext));
         }
     }
 

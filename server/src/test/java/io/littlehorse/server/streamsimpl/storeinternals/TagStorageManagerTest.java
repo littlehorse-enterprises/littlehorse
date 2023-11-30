@@ -4,10 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -17,6 +14,7 @@ import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -52,7 +50,7 @@ public class TagStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    private ModelStore localStore = ModelStore.instanceFor(store, tenantId);
+    private ModelStore localStore = ModelStore.instanceFor(store, tenantId, mock());
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
@@ -66,10 +64,7 @@ public class TagStorageManagerTest {
     private List<Tag> tags;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private CoreProcessorDAO processorDAO;
-
-    private AuthorizationContext authorizationContext =
-            new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+    private ExecutionContext executionContext;
 
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
@@ -78,8 +73,7 @@ public class TagStorageManagerTest {
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
-        when(processorDAO.context()).thenReturn(authorizationContext);
-        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, processorDAO);
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, mock());
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);

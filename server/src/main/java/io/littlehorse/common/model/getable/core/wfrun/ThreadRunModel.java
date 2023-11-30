@@ -44,6 +44,8 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,23 +73,29 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public String errorMessage;
 
-    public List<Integer> childThreadIds;
+    public List<Integer> childThreadIds = new ArrayList<>();
     public Integer parentThreadId;
 
-    public List<ThreadHaltReasonModel> haltReasons;
+    public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
     public ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
-    public List<Integer> handledFailedChildren;
+    public List<Integer> handledFailedChildren = new ArrayList<>();
 
     public ThreadType type;
 
-    public ThreadRunModel() {
-        childThreadIds = new ArrayList<>();
-        haltReasons = new ArrayList<>();
-        handledFailedChildren = new ArrayList<>();
+    private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
+
+    public ThreadRunModel() {}
+
+    public ThreadRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         ThreadRun proto = (ThreadRun) p;
         number = proto.getNumber();
         status = proto.getStatus();
@@ -107,23 +115,25 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         if (proto.hasInterruptTriggerId()) {
-            interruptTriggerId = LHSerializable.fromProto(proto.getInterruptTriggerId(), ExternalEventIdModel.class);
+            interruptTriggerId =
+                    LHSerializable.fromProto(proto.getInterruptTriggerId(), ExternalEventIdModel.class, context);
         }
 
         for (ThreadHaltReason thrpb : proto.getHaltReasonsList()) {
-            ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb);
+            ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb, context);
             thr.threadRunModel = this;
             haltReasons.add(thr);
         }
 
         if (proto.hasFailureBeingHandled()) {
-            failureBeingHandled = FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled());
+            failureBeingHandled = FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled(), context);
         }
 
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
-
+        executionContext = context;
+        processorContext = context.castOnSupport(ProcessorExecutionContext.class);
         type = proto.getType();
     }
 
@@ -163,9 +173,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
-    public static ThreadRunModel fromProto(Message p) {
+    public static ThreadRunModel fromProto(Message p, ExecutionContext context) {
         ThreadRunModel out = new ThreadRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -261,7 +271,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         thr.interrupted = new InterruptedModel();
         thr.interrupted.interruptThreadId = handlerThreadId;
 
-        childThreadIds.add((Integer) handlerThreadId);
+        childThreadIds.add(handlerThreadId);
 
         haltReasons.add(thr);
     }
@@ -488,7 +498,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         // This also stops the children
         halt(haltReason);
-        getWfRun().advance(getWfRun().getDao().getEventTime());
+        getWfRun().advance(processorContext.currentCommand().getTime());
     }
 
     public void acknowledgeXnHandlerStarted(PendingFailureHandlerModel pfh, int handlerThreadNumber) {
@@ -615,8 +625,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         currentNodePosition++;
 
-        NodeRunModel cnr = new NodeRunModel();
-        cnr.setDao(wfRun.getDao());
+        NodeRunModel cnr = new NodeRunModel(processorContext);
         cnr.setThreadRun(this);
         cnr.nodeName = node.name;
         cnr.status = LHStatus.STARTING;
@@ -797,11 +806,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void putNodeRun(NodeRunModel nr) {
-        wfRun.getDao().put(nr);
+        processorContext.getableManager().put(nr);
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = wfRun.getDao().get(new NodeRunIdModel(wfRun.getId(), number, position));
+        NodeRunModel out = processorContext.getableManager().get(new NodeRunIdModel(wfRun.getId(), number, position));
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -847,7 +856,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
             VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpec());
-            wfRun.getDao().put(variable);
+            processorContext.getableManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, createVariable);
     }
@@ -865,9 +874,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = wfRun.getDao().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
+            VariableModel variable =
+                    processorContext.getableManager().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
             variable.setValue(var);
-            wfRun.getDao().put(variable);
+            processorContext.getableManager().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
@@ -875,7 +885,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public VariableModel getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        VariableModel out = wfRun.getDao().get(new VariableIdModel(wfRun.getId(), this.number, varName));
+        VariableModel out =
+                processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
         if (out != null) {
             return out;
         }

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CommandProcessorOutput {
+public class CommandProcessorOutput implements Forwardable {
 
     public String topic;
     public LHSerializable<?> payload;

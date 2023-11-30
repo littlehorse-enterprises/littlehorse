@@ -9,6 +9,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,10 +34,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public String strVal;
     public Long intVal;
     public byte[] bytesVal;
+    private ExecutionContext context;
 
-    public static VariableValueModel fromProto(VariableValue proto) {
+    public static VariableValueModel fromProto(VariableValue proto, ExecutionContext context) {
         VariableValueModel out = new VariableValueModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -44,7 +46,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return VariableValue.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
+        this.context = context;
         VariableValue p = (VariableValue) proto;
         type = p.getType();
         switch (type) {
@@ -149,7 +153,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel getCopy() {
         VariableValueModel out = new VariableValueModel();
-        out.initFrom(toProto().build());
+        out.initFrom(toProto().build(), context);
         return out;
     }
 
