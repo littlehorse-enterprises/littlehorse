@@ -68,11 +68,10 @@ export function TaskInformation({ isWFRun, data, wfRunId, run }: TaskInformation
         }
     }
     const getInfo = async () => {
-
         const res = await fetch('/api/information/taskDef', {
             method: 'POST',
             body: JSON.stringify({
-                id: data?.lhNode?.task?.taskDefName,
+                id: data?.lhNode?.task?.taskDefId.name,
             })
         })
         if (res.ok) {
