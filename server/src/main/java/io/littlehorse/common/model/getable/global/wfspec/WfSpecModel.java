@@ -266,7 +266,9 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     }
 
     public Map<String, ThreadVarDefModel> getRequiredVariables() {
-        return threadSpecs.get(entrypointThreadName).getInputVariableDefs();
+        return threadSpecs.get(entrypointThreadName).getInputVariableDefs().entrySet().stream()
+                .filter(kv -> kv.getValue().isRequired())
+                .collect(Collectors.toMap(kv -> kv.getKey(), kv -> kv.getValue()));
     }
 
     /*
