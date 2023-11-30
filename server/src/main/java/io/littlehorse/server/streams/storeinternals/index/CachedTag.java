@@ -4,6 +4,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,15 +35,15 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TagsCachePb.CachedTagPb cachedTagPb = (TagsCachePb.CachedTagPb) proto;
         this.id = cachedTagPb.getId();
         this.isRemote = cachedTagPb.getIsRemote();
     }
 
-    public static CachedTag fromProto(TagsCachePb.CachedTagPb proto) {
+    public static CachedTag fromProto(TagsCachePb.CachedTagPb proto, ExecutionContext context) {
         CachedTag out = new CachedTag();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

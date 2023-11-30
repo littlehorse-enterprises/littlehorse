@@ -7,7 +7,6 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -26,8 +25,9 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,7 +49,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class GetableStorageManagerTest {
+public class GetableManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
@@ -65,26 +65,27 @@ public class GetableStorageManagerTest {
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
-    private GetableStorageManager getableStorageManager;
+    private GetableManager getableManager;
 
     @Mock
-    private CoreProcessorDAO mockCoreDao;
+    private ExecutionContext executionContext;
 
-    private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
+    private AuthorizationContext testContext =
+            new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
-        getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        getableManager =
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
     @ParameterizedTest
     @MethodSource("provideGetableObjectsAndIds")
     void storeNewGetableWithTags(CoreGetable<?> getable, int expectedTagsCount) {
-        getableStorageManager.put(getable);
-        getableStorageManager.commit();
+        getableManager.put(getable);
+        getableManager.commit();
 
         final var keys = getAllKeys(store);
         assertThat(localStoreWrapper.get(getable.getObjectId())).isNotNull();
@@ -94,8 +95,8 @@ public class GetableStorageManagerTest {
     @Test
     void deleteGetableAndTags() {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
-        getableStorageManager.put(wfRunModel);
-        getableStorageManager.commit();
+        getableManager.put(wfRunModel);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("3/0000000", StoredGetable.class)).isNotNull();
         List<String> keysBeforeDelete = getAllKeys(store);
@@ -105,9 +106,9 @@ public class GetableStorageManagerTest {
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000__status_RUNNING"));
-
-        getableStorageManager.delete(wfRunModel.getObjectId());
-        getableStorageManager.commit();
+        getableManager.get(wfRunModel.getObjectId());
+        getableManager.delete(wfRunModel.getObjectId());
+        getableManager.commit();
 
         List<String> keysAfterDelete = getAllKeys(store);
         assertThat(keysAfterDelete).isEmpty();
@@ -136,8 +137,8 @@ public class GetableStorageManagerTest {
             threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, true, false)));
         });
 
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
                 .isNotNull();
@@ -168,8 +169,8 @@ public class GetableStorageManagerTest {
                     new ThreadVarDefModel(variableDef2, false, false)));
         });
 
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
                 .isNotNull();
@@ -235,8 +236,8 @@ public class GetableStorageManagerTest {
                     new ThreadVarDefModel(variableDef2, false, false)));
         });
 
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
                 .isNotNull();
@@ -301,8 +302,8 @@ public class GetableStorageManagerTest {
                     new ThreadVarDefModel(variableDef2, false, false)));
         });
 
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
                 .isNotNull();
@@ -384,8 +385,8 @@ public class GetableStorageManagerTest {
                     new ThreadVarDefModel(variableDef2, true, false)));
         });
 
-        getableStorageManager.put(variable);
-        getableStorageManager.commit();
+        getableManager.put(variable);
+        getableManager.commit();
 
         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
                 .isNotNull();
@@ -468,8 +469,8 @@ public class GetableStorageManagerTest {
         //         .toList();
         List<String> expectedRemoteStoreKeys = List.of();
 
-        getableStorageManager.put(nodeRunModel);
-        getableStorageManager.commit();
+        getableManager.put(nodeRunModel);
+        getableManager.commit();
 
         final var storedKeys = getAllKeys(store);
         assertThat(storedKeys).hasSize(expectedLocalTagKeys.size() + 1).anyMatch(key -> key.contains(expectedStoreKey));

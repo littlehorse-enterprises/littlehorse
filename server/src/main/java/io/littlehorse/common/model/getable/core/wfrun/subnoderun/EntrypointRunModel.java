@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.sdk.common.proto.EntrypointRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
@@ -14,15 +15,16 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
         return EntrypointRun.class;
     }
 
-    public void initFrom(Message p) {}
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {}
 
     public EntrypointRun.Builder toProto() {
         return EntrypointRun.newBuilder();
     }
 
-    public static EntrypointRunModel fromProto(EntrypointRun p) {
+    public static EntrypointRunModel fromProto(EntrypointRun p, ExecutionContext context) {
         EntrypointRunModel out = new EntrypointRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

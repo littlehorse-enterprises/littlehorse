@@ -2,10 +2,11 @@ package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +22,7 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
 
     public UserTaskTriggerReferenceModel() {}
 
-    public UserTaskTriggerReferenceModel(UserTaskRunModel utr) {
+    public UserTaskTriggerReferenceModel(UserTaskRunModel utr, ProcessorExecutionContext processorContext) {
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
@@ -42,18 +43,21 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
     }
 
-    public void onCompleted(TaskAttemptModel successfullAttempt, CoreProcessorDAO dao) {
+    @Override
+    public void onCompleted(TaskAttemptModel successfullAttempt) {
         // For now, we only "fire-and-forget" User Task Triggered Action TaskRun's, so
         // we don't actually care about what happens here.
     }
 
-    public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
+    @Override
+    public void onFailed(TaskAttemptModel lastFailure) {
         // Same here, we don't yet care about what happens.
     }
 }

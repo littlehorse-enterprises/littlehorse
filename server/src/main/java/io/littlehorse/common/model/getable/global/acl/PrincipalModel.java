@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,16 +38,17 @@ public class PrincipalModel extends GlobalGetable<Principal> {
     public PrincipalModel() {}
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         Principal principal = (Principal) proto;
         this.id = principal.getId();
-        this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class);
+        this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(principal.getCreatedAt());
 
         for (Map.Entry<String, ServerACLs> tenantAcls :
                 principal.getPerTenantAclsMap().entrySet()) {
             perTenantAcls.put(
-                    tenantAcls.getKey(), LHSerializable.fromProto(tenantAcls.getValue(), ServerACLsModel.class));
+                    tenantAcls.getKey(),
+                    LHSerializable.fromProto(tenantAcls.getValue(), ServerACLsModel.class, context));
         }
     }
 

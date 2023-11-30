@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
@@ -19,6 +18,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 
@@ -55,12 +55,13 @@ public class ListTaskMetricsRequestModel
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ListTaskMetricsRequest p = (ListTaskMetricsRequest) proto;
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();
         windowLength = p.getWindowLength();
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         limit = numWindows;
     }
 
@@ -69,7 +70,7 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

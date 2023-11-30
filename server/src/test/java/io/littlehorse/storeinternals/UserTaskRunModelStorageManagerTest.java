@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -17,6 +16,7 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -56,7 +56,7 @@ public class UserTaskRunModelStorageManagerTest {
     private String wfRunId = "1234567890";
 
     @Mock
-    private CoreProcessorDAO mockCoreDao;
+    private ExecutionContext executionContext;
 
     // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
 
@@ -67,7 +67,7 @@ public class UserTaskRunModelStorageManagerTest {
             if (userTaskRunStatus == UserTaskRunStatus.UNRECOGNIZED) {
                 continue;
             }
-            UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
+            UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId, mock());
             userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(new UserTaskRunIdModel(
                     new WfRunIdModel(wfRunId + "1"), UUID.randomUUID().toString()));
@@ -80,9 +80,9 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
         getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

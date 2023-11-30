@@ -5,7 +5,6 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -27,6 +26,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +40,7 @@ public class SearchWfRunRequestModel
     public StatusAndSpecRequest statusAndSpec;
     private NameRequest namePb;
     private StatusAndNameRequest statusAndName;
+    private ExecutionContext executionContext;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
@@ -49,7 +50,8 @@ public class SearchWfRunRequestModel
         return SearchWfRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchWfRunRequest p = (SearchWfRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -74,6 +76,7 @@ public class SearchWfRunRequestModel
             case WFRUNCRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.executionContext = context;
     }
 
     public SearchWfRunRequest.Builder toProto() {
@@ -101,9 +104,9 @@ public class SearchWfRunRequestModel
         return out;
     }
 
-    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto) {
+    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto, ExecutionContext context) {
         SearchWfRunRequestModel out = new SearchWfRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -148,7 +151,7 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         List<String> searchAttributeKeys =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
@@ -164,7 +167,7 @@ public class SearchWfRunRequestModel
 
     @Override
     public LHStore getStoreType() {
-        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 
     @Override
@@ -192,7 +195,7 @@ public class SearchWfRunRequestModel
         return Arrays.asList(
                 new Attribute(
                         "wfSpecId",
-                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class)
+                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class, executionContext)
                                 .toString()),
                 new Attribute("status", statusAndSpec.getStatus().toString()));
     }

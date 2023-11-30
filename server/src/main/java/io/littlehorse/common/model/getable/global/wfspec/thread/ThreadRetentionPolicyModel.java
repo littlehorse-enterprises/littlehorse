@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.ThreadGcPolicyCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 
@@ -33,7 +34,7 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ThreadRetentionPolicy p = (ThreadRetentionPolicy) proto;
         type = p.getThreadGcPolicyCase();
 

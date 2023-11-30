@@ -4,7 +4,6 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -19,6 +18,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ListUserTaskRunRequestModel
         extends PublicScanRequest<
@@ -32,9 +32,9 @@ public class ListUserTaskRunRequestModel
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ListUserTaskRunRequest p = (ListUserTaskRunRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ListUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

@@ -36,6 +36,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -78,15 +80,29 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
+    private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
-    public UserTaskRunModel() {}
+    public UserTaskRunModel() {
+        // Used by LHSerializable
+    }
 
-    public UserTaskRunModel(UserTaskDefModel utd, UserTaskNodeModel userTaskNode, NodeRunModel nodeRunModel) {
+    public UserTaskRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
+
+    public UserTaskRunModel(
+            UserTaskDefModel utd,
+            UserTaskNodeModel userTaskNode,
+            NodeRunModel nodeRunModel,
+            ProcessorExecutionContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.userTaskNode = userTaskNode;
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
     public Class<UserTaskRun> getProtoBaseClass() {
@@ -120,13 +136,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         return id;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskRun p = (UserTaskRun) proto;
-        id = LHSerializable.fromProto(p.getId(), UserTaskRunIdModel.class);
-        userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), UserTaskRunIdModel.class, context);
+        userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
 
         if (p.hasUserId()) userId = p.getUserId();
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
@@ -134,11 +151,13 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         if (p.hasNotes()) notes = p.getNotes();
 
         for (UserTaskEvent ute : p.getEventsList()) {
-            events.add(LHSerializable.fromProto(ute, UserTaskEventModel.class));
+            events.add(LHSerializable.fromProto(ute, UserTaskEventModel.class, context));
         }
         for (Map.Entry<String, VariableValue> result : p.getResultsMap().entrySet()) {
-            results.put(result.getKey(), VariableValueModel.fromProto(result.getValue()));
+            results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
+        this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public boolean isTerminated() {
@@ -180,7 +199,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         // Log the assigment.
         UTEAssignedModel assignedEvent = new UTEAssignedModel(oldUserId, newUserId, oldUserGroup, newUserGroup);
-        events.add(new UserTaskEventModel(assignedEvent, getDao().getEventTime()));
+        events.add(new UserTaskEventModel(
+                assignedEvent, processorContext.currentCommand().getTime()));
 
         if (this.userId != null) {
             this.status = UserTaskRunStatus.ASSIGNED;
@@ -229,7 +249,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
+        trigger.schedule(this);
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) throws LHApiException {
@@ -255,7 +275,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             FailureModel failure = new FailureModel(
                     "Failed calculating new assignment for UserTaskRun: " + exn.getMessage(),
                     LHErrorType.VAR_SUB_ERROR.toString());
-            getNodeRun().fail(failure, getDao().getEventTime());
+            getNodeRun().fail(failure, processorContext.currentCommand().getTime());
             return;
         }
 
@@ -290,8 +310,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         }
 
         Map<String, Object> rawNodeOutput = new HashMap<>();
-        UserTaskDefModel userTaskDef = getDao().getUserTaskDef(
-                        getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
+        UserTaskDefModel userTaskDef = executionContext
+                .metadataManager()
+                .get(new UserTaskDefIdModel(
+                        getUserTaskDefId().getName(), getUserTaskDefId().getVersion()));
 
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
@@ -337,7 +359,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     public NodeRunModel getNodeRun() {
-        return getDao().get(nodeRunId);
+        return processorContext.getableManager().get(nodeRunId);
     }
 
     // TODO: LH-314

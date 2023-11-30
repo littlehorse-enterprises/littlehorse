@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -19,6 +18,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +38,8 @@ public class SearchNodeRunRequestModel
         return SearchNodeRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchNodeRunRequest p = (SearchNodeRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -52,7 +53,7 @@ public class SearchNodeRunRequestModel
         type = p.getNoderunCriteriaCase();
         switch (type) {
             case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing node_run_criteria");
@@ -78,14 +79,14 @@ public class SearchNodeRunRequestModel
         return out;
     }
 
-    public static SearchNodeRunRequestModel fromProto(SearchNodeRunRequest proto) {
+    public static SearchNodeRunRequestModel fromProto(SearchNodeRunRequest proto, ExecutionContext context) {
         SearchNodeRunRequestModel out = new SearchNodeRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

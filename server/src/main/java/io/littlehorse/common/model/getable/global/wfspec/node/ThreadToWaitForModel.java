@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +18,10 @@ public class ThreadToWaitForModel extends LHSerializable<ThreadToWaitFor> {
         return ThreadToWaitFor.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ThreadToWaitFor p = (ThreadToWaitFor) proto;
-        threadRunNumber = VariableAssignmentModel.fromProto(p.getThreadRunNumber());
+        threadRunNumber = VariableAssignmentModel.fromProto(p.getThreadRunNumber(), context);
     }
 
     public ThreadToWaitFor.Builder toProto() {

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.NodeMigration;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,18 +12,23 @@ import lombok.Setter;
 public class NodeMigrationModel extends LHSerializable<NodeMigration> {
 
     private String newNodeName;
+    private ExecutionContext context;
 
+    @Override
     public Class<NodeMigration> getProtoBaseClass() {
         return NodeMigration.class;
     }
 
+    @Override
     public NodeMigration.Builder toProto() {
         NodeMigration.Builder out = NodeMigration.newBuilder().setNewNodeName(newNodeName);
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext executionContext) {
         NodeMigration p = (NodeMigration) proto;
         newNodeName = p.getNewNodeName();
+        this.context = executionContext;
     }
 }

@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import org.apache.commons.lang3.NotImplementedException;
@@ -70,11 +71,12 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskMetricUpdatePb p = (TaskMetricUpdatePb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();

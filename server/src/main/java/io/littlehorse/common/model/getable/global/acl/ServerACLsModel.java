@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.ServerACL;
 import io.littlehorse.common.proto.ServerACLs;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.EqualsAndHashCode;
@@ -30,10 +31,10 @@ public class ServerACLsModel extends LHSerializable<ServerACLs> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ServerACLs p = (ServerACLs) proto;
         for (ServerACL acl : p.getAclsList()) {
-            acls.add(LHSerializable.fromProto(acl, ServerACLModel.class));
+            acls.add(LHSerializable.fromProto(acl, ServerACLModel.class, context));
         }
     }
 }

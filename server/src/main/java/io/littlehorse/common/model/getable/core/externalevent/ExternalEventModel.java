@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -67,15 +68,16 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         return ExternalEvent.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEvent p = (ExternalEvent) proto;
-        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class, context);
         if (p.hasCreatedAt()) {
             createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         } else {
             createdAt = new Date();
         }
-        content = VariableValueModel.fromProto(p.getContent());
+        content = VariableValueModel.fromProto(p.getContent(), context);
         claimed = p.getClaimed();
 
         if (p.hasThreadRunNumber()) {
@@ -142,9 +144,9 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         this.nodeRunPosition = nodeRun.getId().getPosition();
     }
 
-    public static ExternalEventModel fromProto(ExternalEvent p) {
+    public static ExternalEventModel fromProto(ExternalEvent p, ExecutionContext context) {
         ExternalEventModel out = new ExternalEventModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

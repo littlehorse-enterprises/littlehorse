@@ -5,6 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +21,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public TaskRunSourceModel() {}
 
-    public TaskRunSourceModel(TaskRunSubSource<?> source) {
+    public TaskRunSourceModel(TaskRunSubSource<?> source, ProcessorExecutionContext processorContext) {
         if (source.getClass().equals(TaskNodeReferenceModel.class)) {
             this.type = TaskRunSourceCase.TASK_NODE;
             this.taskNode = (TaskNodeReferenceModel) source;
@@ -35,18 +37,20 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         return TaskRunSource.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskRunSource p = (TaskRunSource) proto;
         if (p.hasWfSpecId()) {
-            wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+            wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         }
         type = p.getTaskRunSourceCase();
         switch (type) {
             case TASK_NODE:
-                taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class);
+                taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class, context);
                 break;
             case USER_TASK_TRIGGER:
-                userTaskTrigger = LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class);
+                userTaskTrigger =
+                        LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class, context);
                 break;
             case TASKRUNSOURCE_NOT_SET:
                 // Not really possible. Maybe throw error?

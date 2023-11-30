@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.StartThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
         return StartThreadRun.class;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         StartThreadRun proto = (StartThreadRun) p;
         if (proto.hasChildThreadId()) childThreadId = proto.getChildThreadId();
         threadSpecName = proto.getThreadSpecName();
@@ -42,9 +44,9 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
         return out;
     }
 
-    public static StartThreadRunModel fromProto(StartThreadRun p) {
+    public static StartThreadRunModel fromProto(StartThreadRun p, ExecutionContext context) {
         StartThreadRunModel out = new StartThreadRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

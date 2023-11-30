@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.ThreadSpecMigration;
 import io.littlehorse.sdk.common.proto.WfSpecVersionMigration;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
     private int newMajorVersion;
     private int newRevision;
     private Map<String, ThreadSpecMigrationModel> threadSpecMigrations;
+    private ExecutionContext context;
 
     public WfSpecVersionMigrationModel() {
         threadSpecMigrations = new HashMap<>();
@@ -45,7 +47,7 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext executionContext) {
         WfSpecVersionMigration p = (WfSpecVersionMigration) proto;
         newMajorVersion = p.getNewMajorVersion();
         newRevision = p.getNewRevision();
@@ -53,8 +55,10 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         for (Map.Entry<String, ThreadSpecMigration> e :
                 p.getThreadSpecMigrationsMap().entrySet()) {
             threadSpecMigrations.put(
-                    e.getKey(), LHSerializable.fromProto(e.getValue(), ThreadSpecMigrationModel.class));
+                    e.getKey(),
+                    LHSerializable.fromProto(e.getValue(), ThreadSpecMigrationModel.class, executionContext));
         }
+        this.context = executionContext;
     }
 
     /*

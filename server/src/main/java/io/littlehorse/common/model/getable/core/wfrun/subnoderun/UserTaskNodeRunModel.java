@@ -12,6 +12,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +23,17 @@ import lombok.Setter;
 public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     private UserTaskRunIdModel userTaskRunId;
+    private ExecutionContext executionContext;
+    private ProcessorExecutionContext processorContext;
 
-    public UserTaskNodeRunModel() {}
+    public UserTaskNodeRunModel() {
+        // used by lh deserializer
+    }
+
+    public UserTaskNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
+    }
 
     @Override
     public Class<UserTaskNodeRun> getProtoBaseClass() {
@@ -30,11 +41,13 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskNodeRun p = (UserTaskNodeRun) proto;
         if (p.hasUserTaskRunId()) {
-            userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+            userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         }
+        this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -59,26 +72,25 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         NodeModel node = getNodeRun().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();
 
-        UserTaskDefModel utd = getDao().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
+        UserTaskDefModel utd =
+                processorContext.service().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
             nodeRun.fail(new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR), time);
             return;
         }
-        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun());
+        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun(), processorContext);
         // Now we create a new UserTaskRun.
-
-        out.setDao(getDao());
 
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
-        getDao().put(out);
+        processorContext.getableManager().put(out);
     }
 
     @Override
     public void halt() {
-        UserTaskRunModel userTaskRunModel = getDao().get(getUserTaskRunId());
+        UserTaskRunModel userTaskRunModel = processorContext.getableManager().get(getUserTaskRunId());
         userTaskRunModel.setStatus(UserTaskRunStatus.CANCELLED);
     }
 }
