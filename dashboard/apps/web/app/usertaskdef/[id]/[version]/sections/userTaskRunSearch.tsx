@@ -11,10 +11,11 @@ import {
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { UserTaskRunSearchTable } from '../search/userTaskRunSearchTable'
+import type { WfRunId } from '../../../../../littlehorse-public-api/object_id'
 
 export interface Result {
     id: any;
-    wfRunId: string;
+    wfRunId: WfRunId;
     userTaskGuid: string;
     status?: string;
 }

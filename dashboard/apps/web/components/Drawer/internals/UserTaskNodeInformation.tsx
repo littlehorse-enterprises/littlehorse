@@ -136,7 +136,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                         <Link
                             className="drawer-link"
                             href={
-                                `/usertaskdef/${data?.lhNode?.userTask?.userTaskDefId.name}/${data?.lhNode?.userTask?.userTaskDefId.version}`
+                                `/usertaskdef/${data?.lhNode?.userTask?.userTaskDefName}/${data?.lhNode?.userTask?.userTaskDefVersion}`
                             }
                         >
                             <Image alt="link" height={10} src={linkSvg} width={20} />

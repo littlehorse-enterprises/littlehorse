@@ -22,9 +22,10 @@ export function UserTaskDefSchemaInformation({
             }),
         })
         if (res.ok) {
-            const data: any = await res.json()
-            setFieldsInputs(data.result.fields)
-            setLoadingInputVars(false)
+            res.json().then((data) => {
+                setFieldsInputs(data.fields)
+                setLoadingInputVars(false)
+            })
         }
     }
 
