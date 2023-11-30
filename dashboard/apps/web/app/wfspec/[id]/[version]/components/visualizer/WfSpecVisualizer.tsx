@@ -9,7 +9,7 @@ import { WfSpecGraph } from './WfSpecGraph'
 
 interface WfSpecVisualizerProps {
     id: string
-    version: number
+    version: string
 }
 
 export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
@@ -86,6 +86,14 @@ export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
         getWfSpec()
     }, [])
 
+    const getVersionFromFormattedString = (formattedVersion: string) => {
+        const versionValues = formattedVersion.split('.')
+        return {
+            majorVersion: versionValues[0],
+            revision: versionValues[1]
+        }
+    }
+
     return (
 
         <div className='visualizer'>
@@ -102,8 +110,9 @@ export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
                         threadRunNumber={null}
                         threadSpec={threadSpec}
                         wfRunId={null}
+                        wfSpecMajorVersion={Number(getVersionFromFormattedString(version).majorVersion)}
                         wfSpecName={id}
-                        wfSpecVersion={version}
+                        wfSpecRevision={Number(getVersionFromFormattedString(version).revision)}
                     />
                 )
                 }

@@ -7,8 +7,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const parsedRequestBody = JSON.parse(req.body)
         const grpcRequestBody = {
             name: parsedRequestBody.id,
-            majorVersion: parsedRequestBody.version,
-            revision: 0 // TODO: OSS - bring this from the UI
+            majorVersion: parsedRequestBody.majorVersion,
+            revision: parsedRequestBody.revision
         } as WfSpecId
 
         await handleGrpcCallWithNext('getWfSpec', req, res, grpcRequestBody)

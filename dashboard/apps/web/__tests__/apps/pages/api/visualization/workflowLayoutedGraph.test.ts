@@ -20,7 +20,7 @@ describe('Layouted Graph API', () => {
         jest.spyOn(nextAuth, 'getServerSession').mockResolvedValue({ accessToken: 'ANY_ACCESS_TOKEN' })
 
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
-        req.body = JSON.stringify({ wfSpecName: 'ANY_WF_SPEC', version: 0 })
+        req.body = JSON.stringify({ wfSpecName: 'ANY_WF_SPEC', majorVersion: 1, revision: 2 })
 
         await handler(req, res)
 
@@ -28,8 +28,8 @@ describe('Layouted Graph API', () => {
             .toHaveBeenCalledWith('getWfSpec',
                 req, res, {
                     name: 'ANY_WF_SPEC',
-                    majorVersion: 0,
-                    revision: 0
+                    majorVersion: 1,
+                    revision: 2
                 } as WfSpecId)
     })
 
@@ -37,7 +37,7 @@ describe('Layouted Graph API', () => {
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
         jest.spyOn(nextAuth, 'getServerSession').mockResolvedValue(null)
 
-        req.body = JSON.stringify({ wfSpecName: 'ANY_WF_SPEC', version: 0 })
+        req.body = JSON.stringify({ wfSpecName: 'ANY_WF_SPEC', majorVersion: 1, revision: 2 })
 
         const statusMock = jest.fn()
         const jsonMock = jest.fn()

@@ -9,7 +9,7 @@ jest.mock('../../../../../pages/api/grpcMethodCallHandler')
 describe('WfSpec API', () => {
     it('should perform a grpc request to get the wfSpec sending the right request body', async () => {
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
-        req.body = JSON.stringify({ id: 'any_wf_spec', version: 0 })
+        req.body = JSON.stringify({ id: 'any_wf_spec', majorVersion: 1, revision: 1 })
 
         await handler(req, res)
 
@@ -17,8 +17,8 @@ describe('WfSpec API', () => {
             .toHaveBeenCalledWith('getWfSpec',
                 req, res, {
                     name: 'any_wf_spec',
-                    majorVersion: 0,
-                    revision: 0 // TODO: OSS - bring this from the UI
+                    majorVersion: 1,
+                    revision: 1
                 } as WfSpecId)
     })
 })

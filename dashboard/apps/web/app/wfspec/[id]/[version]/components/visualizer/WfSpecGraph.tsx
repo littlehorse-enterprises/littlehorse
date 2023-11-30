@@ -20,7 +20,8 @@ import type { ReactFlowNodeWithLHInfo } from './mappers/GraphLayouter'
 
 interface WfSpecGraphProps {
     wfSpecName: string | undefined,
-    wfSpecVersion: number,
+    wfSpecMajorVersion: number,
+    wfSpecRevision: number,
     setSelectedNodeName: any,
     threadSpec: string,
     threadRunNumber: number | null,
@@ -32,7 +33,8 @@ interface WfSpecGraphProps {
 
 export function WfSpecGraph({
     wfSpecName,
-    wfSpecVersion,
+    wfSpecMajorVersion,
+    wfSpecRevision,
     setSelectedNodeName,
     threadSpec,
     threadRunNumber,
@@ -65,12 +67,13 @@ export function WfSpecGraph({
     })
 
     const getLayoutedGraph = async () => {
-        if (wfSpecVersion !== undefined && wfSpecName !== undefined && threadSpec !== undefined) {
+        if (wfSpecMajorVersion !== undefined  && wfSpecRevision !== undefined && wfSpecName !== undefined && threadSpec !== undefined) {
             const layoutedGraphResponse = await fetch('/api/visualization/workflowLayoutedGraph', {
                 method: 'POST',
                 body: JSON.stringify({
                     wfSpecName,
-                    version: wfSpecVersion,
+                    majorVersion: wfSpecMajorVersion,
+                    revision: wfSpecRevision,
                     threadSpec,
                     threadRunNumber,
                     isWfSpecVisualization,
@@ -95,7 +98,7 @@ export function WfSpecGraph({
 
     useEffect(() => {
         getLayoutedGraph()
-    }, [ wfSpecName, wfSpecVersion, threadSpec, threadRunNumber ])
+    }, [ wfSpecName, wfSpecRevision, wfSpecMajorVersion, threadSpec, threadRunNumber ])
 
     const onNodeClick = (_: ReactMouseEvent, node: ReactFlowNodeWithLHInfo) => {
         setSelectedNodeName(node.id)

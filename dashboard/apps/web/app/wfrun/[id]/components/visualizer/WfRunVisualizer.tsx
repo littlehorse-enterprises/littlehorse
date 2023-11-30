@@ -23,7 +23,8 @@ export function WfRunVisualizer({
     const [ showError, setShowError ] = useState(false)
     const [ toggleSideBar, setToggleSideBar ] = useState(false)
     const [ sideBarData, setSideBarData ] = useState('')
-    const [ wfSpecVersion, setWfSpecVersion ] = useState(0)
+    const [ wfSpecMajorVersion, setWfSpecMajorVersion ] = useState(0)
+    const [ wfSpecRevision, setWfSpecRevision ] = useState(0)
     const [ wfSpecName, setWfSpecName ] = useState()
     const [ graphLayout, setGraphLayout ] = useState()
     const [ threadRunSpecWithNumber, setThreadRunSpecWithNumber ]
@@ -52,19 +53,21 @@ export function WfRunVisualizer({
     const [ run, setRun ] = useState<any>()
     const [ runs, setRuns ] = useState<any[]>([])
     const setThreads = (data: any) => {
-        getWfSpec(data.wfSpecName, data.wfSpecVersion)
-        setWfSpecVersion(data.wfSpecVersion)
+        getWfSpec(data.wfSpecId.name, data.wfSpecId.majorVersion, data.wfSpecId.revision)
+        setWfSpecMajorVersion(data.wfSpecId.majorVersion)
+        setWfSpecRevision(data.wfSpecId.revision)
         setRun(data.threadRuns[0])
         setRuns(data.threadRuns)
-        setWfSpecName(data.wfSpecName)
+        setWfSpecName(data.wfSpecId.name)
     }
 
-    const getWfSpec = async (wfSpecNameToSearchFor: string, version: number) => {
+    const getWfSpec = async (wfSpecNameToSearchFor: string, majorVersion: number, revision: number) => {
         const wfSpecResponse = await fetch('/api/visualization/wfSpec', {
             method: 'POST',
             body: JSON.stringify({
                 id: wfSpecNameToSearchFor,
-                version,
+                majorVersion,
+                revision
             }),
         })
 
@@ -124,8 +127,9 @@ export function WfRunVisualizer({
                         threadRunNumber={threadRunSpecWithNumber.threadRunNumber}
                         threadSpec={threadRunSpecWithNumber.threadSpecName}
                         wfRunId={wfRunId}
+                        wfSpecMajorVersion={wfSpecMajorVersion}
                         wfSpecName={wfSpecName}
-                        wfSpecVersion={wfSpecVersion}
+                        wfSpecRevision={wfSpecRevision}
                     />
                 )}
 
