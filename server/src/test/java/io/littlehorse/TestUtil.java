@@ -37,11 +37,17 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.Stores;
+import org.mockito.Mockito;
 
 public class TestUtil {
 
@@ -81,15 +87,15 @@ public class TestUtil {
         return nodeRunModel;
     }
 
-    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId) {
-        UserTaskRunModel utr = userTaskRun(wfRunId);
+    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
         out.setUserTaskRunId(utr.getObjectId());
         return out;
     }
 
-    public static UserTaskRunModel userTaskRun(String wfRunId) {
-        UserTaskRunModel userTaskRun = new UserTaskRunModel();
+    public static UserTaskRunModel userTaskRun(String wfRunId, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
         userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
@@ -100,13 +106,26 @@ public class TestUtil {
         return userTaskRun;
     }
 
+    public static UserTaskRunModel userTaskRun(
+            String wfRunId, NodeRunModel nodeRun, ProcessorExecutionContext processorContext) {
+        UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
+        userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
+        userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
+        userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
+        userTaskRun.setUserId("33333");
+        userTaskRun.setUserGroup("1234567");
+        userTaskRun.setScheduledTime(new Date());
+        userTaskRun.setNodeRunId(nodeRun.getObjectId());
+        return userTaskRun;
+    }
+
     public static WfSpecIdModel wfSpecId() {
         WfSpecIdModel wfSpecId = new WfSpecIdModel("testName", 0, 0);
         return wfSpecId;
     }
 
     public static TaskNodeRunModel taskNodeRun() {
-        TaskNodeRunModel taskNodeRun = new TaskNodeRunModel();
+        TaskNodeRunModel taskNodeRun = new TaskNodeRunModel(Mockito.mock());
         taskNodeRun.setTaskRunId(taskRunId());
         return taskNodeRun;
     }
@@ -114,8 +133,8 @@ public class TestUtil {
     public static TaskRunModel taskRun() {
         TaskRunModel taskRun = new TaskRunModel();
         taskRun.setId(taskRunId());
-        taskRun.setTaskRunSource(
-                new TaskRunSourceModel(new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
+        taskRun.setTaskRunSource(new TaskRunSourceModel(
+                new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
         taskRun.setTaskDefId(new TaskDefIdModel("test-name"));
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
@@ -136,7 +155,7 @@ public class TestUtil {
     }
 
     public static WfSpecModel wfSpec(String name) {
-        WfSpecModel spec = new WfSpecModel();
+        WfSpecModel spec = new WfSpecModel(Mockito.mock());
         spec.setId(new WfSpecIdModel(name, 0, 0));
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
@@ -204,7 +223,8 @@ public class TestUtil {
         return new ScheduledTaskModel(
                 taskDef("my-task").getObjectId(),
                 List.of(),
-                userTaskRun(UUID.randomUUID().toString()));
+                userTaskRun(UUID.randomUUID().toString(), Mockito.mock()),
+                Mockito.mock());
     }
 
     public static ServerACLModel acl() {
@@ -218,7 +238,7 @@ public class TestUtil {
 
     public static ServerACLsModel singleAcl() {
         return ServerACLsModel.fromProto(
-                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class);
+                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class, null);
     }
 
     public static ServerACLModel adminAcl() {
@@ -237,6 +257,12 @@ public class TestUtil {
     public static ServerACLsModel singleAdminAcl(String aclNAme) {
         ServerACLs acls =
                 ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
-        return ServerACLsModel.fromProto(acls, ServerACLsModel.class);
+        return ServerACLsModel.fromProto(acls, ServerACLsModel.class, null);
+    }
+
+    public static KeyValueStore<String, Bytes> testStore(String storeName) {
+        return Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
+                .withLoggingDisabled()
+                .build();
     }
 }

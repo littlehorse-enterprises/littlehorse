@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TenantId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class TenantIdModel extends MetadataId<TenantId, Tenant, TenantModel> {
 
@@ -24,7 +25,7 @@ public class TenantIdModel extends MetadataId<TenantId, Tenant, TenantModel> {
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         TenantId tenantId = (TenantId) proto;
         this.id = tenantId.getId();
     }

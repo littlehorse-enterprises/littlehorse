@@ -1,8 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -11,6 +9,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Instant;
 import java.util.Date;
 
@@ -20,6 +20,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     public VariableAssignmentModel rawSeconds;
     public VariableAssignmentModel timestamp;
     public VariableAssignmentModel isoDate;
+    private ProcessorExecutionContext processorContext;
 
     public Class<SleepNode> getProtoBaseClass() {
         return SleepNode.class;
@@ -45,26 +46,28 @@ public class SleepNodeModel extends SubNode<SleepNode> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SleepNode p = (SleepNode) proto;
         type = p.getSleepLengthCase();
         switch (type) {
             case RAW_SECONDS:
-                rawSeconds = VariableAssignmentModel.fromProto(p.getRawSeconds());
+                rawSeconds = VariableAssignmentModel.fromProto(p.getRawSeconds(), context);
                 break;
             case TIMESTAMP:
-                timestamp = VariableAssignmentModel.fromProto(p.getTimestamp());
+                timestamp = VariableAssignmentModel.fromProto(p.getTimestamp(), context);
                 break;
             case ISO_DATE:
-                isoDate = VariableAssignmentModel.fromProto(p.getIsoDate());
+                isoDate = VariableAssignmentModel.fromProto(p.getIsoDate(), context);
                 break;
             case SLEEPLENGTH_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
-    public void validate(ReadOnlyMetadataDAO readOnlyDao, LHServerConfig config) throws LHApiException {
+    public void validate() throws LHApiException {
         // TODO: once we have schemas, we need to validate that the
         // variable assignments are types that make sense (unsigned int, long,
         // or date string).
@@ -72,7 +75,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
 
     @Override
     public SleepNodeRunModel createSubNodeRun(Date time) {
-        return new SleepNodeRunModel();
+        return new SleepNodeRunModel(processorContext);
     }
 
     public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {

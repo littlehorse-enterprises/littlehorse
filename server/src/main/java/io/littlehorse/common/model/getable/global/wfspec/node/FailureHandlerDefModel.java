@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,16 +32,17 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         FailureHandlerDef p = (FailureHandlerDef) proto;
         if (p.hasSpecificFailure()) specificFailure = p.getSpecificFailure();
         if (p.hasAnyFailureOfType()) type = p.getAnyFailureOfType();
         handlerSpecName = p.getHandlerSpecName();
     }
 
-    public static FailureHandlerDefModel fromProto(FailureHandlerDef p) {
+    public static FailureHandlerDefModel fromProto(FailureHandlerDef p, ExecutionContext context) {
         FailureHandlerDefModel out = new FailureHandlerDefModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

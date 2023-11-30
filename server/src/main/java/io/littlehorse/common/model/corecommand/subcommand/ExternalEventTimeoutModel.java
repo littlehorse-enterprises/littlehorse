@@ -4,11 +4,12 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,9 +38,9 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ExternalEventNodeTimeoutPb p = (ExternalEventNodeTimeoutPb) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
     }
 
     @Override
@@ -48,8 +49,8 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfRunModel wfRunModel = dao.get(nodeRunId.getWfRunId());
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        WfRunModel wfRunModel = executionContext.getableManager().get(nodeRunId.getWfRunId());
 
         if (wfRunModel == null) {
             log.warn("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
@@ -65,9 +66,9 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
         return false;
     }
 
-    public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p) {
+    public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p, ExecutionContext context) {
         ExternalEventTimeoutModel out = new ExternalEventTimeoutModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

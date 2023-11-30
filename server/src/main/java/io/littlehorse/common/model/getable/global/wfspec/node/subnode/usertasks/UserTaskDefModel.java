@@ -2,9 +2,6 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
@@ -14,6 +11,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +51,8 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskDef p = (UserTaskDef) proto;
         name = p.getName();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
@@ -61,7 +60,7 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
         if (p.hasDescription()) description = p.getDescription();
 
         for (UserTaskField utf : p.getFieldsList()) {
-            fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class));
+            fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class, context));
         }
     }
 
@@ -81,9 +80,5 @@ public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
-    }
-
-    public void validate(ReadOnlyMetadataDAO dao, LHServerConfig config) throws LHApiException {
-        // TODO: Add validation
     }
 }

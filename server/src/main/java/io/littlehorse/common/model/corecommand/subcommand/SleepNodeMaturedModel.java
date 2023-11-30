@@ -4,13 +4,18 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,14 +40,14 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         SleepNodeMaturedPb p = (SleepNodeMaturedPb) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
     }
 
-    public static SleepNodeMaturedModel fromProto(SleepNodeMaturedPb proto) {
+    public static SleepNodeMaturedModel fromProto(SleepNodeMaturedPb proto, ExecutionContext context) {
         SleepNodeMaturedModel out = new SleepNodeMaturedModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -55,21 +60,26 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        WfRunModel wfRunModel = dao.getWfRun(nodeRunId.getWfRunId().getId());
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        GetableManager getableManager = executionContext.getableManager();
+        ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
+        WfService service = executionContext.service();
+        WfRunModel wfRunModel =
+                getableManager.get(new WfRunIdModel(nodeRunId.getWfRunId().getId()));
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.getWfSpecId());
+        WfSpecModel wfSpecModel = service.getWfSpec(wfRunModel.getWfSpecId());
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;
         }
 
         try {
-            wfRunModel.processSleepNodeMatured(this, dao.getEventTime());
+            wfRunModel.processSleepNodeMatured(
+                    this, executionContext.currentCommand().getTime());
         } catch (LHValidationError exn) {
             log.debug("Uh, invalid timer event: {}", exn.getMessage(), exn);
         }

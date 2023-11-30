@@ -5,7 +5,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -13,6 +12,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.DeadlineReassignUserTask;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,11 +45,11 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         DeadlineReassignUserTask p = (DeadlineReassignUserTask) proto;
-        if (p.hasNewUserId()) newUserId = VariableAssignmentModel.fromProto(p.getNewUserId());
-        if (p.hasNewUserGroup()) newUserGroup = VariableAssignmentModel.fromProto(p.getNewUserGroup());
-        source = LHSerializable.fromProto(p.getUserTask(), UserTaskRunIdModel.class);
+        if (p.hasNewUserId()) newUserId = VariableAssignmentModel.fromProto(p.getNewUserId(), context);
+        if (p.hasNewUserGroup()) newUserGroup = VariableAssignmentModel.fromProto(p.getNewUserGroup(), context);
+        source = LHSerializable.fromProto(p.getUserTask(), UserTaskRunIdModel.class, context);
     }
 
     @Override
@@ -57,8 +58,9 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        UserTaskRunModel userTaskRun = dao.get(source);
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        UserTaskRunModel userTaskRun = processorContext.getableManager().get(source);
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");
         }

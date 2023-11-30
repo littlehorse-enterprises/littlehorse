@@ -40,11 +40,11 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         String key = record.key();
         Bytes value = record.value();
 
-        try {
+        /*try {
             metadataCache.updateCache(key, value);
         } catch (Exception ex) {
             log.error("Failed to update metadata cache", ex);
-        }
+        }*/
 
         if (value == null) {
             store.delete(key);

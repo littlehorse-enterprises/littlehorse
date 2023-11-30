@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -14,30 +13,44 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeM
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     public Date maturationTime;
+    private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
 
-    public SleepNodeRunModel() {}
+    public SleepNodeRunModel() {
+        // used by lhdeserializer
+    }
+
+    public SleepNodeRunModel(ProcessorExecutionContext processorContext) {
+        this.processorContext = processorContext;
+    }
 
     public Class<SleepNodeRun> getProtoBaseClass() {
         return SleepNodeRun.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
+        this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public SleepNodeRun.Builder toProto() {
         return SleepNodeRun.newBuilder().setMaturationTime(LHUtil.fromDate(maturationTime));
     }
 
-    public static SleepNodeRunModel fromProto(SleepNodeRun p) {
+    public static SleepNodeRunModel fromProto(SleepNodeRun p, ExecutionContext context) {
         SleepNodeRunModel out = new SleepNodeRunModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 
@@ -58,8 +71,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
             SleepNodeMaturedModel snm = new SleepNodeMaturedModel(nodeRun.getId());
             CommandModel command = new CommandModel(snm, maturationTime);
-            CoreProcessorDAO dao = nodeRun.getThreadRun().getWfRun().getDao();
-            dao.scheduleTimer(new LHTimer(command, dao));
+            processorContext.getTaskManager().scheduleTimer(new LHTimer(command));
 
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(

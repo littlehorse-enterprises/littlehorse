@@ -4,11 +4,10 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -27,7 +26,11 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,21 +48,30 @@ import org.apache.commons.lang3.tuple.Pair;
 @Setter
 public class WfSpecModel extends GlobalGetable<WfSpec> {
 
-    private WfSpecIdModel id;
+    private WfSpecIdModel id = new WfSpecIdModel();
 
     public Date createdAt;
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
 
-    public Map<String, ThreadSpecModel> threadSpecs;
-    private Map<String, ThreadVarDefModel> frozenVariables;
+    public Map<String, ThreadSpecModel> threadSpecs = new HashMap<>();
+    private Map<String, ThreadVarDefModel> frozenVariables = new HashMap<>();
 
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
 
     // Internal, not related to Proto.
-    private Map<String, String> varToThreadSpec;
-    private boolean initializedVarToThreadSpec;
+    private Map<String, String> varToThreadSpec = new HashMap<>();
+    private boolean initializedVarToThreadSpec = false;
+    private ExecutionContext executionContext;
+
+    public WfSpecModel() {
+        // default constructor used by LHDeserializers
+    }
+
+    public WfSpecModel(MetadataCommandExecution executionContext) {
+        this.executionContext = executionContext;
+    }
 
     public WfSpecIdModel getObjectId() {
         return id;
@@ -101,18 +113,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return names;
     }
 
-    public WfSpecModel() {
-        this.id = new WfSpecIdModel();
-        threadSpecs = new HashMap<>();
-        varToThreadSpec = new HashMap<>();
-        initializedVarToThreadSpec = false;
-        frozenVariables = new HashMap<>();
-    }
-
     public void setLastUpdatedOffset(long newOffset) {
         lastOffset = newOffset;
     }
 
+    @Override
     public WfSpec.Builder toProto() {
         WfSpec.Builder out = WfSpec.newBuilder()
                 .setId(id.toProto())
@@ -140,30 +145,38 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return out;
     }
 
-    public void initFrom(Message pr) {
+    @Override
+    public void initFrom(Message pr, ExecutionContext context) {
         WfSpec proto = (WfSpec) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         entrypointThreadName = proto.getEntrypointThreadName();
-        id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class);
+        id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class, context);
 
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
             ThreadSpecModel ts = new ThreadSpecModel();
             ts.wfSpecModel = this;
             ts.name = e.getKey();
-            ts.initFrom(e.getValue());
+            ts.initFrom(e.getValue(), context);
             threadSpecs.put(e.getKey(), ts);
         }
 
         if (proto.hasRetentionPolicy()) {
-            retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
+            retentionPolicy =
+                    LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
 
         if (proto.hasMigration()) {
-            migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class);
+            migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class, context);
         }
 
+        if (proto.hasRetentionPolicy()) {
+            retentionPolicy =
+                    LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
+        }
+        this.executionContext = context;
+
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
-            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class);
+            ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
         }
     }
@@ -172,9 +185,9 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return WfSpec.class;
     }
 
-    public static WfSpecModel fromProto(WfSpec proto) {
+    public static WfSpecModel fromProto(WfSpec proto, ExecutionContext context) {
         WfSpecModel out = new WfSpecModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -198,9 +211,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(
-            MetadataProcessorDAO metadataDao, LHServerConfig config, Optional<WfSpecModel> oldVersion)
-            throws LHApiException {
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion) throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
@@ -210,7 +221,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
-                ts.validate(metadataDao, config);
+                ts.validate();
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
@@ -388,19 +399,25 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         }
     }
 
-    public WfRunModel startNewRun(RunWfRequestModel evt) {
-        WfRunModel out = new WfRunModel();
-        out.setDao(getDao());
+    /*
+    1. direct pass method argument
+    2. setDAO :(
+    3. implicitly pass context
+     */
+    public WfRunModel startNewRun(RunWfRequestModel evt, ProcessorExecutionContext processorContext) {
+        CommandModel currentCommand = processorContext.currentCommand();
+        GetableManager getableManager = processorContext.getableManager();
+        WfRunModel out = new WfRunModel(processorContext);
         out.setId(new WfRunIdModel(evt.getId()));
 
         out.setWfSpec(this);
         out.setWfSpecId(getObjectId());
-        out.startTime = getDao().getEventTime();
+        out.startTime = currentCommand.getTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
-        getDao().put(out);
-
+        out.startThread(
+                entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        getableManager.put(out);
         return out;
     }
 

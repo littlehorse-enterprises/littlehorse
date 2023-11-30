@@ -3,17 +3,19 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +34,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private List<UTActionTriggerModel> actions;
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
+    private ReadOnlyMetadataManager metadataManager;
+    private ProcessorExecutionContext processorContext;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -62,23 +66,26 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         UserTaskNode p = (UserTaskNode) proto;
         userTaskDefName = p.getUserTaskDefName();
-        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
-        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId());
+        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup(), context);
+        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId(), context);
 
         if (p.hasUserTaskDefVersion()) {
             userTaskDefVersion = p.getUserTaskDefVersion();
         }
 
         for (UTActionTrigger action : p.getActionsList()) {
-            actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class));
+            actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class, context));
         }
 
         if (p.hasNotes()) {
-            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class);
+            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
+        this.metadataManager = context.metadataManager();
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
@@ -91,12 +98,19 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return matchingHooks;
     }
 
+    @Override
     public UserTaskNodeRunModel createSubNodeRun(Date time) {
-        return new UserTaskNodeRunModel();
+        return new UserTaskNodeRunModel(processorContext);
     }
 
-    public void validate(ReadOnlyMetadataDAO stores, LHServerConfig config) throws LHApiException {
-        UserTaskDefModel utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
+    @Override
+    public void validate() throws LHApiException {
+        UserTaskDefModel utd;
+        if (userTaskDefVersion == null) {
+            utd = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(userTaskDefName));
+        } else {
+            utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        }
 
         if (utd == null) {
             throw new LHApiException(

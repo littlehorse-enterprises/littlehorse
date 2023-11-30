@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
@@ -33,9 +34,9 @@ public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, Task
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerGroupId p = (TaskWorkerGroupId) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
     }
 
     @Override

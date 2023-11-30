@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.store;
 
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -11,8 +12,8 @@ class SerdeModelStore extends SerdeReadOnlyModelStore implements ModelStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
 
-    SerdeModelStore(final KeyValueStore<String, Bytes> nativeStore) {
-        super(nativeStore);
+    SerdeModelStore(final KeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
+        super(nativeStore, executionContext);
         this.nativeStore = nativeStore;
     }
 

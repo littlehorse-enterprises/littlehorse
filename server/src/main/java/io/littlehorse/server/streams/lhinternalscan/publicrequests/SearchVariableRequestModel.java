@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -28,6 +27,8 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class SearchVariableRequestModel
     private VariableCriteriaCase type;
     private NameAndValueRequest value;
     private WfRunIdModel wfRunId;
+    private WfService service;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -49,7 +51,8 @@ public class SearchVariableRequestModel
         return SearchVariableRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchVariableRequest p = (SearchVariableRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -66,11 +69,12 @@ public class SearchVariableRequestModel
                 value = p.getValue();
                 break;
             case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
             case VARIABLECRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+        this.service = context.service();
     }
 
     public SearchVariableRequest.Builder toProto() {
@@ -94,9 +98,9 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ExecutionContext context) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -112,11 +116,11 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
+    private TagStorageType indexTypeForSearchFromWfSpec() {
         Integer majorVersion = value.hasWfSpecMajorVersion() ? value.getWfSpecMajorVersion() : null;
         Integer revision = value.hasWfSpecRevision() ? value.getWfSpecRevision() : null;
 
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), majorVersion, revision);
+        WfSpecModel spec = service.getWfSpec(value.getWfSpecName(), majorVersion, revision);
         log.error("Major: {}, Revision: {}", majorVersion, revision);
 
         if (spec == null) {
@@ -165,9 +169,9 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) {
+    public TagStorageType indexTypeForSearch() {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
-            TagStorageType result = indexTypeForSearchFromWfSpec(readOnlyDao);
+            TagStorageType result = indexTypeForSearchFromWfSpec();
             log.trace("Doing a {} search", result);
             return result;
         });

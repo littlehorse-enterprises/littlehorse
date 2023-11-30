@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -26,7 +27,7 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WfRunId p = (WfRunId) proto;
         id = p.getId();
     }

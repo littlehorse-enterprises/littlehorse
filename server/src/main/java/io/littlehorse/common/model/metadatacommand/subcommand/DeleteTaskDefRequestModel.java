@@ -4,11 +4,11 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 
 public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefRequest> {
 
@@ -23,9 +23,10 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         DeleteTaskDefRequest p = (DeleteTaskDefRequest) proto;
-        id = LHSerializable.fromProto(p.getId(), TaskDefIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), TaskDefIdModel.class, context);
     }
 
     public String getPartitionKey() {
@@ -33,8 +34,8 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
     }
 
     @Override
-    public Empty process(MetadataProcessorDAO dao, LHServerConfig config) {
-        dao.delete(id);
+    public Empty process(MetadataCommandExecution context) {
+        context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
@@ -42,9 +43,9 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
         return true;
     }
 
-    public static DeleteTaskDefRequestModel fromProto(DeleteTaskDefRequest p) {
+    public static DeleteTaskDefRequestModel fromProto(DeleteTaskDefRequest p, ExecutionContext context) {
         DeleteTaskDefRequestModel out = new DeleteTaskDefRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

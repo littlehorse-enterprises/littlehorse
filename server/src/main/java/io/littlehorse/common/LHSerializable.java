@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.lang.reflect.InvocationTargetException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +15,7 @@ public abstract class LHSerializable<T extends Message> {
 
     public abstract GeneratedMessageV3.Builder<?> toProto();
 
-    public abstract void initFrom(Message proto) throws LHSerdeError;
+    public abstract void initFrom(Message proto, ExecutionContext context) throws LHSerdeError;
 
     // TODO: should this be:
     // public abstract Class<T> getProtoBaseClass(); ?
@@ -32,10 +33,11 @@ public abstract class LHSerializable<T extends Message> {
         return toProto().build().toByteArray();
     }
 
-    public static <U extends Message, T extends LHSerializable<U>> T fromProto(U proto, Class<T> cls) {
+    public static <U extends Message, T extends LHSerializable<U>> T fromProto(
+            U proto, Class<T> cls, ExecutionContext context) {
         try {
             T out = cls.getDeclaredConstructor().newInstance();
-            out.initFrom(proto);
+            out.initFrom(proto, context);
             return out;
         } catch (Exception exn) {
             log.error("This shouldn't be possible", exn);
@@ -45,14 +47,15 @@ public abstract class LHSerializable<T extends Message> {
 
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
-    public static <T extends LHSerializable<?>> T fromBytes(byte[] b, Class<T> cls) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromBytes(byte[] b, Class<T> cls, ExecutionContext context)
+            throws LHSerdeError {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
 
             GeneratedMessageV3 proto = protoClass.cast(
                     protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
-            out.initFrom(proto);
+            out.initFrom(proto, context);
             return out;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
@@ -65,7 +68,8 @@ public abstract class LHSerializable<T extends Message> {
         return cls.getDeclaredConstructor().newInstance();
     }
 
-    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls, ExecutionContext context)
+            throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
@@ -83,7 +87,7 @@ public abstract class LHSerializable<T extends Message> {
             throw new LHSerdeError(exn, "bad protobuf for " + cls.getName());
         }
 
-        out.initFrom(builder.build());
+        out.initFrom(builder.build(), context);
         return out;
     }
 

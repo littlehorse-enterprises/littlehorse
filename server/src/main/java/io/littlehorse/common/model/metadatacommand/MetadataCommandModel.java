@@ -3,7 +3,6 @@ package io.littlehorse.common.model.metadatacommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -20,6 +19,8 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -112,7 +113,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         MetadataCommand p = (MetadataCommand) proto;
         time = LHUtil.fromProtoTs(p.getTime());
 
@@ -123,39 +124,42 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         type = p.getMetadataCommandCase();
         switch (type) {
             case PUT_WF_SPEC:
-                putWfSpecRequest = PutWfSpecRequestModel.fromProto(p.getPutWfSpec());
+                putWfSpecRequest = PutWfSpecRequestModel.fromProto(p.getPutWfSpec(), context);
                 break;
             case PUT_TASK_DEF:
-                putTaskDefRequest = PutTaskDefRequestModel.fromProto(p.getPutTaskDef());
+                putTaskDefRequest = PutTaskDefRequestModel.fromProto(p.getPutTaskDef(), context);
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                putExternalEventDefRequest = PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef());
+                putExternalEventDefRequest =
+                        PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef(), context);
                 break;
             case DELETE_EXTERNAL_EVENT_DEF:
-                deleteExternalEventDef = DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef());
+                deleteExternalEventDef =
+                        DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef(), context);
                 break;
             case DELETE_TASK_DEF:
-                deleteTaskDef = DeleteTaskDefRequestModel.fromProto(p.getDeleteTaskDef());
+                deleteTaskDef = DeleteTaskDefRequestModel.fromProto(p.getDeleteTaskDef(), context);
                 break;
             case DELETE_WF_SPEC:
-                deleteWfSpec = DeleteWfSpecRequestModel.fromProto(p.getDeleteWfSpec());
+                deleteWfSpec = DeleteWfSpecRequestModel.fromProto(p.getDeleteWfSpec(), context);
                 break;
             case PUT_USER_TASK_DEF:
                 putUserTaskDefRequest =
-                        LHSerializable.fromProto(p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class);
+                        LHSerializable.fromProto(p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class, context);
                 break;
             case DELETE_USER_TASK_DEF:
-                deleteUserTaskDef =
-                        LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
+                deleteUserTaskDef = LHSerializable.fromProto(
+                        p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class, context);
                 break;
             case PUT_TENANT:
-                putTenant = LHSerializable.fromProto(p.getPutTenant(), PutTenantRequestModel.class);
+                putTenant = LHSerializable.fromProto(p.getPutTenant(), PutTenantRequestModel.class, context);
                 break;
             case PUT_PRINCIPAL:
-                putPrincipal = LHSerializable.fromProto(p.getPutPrincipal(), PutPrincipalRequestModel.class);
+                putPrincipal = LHSerializable.fromProto(p.getPutPrincipal(), PutPrincipalRequestModel.class, context);
                 break;
             case DELETE_PRINCIPAL:
-                deletePrincipal = LHSerializable.fromProto(p.getDeletePrincipal(), DeletePrincipalRequestModel.class);
+                deletePrincipal =
+                        LHSerializable.fromProto(p.getDeletePrincipal(), DeletePrincipalRequestModel.class, context);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
@@ -236,8 +240,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(MetadataProcessorDAO dao, LHServerConfig config) {
-        return getSubCommand().process(dao, config);
+    public Message process(MetadataCommandExecution context) {
+        return getSubCommand().process(context);
     }
 
     @Override
