@@ -263,12 +263,12 @@ export function TaskInformation({ isWFRun, data, wfRunId, run }: TaskInformation
                 <Link
                     className="drawer-link"
                     href={
-                        `/taskdef/${data?.lhNode?.task?.taskDefName}`
+                        `/taskdef/${data?.lhNode?.task?.taskDefId.name}`
                     }
                 >
                     <Image alt="link" height={10} src={linkSvg} width={20}/>
                     <p className="drawer__task__link__container__clickable__text">
-                        {data?.lhNode?.task?.taskDefName || ''}
+                        {data?.lhNode?.task?.taskDefId.name || ''}
                     </p>
                 </Link>
             </DrawerSection>

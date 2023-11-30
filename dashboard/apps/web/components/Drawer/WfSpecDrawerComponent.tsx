@@ -92,7 +92,7 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
                             } else { console.error('INVALID RESPONSE FROM API')}
                         })(
                             '../../api/drawer/taskDef/',
-                            selectedNode?.task.taskDefName,
+                            selectedNode?.task.taskDefId.name,
                             setRawData
                         )
                     } else {

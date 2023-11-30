@@ -157,7 +157,7 @@ export function DrawerComponent(props: DrawerComponentProps) {
                     if (rawData === undefined) {
                         getData(
                             '../../api/drawer/taskDef/',
-                            selectedNode?.task.taskDefName,
+                            selectedNode?.task.taskDefId.name,
                             setRawData,
                             'result'
                         )
