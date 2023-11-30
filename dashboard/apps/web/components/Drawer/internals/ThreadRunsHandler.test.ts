@@ -9,6 +9,11 @@ describe('handle Thread Runs related logic', () => {
     it('should return all the thread runs that the node run is waiting for', () => {
         const threadRuns: ThreadRun[] = [
             {
+                wfSpecId: {
+                    name: 'A_WFSPEC',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 'number': 0,
                 'status': LHStatus.RUNNING,
                 'threadSpecName': 'entrypoint',
@@ -23,6 +28,11 @@ describe('handle Thread Runs related logic', () => {
                 'type': ThreadType.ENTRYPOINT
             },
             {
+                wfSpecId: {
+                    name: 'A_WFSPEC',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 'number': 1,
                 'status': LHStatus.RUNNING,
                 'threadSpecName': 'approval',
@@ -35,6 +45,11 @@ describe('handle Thread Runs related logic', () => {
                 'type': ThreadType.CHILD
             },
             {
+                wfSpecId: {
+                    name: 'A_WFSPEC',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 'number': 2,
                 'status': LHStatus.RUNNING,
                 'threadSpecName': 'approval',
@@ -49,14 +64,19 @@ describe('handle Thread Runs related logic', () => {
         ]
 
         const waitForThreadsRun: NodeRun = {
-            'wfRunId': 'asdf',
-            'threadRunNumber': 0,
-            'position': 3,
+            id: {
+                wfRunId: {
+                    id: 'asdf'
+                },
+                threadRunNumber: 0,
+                position: 3
+            },
             'status': LHStatus.RUNNING,
             'arrivalTime': '2023-10-30T19:40:52.286Z',
-            'wfSpecId': {
-                'name': 'alti-br',
-                'version': 0
+            wfSpecId: {
+                name: 'A_WFSPEC',
+                majorVersion: 0,
+                revision: 0
             },
             'threadSpecName': 'entrypoint',
             'nodeName': '3-threads-WAIT_FOR_THREADS',
@@ -87,6 +107,11 @@ describe('handle Thread Runs related logic', () => {
     it('if thread runs were not found an empty result should be provided', () => {
         const threadRuns: ThreadRun[] = [
             {
+                wfSpecId: {
+                    name: 'A_WFSPEC',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 'number': 0,
                 'status': LHStatus.RUNNING,
                 'threadSpecName': 'entrypoint',
@@ -103,14 +128,19 @@ describe('handle Thread Runs related logic', () => {
         ]
 
         const waitForThreadsRun: NodeRun = {
-            'wfRunId': 'asdf',
-            'threadRunNumber': 0,
-            'position': 3,
+            id: {
+                wfRunId: {
+                    id: 'asdf'
+                },
+                threadRunNumber: 0,
+                position: 3
+            },
             'status': LHStatus.RUNNING,
             'arrivalTime': '2023-10-30T19:40:52.286Z',
-            'wfSpecId': {
-                'name': 'alti-br',
-                'version': 0
+            wfSpecId: {
+                name: 'A_WFSPEC',
+                majorVersion: 0,
+                revision: 0
             },
             'threadSpecName': 'entrypoint',
             'nodeName': '3-threads-WAIT_FOR_THREADS',
@@ -136,6 +166,11 @@ describe('handle Thread Runs related logic', () => {
     it('when the node run does not have wait for threads should return an empty result', () => {
         const threadRuns: ThreadRun[] = [
             {
+                wfSpecId: {
+                    name: 'A_WFSPEC',
+                    majorVersion: 0,
+                    revision: 0
+                },
                 'number': 0,
                 'status': LHStatus.RUNNING,
                 'threadSpecName': 'entrypoint',
@@ -152,14 +187,19 @@ describe('handle Thread Runs related logic', () => {
         ]
 
         const waitForThreadsRun: NodeRun = {
-            'wfRunId': 'asdf',
-            'threadRunNumber': 0,
-            'position': 3,
+            id: {
+                wfRunId: {
+                    id: 'asdf'
+                },
+                threadRunNumber: 0,
+                position: 3
+            },
             'status': LHStatus.RUNNING,
             'arrivalTime': '2023-10-30T19:40:52.286Z',
-            'wfSpecId': {
-                'name': 'alti-br',
-                'version': 0
+            wfSpecId: {
+                name: 'A_WFSPEC',
+                majorVersion: 0,
+                revision: 0
             },
             'threadSpecName': 'entrypoint',
             'nodeName': '3-threads-WAIT_FOR_THREADS',

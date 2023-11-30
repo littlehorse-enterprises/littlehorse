@@ -1,7 +1,7 @@
 import type { Edge, Node } from 'reactflow'
 import { MarkerType } from 'reactflow'
 import ElkConstructor from 'elkjs/lib/elk.bundled.js'
-import type { WfSpec } from '../../../../../../../littlehorse-public-api/wf_spec'
+import type { ExitNode, UserTaskNode, WfSpec } from '../../../../../../../littlehorse-public-api/wf_spec'
 import { FailureHandlerDef_LHFailureType, Node as LHNode } from '../../../../../../../littlehorse-public-api/wf_spec'
 import {
     LHStatus,
@@ -9,7 +9,13 @@ import {
     VariableType,
     WaitForThreadsPolicy
 } from '../../../../../../../littlehorse-public-api/common_enums'
-import { Comparator, VariableMutationType } from '../../../../../../../littlehorse-public-api/common_wfspec'
+import type {
+    TaskNode,
+    VariableMutation } from '../../../../../../../littlehorse-public-api/common_wfspec'
+import {
+    Comparator,
+    VariableMutationType
+} from '../../../../../../../littlehorse-public-api/common_wfspec'
 import EdgeLabelExtractor from '../extractors/EdgeLabelExtractor'
 import type { WfRun } from '../../../../../../../littlehorse-public-api/wf_run'
 import { ThreadType } from '../../../../../../../littlehorse-public-api/wf_run'
@@ -50,7 +56,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -92,7 +98,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -156,7 +162,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const expectedNodesForAnotherThreadSpec: ReactFlowNodeWithLHInfo[] = [
@@ -239,7 +245,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -281,7 +287,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -347,7 +353,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -449,7 +455,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const expectedNodes: ReactFlowNodeWithLHInfo[] = [
@@ -747,7 +753,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
 
@@ -783,12 +789,14 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                         {
                             'lhsName': 'was-it-a-risky-decision',
                             'operation': VariableMutationType.ASSIGN,
-                            'nodeOutput': {}
+                            nodeOutput: {}
                         }
-                    ],
+                    ] as VariableMutation[],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'evaluate-risk-of-decision',
+                        taskDefId: {
+                            name: 'evaluate-risk-of-decision'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -796,7 +804,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                 'variableName': 'request-id'
                             }
                         ]
-                    }
+                    } as TaskNode,
                 })
             },
             {
@@ -856,7 +864,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                     'variableMutations': [],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'save-risk-evaluation-results',
+                        taskDefId: {
+                            name: 'save-risk-evaluation-results'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -867,7 +877,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                 'variableName': 'was-it-a-risky-decision'
                             }
                         ]
-                    }
+                    } as TaskNode
                 })
             },
             {
@@ -917,7 +927,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                         },
                         'actions': [],
                         'userTaskDefVersion': 2
-                    }
+                    } as UserTaskNode
                 })
             },
             {
@@ -934,7 +944,9 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                     'variableMutations': [],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'save-risk-evaluation-results',
+                        'taskDefId': {
+                            'name': 'save-risk-evaluation-results',
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -953,12 +965,12 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 data: { label: '7-exit-EXIT', failureHandlers: [], nodeHasRun: false },
                 position: { x: expect.any(Number), y: expect.any(Number) },
                 type: 'exitNodeType',
-                lhNode: LHNode.fromJSON({
+                lhNode: {
                     'outgoingEdges': [],
                     'variableMutations': [],
                     'failureHandlers': [],
-                    'exit': {}
-                })
+                    'exit': {} as ExitNode
+                }
             }
         ]
 
@@ -1134,7 +1146,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const expectedReactFlowNodes: ReactFlowNodeWithLHInfo[] = [
@@ -1278,7 +1290,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
             id: {
                 'name': 'example-exception-handler',
                 'majorVersion': 0,
-                'revision': 0  
+                'revision': 0
             },
             'frozenVariables': [],
             'createdAt': '2023-10-17T17:02:53.770Z',
@@ -1389,7 +1401,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -1546,7 +1558,7 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const mapper: GraphLayouter = new GraphLayouter(elk, labelExtractor)
@@ -1657,7 +1669,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const wfRun: WfRun = {
@@ -1665,7 +1677,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 'id': WF_RUN_ID
             },
             'wfSpecId': {
-                'name': 'example-interrupt-handler', 
+                'name': 'example-interrupt-handler',
                 'majorVersion': 0 ,
                 'revision': 0
             },
@@ -1767,7 +1779,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const wfRun: WfRun = {
@@ -1820,24 +1832,28 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     position: number
                 }): Promise<NodeRun> => {
                     if (getNodeRunRequest.position === 0) {
-                        return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': '56021fd8a2054563b25b595e6162b00c',
-                            'threadRunNumber': 1,
-                            'position': 0,
+                        return Promise.resolve({
+                            id: {
+                                wfRunId: {
+                                    id: '56021fd8a2054563b25b595e6162b00c'
+                                },
+                                threadRunNumber: 1,
+                                position: 0
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-24T16:56:36.191Z',
                             'endTime': '2023-10-24T16:56:36.191Z',
                             'wfSpecId': {
-                                'name': 'example-child-thread',
-                                'version': 0
+                                name: 'example-child-thread',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '0-entrypoint-ENTRYPOINT',
                             'failures': [],
                             'entrypoint': {},
                             'failureHandlerIds': []
-                        })
-                        )
+                        } as NodeRun)
                     }
 
                     return Promise.reject(new Error('Node position not present in wf Run'))
@@ -1889,7 +1905,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const wfRun: WfRun = {
@@ -1911,7 +1927,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'wfSpecId': {
                         'name': 'example-child-thread',
                         'majorVersion': 0,
-                        'revision': 0 
+                        'revision': 0
                     },
                     'number': 0,
                     'status': LHStatus.COMPLETED,
@@ -1941,23 +1957,29 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     position: number
                 }): Promise<NodeRun> => {
                     if (getNodeRunRequest.position === 0) {
-                        return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': '56021fd8a2054563b25b595e6162b00c',
-                            'threadRunNumber': 1,
-                            'position': 0,
+                        return Promise.resolve({
+                            id: {
+                                wfRunId: {
+                                    id: '56021fd8a2054563b25b595e6162b00c'
+                                },
+                                'threadRunNumber': 1,
+                                'position': 0,
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-24T16:56:36.191Z',
                             'endTime': '2023-10-24T16:56:36.191Z',
                             'wfSpecId': {
-                                'name': 'example-child-thread',
-                                'version': 0
+                                name: 'example-child-thread',
+                                majorVersion: 0,
+                                revision: 0
+
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '0-entrypoint-ENTRYPOINT',
                             'failures': [],
                             'entrypoint': {},
                             'failureHandlerIds': []
-                        })
+                        } as NodeRun
                         )
                     }
 
@@ -1988,7 +2010,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
             id: {
                 'name': 'evaluate-ai-decision',
                 majorVersion: 0,
-                revision: 0 
+                revision: 0
             },
             frozenVariables: [],
             'createdAt': '2023-10-23T19:50:53.488Z',
@@ -2236,7 +2258,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const CURRENT_NODE_POSITION = 4
@@ -2313,12 +2335,16 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                         {
                             'lhsName': 'was-it-a-risky-decision',
                             'operation': VariableMutationType.ASSIGN,
-                            'nodeOutput': {}
+                            nodeOutput: {
+                                jsonPath: undefined
+                            }
                         }
                     ],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'evaluate-risk-of-decision',
+                        taskDefId: {
+                            name: 'evaluate-risk-of-decision'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -2387,7 +2413,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'variableMutations': [],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'save-risk-evaluation-results',
+                        taskDefId: {
+                            name:  'save-risk-evaluation-results'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -2423,7 +2451,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 position: { x: expect.any(Number), y: expect.any(Number) },
                 type: 'taskNodeType',
                 positionInThreadRun: 3,
-                lhNode: LHNode.fromJSON({
+                lhNode: {
                     'outgoingEdges': [
                         {
                             'sinkNodeName': '6-risk-approval-form-USER_TASK'
@@ -2438,7 +2466,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     ],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'explain-decision',
+                        taskDefId: {
+                            name:'explain-decision'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -2447,7 +2477,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             }
                         ]
                     }
-                })
+                } as LHNode
             },
             {
                 id: '6-risk-approval-form-USER_TASK',
@@ -2498,7 +2528,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'variableMutations': [],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'save-risk-evaluation-results',
+                        taskDefId: {
+                            name: 'save-risk-evaluation-results'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -2517,12 +2549,12 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 data: { label: '8-exit-EXIT', failureHandlers: [], nodeHasRun: false },
                 position: { x: expect.any(Number), y: expect.any(Number) },
                 type: 'exitNodeType',
-                lhNode: LHNode.fromJSON({
+                lhNode: {
                     'outgoingEdges': [],
                     'variableMutations': [],
                     'failureHandlers': [],
-                    'exit': {}
-                })
+                    exit: {}
+                } as LHNode
             }
         ]
 
@@ -2539,37 +2571,47 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     position: number
                 }): Promise<NodeRun> => {
                     if (getNodeRunRequest.position === 0) {
-                        return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': WF_RUN_ID,
-                            'threadRunNumber': 0,
-                            'position': 0,
+                        return Promise.resolve({
+                            id: {
+                                wfRunId: {
+                                    id: WF_RUN_ID
+                                },
+                                threadRunNumber: 0,
+                                position: 0,
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-23T20:47:00.193Z',
                             'endTime': '2023-10-23T20:47:00.193Z',
                             'wfSpecId': {
-                                'name': 'evaluate-ai-decision',
-                                'version': 0
+                                name: 'evaluate-ai-decision',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '0-entrypoint-ENTRYPOINT',
                             'failures': [],
                             'entrypoint': {},
                             'failureHandlerIds': []
-                        })
+                        } as NodeRun
                         )
                     }
 
                     if (getNodeRunRequest.position === 1) {
                         return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': WF_RUN_ID,
-                            'threadRunNumber': 0,
-                            'position': 1,
+                            id: {
+                                wfRunId: {
+                                    id: WF_RUN_ID
+                                },
+                                threadRunNumber: 0,
+                                position: 1,
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-23T20:47:00.193Z',
                             'endTime': '2023-10-23T20:47:00.198Z',
-                            'wfSpecId': {
-                                'name': 'evaluate-ai-decision',
-                                'version': 0
+                            wfSpecId: {
+                                name: 'evaluate-ai-decision',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '1-evaluate-risk-of-decision-TASK',
@@ -2587,15 +2629,20 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
 
                     if (getNodeRunRequest.position === 2) {
                         return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': WF_RUN_ID,
-                            'threadRunNumber': 0,
-                            'position': 2,
+                            id: {
+                                wfRunId: {
+                                    id: WF_RUN_ID
+                                },
+                                threadRunNumber: 0,
+                                position: 2,
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-23T20:47:00.199Z',
                             'endTime': '2023-10-23T20:47:00.199Z',
-                            'wfSpecId': {
-                                'name': 'evaluate-ai-decision',
-                                'version': 0
+                            wfSpecId: {
+                                name: 'evaluate-ai-decision',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '2-nop-NOP',
@@ -2608,15 +2655,20 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
 
                     if (getNodeRunRequest.position === 3) {
                         return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': WF_RUN_ID,
-                            'threadRunNumber': 0,
-                            'position': 3,
+                            id: {
+                                wfRunId: {
+                                    id: WF_RUN_ID
+                                },
+                                threadRunNumber: 0,
+                                position: 3,
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-23T20:47:00.199Z',
                             'endTime': '2023-10-23T20:47:00.203Z',
-                            'wfSpecId': {
-                                'name': 'evaluate-ai-decision',
-                                'version': 0
+                            wfSpecId: {
+                                name: 'evaluate-ai-decision',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '5-explain-decision-TASK',
@@ -2634,14 +2686,19 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
 
                     if (getNodeRunRequest.position === 4) {
                         return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': WF_RUN_ID,
-                            'threadRunNumber': 0,
-                            'position': 4,
+                            id: {
+                                wfRunId: {
+                                    id: WF_RUN_ID
+                                },
+                                threadRunNumber: 0,
+                                position: 4,
+                            },
                             'status': 'RUNNING',
                             'arrivalTime': '2023-10-23T20:47:00.207Z',
-                            'wfSpecId': {
-                                'name': 'evaluate-ai-decision',
-                                'version': 0
+                            wfSpecId: {
+                                name: 'evaluate-ai-decision',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': 'entrypoint',
                             'nodeName': '6-risk-approval-form-USER_TASK',
@@ -2781,7 +2838,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                             'outgoingEdges': [],
                             'variableMutations': [],
                             'failureHandlers': [],
-                            'exit': {}
+                            exit: {
+                                failureDef: undefined
+                            }
                         }
                     },
                     'variableDefs': [
@@ -2864,7 +2923,7 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 }
             },
             'entrypointThreadName': 'entrypoint',
-            
+
         }
 
         const CURRENT_NODE_POSITION = 1
@@ -2979,7 +3038,9 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     'variableMutations': [],
                     'failureHandlers': [],
                     'task': {
-                        'taskDefName': 'child-task',
+                        'taskDefId': {
+                            name: 'child-task'
+                        },
                         'timeoutSeconds': 15,
                         'retries': 0,
                         'variables': [
@@ -2995,12 +3056,12 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                 data: { label: '2-exit-EXIT', failureHandlers: [], nodeHasRun: false },
                 position: { x: expect.any(Number), y: expect.any(Number) },
                 type: 'exitNodeType',
-                lhNode: LHNode.fromJSON({
-                    'outgoingEdges': [],
-                    'variableMutations': [],
-                    'failureHandlers': [],
-                    'exit': {}
-                })
+                lhNode: {
+                    outgoingEdges: [],
+                    variableMutations: [],
+                    failureHandlers: [],
+                    exit: {}
+                }
             },
         ]
 
@@ -3017,51 +3078,61 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                     position: number
                 }): Promise<NodeRun> => {
                     if (getNodeRunRequest.position === 0) {
-                        return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': '56021fd8a2054563b25b595e6162b00c',
-                            'threadRunNumber': 1,
-                            'position': 0,
+                        return Promise.resolve({
+                            id: {
+                                wfRunId: {
+                                    id: '56021fd8a2054563b25b595e6162b00c'
+                                },
+                                position: 0,
+                                threadRunNumber: 1
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-24T16:56:36.191Z',
                             'endTime': '2023-10-24T16:56:36.191Z',
                             'wfSpecId': {
-                                'name': 'example-child-thread',
-                                'version': 0
+                                name: 'example-child-thread',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': threadSpec,
                             'nodeName': '0-entrypoint-ENTRYPOINT',
                             'failures': [],
                             'entrypoint': {},
                             'failureHandlerIds': []
-                        })
+                        } as NodeRun
                         )
                     }
 
                     if (getNodeRunRequest.position === 1) {
-                        return Promise.resolve(NodeRun.fromJSON({
-                            'wfRunId': '56021fd8a2054563b25b595e6162b00c',
-                            'threadRunNumber': 1,
-                            'position': 1,
+                        return Promise.resolve({
+                            id: {
+                                wfRunId: {
+                                    id: '56021fd8a2054563b25b595e6162b00c'
+                                },
+                                position: 1,
+                                threadRunNumber: 1
+                            },
                             'status': 'COMPLETED',
                             'arrivalTime': '2023-10-24T16:56:36.191Z',
                             'endTime': '2023-10-24T16:56:36.200Z',
-                            'wfSpecId': {
-                                'name': 'example-child-thread',
-                                'version': 0
+                            wfSpecId: {
+                                name: 'example-child-thread',
+                                majorVersion: 0,
+                                revision: 0
                             },
                             'threadSpecName': threadSpec,
                             'nodeName': '1-child-task-TASK',
                             'failures': [],
                             'task': {
                                 'taskRunId': {
-                                    'wfRunId': '56021fd8a2054563b25b595e6162b00c',
+                                    'wfRunId': {
+                                        id: '56021fd8a2054563b25b595e6162b00c'
+                                    },
                                     'taskGuid': 'a86ea08caf4c40bfaf3c2f93ac404285'
                                 }
                             },
                             'failureHandlerIds': []
-                        }
-                        )
-                        )
+                        } as NodeRun)
                     }
 
                     return Promise.reject(new Error('Node position not present in wf Run'))
