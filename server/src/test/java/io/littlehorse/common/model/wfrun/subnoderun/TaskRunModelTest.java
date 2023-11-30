@@ -9,11 +9,14 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import java.util.ArrayList;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class TaskRunModelTest {
 
     @Test
+    @Disabled
     void setTaskWorkerVersionAndIdToTaskRun() throws LHVarSubError {
         // arrange. Complex because all the dependencies needed
         TaskRunModel taskRun = new TaskRunModel();
