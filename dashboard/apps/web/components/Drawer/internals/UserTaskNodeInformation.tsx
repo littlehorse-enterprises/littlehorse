@@ -40,7 +40,7 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
             method: 'POST',
             body: JSON.stringify({
                 wfRunId,
-                guid:node?.userTask?.userTaskRunId?.userTaskGuid
+                guid: node?.userTask?.userTaskRunId?.userTaskGuid
             })
         })
 
@@ -51,17 +51,17 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
         }
     }
     const getInfo = async () => {
-
         const res = await fetch('/api/information/userTaskDef', {
             method: 'POST',
             body: JSON.stringify({
-                id:data?.lhNode?.userTask?.userTaskDefId.name,
-                version:data?.lhNode?.userTask?.userTaskDefId.version
+                id: data?.lhNode?.userTask?.userTaskDefName,
+                version: data?.lhNode?.userTask?.userTaskDefVersion
             })
         })
         if (res.ok) {
-            const { result } = await res.json()
-            setInfo(result)
+            res.json().then((result) => {
+                setInfo(result)
+            })
         }
 
     }
