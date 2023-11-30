@@ -1,12 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { Loading } from 'ui/components/Loading'
-import type { TaskDefInformationResponse } from '../../../../interfaces/TaskDefInformationResponse'
-import type { InputVarsTaskDef } from '../../../../interfaces/InputVarsTaskDef'
+import type { VariableDef } from '../../../../littlehorse-public-api/common_wfspec'
+import type { TaskDef } from '../../../../littlehorse-public-api/task_def'
 
 export function TaskDefSchemaInformation({ id }: { id: string }) {
     const [ loadingInputVars, setLoadingInputVars ] = useState(true)
-    const [ inputVars, setInputVars ] = useState<InputVarsTaskDef[]>([])
+    const [ inputVars, setInputVars ] = useState<VariableDef[]>([])
 
     const taskInformation = async () => {
         const res = await fetch('/api/information/taskDef', {
@@ -16,8 +16,8 @@ export function TaskDefSchemaInformation({ id }: { id: string }) {
             }),
         })
         if (res.ok) {
-            const data: TaskDefInformationResponse = await res.json()
-            setInputVars(data.result.inputVars)
+            const data: TaskDef = await res.json()
+            setInputVars(data.inputVars)
             setLoadingInputVars(false)
         }
     }

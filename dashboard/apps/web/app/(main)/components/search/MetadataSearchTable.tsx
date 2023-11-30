@@ -21,7 +21,8 @@ export function MetadataSearchTable({ results }:MetadataSearchTableProps) {
             <tbody className="scrollbar" style={{
                 height: '519px'
             }}>
-                {results.map( (r:Result) => <tr className="flex w-full" key={r.name}>
+                {/* eslint-disable-next-line react/no-array-index-key */}
+                {results.map( (r:Result) => <tr className="flex w-full" key={r.name + r.version}>
                     <td className="capitalize">
                         {(r.type==='WfSpec') ? <Link href={`/wfspec/${r.name}/${r.version}`}>{r.name}</Link>  :  undefined}
                         {(r.type==='TaskDef') ? <Link href={`/taskdef/${r.name}`}>{r.name}</Link>  :  undefined}
