@@ -1,20 +1,17 @@
-package io.littlehorse.common.model.command.subcommand.internals;
+package io.littlehorse.common.model.corecommand.subcommand.internals;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
 public class RoundRobinAssignorTest {
 
-    private Faker faker = new Faker();
-    private RoundRobinAssignor robinAssignor = new RoundRobinAssignor();
+    private final Faker faker = new Faker();
+    private final RoundRobinAssignor robinAssignor = new RoundRobinAssignor();
 
     @Test
     void assignWithOneHostAndTwoWorkers() {
@@ -88,7 +85,7 @@ public class RoundRobinAssignorTest {
     void assignWithFiveHostsAndFiveWorkers() {
         List<HostModel> hosts = generateHosts(5);
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(5);
-
+        System.out.println(taskWorkersMetadata);
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
         assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
@@ -134,11 +131,9 @@ public class RoundRobinAssignorTest {
         List<HostModel> hosts = generateHosts(3);
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(9);
 
+        // assign multiple times
         robinAssignor.assign(hosts, taskWorkersMetadata);
-
-        for (TaskWorkerMetadataModel var : taskWorkersMetadata) {
-            System.out.println(var.hosts);
-        }
+        robinAssignor.assign(hosts, taskWorkersMetadata);
 
         assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
                 && taskWorkersMetadata.get(0).hosts.size() == 1);
@@ -161,20 +156,22 @@ public class RoundRobinAssignorTest {
     }
 
     public List<HostModel> generateHosts(int q) {
-        List<HostModel> hosts = new ArrayList<HostModel>();
-        for (int i = 0; i < q; i++) {
-            HostModel host =
-                    new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
+        char[] domains = "abcdefghijklmnopqrstuvwxyz".substring(0, q).toCharArray();
+        List<HostModel> hosts = new ArrayList<>();
+        for (char domain : domains) {
+            HostModel host = new HostModel(String.valueOf(domain), 2023);
             hosts.add(host);
         }
         return hosts;
     }
 
     public List<TaskWorkerMetadataModel> generateTaskWorkersMetadata(int q) {
-        List<TaskWorkerMetadataModel> taskWorkersMetadata = new ArrayList<TaskWorkerMetadataModel>();
-        for (int i = 0; i < q; i++) {
+        char[] clientIds = "abcdefghijklmnopqrstuvwxyz".substring(0, q).toCharArray();
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = new ArrayList<>();
+        for (char clientId : clientIds) {
             TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
-            taskWorker.clientId = UUID.randomUUID().toString();
+            taskWorker.clientId = String.valueOf(clientId);
+            taskWorker.latestHeartbeat = new Date();
             taskWorkersMetadata.add(taskWorker);
         }
         return taskWorkersMetadata;

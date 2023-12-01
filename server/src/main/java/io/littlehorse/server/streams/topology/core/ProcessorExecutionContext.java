@@ -16,7 +16,6 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
-import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.Set;
@@ -36,8 +35,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private LHTaskManager currentTaskManager;
     private TaskQueueManager globalTaskQueueManager;
     private GetableManager storageManager;
-
-    private Set<HostModel> currentHosts;
     private final Headers recordMetadata;
     private final CommandModel currentCommand;
     private final ModelStore coreStore;
@@ -132,11 +129,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return currentCommand;
     }
 
-    public InternalHosts getInternalHosts() {
-        Set<HostModel> newHost = server.getAllInternalHosts();
-        InternalHosts internalHosts = new InternalHosts(currentHosts, newHost);
-        currentHosts = newHost;
-        return internalHosts;
+    public Set<HostModel> getInternalHosts() {
+        return server.getAllInternalHosts();
     }
 
     public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
