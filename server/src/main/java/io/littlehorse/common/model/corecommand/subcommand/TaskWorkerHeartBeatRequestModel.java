@@ -39,7 +39,6 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     @Setter // for unit test
     private String clientId;
 
-    @Setter // for unit test
     private TaskDefIdModel taskDefId;
 
     private String listenerName;
