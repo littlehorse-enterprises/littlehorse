@@ -21,7 +21,6 @@ import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -41,6 +40,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     private String clientId;
 
     private TaskDefIdModel taskDefId;
+
     private String listenerName;
 
     private TaskWorkerAssignor assignor;
@@ -69,31 +69,20 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         }
 
         // Remove inactive taskWorker
-        boolean areInactiveWorkersRemoved = removeInactiveWorkers(taskWorkerGroup);
+        removeInactiveWorkers(taskWorkerGroup);
 
         // Get the specific worker, each worker is supposed to have a unique client id
-        boolean isANewTaskWorker = false;
         TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
 
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
-            isANewTaskWorker = true;
             taskWorker = new TaskWorkerMetadataModel();
             taskWorker.clientId = clientId;
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
 
-        // Verify there are no changes on the current servers
-        boolean thereAreNewHost = checkIfNewHostsHasChanges(executionContext.getInternalHosts());
-
-        // If there are dead workers or new workers or new hosts let's rebalance
-        if (areInactiveWorkersRemoved || isANewTaskWorker || thereAreNewHost) {
-            // Get all internal servers (from kafka stream API), they are already sorted by
-            // Host::getKey.
-            // As it is a new worker then we need to rebalance
-            log.info("Triggering rebalance");
-            assignor.assign(hosts, taskWorkerGroup.taskWorkers.values());
-        }
+        // Run assignor
+        assignor.assign(executionContext.getInternalHosts(), taskWorkerGroup.taskWorkers.values());
 
         // Update the latest heartbeat with the current timestamp
         taskWorker.latestHeartbeat = new Date();
@@ -107,15 +96,10 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         for (HostModel hostInfo : taskWorker.hosts) {
             yourHosts.add(executionContext.getAdvertisedHost(hostInfo, listenerName));
         }
-        return prepareReply(yourHosts, taskWorker.hosts);
+        return prepareReply(yourHosts);
     }
 
-    private boolean checkIfNewHostsHasChanges(InternalHosts internalHosts) {
-        hosts = internalHosts.getHosts();
-        return internalHosts.hasChanges();
-    }
-
-    private RegisterTaskWorkerResponse prepareReply(Set<LHHostInfo> yourHosts, Set<HostModel> hosts) {
+    private RegisterTaskWorkerResponse prepareReply(Set<LHHostInfo> yourHosts) {
         RegisterTaskWorkerResponse.Builder reply = RegisterTaskWorkerResponse.newBuilder();
         reply.addAllYourHosts(yourHosts);
 
@@ -129,17 +113,12 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         return reply.build();
     }
 
-    private boolean removeInactiveWorkers(TaskWorkerGroupModel taskWorkerGroup) {
-        int sizeBeforeFiltering = taskWorkerGroup.taskWorkers.size();
-
+    private void removeInactiveWorkers(TaskWorkerGroupModel taskWorkerGroup) {
         taskWorkerGroup.taskWorkers = taskWorkerGroup.taskWorkers.values().stream()
                 .filter(taskWorker -> Duration.between(taskWorker.latestHeartbeat.toInstant(), Instant.now())
-                                        .toSeconds()
-                                < MAX_TASK_WORKER_INACTIVITY
-                        || taskWorker.clientId == clientId)
+                                .toSeconds()
+                        < MAX_TASK_WORKER_INACTIVITY)
                 .collect(Collectors.toMap(taskWorker -> taskWorker.clientId, Function.identity()));
-
-        return sizeBeforeFiltering > taskWorkerGroup.taskWorkers.size();
     }
 
     @Override
@@ -154,11 +133,10 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
 
     @Override
     public TaskWorkerHeartBeatRequest.Builder toProto() {
-        TaskWorkerHeartBeatRequest.Builder builder = TaskWorkerHeartBeatRequest.newBuilder()
+        return TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(clientId)
                 .setTaskDefId(taskDefId.toProto())
                 .setListenerName(listenerName);
-        return builder;
     }
 
     @Override

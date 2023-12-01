@@ -221,7 +221,7 @@ public class BackendInternalComms implements Closeable {
     public Set<HostModel> getAllInternalHosts() {
         // It returns a sorted collection always
         return coreStreams.metadataForAllStreamsClients().stream()
-                .map(meta -> meta.hostInfo())
+                .map(StreamsMetadata::hostInfo)
                 .map(hostInfo -> new HostModel(hostInfo.host(), hostInfo.port()))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
