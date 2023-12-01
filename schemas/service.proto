@@ -94,31 +94,16 @@ message RunWfRequest {
 }
 
 message SearchWfRunRequest {
-  optional bytes bookmark = 1;
-  optional int32 limit = 2;
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
 
-  message StatusAndSpecRequest {
-    WfSpecId wf_spec_id = 1;
-    LHStatus status = 2;
-    optional google.protobuf.Timestamp earliest_start = 3;
-    optional google.protobuf.Timestamp latest_start = 4;
-  }
-  message NameRequest {
-    string wf_spec_name = 1;
-    optional google.protobuf.Timestamp earliest_start = 2;
-    optional google.protobuf.Timestamp latest_start = 3;
-  }
-  message StatusAndNameRequest {
-    string wf_spec_name = 1;
-    LHStatus status = 2;
-    optional google.protobuf.Timestamp earliest_start = 3;
-    optional google.protobuf.Timestamp latest_start = 4;
-  }
-  oneof wfrun_criteria {
-    StatusAndSpecRequest status_and_spec = 3;
-    NameRequest name = 4;
-    StatusAndNameRequest status_and_name = 5;
-  }
+    string wf_spec_name = 3;
+    optional int32 wf_spec_major_version = 4;
+    optional int32 wf_spec_revision = 5;
+    optional LHStatus status = 6;
+
+    optional google.protobuf.Timestamp earliest_start = 7;
+    optional google.protobuf.Timestamp latest_start = 8;
 }
 
 message WfRunIdList {
@@ -127,26 +112,13 @@ message WfRunIdList {
 }
 
 message SearchTaskRunRequest {
-  optional bytes bookmark = 1;
-  optional int32 limit = 2;
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+    string task_def_name = 3;
+    optional TaskStatus status = 4;
 
-  message StatusAndTaskDefRequest {
-    TaskStatus status = 1;
-    string task_def_name = 2;
-    optional google.protobuf.Timestamp earliest_start = 3;
-    optional google.protobuf.Timestamp latest_start = 4;
-  }
-
-  message ByTaskDefRequest {
-    string task_def_name = 1;
-    optional google.protobuf.Timestamp earliest_start = 2;
-    optional google.protobuf.Timestamp latest_start = 3;
-  }
-
-  oneof task_run_criteria {
-    StatusAndTaskDefRequest status_and_task_def = 3;
-    ByTaskDefRequest task_def = 4;
-  }
+    optional google.protobuf.Timestamp earliest_start = 5;
+    optional google.protobuf.Timestamp latest_start = 6;
 }
 
 message TaskRunIdList {
@@ -155,12 +127,25 @@ message TaskRunIdList {
 }
 
 message SearchNodeRunRequest {
+  enum NodeType {
+    TASK = 0;
+    EXTERNAL_EVENT = 1;
+    ENTRYPOINT = 2;
+    EXIT = 3;
+    START_THREAD = 4;
+    WAIT_THREADS = 5;
+    SLEEP = 6;
+    USER_TASK = 7;
+    START_MULTIPLE_THREADS = 8;
+  }
+
   optional bytes bookmark = 1;
   optional int32 limit = 2;
+  optional google.protobuf.Timestamp earliest_start = 3;
+  optional google.protobuf.Timestamp latest_start = 4;
 
-  oneof noderun_criteria {
-    WfRunId wf_run_id = 3;
-  }
+  NodeType node_type = 5;
+  LHStatus status = 6;
 }
 
 message NodeRunIdList {
@@ -191,18 +176,11 @@ message SearchVariableRequest {
   optional bytes bookmark = 1;
   optional int32 limit = 2;
 
-  message NameAndValueRequest {
-    VariableValue value = 1;
-    optional int32 wf_spec_major_version = 2;
-    optional int32 wf_spec_revision = 3;
-    string var_name = 4;
-    string wf_spec_name = 5;
-  }
-
-  oneof variable_criteria {
-    WfRunId wf_run_id = 3;
-    NameAndValueRequest value = 4;
-  }
+  VariableValue value = 3;
+  optional int32 wf_spec_major_version = 4;
+  optional int32 wf_spec_revision = 5;
+  string var_name = 6;
+  string wf_spec_name = 7;
 }
 
 message VariableIdList {
