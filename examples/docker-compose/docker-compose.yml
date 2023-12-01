@@ -39,3 +39,15 @@ services:
         condition: service_healthy
     ports:
       - "2023:2023"
+  dashboard:
+    container_name: lh-dashboard
+    image: public.ecr.aws/littlehorse/lh-dashboard:latest
+    environment:
+      API_URL: littlehorse:2023
+      AUTHENTICATION_ENABLED: "false"
+    restart: on-failure
+    healthcheck:
+      test: curl -f localhost:8080
+      interval: 5s
+    ports:
+      - "8080:8080"

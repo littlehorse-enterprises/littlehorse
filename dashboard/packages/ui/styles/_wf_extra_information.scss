@@ -1,0 +1,20 @@
+.pop-up-wfrun-information {
+
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+
+    .header {
+        display: inline-flex;
+        align-items: center;
+        gap: 20px;
+        padding: 8px 0;
+    }
+
+    .snippet {
+        pre {
+            margin: 0;
+        }
+    }
+}
