@@ -94,7 +94,6 @@ export function UserTaskNodeInformation({ isWFRun, data, wfRunId, run, setToggle
                             <p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
                             <p className="drawer__nodeData__header">STATUS</p>
                             <p className="drawer__nodeData__data">{node?.status}</p>
-                            {console.log('user task run', userTaskRun)}
                             {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) ? <p className="drawer__nodeData__header">USER GROUP</p> : null}
                             {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) ? <p className="drawer__nodeData__data">{userTaskRun?.user?.userGroup?.id || userTaskRun?.userGroup }</p> : null}
 

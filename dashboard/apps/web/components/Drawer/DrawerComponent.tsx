@@ -67,23 +67,6 @@ export function DrawerComponent(props: DrawerComponentProps) {
         setThreadHandler(threadRunInfoValue ? threadRunInfoValue : ThreadRunsHandler.buildThreadRunInfo(DEFAULT_THREAD_RUN_NUMBER, DEFAULT_THREAD_SPEC_NAME))
     }, [ threadRunInfoValue ])
 
-    const getData: any = async (
-        url: string,
-        name: string,
-        handler: (data: any) => void,
-        dataPath: string
-    ) => {
-        const response = await fetch(url + name)
-        const a= true
-        if (a) {console.error('hola')}
-
-        if (response.ok) {
-            const content = await response.json()
-
-            handler(content.data[dataPath])
-        } else {console.error('INVALID RESPONSE FROM API')}
-    }
-
     const getErrorData: any = (node: any, key: string) => {
         if (node) {
             const logs = 'task' in node ? node.task.logOutput : null
@@ -155,11 +138,23 @@ export function DrawerComponent(props: DrawerComponentProps) {
             const processComplexData = {
                 task: () => {
                     if (rawData === undefined) {
-                        getData(
+                        (async (
+                            url: string,
+                            name: string,
+                            handler: (data: any) => void
+                        ) => {
+                            const response = await fetch(url + name)
+
+                            if (response.ok) {
+                                const content = await response.json()
+                                handler(content.data)
+                            } else {
+                                console.error('INVALID RESPONSE FROM API')
+                            }
+                        })(
                             '../../api/drawer/taskDef/',
                             selectedNode?.task.taskDefId.name,
-                            setRawData,
-                            'result'
+                            setRawData
                         )
                     } else {
                         const processedData = rawData.inputVars.map(

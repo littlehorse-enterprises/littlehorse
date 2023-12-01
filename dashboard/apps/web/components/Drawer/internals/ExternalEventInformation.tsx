@@ -49,16 +49,18 @@ export function ExternalEventInformation({ isWFRun,run,data,wfRunId,errorData,se
         }
     }
     const getExternalEventRun = async () => {
-        const res = await fetch('/api/drawer/externalEvent', {
-            method: 'POST',
-            body: JSON.stringify({
-                ...node?.externalEvent?.externalEventId
+        if (node) {
+            const res = await fetch('/api/drawer/externalEvent', {
+                method: 'POST',
+                body: JSON.stringify({
+                    ...node?.externalEvent?.externalEventId
+                })
             })
-        })
-        if (res.ok) {
-            res.json().then(result => {
-                setExternalEventRun(result)
-            })
+            if (res.ok) {
+                res.json().then(result => {
+                    setExternalEventRun(result)
+                })
+            }
         }
     }
     useEffect( () => {
