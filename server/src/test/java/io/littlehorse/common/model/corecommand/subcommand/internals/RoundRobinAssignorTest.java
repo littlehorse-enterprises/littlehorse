@@ -85,7 +85,6 @@ public class RoundRobinAssignorTest {
     void assignWithFiveHostsAndFiveWorkers() {
         List<HostModel> hosts = generateHosts(5);
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(5);
-        System.out.println(taskWorkersMetadata);
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
         assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
