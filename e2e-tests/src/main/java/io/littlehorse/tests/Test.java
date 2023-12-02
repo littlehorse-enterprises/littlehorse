@@ -124,8 +124,8 @@ public abstract class Test {
     // pagination via Bookmark's.
     public TaskRunIdList searchTaskRuns(String taskDefName, TaskStatus status) {
         return client.searchTaskRun(SearchTaskRunRequest.newBuilder()
-                        .setStatus(status)
-                        .setTaskDefName(taskDefName)
+                .setStatus(status)
+                .setTaskDefName(taskDefName)
                 .build());
     }
 

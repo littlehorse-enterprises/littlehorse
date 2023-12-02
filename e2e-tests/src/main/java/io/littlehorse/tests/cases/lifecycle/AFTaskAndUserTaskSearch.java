@@ -105,9 +105,9 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         // Since we haven't started the first TaskWorker, the tasks should both
         // be STARTING. We'll test out pagination.
         WfRunIdList runningWfs = client.searchWfRun(SearchWfRunRequest.newBuilder()
-                        .setWfSpecName(WF_SPEC_NAME)
-                        .setStatus(LHStatus.RUNNING)
-                        .setEarliestStart(LHLibUtil.fromDate(new Date(System.currentTimeMillis() - 5000)))
+                .setWfSpecName(WF_SPEC_NAME)
+                .setStatus(LHStatus.RUNNING)
+                .setEarliestStart(LHLibUtil.fromDate(new Date(System.currentTimeMillis() - 5000)))
                 .build());
         assertContainsWfRun(runningWfs, succeedWf);
         assertContainsWfRun(runningWfs, failWf);
