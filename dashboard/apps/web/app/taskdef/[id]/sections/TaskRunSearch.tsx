@@ -65,12 +65,10 @@ export function TaskRunSearch({ id }: any) {
         const res = await fetch('/api/search/taskRun', {
             method: 'POST',
             body: JSON.stringify({
-                statusAndTaskDef: {
-                    status: taskStatus,
-                    taskDefName: id,
-                    earliestStart: startDt,
-                    latestStart: endDt,
-                },
+                status: taskStatus,
+                taskDefName: id,
+                earliestStart: startDt,
+                latestStart: endDt,
                 ...filters,
             }),
         })

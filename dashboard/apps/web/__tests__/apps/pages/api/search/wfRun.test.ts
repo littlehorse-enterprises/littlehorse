@@ -31,16 +31,12 @@ describe('WFRun API', () => {
         await handler(req, res)
 
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('searchWfRun', req, res, {
-            statusAndSpec: {
-                wfSpecId: {
-                    name: 'any_wfSpec_name',
-                    majorVersion: 0,
-                    revision: 0
-                },
-                status: LHStatus.RUNNING,
-                earliestStart: '2023-11-11T12:12:12Z',
-                latestStart: '2023-11-11T14:12:12Z'
-            },
+            wfSpecName: 'any_wfSpec_name',
+            wfSpecMajorVersion: 0,
+            wfSpecRevision: 0,
+            status: LHStatus.RUNNING,
+            earliestStart: '2023-11-11T12:12:12Z',
+            latestStart: '2023-11-11T14:12:12Z',
             bookmark: Uint8Array.from([
                 65, 95, 66, 79, 79,
                 75, 77, 65, 82, 75

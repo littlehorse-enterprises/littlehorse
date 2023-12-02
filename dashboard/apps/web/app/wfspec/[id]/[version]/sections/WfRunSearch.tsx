@@ -57,15 +57,12 @@ export function WfRunSearch({ id, version }: any) {
         const res = await fetch('/api/search/wfRun', {
             method: 'POST',
             body: JSON.stringify({
-                statusAndSpec: {
-                    status: wfRunStatus,
-                    wfSpecId: {
-                        name: id,
-                        majorVersion: version
-                    },
-                    earliestStart: startDt,
-                    latestStart: endDt
-                },
+                status: wfRunStatus,
+                wfSpecName: id,
+                wfSpecMajorVersion: version,
+                // wfSpecRevision: TODO
+                earliestStart: startDt,
+                latestStart: endDt,
                 ...filters
             })
         })
