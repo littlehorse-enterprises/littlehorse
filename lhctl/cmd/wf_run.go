@@ -2,12 +2,10 @@ package cmd
 
 import (
 	"log"
-	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var getWfRunCmd = &cobra.Command{
@@ -46,30 +44,25 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
-		status, _ := cmd.Flags().GetString("status")
-		majorVersion, _ := cmd.Flags().GetInt32("majorVersion")
-		revision, _ := cmd.Flags().GetInt32("revision")
+		statusRaw, _ := cmd.Flags().GetString("status")
+		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
+		revisionRaw, _ := cmd.Flags().GetInt32("revision")
 
-		earliestMinutesAgo, _ := cmd.Flags().GetInt("earliestMinutesAgo")
-		latestMinutesAgo, _ := cmd.Flags().GetInt32("latestMinutesAgo")
-		earliestStartTime := &timestamppb.Timestamp{}
-		latestStartTime := &timestamppb.Timestamp{}
+		var majorVersion, revision *int32 = nil, nil
+		var status *model.LHStatus
 
-		if earliestMinutesAgo == -1 {
-			earliestStartTime = nil
-		} else {
-			earliestStartTime = timestamppb.New(
-				time.Now().Add(-1 * time.Duration(earliestMinutesAgo) * time.Minute),
-			)
+		if majorVersionRaw != -1 {
+			majorVersion = &majorVersionRaw
+		}
+		if revisionRaw != -1 {
+			revision = &revisionRaw
+		}
+		if statusRaw != "" {
+			statusTmp := model.LHStatus(model.LHStatus_value[statusRaw])
+			status = &statusTmp
 		}
 
-		if latestMinutesAgo == -1 {
-			latestStartTime = nil
-		} else {
-			latestStartTime = timestamppb.New(
-				time.Now().Add(-1 * time.Duration(latestMinutesAgo) * time.Minute),
-			)
-		}
+		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
@@ -79,40 +72,15 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		}
 
 		search := &model.SearchWfRunRequest{
-			Bookmark: bookmark,
-			Limit:    &limit,
-		}
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			WfSpecName:    wfSpecName,
+			Status:        status,
 
-		if majorVersion != -1 && status != "" {
-			search.WfrunCriteria = &model.SearchWfRunRequest_StatusAndSpec{
-				StatusAndSpec: &model.SearchWfRunRequest_StatusAndSpecRequest{
-					Status: model.LHStatus(model.LHStatus_value[status]),
-					WfSpecId: &model.WfSpecId{
-						Name:         wfSpecName,
-						MajorVersion: majorVersion,
-						Revision:     revision,
-					},
-					LatestStart:   latestStartTime,
-					EarliestStart: earliestStartTime,
-				},
-			}
-		} else if status != "" {
-			// TODO: Eventually we need to validate the status
-			search.WfrunCriteria = &model.SearchWfRunRequest_StatusAndName{
-				StatusAndName: &model.SearchWfRunRequest_StatusAndNameRequest{
-					WfSpecName: wfSpecName,
-					Status:     model.LHStatus(model.LHStatus_value[status]),
-				},
-			}
-		} else {
-			if majorVersion != -1 {
-				log.Fatal("--wfSpecVersion provided without --status")
-			}
-			search.WfrunCriteria = &model.SearchWfRunRequest_Name{
-				Name: &model.SearchWfRunRequest_NameRequest{
-					WfSpecName: wfSpecName,
-				},
-			}
+			WfSpecMajorVersion: majorVersion,
+			WfSpecRevision:     revision,
 		}
 
 		common.PrintResp(

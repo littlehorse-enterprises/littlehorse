@@ -74,45 +74,31 @@ Choose one of the following option groups:
 
 		statusStr, _ := cmd.Flags().GetString("status")
 		taskDefName, _ := cmd.Flags().GetString("taskDefName")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search *model.SearchTaskRunRequest
+		var status *model.TaskStatus = nil
+		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		if statusStr != "" {
 			if taskDefName == "" {
 				log.Fatal("Must provide taskDefName along with status!")
 			}
-			earliest, latest := loadEarliestAndLatestStart(cmd)
 
 			statusInt, ok := model.TaskStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid status provided. See --help.")
 			}
-			status := model.TaskStatus(statusInt)
+			status = (*model.TaskStatus)(&statusInt)
+		}
 
-			search = &model.SearchTaskRunRequest{
-				TaskRunCriteria: &model.SearchTaskRunRequest_StatusAndTaskDef{
-					StatusAndTaskDef: &model.SearchTaskRunRequest_StatusAndTaskDefRequest{
-						Status:        status,
-						TaskDefName:   taskDefName,
-						EarliestStart: earliest,
-						LatestStart:   latest,
-					},
-				},
-			}
-		} else if taskDefName != "" {
-			earliest, latest := loadEarliestAndLatestStart(cmd)
-
-			search = &model.SearchTaskRunRequest{
-				TaskRunCriteria: &model.SearchTaskRunRequest_TaskDef{
-					TaskDef: &model.SearchTaskRunRequest_ByTaskDefRequest{
-						TaskDefName:   taskDefName,
-						EarliestStart: earliest,
-						LatestStart:   latest,
-					},
-				},
-			}
-		} else {
-			log.Fatal("must at least provide taskDefName")
+		search := &model.SearchTaskRunRequest{
+			Status:        status,
+			TaskDefName:   taskDefName,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			Bookmark:      bookmark,
+			Limit:         &limit,
 		}
 		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(), search))
 	},
