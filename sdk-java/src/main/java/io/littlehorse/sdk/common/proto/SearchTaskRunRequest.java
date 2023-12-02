@@ -17,6 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private SearchTaskRunRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    taskDefName_ = "";
+    status_ = 0;
   }
 
   @java.lang.Override
@@ -39,2066 +41,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.SearchTaskRunRequest.class, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.Builder.class);
   }
 
-  public interface StatusAndTaskDefRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.littlehorse.TaskStatus status = 1;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    int getStatusValue();
-    /**
-     * <code>.littlehorse.TaskStatus status = 1;</code>
-     * @return The status.
-     */
-    io.littlehorse.sdk.common.proto.TaskStatus getStatus();
-
-    /**
-     * <code>string task_def_name = 2;</code>
-     * @return The taskDefName.
-     */
-    java.lang.String getTaskDefName();
-    /**
-     * <code>string task_def_name = 2;</code>
-     * @return The bytes for taskDefName.
-     */
-    com.google.protobuf.ByteString
-        getTaskDefNameBytes();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    boolean hasEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     * @return The earliestStart.
-     */
-    com.google.protobuf.Timestamp getEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     * @return Whether the latestStart field is set.
-     */
-    boolean hasLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     * @return The latestStart.
-     */
-    com.google.protobuf.Timestamp getLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest}
-   */
-  public static final class StatusAndTaskDefRequest extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest)
-      StatusAndTaskDefRequestOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use StatusAndTaskDefRequest.newBuilder() to construct.
-    private StatusAndTaskDefRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private StatusAndTaskDefRequest() {
-      status_ = 0;
-      taskDefName_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new StatusAndTaskDefRequest();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_StatusAndTaskDefRequest_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_StatusAndTaskDefRequest_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.class, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int STATUS_FIELD_NUMBER = 1;
-    private int status_ = 0;
-    /**
-     * <code>.littlehorse.TaskStatus status = 1;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>.littlehorse.TaskStatus status = 1;</code>
-     * @return The status.
-     */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
-      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
-    }
-
-    public static final int TASK_DEF_NAME_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object taskDefName_ = "";
-    /**
-     * <code>string task_def_name = 2;</code>
-     * @return The taskDefName.
-     */
-    @java.lang.Override
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string task_def_name = 2;</code>
-     * @return The bytes for taskDefName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int EARLIEST_START_FIELD_NUMBER = 3;
-    private com.google.protobuf.Timestamp earliestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasEarliestStart() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     * @return The earliestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getEarliestStart() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-
-    public static final int LATEST_START_FIELD_NUMBER = 4;
-    private com.google.protobuf.Timestamp latestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     * @return Whether the latestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasLatestStart() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     * @return The latestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getLatestStart() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
-        output.writeEnum(1, status_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, taskDefName_);
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeMessage(3, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(4, getLatestStart());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, status_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, taskDefName_);
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getLatestStart());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest other = (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) obj;
-
-      if (status_ != other.status_) return false;
-      if (!getTaskDefName()
-          .equals(other.getTaskDefName())) return false;
-      if (hasEarliestStart() != other.hasEarliestStart()) return false;
-      if (hasEarliestStart()) {
-        if (!getEarliestStart()
-            .equals(other.getEarliestStart())) return false;
-      }
-      if (hasLatestStart() != other.hasLatestStart()) return false;
-      if (hasLatestStart()) {
-        if (!getLatestStart()
-            .equals(other.getLatestStart())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + STATUS_FIELD_NUMBER;
-      hash = (53 * hash) + status_;
-      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefName().hashCode();
-      if (hasEarliestStart()) {
-        hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getEarliestStart().hashCode();
-      }
-      if (hasLatestStart()) {
-        hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getLatestStart().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest)
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_StatusAndTaskDefRequest_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_StatusAndTaskDefRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.class, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getEarliestStartFieldBuilder();
-          getLatestStartFieldBuilder();
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        status_ = 0;
-        taskDefName_ = "";
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_StatusAndTaskDefRequest_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest build() {
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest buildPartial() {
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest result = new io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.status_ = status_;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.taskDefName_ = taskDefName_;
-        }
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.earliestStart_ = earliestStartBuilder_ == null
-              ? earliestStart_
-              : earliestStartBuilder_.build();
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.latestStart_ = latestStartBuilder_ == null
-              ? latestStart_
-              : latestStartBuilder_.build();
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest other) {
-        if (other == io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance()) return this;
-        if (other.status_ != 0) {
-          setStatusValue(other.getStatusValue());
-        }
-        if (!other.getTaskDefName().isEmpty()) {
-          taskDefName_ = other.taskDefName_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        if (other.hasEarliestStart()) {
-          mergeEarliestStart(other.getEarliestStart());
-        }
-        if (other.hasLatestStart()) {
-          mergeLatestStart(other.getLatestStart());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 8: {
-                status_ = input.readEnum();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 8
-              case 18: {
-                taskDefName_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                input.readMessage(
-                    getEarliestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              case 34: {
-                input.readMessage(
-                    getLatestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 34
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private int status_ = 0;
-      /**
-       * <code>.littlehorse.TaskStatus status = 1;</code>
-       * @return The enum numeric value on the wire for status.
-       */
-      @java.lang.Override public int getStatusValue() {
-        return status_;
-      }
-      /**
-       * <code>.littlehorse.TaskStatus status = 1;</code>
-       * @param value The enum numeric value on the wire for status to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStatusValue(int value) {
-        status_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.TaskStatus status = 1;</code>
-       * @return The status.
-       */
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
-        io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
-        return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.littlehorse.TaskStatus status = 1;</code>
-       * @param value The status to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
-        status_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.TaskStatus status = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        status_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object taskDefName_ = "";
-      /**
-       * <code>string task_def_name = 2;</code>
-       * @return The taskDefName.
-       */
-      public java.lang.String getTaskDefName() {
-        java.lang.Object ref = taskDefName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          taskDefName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string task_def_name = 2;</code>
-       * @return The bytes for taskDefName.
-       */
-      public com.google.protobuf.ByteString
-          getTaskDefNameBytes() {
-        java.lang.Object ref = taskDefName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          taskDefName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string task_def_name = 2;</code>
-       * @param value The taskDefName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTaskDefName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        taskDefName_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string task_def_name = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearTaskDefName() {
-        taskDefName_ = getDefaultInstance().getTaskDefName();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string task_def_name = 2;</code>
-       * @param value The bytes for taskDefName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTaskDefNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        taskDefName_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Timestamp earliestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       * @return Whether the earliestStart field is set.
-       */
-      public boolean hasEarliestStart() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       * @return The earliestStart.
-       */
-      public com.google.protobuf.Timestamp getEarliestStart() {
-        if (earliestStartBuilder_ == null) {
-          return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        } else {
-          return earliestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          earliestStart_ = value;
-        } else {
-          earliestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public Builder setEarliestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (earliestStartBuilder_ == null) {
-          earliestStart_ = builderForValue.build();
-        } else {
-          earliestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
-            earliestStart_ != null &&
-            earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getEarliestStartBuilder().mergeFrom(value);
-          } else {
-            earliestStart_ = value;
-          }
-        } else {
-          earliestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public Builder clearEarliestStart() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return getEarliestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-        if (earliestStartBuilder_ != null) {
-          return earliestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return earliestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getEarliestStartFieldBuilder() {
-        if (earliestStartBuilder_ == null) {
-          earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getEarliestStart(),
-                  getParentForChildren(),
-                  isClean());
-          earliestStart_ = null;
-        }
-        return earliestStartBuilder_;
-      }
-
-      private com.google.protobuf.Timestamp latestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       * @return Whether the latestStart field is set.
-       */
-      public boolean hasLatestStart() {
-        return ((bitField0_ & 0x00000008) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       * @return The latestStart.
-       */
-      public com.google.protobuf.Timestamp getLatestStart() {
-        if (latestStartBuilder_ == null) {
-          return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        } else {
-          return latestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public Builder setLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          latestStart_ = value;
-        } else {
-          latestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public Builder setLatestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (latestStartBuilder_ == null) {
-          latestStart_ = builderForValue.build();
-        } else {
-          latestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0) &&
-            latestStart_ != null &&
-            latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getLatestStartBuilder().mergeFrom(value);
-          } else {
-            latestStart_ = value;
-          }
-        } else {
-          latestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public Builder clearLatestStart() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return getLatestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-        if (latestStartBuilder_ != null) {
-          return latestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return latestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getLatestStartFieldBuilder() {
-        if (latestStartBuilder_ == null) {
-          latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getLatestStart(),
-                  getParentForChildren(),
-                  isClean());
-          latestStart_ = null;
-        }
-        return latestStartBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest)
-    private static final io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest();
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<StatusAndTaskDefRequest>
-        PARSER = new com.google.protobuf.AbstractParser<StatusAndTaskDefRequest>() {
-      @java.lang.Override
-      public StatusAndTaskDefRequest parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<StatusAndTaskDefRequest> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<StatusAndTaskDefRequest> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ByTaskDefRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.SearchTaskRunRequest.ByTaskDefRequest)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The taskDefName.
-     */
-    java.lang.String getTaskDefName();
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The bytes for taskDefName.
-     */
-    com.google.protobuf.ByteString
-        getTaskDefNameBytes();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    boolean hasEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     * @return The earliestStart.
-     */
-    com.google.protobuf.Timestamp getEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     * @return Whether the latestStart field is set.
-     */
-    boolean hasLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     * @return The latestStart.
-     */
-    com.google.protobuf.Timestamp getLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.SearchTaskRunRequest.ByTaskDefRequest}
-   */
-  public static final class ByTaskDefRequest extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.SearchTaskRunRequest.ByTaskDefRequest)
-      ByTaskDefRequestOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use ByTaskDefRequest.newBuilder() to construct.
-    private ByTaskDefRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ByTaskDefRequest() {
-      taskDefName_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new ByTaskDefRequest();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_ByTaskDefRequest_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_ByTaskDefRequest_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.class, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object taskDefName_ = "";
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The taskDefName.
-     */
-    @java.lang.Override
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The bytes for taskDefName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int EARLIEST_START_FIELD_NUMBER = 2;
-    private com.google.protobuf.Timestamp earliestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasEarliestStart() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     * @return The earliestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getEarliestStart() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-
-    public static final int LATEST_START_FIELD_NUMBER = 3;
-    private com.google.protobuf.Timestamp latestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     * @return Whether the latestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasLatestStart() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     * @return The latestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getLatestStart() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeMessage(2, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(3, getLatestStart());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getLatestStart());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest other = (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) obj;
-
-      if (!getTaskDefName()
-          .equals(other.getTaskDefName())) return false;
-      if (hasEarliestStart() != other.hasEarliestStart()) return false;
-      if (hasEarliestStart()) {
-        if (!getEarliestStart()
-            .equals(other.getEarliestStart())) return false;
-      }
-      if (hasLatestStart() != other.hasLatestStart()) return false;
-      if (hasLatestStart()) {
-        if (!getLatestStart()
-            .equals(other.getLatestStart())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefName().hashCode();
-      if (hasEarliestStart()) {
-        hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getEarliestStart().hashCode();
-      }
-      if (hasLatestStart()) {
-        hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getLatestStart().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.SearchTaskRunRequest.ByTaskDefRequest}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.SearchTaskRunRequest.ByTaskDefRequest)
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_ByTaskDefRequest_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_ByTaskDefRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.class, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getEarliestStartFieldBuilder();
-          getLatestStartFieldBuilder();
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        taskDefName_ = "";
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchTaskRunRequest_ByTaskDefRequest_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest build() {
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest buildPartial() {
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest result = new io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.taskDefName_ = taskDefName_;
-        }
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.earliestStart_ = earliestStartBuilder_ == null
-              ? earliestStart_
-              : earliestStartBuilder_.build();
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.latestStart_ = latestStartBuilder_ == null
-              ? latestStart_
-              : latestStartBuilder_.build();
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest other) {
-        if (other == io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance()) return this;
-        if (!other.getTaskDefName().isEmpty()) {
-          taskDefName_ = other.taskDefName_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (other.hasEarliestStart()) {
-          mergeEarliestStart(other.getEarliestStart());
-        }
-        if (other.hasLatestStart()) {
-          mergeLatestStart(other.getLatestStart());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                taskDefName_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getEarliestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                input.readMessage(
-                    getLatestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object taskDefName_ = "";
-      /**
-       * <code>string task_def_name = 1;</code>
-       * @return The taskDefName.
-       */
-      public java.lang.String getTaskDefName() {
-        java.lang.Object ref = taskDefName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          taskDefName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string task_def_name = 1;</code>
-       * @return The bytes for taskDefName.
-       */
-      public com.google.protobuf.ByteString
-          getTaskDefNameBytes() {
-        java.lang.Object ref = taskDefName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          taskDefName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string task_def_name = 1;</code>
-       * @param value The taskDefName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTaskDefName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        taskDefName_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string task_def_name = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearTaskDefName() {
-        taskDefName_ = getDefaultInstance().getTaskDefName();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string task_def_name = 1;</code>
-       * @param value The bytes for taskDefName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTaskDefNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        taskDefName_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Timestamp earliestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       * @return Whether the earliestStart field is set.
-       */
-      public boolean hasEarliestStart() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       * @return The earliestStart.
-       */
-      public com.google.protobuf.Timestamp getEarliestStart() {
-        if (earliestStartBuilder_ == null) {
-          return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        } else {
-          return earliestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          earliestStart_ = value;
-        } else {
-          earliestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public Builder setEarliestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (earliestStartBuilder_ == null) {
-          earliestStart_ = builderForValue.build();
-        } else {
-          earliestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            earliestStart_ != null &&
-            earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getEarliestStartBuilder().mergeFrom(value);
-          } else {
-            earliestStart_ = value;
-          }
-        } else {
-          earliestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public Builder clearEarliestStart() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getEarliestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-        if (earliestStartBuilder_ != null) {
-          return earliestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return earliestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getEarliestStartFieldBuilder() {
-        if (earliestStartBuilder_ == null) {
-          earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getEarliestStart(),
-                  getParentForChildren(),
-                  isClean());
-          earliestStart_ = null;
-        }
-        return earliestStartBuilder_;
-      }
-
-      private com.google.protobuf.Timestamp latestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       * @return Whether the latestStart field is set.
-       */
-      public boolean hasLatestStart() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       * @return The latestStart.
-       */
-      public com.google.protobuf.Timestamp getLatestStart() {
-        if (latestStartBuilder_ == null) {
-          return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        } else {
-          return latestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public Builder setLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          latestStart_ = value;
-        } else {
-          latestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public Builder setLatestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (latestStartBuilder_ == null) {
-          latestStart_ = builderForValue.build();
-        } else {
-          latestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
-            latestStart_ != null &&
-            latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getLatestStartBuilder().mergeFrom(value);
-          } else {
-            latestStart_ = value;
-          }
-        } else {
-          latestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public Builder clearLatestStart() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return getLatestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-        if (latestStartBuilder_ != null) {
-          return latestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return latestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getLatestStartFieldBuilder() {
-        if (latestStartBuilder_ == null) {
-          latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getLatestStart(),
-                  getParentForChildren(),
-                  isClean());
-          latestStart_ = null;
-        }
-        return latestStartBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.SearchTaskRunRequest.ByTaskDefRequest)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.SearchTaskRunRequest.ByTaskDefRequest)
-    private static final io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest();
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ByTaskDefRequest>
-        PARSER = new com.google.protobuf.AbstractParser<ByTaskDefRequest>() {
-      @java.lang.Override
-      public ByTaskDefRequest parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<ByTaskDefRequest> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ByTaskDefRequest> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private int bitField0_;
-  private int taskRunCriteriaCase_ = 0;
-  @SuppressWarnings("serial")
-  private java.lang.Object taskRunCriteria_;
-  public enum TaskRunCriteriaCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    STATUS_AND_TASK_DEF(3),
-    TASK_DEF(4),
-    TASKRUNCRITERIA_NOT_SET(0);
-    private final int value;
-    private TaskRunCriteriaCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static TaskRunCriteriaCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static TaskRunCriteriaCase forNumber(int value) {
-      switch (value) {
-        case 3: return STATUS_AND_TASK_DEF;
-        case 4: return TASK_DEF;
-        case 0: return TASKRUNCRITERIA_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public TaskRunCriteriaCase
-  getTaskRunCriteriaCase() {
-    return TaskRunCriteriaCase.forNumber(
-        taskRunCriteriaCase_);
-  }
-
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -2137,66 +80,120 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int STATUS_AND_TASK_DEF_FIELD_NUMBER = 3;
+  public static final int TASK_DEF_NAME_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object taskDefName_ = "";
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   * @return Whether the statusAndTaskDef field is set.
+   * <code>string task_def_name = 3;</code>
+   * @return The taskDefName.
    */
   @java.lang.Override
-  public boolean hasStatusAndTaskDef() {
-    return taskRunCriteriaCase_ == 3;
+  public java.lang.String getTaskDefName() {
+    java.lang.Object ref = taskDefName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      taskDefName_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   * @return The statusAndTaskDef.
+   * <code>string task_def_name = 3;</code>
+   * @return The bytes for taskDefName.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getStatusAndTaskDef() {
-    if (taskRunCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_;
+  public com.google.protobuf.ByteString
+      getTaskDefNameBytes() {
+    java.lang.Object ref = taskDefName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      taskDefName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
-    return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder getStatusAndTaskDefOrBuilder() {
-    if (taskRunCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
   }
 
-  public static final int TASK_DEF_FIELD_NUMBER = 4;
+  public static final int STATUS_FIELD_NUMBER = 4;
+  private int status_ = 0;
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-   * @return Whether the taskDef field is set.
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return Whether the status field is set.
    */
-  @java.lang.Override
-  public boolean hasTaskDef() {
-    return taskRunCriteriaCase_ == 4;
+  @java.lang.Override public boolean hasStatus() {
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-   * @return The taskDef.
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return The enum numeric value on the wire for status.
    */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getTaskDef() {
-    if (taskRunCriteriaCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
+  @java.lang.Override public int getStatusValue() {
+    return status_;
   }
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return The status.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
+  }
+
+  public static final int EARLIEST_START_FIELD_NUMBER = 5;
+  private com.google.protobuf.Timestamp earliestStart_;
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   * @return Whether the earliestStart field is set.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder getTaskDefOrBuilder() {
-    if (taskRunCriteriaCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
+  public boolean hasEarliestStart() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   * @return The earliestStart.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getEarliestStart() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+  }
+
+  public static final int LATEST_START_FIELD_NUMBER = 6;
+  private com.google.protobuf.Timestamp latestStart_;
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   * @return Whether the latestStart field is set.
+   */
+  @java.lang.Override
+  public boolean hasLatestStart() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   * @return The latestStart.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getLatestStart() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -2219,11 +216,17 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (taskRunCriteriaCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, taskDefName_);
     }
-    if (taskRunCriteriaCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_);
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeEnum(4, status_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeMessage(5, getEarliestStart());
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeMessage(6, getLatestStart());
     }
     getUnknownFields().writeTo(output);
   }
@@ -2242,13 +245,20 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (taskRunCriteriaCase_ == 3) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, taskDefName_);
     }
-    if (taskRunCriteriaCase_ == 4) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_);
+        .computeEnumSize(4, status_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getEarliestStart());
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getLatestStart());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -2275,18 +285,21 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (!getTaskRunCriteriaCase().equals(other.getTaskRunCriteriaCase())) return false;
-    switch (taskRunCriteriaCase_) {
-      case 3:
-        if (!getStatusAndTaskDef()
-            .equals(other.getStatusAndTaskDef())) return false;
-        break;
-      case 4:
-        if (!getTaskDef()
-            .equals(other.getTaskDef())) return false;
-        break;
-      case 0:
-      default:
+    if (!getTaskDefName()
+        .equals(other.getTaskDefName())) return false;
+    if (hasStatus() != other.hasStatus()) return false;
+    if (hasStatus()) {
+      if (status_ != other.status_) return false;
+    }
+    if (hasEarliestStart() != other.hasEarliestStart()) return false;
+    if (hasEarliestStart()) {
+      if (!getEarliestStart()
+          .equals(other.getEarliestStart())) return false;
+    }
+    if (hasLatestStart() != other.hasLatestStart()) return false;
+    if (hasLatestStart()) {
+      if (!getLatestStart()
+          .equals(other.getLatestStart())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -2307,17 +320,19 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    switch (taskRunCriteriaCase_) {
-      case 3:
-        hash = (37 * hash) + STATUS_AND_TASK_DEF_FIELD_NUMBER;
-        hash = (53 * hash) + getStatusAndTaskDef().hashCode();
-        break;
-      case 4:
-        hash = (37 * hash) + TASK_DEF_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskDef().hashCode();
-        break;
-      case 0:
-      default:
+    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getTaskDefName().hashCode();
+    if (hasStatus()) {
+      hash = (37 * hash) + STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + status_;
+    }
+    if (hasEarliestStart()) {
+      hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getEarliestStart().hashCode();
+    }
+    if (hasLatestStart()) {
+      hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getLatestStart().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -2438,13 +453,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.SearchTaskRunRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getEarliestStartFieldBuilder();
+        getLatestStartFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -2452,14 +474,18 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      if (statusAndTaskDefBuilder_ != null) {
-        statusAndTaskDefBuilder_.clear();
+      taskDefName_ = "";
+      status_ = 0;
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
       }
-      if (taskDefBuilder_ != null) {
-        taskDefBuilder_.clear();
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
       }
-      taskRunCriteriaCase_ = 0;
-      taskRunCriteria_ = null;
       return this;
     }
 
@@ -2487,7 +513,6 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.SearchTaskRunRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchTaskRunRequest result = new io.littlehorse.sdk.common.proto.SearchTaskRunRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -2503,20 +528,26 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.taskDefName_ = taskDefName_;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.status_ = status_;
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.earliestStart_ = earliestStartBuilder_ == null
+            ? earliestStart_
+            : earliestStartBuilder_.build();
+        to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.latestStart_ = latestStartBuilder_ == null
+            ? latestStart_
+            : latestStartBuilder_.build();
+        to_bitField0_ |= 0x00000010;
+      }
       result.bitField0_ |= to_bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchTaskRunRequest result) {
-      result.taskRunCriteriaCase_ = taskRunCriteriaCase_;
-      result.taskRunCriteria_ = this.taskRunCriteria_;
-      if (taskRunCriteriaCase_ == 3 &&
-          statusAndTaskDefBuilder_ != null) {
-        result.taskRunCriteria_ = statusAndTaskDefBuilder_.build();
-      }
-      if (taskRunCriteriaCase_ == 4 &&
-          taskDefBuilder_ != null) {
-        result.taskRunCriteria_ = taskDefBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -2569,18 +600,19 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      switch (other.getTaskRunCriteriaCase()) {
-        case STATUS_AND_TASK_DEF: {
-          mergeStatusAndTaskDef(other.getStatusAndTaskDef());
-          break;
-        }
-        case TASK_DEF: {
-          mergeTaskDef(other.getTaskDef());
-          break;
-        }
-        case TASKRUNCRITERIA_NOT_SET: {
-          break;
-        }
+      if (!other.getTaskDefName().isEmpty()) {
+        taskDefName_ = other.taskDefName_;
+        bitField0_ |= 0x00000004;
+        onChanged();
+      }
+      if (other.hasStatus()) {
+        setStatus(other.getStatus());
+      }
+      if (other.hasEarliestStart()) {
+        mergeEarliestStart(other.getEarliestStart());
+      }
+      if (other.hasLatestStart()) {
+        mergeLatestStart(other.getLatestStart());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -2619,19 +651,29 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              input.readMessage(
-                  getStatusAndTaskDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              taskRunCriteriaCase_ = 3;
+              taskDefName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000004;
               break;
             } // case 26
-            case 34: {
-              input.readMessage(
-                  getTaskDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              taskRunCriteriaCase_ = 4;
+            case 32: {
+              status_ = input.readEnum();
+              bitField0_ |= 0x00000008;
               break;
-            } // case 34
+            } // case 32
+            case 42: {
+              input.readMessage(
+                  getEarliestStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
+            case 50: {
+              input.readMessage(
+                  getLatestStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2647,21 +689,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int taskRunCriteriaCase_ = 0;
-    private java.lang.Object taskRunCriteria_;
-    public TaskRunCriteriaCase
-        getTaskRunCriteriaCase() {
-      return TaskRunCriteriaCase.forNumber(
-          taskRunCriteriaCase_);
-    }
-
-    public Builder clearTaskRunCriteria() {
-      taskRunCriteriaCase_ = 0;
-      taskRunCriteria_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -2744,288 +771,374 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder> statusAndTaskDefBuilder_;
+    private java.lang.Object taskDefName_ = "";
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     * @return Whether the statusAndTaskDef field is set.
+     * <code>string task_def_name = 3;</code>
+     * @return The taskDefName.
      */
-    @java.lang.Override
-    public boolean hasStatusAndTaskDef() {
-      return taskRunCriteriaCase_ == 3;
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     * @return The statusAndTaskDef.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getStatusAndTaskDef() {
-      if (statusAndTaskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
+    public java.lang.String getTaskDefName() {
+      java.lang.Object ref = taskDefName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        taskDefName_ = s;
+        return s;
       } else {
-        if (taskRunCriteriaCase_ == 3) {
-          return statusAndTaskDefBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
+     * <code>string task_def_name = 3;</code>
+     * @return The bytes for taskDefName.
      */
-    public Builder setStatusAndTaskDef(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest value) {
-      if (statusAndTaskDefBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        taskRunCriteria_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getTaskDefNameBytes() {
+      java.lang.Object ref = taskDefName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        taskDefName_ = b;
+        return b;
       } else {
-        statusAndTaskDefBuilder_.setMessage(value);
-      }
-      taskRunCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     */
-    public Builder setStatusAndTaskDef(
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder builderForValue) {
-      if (statusAndTaskDefBuilder_ == null) {
-        taskRunCriteria_ = builderForValue.build();
-        onChanged();
-      } else {
-        statusAndTaskDefBuilder_.setMessage(builderForValue.build());
-      }
-      taskRunCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     */
-    public Builder mergeStatusAndTaskDef(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest value) {
-      if (statusAndTaskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 3 &&
-            taskRunCriteria_ != io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance()) {
-          taskRunCriteria_ = io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          taskRunCriteria_ = value;
-        }
-        onChanged();
-      } else {
-        if (taskRunCriteriaCase_ == 3) {
-          statusAndTaskDefBuilder_.mergeFrom(value);
-        } else {
-          statusAndTaskDefBuilder_.setMessage(value);
-        }
-      }
-      taskRunCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     */
-    public Builder clearStatusAndTaskDef() {
-      if (statusAndTaskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 3) {
-          taskRunCriteriaCase_ = 0;
-          taskRunCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (taskRunCriteriaCase_ == 3) {
-          taskRunCriteriaCase_ = 0;
-          taskRunCriteria_ = null;
-        }
-        statusAndTaskDefBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder getStatusAndTaskDefBuilder() {
-      return getStatusAndTaskDefFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder getStatusAndTaskDefOrBuilder() {
-      if ((taskRunCriteriaCase_ == 3) && (statusAndTaskDefBuilder_ != null)) {
-        return statusAndTaskDefBuilder_.getMessageOrBuilder();
-      } else {
-        if (taskRunCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
+        return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
+     * <code>string task_def_name = 3;</code>
+     * @param value The taskDefName to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder> 
-        getStatusAndTaskDefFieldBuilder() {
-      if (statusAndTaskDefBuilder_ == null) {
-        if (!(taskRunCriteriaCase_ == 3)) {
-          taskRunCriteria_ = io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.getDefaultInstance();
-        }
-        statusAndTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest) taskRunCriteria_,
-                getParentForChildren(),
-                isClean());
-        taskRunCriteria_ = null;
-      }
-      taskRunCriteriaCase_ = 3;
+    public Builder setTaskDefName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      taskDefName_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
-      return statusAndTaskDefBuilder_;
+      return this;
+    }
+    /**
+     * <code>string task_def_name = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTaskDefName() {
+      taskDefName_ = getDefaultInstance().getTaskDefName();
+      bitField0_ = (bitField0_ & ~0x00000004);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string task_def_name = 3;</code>
+     * @param value The bytes for taskDefName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTaskDefNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      taskDefName_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder> taskDefBuilder_;
+    private int status_ = 0;
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-     * @return Whether the taskDef field is set.
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @return Whether the status field is set.
      */
-    @java.lang.Override
-    public boolean hasTaskDef() {
-      return taskRunCriteriaCase_ == 4;
+    @java.lang.Override public boolean hasStatus() {
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-     * @return The taskDef.
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatusValue(int value) {
+      status_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @return The status.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getTaskDef() {
-      if (taskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000008;
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskStatus status = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      status_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Timestamp earliestStart_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+     * @return Whether the earliestStart field is set.
+     */
+    public boolean hasEarliestStart() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+     * @return The earliestStart.
+     */
+    public com.google.protobuf.Timestamp getEarliestStart() {
+      if (earliestStartBuilder_ == null) {
+        return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
       } else {
-        if (taskRunCriteriaCase_ == 4) {
-          return taskDefBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
+        return earliestStartBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    public Builder setTaskDef(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest value) {
-      if (taskDefBuilder_ == null) {
+    public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        taskRunCriteria_ = value;
-        onChanged();
+        earliestStart_ = value;
       } else {
-        taskDefBuilder_.setMessage(value);
+        earliestStartBuilder_.setMessage(value);
       }
-      taskRunCriteriaCase_ = 4;
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    public Builder setTaskDef(
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder builderForValue) {
-      if (taskDefBuilder_ == null) {
-        taskRunCriteria_ = builderForValue.build();
-        onChanged();
+    public Builder setEarliestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (earliestStartBuilder_ == null) {
+        earliestStart_ = builderForValue.build();
       } else {
-        taskDefBuilder_.setMessage(builderForValue.build());
+        earliestStartBuilder_.setMessage(builderForValue.build());
       }
-      taskRunCriteriaCase_ = 4;
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    public Builder mergeTaskDef(io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest value) {
-      if (taskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 4 &&
-            taskRunCriteria_ != io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance()) {
-          taskRunCriteria_ = io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_)
-              .mergeFrom(value).buildPartial();
+    public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          earliestStart_ != null &&
+          earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getEarliestStartBuilder().mergeFrom(value);
         } else {
-          taskRunCriteria_ = value;
+          earliestStart_ = value;
         }
-        onChanged();
       } else {
-        if (taskRunCriteriaCase_ == 4) {
-          taskDefBuilder_.mergeFrom(value);
-        } else {
-          taskDefBuilder_.setMessage(value);
-        }
+        earliestStartBuilder_.mergeFrom(value);
       }
-      taskRunCriteriaCase_ = 4;
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    public Builder clearTaskDef() {
-      if (taskDefBuilder_ == null) {
-        if (taskRunCriteriaCase_ == 4) {
-          taskRunCriteriaCase_ = 0;
-          taskRunCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (taskRunCriteriaCase_ == 4) {
-          taskRunCriteriaCase_ = 0;
-          taskRunCriteria_ = null;
-        }
-        taskDefBuilder_.clear();
+    public Builder clearEarliestStart() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder getTaskDefBuilder() {
-      return getTaskDefFieldBuilder().getBuilder();
+    public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getEarliestStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder getTaskDefOrBuilder() {
-      if ((taskRunCriteriaCase_ == 4) && (taskDefBuilder_ != null)) {
-        return taskDefBuilder_.getMessageOrBuilder();
+    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+      if (earliestStartBuilder_ != null) {
+        return earliestStartBuilder_.getMessageOrBuilder();
       } else {
-        if (taskRunCriteriaCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
+        return earliestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
       }
     }
     /**
-     * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder> 
-        getTaskDefFieldBuilder() {
-      if (taskDefBuilder_ == null) {
-        if (!(taskRunCriteriaCase_ == 4)) {
-          taskRunCriteria_ = io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.getDefaultInstance();
-        }
-        taskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest) taskRunCriteria_,
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getEarliestStartFieldBuilder() {
+      if (earliestStartBuilder_ == null) {
+        earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getEarliestStart(),
                 getParentForChildren(),
                 isClean());
-        taskRunCriteria_ = null;
+        earliestStart_ = null;
       }
-      taskRunCriteriaCase_ = 4;
+      return earliestStartBuilder_;
+    }
+
+    private com.google.protobuf.Timestamp latestStart_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     * @return Whether the latestStart field is set.
+     */
+    public boolean hasLatestStart() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     * @return The latestStart.
+     */
+    public com.google.protobuf.Timestamp getLatestStart() {
+      if (latestStartBuilder_ == null) {
+        return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      } else {
+        return latestStartBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public Builder setLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        latestStart_ = value;
+      } else {
+        latestStartBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000020;
       onChanged();
-      return taskDefBuilder_;
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public Builder setLatestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (latestStartBuilder_ == null) {
+        latestStart_ = builderForValue.build();
+      } else {
+        latestStartBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0) &&
+          latestStart_ != null &&
+          latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getLatestStartBuilder().mergeFrom(value);
+        } else {
+          latestStart_ = value;
+        }
+      } else {
+        latestStartBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public Builder clearLatestStart() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return getLatestStartFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+      if (latestStartBuilder_ != null) {
+        return latestStartBuilder_.getMessageOrBuilder();
+      } else {
+        return latestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getLatestStartFieldBuilder() {
+      if (latestStartBuilder_ == null) {
+        latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getLatestStart(),
+                getParentForChildren(),
+                isClean());
+        latestStart_ = null;
+      }
+      return latestStartBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

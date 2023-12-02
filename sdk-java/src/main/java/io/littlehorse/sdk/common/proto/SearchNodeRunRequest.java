@@ -17,6 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private SearchNodeRunRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    nodeType_ = 0;
+    status_ = 0;
   }
 
   @java.lang.Override
@@ -39,47 +41,178 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.SearchNodeRunRequest.class, io.littlehorse.sdk.common.proto.SearchNodeRunRequest.Builder.class);
   }
 
-  private int bitField0_;
-  private int noderunCriteriaCase_ = 0;
-  @SuppressWarnings("serial")
-  private java.lang.Object noderunCriteria_;
-  public enum NoderunCriteriaCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    WF_RUN_ID(3),
-    NODERUNCRITERIA_NOT_SET(0);
-    private final int value;
-    private NoderunCriteriaCase(int value) {
-      this.value = value;
-    }
+  /**
+   * Protobuf enum {@code littlehorse.SearchNodeRunRequest.NodeType}
+   */
+  public enum NodeType
+      implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
+     * <code>TASK = 0;</code>
+     */
+    TASK(0),
+    /**
+     * <code>EXTERNAL_EVENT = 1;</code>
+     */
+    EXTERNAL_EVENT(1),
+    /**
+     * <code>ENTRYPOINT = 2;</code>
+     */
+    ENTRYPOINT(2),
+    /**
+     * <code>EXIT = 3;</code>
+     */
+    EXIT(3),
+    /**
+     * <code>START_THREAD = 4;</code>
+     */
+    START_THREAD(4),
+    /**
+     * <code>WAIT_THREADS = 5;</code>
+     */
+    WAIT_THREADS(5),
+    /**
+     * <code>SLEEP = 6;</code>
+     */
+    SLEEP(6),
+    /**
+     * <code>USER_TASK = 7;</code>
+     */
+    USER_TASK(7),
+    /**
+     * <code>START_MULTIPLE_THREADS = 8;</code>
+     */
+    START_MULTIPLE_THREADS(8),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>TASK = 0;</code>
+     */
+    public static final int TASK_VALUE = 0;
+    /**
+     * <code>EXTERNAL_EVENT = 1;</code>
+     */
+    public static final int EXTERNAL_EVENT_VALUE = 1;
+    /**
+     * <code>ENTRYPOINT = 2;</code>
+     */
+    public static final int ENTRYPOINT_VALUE = 2;
+    /**
+     * <code>EXIT = 3;</code>
+     */
+    public static final int EXIT_VALUE = 3;
+    /**
+     * <code>START_THREAD = 4;</code>
+     */
+    public static final int START_THREAD_VALUE = 4;
+    /**
+     * <code>WAIT_THREADS = 5;</code>
+     */
+    public static final int WAIT_THREADS_VALUE = 5;
+    /**
+     * <code>SLEEP = 6;</code>
+     */
+    public static final int SLEEP_VALUE = 6;
+    /**
+     * <code>USER_TASK = 7;</code>
+     */
+    public static final int USER_TASK_VALUE = 7;
+    /**
+     * <code>START_MULTIPLE_THREADS = 8;</code>
+     */
+    public static final int START_MULTIPLE_THREADS_VALUE = 8;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
-    public static NoderunCriteriaCase valueOf(int value) {
+    public static NodeType valueOf(int value) {
       return forNumber(value);
     }
 
-    public static NoderunCriteriaCase forNumber(int value) {
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static NodeType forNumber(int value) {
       switch (value) {
-        case 3: return WF_RUN_ID;
-        case 0: return NODERUNCRITERIA_NOT_SET;
+        case 0: return TASK;
+        case 1: return EXTERNAL_EVENT;
+        case 2: return ENTRYPOINT;
+        case 3: return EXIT;
+        case 4: return START_THREAD;
+        case 5: return WAIT_THREADS;
+        case 6: return SLEEP;
+        case 7: return USER_TASK;
+        case 8: return START_MULTIPLE_THREADS;
         default: return null;
       }
     }
-    public int getNumber() {
-      return this.value;
-    }
-  };
 
-  public NoderunCriteriaCase
-  getNoderunCriteriaCase() {
-    return NoderunCriteriaCase.forNumber(
-        noderunCriteriaCase_);
+    public static com.google.protobuf.Internal.EnumLiteMap<NodeType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        NodeType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<NodeType>() {
+            public NodeType findValueByNumber(int number) {
+              return NodeType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.SearchNodeRunRequest.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final NodeType[] VALUES = values();
+
+    public static NodeType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private NodeType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.SearchNodeRunRequest.NodeType)
   }
 
+  private int bitField0_;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -118,35 +251,92 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 3;
+  public static final int EARLIEST_START_FIELD_NUMBER = 3;
+  private com.google.protobuf.Timestamp earliestStart_;
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
    */
   @java.lang.Override
-  public boolean hasWfRunId() {
-    return noderunCriteriaCase_ == 3;
+  public boolean hasEarliestStart() {
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-    if (noderunCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+  public com.google.protobuf.Timestamp getEarliestStart() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
   }
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-    if (noderunCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+  public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+  }
+
+  public static final int LATEST_START_FIELD_NUMBER = 4;
+  private com.google.protobuf.Timestamp latestStart_;
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
+   */
+  @java.lang.Override
+  public boolean hasLatestStart() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getLatestStart() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+  }
+
+  public static final int NODE_TYPE_FIELD_NUMBER = 5;
+  private int nodeType_ = 0;
+  /**
+   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+   * @return The enum numeric value on the wire for nodeType.
+   */
+  @java.lang.Override public int getNodeTypeValue() {
+    return nodeType_;
+  }
+  /**
+   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+   * @return The nodeType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType() {
+    io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType result = io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.forNumber(nodeType_);
+    return result == null ? io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.UNRECOGNIZED : result;
+  }
+
+  public static final int STATUS_FIELD_NUMBER = 6;
+  private int status_ = 0;
+  /**
+   * <code>.littlehorse.LHStatus status = 6;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  @java.lang.Override public int getStatusValue() {
+    return status_;
+  }
+  /**
+   * <code>.littlehorse.LHStatus status = 6;</code>
+   * @return The status.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+    io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -169,8 +359,17 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (noderunCriteriaCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_);
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeMessage(3, getEarliestStart());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeMessage(4, getLatestStart());
+    }
+    if (nodeType_ != io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.TASK.getNumber()) {
+      output.writeEnum(5, nodeType_);
+    }
+    if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
+      output.writeEnum(6, status_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -189,9 +388,21 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (noderunCriteriaCase_ == 3) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_);
+        .computeMessageSize(3, getEarliestStart());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getLatestStart());
+    }
+    if (nodeType_ != io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.TASK.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(5, nodeType_);
+    }
+    if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(6, status_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -218,15 +429,18 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (!getNoderunCriteriaCase().equals(other.getNoderunCriteriaCase())) return false;
-    switch (noderunCriteriaCase_) {
-      case 3:
-        if (!getWfRunId()
-            .equals(other.getWfRunId())) return false;
-        break;
-      case 0:
-      default:
+    if (hasEarliestStart() != other.hasEarliestStart()) return false;
+    if (hasEarliestStart()) {
+      if (!getEarliestStart()
+          .equals(other.getEarliestStart())) return false;
     }
+    if (hasLatestStart() != other.hasLatestStart()) return false;
+    if (hasLatestStart()) {
+      if (!getLatestStart()
+          .equals(other.getLatestStart())) return false;
+    }
+    if (nodeType_ != other.nodeType_) return false;
+    if (status_ != other.status_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -246,14 +460,18 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    switch (noderunCriteriaCase_) {
-      case 3:
-        hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getWfRunId().hashCode();
-        break;
-      case 0:
-      default:
+    if (hasEarliestStart()) {
+      hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getEarliestStart().hashCode();
     }
+    if (hasLatestStart()) {
+      hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getLatestStart().hashCode();
+    }
+    hash = (37 * hash) + NODE_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + nodeType_;
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + status_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -373,13 +591,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.SearchNodeRunRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getEarliestStartFieldBuilder();
+        getLatestStartFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -387,11 +612,18 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      if (wfRunIdBuilder_ != null) {
-        wfRunIdBuilder_.clear();
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
       }
-      noderunCriteriaCase_ = 0;
-      noderunCriteria_ = null;
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
+      }
+      nodeType_ = 0;
+      status_ = 0;
       return this;
     }
 
@@ -419,7 +651,6 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.SearchNodeRunRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchNodeRunRequest result = new io.littlehorse.sdk.common.proto.SearchNodeRunRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -435,16 +666,25 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
-      result.bitField0_ |= to_bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchNodeRunRequest result) {
-      result.noderunCriteriaCase_ = noderunCriteriaCase_;
-      result.noderunCriteria_ = this.noderunCriteria_;
-      if (noderunCriteriaCase_ == 3 &&
-          wfRunIdBuilder_ != null) {
-        result.noderunCriteria_ = wfRunIdBuilder_.build();
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.earliestStart_ = earliestStartBuilder_ == null
+            ? earliestStart_
+            : earliestStartBuilder_.build();
+        to_bitField0_ |= 0x00000004;
       }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.latestStart_ = latestStartBuilder_ == null
+            ? latestStart_
+            : latestStartBuilder_.build();
+        to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.nodeType_ = nodeType_;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.status_ = status_;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -497,14 +737,17 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      switch (other.getNoderunCriteriaCase()) {
-        case WF_RUN_ID: {
-          mergeWfRunId(other.getWfRunId());
-          break;
-        }
-        case NODERUNCRITERIA_NOT_SET: {
-          break;
-        }
+      if (other.hasEarliestStart()) {
+        mergeEarliestStart(other.getEarliestStart());
+      }
+      if (other.hasLatestStart()) {
+        mergeLatestStart(other.getLatestStart());
+      }
+      if (other.nodeType_ != 0) {
+        setNodeTypeValue(other.getNodeTypeValue());
+      }
+      if (other.status_ != 0) {
+        setStatusValue(other.getStatusValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -544,11 +787,28 @@ private static final long serialVersionUID = 0L;
             } // case 16
             case 26: {
               input.readMessage(
-                  getWfRunIdFieldBuilder().getBuilder(),
+                  getEarliestStartFieldBuilder().getBuilder(),
                   extensionRegistry);
-              noderunCriteriaCase_ = 3;
+              bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getLatestStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
+            case 40: {
+              nodeType_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
+            case 48: {
+              status_ = input.readEnum();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -564,21 +824,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int noderunCriteriaCase_ = 0;
-    private java.lang.Object noderunCriteria_;
-    public NoderunCriteriaCase
-        getNoderunCriteriaCase() {
-      return NoderunCriteriaCase.forNumber(
-          noderunCriteriaCase_);
-    }
-
-    public Builder clearNoderunCriteria() {
-      noderunCriteriaCase_ = 0;
-      noderunCriteria_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -661,146 +906,348 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.Timestamp earliestStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return Whether the wfRunId field is set.
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     * @return Whether the earliestStart field is set.
      */
-    @java.lang.Override
-    public boolean hasWfRunId() {
-      return noderunCriteriaCase_ == 3;
+    public boolean hasEarliestStart() {
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return The wfRunId.
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     * @return The earliestStart.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-      if (wfRunIdBuilder_ == null) {
-        if (noderunCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+    public com.google.protobuf.Timestamp getEarliestStart() {
+      if (earliestStartBuilder_ == null) {
+        return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
       } else {
-        if (noderunCriteriaCase_ == 3) {
-          return wfRunIdBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+        return earliestStartBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
+    public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        noderunCriteria_ = value;
-        onChanged();
+        earliestStart_ = value;
       } else {
-        wfRunIdBuilder_.setMessage(value);
+        earliestStartBuilder_.setMessage(value);
       }
-      noderunCriteriaCase_ = 3;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    public Builder setWfRunId(
-        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
-      if (wfRunIdBuilder_ == null) {
-        noderunCriteria_ = builderForValue.build();
-        onChanged();
+    public Builder setEarliestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (earliestStartBuilder_ == null) {
+        earliestStart_ = builderForValue.build();
       } else {
-        wfRunIdBuilder_.setMessage(builderForValue.build());
+        earliestStartBuilder_.setMessage(builderForValue.build());
       }
-      noderunCriteriaCase_ = 3;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
-        if (noderunCriteriaCase_ == 3 &&
-            noderunCriteria_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
-          noderunCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.newBuilder((io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_)
-              .mergeFrom(value).buildPartial();
+    public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          earliestStart_ != null &&
+          earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getEarliestStartBuilder().mergeFrom(value);
         } else {
-          noderunCriteria_ = value;
+          earliestStart_ = value;
         }
-        onChanged();
       } else {
-        if (noderunCriteriaCase_ == 3) {
-          wfRunIdBuilder_.mergeFrom(value);
-        } else {
-          wfRunIdBuilder_.setMessage(value);
-        }
+        earliestStartBuilder_.mergeFrom(value);
       }
-      noderunCriteriaCase_ = 3;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    public Builder clearWfRunId() {
-      if (wfRunIdBuilder_ == null) {
-        if (noderunCriteriaCase_ == 3) {
-          noderunCriteriaCase_ = 0;
-          noderunCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (noderunCriteriaCase_ == 3) {
-          noderunCriteriaCase_ = 0;
-          noderunCriteria_ = null;
-        }
-        wfRunIdBuilder_.clear();
+    public Builder clearEarliestStart() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
-      return getWfRunIdFieldBuilder().getBuilder();
+    public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getEarliestStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-      if ((noderunCriteriaCase_ == 3) && (wfRunIdBuilder_ != null)) {
-        return wfRunIdBuilder_.getMessageOrBuilder();
+    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+      if (earliestStartBuilder_ != null) {
+        return earliestStartBuilder_.getMessageOrBuilder();
       } else {
-        if (noderunCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+        return earliestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
       }
     }
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
-        getWfRunIdFieldBuilder() {
-      if (wfRunIdBuilder_ == null) {
-        if (!(noderunCriteriaCase_ == 3)) {
-          noderunCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-        }
-        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WfRunId) noderunCriteria_,
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getEarliestStartFieldBuilder() {
+      if (earliestStartBuilder_ == null) {
+        earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getEarliestStart(),
                 getParentForChildren(),
                 isClean());
-        noderunCriteria_ = null;
+        earliestStart_ = null;
       }
-      noderunCriteriaCase_ = 3;
+      return earliestStartBuilder_;
+    }
+
+    private com.google.protobuf.Timestamp latestStart_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     * @return Whether the latestStart field is set.
+     */
+    public boolean hasLatestStart() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     * @return The latestStart.
+     */
+    public com.google.protobuf.Timestamp getLatestStart() {
+      if (latestStartBuilder_ == null) {
+        return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      } else {
+        return latestStartBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder setLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        latestStart_ = value;
+      } else {
+        latestStartBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
       onChanged();
-      return wfRunIdBuilder_;
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder setLatestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (latestStartBuilder_ == null) {
+        latestStart_ = builderForValue.build();
+      } else {
+        latestStartBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          latestStart_ != null &&
+          latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getLatestStartBuilder().mergeFrom(value);
+        } else {
+          latestStart_ = value;
+        }
+      } else {
+        latestStartBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder clearLatestStart() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getLatestStartFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+      if (latestStartBuilder_ != null) {
+        return latestStartBuilder_.getMessageOrBuilder();
+      } else {
+        return latestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getLatestStartFieldBuilder() {
+      if (latestStartBuilder_ == null) {
+        latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getLatestStart(),
+                getParentForChildren(),
+                isClean());
+        latestStart_ = null;
+      }
+      return latestStartBuilder_;
+    }
+
+    private int nodeType_ = 0;
+    /**
+     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+     * @return The enum numeric value on the wire for nodeType.
+     */
+    @java.lang.Override public int getNodeTypeValue() {
+      return nodeType_;
+    }
+    /**
+     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+     * @param value The enum numeric value on the wire for nodeType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNodeTypeValue(int value) {
+      nodeType_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+     * @return The nodeType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType() {
+      io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType result = io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.forNumber(nodeType_);
+      return result == null ? io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+     * @param value The nodeType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNodeType(io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      nodeType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNodeType() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      nodeType_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int status_ = 0;
+    /**
+     * <code>.littlehorse.LHStatus status = 6;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <code>.littlehorse.LHStatus status = 6;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatusValue(int value) {
+      status_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHStatus status = 6;</code>
+     * @return The status.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.LHStatus status = 6;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000020;
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHStatus status = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      status_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

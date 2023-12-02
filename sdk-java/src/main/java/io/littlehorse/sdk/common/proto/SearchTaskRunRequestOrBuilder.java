@@ -30,34 +30,60 @@ public interface SearchTaskRunRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   * @return Whether the statusAndTaskDef field is set.
+   * <code>string task_def_name = 3;</code>
+   * @return The taskDefName.
    */
-  boolean hasStatusAndTaskDef();
+  java.lang.String getTaskDefName();
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   * @return The statusAndTaskDef.
+   * <code>string task_def_name = 3;</code>
+   * @return The bytes for taskDefName.
    */
-  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest getStatusAndTaskDef();
-  /**
-   * <code>.littlehorse.SearchTaskRunRequest.StatusAndTaskDefRequest status_and_task_def = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequestOrBuilder getStatusAndTaskDefOrBuilder();
+  com.google.protobuf.ByteString
+      getTaskDefNameBytes();
 
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-   * @return Whether the taskDef field is set.
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return Whether the status field is set.
    */
-  boolean hasTaskDef();
+  boolean hasStatus();
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
-   * @return The taskDef.
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return The enum numeric value on the wire for status.
    */
-  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest getTaskDef();
+  int getStatusValue();
   /**
-   * <code>.littlehorse.SearchTaskRunRequest.ByTaskDefRequest task_def = 4;</code>
+   * <code>optional .littlehorse.TaskStatus status = 4;</code>
+   * @return The status.
    */
-  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder getTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskStatus getStatus();
 
-  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.TaskRunCriteriaCase getTaskRunCriteriaCase();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   * @return Whether the earliestStart field is set.
+   */
+  boolean hasEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   * @return The earliestStart.
+   */
+  com.google.protobuf.Timestamp getEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
+
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   * @return Whether the latestStart field is set.
+   */
+  boolean hasLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   * @return The latestStart.
+   */
+  com.google.protobuf.Timestamp getLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 }

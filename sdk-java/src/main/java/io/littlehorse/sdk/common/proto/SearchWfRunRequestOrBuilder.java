@@ -30,49 +30,82 @@ public interface SearchWfRunRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndSpecRequest status_and_spec = 3;</code>
-   * @return Whether the statusAndSpec field is set.
+   * <code>string wf_spec_name = 3;</code>
+   * @return The wfSpecName.
    */
-  boolean hasStatusAndSpec();
+  java.lang.String getWfSpecName();
   /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndSpecRequest status_and_spec = 3;</code>
-   * @return The statusAndSpec.
+   * <code>string wf_spec_name = 3;</code>
+   * @return The bytes for wfSpecName.
    */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequest getStatusAndSpec();
-  /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndSpecRequest status_and_spec = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequestOrBuilder getStatusAndSpecOrBuilder();
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
 
   /**
-   * <code>.littlehorse.SearchWfRunRequest.NameRequest name = 4;</code>
-   * @return Whether the name field is set.
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return Whether the wfSpecMajorVersion field is set.
    */
-  boolean hasName();
+  boolean hasWfSpecMajorVersion();
   /**
-   * <code>.littlehorse.SearchWfRunRequest.NameRequest name = 4;</code>
-   * @return The name.
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return The wfSpecMajorVersion.
    */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.NameRequest getName();
-  /**
-   * <code>.littlehorse.SearchWfRunRequest.NameRequest name = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.NameRequestOrBuilder getNameOrBuilder();
+  int getWfSpecMajorVersion();
 
   /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndNameRequest status_and_name = 5;</code>
-   * @return Whether the statusAndName field is set.
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return Whether the wfSpecRevision field is set.
    */
-  boolean hasStatusAndName();
+  boolean hasWfSpecRevision();
   /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndNameRequest status_and_name = 5;</code>
-   * @return The statusAndName.
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return The wfSpecRevision.
    */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest getStatusAndName();
-  /**
-   * <code>.littlehorse.SearchWfRunRequest.StatusAndNameRequest status_and_name = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequestOrBuilder getStatusAndNameOrBuilder();
+  int getWfSpecRevision();
 
-  io.littlehorse.sdk.common.proto.SearchWfRunRequest.WfrunCriteriaCase getWfrunCriteriaCase();
+  /**
+   * <code>optional .littlehorse.LHStatus status = 6;</code>
+   * @return Whether the status field is set.
+   */
+  boolean hasStatus();
+  /**
+   * <code>optional .littlehorse.LHStatus status = 6;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  int getStatusValue();
+  /**
+   * <code>optional .littlehorse.LHStatus status = 6;</code>
+   * @return The status.
+   */
+  io.littlehorse.sdk.common.proto.LHStatus getStatus();
+
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
+   * @return Whether the earliestStart field is set.
+   */
+  boolean hasEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
+   * @return The earliestStart.
+   */
+  com.google.protobuf.Timestamp getEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
+
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
+   * @return Whether the latestStart field is set.
+   */
+  boolean hasLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
+   * @return The latestStart.
+   */
+  com.google.protobuf.Timestamp getLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 }

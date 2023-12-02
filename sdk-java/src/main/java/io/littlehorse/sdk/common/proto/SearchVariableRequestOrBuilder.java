@@ -30,34 +30,63 @@ public interface SearchVariableRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
-   */
-  boolean hasWfRunId();
-  /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
-   */
-  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
-  /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    * @return The value.
    */
-  io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getValue();
+  io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder getValueOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 
-  io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase getVariableCriteriaCase();
+  /**
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return Whether the wfSpecMajorVersion field is set.
+   */
+  boolean hasWfSpecMajorVersion();
+  /**
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return The wfSpecMajorVersion.
+   */
+  int getWfSpecMajorVersion();
+
+  /**
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return Whether the wfSpecRevision field is set.
+   */
+  boolean hasWfSpecRevision();
+  /**
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return The wfSpecRevision.
+   */
+  int getWfSpecRevision();
+
+  /**
+   * <code>string var_name = 6;</code>
+   * @return The varName.
+   */
+  java.lang.String getVarName();
+  /**
+   * <code>string var_name = 6;</code>
+   * @return The bytes for varName.
+   */
+  com.google.protobuf.ByteString
+      getVarNameBytes();
+
+  /**
+   * <code>string wf_spec_name = 7;</code>
+   * @return The wfSpecName.
+   */
+  java.lang.String getWfSpecName();
+  /**
+   * <code>string wf_spec_name = 7;</code>
+   * @return The bytes for wfSpecName.
+   */
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
 }
