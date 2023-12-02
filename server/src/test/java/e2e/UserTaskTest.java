@@ -55,10 +55,8 @@ public class UserTaskTest {
     void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
         SearchResultCaptor<WfRunIdList> instanceCaptor = SearchResultCaptor.of(WfRunIdList.class);
         Function<WfRunTestContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
-                .setStatusAndName(SearchWfRunRequest.StatusAndNameRequest.newBuilder()
-                        .setWfSpecName("deadline-reassignment-workflow-user-without-group")
-                        .setStatus(RUNNING)
-                        .build())
+                .setWfSpecName("deadline-reassignment-workflow-user-without-group")
+                .setStatus(RUNNING)
                 .build();
         workflowVerifier
                 .prepareRun(deadlineReassignmentUserWithoutGroupWorkflow)

@@ -1,9 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.grpc.Status;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -24,9 +22,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchWfRunRequestModel
         extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel, SearchWfRunReply> {
-
 
     // from proto
     private String wfSpecName;
@@ -88,7 +83,7 @@ public class SearchWfRunRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-        
+
         if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
         if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
 
@@ -109,12 +104,16 @@ public class SearchWfRunRequestModel
 
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "If wfSpecMajorVersion is provided, you must also provide wfSpecRevision");
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "If wfSpecMajorVersion is provided, you must also provide wfSpecRevision");
             }
-            out.add(new Attribute("wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+            out.add(new Attribute(
+                    "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
         } else {
             if (wfSpecRevision != null) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
             }
             out.add(new Attribute("wfSpecName", wfSpecName));
         }
@@ -149,8 +148,6 @@ public class SearchWfRunRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.ofNullable(earliestStart),
-                Optional.ofNullable(latestStart));
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 }
