@@ -91,6 +91,7 @@ message RunWfRequest {
   optional int32 revision = 3;
   map<string, VariableValue> variables = 4;
   optional string id = 5;
+  optional WfRunId parent_wf_run_id = 6;
 }
 
 message SearchWfRunRequest {

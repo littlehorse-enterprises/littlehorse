@@ -63,10 +63,12 @@ class ExternalEventId(_message.Message):
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ...) -> None: ...
 
 class WfRunId(_message.Message):
-    __slots__ = ["id"]
+    __slots__ = ["id", "parent_wf_run_id"]
     ID_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
+    parent_wf_run_id: WfRunId
+    def __init__(self, id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ...) -> None: ...
 
 class NodeRunId(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number", "position"]

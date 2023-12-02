@@ -47,6 +47,7 @@ export interface ExternalEventId {
 
 export interface WfRunId {
   id: string;
+  parentWfRunId?: WfRunId | undefined;
 }
 
 export interface NodeRunId {
@@ -608,13 +609,16 @@ export const ExternalEventId = {
 };
 
 function createBaseWfRunId(): WfRunId {
-  return { id: "" };
+  return { id: "", parentWfRunId: undefined };
 }
 
 export const WfRunId = {
   encode(message: WfRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -633,6 +637,13 @@ export const WfRunId = {
 
           message.id = reader.string();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -643,13 +654,19 @@ export const WfRunId = {
   },
 
   fromJSON(object: any): WfRunId {
-    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
+    };
   },
 
   toJSON(message: WfRunId): unknown {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
+    }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
     }
     return obj;
   },
@@ -660,6 +677,9 @@ export const WfRunId = {
   fromPartial<I extends Exact<DeepPartial<WfRunId>, I>>(object: I): WfRunId {
     const message = createBaseWfRunId();
     message.id = object.id ?? "";
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
     return message;
   },
 };

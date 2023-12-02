@@ -41,11 +41,21 @@ export interface WfSpec {
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
   migration?: WfSpecVersionMigration | undefined;
+  parentWfSpec?: WfSpec_ParentWfSpecReference | undefined;
 }
 
 export interface WfSpec_ThreadSpecsEntry {
   key: string;
   value: ThreadSpec | undefined;
+}
+
+export interface WfSpec_ParentWfSpecReference {
+  /**
+   * FOR NOW: no validation of variables on parent. In the future we will pass
+   * wf_spec_major_version, but we should probably examine the rules for
+   * evolution in the future.
+   */
+  wfSpecName: string;
 }
 
 export interface WorkflowRetentionPolicy {
@@ -71,6 +81,7 @@ export interface ThreadVarDef {
   required: boolean;
   searchable: boolean;
   jsonIndexes: JsonIndex[];
+  fromParent: boolean;
 }
 
 export interface ThreadSpec {
@@ -298,6 +309,7 @@ function createBaseWfSpec(): WfSpec {
     entrypointThreadName: "",
     retentionPolicy: undefined,
     migration: undefined,
+    parentWfSpec: undefined,
   };
 }
 
@@ -326,6 +338,9 @@ export const WfSpec = {
     }
     if (message.migration !== undefined) {
       WfSpecVersionMigration.encode(message.migration, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.parentWfSpec !== undefined) {
+      WfSpec_ParentWfSpecReference.encode(message.parentWfSpec, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -396,6 +411,13 @@ export const WfSpec = {
 
           message.migration = WfSpecVersionMigration.decode(reader, reader.uint32());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.parentWfSpec = WfSpec_ParentWfSpecReference.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -424,6 +446,7 @@ export const WfSpec = {
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
       migration: isSet(object.migration) ? WfSpecVersionMigration.fromJSON(object.migration) : undefined,
+      parentWfSpec: isSet(object.parentWfSpec) ? WfSpec_ParentWfSpecReference.fromJSON(object.parentWfSpec) : undefined,
     };
   },
 
@@ -459,6 +482,9 @@ export const WfSpec = {
     if (message.migration !== undefined) {
       obj.migration = WfSpecVersionMigration.toJSON(message.migration);
     }
+    if (message.parentWfSpec !== undefined) {
+      obj.parentWfSpec = WfSpec_ParentWfSpecReference.toJSON(message.parentWfSpec);
+    }
     return obj;
   },
 
@@ -486,6 +512,9 @@ export const WfSpec = {
       : undefined;
     message.migration = (object.migration !== undefined && object.migration !== null)
       ? WfSpecVersionMigration.fromPartial(object.migration)
+      : undefined;
+    message.parentWfSpec = (object.parentWfSpec !== undefined && object.parentWfSpec !== null)
+      ? WfSpec_ParentWfSpecReference.fromPartial(object.parentWfSpec)
       : undefined;
     return message;
   },
@@ -563,6 +592,63 @@ export const WfSpec_ThreadSpecsEntry = {
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadSpec.fromPartial(object.value)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseWfSpec_ParentWfSpecReference(): WfSpec_ParentWfSpecReference {
+  return { wfSpecName: "" };
+}
+
+export const WfSpec_ParentWfSpecReference = {
+  encode(message: WfSpec_ParentWfSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfSpec_ParentWfSpecReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfSpec_ParentWfSpecReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfSpec_ParentWfSpecReference {
+    return { wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "" };
+  },
+
+  toJSON(message: WfSpec_ParentWfSpecReference): unknown {
+    const obj: any = {};
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(base?: I): WfSpec_ParentWfSpecReference {
+    return WfSpec_ParentWfSpecReference.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(object: I): WfSpec_ParentWfSpecReference {
+    const message = createBaseWfSpec_ParentWfSpecReference();
+    message.wfSpecName = object.wfSpecName ?? "";
     return message;
   },
 };
@@ -762,7 +848,7 @@ export const SearchableVariableDef = {
 };
 
 function createBaseThreadVarDef(): ThreadVarDef {
-  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [] };
+  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [], fromParent: false };
 }
 
 export const ThreadVarDef = {
@@ -778,6 +864,9 @@ export const ThreadVarDef = {
     }
     for (const v of message.jsonIndexes) {
       JsonIndex.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.fromParent === true) {
+      writer.uint32(40).bool(message.fromParent);
     }
     return writer;
   },
@@ -817,6 +906,13 @@ export const ThreadVarDef = {
 
           message.jsonIndexes.push(JsonIndex.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.fromParent = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -834,6 +930,7 @@ export const ThreadVarDef = {
       jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
         ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
         : [],
+      fromParent: isSet(object.fromParent) ? globalThis.Boolean(object.fromParent) : false,
     };
   },
 
@@ -851,6 +948,9 @@ export const ThreadVarDef = {
     if (message.jsonIndexes?.length) {
       obj.jsonIndexes = message.jsonIndexes.map((e) => JsonIndex.toJSON(e));
     }
+    if (message.fromParent === true) {
+      obj.fromParent = message.fromParent;
+    }
     return obj;
   },
 
@@ -865,6 +965,7 @@ export const ThreadVarDef = {
     message.required = object.required ?? false;
     message.searchable = object.searchable ?? false;
     message.jsonIndexes = object.jsonIndexes?.map((e) => JsonIndex.fromPartial(e)) || [];
+    message.fromParent = object.fromParent ?? false;
     return message;
   },
 };

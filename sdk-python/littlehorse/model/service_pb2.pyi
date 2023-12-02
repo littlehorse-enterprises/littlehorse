@@ -133,7 +133,7 @@ class DeleteExternalEventDefRequest(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class RunWfRequest(_message.Message):
-    __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id"]
+    __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id"]
     class VariablesEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -146,12 +146,14 @@ class RunWfRequest(_message.Message):
     REVISION_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     ID_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
     major_version: int
     revision: int
     variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
     id: str
-    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start"]

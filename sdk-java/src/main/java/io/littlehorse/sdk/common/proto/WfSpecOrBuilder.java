@@ -155,4 +155,19 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();
+
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return Whether the parentWfSpec field is set.
+   */
+  boolean hasParentWfSpec();
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return The parentWfSpec.
+   */
+  io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference getParentWfSpec();
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder();
 }

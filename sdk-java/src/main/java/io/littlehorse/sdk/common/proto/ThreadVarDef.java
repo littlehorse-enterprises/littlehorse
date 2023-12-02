@@ -128,6 +128,17 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_.get(index);
   }
 
+  public static final int FROM_PARENT_FIELD_NUMBER = 5;
+  private boolean fromParent_ = false;
+  /**
+   * <code>bool from_parent = 5;</code>
+   * @return The fromParent.
+   */
+  @java.lang.Override
+  public boolean getFromParent() {
+    return fromParent_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -154,6 +165,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       output.writeMessage(4, jsonIndexes_.get(i));
     }
+    if (fromParent_ != false) {
+      output.writeBool(5, fromParent_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -178,6 +192,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, jsonIndexes_.get(i));
+    }
+    if (fromParent_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(5, fromParent_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -205,6 +223,8 @@ private static final long serialVersionUID = 0L;
         != other.getSearchable()) return false;
     if (!getJsonIndexesList()
         .equals(other.getJsonIndexesList())) return false;
+    if (getFromParent()
+        != other.getFromParent()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -230,6 +250,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + JSON_INDEXES_FIELD_NUMBER;
       hash = (53 * hash) + getJsonIndexesList().hashCode();
     }
+    hash = (37 * hash) + FROM_PARENT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getFromParent());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -375,6 +398,7 @@ private static final long serialVersionUID = 0L;
         jsonIndexesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000008);
+      fromParent_ = false;
       return this;
     }
 
@@ -431,6 +455,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.searchable_ = searchable_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.fromParent_ = fromParent_;
       }
     }
 
@@ -513,6 +540,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.getFromParent() != false) {
+        setFromParent(other.getFromParent());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -569,6 +599,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 34
+            case 40: {
+              fromParent_ = input.readBool();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1007,6 +1042,38 @@ private static final long serialVersionUID = 0L;
         jsonIndexes_ = null;
       }
       return jsonIndexesBuilder_;
+    }
+
+    private boolean fromParent_ ;
+    /**
+     * <code>bool from_parent = 5;</code>
+     * @return The fromParent.
+     */
+    @java.lang.Override
+    public boolean getFromParent() {
+      return fromParent_;
+    }
+    /**
+     * <code>bool from_parent = 5;</code>
+     * @param value The fromParent to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFromParent(boolean value) {
+
+      fromParent_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool from_parent = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFromParent() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      fromParent_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

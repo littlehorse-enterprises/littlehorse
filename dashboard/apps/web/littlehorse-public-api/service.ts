@@ -179,6 +179,7 @@ export interface RunWfRequest {
   revision?: number | undefined;
   variables: { [key: string]: VariableValue };
   id?: string | undefined;
+  parentWfRunId?: WfRunId | undefined;
 }
 
 export interface RunWfRequest_VariablesEntry {
@@ -1627,7 +1628,14 @@ export const DeleteExternalEventDefRequest = {
 };
 
 function createBaseRunWfRequest(): RunWfRequest {
-  return { wfSpecName: "", majorVersion: undefined, revision: undefined, variables: {}, id: undefined };
+  return {
+    wfSpecName: "",
+    majorVersion: undefined,
+    revision: undefined,
+    variables: {},
+    id: undefined,
+    parentWfRunId: undefined,
+  };
 }
 
 export const RunWfRequest = {
@@ -1646,6 +1654,9 @@ export const RunWfRequest = {
     });
     if (message.id !== undefined) {
       writer.uint32(42).string(message.id);
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -1695,6 +1706,13 @@ export const RunWfRequest = {
 
           message.id = reader.string();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1716,6 +1734,7 @@ export const RunWfRequest = {
         }, {})
         : {},
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
     };
   },
 
@@ -1742,6 +1761,9 @@ export const RunWfRequest = {
     if (message.id !== undefined) {
       obj.id = message.id;
     }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
+    }
     return obj;
   },
 
@@ -1763,6 +1785,9 @@ export const RunWfRequest = {
       {},
     );
     message.id = object.id ?? undefined;
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
     return message;
   },
 };

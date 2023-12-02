@@ -25,6 +25,14 @@ message WfSpec {
 
   optional WorkflowRetentionPolicy retention_policy = 7;
   optional WfSpecVersionMigration migration = 8;
+
+  message ParentWfSpecReference {
+    string wf_spec_name = 1;
+    // FOR NOW: no validation of variables on parent. In the future we will pass
+    // wf_spec_major_version, but we should probably examine the rules for
+    // evolution in the future.
+  }
+  optional ParentWfSpecReference parent_wf_spec = 9;
 }
 
 message WorkflowRetentionPolicy {
@@ -52,6 +60,8 @@ message ThreadVarDef {
   bool required = 2;
   bool searchable = 3;
   repeated JsonIndex json_indexes = 4;
+
+  bool from_parent = 5;
 }
 
 message ThreadSpec {
