@@ -505,7 +505,7 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyModelStore store = getStore(partition, false, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
-        String endKey = req.boundedObjectIdScan.getEndObjectId() + "";
+        String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
         if (partBookmark == null) {
             startKey = req.boundedObjectIdScan.getStartObjectId();

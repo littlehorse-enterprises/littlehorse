@@ -139,7 +139,7 @@ public class SearchExternalEventRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.EXTERNAL_EVENT);
+            return ObjectIdScanBoundaryStrategy.from(wfRunId, getObjectType());
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
