@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -21,6 +22,11 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
 
     public WfRunIdModel(String id) {
         this.id = id;
+    }
+
+
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -51,12 +57,24 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
 
     @Override
     public String toString() {
+        if (parentWfRunId != null) {
+            return parentWfRunId.toString() + "_" + id;
+        }
         return id;
     }
 
     @Override
     public void initFromString(String storeKey) {
-        id = storeKey;
+        if (storeKey.contains("_")) {
+            // then it's a composite id
+            String[] splits = storeKey.split("_");
+
+            this.id = splits[splits.length - 1];
+            this.parentWfRunId = (WfRunIdModel)
+                    ObjectIdModel.fromString(storeKey.substring(0, storeKey.lastIndexOf("_")), WfRunIdModel.class);
+        } else {
+            id = storeKey;
+        }
     }
 
     @Override

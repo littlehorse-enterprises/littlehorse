@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.wfspec.ParentWfSpecReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -30,6 +31,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public Map<String, ThreadSpecModel> threadSpecs;
     public String entrypointThreadName;
     public WorkflowRetentionPolicyModel retentionPolicy;
+    private ParentWfSpecReferenceModel parentWfSpec;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -53,6 +55,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             out.putThreadSpecs(e.getKey(), e.getValue().toProto().build());
         }
+
+        if (parentWfSpec != null) out.setParentWfSpec(parentWfSpec.toProto());
         return out;
     }
 
@@ -66,6 +70,10 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
                     LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue(), context));
+        }
+
+        if (p.hasParentWfSpec()) {
+            parentWfSpec = LHSerializable.fromProto(p.getParentWfSpec(), ParentWfSpecReferenceModel.class, context);
         }
     }
 
@@ -96,7 +104,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
-        spec.validateAndMaybeBumpVersion(optWfSpec);
+        spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
         metadataManager.put(spec);
         return spec.toProto().build();
     }

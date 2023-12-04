@@ -30,10 +30,14 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     private Integer revision;
     private Map<String, VariableValueModel> variables;
     private String id;
+    private WfRunIdModel parentWfRunId;
 
     public String getPartitionKey() {
-        if (id == null) {
-            id = LHUtil.generateGuid();
+        if (id == null) id = LHUtil.generateGuid();
+
+        // Child wfrun needs access to state of parent, so it needs to be on the same partition
+        if (parentWfRunId != null) {
+            return parentWfRunId.getPartitionKey().get();
         }
         return id;
     }
@@ -83,16 +87,21 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
 
-        if (id == null) {
-            id = LHUtil.generateGuid();
-        } else {
-            WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
-            if (oldWfRun != null) {
-                throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
-            }
+        // TODO: Add WfRun Start Metrics
+
+        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
+        if (oldWfRun != null) {
+            throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }
 
-        // TODO: Add WfRun Start Metrics
+        // Validate that parent WfRun exists and is on this partition.
+        if (parentWfRunId != null) {
+            WfRunModel parent = processorContext.getableManager().get(parentWfRunId);
+            if (parent == null) {
+                throw new LHApiException(
+                        Status.FAILED_PRECONDITION, "Parent WfRun %s not found.".formatted(parentWfRunId.toString()));
+            }
+        }
 
         WfRunModel newRun = spec.startNewRun(this, processorContext);
         newRun.advance(processorContext.currentCommand().getTime());

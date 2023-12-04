@@ -28,13 +28,11 @@ public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
-    private final ExecutionContext executionContext;
 
     public WfService(
             ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
         this.metadataCache = metadataCache;
         this.metadataManager = metadataManager;
-        this.executionContext = executionContext;
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
@@ -102,7 +100,6 @@ public class WfService {
             id = LHConstants.ANONYMOUS_PRINCIPAL;
         }
 
-        @SuppressWarnings("unchecked")
         PrincipalModel storedResult = metadataManager.get(new PrincipalIdModel(id));
 
         if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {

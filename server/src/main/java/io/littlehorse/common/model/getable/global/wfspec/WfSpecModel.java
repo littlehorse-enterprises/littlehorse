@@ -59,6 +59,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
+    private ParentWfSpecReferenceModel parentWfSpec;
 
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
@@ -211,7 +212,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion) throws LHApiException {
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, MetadataCommandExecution ctx)
+            throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
@@ -229,6 +231,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
         if (oldVersion.isPresent()) {
             checkCompatibilityAndSetVersion(oldVersion.get());
+        }
+
+        if (parentWfSpec != null) {
+            validateParentHelper(ctx);
         }
     }
 
@@ -421,6 +427,20 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
                 entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getableManager.put(out);
         return out;
+    }
+
+    /*
+     * Validates that the parent reference is a valid WfSpec. It doesn't do any
+     * checking of variables, though. That is a future feature we will add in 1.0
+     * or 1.1
+     */
+    private void validateParentHelper(MetadataCommandExecution ctx) {
+        WfSpecModel parent = ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), null, null);
+        if (parent == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Provided spec refers to nonexistent parent wfSpec %s".formatted(parentWfSpec.getWfSpecName()));
+        }
     }
 
     public static WfSpecId parseId(String fullId) {

@@ -32,7 +32,7 @@ message PutWfSpecRequest {
   map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
   optional WorkflowRetentionPolicy retention_policy = 8;
-  reserved 9;
+  optional ParentWfSpecReference parent_wf_spec = 9;
 }
 
 message PutTaskDefRequest {
