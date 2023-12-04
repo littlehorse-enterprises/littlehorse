@@ -24,7 +24,7 @@ describe('elk Node Mapper from LHNode', () => {
             labels: [ '0-a-name-EXIT' ] as ElkLabel[],
             x: 0,
             y: 0,
-            width: 96,
+            width: 237,
             height: 50
         } ],
         [ '0-a-name-NOP', {

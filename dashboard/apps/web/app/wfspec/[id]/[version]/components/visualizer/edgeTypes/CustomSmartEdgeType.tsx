@@ -51,13 +51,13 @@ export function CustomSmartEdgeType(props) {
                 style={style}
             />
             <foreignObject
-                height={20}
+                height={200}
                 requiredExtensions='http://www.w3.org/1999/xhtml'
                 width={500}
                 x={(edgeCenterX - 100 / 2) - 50}
                 y={edgeCenterY - 20 / 2}
             >
-                {label}
+                <div className="custom-smart-edge__label">{label}</div>
             </foreignObject>
         </>
     )
