@@ -53,7 +53,7 @@ public class ListNodeRunsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.NODE_RUN);
+        return ObjectIdScanBoundaryStrategy.from(wfRunId, getObjectType());
     }
 
     @Override
