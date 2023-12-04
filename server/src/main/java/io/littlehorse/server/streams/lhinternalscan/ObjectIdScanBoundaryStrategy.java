@@ -32,9 +32,8 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
     }
 
     public static ObjectIdScanBoundaryStrategy from(WfRunIdModel wfRunId, GetableClassEnum objectType) {
+        final String prefixKey = objectType.getNumber() + "/";
         return new ObjectIdScanBoundaryStrategy(
-                wfRunId.toString(),
-                objectType.getNumber() + "/" + wfRunId + "/",
-                objectType.getNumber() + "/" + wfRunId + "/~");
+                wfRunId.toString(), prefixKey + wfRunId + "/", prefixKey + wfRunId + "/~");
     }
 }
