@@ -515,10 +515,7 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<?> iter = store.range(
-                StoredGetable.getRocksDBKey(startKey, req.getObjectType()),
-                StoredGetable.getRocksDBKey(endKey, req.getObjectType()),
-                StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
