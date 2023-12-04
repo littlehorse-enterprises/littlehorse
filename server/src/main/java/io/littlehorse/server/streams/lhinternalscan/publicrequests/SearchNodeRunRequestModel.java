@@ -98,7 +98,7 @@ public class SearchNodeRunRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
-            return new ObjectIdScanBoundaryStrategy(wfRunId);
+            return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.NODE_RUN);
         } else {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing search type");
         }

@@ -194,7 +194,7 @@ public class SearchVariableRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (type == VariableCriteriaCase.WF_RUN_ID) {
-            return new ObjectIdScanBoundaryStrategy(wfRunId);
+            return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.VARIABLE);
         } else if (type == VariableCriteriaCase.VALUE) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         }

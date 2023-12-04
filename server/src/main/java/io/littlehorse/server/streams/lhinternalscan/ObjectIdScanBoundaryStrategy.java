@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
 
 public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy {
@@ -10,10 +11,6 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
     private String endKey;
 
     private String objectId;
-
-    public ObjectIdScanBoundaryStrategy(WfRunIdModel objectId) {
-        this(objectId.toString(), objectId.toString() + "/", objectId.toString() + "/~");
-    }
 
     public ObjectIdScanBoundaryStrategy(String objectId, String startKey, String endKey) {
         this.startKey = startKey;
@@ -32,5 +29,12 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
     @Override
     public String getSearchAttributeString() {
         return objectId;
+    }
+
+    public static ObjectIdScanBoundaryStrategy from(WfRunIdModel wfRunId, GetableClassEnum objectType) {
+        return new ObjectIdScanBoundaryStrategy(
+                wfRunId.toString(),
+                objectType.getNumber() + "/" + wfRunId + "/",
+                objectType.getNumber() + "/" + wfRunId + "/~");
     }
 }
