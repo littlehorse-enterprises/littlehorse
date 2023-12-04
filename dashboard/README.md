@@ -1,9 +1,6 @@
-# Little Horse Dashboard
+# LittleHorse Dashboard
 
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
+This directory contains the code for the LittleHorse Dashhboard. The LH Dashboard is an administrative tool that allows you to easily visualize what's going on in your LH Cluster.
 
 ## Requirements
 * `NodeJS`. The version 20 is required. In case you need multiple versions of node on you machine, you can install
@@ -18,13 +15,6 @@ npm install pnpm --global
 * Install the node packages:
 ```
 pnpm install
-```
-
-### Compiling Protobuf classes
-
-Execute the following script to generate the TypeScript proto files.
-```
-./local-dev/compile-proto.sh
 ```
 
 ## Feature Toggles
@@ -86,12 +76,6 @@ To make the feature toggles available for the tests the following has been put i
 * [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
 
 
-
-## Compiling the protobuff files
-LHDashboard needs the Little Horse protobuff files in order to do operations against its public API.
-To achieve that we have included Littlehorse as a submodule (more details if the above section); with those protobuff files
-we need to generate TypeScript code to be used in the NextJS application.
-
 ### Libraries
 We are using the following libraries:
 * `ts-proto`: library for the generation of the TypeScript files, we are using the options:
@@ -103,15 +87,15 @@ We are using the following libraries:
 * `nice-grpc`: Library that provides a good interface from the developer perspective when making GRPC calls.
 
 ### Generating TypeScript proto files
-Execute:
-```
-./compile-proto.sh
-```
 
-The TypeScript proto files will be available under `/littlehorse-public-api`
+Protobuf files can be re-compiled by running, _from the root of the repo, NOT this folder_:
+
+```
+./local-dev/compile.sh
+```
 
 ### Known Issues
-The protobuffjs library does not have a default export because of that you can have an error similar to:
+The protobufjs library does not have a default export because of that you can have an error similar to:
 
 ```
 if (_m0.util.Long !== Long)
@@ -232,13 +216,15 @@ You need to create a `env.test.local` file to contain any env variable you might
 
 
 ## Docker
-### Build Docker Image
-In root rename `.env.sample` to `.env`, the values you specify in this file will be copied to `apps/web/.env`
 
-To build the docker image execute the next script
+### Build Docker Image
+
+_In this folder_, rename `.env.sample` to `.env`, the values you specify in this file will be copied to `apps/web/.env`.
+
+Next, _navigate to the root of the repo, NOT this folder_, and run the following:
 
 ```
-docker build -t lhd .
+docker build -f docker/dashboard/Dockerfile -t lhd .
 ```
 
 Note: The Docker file will copy the `.env` file from the root folder to apps/web

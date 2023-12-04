@@ -189,27 +189,10 @@ export interface RunWfRequest_VariablesEntry {
 export interface SearchWfRunRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  statusAndSpec?: SearchWfRunRequest_StatusAndSpecRequest | undefined;
-  name?: SearchWfRunRequest_NameRequest | undefined;
-  statusAndName?: SearchWfRunRequest_StatusAndNameRequest | undefined;
-}
-
-export interface SearchWfRunRequest_StatusAndSpecRequest {
-  wfSpecId: WfSpecId | undefined;
-  status: LHStatus;
-  earliestStart?: string | undefined;
-  latestStart?: string | undefined;
-}
-
-export interface SearchWfRunRequest_NameRequest {
   wfSpecName: string;
-  earliestStart?: string | undefined;
-  latestStart?: string | undefined;
-}
-
-export interface SearchWfRunRequest_StatusAndNameRequest {
-  wfSpecName: string;
-  status: LHStatus;
+  wfSpecMajorVersion?: number | undefined;
+  wfSpecRevision?: number | undefined;
+  status?: LHStatus | undefined;
   earliestStart?: string | undefined;
   latestStart?: string | undefined;
 }
@@ -222,19 +205,8 @@ export interface WfRunIdList {
 export interface SearchTaskRunRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  statusAndTaskDef?: SearchTaskRunRequest_StatusAndTaskDefRequest | undefined;
-  taskDef?: SearchTaskRunRequest_ByTaskDefRequest | undefined;
-}
-
-export interface SearchTaskRunRequest_StatusAndTaskDefRequest {
-  status: TaskStatus;
   taskDefName: string;
-  earliestStart?: string | undefined;
-  latestStart?: string | undefined;
-}
-
-export interface SearchTaskRunRequest_ByTaskDefRequest {
-  taskDefName: string;
+  status?: TaskStatus | undefined;
   earliestStart?: string | undefined;
   latestStart?: string | undefined;
 }
@@ -247,7 +219,111 @@ export interface TaskRunIdList {
 export interface SearchNodeRunRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  wfRunId?: WfRunId | undefined;
+  earliestStart?: string | undefined;
+  latestStart?: string | undefined;
+  nodeType: SearchNodeRunRequest_NodeType;
+  status: LHStatus;
+}
+
+export enum SearchNodeRunRequest_NodeType {
+  TASK = "TASK",
+  EXTERNAL_EVENT = "EXTERNAL_EVENT",
+  ENTRYPOINT = "ENTRYPOINT",
+  EXIT = "EXIT",
+  START_THREAD = "START_THREAD",
+  WAIT_THREADS = "WAIT_THREADS",
+  SLEEP = "SLEEP",
+  USER_TASK = "USER_TASK",
+  START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function searchNodeRunRequest_NodeTypeFromJSON(object: any): SearchNodeRunRequest_NodeType {
+  switch (object) {
+    case 0:
+    case "TASK":
+      return SearchNodeRunRequest_NodeType.TASK;
+    case 1:
+    case "EXTERNAL_EVENT":
+      return SearchNodeRunRequest_NodeType.EXTERNAL_EVENT;
+    case 2:
+    case "ENTRYPOINT":
+      return SearchNodeRunRequest_NodeType.ENTRYPOINT;
+    case 3:
+    case "EXIT":
+      return SearchNodeRunRequest_NodeType.EXIT;
+    case 4:
+    case "START_THREAD":
+      return SearchNodeRunRequest_NodeType.START_THREAD;
+    case 5:
+    case "WAIT_THREADS":
+      return SearchNodeRunRequest_NodeType.WAIT_THREADS;
+    case 6:
+    case "SLEEP":
+      return SearchNodeRunRequest_NodeType.SLEEP;
+    case 7:
+    case "USER_TASK":
+      return SearchNodeRunRequest_NodeType.USER_TASK;
+    case 8:
+    case "START_MULTIPLE_THREADS":
+      return SearchNodeRunRequest_NodeType.START_MULTIPLE_THREADS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SearchNodeRunRequest_NodeType.UNRECOGNIZED;
+  }
+}
+
+export function searchNodeRunRequest_NodeTypeToJSON(object: SearchNodeRunRequest_NodeType): string {
+  switch (object) {
+    case SearchNodeRunRequest_NodeType.TASK:
+      return "TASK";
+    case SearchNodeRunRequest_NodeType.EXTERNAL_EVENT:
+      return "EXTERNAL_EVENT";
+    case SearchNodeRunRequest_NodeType.ENTRYPOINT:
+      return "ENTRYPOINT";
+    case SearchNodeRunRequest_NodeType.EXIT:
+      return "EXIT";
+    case SearchNodeRunRequest_NodeType.START_THREAD:
+      return "START_THREAD";
+    case SearchNodeRunRequest_NodeType.WAIT_THREADS:
+      return "WAIT_THREADS";
+    case SearchNodeRunRequest_NodeType.SLEEP:
+      return "SLEEP";
+    case SearchNodeRunRequest_NodeType.USER_TASK:
+      return "USER_TASK";
+    case SearchNodeRunRequest_NodeType.START_MULTIPLE_THREADS:
+      return "START_MULTIPLE_THREADS";
+    case SearchNodeRunRequest_NodeType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function searchNodeRunRequest_NodeTypeToNumber(object: SearchNodeRunRequest_NodeType): number {
+  switch (object) {
+    case SearchNodeRunRequest_NodeType.TASK:
+      return 0;
+    case SearchNodeRunRequest_NodeType.EXTERNAL_EVENT:
+      return 1;
+    case SearchNodeRunRequest_NodeType.ENTRYPOINT:
+      return 2;
+    case SearchNodeRunRequest_NodeType.EXIT:
+      return 3;
+    case SearchNodeRunRequest_NodeType.START_THREAD:
+      return 4;
+    case SearchNodeRunRequest_NodeType.WAIT_THREADS:
+      return 5;
+    case SearchNodeRunRequest_NodeType.SLEEP:
+      return 6;
+    case SearchNodeRunRequest_NodeType.USER_TASK:
+      return 7;
+    case SearchNodeRunRequest_NodeType.START_MULTIPLE_THREADS:
+      return 8;
+    case SearchNodeRunRequest_NodeType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
 }
 
 export interface NodeRunIdList {
@@ -274,11 +350,6 @@ export interface UserTaskRunIdList {
 export interface SearchVariableRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
-  wfRunId?: WfRunId | undefined;
-  value?: SearchVariableRequest_NameAndValueRequest | undefined;
-}
-
-export interface SearchVariableRequest_NameAndValueRequest {
   value: VariableValue | undefined;
   wfSpecMajorVersion?: number | undefined;
   wfSpecRevision?: number | undefined;
@@ -1773,7 +1844,16 @@ export const RunWfRequest_VariablesEntry = {
 };
 
 function createBaseSearchWfRunRequest(): SearchWfRunRequest {
-  return { bookmark: undefined, limit: undefined, statusAndSpec: undefined, name: undefined, statusAndName: undefined };
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    wfSpecName: "",
+    wfSpecMajorVersion: undefined,
+    wfSpecRevision: undefined,
+    status: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+  };
 }
 
 export const SearchWfRunRequest = {
@@ -1784,14 +1864,23 @@ export const SearchWfRunRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.statusAndSpec !== undefined) {
-      SearchWfRunRequest_StatusAndSpecRequest.encode(message.statusAndSpec, writer.uint32(26).fork()).ldelim();
+    if (message.wfSpecName !== "") {
+      writer.uint32(26).string(message.wfSpecName);
     }
-    if (message.name !== undefined) {
-      SearchWfRunRequest_NameRequest.encode(message.name, writer.uint32(34).fork()).ldelim();
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(32).int32(message.wfSpecMajorVersion);
     }
-    if (message.statusAndName !== undefined) {
-      SearchWfRunRequest_StatusAndNameRequest.encode(message.statusAndName, writer.uint32(42).fork()).ldelim();
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(40).int32(message.wfSpecRevision);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(48).int32(lHStatusToNumber(message.status));
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(58).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(66).fork()).ldelim();
     }
     return writer;
   },
@@ -1822,21 +1911,42 @@ export const SearchWfRunRequest = {
             break;
           }
 
-          message.statusAndSpec = SearchWfRunRequest_StatusAndSpecRequest.decode(reader, reader.uint32());
+          message.wfSpecName = reader.string();
           continue;
         case 4:
-          if (tag !== 34) {
+          if (tag !== 32) {
             break;
           }
 
-          message.name = SearchWfRunRequest_NameRequest.decode(reader, reader.uint32());
+          message.wfSpecMajorVersion = reader.int32();
           continue;
         case 5:
-          if (tag !== 42) {
+          if (tag !== 40) {
             break;
           }
 
-          message.statusAndName = SearchWfRunRequest_StatusAndNameRequest.decode(reader, reader.uint32());
+          message.wfSpecRevision = reader.int32();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.status = lHStatusFromJSON(reader.int32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1851,13 +1961,12 @@ export const SearchWfRunRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      statusAndSpec: isSet(object.statusAndSpec)
-        ? SearchWfRunRequest_StatusAndSpecRequest.fromJSON(object.statusAndSpec)
-        : undefined,
-      name: isSet(object.name) ? SearchWfRunRequest_NameRequest.fromJSON(object.name) : undefined,
-      statusAndName: isSet(object.statusAndName)
-        ? SearchWfRunRequest_StatusAndNameRequest.fromJSON(object.statusAndName)
-        : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
+      status: isSet(object.status) ? lHStatusFromJSON(object.status) : undefined,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -1869,14 +1978,23 @@ export const SearchWfRunRequest = {
     if (message.limit !== undefined) {
       obj.limit = Math.round(message.limit);
     }
-    if (message.statusAndSpec !== undefined) {
-      obj.statusAndSpec = SearchWfRunRequest_StatusAndSpecRequest.toJSON(message.statusAndSpec);
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
     }
-    if (message.name !== undefined) {
-      obj.name = SearchWfRunRequest_NameRequest.toJSON(message.name);
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
     }
-    if (message.statusAndName !== undefined) {
-      obj.statusAndName = SearchWfRunRequest_StatusAndNameRequest.toJSON(message.statusAndName);
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
+    }
+    if (message.status !== undefined) {
+      obj.status = lHStatusToJSON(message.status);
+    }
+    if (message.earliestStart !== undefined) {
+      obj.earliestStart = message.earliestStart;
+    }
+    if (message.latestStart !== undefined) {
+      obj.latestStart = message.latestStart;
     }
     return obj;
   },
@@ -1888,322 +2006,10 @@ export const SearchWfRunRequest = {
     const message = createBaseSearchWfRunRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.statusAndSpec = (object.statusAndSpec !== undefined && object.statusAndSpec !== null)
-      ? SearchWfRunRequest_StatusAndSpecRequest.fromPartial(object.statusAndSpec)
-      : undefined;
-    message.name = (object.name !== undefined && object.name !== null)
-      ? SearchWfRunRequest_NameRequest.fromPartial(object.name)
-      : undefined;
-    message.statusAndName = (object.statusAndName !== undefined && object.statusAndName !== null)
-      ? SearchWfRunRequest_StatusAndNameRequest.fromPartial(object.statusAndName)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseSearchWfRunRequest_StatusAndSpecRequest(): SearchWfRunRequest_StatusAndSpecRequest {
-  return { wfSpecId: undefined, status: LHStatus.STARTING, earliestStart: undefined, latestStart: undefined };
-}
-
-export const SearchWfRunRequest_StatusAndSpecRequest = {
-  encode(message: SearchWfRunRequest_StatusAndSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.status !== LHStatus.STARTING) {
-      writer.uint32(16).int32(lHStatusToNumber(message.status));
-    }
-    if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
-    }
-    if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWfRunRequest_StatusAndSpecRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchWfRunRequest_StatusAndSpecRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.status = lHStatusFromJSON(reader.int32());
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchWfRunRequest_StatusAndSpecRequest {
-    return {
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-    };
-  },
-
-  toJSON(message: SearchWfRunRequest_StatusAndSpecRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
-    }
-    if (message.status !== LHStatus.STARTING) {
-      obj.status = lHStatusToJSON(message.status);
-    }
-    if (message.earliestStart !== undefined) {
-      obj.earliestStart = message.earliestStart;
-    }
-    if (message.latestStart !== undefined) {
-      obj.latestStart = message.latestStart;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchWfRunRequest_StatusAndSpecRequest>, I>>(
-    base?: I,
-  ): SearchWfRunRequest_StatusAndSpecRequest {
-    return SearchWfRunRequest_StatusAndSpecRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchWfRunRequest_StatusAndSpecRequest>, I>>(
-    object: I,
-  ): SearchWfRunRequest_StatusAndSpecRequest {
-    const message = createBaseSearchWfRunRequest_StatusAndSpecRequest();
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
-    message.status = object.status ?? LHStatus.STARTING;
-    message.earliestStart = object.earliestStart ?? undefined;
-    message.latestStart = object.latestStart ?? undefined;
-    return message;
-  },
-};
-
-function createBaseSearchWfRunRequest_NameRequest(): SearchWfRunRequest_NameRequest {
-  return { wfSpecName: "", earliestStart: undefined, latestStart: undefined };
-}
-
-export const SearchWfRunRequest_NameRequest = {
-  encode(message: SearchWfRunRequest_NameRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
-    }
-    if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(26).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWfRunRequest_NameRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchWfRunRequest_NameRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecName = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchWfRunRequest_NameRequest {
-    return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-    };
-  },
-
-  toJSON(message: SearchWfRunRequest_NameRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.earliestStart !== undefined) {
-      obj.earliestStart = message.earliestStart;
-    }
-    if (message.latestStart !== undefined) {
-      obj.latestStart = message.latestStart;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchWfRunRequest_NameRequest>, I>>(base?: I): SearchWfRunRequest_NameRequest {
-    return SearchWfRunRequest_NameRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchWfRunRequest_NameRequest>, I>>(
-    object: I,
-  ): SearchWfRunRequest_NameRequest {
-    const message = createBaseSearchWfRunRequest_NameRequest();
     message.wfSpecName = object.wfSpecName ?? "";
-    message.earliestStart = object.earliestStart ?? undefined;
-    message.latestStart = object.latestStart ?? undefined;
-    return message;
-  },
-};
-
-function createBaseSearchWfRunRequest_StatusAndNameRequest(): SearchWfRunRequest_StatusAndNameRequest {
-  return { wfSpecName: "", status: LHStatus.STARTING, earliestStart: undefined, latestStart: undefined };
-}
-
-export const SearchWfRunRequest_StatusAndNameRequest = {
-  encode(message: SearchWfRunRequest_StatusAndNameRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
-    }
-    if (message.status !== LHStatus.STARTING) {
-      writer.uint32(16).int32(lHStatusToNumber(message.status));
-    }
-    if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
-    }
-    if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWfRunRequest_StatusAndNameRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchWfRunRequest_StatusAndNameRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecName = reader.string();
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.status = lHStatusFromJSON(reader.int32());
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchWfRunRequest_StatusAndNameRequest {
-    return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-    };
-  },
-
-  toJSON(message: SearchWfRunRequest_StatusAndNameRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.status !== LHStatus.STARTING) {
-      obj.status = lHStatusToJSON(message.status);
-    }
-    if (message.earliestStart !== undefined) {
-      obj.earliestStart = message.earliestStart;
-    }
-    if (message.latestStart !== undefined) {
-      obj.latestStart = message.latestStart;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchWfRunRequest_StatusAndNameRequest>, I>>(
-    base?: I,
-  ): SearchWfRunRequest_StatusAndNameRequest {
-    return SearchWfRunRequest_StatusAndNameRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchWfRunRequest_StatusAndNameRequest>, I>>(
-    object: I,
-  ): SearchWfRunRequest_StatusAndNameRequest {
-    const message = createBaseSearchWfRunRequest_StatusAndNameRequest();
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.status = object.status ?? LHStatus.STARTING;
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
+    message.status = object.status ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     return message;
@@ -2285,7 +2091,14 @@ export const WfRunIdList = {
 };
 
 function createBaseSearchTaskRunRequest(): SearchTaskRunRequest {
-  return { bookmark: undefined, limit: undefined, statusAndTaskDef: undefined, taskDef: undefined };
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    taskDefName: "",
+    status: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+  };
 }
 
 export const SearchTaskRunRequest = {
@@ -2296,11 +2109,17 @@ export const SearchTaskRunRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.statusAndTaskDef !== undefined) {
-      SearchTaskRunRequest_StatusAndTaskDefRequest.encode(message.statusAndTaskDef, writer.uint32(26).fork()).ldelim();
+    if (message.taskDefName !== "") {
+      writer.uint32(26).string(message.taskDefName);
     }
-    if (message.taskDef !== undefined) {
-      SearchTaskRunRequest_ByTaskDefRequest.encode(message.taskDef, writer.uint32(34).fork()).ldelim();
+    if (message.status !== undefined) {
+      writer.uint32(32).int32(taskStatusToNumber(message.status));
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(42).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -2331,14 +2150,28 @@ export const SearchTaskRunRequest = {
             break;
           }
 
-          message.statusAndTaskDef = SearchTaskRunRequest_StatusAndTaskDefRequest.decode(reader, reader.uint32());
+          message.taskDefName = reader.string();
           continue;
         case 4:
-          if (tag !== 34) {
+          if (tag !== 32) {
             break;
           }
 
-          message.taskDef = SearchTaskRunRequest_ByTaskDefRequest.decode(reader, reader.uint32());
+          message.status = taskStatusFromJSON(reader.int32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2353,10 +2186,10 @@ export const SearchTaskRunRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      statusAndTaskDef: isSet(object.statusAndTaskDef)
-        ? SearchTaskRunRequest_StatusAndTaskDefRequest.fromJSON(object.statusAndTaskDef)
-        : undefined,
-      taskDef: isSet(object.taskDef) ? SearchTaskRunRequest_ByTaskDefRequest.fromJSON(object.taskDef) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      status: isSet(object.status) ? taskStatusFromJSON(object.status) : undefined,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2368,11 +2201,17 @@ export const SearchTaskRunRequest = {
     if (message.limit !== undefined) {
       obj.limit = Math.round(message.limit);
     }
-    if (message.statusAndTaskDef !== undefined) {
-      obj.statusAndTaskDef = SearchTaskRunRequest_StatusAndTaskDefRequest.toJSON(message.statusAndTaskDef);
+    if (message.taskDefName !== "") {
+      obj.taskDefName = message.taskDefName;
     }
-    if (message.taskDef !== undefined) {
-      obj.taskDef = SearchTaskRunRequest_ByTaskDefRequest.toJSON(message.taskDef);
+    if (message.status !== undefined) {
+      obj.status = taskStatusToJSON(message.status);
+    }
+    if (message.earliestStart !== undefined) {
+      obj.earliestStart = message.earliestStart;
+    }
+    if (message.latestStart !== undefined) {
+      obj.latestStart = message.latestStart;
     }
     return obj;
   },
@@ -2384,211 +2223,8 @@ export const SearchTaskRunRequest = {
     const message = createBaseSearchTaskRunRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.statusAndTaskDef = (object.statusAndTaskDef !== undefined && object.statusAndTaskDef !== null)
-      ? SearchTaskRunRequest_StatusAndTaskDefRequest.fromPartial(object.statusAndTaskDef)
-      : undefined;
-    message.taskDef = (object.taskDef !== undefined && object.taskDef !== null)
-      ? SearchTaskRunRequest_ByTaskDefRequest.fromPartial(object.taskDef)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseSearchTaskRunRequest_StatusAndTaskDefRequest(): SearchTaskRunRequest_StatusAndTaskDefRequest {
-  return { status: TaskStatus.TASK_SCHEDULED, taskDefName: "", earliestStart: undefined, latestStart: undefined };
-}
-
-export const SearchTaskRunRequest_StatusAndTaskDefRequest = {
-  encode(message: SearchTaskRunRequest_StatusAndTaskDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.status !== TaskStatus.TASK_SCHEDULED) {
-      writer.uint32(8).int32(taskStatusToNumber(message.status));
-    }
-    if (message.taskDefName !== "") {
-      writer.uint32(18).string(message.taskDefName);
-    }
-    if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
-    }
-    if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchTaskRunRequest_StatusAndTaskDefRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchTaskRunRequest_StatusAndTaskDefRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.status = taskStatusFromJSON(reader.int32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.taskDefName = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchTaskRunRequest_StatusAndTaskDefRequest {
-    return {
-      status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
-      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-    };
-  },
-
-  toJSON(message: SearchTaskRunRequest_StatusAndTaskDefRequest): unknown {
-    const obj: any = {};
-    if (message.status !== TaskStatus.TASK_SCHEDULED) {
-      obj.status = taskStatusToJSON(message.status);
-    }
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
-    }
-    if (message.earliestStart !== undefined) {
-      obj.earliestStart = message.earliestStart;
-    }
-    if (message.latestStart !== undefined) {
-      obj.latestStart = message.latestStart;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchTaskRunRequest_StatusAndTaskDefRequest>, I>>(
-    base?: I,
-  ): SearchTaskRunRequest_StatusAndTaskDefRequest {
-    return SearchTaskRunRequest_StatusAndTaskDefRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchTaskRunRequest_StatusAndTaskDefRequest>, I>>(
-    object: I,
-  ): SearchTaskRunRequest_StatusAndTaskDefRequest {
-    const message = createBaseSearchTaskRunRequest_StatusAndTaskDefRequest();
-    message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
     message.taskDefName = object.taskDefName ?? "";
-    message.earliestStart = object.earliestStart ?? undefined;
-    message.latestStart = object.latestStart ?? undefined;
-    return message;
-  },
-};
-
-function createBaseSearchTaskRunRequest_ByTaskDefRequest(): SearchTaskRunRequest_ByTaskDefRequest {
-  return { taskDefName: "", earliestStart: undefined, latestStart: undefined };
-}
-
-export const SearchTaskRunRequest_ByTaskDefRequest = {
-  encode(message: SearchTaskRunRequest_ByTaskDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefName !== "") {
-      writer.uint32(10).string(message.taskDefName);
-    }
-    if (message.earliestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.latestStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(26).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchTaskRunRequest_ByTaskDefRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchTaskRunRequest_ByTaskDefRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.taskDefName = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchTaskRunRequest_ByTaskDefRequest {
-    return {
-      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
-      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-    };
-  },
-
-  toJSON(message: SearchTaskRunRequest_ByTaskDefRequest): unknown {
-    const obj: any = {};
-    if (message.taskDefName !== "") {
-      obj.taskDefName = message.taskDefName;
-    }
-    if (message.earliestStart !== undefined) {
-      obj.earliestStart = message.earliestStart;
-    }
-    if (message.latestStart !== undefined) {
-      obj.latestStart = message.latestStart;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchTaskRunRequest_ByTaskDefRequest>, I>>(
-    base?: I,
-  ): SearchTaskRunRequest_ByTaskDefRequest {
-    return SearchTaskRunRequest_ByTaskDefRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchTaskRunRequest_ByTaskDefRequest>, I>>(
-    object: I,
-  ): SearchTaskRunRequest_ByTaskDefRequest {
-    const message = createBaseSearchTaskRunRequest_ByTaskDefRequest();
-    message.taskDefName = object.taskDefName ?? "";
+    message.status = object.status ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     return message;
@@ -2670,7 +2306,14 @@ export const TaskRunIdList = {
 };
 
 function createBaseSearchNodeRunRequest(): SearchNodeRunRequest {
-  return { bookmark: undefined, limit: undefined, wfRunId: undefined };
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+    nodeType: SearchNodeRunRequest_NodeType.TASK,
+    status: LHStatus.STARTING,
+  };
 }
 
 export const SearchNodeRunRequest = {
@@ -2681,8 +2324,17 @@ export const SearchNodeRunRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.wfRunId !== undefined) {
-      WfRunId.encode(message.wfRunId, writer.uint32(26).fork()).ldelim();
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
+    }
+    if (message.nodeType !== SearchNodeRunRequest_NodeType.TASK) {
+      writer.uint32(40).int32(searchNodeRunRequest_NodeTypeToNumber(message.nodeType));
+    }
+    if (message.status !== LHStatus.STARTING) {
+      writer.uint32(48).int32(lHStatusToNumber(message.status));
     }
     return writer;
   },
@@ -2713,7 +2365,28 @@ export const SearchNodeRunRequest = {
             break;
           }
 
-          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.nodeType = searchNodeRunRequest_NodeTypeFromJSON(reader.int32());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.status = lHStatusFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2728,7 +2401,12 @@ export const SearchNodeRunRequest = {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
+      nodeType: isSet(object.nodeType)
+        ? searchNodeRunRequest_NodeTypeFromJSON(object.nodeType)
+        : SearchNodeRunRequest_NodeType.TASK,
+      status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
     };
   },
 
@@ -2740,8 +2418,17 @@ export const SearchNodeRunRequest = {
     if (message.limit !== undefined) {
       obj.limit = Math.round(message.limit);
     }
-    if (message.wfRunId !== undefined) {
-      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    if (message.earliestStart !== undefined) {
+      obj.earliestStart = message.earliestStart;
+    }
+    if (message.latestStart !== undefined) {
+      obj.latestStart = message.latestStart;
+    }
+    if (message.nodeType !== SearchNodeRunRequest_NodeType.TASK) {
+      obj.nodeType = searchNodeRunRequest_NodeTypeToJSON(message.nodeType);
+    }
+    if (message.status !== LHStatus.STARTING) {
+      obj.status = lHStatusToJSON(message.status);
     }
     return obj;
   },
@@ -2753,9 +2440,10 @@ export const SearchNodeRunRequest = {
     const message = createBaseSearchNodeRunRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
-      ? WfRunId.fromPartial(object.wfRunId)
-      : undefined;
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    message.nodeType = object.nodeType ?? SearchNodeRunRequest_NodeType.TASK;
+    message.status = object.status ?? LHStatus.STARTING;
     return message;
   },
 };
@@ -3084,7 +2772,15 @@ export const UserTaskRunIdList = {
 };
 
 function createBaseSearchVariableRequest(): SearchVariableRequest {
-  return { bookmark: undefined, limit: undefined, wfRunId: undefined, value: undefined };
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    value: undefined,
+    wfSpecMajorVersion: undefined,
+    wfSpecRevision: undefined,
+    varName: "",
+    wfSpecName: "",
+  };
 }
 
 export const SearchVariableRequest = {
@@ -3095,11 +2791,20 @@ export const SearchVariableRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.wfRunId !== undefined) {
-      WfRunId.encode(message.wfRunId, writer.uint32(26).fork()).ldelim();
-    }
     if (message.value !== undefined) {
-      SearchVariableRequest_NameAndValueRequest.encode(message.value, writer.uint32(34).fork()).ldelim();
+      VariableValue.encode(message.value, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(32).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(40).int32(message.wfSpecRevision);
+    }
+    if (message.varName !== "") {
+      writer.uint32(50).string(message.varName);
+    }
+    if (message.wfSpecName !== "") {
+      writer.uint32(58).string(message.wfSpecName);
     }
     return writer;
   },
@@ -3130,128 +2835,31 @@ export const SearchVariableRequest = {
             break;
           }
 
-          message.wfRunId = WfRunId.decode(reader, reader.uint32());
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.value = SearchVariableRequest_NameAndValueRequest.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchVariableRequest {
-    return {
-      bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
-      value: isSet(object.value) ? SearchVariableRequest_NameAndValueRequest.fromJSON(object.value) : undefined,
-    };
-  },
-
-  toJSON(message: SearchVariableRequest): unknown {
-    const obj: any = {};
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    if (message.wfRunId !== undefined) {
-      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
-    }
-    if (message.value !== undefined) {
-      obj.value = SearchVariableRequest_NameAndValueRequest.toJSON(message.value);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchVariableRequest>, I>>(base?: I): SearchVariableRequest {
-    return SearchVariableRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SearchVariableRequest>, I>>(object: I): SearchVariableRequest {
-    const message = createBaseSearchVariableRequest();
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
-    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
-      ? WfRunId.fromPartial(object.wfRunId)
-      : undefined;
-    message.value = (object.value !== undefined && object.value !== null)
-      ? SearchVariableRequest_NameAndValueRequest.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseSearchVariableRequest_NameAndValueRequest(): SearchVariableRequest_NameAndValueRequest {
-  return { value: undefined, wfSpecMajorVersion: undefined, wfSpecRevision: undefined, varName: "", wfSpecName: "" };
-}
-
-export const SearchVariableRequest_NameAndValueRequest = {
-  encode(message: SearchVariableRequest_NameAndValueRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.value !== undefined) {
-      VariableValue.encode(message.value, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.wfSpecMajorVersion !== undefined) {
-      writer.uint32(16).int32(message.wfSpecMajorVersion);
-    }
-    if (message.wfSpecRevision !== undefined) {
-      writer.uint32(24).int32(message.wfSpecRevision);
-    }
-    if (message.varName !== "") {
-      writer.uint32(34).string(message.varName);
-    }
-    if (message.wfSpecName !== "") {
-      writer.uint32(42).string(message.wfSpecName);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchVariableRequest_NameAndValueRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchVariableRequest_NameAndValueRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.value = VariableValue.decode(reader, reader.uint32());
           continue;
-        case 2:
-          if (tag !== 16) {
+        case 4:
+          if (tag !== 32) {
             break;
           }
 
           message.wfSpecMajorVersion = reader.int32();
           continue;
-        case 3:
-          if (tag !== 24) {
+        case 5:
+          if (tag !== 40) {
             break;
           }
 
           message.wfSpecRevision = reader.int32();
           continue;
-        case 4:
-          if (tag !== 34) {
+        case 6:
+          if (tag !== 50) {
             break;
           }
 
           message.varName = reader.string();
           continue;
-        case 5:
-          if (tag !== 42) {
+        case 7:
+          if (tag !== 58) {
             break;
           }
 
@@ -3266,8 +2874,10 @@ export const SearchVariableRequest_NameAndValueRequest = {
     return message;
   },
 
-  fromJSON(object: any): SearchVariableRequest_NameAndValueRequest {
+  fromJSON(object: any): SearchVariableRequest {
     return {
+      bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
       wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
       wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
@@ -3276,8 +2886,14 @@ export const SearchVariableRequest_NameAndValueRequest = {
     };
   },
 
-  toJSON(message: SearchVariableRequest_NameAndValueRequest): unknown {
+  toJSON(message: SearchVariableRequest): unknown {
     const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
     if (message.value !== undefined) {
       obj.value = VariableValue.toJSON(message.value);
     }
@@ -3296,15 +2912,13 @@ export const SearchVariableRequest_NameAndValueRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SearchVariableRequest_NameAndValueRequest>, I>>(
-    base?: I,
-  ): SearchVariableRequest_NameAndValueRequest {
-    return SearchVariableRequest_NameAndValueRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<SearchVariableRequest>, I>>(base?: I): SearchVariableRequest {
+    return SearchVariableRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SearchVariableRequest_NameAndValueRequest>, I>>(
-    object: I,
-  ): SearchVariableRequest_NameAndValueRequest {
-    const message = createBaseSearchVariableRequest_NameAndValueRequest();
+  fromPartial<I extends Exact<DeepPartial<SearchVariableRequest>, I>>(object: I): SearchVariableRequest {
+    const message = createBaseSearchVariableRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;

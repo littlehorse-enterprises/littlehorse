@@ -39,6 +39,13 @@ export function WfRunSearch({ id, version }: any) {
     const [ type, setType ] = useState('')
     const [ wfRunSearchResults, setWfRunSearchResults ] = useState<any[]>([])
 
+    const getVersionFromFormattedString = (formattedVersion: string) => {
+        const versionValues = formattedVersion.split('.')
+        return {
+            majorVersion: versionValues[0],
+            revision: versionValues[1]
+        }
+    }
     const fetchData = async (wfRunStatus: string, paginate = false, useLimit = true) => {
         let bookmark: string | undefined
         if (wfRunStatus === 'ERROR') {bookmark = errorBookmark}
@@ -54,18 +61,18 @@ export function WfRunSearch({ id, version }: any) {
         // if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
         if (paginate && bookmark) {filters.bookmark = bookmark}
         if (paginate && !bookmark) {return { status: 'done' }}
+
+        const { majorVersion, revision } = getVersionFromFormattedString(version)
+
         const res = await fetch('/api/search/wfRun', {
             method: 'POST',
             body: JSON.stringify({
-                statusAndSpec: {
-                    status: wfRunStatus,
-                    wfSpecId: {
-                        name: id,
-                        majorVersion: version
-                    },
-                    earliestStart: startDt,
-                    latestStart: endDt
-                },
+                status: wfRunStatus,
+                wfSpecName: id,
+                wfSpecMajorVersion: majorVersion,
+                wfSpecRevision: revision,
+                earliestStart: startDt,
+                latestStart: endDt,
                 ...filters
             })
         })

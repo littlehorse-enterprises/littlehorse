@@ -17,6 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private SearchVariableRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    varName_ = "";
+    wfSpecName_ = "";
   }
 
   @java.lang.Override
@@ -39,1146 +41,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.SearchVariableRequest.class, io.littlehorse.sdk.common.proto.SearchVariableRequest.Builder.class);
   }
 
-  public interface NameAndValueRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.SearchVariableRequest.NameAndValueRequest)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     * @return Whether the value field is set.
-     */
-    boolean hasValue();
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     * @return The value.
-     */
-    io.littlehorse.sdk.common.proto.VariableValue getValue();
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     */
-    io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
-
-    /**
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return Whether the wfSpecMajorVersion field is set.
-     */
-    boolean hasWfSpecMajorVersion();
-    /**
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return The wfSpecMajorVersion.
-     */
-    int getWfSpecMajorVersion();
-
-    /**
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return Whether the wfSpecRevision field is set.
-     */
-    boolean hasWfSpecRevision();
-    /**
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return The wfSpecRevision.
-     */
-    int getWfSpecRevision();
-
-    /**
-     * <code>string var_name = 4;</code>
-     * @return The varName.
-     */
-    java.lang.String getVarName();
-    /**
-     * <code>string var_name = 4;</code>
-     * @return The bytes for varName.
-     */
-    com.google.protobuf.ByteString
-        getVarNameBytes();
-
-    /**
-     * <code>string wf_spec_name = 5;</code>
-     * @return The wfSpecName.
-     */
-    java.lang.String getWfSpecName();
-    /**
-     * <code>string wf_spec_name = 5;</code>
-     * @return The bytes for wfSpecName.
-     */
-    com.google.protobuf.ByteString
-        getWfSpecNameBytes();
-  }
-  /**
-   * Protobuf type {@code littlehorse.SearchVariableRequest.NameAndValueRequest}
-   */
-  public static final class NameAndValueRequest extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.SearchVariableRequest.NameAndValueRequest)
-      NameAndValueRequestOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use NameAndValueRequest.newBuilder() to construct.
-    private NameAndValueRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private NameAndValueRequest() {
-      varName_ = "";
-      wfSpecName_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new NameAndValueRequest();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.class, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int VALUE_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.VariableValue value_;
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     * @return Whether the value field is set.
-     */
-    @java.lang.Override
-    public boolean hasValue() {
-      return value_ != null;
-    }
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     * @return The value.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValue getValue() {
-      return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-    }
-    /**
-     * <code>.littlehorse.VariableValue value = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
-      return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-    }
-
-    public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
-    private int wfSpecMajorVersion_ = 0;
-    /**
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return Whether the wfSpecMajorVersion field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfSpecMajorVersion() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return The wfSpecMajorVersion.
-     */
-    @java.lang.Override
-    public int getWfSpecMajorVersion() {
-      return wfSpecMajorVersion_;
-    }
-
-    public static final int WF_SPEC_REVISION_FIELD_NUMBER = 3;
-    private int wfSpecRevision_ = 0;
-    /**
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return Whether the wfSpecRevision field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfSpecRevision() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return The wfSpecRevision.
-     */
-    @java.lang.Override
-    public int getWfSpecRevision() {
-      return wfSpecRevision_;
-    }
-
-    public static final int VAR_NAME_FIELD_NUMBER = 4;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object varName_ = "";
-    /**
-     * <code>string var_name = 4;</code>
-     * @return The varName.
-     */
-    @java.lang.Override
-    public java.lang.String getVarName() {
-      java.lang.Object ref = varName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        varName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string var_name = 4;</code>
-     * @return The bytes for varName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getVarNameBytes() {
-      java.lang.Object ref = varName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        varName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int WF_SPEC_NAME_FIELD_NUMBER = 5;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object wfSpecName_ = "";
-    /**
-     * <code>string wf_spec_name = 5;</code>
-     * @return The wfSpecName.
-     */
-    @java.lang.Override
-    public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string wf_spec_name = 5;</code>
-     * @return The bytes for wfSpecName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfSpecName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (value_ != null) {
-        output.writeMessage(1, getValue());
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeInt32(2, wfSpecMajorVersion_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeInt32(3, wfSpecRevision_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, varName_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, wfSpecName_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (value_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getValue());
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, wfSpecMajorVersion_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, wfSpecRevision_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, varName_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, wfSpecName_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest other = (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) obj;
-
-      if (hasValue() != other.hasValue()) return false;
-      if (hasValue()) {
-        if (!getValue()
-            .equals(other.getValue())) return false;
-      }
-      if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
-      if (hasWfSpecMajorVersion()) {
-        if (getWfSpecMajorVersion()
-            != other.getWfSpecMajorVersion()) return false;
-      }
-      if (hasWfSpecRevision() != other.hasWfSpecRevision()) return false;
-      if (hasWfSpecRevision()) {
-        if (getWfSpecRevision()
-            != other.getWfSpecRevision()) return false;
-      }
-      if (!getVarName()
-          .equals(other.getVarName())) return false;
-      if (!getWfSpecName()
-          .equals(other.getWfSpecName())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasValue()) {
-        hash = (37 * hash) + VALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getValue().hashCode();
-      }
-      if (hasWfSpecMajorVersion()) {
-        hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getWfSpecMajorVersion();
-      }
-      if (hasWfSpecRevision()) {
-        hash = (37 * hash) + WF_SPEC_REVISION_FIELD_NUMBER;
-        hash = (53 * hash) + getWfSpecRevision();
-      }
-      hash = (37 * hash) + VAR_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getVarName().hashCode();
-      hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecName().hashCode();
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.SearchVariableRequest.NameAndValueRequest}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.SearchVariableRequest.NameAndValueRequest)
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.class, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        value_ = null;
-        if (valueBuilder_ != null) {
-          valueBuilder_.dispose();
-          valueBuilder_ = null;
-        }
-        wfSpecMajorVersion_ = 0;
-        wfSpecRevision_ = 0;
-        varName_ = "";
-        wfSpecName_ = "";
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest build() {
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest buildPartial() {
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest result = new io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.value_ = valueBuilder_ == null
-              ? value_
-              : valueBuilder_.build();
-        }
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.wfSpecRevision_ = wfSpecRevision_;
-          to_bitField0_ |= 0x00000002;
-        }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.varName_ = varName_;
-        }
-        if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.wfSpecName_ = wfSpecName_;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest other) {
-        if (other == io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance()) return this;
-        if (other.hasValue()) {
-          mergeValue(other.getValue());
-        }
-        if (other.hasWfSpecMajorVersion()) {
-          setWfSpecMajorVersion(other.getWfSpecMajorVersion());
-        }
-        if (other.hasWfSpecRevision()) {
-          setWfSpecRevision(other.getWfSpecRevision());
-        }
-        if (!other.getVarName().isEmpty()) {
-          varName_ = other.varName_;
-          bitField0_ |= 0x00000008;
-          onChanged();
-        }
-        if (!other.getWfSpecName().isEmpty()) {
-          wfSpecName_ = other.wfSpecName_;
-          bitField0_ |= 0x00000010;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                input.readMessage(
-                    getValueFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 16: {
-                wfSpecMajorVersion_ = input.readInt32();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 16
-              case 24: {
-                wfSpecRevision_ = input.readInt32();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 24
-              case 34: {
-                varName_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 34
-              case 42: {
-                wfSpecName_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 42
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private io.littlehorse.sdk.common.proto.VariableValue value_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       * @return Whether the value field is set.
-       */
-      public boolean hasValue() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       * @return The value.
-       */
-      public io.littlehorse.sdk.common.proto.VariableValue getValue() {
-        if (valueBuilder_ == null) {
-          return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-        } else {
-          return valueBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
-        if (valueBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          value_ = value;
-        } else {
-          valueBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public Builder setValue(
-          io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
-        if (valueBuilder_ == null) {
-          value_ = builderForValue.build();
-        } else {
-          valueBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
-        if (valueBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0) &&
-            value_ != null &&
-            value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
-            getValueBuilder().mergeFrom(value);
-          } else {
-            value_ = value;
-          }
-        } else {
-          valueBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        value_ = null;
-        if (valueBuilder_ != null) {
-          valueBuilder_.dispose();
-          valueBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getValueFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
-        if (valueBuilder_ != null) {
-          return valueBuilder_.getMessageOrBuilder();
-        } else {
-          return value_ == null ?
-              io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
-          getValueFieldBuilder() {
-        if (valueBuilder_ == null) {
-          valueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
-                  getValue(),
-                  getParentForChildren(),
-                  isClean());
-          value_ = null;
-        }
-        return valueBuilder_;
-      }
-
-      private int wfSpecMajorVersion_ ;
-      /**
-       * <code>optional int32 wf_spec_major_version = 2;</code>
-       * @return Whether the wfSpecMajorVersion field is set.
-       */
-      @java.lang.Override
-      public boolean hasWfSpecMajorVersion() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional int32 wf_spec_major_version = 2;</code>
-       * @return The wfSpecMajorVersion.
-       */
-      @java.lang.Override
-      public int getWfSpecMajorVersion() {
-        return wfSpecMajorVersion_;
-      }
-      /**
-       * <code>optional int32 wf_spec_major_version = 2;</code>
-       * @param value The wfSpecMajorVersion to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecMajorVersion(int value) {
-
-        wfSpecMajorVersion_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 wf_spec_major_version = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearWfSpecMajorVersion() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        wfSpecMajorVersion_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int wfSpecRevision_ ;
-      /**
-       * <code>optional int32 wf_spec_revision = 3;</code>
-       * @return Whether the wfSpecRevision field is set.
-       */
-      @java.lang.Override
-      public boolean hasWfSpecRevision() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>optional int32 wf_spec_revision = 3;</code>
-       * @return The wfSpecRevision.
-       */
-      @java.lang.Override
-      public int getWfSpecRevision() {
-        return wfSpecRevision_;
-      }
-      /**
-       * <code>optional int32 wf_spec_revision = 3;</code>
-       * @param value The wfSpecRevision to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecRevision(int value) {
-
-        wfSpecRevision_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 wf_spec_revision = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearWfSpecRevision() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        wfSpecRevision_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object varName_ = "";
-      /**
-       * <code>string var_name = 4;</code>
-       * @return The varName.
-       */
-      public java.lang.String getVarName() {
-        java.lang.Object ref = varName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          varName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string var_name = 4;</code>
-       * @return The bytes for varName.
-       */
-      public com.google.protobuf.ByteString
-          getVarNameBytes() {
-        java.lang.Object ref = varName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          varName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string var_name = 4;</code>
-       * @param value The varName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setVarName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        varName_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string var_name = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearVarName() {
-        varName_ = getDefaultInstance().getVarName();
-        bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string var_name = 4;</code>
-       * @param value The bytes for varName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setVarNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        varName_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object wfSpecName_ = "";
-      /**
-       * <code>string wf_spec_name = 5;</code>
-       * @return The wfSpecName.
-       */
-      public java.lang.String getWfSpecName() {
-        java.lang.Object ref = wfSpecName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          wfSpecName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string wf_spec_name = 5;</code>
-       * @return The bytes for wfSpecName.
-       */
-      public com.google.protobuf.ByteString
-          getWfSpecNameBytes() {
-        java.lang.Object ref = wfSpecName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          wfSpecName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string wf_spec_name = 5;</code>
-       * @param value The wfSpecName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        wfSpecName_ = value;
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string wf_spec_name = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearWfSpecName() {
-        wfSpecName_ = getDefaultInstance().getWfSpecName();
-        bitField0_ = (bitField0_ & ~0x00000010);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string wf_spec_name = 5;</code>
-       * @param value The bytes for wfSpecName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        wfSpecName_ = value;
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.SearchVariableRequest.NameAndValueRequest)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.SearchVariableRequest.NameAndValueRequest)
-    private static final io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest();
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<NameAndValueRequest>
-        PARSER = new com.google.protobuf.AbstractParser<NameAndValueRequest>() {
-      @java.lang.Override
-      public NameAndValueRequest parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<NameAndValueRequest> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<NameAndValueRequest> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private int bitField0_;
-  private int variableCriteriaCase_ = 0;
-  @SuppressWarnings("serial")
-  private java.lang.Object variableCriteria_;
-  public enum VariableCriteriaCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    WF_RUN_ID(3),
-    VALUE(4),
-    VARIABLECRITERIA_NOT_SET(0);
-    private final int value;
-    private VariableCriteriaCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static VariableCriteriaCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static VariableCriteriaCase forNumber(int value) {
-      switch (value) {
-        case 3: return WF_RUN_ID;
-        case 4: return VALUE;
-        case 0: return VARIABLECRITERIA_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public VariableCriteriaCase
-  getVariableCriteriaCase() {
-    return VariableCriteriaCase.forNumber(
-        variableCriteriaCase_);
-  }
-
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -1217,66 +80,146 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 3;
+  public static final int VALUE_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfRunId() {
-    return variableCriteriaCase_ == 3;
-  }
-  /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-    if (variableCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-    if (variableCriteriaCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-  }
-
-  public static final int VALUE_FIELD_NUMBER = 4;
-  /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    * @return Whether the value field is set.
    */
   @java.lang.Override
   public boolean hasValue() {
-    return variableCriteriaCase_ == 4;
+    return value_ != null;
   }
   /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    * @return The value.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getValue() {
-    if (variableCriteriaCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
+  public io.littlehorse.sdk.common.proto.VariableValue getValue() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
-   * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+   * <code>.littlehorse.VariableValue value = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder getValueOrBuilder() {
-    if (variableCriteriaCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_;
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
+  }
+
+  public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 4;
+  private int wfSpecMajorVersion_ = 0;
+  /**
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return Whether the wfSpecMajorVersion field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecMajorVersion() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional int32 wf_spec_major_version = 4;</code>
+   * @return The wfSpecMajorVersion.
+   */
+  @java.lang.Override
+  public int getWfSpecMajorVersion() {
+    return wfSpecMajorVersion_;
+  }
+
+  public static final int WF_SPEC_REVISION_FIELD_NUMBER = 5;
+  private int wfSpecRevision_ = 0;
+  /**
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return Whether the wfSpecRevision field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecRevision() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional int32 wf_spec_revision = 5;</code>
+   * @return The wfSpecRevision.
+   */
+  @java.lang.Override
+  public int getWfSpecRevision() {
+    return wfSpecRevision_;
+  }
+
+  public static final int VAR_NAME_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object varName_ = "";
+  /**
+   * <code>string var_name = 6;</code>
+   * @return The varName.
+   */
+  @java.lang.Override
+  public java.lang.String getVarName() {
+    java.lang.Object ref = varName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      varName_ = s;
+      return s;
     }
-    return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
+  }
+  /**
+   * <code>string var_name = 6;</code>
+   * @return The bytes for varName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getVarNameBytes() {
+    java.lang.Object ref = varName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      varName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 7;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object wfSpecName_ = "";
+  /**
+   * <code>string wf_spec_name = 7;</code>
+   * @return The wfSpecName.
+   */
+  @java.lang.Override
+  public java.lang.String getWfSpecName() {
+    java.lang.Object ref = wfSpecName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      wfSpecName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string wf_spec_name = 7;</code>
+   * @return The bytes for wfSpecName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getWfSpecNameBytes() {
+    java.lang.Object ref = wfSpecName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      wfSpecName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1299,11 +242,20 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (variableCriteriaCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_);
+    if (value_ != null) {
+      output.writeMessage(3, getValue());
     }
-    if (variableCriteriaCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_);
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeInt32(4, wfSpecMajorVersion_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeInt32(5, wfSpecRevision_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, varName_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, wfSpecName_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1322,13 +274,23 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (variableCriteriaCase_ == 3) {
+    if (value_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_);
+        .computeMessageSize(3, getValue());
     }
-    if (variableCriteriaCase_ == 4) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_);
+        .computeInt32Size(4, wfSpecMajorVersion_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, wfSpecRevision_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, varName_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, wfSpecName_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1355,19 +317,25 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (!getVariableCriteriaCase().equals(other.getVariableCriteriaCase())) return false;
-    switch (variableCriteriaCase_) {
-      case 3:
-        if (!getWfRunId()
-            .equals(other.getWfRunId())) return false;
-        break;
-      case 4:
-        if (!getValue()
-            .equals(other.getValue())) return false;
-        break;
-      case 0:
-      default:
+    if (hasValue() != other.hasValue()) return false;
+    if (hasValue()) {
+      if (!getValue()
+          .equals(other.getValue())) return false;
     }
+    if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
+    if (hasWfSpecMajorVersion()) {
+      if (getWfSpecMajorVersion()
+          != other.getWfSpecMajorVersion()) return false;
+    }
+    if (hasWfSpecRevision() != other.hasWfSpecRevision()) return false;
+    if (hasWfSpecRevision()) {
+      if (getWfSpecRevision()
+          != other.getWfSpecRevision()) return false;
+    }
+    if (!getVarName()
+        .equals(other.getVarName())) return false;
+    if (!getWfSpecName()
+        .equals(other.getWfSpecName())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1387,18 +355,22 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    switch (variableCriteriaCase_) {
-      case 3:
-        hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getWfRunId().hashCode();
-        break;
-      case 4:
-        hash = (37 * hash) + VALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getValue().hashCode();
-        break;
-      case 0:
-      default:
+    if (hasValue()) {
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getValue().hashCode();
     }
+    if (hasWfSpecMajorVersion()) {
+      hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecMajorVersion();
+    }
+    if (hasWfSpecRevision()) {
+      hash = (37 * hash) + WF_SPEC_REVISION_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecRevision();
+    }
+    hash = (37 * hash) + VAR_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getVarName().hashCode();
+    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecName().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1532,14 +504,15 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      if (wfRunIdBuilder_ != null) {
-        wfRunIdBuilder_.clear();
-      }
+      value_ = null;
       if (valueBuilder_ != null) {
-        valueBuilder_.clear();
+        valueBuilder_.dispose();
+        valueBuilder_ = null;
       }
-      variableCriteriaCase_ = 0;
-      variableCriteria_ = null;
+      wfSpecMajorVersion_ = 0;
+      wfSpecRevision_ = 0;
+      varName_ = "";
+      wfSpecName_ = "";
       return this;
     }
 
@@ -1567,7 +540,6 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.SearchVariableRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchVariableRequest result = new io.littlehorse.sdk.common.proto.SearchVariableRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -1583,20 +555,26 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.value_ = valueBuilder_ == null
+            ? value_
+            : valueBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.wfSpecRevision_ = wfSpecRevision_;
+        to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.varName_ = varName_;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.wfSpecName_ = wfSpecName_;
+      }
       result.bitField0_ |= to_bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchVariableRequest result) {
-      result.variableCriteriaCase_ = variableCriteriaCase_;
-      result.variableCriteria_ = this.variableCriteria_;
-      if (variableCriteriaCase_ == 3 &&
-          wfRunIdBuilder_ != null) {
-        result.variableCriteria_ = wfRunIdBuilder_.build();
-      }
-      if (variableCriteriaCase_ == 4 &&
-          valueBuilder_ != null) {
-        result.variableCriteria_ = valueBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -1649,18 +627,24 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      switch (other.getVariableCriteriaCase()) {
-        case WF_RUN_ID: {
-          mergeWfRunId(other.getWfRunId());
-          break;
-        }
-        case VALUE: {
-          mergeValue(other.getValue());
-          break;
-        }
-        case VARIABLECRITERIA_NOT_SET: {
-          break;
-        }
+      if (other.hasValue()) {
+        mergeValue(other.getValue());
+      }
+      if (other.hasWfSpecMajorVersion()) {
+        setWfSpecMajorVersion(other.getWfSpecMajorVersion());
+      }
+      if (other.hasWfSpecRevision()) {
+        setWfSpecRevision(other.getWfSpecRevision());
+      }
+      if (!other.getVarName().isEmpty()) {
+        varName_ = other.varName_;
+        bitField0_ |= 0x00000020;
+        onChanged();
+      }
+      if (!other.getWfSpecName().isEmpty()) {
+        wfSpecName_ = other.wfSpecName_;
+        bitField0_ |= 0x00000040;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1700,18 +684,31 @@ private static final long serialVersionUID = 0L;
             } // case 16
             case 26: {
               input.readMessage(
-                  getWfRunIdFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              variableCriteriaCase_ = 3;
-              break;
-            } // case 26
-            case 34: {
-              input.readMessage(
                   getValueFieldBuilder().getBuilder(),
                   extensionRegistry);
-              variableCriteriaCase_ = 4;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 34
+            } // case 26
+            case 32: {
+              wfSpecMajorVersion_ = input.readInt32();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            case 40: {
+              wfSpecRevision_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
+            case 50: {
+              varName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 50
+            case 58: {
+              wfSpecName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1727,21 +724,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int variableCriteriaCase_ = 0;
-    private java.lang.Object variableCriteria_;
-    public VariableCriteriaCase
-        getVariableCriteriaCase() {
-      return VariableCriteriaCase.forNumber(
-          variableCriteriaCase_);
-    }
-
-    public Builder clearVariableCriteria() {
-      variableCriteriaCase_ = 0;
-      variableCriteria_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -1824,288 +806,347 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private io.littlehorse.sdk.common.proto.VariableValue value_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return Whether the wfRunId field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfRunId() {
-      return variableCriteriaCase_ == 3;
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return The wfRunId.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-      if (wfRunIdBuilder_ == null) {
-        if (variableCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-      } else {
-        if (variableCriteriaCase_ == 3) {
-          return wfRunIdBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        variableCriteria_ = value;
-        onChanged();
-      } else {
-        wfRunIdBuilder_.setMessage(value);
-      }
-      variableCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder setWfRunId(
-        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
-      if (wfRunIdBuilder_ == null) {
-        variableCriteria_ = builderForValue.build();
-        onChanged();
-      } else {
-        wfRunIdBuilder_.setMessage(builderForValue.build());
-      }
-      variableCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
-        if (variableCriteriaCase_ == 3 &&
-            variableCriteria_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
-          variableCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.newBuilder((io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          variableCriteria_ = value;
-        }
-        onChanged();
-      } else {
-        if (variableCriteriaCase_ == 3) {
-          wfRunIdBuilder_.mergeFrom(value);
-        } else {
-          wfRunIdBuilder_.setMessage(value);
-        }
-      }
-      variableCriteriaCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder clearWfRunId() {
-      if (wfRunIdBuilder_ == null) {
-        if (variableCriteriaCase_ == 3) {
-          variableCriteriaCase_ = 0;
-          variableCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (variableCriteriaCase_ == 3) {
-          variableCriteriaCase_ = 0;
-          variableCriteria_ = null;
-        }
-        wfRunIdBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
-      return getWfRunIdFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-      if ((variableCriteriaCase_ == 3) && (wfRunIdBuilder_ != null)) {
-        return wfRunIdBuilder_.getMessageOrBuilder();
-      } else {
-        if (variableCriteriaCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
-        getWfRunIdFieldBuilder() {
-      if (wfRunIdBuilder_ == null) {
-        if (!(variableCriteriaCase_ == 3)) {
-          variableCriteria_ = io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
-        }
-        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WfRunId) variableCriteria_,
-                getParentForChildren(),
-                isClean());
-        variableCriteria_ = null;
-      }
-      variableCriteriaCase_ = 3;
-      onChanged();
-      return wfRunIdBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder> valueBuilder_;
-    /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      * @return Whether the value field is set.
      */
-    @java.lang.Override
     public boolean hasValue() {
-      return variableCriteriaCase_ == 4;
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      * @return The value.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest getValue() {
+    public io.littlehorse.sdk.common.proto.VariableValue getValue() {
       if (valueBuilder_ == null) {
-        if (variableCriteriaCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
+        return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       } else {
-        if (variableCriteriaCase_ == 4) {
-          return valueBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
+        return valueBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
-    public Builder setValue(io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest value) {
+    public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        variableCriteria_ = value;
-        onChanged();
+        value_ = value;
       } else {
         valueBuilder_.setMessage(value);
       }
-      variableCriteriaCase_ = 4;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder setValue(
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
       if (valueBuilder_ == null) {
-        variableCriteria_ = builderForValue.build();
-        onChanged();
+        value_ = builderForValue.build();
       } else {
         valueBuilder_.setMessage(builderForValue.build());
       }
-      variableCriteriaCase_ = 4;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
-    public Builder mergeValue(io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest value) {
+    public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
-        if (variableCriteriaCase_ == 4 &&
-            variableCriteria_ != io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance()) {
-          variableCriteria_ = io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.newBuilder((io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_)
-              .mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000004) != 0) &&
+          value_ != null &&
+          value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          getValueBuilder().mergeFrom(value);
         } else {
-          variableCriteria_ = value;
+          value_ = value;
         }
-        onChanged();
       } else {
-        if (variableCriteriaCase_ == 4) {
-          valueBuilder_.mergeFrom(value);
-        } else {
-          valueBuilder_.setMessage(value);
-        }
+        valueBuilder_.mergeFrom(value);
       }
-      variableCriteriaCase_ = 4;
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder clearValue() {
-      if (valueBuilder_ == null) {
-        if (variableCriteriaCase_ == 4) {
-          variableCriteriaCase_ = 0;
-          variableCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (variableCriteriaCase_ == 4) {
-          variableCriteriaCase_ = 0;
-          variableCriteria_ = null;
-        }
-        valueBuilder_.clear();
+      bitField0_ = (bitField0_ & ~0x00000004);
+      value_ = null;
+      if (valueBuilder_ != null) {
+        valueBuilder_.dispose();
+        valueBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder getValueBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
       return getValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder getValueOrBuilder() {
-      if ((variableCriteriaCase_ == 4) && (valueBuilder_ != null)) {
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
+      if (valueBuilder_ != null) {
         return valueBuilder_.getMessageOrBuilder();
       } else {
-        if (variableCriteriaCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
+        return value_ == null ?
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       }
     }
     /**
-     * <code>.littlehorse.SearchVariableRequest.NameAndValueRequest value = 4;</code>
+     * <code>.littlehorse.VariableValue value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         getValueFieldBuilder() {
       if (valueBuilder_ == null) {
-        if (!(variableCriteriaCase_ == 4)) {
-          variableCriteria_ = io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.getDefaultInstance();
-        }
         valueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest) variableCriteria_,
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                getValue(),
                 getParentForChildren(),
                 isClean());
-        variableCriteria_ = null;
+        value_ = null;
       }
-      variableCriteriaCase_ = 4;
-      onChanged();
       return valueBuilder_;
+    }
+
+    private int wfSpecMajorVersion_ ;
+    /**
+     * <code>optional int32 wf_spec_major_version = 4;</code>
+     * @return Whether the wfSpecMajorVersion field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecMajorVersion() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional int32 wf_spec_major_version = 4;</code>
+     * @return The wfSpecMajorVersion.
+     */
+    @java.lang.Override
+    public int getWfSpecMajorVersion() {
+      return wfSpecMajorVersion_;
+    }
+    /**
+     * <code>optional int32 wf_spec_major_version = 4;</code>
+     * @param value The wfSpecMajorVersion to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecMajorVersion(int value) {
+
+      wfSpecMajorVersion_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 wf_spec_major_version = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecMajorVersion() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      wfSpecMajorVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int wfSpecRevision_ ;
+    /**
+     * <code>optional int32 wf_spec_revision = 5;</code>
+     * @return Whether the wfSpecRevision field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecRevision() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 wf_spec_revision = 5;</code>
+     * @return The wfSpecRevision.
+     */
+    @java.lang.Override
+    public int getWfSpecRevision() {
+      return wfSpecRevision_;
+    }
+    /**
+     * <code>optional int32 wf_spec_revision = 5;</code>
+     * @param value The wfSpecRevision to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecRevision(int value) {
+
+      wfSpecRevision_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 wf_spec_revision = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecRevision() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      wfSpecRevision_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object varName_ = "";
+    /**
+     * <code>string var_name = 6;</code>
+     * @return The varName.
+     */
+    public java.lang.String getVarName() {
+      java.lang.Object ref = varName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        varName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string var_name = 6;</code>
+     * @return The bytes for varName.
+     */
+    public com.google.protobuf.ByteString
+        getVarNameBytes() {
+      java.lang.Object ref = varName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        varName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string var_name = 6;</code>
+     * @param value The varName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVarName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      varName_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string var_name = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVarName() {
+      varName_ = getDefaultInstance().getVarName();
+      bitField0_ = (bitField0_ & ~0x00000020);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string var_name = 6;</code>
+     * @param value The bytes for varName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVarNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      varName_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object wfSpecName_ = "";
+    /**
+     * <code>string wf_spec_name = 7;</code>
+     * @return The wfSpecName.
+     */
+    public java.lang.String getWfSpecName() {
+      java.lang.Object ref = wfSpecName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        wfSpecName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string wf_spec_name = 7;</code>
+     * @return The bytes for wfSpecName.
+     */
+    public com.google.protobuf.ByteString
+        getWfSpecNameBytes() {
+      java.lang.Object ref = wfSpecName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        wfSpecName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string wf_spec_name = 7;</code>
+     * @param value The wfSpecName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      wfSpecName_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_spec_name = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecName() {
+      wfSpecName_ = getDefaultInstance().getWfSpecName();
+      bitField0_ = (bitField0_ & ~0x00000040);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_spec_name = 7;</code>
+     * @param value The bytes for wfSpecName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      wfSpecName_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

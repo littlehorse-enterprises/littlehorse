@@ -30,19 +30,54 @@ public interface SearchNodeRunRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
    */
-  boolean hasWfRunId();
+  boolean hasEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
    */
-  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
+  com.google.protobuf.Timestamp getEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
-  io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NoderunCriteriaCase getNoderunCriteriaCase();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
+   */
+  boolean hasLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
+   */
+  com.google.protobuf.Timestamp getLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
+
+  /**
+   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+   * @return The enum numeric value on the wire for nodeType.
+   */
+  int getNodeTypeValue();
+  /**
+   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
+   * @return The nodeType.
+   */
+  io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType();
+
+  /**
+   * <code>.littlehorse.LHStatus status = 6;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  int getStatusValue();
+  /**
+   * <code>.littlehorse.LHStatus status = 6;</code>
+   * @return The status.
+   */
+  io.littlehorse.sdk.common.proto.LHStatus getStatus();
 }

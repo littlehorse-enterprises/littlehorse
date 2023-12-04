@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -106,10 +105,9 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         // Since we haven't started the first TaskWorker, the tasks should both
         // be STARTING. We'll test out pagination.
         WfRunIdList runningWfs = client.searchWfRun(SearchWfRunRequest.newBuilder()
-                .setStatusAndName(StatusAndNameRequest.newBuilder()
-                        .setWfSpecName(WF_SPEC_NAME)
-                        .setStatus(LHStatus.RUNNING)
-                        .setEarliestStart(LHLibUtil.fromDate(new Date(System.currentTimeMillis() - 5000))))
+                .setWfSpecName(WF_SPEC_NAME)
+                .setStatus(LHStatus.RUNNING)
+                .setEarliestStart(LHLibUtil.fromDate(new Date(System.currentTimeMillis() - 5000)))
                 .build());
         assertContainsWfRun(runningWfs, succeedWf);
         assertContainsWfRun(runningWfs, failWf);

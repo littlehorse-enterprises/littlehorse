@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -125,10 +124,8 @@ public abstract class Test {
     // pagination via Bookmark's.
     public TaskRunIdList searchTaskRuns(String taskDefName, TaskStatus status) {
         return client.searchTaskRun(SearchTaskRunRequest.newBuilder()
-                .setStatusAndTaskDef(StatusAndTaskDefRequest.newBuilder()
-                        .setStatus(status)
-                        .setTaskDefName(taskDefName)
-                        .build())
+                .setStatus(status)
+                .setTaskDefName(taskDefName)
                 .build());
     }
 

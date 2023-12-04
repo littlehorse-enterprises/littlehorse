@@ -17,12 +17,11 @@ describe('taskRun API', () => {
         });
 
         (grpcCallHandler.makeGrpcCall as jest.Mock).mockImplementation((method: string, req: NextApiRequest, res: NextApiResponse, grpcRequestBody: SearchTaskRunRequest) => {
-            if (grpcRequestBody.statusAndTaskDef?.status === TaskStatus.TASK_SCHEDULED) {
-                expect(grpcRequestBody).toEqual( { statusAndTaskDef: {
+            if (grpcRequestBody.status === TaskStatus.TASK_SCHEDULED) {
+                expect(grpcRequestBody).toEqual( { 
                     status: 'TASK_SCHEDULED',
-                    taskDefName: 'A_TASKDEF'
-                },
-                'limit': 99
+                    taskDefName: 'A_TASKDEF',
+                    'limit': 99
                 })
 
                 return Promise.resolve({
@@ -33,12 +32,11 @@ describe('taskRun API', () => {
                 })
             }
 
-            if (grpcRequestBody.statusAndTaskDef?.status === TaskStatus.TASK_RUNNING) {
-                expect(grpcRequestBody).toEqual( { statusAndTaskDef: {
+            if (grpcRequestBody.status === TaskStatus.TASK_RUNNING) {
+                expect(grpcRequestBody).toEqual( {
                     status: 'TASK_RUNNING',
-                    taskDefName: 'A_TASKDEF'
-                },
-                'limit': 99
+                    taskDefName: 'A_TASKDEF',
+                    'limit': 99
                 })
 
                 return Promise.resolve({
@@ -49,12 +47,11 @@ describe('taskRun API', () => {
                 })
             }
 
-            if (grpcRequestBody.statusAndTaskDef?.status === TaskStatus.TASK_SUCCESS) {
-                expect(grpcRequestBody).toEqual( { statusAndTaskDef: {
+            if (grpcRequestBody.status === TaskStatus.TASK_SUCCESS) {
+                expect(grpcRequestBody).toEqual( {
                     status: 'TASK_SUCCESS',
-                    taskDefName: 'A_TASKDEF'
-                },
-                'limit': 99
+                    taskDefName: 'A_TASKDEF',
+                    'limit': 99
                 })
 
                 return Promise.resolve({

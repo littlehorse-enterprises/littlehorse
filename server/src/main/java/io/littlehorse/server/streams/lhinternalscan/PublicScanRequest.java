@@ -79,8 +79,7 @@ public abstract class PublicScanRequest<
 
     /**
      * Builds search attributes based on the provided search input arguments. This
-     * method is
-     * intended to be overridden by subclasses to implement custom logic.
+     * method is intended to be overridden by subclasses to implement custom logic.
      *
      * @return {@link Attribute} containing attributes associated with the search
      *         operation.
