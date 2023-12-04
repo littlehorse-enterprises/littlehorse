@@ -22,10 +22,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             req,
             res,
             SearchTaskRunRequest.fromJSON({
-                statusAndTaskDef: {
-                    status: 'TASK_SCHEDULED',
-                    taskDefName
-                },
+                status: 'TASK_SCHEDULED',
+                taskDefName,
                 limit: 99
             }))
 
@@ -35,10 +33,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             req,
             res,
             SearchTaskRunRequest.fromJSON({
-                statusAndTaskDef: {
-                    status: 'TASK_RUNNING',
-                    taskDefName
-                },
+                status: 'TASK_RUNNING',
+                taskDefName,
                 limit: 99
             }))
         out = out.concat(runningTasks.results.filter(r => r.wfRunId === wfRunId) )
@@ -47,10 +43,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             req,
             res,
             SearchTaskRunRequest.fromJSON({
-                statusAndTaskDef: {
-                    status: 'TASK_SUCCESS',
-                    taskDefName
-                },
+                status: 'TASK_SUCCESS',
+                taskDefName,
                 limit: 99
             }))
         out = out.concat(successfulTasks.results.filter(r => r.wfRunId === wfRunId) )
