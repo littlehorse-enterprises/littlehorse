@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -35,5 +36,10 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
         final String prefixKey = objectType.getNumber() + "/";
         return new ObjectIdScanBoundaryStrategy(
                 wfRunId.toString(), prefixKey + wfRunId + "/", prefixKey + wfRunId + "/~");
+    }
+
+    public static ObjectIdScanBoundaryStrategy metadataSearchFor(GetableClassEnum objectType) {
+        final String prefixKey = objectType.getNumber() + "/";
+        return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefixKey, prefixKey + "/~");
     }
 }

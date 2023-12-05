@@ -145,10 +145,7 @@ public class SearchWfSpecRequestModel
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY,
-                    GetableClassEnum.WF_SPEC.getNumber() + "/",
-                    GetableClassEnum.WF_SPEC.getNumber() + "/~");
+            return ObjectIdScanBoundaryStrategy.metadataSearchFor(GetableClassEnum.WF_SPEC);
         }
     }
 }

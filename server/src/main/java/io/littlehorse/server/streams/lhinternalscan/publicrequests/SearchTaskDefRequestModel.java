@@ -80,10 +80,7 @@ public class SearchTaskDefRequestModel
         if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY,
-                    GetableClassEnum.TASK_DEF.getNumber() + "/",
-                    GetableClassEnum.TASK_DEF.getNumber() + "/~");
+            return ObjectIdScanBoundaryStrategy.metadataSearchFor(GetableClassEnum.TASK_DEF);
         }
     }
 }

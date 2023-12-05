@@ -114,10 +114,7 @@ public class SearchUserTaskDefRequestModel
         } else if (name != null && !name.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name, name + "/");
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY,
-                    GetableClassEnum.USER_TASK_DEF.getNumber() + "/",
-                    GetableClassEnum.USER_TASK_DEF.getNumber() + "/~");
+            return ObjectIdScanBoundaryStrategy.metadataSearchFor(GetableClassEnum.USER_TASK_DEF);
         }
     }
 }
