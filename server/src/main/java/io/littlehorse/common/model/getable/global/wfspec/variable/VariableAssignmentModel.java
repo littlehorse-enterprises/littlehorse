@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -26,7 +27,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return VariableAssignment.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
 
@@ -36,10 +38,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 variableName = p.getVariableName();
                 break;
             case LITERAL_VALUE:
-                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue());
+                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue(), context);
                 break;
             case FORMAT_STRING:
-                formatString = LHSerializable.fromProto(p.getFormatString(), FormatStringModel.class);
+                formatString = LHSerializable.fromProto(p.getFormatString(), FormatStringModel.class, context);
                 break;
             case SOURCE_NOT_SET:
                 // nothing to do;
@@ -68,9 +70,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return out;
     }
 
-    public static VariableAssignmentModel fromProto(VariableAssignment proto) {
+    public static VariableAssignmentModel fromProto(VariableAssignment proto, ExecutionContext context) {
         VariableAssignmentModel out = new VariableAssignmentModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 

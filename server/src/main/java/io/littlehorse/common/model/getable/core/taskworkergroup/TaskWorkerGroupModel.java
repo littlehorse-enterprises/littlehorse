@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,14 +54,14 @@ public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
     }
 
     @Override
-    public void initFrom(Message p) {
+    public void initFrom(Message p, ExecutionContext context) {
         TaskWorkerGroup proto = (TaskWorkerGroup) p;
-        id = LHSerializable.fromProto(proto.getId(), TaskWorkerGroupIdModel.class);
+        id = LHSerializable.fromProto(proto.getId(), TaskWorkerGroupIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         taskWorkers = proto.getTaskWorkersMap().entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
                     TaskWorkerMetadataModel metadata = new TaskWorkerMetadataModel();
-                    metadata.initFrom(entry.getValue());
+                    metadata.initFrom(entry.getValue(), context);
                     return metadata;
                 }));
     }

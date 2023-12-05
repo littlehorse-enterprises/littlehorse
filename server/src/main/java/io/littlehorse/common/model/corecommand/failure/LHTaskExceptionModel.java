@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHTaskException;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 
 @Getter
@@ -18,7 +19,7 @@ public class LHTaskExceptionModel extends LHSerializable<LHTaskException> {
     }
 
     @Override
-    public void initFrom(Message proto) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         LHTaskException taskException = (LHTaskException) proto;
         name = taskException.getName();
         message = taskException.getMessage();

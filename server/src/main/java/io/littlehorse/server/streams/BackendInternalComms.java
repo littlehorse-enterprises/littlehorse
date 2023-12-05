@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.ChannelCredentials;
+import io.grpc.Context;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -17,8 +18,6 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.AbstractCommand;
@@ -36,7 +35,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -45,6 +43,8 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
@@ -95,7 +95,7 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
-    private MetadataCache metadataCache;
+    private final Context.Key<RequestExecutionContext> contextKey;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -103,11 +103,11 @@ public class BackendInternalComms implements Closeable {
             KafkaStreams timerStreams,
             Executor executor,
             MetadataCache metadataCache,
-            ServerDAOFactory daoFactory) {
+            Context.Key<RequestExecutionContext> contextKey) {
         this.config = config;
         this.coreStreams = coreStreams;
-        this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
+        this.contextKey = contextKey;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -150,6 +150,10 @@ public class BackendInternalComms implements Closeable {
         internalGrpcServer.start();
     }
 
+    public RequestExecutionContext executionContext() {
+        return contextKey.get();
+    }
+
     public void close() {
         log.info("Closing backend internal comms");
         for (ManagedChannel channel : channels.values()) {
@@ -164,7 +168,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
-            ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
+            ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeError {
 
         if (objectId.getPartitionKey().isEmpty()) {
             throw new IllegalArgumentException(
@@ -188,7 +192,8 @@ public class BackendInternalComms implements Closeable {
                                     .build())
                             .getResponse()
                             .toByteArray(),
-                    clazz);
+                    clazz,
+                    context);
         }
     }
 
@@ -216,7 +221,7 @@ public class BackendInternalComms implements Closeable {
     public Set<HostModel> getAllInternalHosts() {
         // It returns a sorted collection always
         return coreStreams.metadataForAllStreamsClients().stream()
-                .map(meta -> meta.hostInfo())
+                .map(StreamsMetadata::hostInfo)
                 .map(hostInfo -> new HostModel(hostInfo.host(), hostInfo.port()))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
@@ -311,8 +316,9 @@ public class BackendInternalComms implements Closeable {
 
     private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
-        AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
-        return ModelStore.instanceFor(rawStore, authContext.tenantId());
+        RequestExecutionContext requestContext = executionContext();
+        AuthorizationContext authContext = requestContext.authorization();
+        return ModelStore.instanceFor(rawStore, authContext.tenantId(), requestContext);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
@@ -384,7 +390,7 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> ctx) {
-            InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class);
+            InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
             try {
                 InternalScanResponse reply = doScan(lhis);
                 ctx.onNext(reply);
@@ -679,10 +685,6 @@ public class BackendInternalComms implements Closeable {
             return i;
         }
         throw new RuntimeException("Not possible");
-    }
-
-    public ReadOnlyMetadataStore getGlobalStoreImpl() {
-        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE), metadataCache);
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {

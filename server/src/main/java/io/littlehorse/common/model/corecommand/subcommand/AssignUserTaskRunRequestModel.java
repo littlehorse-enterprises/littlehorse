@@ -5,7 +5,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -13,6 +12,8 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,9 +43,10 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         AssignUserTaskRunRequest p = (AssignUserTaskRunRequest) proto;
-        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         overrideClaim = p.getOverrideClaim();
 
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
@@ -56,13 +58,13 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
 
         if (userGroup == null && userId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "must provide either UserGroup or userId");
         }
 
-        UserTaskRunModel utr = dao.get(userTaskRunId);
+        UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
@@ -83,8 +85,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
 
         log.debug("Reassigning user task run {} to user: {}, group: {}", userTaskRunId, userId, userGroup);
         utr.assignTo(userId, userGroup, true);
-
-        WfRunModel wfRunModel = dao.get(getWfRunId());
+        WfRunModel wfRunModel = executionContext.getableManager().get(getWfRunId());
         if (wfRunModel == null) {
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }

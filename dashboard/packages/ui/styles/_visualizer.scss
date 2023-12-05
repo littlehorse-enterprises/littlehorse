@@ -1,0 +1,127 @@
+.visualizer {
+  display: flex;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #363a41;
+  background: linear-gradient(180deg, #282b30 0%, #24272b 53.65%, #232529 100%);
+
+  /* shadow-darkbox01 */
+  box-shadow: 0px 27px 8px 0px rgba(0, 0, 0, 0),
+    0px 17px 7px 0px rgba(0, 0, 0, 0.01), 0px 10px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 4px 4px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.1),
+    0px 0px 0px 0px rgba(0, 0, 0, 0.1);
+  .canvas {
+    background: #1d1e26;
+    overflow: auto;
+    flex: 1 0 0;
+    align-self: stretch;
+    width: 633px;
+    height: 953px;
+  }
+
+  .viznode-canvas {
+    // background: #1d1e26;
+    // width: 200px;
+    // border: 1px solid #3D4149;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    .ring {
+      background: #1d1e26;
+      padding: 5px;
+      padding-top: 0px;
+    }
+    .opacity50{
+      opacity: .35;
+    }
+    .node {
+      cursor: pointer;
+      display: inline-flex;
+      padding: 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid var(--color-shadow-light, #3d4149);
+      background: var(--color-ghost-light, #363a41);
+      // background: var(--color-ghost-light, #363A41);
+      // &:hover{
+      //     box-shadow: 0px 0px 10px 0px rgba(118, 118, 118, 0.50), 0px 0px 20px 0px rgba(255, 255, 255, 0.25);
+      // }
+
+      color: var(--color-bright-light, #edeef0);
+      font-family: "Inter";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+
+      transition: all ease-in 0.1s;
+
+      &.selected-node {
+        border: 1px solid var(--color-bright-light, #edeef0);
+        box-shadow: 0px 0px 10px 0px rgba(118, 118, 118, 0.5),
+          0px 0px 20px 0px rgba(255, 255, 255, 0.25);
+      }
+
+      // START: If you change the values here, the values on _visualizer.scss should be adjusted as well.
+      &.tENTRYPOINT {
+        border-radius: 64px;
+        border: 1px solid var(--color-information, #007aff);
+        background: rgba(0, 122, 255, 0.2);
+      }
+
+      &.tTASK{
+        width: 250px;
+      }
+
+      &.tEXIT {
+        width: 200px;
+        border-radius: 64px;
+        border: 1px solid var(--color-success, #34c759);
+        background: rgba(52, 199, 89, 0.2);
+      }
+
+      &.tNOP {
+        width: 200px;
+        flex-direction: column;
+        gap: 0px;
+      }
+
+      &.tSTART_THREAD {
+        width: 200px;
+      }
+
+      &.tWAIT_FOR_THREADS {
+        width: 84px;
+      }
+
+      &.tEXTERNAL_EVENT {
+        width: 200px;
+      }
+
+      &.tSLEEP {
+        width: 200px;
+      }
+
+      &.tSTART_MULTIPLE_THREADS {
+        width: 200px;
+      }
+
+      &.tUSER_TASK {
+        width: 250px;
+      }
+
+      // END
+
+    }
+  }
+}
+
+.custom-smart-edge {
+  &__label {
+    max-width: 200px;
+  }
+}

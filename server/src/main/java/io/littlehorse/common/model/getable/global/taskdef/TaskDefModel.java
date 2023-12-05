@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,13 +71,13 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
     }
 
     @Override
-    public void initFrom(Message p) {
+    public void initFrom(Message p, ExecutionContext context) {
         TaskDef proto = (TaskDef) p;
-        id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class);
+        id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
 
         for (VariableDef entry : proto.getInputVarsList()) {
-            inputVars.add(VariableDefModel.fromProto(entry));
+            inputVars.add(VariableDefModel.fromProto(entry, context));
         }
     }
 
@@ -84,9 +85,9 @@ public class TaskDefModel extends GlobalGetable<TaskDef> {
         return id.getName();
     }
 
-    public static TaskDefModel fromProto(TaskDef p) {
+    public static TaskDefModel fromProto(TaskDef p, ExecutionContext context) {
         TaskDefModel out = new TaskDefModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

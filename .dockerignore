@@ -5,6 +5,7 @@
 !sdk-go/
 !lhctl/
 !docker/
+!dashboard/
 !gradle.properties
 !settings.gradle
 !go.mod

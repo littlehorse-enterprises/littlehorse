@@ -9,12 +9,12 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -26,6 +26,40 @@ public class Tag extends Storeable<TagPb> {
     public List<Attribute> attributes;
     public Date createdAt;
     public String describedObjectId;
+
+    public Tag() {
+        attributes = new ArrayList<>();
+    }
+
+    public TagStorageType getTagStorageType() {
+        return this.tagType;
+    }
+
+    @SafeVarargs
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Pair<String, String>... atts) {
+        this(getable, type, Arrays.asList(atts));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
+        this();
+        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
+        createdAt = getable.getCreatedAt();
+        describedObjectId = getable.getObjectId().toString();
+        this.tagType = type;
+
+        for (Pair<String, String> p : atts) {
+            attributes.add(new Attribute(p.getLeft(), p.getRight()));
+        }
+    }
+
+    public Tag(TagStorageType type, GetableClassEnum objectType, Collection<Attribute> attributes) {
+        this();
+        this.tagType = type;
+        this.objectType = objectType;
+        this.createdAt = new Date();
+        this.attributes.addAll(attributes);
+    }
 
     public Class<TagPb> getProtoBaseClass() {
         return TagPb.class;
@@ -47,14 +81,14 @@ public class Tag extends Storeable<TagPb> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TagPb p = (TagPb) proto;
         objectType = p.getObjectType();
         describedObjectId = p.getDescribedObjectId();
         createdAt = LHUtil.fromProtoTs(p.getCreated());
 
         for (AttributePb attr : p.getAttributesList()) {
-            attributes.add(Attribute.fromProto(attr));
+            attributes.add(Attribute.fromProto(attr, context));
         }
 
         tagType = p.getTagType();
@@ -90,11 +124,6 @@ public class Tag extends Storeable<TagPb> {
         return builder.toString();
     }
 
-    public static String getAttributeStringFromPb(GetableClassEnum objectType, List<AttributePb> attributes) {
-        return getAttributeString(
-                objectType, attributes.stream().map(Attribute::fromProto).collect(Collectors.toList()));
-    }
-
     public boolean isRemote() {
         // When we re-enable REMOTE tags, we will need to check this.tagType;
         return false;
@@ -108,46 +137,6 @@ public class Tag extends Storeable<TagPb> {
         builder.append("/");
         builder.append(describedObjectId);
         return builder.toString();
-    }
-
-    public Tag() {
-        attributes = new ArrayList<>();
-    }
-
-    public TagStorageType getTagStorageType() {
-        return this.tagType;
-    }
-
-    @SafeVarargs
-    public Tag(AbstractGetable<?> getable, TagStorageType type, Pair<String, String>... atts) {
-        this(getable, type, Arrays.asList(atts));
-    }
-
-    @SuppressWarnings("unchecked")
-    public Tag(AbstractGetable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
-        this();
-        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
-        createdAt = getable.getCreatedAt();
-        describedObjectId = getable.getObjectId().toString();
-        this.tagType = type;
-
-        for (Pair<String, String> p : atts) {
-            attributes.add(new Attribute(p.getLeft(), p.getRight()));
-        }
-    }
-
-    public Tag(
-            TagStorageType type,
-            GetableClassEnum objectType,
-            Collection<Attribute> attributes,
-            String describedObjectId,
-            Date createAt) {
-        this();
-        this.tagType = type;
-        this.objectType = objectType;
-        this.describedObjectId = describedObjectId;
-        this.createdAt = createAt;
-        this.attributes.addAll(attributes);
     }
 
     public int hashCode() {

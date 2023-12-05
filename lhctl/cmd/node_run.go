@@ -88,45 +88,69 @@ Lists all NodeRun's for a given WfRun Id.
 }
 
 var searchNodeRunCmd = &cobra.Command{
-	Use:   "nodeRun",
-	Short: "Search for NodeRun's either by WfRunId or by {takDefId,Status}",
+	Use:   "nodeRun <node_type> <status>",
+	Short: "Search for NodeRun's by providing Node Type and Status",
 	Long: `
-Search for NodeRun's by either the WfRunId or by providing the taskDefName and the Status.
+Search for NodeRun's by providing the type of the Node and the status of the NodeRun.
 
-Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'.
+Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'. Optionally
+provde --earliestMinutesAgo and --latestMinutesAgo to filter by NodeRun creation time.
 
-Choose one of the following option groups:
-// Returns all NodeRun's from a specified WfRun.
-[wfRunId]
+Valid options for the Node Type:
+- TASK
+- EXTERNAL_EVENT
+- ENTRYPOINT
+- EXIT
+- START_THREAD
+- WAIT_THREADS
+- SLEEP
+- USER_TASK
+- START_MULTIPLE_THREADS
 
-// For user task search. Use any combination of the following, except note
-// that userId and userGroup are mutually exclusive.
-[userTaskDefName, userTaskStatus, userId, userGroup]
+Valid options for Status:
+- STARTING
+- RUNNING
+- COMPLETED
+- HALTING
+- HALTED
+- ERROR
+- EXCEPTION
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-  options with any group except [--wfRunId] to put a time bound on WfRun's
-  which are returned. The time bound applies to the time that the WfRun was
-  created.
+  options to filter returned NodeRun ID's based on the NodeRun creation
+  time.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
+		if len(args) != 2 {
+			log.Fatal("Must provide two arguments: Node Type and NodeRun Status")
+		}
+
+		nodeTypeStr, statusStr := args[0], args[1]
+
+		nodeTypeInt, ok := model.SearchNodeRunRequest_NodeType_value[nodeTypeStr]
+		if !ok {
+			log.Fatal("Invalid value for nodeType: " + nodeTypeStr + ". See lhctl search nodeRun --help")
+		}
+
+		statusInt, ok := model.TaskStatus_value[statusStr]
+		if !ok {
+			log.Fatal("Invalid value for status: " + statusStr + ". See lhctl search nodeRun --help")
+		}
+
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search *model.SearchNodeRunRequest
+		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		if wfRunId != "" {
-			search = &model.SearchNodeRunRequest{
-				NoderunCriteria: &model.SearchNodeRunRequest_WfRunId{
-					WfRunId: &model.WfRunId{Id: wfRunId},
-				},
-			}
-		} else {
-			log.Fatal("Must provide --wfRunId flag")
+		search := &model.SearchNodeRunRequest{
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			NodeType:      model.SearchNodeRunRequest_NodeType(nodeTypeInt),
+			Status:        model.LHStatus(statusInt),
 		}
-		search.Bookmark = bookmark
-		search.Limit = &limit
 
 		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(), search))
 
@@ -163,15 +187,6 @@ func init() {
 	searchCmd.AddCommand(searchNodeRunCmd)
 	listCmd.AddCommand(listNodeRunCmd)
 
-	searchNodeRunCmd.Flags().String("wfRunId", "", "WfRunId for which to return all NodeRun id's.")
-	searchNodeRunCmd.Flags().String("userTaskDefName", "", "UserTaskDef ID of User Task Run's to search for.")
-	searchNodeRunCmd.Flags().String("userId", "", "Search for User Task Runs assigned to this User ID.")
-	searchNodeRunCmd.Flags().String("userGroup", "", "Search for User Task Runs assigned to this User Group.")
-	searchNodeRunCmd.Flags().String("userTaskStatus", "", "Status of User Task Runs to search for.")
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
-
-	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userTaskDefName")
-	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userId")
-	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userGroup")
 }

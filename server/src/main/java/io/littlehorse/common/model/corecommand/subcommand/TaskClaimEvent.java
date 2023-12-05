@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -14,6 +13,8 @@ import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,8 +71,8 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     }
 
     @Override
-    public PollTaskResponse process(CoreProcessorDAO dao, LHServerConfig config) {
-        TaskRunModel taskRun = dao.get(taskRunId);
+    public PollTaskResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
@@ -79,7 +80,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        ScheduledTaskModel scheduledTask = dao.markTaskAsScheduled(taskRunId);
+        ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
 
         // It's totally fine for the scheduledTask to be null. That happens when someone already
         // claimed that task. This happens when a server is recovering from a crash. The fact that it
@@ -96,15 +97,15 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         }
     }
 
-    public static TaskClaimEvent fromProto(TaskClaimEventPb proto) {
+    public static TaskClaimEvent fromProto(TaskClaimEventPb proto, ExecutionContext context) {
         TaskClaimEvent out = new TaskClaimEvent();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
-    public void initFrom(Message p) {
+    public void initFrom(Message p, ExecutionContext context) {
         TaskClaimEventPb proto = (TaskClaimEventPb) p;
-        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class);
+        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class, context);
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());

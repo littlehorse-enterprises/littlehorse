@@ -3,13 +3,13 @@ package io.littlehorse.common.model.getable.core.taskrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
-import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +18,8 @@ import lombok.Setter;
 public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> {
 
     private NodeRunIdModel nodeRunId;
+    private ExecutionContext context;
+    private ProcessorExecutionContext processorContext;
 
     public TaskNodeReferenceModel() {}
 
@@ -35,38 +37,37 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskNodeReference p = (TaskNodeReference) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
+        this.context = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
-    public void onCompleted(TaskAttemptModel successfulAttept, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
+    public void onCompleted(TaskAttemptModel successfulAttept) {
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
         nodeRunModel.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
     }
 
-    public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.get(nodeRunId);
-        FailureModel failure;
-        if (!lastFailure.containsException()) {
-            String message = getMessageFor(lastFailure.getStatus());
-            if (lastFailure.getError() == null) { // check for compatibility
-                failure = new FailureModel(message, getFailureCodeFor(lastFailure.getStatus()));
-            } else {
-                failure = new FailureModel(
-                        message, lastFailure.getError().getType().name());
-            }
-        } else {
-            failure = new FailureModel(
-                    lastFailure.getException().getMessage(),
-                    lastFailure.getException().getName());
-        }
+    @Override
+    public void onFailed(TaskAttemptModel lastFailure) {
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(nodeRunId);
+
+        String message = getMessageFor(lastFailure);
+        String errorType = (!lastFailure.containsException() && lastFailure.getError() != null)
+                ? lastFailure.getError().getType().name() // case for only technical errors where error type is known
+                : getFailureCodeFor(lastFailure); // case for technical and business exception
+
+        FailureModel failure = new FailureModel(message, errorType);
+
         nodeRunModel.fail(failure, lastFailure.getEndTime());
     }
 
-    private String getFailureCodeFor(TaskStatus status) {
-        switch (status) {
-            case TASK_EXCEPTION: // TODO: LH-162: This shouldn't be TASK_FAILURE
+    private String getFailureCodeFor(TaskAttemptModel lastFailure) {
+        switch (lastFailure.getStatus()) {
+            case TASK_EXCEPTION:
+                return lastFailure.getException().getName();
             case TASK_FAILED:
                 return LHConstants.TASK_FAILURE;
             case TASK_TIMEOUT:
@@ -80,13 +81,13 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             case TASK_SUCCESS:
             case UNRECOGNIZED:
         }
-        throw new IllegalArgumentException("Unexpected task status: " + status);
+        throw new IllegalArgumentException("Unexpected task status: " + lastFailure.getStatus());
     }
 
-    private String getMessageFor(TaskStatus status) {
-        switch (status) {
-            case TASK_EXCEPTION: // TODO: LH-162: Verify that this makes sense
-                return "Task threw business exception";
+    private String getMessageFor(TaskAttemptModel lastFailure) {
+        switch (lastFailure.getStatus()) {
+            case TASK_EXCEPTION:
+                return lastFailure.getException().getMessage();
             case TASK_FAILED:
                 return "Task execution failed";
             case TASK_TIMEOUT:
@@ -100,6 +101,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             case TASK_SUCCESS:
             case UNRECOGNIZED:
         }
-        throw new IllegalArgumentException("Unexpected task status: " + status);
+        throw new IllegalArgumentException("Unexpected task status: " + lastFailure.getStatus());
     }
 }

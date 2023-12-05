@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -53,16 +54,18 @@ public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
         return b;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         ExternalEventDef proto = (ExternalEventDef) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class);
+        retentionPolicy =
+                LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
     }
 
-    public static ExternalEventDefModel fromProto(ExternalEventDef p) {
+    public static ExternalEventDefModel fromProto(ExternalEventDef p, ExecutionContext context) {
         ExternalEventDefModel out = new ExternalEventDefModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 

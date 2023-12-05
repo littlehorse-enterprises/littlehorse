@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.WfGcPolicyCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 
@@ -33,7 +34,7 @@ public class WorkflowRetentionPolicyModel extends LHSerializable<WorkflowRetenti
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         WorkflowRetentionPolicy p = (WorkflowRetentionPolicy) proto;
         type = p.getWfGcPolicyCase();
 

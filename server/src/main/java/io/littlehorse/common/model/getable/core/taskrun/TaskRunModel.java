@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.core.taskrun;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
@@ -23,6 +22,8 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private Date scheduledAt;
     private int timeoutSeconds;
     private TaskStatus status;
+    private ExecutionContext executionContext;
+    // Only contains value in Processor execution context.
+    private ProcessorExecutionContext processorContext;
 
     @Override
     public Class<TaskRun> getProtoBaseClass() {
@@ -53,22 +57,24 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         TaskRun p = (TaskRun) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class);
+        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
-        id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class);
+        id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class, context);
         status = p.getStatus();
         timeoutSeconds = p.getTimeoutSeconds();
-        taskRunSource = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
+        taskRunSource = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class, context);
 
         for (TaskAttempt attempt : p.getAttemptsList()) {
-            attempts.add(LHSerializable.fromProto(attempt, TaskAttemptModel.class));
+            attempts.add(LHSerializable.fromProto(attempt, TaskAttemptModel.class, context));
         }
         for (VarNameAndVal v : p.getInputVariablesList()) {
-            inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class));
+            inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
+        this.executionContext = context;
+        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public TaskRun.Builder toProto() {
@@ -129,9 +135,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return null;
     }
 
-    // Not in the proto
-    private CoreProcessorDAO dao;
-
     public TaskRunModel() {
         scheduledAt = new Date();
         inputVariables = new ArrayList<>();
@@ -139,15 +142,19 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     public TaskRunModel(
-            CoreProcessorDAO dao, List<VarNameAndValModel> inputVars, TaskRunSourceModel source, TaskNodeModel node) {
+            List<VarNameAndValModel> inputVars,
+            TaskRunSourceModel source,
+            TaskNodeModel node,
+            ProcessorExecutionContext processorContext) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
-        this.setDao(dao);
         this.taskDefId = node.getTaskDefId();
         this.maxAttempts = node.getRetries() + 1;
         this.status = TaskStatus.TASK_SCHEDULED;
         this.timeoutSeconds = node.getTimeoutSeconds();
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
     }
 
     @Override
@@ -155,9 +162,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return id;
     }
 
-    public static TaskRunModel fromProto(TaskRun proto) {
+    public static TaskRunModel fromProto(TaskRun proto, ExecutionContext context) {
         TaskRunModel out = new TaskRunModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -194,7 +201,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         // initialization happens here
         attempts.add(new TaskAttemptModel());
 
-        getDao().scheduleTask(scheduledTask);
+        processorContext.getTaskManager().scheduleTask(scheduledTask);
         // TODO: Update Metrics
     }
 
@@ -207,8 +214,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
-        LHTimer timer = new LHTimer(timerCommand, getDao());
-        getDao().scheduleTimer(timer);
+        LHTimer timer = new LHTimer(timerCommand);
+        processorContext.getTaskManager().scheduleTimer(timer);
 
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.
@@ -253,14 +260,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
         if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.
-            taskRunSource.getSubSource().onCompleted(attempt, getDao());
+            taskRunSource.getSubSource().onCompleted(attempt);
             status = TaskStatus.TASK_SUCCESS;
         } else if (shouldRetry()) {
             status = TaskStatus.TASK_SCHEDULED;
             scheduleAttempt();
         } else {
             status = ce.getStatus();
-            taskRunSource.getSubSource().onFailed(attempt, getDao());
+            taskRunSource.getSubSource().onFailed(attempt);
         }
     }
 }

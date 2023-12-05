@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -18,6 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +55,8 @@ public class SearchUserTaskRunRequestModel
         return SearchUserTaskRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchUserTaskRunRequest p = (SearchUserTaskRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -105,9 +106,9 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    public static SearchUserTaskRunRequestModel fromProto(SearchUserTaskRunRequest proto) {
+    public static SearchUserTaskRunRequestModel fromProto(SearchUserTaskRunRequest proto, ExecutionContext context) {
         SearchUserTaskRunRequestModel out = new SearchUserTaskRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -134,7 +135,7 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         // Everything is local.
         return TagStorageType.LOCAL;
     }
@@ -156,6 +157,6 @@ public class SearchUserTaskRunRequestModel
     // }
 
     public LHStore getStoreType() {
-        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 }

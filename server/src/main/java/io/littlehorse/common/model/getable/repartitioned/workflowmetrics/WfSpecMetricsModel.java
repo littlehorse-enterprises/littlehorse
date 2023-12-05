@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
     public long totalStarted;
     public long startToCompleteMax;
     public long startToCompleteAvg;
+    private ExecutionContext executionContext;
 
     public Class<WfSpecMetrics> getProtoBaseClass() {
         return WfSpecMetrics.class;
@@ -53,16 +55,18 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         WfSpecMetrics p = (WfSpecMetrics) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
         startToCompleteAvg = p.getStartToCompleteAvg();
         startToCompleteMax = p.getStartToCompleteMax();
+        this.executionContext = context;
     }
 
     public Date getCreatedAt() {
@@ -78,11 +82,12 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         return new WfSpecMetricsIdModel(time, windowType, wfSpecId).getStoreableKey();
     }
 
-    public static String getObjectId(WfSpecMetricsQueryRequest request) {
+    public static String getObjectId(WfSpecMetricsQueryRequest request, ExecutionContext executionContext) {
+        request.getWfSpecId();
         return new WfSpecMetricsIdModel(
                         LHUtil.getWindowStart(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowLength()),
                         request.getWindowLength(),
-                        LHSerializable.fromProto(request.getWfSpecId(), WfSpecIdModel.class))
+                        LHSerializable.fromProto(request.getWfSpecId(), WfSpecIdModel.class, executionContext))
                 .getStoreableKey();
     }
 

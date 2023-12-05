@@ -3,8 +3,6 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -14,6 +12,9 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +46,12 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         PutTaskDefRequest p = (PutTaskDefRequest) proto;
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
-            inputVars.add(VariableDefModel.fromProto(entry));
+            inputVars.add(VariableDefModel.fromProto(entry, context));
         }
     }
 
@@ -57,26 +59,27 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return true;
     }
 
-    public TaskDef process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public TaskDef process(MetadataCommandExecution context) {
+        MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");
         }
 
-        TaskDefModel oldVersion = dao.getTaskDef(name);
+        TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
         }
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
-        dao.put(spec);
+        metadataManager.put(spec);
 
         return spec.toProto().build();
     }
 
-    public static PutTaskDefRequestModel fromProto(PutTaskDefRequest p) {
+    public static PutTaskDefRequestModel fromProto(PutTaskDefRequest p, ExecutionContext context) {
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

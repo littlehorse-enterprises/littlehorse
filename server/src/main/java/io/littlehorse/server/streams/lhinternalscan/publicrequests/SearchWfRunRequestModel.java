@@ -1,11 +1,8 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.grpc.Status;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -14,11 +11,8 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest.NameRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest.WfrunCriteriaCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
@@ -27,7 +21,9 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
-import java.util.Arrays;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +32,17 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchWfRunRequestModel
         extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel, SearchWfRunReply> {
 
-    public WfrunCriteriaCase type;
-    public StatusAndSpecRequest statusAndSpec;
-    private NameRequest namePb;
-    private StatusAndNameRequest statusAndName;
+    // from proto
+    private String wfSpecName;
+    private Integer wfSpecMajorVersion;
+    private Integer wfSpecRevision;
+    private LHStatus status;
+
+    private Date earliestStart;
+    private Date latestStart;
+
+    // not from proto
+    private ExecutionContext executionContext;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
@@ -49,7 +52,8 @@ public class SearchWfRunRequestModel
         return SearchWfRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchWfRunRequest p = (SearchWfRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -60,95 +64,69 @@ public class SearchWfRunRequestModel
             }
         }
 
-        type = p.getWfrunCriteriaCase();
-        switch (type) {
-            case STATUS_AND_SPEC:
-                statusAndSpec = p.getStatusAndSpec();
-                break;
-            case NAME:
-                namePb = p.getName();
-                break;
-            case STATUS_AND_NAME:
-                statusAndName = p.getStatusAndName();
-                break;
-            case WFRUNCRITERIA_NOT_SET:
-                throw new RuntimeException("Not possible");
-        }
+        wfSpecName = p.getWfSpecName();
+        if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
+        if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
+        if (p.hasStatus()) status = p.getStatus();
+
+        if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
+        if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+
+        this.executionContext = context;
     }
 
     public SearchWfRunRequest.Builder toProto() {
-        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder();
+        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder().setWfSpecName(wfSpecName);
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
         if (limit != null) {
             out.setLimit(limit);
         }
-        switch (type) {
-            case STATUS_AND_SPEC:
-                out.setStatusAndSpec(statusAndSpec);
-                break;
-            case NAME:
-                out.setName(namePb);
-                break;
-            case STATUS_AND_NAME:
-                out.setStatusAndName(statusAndName);
-                break;
-            case WFRUNCRITERIA_NOT_SET:
-                throw new RuntimeException("not possible");
-        }
+
+        if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
+        if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
+
+        if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
+        if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
 
         return out;
     }
 
-    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto) {
+    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto, ExecutionContext context) {
         SearchWfRunRequestModel out = new SearchWfRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
-    }
-
-    private List<WfrunCriteriaCase> supportedCriteriaCases() {
-        return List.of(WfrunCriteriaCase.STATUS_AND_SPEC, WfrunCriteriaCase.NAME, WfrunCriteriaCase.STATUS_AND_NAME);
-    }
-
-    private Timestamp getEarliestStart() {
-        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
-            if (statusAndSpec.hasEarliestStart()) {
-                return statusAndSpec.getEarliestStart();
-            }
-        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
-            if (statusAndName.hasEarliestStart()) {
-                return statusAndName.getEarliestStart();
-            }
-        }
-        return null;
-    }
-
-    private Timestamp getLatestStart() {
-        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
-            if (statusAndSpec.hasLatestStart()) {
-                return statusAndSpec.getLatestStart();
-            }
-        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
-            if (statusAndName.hasLatestStart()) {
-                return statusAndName.getLatestStart();
-            }
-        }
-        return null;
     }
 
     public List<Attribute> getSearchAttributes() {
-        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
-            return buildStatusAndSpecAttributesPb();
-        } else if (type == WfrunCriteriaCase.NAME) {
-            return buildNameAttributePb();
+        List<Attribute> out = new ArrayList<>();
+
+        if (wfSpecMajorVersion != null) {
+            if (wfSpecRevision == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "If wfSpecMajorVersion is provided, you must also provide wfSpecRevision");
+            }
+            out.add(new Attribute(
+                    "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
         } else {
-            return buildStatusAndNameAttributesPb();
+            if (wfSpecRevision != null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+            }
+            out.add(new Attribute("wfSpecName", wfSpecName));
         }
+
+        if (status != null) {
+            out.add(new Attribute("status", status.toString()));
+        }
+
+        return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         List<String> searchAttributeKeys =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
@@ -164,36 +142,12 @@ public class SearchWfRunRequestModel
 
     @Override
     public LHStore getStoreType() {
-        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (!supportedCriteriaCases().contains(type)) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Search case not supported yet");
-        }
         return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
-                Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart())));
-    }
-
-    private List<Attribute> buildStatusAndNameAttributesPb() {
-        return Arrays.asList(
-                new Attribute("wfSpecName", statusAndName.getWfSpecName()),
-                new Attribute("status", statusAndName.getStatus().toString()));
-    }
-
-    private List<Attribute> buildNameAttributePb() {
-        return List.of(new Attribute("wfSpecName", namePb.getWfSpecName()));
-    }
-
-    private List<Attribute> buildStatusAndSpecAttributesPb() {
-        return Arrays.asList(
-                new Attribute(
-                        "wfSpecId",
-                        LHSerializable.fromProto(statusAndSpec.getWfSpecId(), WfSpecIdModel.class)
-                                .toString()),
-                new Attribute("status", statusAndSpec.getStatus().toString()));
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 }

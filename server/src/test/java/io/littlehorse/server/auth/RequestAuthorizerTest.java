@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Iterables;
+import io.grpc.Context;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
@@ -16,18 +17,17 @@ import io.grpc.ServerServiceDefinition;
 import io.grpc.internal.NoopServerCall;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.dao.ServerDAOFactory;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
+import io.littlehorse.server.TestMetadataManager;
+import io.littlehorse.server.TestRequestExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,12 +39,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,19 +50,18 @@ public class RequestAuthorizerTest {
     private final KafkaStreamsServerImpl server = mock();
     private final KafkaStreams kafkaStreams = mock();
     private final MetadataCache metadataCache = new MetadataCache();
-    private final AuthorizationContext context =
-            new AuthorizationContextImpl("my-principal-id", ModelStore.DEFAULT_TENANT, List.of());
-    private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
-            .withLoggingDisabled()
-            .build();
-    private ModelStore modelStore = ModelStore.defaultStore(nativeMetadataStore);
-    private final MetadataProcessorDAO metadataDao = new MetadataProcessorDAOImpl(modelStore, metadataCache, context);
-    private final ServerDAOFactory daoFactory = new ServerDAOFactory(kafkaStreams, metadataCache);
-    private final RequestAuthorizer requestAuthorizer = new RequestAuthorizer(server, daoFactory);
+    private final Context.Key<RequestExecutionContext> contextKey = Context.key("test-context-key");
+    private LHServerConfig lhConfig = mock();
+
+    private final TestRequestExecutionContext requestContext = TestRequestExecutionContext.create();
+    private TestMetadataManager metadataManager =
+            TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
+    private final RequestAuthorizer requestAuthorizer =
+            new RequestAuthorizer(server, contextKey, metadataCache, requestContext::resolveStoreName, lhConfig);
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata mockMetadata = mock();
-    private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
+
+    private WfService service = requestContext.service();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
             ServerServiceDefinition.builder(LHPublicApiGrpc.getServiceDescriptor()),
             LHPublicApiGrpc.getServiceDescriptor().getMethods());
@@ -76,9 +70,8 @@ public class RequestAuthorizerTest {
 
     @BeforeEach
     public void setup() {
-        nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        when(kafkaStreams.store(any())).thenReturn(nativeMetadataStore);
-        inMemoryAnonymousPrincipal = metadataDao.getPrincipal(null);
+        when(kafkaStreams.store(any())).thenReturn(requestContext.getCoreNativeStore());
+        inMemoryAnonymousPrincipal = service.getPrincipal(null);
     }
 
     private void startCall() {
@@ -118,8 +111,8 @@ public class RequestAuthorizerTest {
         newPrincipal.setId("principal-id");
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
         TenantModel tenant = new TenantModel("my-tenant");
-        metadataDao.put(tenant);
-        metadataDao().put(newPrincipal);
+        metadataManager.put(tenant);
+        metadataManager.put(newPrincipal);
         MethodDescriptor<Object, Object> mockMethod = mock();
         when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
@@ -130,7 +123,7 @@ public class RequestAuthorizerTest {
     @Test
     public void supportAnonymousPrincipalWhenPrincipalIdIsNotFound() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        metadataDao.put(new TenantModel("my-tenant"));
+        metadataManager.put(new TenantModel("my-tenant"));
         startCall();
         assertThat(resolvedAuthContext.principalId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
         assertThat(resolvedAuthContext.acls())
@@ -146,9 +139,9 @@ public class RequestAuthorizerTest {
             TenantModel customTenant = new TenantModel("my-tenant");
             PrincipalModel adminPrincipal = buildAdminPrincipal();
             PrincipalModel limitedPrincipal = buildLimitedPrincipal();
-            metadataDao.put(customTenant);
-            metadataDao.put(adminPrincipal);
-            metadataDao.put(limitedPrincipal);
+            metadataManager.put(customTenant);
+            metadataManager.put(adminPrincipal);
+            metadataManager.put(limitedPrincipal);
         }
 
         @Test
@@ -201,7 +194,7 @@ public class RequestAuthorizerTest {
             PrincipalModel newPrincipal = new PrincipalModel();
             newPrincipal.setId(principalId);
             newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
-            metadataDao.put(newPrincipal);
+            metadataManager.put(newPrincipal);
             def.getServerCallHandler().startCall(stubCall, mockMetadata);
         };
         List<Future<?>> toDo = new ArrayList<>();
@@ -230,16 +223,13 @@ public class RequestAuthorizerTest {
         }
     }
 
-    private MetadataProcessorDAO metadataDao() {
-        ModelStore store = ModelStore.defaultStore(nativeMetadataStore);
-        return new MetadataProcessorDAOImpl(store, metadataCache, context);
-    }
-
     private ServerServiceDefinition buildTestServiceDefinition(
             ServerServiceDefinition.Builder definitionBuilder, Collection<MethodDescriptor<?, ?>> stubMethods) {
         for (MethodDescriptor<?, ?> method : stubMethods) {
             definitionBuilder = definitionBuilder.addMethod(method, (call, headers) -> {
-                resolvedAuthContext = ServerAuthorizer.AUTH_CONTEXT.get();
+                if (contextKey.get() != null) {
+                    resolvedAuthContext = contextKey.get().authorization();
+                }
                 return null;
             });
         }
@@ -250,7 +240,7 @@ public class RequestAuthorizerTest {
             ServerServiceDefinition.Builder definitionBuilder, Collection<MethodDescriptor<?, ?>> stubMethods) {
         for (MethodDescriptor<?, ?> method : stubMethods) {
             definitionBuilder = definitionBuilder.addMethod(method, (call, headers) -> {
-                String principalId = ServerAuthorizer.AUTH_CONTEXT.get().principalId();
+                String principalId = contextKey.get().authorization().principalId();
                 assertThat(principalId).isEqualTo(headers.get(ServerAuthorizer.CLIENT_ID));
                 return new NoopServerCall.NoopServerCallListener<>();
             });

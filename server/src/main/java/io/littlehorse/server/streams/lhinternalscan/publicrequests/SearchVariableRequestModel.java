@@ -2,32 +2,29 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
-import io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest;
-import io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +34,15 @@ public class SearchVariableRequestModel
         extends PublicScanRequest<
                 SearchVariableRequest, VariableIdList, VariableId, VariableIdModel, SearchVariableReply> {
 
-    private VariableCriteriaCase type;
-    private NameAndValueRequest value;
-    private WfRunIdModel wfRunId;
+    // from proto
+    private VariableValueModel value;
+    private String varName;
+    private String wfSpecName;
+    private Integer wfSpecMajorVersion;
+    private Integer wfSpecRevision;
+
+    // Not from proto
+    private WfService service;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -49,7 +52,8 @@ public class SearchVariableRequestModel
         return SearchVariableRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext ctx) {
         SearchVariableRequest p = (SearchVariableRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -60,43 +64,34 @@ public class SearchVariableRequestModel
             }
         }
 
-        type = p.getVariableCriteriaCase();
-        switch (type) {
-            case VALUE:
-                value = p.getValue();
-                break;
-            case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
-                break;
-            case VARIABLECRITERIA_NOT_SET:
-                throw new RuntimeException("Not possible");
-        }
+        varName = p.getVarName();
+        wfSpecName = p.getWfSpecName();
+        value = VariableValueModel.fromProto(p.getValue(), ctx);
+        if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
+        if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
+
+        // :porg:
+        this.service = ctx.service();
     }
 
     public SearchVariableRequest.Builder toProto() {
-        SearchVariableRequest.Builder out = SearchVariableRequest.newBuilder();
-        if (bookmark != null) {
-            out.setBookmark(bookmark.toByteString());
-        }
-        if (limit != null) {
-            out.setLimit(limit);
-        }
-        switch (type) {
-            case VALUE:
-                out.setValue(value);
-            case WF_RUN_ID:
-                out.setWfRunId(wfRunId.toProto());
-                break;
-            case VARIABLECRITERIA_NOT_SET:
-                throw new RuntimeException("not possible");
-        }
+        SearchVariableRequest.Builder out = SearchVariableRequest.newBuilder()
+                .setVarName(varName)
+                .setWfSpecName(wfSpecName)
+                .setValue(value.toProto());
+
+        if (bookmark != null) out.setBookmark(bookmark.toByteString());
+        if (limit != null) out.setLimit(limit);
+
+        if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
+        if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
 
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ExecutionContext context) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -112,28 +107,23 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
-        Integer majorVersion = value.hasWfSpecMajorVersion() ? value.getWfSpecMajorVersion() : null;
-        Integer revision = value.hasWfSpecRevision() ? value.getWfSpecRevision() : null;
-
-        WfSpecModel spec = readOnlyDao.getWfSpec(value.getWfSpecName(), majorVersion, revision);
-        log.error("Major: {}, Revision: {}", majorVersion, revision);
+    private TagStorageType indexTypeForSearchFromWfSpec() {
+        WfSpecModel spec = service.getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
 
         if (spec == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec %s".formatted(wfSpecName));
         }
 
-        ThreadVarDefModel varDef = spec.getAllVariables().get(value.getVarName());
+        ThreadVarDefModel varDef = spec.getAllVariables().get(varName);
         if (varDef == null) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + value.getVarName());
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + varName);
         }
 
         if (!varDef.isSearchable()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
-        if (varDef.getVarDef().getType() != value.getValue().getType()) {
+        if (varDef.getVarDef().getType() != value.getType()) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getType());
@@ -144,30 +134,25 @@ public class SearchVariableRequestModel
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
-        if (value.hasWfSpecMajorVersion()) {
-            if (!value.hasWfSpecRevision()) {
+        if (wfSpecMajorVersion != null) {
+            if (wfSpecRevision == null) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "If providing version, must also provide revision");
             }
             return List.of(
                     new Attribute(
-                            "wfSpecId",
-                            new WfSpecIdModel(
-                                            value.getWfSpecName(),
-                                            value.getWfSpecMajorVersion(),
-                                            value.getWfSpecRevision())
-                                    .toString()),
-                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+                            "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()),
+                    new Attribute(varName, getVariableValue(value.toProto().build())));
         } else {
             return List.of(
-                    new Attribute("wfSpecName", value.getWfSpecName()),
-                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+                    new Attribute("wfSpecName", wfSpecName),
+                    new Attribute(varName, getVariableValue(value.toProto().build())));
         }
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) {
+    public TagStorageType indexTypeForSearch() {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
-            TagStorageType result = indexTypeForSearchFromWfSpec(readOnlyDao);
+            TagStorageType result = indexTypeForSearchFromWfSpec();
             log.trace("Doing a {} search", result);
             return result;
         });
@@ -175,26 +160,14 @@ public class SearchVariableRequestModel
 
     @Override
     public LHStore getStoreType() {
-        switch (type) {
-            case WF_RUN_ID:
-                return LHStore.CORE;
-            case VALUE:
-                // This will become more complex when we re-enable REMOTE tags. We will
-                // likely need to pass in a DAO.
-                return LHStore.CORE;
-            case VARIABLECRITERIA_NOT_SET:
-        }
-        throw new LHApiException(Status.INVALID_ARGUMENT, "Didn't provide variable criteria");
+        // This will become more complex when we re-enable REMOTE tags. We will
+        // likely need to pass in a DAO.
+        return LHStore.CORE;
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (type == VariableCriteriaCase.WF_RUN_ID) {
-            return new ObjectIdScanBoundaryStrategy(wfRunId);
-        } else if (type == VariableCriteriaCase.VALUE) {
-            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
-        }
-        return null;
+        return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
     }
 
     private String getVariableValue(VariableValue value) throws LHApiException {

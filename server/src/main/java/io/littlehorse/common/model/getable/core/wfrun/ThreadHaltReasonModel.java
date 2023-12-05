@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterrup
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -88,37 +89,38 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         ThreadHaltReason p = (ThreadHaltReason) proto;
         type = p.getReasonCase();
 
         switch (type) {
             case PARENT_HALTED:
-                parentHalted = ParentHaltedModel.fromProto(p.getParentHalted());
+                parentHalted = ParentHaltedModel.fromProto(p.getParentHalted(), context);
                 break;
             case INTERRUPTED:
-                interrupted = InterruptedModel.fromProto(p.getInterrupted());
+                interrupted = InterruptedModel.fromProto(p.getInterrupted(), context);
                 break;
             case PENDING_INTERRUPT:
-                pendingInterrupt = PendingInterruptHaltReasonModel.fromProto(p.getPendingInterrupt());
+                pendingInterrupt = PendingInterruptHaltReasonModel.fromProto(p.getPendingInterrupt(), context);
                 break;
             case HANDLING_FAILURE:
-                handlingFailure = HandlingFailureHaltReasonModel.fromProto(p.getHandlingFailure());
+                handlingFailure = HandlingFailureHaltReasonModel.fromProto(p.getHandlingFailure(), context);
                 break;
             case PENDING_FAILURE:
-                pendingFailure = PendingFailureHandlerHaltReasonModel.fromProto(p.getPendingFailure());
+                pendingFailure = PendingFailureHandlerHaltReasonModel.fromProto(p.getPendingFailure(), context);
                 break;
             case MANUAL_HALT:
-                manualHalt = ManualHaltModel.fromProto(p.getManualHalt());
+                manualHalt = ManualHaltModel.fromProto(p.getManualHalt(), context);
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
     }
 
-    public static ThreadHaltReasonModel fromProto(ThreadHaltReason p) {
+    public static ThreadHaltReasonModel fromProto(ThreadHaltReason p, ExecutionContext context) {
         ThreadHaltReasonModel out = new ThreadHaltReasonModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

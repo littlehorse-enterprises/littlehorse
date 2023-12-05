@@ -1,0 +1,26 @@
+.scrollBar{
+    padding: 4px;
+    border-radius: 32px;
+    background: var(--color-ghost-light, #363A41);
+}
+.scrollBar__Canvas{
+    position:relative;
+    height: 10px;
+
+}
+.scrollBar__Track{
+    position:absolute;
+    min-width: 20px;
+    height: 20px;
+    top:-4px;
+    left: 0;
+    right: 0;
+}
+.scrollBar__Thumb{
+    position:absolute;
+    min-width: 20px;
+    height: 10px;
+
+    border-radius: 16px;
+    background: var(--color-primary, #7F7AFF);
+}

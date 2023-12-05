@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,7 +50,8 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
         return (GeneratedMessageV3.Builder<?>) builder;
     }
 
-    public void initFrom(Message p) {
+    @Override
+    public void initFrom(Message p, ExecutionContext context) {
         Class<? extends GeneratedMessageV3> baseCls = getProtoBaseClass();
 
         try {
@@ -64,7 +66,7 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
             List<OP> protoResults = (List<OP>) getResults.invoke(p);
 
             for (OP protoResult : protoResults) {
-                results.add(LHSerializable.fromProto(protoResult, getResultJavaClass()));
+                results.add(LHSerializable.fromProto(protoResult, getResultJavaClass(), context));
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException exn) {
             throw new RuntimeException(exn);

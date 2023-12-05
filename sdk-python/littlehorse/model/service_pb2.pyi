@@ -154,49 +154,24 @@ class RunWfRequest(_message.Message):
     def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "status_and_spec", "name", "status_and_name"]
-    class StatusAndSpecRequest(_message.Message):
-        __slots__ = ["wf_spec_id", "status", "earliest_start", "latest_start"]
-        WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-        STATUS_FIELD_NUMBER: _ClassVar[int]
-        EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-        LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        wf_spec_id: _object_id_pb2.WfSpecId
-        status: _common_enums_pb2.LHStatus
-        earliest_start: _timestamp_pb2.Timestamp
-        latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-    class NameRequest(_message.Message):
-        __slots__ = ["wf_spec_name", "earliest_start", "latest_start"]
-        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-        EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-        LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        wf_spec_name: str
-        earliest_start: _timestamp_pb2.Timestamp
-        latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, wf_spec_name: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-    class StatusAndNameRequest(_message.Message):
-        __slots__ = ["wf_spec_name", "status", "earliest_start", "latest_start"]
-        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-        STATUS_FIELD_NUMBER: _ClassVar[int]
-        EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-        LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        wf_spec_name: str
-        status: _common_enums_pb2.LHStatus
-        earliest_start: _timestamp_pb2.Timestamp
-        latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, wf_spec_name: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
-    STATUS_AND_SPEC_FIELD_NUMBER: _ClassVar[int]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    STATUS_AND_NAME_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    status_and_spec: SearchWfRunRequest.StatusAndSpecRequest
-    name: SearchWfRunRequest.NameRequest
-    status_and_name: SearchWfRunRequest.StatusAndNameRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status_and_spec: _Optional[_Union[SearchWfRunRequest.StatusAndSpecRequest, _Mapping]] = ..., name: _Optional[_Union[SearchWfRunRequest.NameRequest, _Mapping]] = ..., status_and_name: _Optional[_Union[SearchWfRunRequest.StatusAndNameRequest, _Mapping]] = ...) -> None: ...
+    wf_spec_name: str
+    wf_spec_major_version: int
+    wf_spec_revision: int
+    status: _common_enums_pb2.LHStatus
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class WfRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -207,36 +182,20 @@ class WfRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WfRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchTaskRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "status_and_task_def", "task_def"]
-    class StatusAndTaskDefRequest(_message.Message):
-        __slots__ = ["status", "task_def_name", "earliest_start", "latest_start"]
-        STATUS_FIELD_NUMBER: _ClassVar[int]
-        TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
-        EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-        LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        status: _common_enums_pb2.TaskStatus
-        task_def_name: str
-        earliest_start: _timestamp_pb2.Timestamp
-        latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., task_def_name: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-    class ByTaskDefRequest(_message.Message):
-        __slots__ = ["task_def_name", "earliest_start", "latest_start"]
-        TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
-        EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-        LATEST_START_FIELD_NUMBER: _ClassVar[int]
-        task_def_name: str
-        earliest_start: _timestamp_pb2.Timestamp
-        latest_start: _timestamp_pb2.Timestamp
-        def __init__(self, task_def_name: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    __slots__ = ["bookmark", "limit", "task_def_name", "status", "earliest_start", "latest_start"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
-    STATUS_AND_TASK_DEF_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
+    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    status_and_task_def: SearchTaskRunRequest.StatusAndTaskDefRequest
-    task_def: SearchTaskRunRequest.ByTaskDefRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status_and_task_def: _Optional[_Union[SearchTaskRunRequest.StatusAndTaskDefRequest, _Mapping]] = ..., task_def: _Optional[_Union[SearchTaskRunRequest.ByTaskDefRequest, _Mapping]] = ...) -> None: ...
+    task_def_name: str
+    status: _common_enums_pb2.TaskStatus
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., task_def_name: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class TaskRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -247,14 +206,40 @@ class TaskRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TaskRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchNodeRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "wf_run_id"]
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "node_type", "status"]
+    class NodeType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = []
+        TASK: _ClassVar[SearchNodeRunRequest.NodeType]
+        EXTERNAL_EVENT: _ClassVar[SearchNodeRunRequest.NodeType]
+        ENTRYPOINT: _ClassVar[SearchNodeRunRequest.NodeType]
+        EXIT: _ClassVar[SearchNodeRunRequest.NodeType]
+        START_THREAD: _ClassVar[SearchNodeRunRequest.NodeType]
+        WAIT_THREADS: _ClassVar[SearchNodeRunRequest.NodeType]
+        SLEEP: _ClassVar[SearchNodeRunRequest.NodeType]
+        USER_TASK: _ClassVar[SearchNodeRunRequest.NodeType]
+        START_MULTIPLE_THREADS: _ClassVar[SearchNodeRunRequest.NodeType]
+    TASK: SearchNodeRunRequest.NodeType
+    EXTERNAL_EVENT: SearchNodeRunRequest.NodeType
+    ENTRYPOINT: SearchNodeRunRequest.NodeType
+    EXIT: SearchNodeRunRequest.NodeType
+    START_THREAD: SearchNodeRunRequest.NodeType
+    WAIT_THREADS: SearchNodeRunRequest.NodeType
+    SLEEP: SearchNodeRunRequest.NodeType
+    USER_TASK: SearchNodeRunRequest.NodeType
+    START_MULTIPLE_THREADS: SearchNodeRunRequest.NodeType
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    NODE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: _object_id_pb2.WfRunId
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    node_type: SearchNodeRunRequest.NodeType
+    status: _common_enums_pb2.LHStatus
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_type: _Optional[_Union[SearchNodeRunRequest.NodeType, str]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ...) -> None: ...
 
 class NodeRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -293,29 +278,22 @@ class UserTaskRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.UserTaskRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchVariableRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "wf_run_id", "value"]
-    class NameAndValueRequest(_message.Message):
-        __slots__ = ["value", "wf_spec_major_version", "wf_spec_revision", "var_name", "wf_spec_name"]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
-        VAR_NAME_FIELD_NUMBER: _ClassVar[int]
-        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-        value: _variable_pb2.VariableValue
-        wf_spec_major_version: int
-        wf_spec_revision: int
-        var_name: str
-        wf_spec_name: str
-        def __init__(self, value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
+    __slots__ = ["bookmark", "limit", "value", "wf_spec_major_version", "wf_spec_revision", "var_name", "wf_spec_name"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
+    VAR_NAME_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: _object_id_pb2.WfRunId
-    value: SearchVariableRequest.NameAndValueRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., value: _Optional[_Union[SearchVariableRequest.NameAndValueRequest, _Mapping]] = ...) -> None: ...
+    value: _variable_pb2.VariableValue
+    wf_spec_major_version: int
+    wf_spec_revision: int
+    var_name: str
+    wf_spec_name: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
 
 class VariableIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

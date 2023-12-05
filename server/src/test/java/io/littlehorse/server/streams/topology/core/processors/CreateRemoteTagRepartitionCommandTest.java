@@ -10,6 +10,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
@@ -41,12 +42,19 @@ public class CreateRemoteTagRepartitionCommandTest {
     @Mock
     private KafkaStreamsServerImpl server;
 
+    @Mock
+    private ExecutionContext executionContext;
+
     private final MetadataCache metadataCache = new MetadataCache();
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.CORE_REPARTITION_STORE),
                     Serdes.String(),
                     Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
+    private final KeyValueStore<String, Bytes> nativeInMemoryGlobalStore = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
@@ -56,14 +64,15 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
-    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
-    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
-    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT);
+    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A, executionContext);
+    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B, executionContext);
+    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT, executionContext);
 
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        commandProcessor = new RepartitionCommandProcessor(config);
+        nativeInMemoryGlobalStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryGlobalStore);
+        commandProcessor = new RepartitionCommandProcessor(config, metadataCache);
     }
 
     @ParameterizedTest

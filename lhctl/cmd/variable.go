@@ -61,8 +61,9 @@ var getVariableCmd = &cobra.Command{
 
 var searchVariableCmd = &cobra.Command{
 	Use:   "variable",
-	Short: "Search for Variables by WfRunId",
+	Short: "Search for Variables by their value",
 	Long: `
+Search for variables by specifying the value 
 Search for Variable's by providing the WfRunId OR by specifying the name, type, and
 value of variable to search for.
 
@@ -73,66 +74,49 @@ Choose one of the following option groups:
 [varType, value, name, wfSpecName, wfSpecVersion]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		token, _ := cmd.Flags().GetString("token")
-		if token != "" {
-			log.Fatal("TODO: Support tokens")
-
-		}
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
 		var search model.SearchVariableRequest
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		name, _ := cmd.Flags().GetString("name")
 		varTypeStr, _ := cmd.Flags().GetString("varType")
 		valueStr, _ := cmd.Flags().GetString("value")
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 
-		// TODO: re-enable WfSpecVersion on variable search
+		var wfSpecMajorVersion *int32 = nil
+		var wfSpecRevision *int32 = nil
 
-		// wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
-		// var wfSpecVersionPtr *int32 = nil
-		// if wfSpecVersion == -1 {
-		// 	wfSpecVersionPtr = nil
-		// } else {
-		// 	wfSpecVersionPtr = &wfSpecVersion
-		// }
+		majorVersionRaw, _ := cmd.Flags().GetInt32("wfSpecMajorVersion")
+		if majorVersionRaw != -1 {
+			wfSpecMajorVersion = &majorVersionRaw
+		}
 
-		if wfRunId != "" {
-			search = model.SearchVariableRequest{
-				VariableCriteria: &model.SearchVariableRequest_WfRunId{
-					WfRunId: &model.WfRunId{Id: wfRunId},
-				},
-			}
-		} else {
-			varType, validVarType := model.VariableType_value[varTypeStr]
-			if !validVarType {
-				log.Fatal(
-					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
-				)
+		revisionRaw, _ := cmd.Flags().GetInt32("wfSpecRevision")
+		if revisionRaw != -1 {
+			wfSpecRevision = &revisionRaw
+		}
 
-			}
-			varTypeEnum := model.VariableType(varType)
-			content, err := common.StrToVarVal(valueStr, varTypeEnum)
-			if err != nil {
-				log.Fatal("Failed deserializing payload: " + err.Error())
+		varType, validVarType := model.VariableType_value[varTypeStr]
+		if !validVarType {
+			log.Fatal(
+				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
+			)
 
-			}
+		}
+		varTypeEnum := model.VariableType(varType)
+		content, err := common.StrToVarVal(valueStr, varTypeEnum)
+		if err != nil {
+			log.Fatal("Failed deserializing payload: " + err.Error())
 
-			search = model.SearchVariableRequest{
-				VariableCriteria: &model.SearchVariableRequest_Value{
-					Value: &model.SearchVariableRequest_NameAndValueRequest{
-						Value:              content,
-						VarName:            name,
-						WfSpecMajorVersion: nil,
-						WfSpecRevision:     nil,
-						// TODO: re-enable WfSpecVersion on Variable Search.
-						// WfSpecVersion: wfSpecVersionPtr,
-						WfSpecName: wfSpecName,
-					},
-				},
-			}
+		}
+
+		search = model.SearchVariableRequest{
+			Value:              content,
+			VarName:            name,
+			WfSpecMajorVersion: wfSpecMajorVersion,
+			WfSpecRevision:     wfSpecRevision,
+			WfSpecName:         wfSpecName,
 		}
 
 		search.Bookmark = bookmark
@@ -175,12 +159,17 @@ func init() {
 	searchCmd.AddCommand(searchVariableCmd)
 	listCmd.AddCommand(listVariableCmd)
 
-	searchVariableCmd.Flags().String("wfRunId", "", "wfRunId of variables to look for.")
 	searchVariableCmd.Flags().String("varType", "", "type of Variable you're searching for")
 	searchVariableCmd.Flags().String("value", "", "value of variable to search for")
 	searchVariableCmd.Flags().String("name", "", "name of the variable to search for")
 	searchVariableCmd.Flags().String("wfSpecName", "", "name of WfSpec")
-	searchVariableCmd.Flags().Int32("wfSpecVersion", -1, "WfSpecVersion to search for")
 
-	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName")
+	// optional params
+	searchVariableCmd.Flags().Int32("wfSpecMajorVersion", -1, "Major Version of WfSpec for Variables to search for")
+	searchVariableCmd.Flags().Int32("wfSpecRevision", -1, "Revision of WfSpec for Variables to search for")
+
+	searchVariableCmd.MarkFlagRequired("value")
+	searchVariableCmd.MarkFlagRequired("name")
+	searchVariableCmd.MarkFlagRequired("varType")
+	searchVariableCmd.MarkFlagRequired("wfSpecName")
 }

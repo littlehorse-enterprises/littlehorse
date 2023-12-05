@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTECancelledModel extends LHSerializable<UTECancelled> {
 
@@ -15,7 +16,8 @@ public class UTECancelledModel extends LHSerializable<UTECancelled> {
         return out;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         // nothing to do;
     }
 }

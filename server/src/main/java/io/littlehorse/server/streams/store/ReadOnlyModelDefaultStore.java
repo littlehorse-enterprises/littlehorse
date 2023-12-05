@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -14,8 +15,9 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;
 
-    public ReadOnlyModelDefaultStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
-        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore);
+    public ReadOnlyModelDefaultStore(
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
+        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore, executionContext);
     }
 
     @Override

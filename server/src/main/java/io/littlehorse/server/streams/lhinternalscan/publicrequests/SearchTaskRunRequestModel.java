@@ -1,10 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
-import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -12,16 +9,17 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.TaskRunCriteriaCase;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -34,9 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchTaskRunRequestModel
         extends PublicScanRequest<SearchTaskRunRequest, TaskRunIdList, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
 
-    private TaskRunCriteriaCase type;
-    private ByTaskDefRequest taskDef;
-    private StatusAndTaskDefRequest statusAndTaskDef;
+    private TaskStatus status;
+    private String taskDefName;
+    private Date earliestStart;
+    private Date latestStart;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.TASK_RUN;
@@ -46,7 +45,8 @@ public class SearchTaskRunRequestModel
         return SearchTaskRunRequest.class;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchTaskRunRequest p = (SearchTaskRunRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -57,85 +57,46 @@ public class SearchTaskRunRequestModel
             }
         }
 
-        type = p.getTaskRunCriteriaCase();
-        switch (type) {
-            case TASK_DEF:
-                taskDef = p.getTaskDef();
-                break;
-            case STATUS_AND_TASK_DEF:
-                statusAndTaskDef = p.getStatusAndTaskDef();
-                break;
-            case TASKRUNCRITERIA_NOT_SET:
-                log.warn("Didn't set TaskDef or StatusAndTaskDef!");
-        }
+        taskDefName = p.getTaskDefName();
+        if (p.hasStatus()) status = p.getStatus();
+
+        if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
+        if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
     }
 
     public SearchTaskRunRequest.Builder toProto() {
-        SearchTaskRunRequest.Builder out = SearchTaskRunRequest.newBuilder();
-        if (bookmark != null) {
-            out.setBookmark(bookmark.toByteString());
-        }
-        if (limit != null) {
-            out.setLimit(limit);
-        }
-        switch (type) {
-            case TASK_DEF:
-                out.setTaskDef(taskDef);
-                break;
-            case STATUS_AND_TASK_DEF:
-                out.setStatusAndTaskDef(statusAndTaskDef);
-            case TASKRUNCRITERIA_NOT_SET:
-                log.warn("Didn't set TaskDef or StatusAndTaskDef!");
-        }
+        SearchTaskRunRequest.Builder out = SearchTaskRunRequest.newBuilder().setTaskDefName(taskDefName);
+
+        if (bookmark != null) out.setBookmark(bookmark.toByteString());
+        if (limit != null) out.setLimit(limit);
+
+        if (status != null) out.setStatus(status);
+        if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
+        if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
 
         return out;
     }
 
-    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto) {
+    public static SearchTaskRunRequestModel fromProto(SearchTaskRunRequest proto, ExecutionContext context) {
         SearchTaskRunRequestModel out = new SearchTaskRunRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
-    }
-
-    private Timestamp getEarliestStart() {
-        if (type == TaskRunCriteriaCase.TASK_DEF) {
-            if (taskDef.hasEarliestStart()) {
-                return taskDef.getEarliestStart();
-            }
-        } else if (type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
-            if (statusAndTaskDef.hasEarliestStart()) {
-                return statusAndTaskDef.getEarliestStart();
-            }
-        }
-        return null;
-    }
-
-    private Timestamp getLatestStart() {
-        if (type == TaskRunCriteriaCase.TASK_DEF) {
-            if (taskDef.hasLatestStart()) {
-                return taskDef.getLatestStart();
-            }
-        } else if (type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
-            if (statusAndTaskDef.hasLatestStart()) {
-                return statusAndTaskDef.getLatestStart();
-            }
-        }
-        return null;
     }
 
     @Override
     public List<Attribute> getSearchAttributes() {
-        if (type == TaskRunCriteriaCase.TASK_DEF) {
-            return List.of(new Attribute("taskDefName", taskDef.getTaskDefName()));
-        } else {
-            return List.of(
-                    new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),
-                    new Attribute("status", statusAndTaskDef.getStatus().toString()));
+        List<Attribute> out = new ArrayList<>();
+        out.add(new Attribute("taskDefName", taskDefName));
+
+        if (status != null) {
+            out.add(new Attribute("status", status.toString()));
         }
+
+        return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
@@ -146,13 +107,7 @@ public class SearchTaskRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        if (type == TaskRunCriteriaCase.TASK_DEF || type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
-            return new TagScanBoundaryStrategy(
-                    searchAttributeString,
-                    Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
-                    Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart())));
-        } else {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Unimplemented search type: " + type);
-        }
+        return new TagScanBoundaryStrategy(
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 }

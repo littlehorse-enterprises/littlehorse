@@ -2,16 +2,17 @@ package io.littlehorse.server.streams.store;
 
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-class TenantModelStore extends ReadOnlyTenantStore implements ModelStore {
+public class TenantModelStore extends ReadOnlyTenantStore implements ModelStore {
 
     private final SerdeModelStore serdeModelStore;
 
-    TenantModelStore(KeyValueStore<String, Bytes> nativeStore, String tenantId) {
-        super(nativeStore, tenantId);
-        this.serdeModelStore = new SerdeModelStore(nativeStore);
+    TenantModelStore(KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
+        super(nativeStore, tenantId, executionContext);
+        this.serdeModelStore = new SerdeModelStore(nativeStore, executionContext);
     }
 
     @Override

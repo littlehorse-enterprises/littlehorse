@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -23,6 +22,7 @@ import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -39,6 +39,7 @@ public class SearchWfSpecRequestModel
     private String name;
     private String taskDefName;
     private String prefix;
+    private ExecutionContext executionContext;
 
     public Class<SearchWfSpecRequest> getProtoBaseClass() {
         return SearchWfSpecRequest.class;
@@ -48,7 +49,8 @@ public class SearchWfSpecRequestModel
         return GetableClassEnum.WF_SPEC;
     }
 
-    public void initFrom(Message proto) {
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
         SearchWfSpecRequest p = (SearchWfSpecRequest) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
@@ -73,6 +75,7 @@ public class SearchWfSpecRequestModel
             case WFSPECCRITERIA_NOT_SET:
                 // nothing to do, we just return all the WfSpec's.
         }
+        this.executionContext = executionContext;
     }
 
     public SearchWfSpecRequest.Builder toProto() {
@@ -99,9 +102,9 @@ public class SearchWfSpecRequestModel
         return out;
     }
 
-    public static SearchWfSpecRequestModel fromProto(SearchWfSpecRequest proto) {
+    public static SearchWfSpecRequestModel fromProto(SearchWfSpecRequest proto, ExecutionContext context) {
         SearchWfSpecRequestModel out = new SearchWfSpecRequestModel();
-        out.initFrom(proto);
+        out.initFrom(proto, context);
         return out;
     }
 
@@ -111,7 +114,7 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public TagStorageType indexTypeForSearch() throws LHApiException {
         if (taskDefName != null) {
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();

@@ -8,11 +8,14 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.topology.core.RepartitionExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -26,8 +29,13 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     private ProcessorContext<Void, Void> ctx;
 
     private KeyValueStore<String, Bytes> nativeStore;
+    private final LHServerConfig lhConfig;
+    private final MetadataCache metadataCache;
 
-    public RepartitionCommandProcessor(LHServerConfig config) {}
+    public RepartitionCommandProcessor(LHServerConfig config, MetadataCache metadataCache) {
+        this.lhConfig = config;
+        this.metadataCache = metadataCache;
+    }
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;
@@ -35,16 +43,18 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         ctx.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::cleanOldMetrics);
     }
 
+    @Override
     public void process(final Record<String, RepartitionCommand> record) {
+        RepartitionExecutionContext repartitionContext = buildExecutionContext(record.headers());
         if (record.value() != null) {
             log.debug("Received a metric update!");
             String tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
-            record.value().process(ModelStore.instanceFor(nativeStore, tenantId), ctx);
+            record.value().process(ModelStore.instanceFor(nativeStore, tenantId, repartitionContext), ctx);
         }
     }
 
     public void cleanOldMetrics(long timestamp) {
-        final ModelStore defaultStore = ModelStore.defaultStore(nativeStore);
+        final ModelStore defaultStore = ModelStore.defaultStore(nativeStore, null);
         Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
         cleanOldTaskMetrics(defaultStore, thirtyDaysAgo);
         cleanOldWfMetrics(defaultStore, thirtyDaysAgo);
@@ -82,5 +92,9 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
 
             }
         }
+    }
+
+    private RepartitionExecutionContext buildExecutionContext(Headers metadataHeaders) {
+        return new RepartitionExecutionContext(metadataHeaders, lhConfig, ctx, metadataCache);
     }
 }

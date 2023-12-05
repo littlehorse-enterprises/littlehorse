@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.ExtEvtGcPolicyCase;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEv
     }
 
     @Override
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext executionContext) {
         ExternalEventRetentionPolicy p = (ExternalEventRetentionPolicy) proto;
         type = p.getExtEvtGcPolicyCase();
         switch (type) {

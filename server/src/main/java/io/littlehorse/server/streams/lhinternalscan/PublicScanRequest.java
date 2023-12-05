@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -46,10 +45,10 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
+    public InternalScan getInternalSearch() throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
-        InternalScan out = getableSearch.buildInternalScan(readOnlyDao, indexTypeForSearch(readOnlyDao));
+        InternalScan out = getableSearch.buildInternalScan(indexTypeForSearch());
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
 
@@ -80,8 +79,7 @@ public abstract class PublicScanRequest<
 
     /**
      * Builds search attributes based on the provided search input arguments. This
-     * method is
-     * intended to be overridden by subclasses to implement custom logic.
+     * method is intended to be overridden by subclasses to implement custom logic.
      *
      * @return {@link Attribute} containing attributes associated with the search
      *         operation.
@@ -98,7 +96,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHApiException if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException;
+    public abstract TagStorageType indexTypeForSearch() throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
 }

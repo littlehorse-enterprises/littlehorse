@@ -5,12 +5,13 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
 public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> {
 
@@ -28,9 +29,9 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
         return out;
     }
 
-    public void initFrom(Message proto) {
+    public void initFrom(Message proto, ExecutionContext context) {
         ResumeWfRunRequest p = (ResumeWfRunRequest) proto;
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class);
+        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         threadRunNumber = p.getThreadRunNumber();
     }
 
@@ -39,9 +40,8 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
-        // TODO: I don't like the fact that the dao works this way
-        WfRunModel wfRunModel = dao.getWfRun(wfRunId.getId());
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        WfRunModel wfRunModel = executionContext.getableManager().get(new WfRunIdModel(wfRunId.getId()));
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided WfRun");
         }
@@ -54,9 +54,9 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
         return true;
     }
 
-    public static ResumeWfRunRequestModel fromProto(ResumeWfRunRequest p) {
+    public static ResumeWfRunRequestModel fromProto(ResumeWfRunRequest p, ExecutionContext context) {
         ResumeWfRunRequestModel out = new ResumeWfRunRequestModel();
-        out.initFrom(p);
+        out.initFrom(p, context);
         return out;
     }
 }

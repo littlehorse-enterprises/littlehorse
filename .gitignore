@@ -23,7 +23,7 @@ lhctl/lhctl
 # vscode
 .vscode/launch.json
 *.code-workspace
-
+.vscode/
 #Visual Studio
 **/bin/
 **/obj/
