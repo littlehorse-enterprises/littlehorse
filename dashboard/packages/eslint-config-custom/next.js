@@ -59,9 +59,6 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'error',
         // '@next/next/no-html-link-for-pages': 'error',
         // '@next/next/no-head-element': 'error',
-        'no-console': [ 'error', {
-            'allow': [ 'error' ]
-        } ],
         '@typescript-eslint/no-explicit-any': 'off', // https://littlehorse.atlassian.net/browse/LH-233
         '@typescript-eslint/explicit-function-return-type': 'off', //https://littlehorse.atlassian.net/browse/LH-232
         '@typescript-eslint/no-unsafe-assignment': 'off', // https://littlehorse.atlassian.net/browse/LH-231

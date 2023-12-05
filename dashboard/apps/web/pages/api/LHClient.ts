@@ -17,6 +17,7 @@ export default class LHClient {
         }
 
         if (__AUTHENTICATION_ENABLED__) {
+            console.log('Calling GRPC URL:', process.env.API_URL)
             this.createUniqueSecureChannel(process.env.API_URL)
 
             return createClientFactory().use((call, options) =>
