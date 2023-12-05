@@ -424,7 +424,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        MigrateWfSpecRequestModel reqModel = LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
+        MigrateWfSpecRequestModel reqModel =
+                LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
     }
 
