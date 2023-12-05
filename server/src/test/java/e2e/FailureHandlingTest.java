@@ -2,7 +2,9 @@ package e2e;
 
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -16,7 +18,9 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +47,9 @@ public class FailureHandlingTest {
     @LHWorkflow("handle-any-failure-wf")
     private Workflow handleAnyFailureWf;
 
+    @LHWorkflow("exception-failure-wf")
+    private Workflow exceptionFailureWf;
+
     @Test
     public void shouldHandleAnyError() {
         workflowVerifier
@@ -59,6 +66,24 @@ public class FailureHandlingTest {
         workflowVerifier
                 .prepareRun(handleExceptionWf)
                 .waitForStatus(LHStatus.COMPLETED)
+                .start();
+    }
+
+    @Test
+    public void shouldMarkWorkflowBusinessException() {
+        workflowVerifier
+                .prepareRun(exceptionFailureWf)
+                .waitForTaskStatus(0, 1, TaskStatus.TASK_EXCEPTION)
+                .waitForNodeRunStatus(0, 1, LHStatus.EXCEPTION)
+                .waitForStatus(LHStatus.EXCEPTION)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    for (Failure failure : failures) {
+                        Assertions.assertThat(failure.getFailureName()).isEqualTo("client-exception");
+                        Assertions.assertThat(failure.getMessage()).contains("This is a business exception!");
+                    }
+                })
                 .start();
     }
 
@@ -207,6 +232,14 @@ public class FailureHandlingTest {
             thread.handleError(waitForThread, handler -> {
                 handler.execute("my-task");
             });
+        });
+    }
+
+    @LHWorkflow("exception-failure-wf")
+    public Workflow exceptionFailureWf() {
+        return new WorkflowImpl("exception-failure-wf", thread -> {
+            thread.execute("business-exception-failure");
+            thread.execute("my-task");
         });
     }
 
