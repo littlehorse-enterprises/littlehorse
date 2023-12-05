@@ -75,7 +75,7 @@ public class SearchWfSpecRequestModel
             case WFSPECCRITERIA_NOT_SET:
                 // nothing to do, we just return all the WfSpec's.
         }
-        this.executionContext = executionContext;
+        this.executionContext = context;
     }
 
     public SearchWfSpecRequest.Builder toProto() {
@@ -145,7 +145,10 @@ public class SearchWfSpecRequestModel
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
+            return new ObjectIdScanBoundaryStrategy(
+                    LHConstants.META_PARTITION_KEY,
+                    GetableClassEnum.WF_SPEC.getNumber() + "/",
+                    GetableClassEnum.WF_SPEC.getNumber() + "/~");
         }
     }
 }
