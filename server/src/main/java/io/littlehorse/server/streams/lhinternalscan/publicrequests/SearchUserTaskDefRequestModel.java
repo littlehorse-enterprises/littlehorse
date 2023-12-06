@@ -114,7 +114,7 @@ public class SearchUserTaskDefRequestModel
         } else if (name != null && !name.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name, name + "/");
         } else {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
+            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
         }
     }
 }
