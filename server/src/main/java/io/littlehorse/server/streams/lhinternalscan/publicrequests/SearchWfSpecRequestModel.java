@@ -141,11 +141,11 @@ public class SearchWfSpecRequestModel
         if (name != null && !name.equals("")) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name + "/", name + "/~");
         } else if (prefix != null && !prefix.isEmpty()) {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            return ObjectIdScanBoundaryStrategy.metadataSearchFor(prefix);
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
-            return ObjectIdScanBoundaryStrategy.metadataSearchFor(GetableClassEnum.WF_SPEC);
+            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
         }
     }
 }

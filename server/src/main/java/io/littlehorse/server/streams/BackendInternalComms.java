@@ -508,14 +508,15 @@ public class BackendInternalComms implements Closeable {
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
         if (partBookmark == null) {
-            startKey = req.boundedObjectIdScan.getStartObjectId();
+            startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
         } else {
             startKey = partBookmark.getLastKey();
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter =
+                store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();

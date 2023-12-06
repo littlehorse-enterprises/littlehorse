@@ -86,7 +86,7 @@ public class SearchExternalEventDefRequestModel
         if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
-            return ObjectIdScanBoundaryStrategy.metadataSearchFor(GetableClassEnum.EXTERNAL_EVENT_DEF);
+            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
         }
     }
 }
