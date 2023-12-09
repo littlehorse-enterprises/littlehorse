@@ -233,6 +233,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private static final boolean ENABLE_STALE_STORES = true;
 
     private RequestExecutionContext requestContext() {
+
         return contextKey.get();
     }
 
@@ -266,7 +267,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 this::readOnlyStore);
 
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, this::readOnlyStore);
     }
 
     public String getInstanceId() {
@@ -865,7 +866,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                         commandMetadata.toArray());
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
+    public ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 

@@ -35,6 +35,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.server.auth.InternalAuthorizer;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -60,6 +62,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +106,8 @@ public class BackendInternalComms implements Closeable {
             KafkaStreams timerStreams,
             Executor executor,
             MetadataCache metadataCache,
-            Context.Key<RequestExecutionContext> contextKey) {
+            Context.Key<RequestExecutionContext> contextKey,
+            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -126,6 +130,7 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .addService(new InterBrokerCommServer())
+                .intercept(new InternalAuthorizer(contextKey, storeProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
@@ -322,7 +327,8 @@ public class BackendInternalComms implements Closeable {
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        return LHInternalsGrpc.newBlockingStub(getChannel(host));
+        return LHInternalsGrpc.newBlockingStub(getChannel(host))
+                .withCallCredentials(new InternalCallCredentials(contextKey));
     }
 
     private LHInternalsStub getInternalAsyncClient(HostInfo host) {
