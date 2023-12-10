@@ -197,6 +197,20 @@ export interface SearchWfRunRequest {
   latestStart?: string | undefined;
 }
 
+export interface FindWfRunRequest {
+  wfSpecName: string;
+  wfSpecMajorVersion?: number | undefined;
+  wfSpecRevision?: number | undefined;
+  variableMatches: FindWfRunRequest_VariableMatch[];
+  earliestStart?: string | undefined;
+  latestStart?: string | undefined;
+}
+
+export interface FindWfRunRequest_VariableMatch {
+  varName: string;
+  value: VariableValue | undefined;
+}
+
 export interface WfRunIdList {
   results: WfRunId[];
   bookmark?: Uint8Array | undefined;
@@ -2012,6 +2026,227 @@ export const SearchWfRunRequest = {
     message.status = object.status ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
+    return message;
+  },
+};
+
+function createBaseFindWfRunRequest(): FindWfRunRequest {
+  return {
+    wfSpecName: "",
+    wfSpecMajorVersion: undefined,
+    wfSpecRevision: undefined,
+    variableMatches: [],
+    earliestStart: undefined,
+    latestStart: undefined,
+  };
+}
+
+export const FindWfRunRequest = {
+  encode(message: FindWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(24).int32(message.wfSpecRevision);
+    }
+    for (const v of message.variableMatches) {
+      FindWfRunRequest_VariableMatch.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(42).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(50).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FindWfRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindWfRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.wfSpecRevision = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.variableMatches.push(FindWfRunRequest_VariableMatch.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FindWfRunRequest {
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
+      variableMatches: globalThis.Array.isArray(object?.variableMatches)
+        ? object.variableMatches.map((e: any) => FindWfRunRequest_VariableMatch.fromJSON(e))
+        : [],
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
+    };
+  },
+
+  toJSON(message: FindWfRunRequest): unknown {
+    const obj: any = {};
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
+    }
+    if (message.variableMatches?.length) {
+      obj.variableMatches = message.variableMatches.map((e) => FindWfRunRequest_VariableMatch.toJSON(e));
+    }
+    if (message.earliestStart !== undefined) {
+      obj.earliestStart = message.earliestStart;
+    }
+    if (message.latestStart !== undefined) {
+      obj.latestStart = message.latestStart;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FindWfRunRequest>, I>>(base?: I): FindWfRunRequest {
+    return FindWfRunRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FindWfRunRequest>, I>>(object: I): FindWfRunRequest {
+    const message = createBaseFindWfRunRequest();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
+    message.variableMatches = object.variableMatches?.map((e) => FindWfRunRequest_VariableMatch.fromPartial(e)) || [];
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    return message;
+  },
+};
+
+function createBaseFindWfRunRequest_VariableMatch(): FindWfRunRequest_VariableMatch {
+  return { varName: "", value: undefined };
+}
+
+export const FindWfRunRequest_VariableMatch = {
+  encode(message: FindWfRunRequest_VariableMatch, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.varName !== "") {
+      writer.uint32(10).string(message.varName);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FindWfRunRequest_VariableMatch {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindWfRunRequest_VariableMatch();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.varName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FindWfRunRequest_VariableMatch {
+    return {
+      varName: isSet(object.varName) ? globalThis.String(object.varName) : "",
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: FindWfRunRequest_VariableMatch): unknown {
+    const obj: any = {};
+    if (message.varName !== "") {
+      obj.varName = message.varName;
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FindWfRunRequest_VariableMatch>, I>>(base?: I): FindWfRunRequest_VariableMatch {
+    return FindWfRunRequest_VariableMatch.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FindWfRunRequest_VariableMatch>, I>>(
+    object: I,
+  ): FindWfRunRequest_VariableMatch {
+    const message = createBaseFindWfRunRequest_VariableMatch();
+    message.varName = object.varName ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
@@ -7278,6 +7513,14 @@ export const LHPublicApiDefinition = {
       responseStream: false,
       options: {},
     },
+    findWfRun: {
+      name: "FindWfRun",
+      requestType: FindWfRunRequest,
+      requestStream: false,
+      responseType: WfRunIdList,
+      responseStream: false,
+      options: {},
+    },
     searchTaskDef: {
       name: "SearchTaskDef",
       requestType: SearchTaskDefRequest,
@@ -7542,6 +7785,7 @@ export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
     request: SearchExternalEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventIdList>>;
+  findWfRun(request: FindWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunIdList>>;
   searchTaskDef(
     request: SearchTaskDefRequest,
     context: CallContext & CallContextExt,
@@ -7687,6 +7931,7 @@ export interface LHPublicApiClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventIdList>;
+  findWfRun(request: DeepPartial<FindWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunIdList>;
   searchTaskDef(
     request: DeepPartial<SearchTaskDefRequest>,
     options?: CallOptions & CallOptionsExt,

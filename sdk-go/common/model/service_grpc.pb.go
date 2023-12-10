@@ -53,6 +53,7 @@ const (
 	LHPublicApi_SearchUserTaskRun_FullMethodName       = "/littlehorse.LHPublicApi/SearchUserTaskRun"
 	LHPublicApi_SearchVariable_FullMethodName          = "/littlehorse.LHPublicApi/SearchVariable"
 	LHPublicApi_SearchExternalEvent_FullMethodName     = "/littlehorse.LHPublicApi/SearchExternalEvent"
+	LHPublicApi_FindWfRun_FullMethodName               = "/littlehorse.LHPublicApi/FindWfRun"
 	LHPublicApi_SearchTaskDef_FullMethodName           = "/littlehorse.LHPublicApi/SearchTaskDef"
 	LHPublicApi_SearchUserTaskDef_FullMethodName       = "/littlehorse.LHPublicApi/SearchUserTaskDef"
 	LHPublicApi_SearchWfSpec_FullMethodName            = "/littlehorse.LHPublicApi/SearchWfSpec"
@@ -114,6 +115,7 @@ type LHPublicApiClient interface {
 	SearchUserTaskRun(ctx context.Context, in *SearchUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunIdList, error)
 	SearchVariable(ctx context.Context, in *SearchVariableRequest, opts ...grpc.CallOption) (*VariableIdList, error)
 	SearchExternalEvent(ctx context.Context, in *SearchExternalEventRequest, opts ...grpc.CallOption) (*ExternalEventIdList, error)
+	FindWfRun(ctx context.Context, in *FindWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
 	SearchTaskDef(ctx context.Context, in *SearchTaskDefRequest, opts ...grpc.CallOption) (*TaskDefIdList, error)
 	SearchUserTaskDef(ctx context.Context, in *SearchUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDefIdList, error)
 	SearchWfSpec(ctx context.Context, in *SearchWfSpecRequest, opts ...grpc.CallOption) (*WfSpecIdList, error)
@@ -443,6 +445,15 @@ func (c *lHPublicApiClient) SearchExternalEvent(ctx context.Context, in *SearchE
 	return out, nil
 }
 
+func (c *lHPublicApiClient) FindWfRun(ctx context.Context, in *FindWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error) {
+	out := new(WfRunIdList)
+	err := c.cc.Invoke(ctx, LHPublicApi_FindWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *lHPublicApiClient) SearchTaskDef(ctx context.Context, in *SearchTaskDefRequest, opts ...grpc.CallOption) (*TaskDefIdList, error) {
 	out := new(TaskDefIdList)
 	err := c.cc.Invoke(ctx, LHPublicApi_SearchTaskDef_FullMethodName, in, out, opts...)
@@ -700,6 +711,7 @@ type LHPublicApiServer interface {
 	SearchUserTaskRun(context.Context, *SearchUserTaskRunRequest) (*UserTaskRunIdList, error)
 	SearchVariable(context.Context, *SearchVariableRequest) (*VariableIdList, error)
 	SearchExternalEvent(context.Context, *SearchExternalEventRequest) (*ExternalEventIdList, error)
+	FindWfRun(context.Context, *FindWfRunRequest) (*WfRunIdList, error)
 	SearchTaskDef(context.Context, *SearchTaskDefRequest) (*TaskDefIdList, error)
 	SearchUserTaskDef(context.Context, *SearchUserTaskDefRequest) (*UserTaskDefIdList, error)
 	SearchWfSpec(context.Context, *SearchWfSpecRequest) (*WfSpecIdList, error)
@@ -827,6 +839,9 @@ func (UnimplementedLHPublicApiServer) SearchVariable(context.Context, *SearchVar
 }
 func (UnimplementedLHPublicApiServer) SearchExternalEvent(context.Context, *SearchExternalEventRequest) (*ExternalEventIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchExternalEvent not implemented")
+}
+func (UnimplementedLHPublicApiServer) FindWfRun(context.Context, *FindWfRunRequest) (*WfRunIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindWfRun not implemented")
 }
 func (UnimplementedLHPublicApiServer) SearchTaskDef(context.Context, *SearchTaskDefRequest) (*TaskDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTaskDef not implemented")
@@ -1501,6 +1516,24 @@ func _LHPublicApi_SearchExternalEvent_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_FindWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindWfRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).FindWfRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_FindWfRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).FindWfRun(ctx, req.(*FindWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LHPublicApi_SearchTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchTaskDefRequest)
 	if err := dec(in); err != nil {
@@ -2043,6 +2076,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchExternalEvent",
 			Handler:    _LHPublicApi_SearchExternalEvent_Handler,
+		},
+		{
+			MethodName: "FindWfRun",
+			Handler:    _LHPublicApi_FindWfRun_Handler,
 		},
 		{
 			MethodName: "SearchTaskDef",
