@@ -1,14 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { VariableId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
 export interface VariableValue {
-  type: VariableType;
   jsonObj?: string | undefined;
   jsonArr?: string | undefined;
   double?: number | undefined;
@@ -27,7 +25,6 @@ export interface Variable {
 
 function createBaseVariableValue(): VariableValue {
   return {
-    type: VariableType.JSON_OBJ,
     jsonObj: undefined,
     jsonArr: undefined,
     double: undefined,
@@ -40,9 +37,6 @@ function createBaseVariableValue(): VariableValue {
 
 export const VariableValue = {
   encode(message: VariableValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(8).int32(variableTypeToNumber(message.type));
-    }
     if (message.jsonObj !== undefined) {
       writer.uint32(18).string(message.jsonObj);
     }
@@ -74,13 +68,6 @@ export const VariableValue = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.type = variableTypeFromJSON(reader.int32());
-          continue;
         case 2:
           if (tag !== 18) {
             break;
@@ -141,7 +128,6 @@ export const VariableValue = {
 
   fromJSON(object: any): VariableValue {
     return {
-      type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
       jsonObj: isSet(object.jsonObj) ? globalThis.String(object.jsonObj) : undefined,
       jsonArr: isSet(object.jsonArr) ? globalThis.String(object.jsonArr) : undefined,
       double: isSet(object.double) ? globalThis.Number(object.double) : undefined,
@@ -154,9 +140,6 @@ export const VariableValue = {
 
   toJSON(message: VariableValue): unknown {
     const obj: any = {};
-    if (message.type !== VariableType.JSON_OBJ) {
-      obj.type = variableTypeToJSON(message.type);
-    }
     if (message.jsonObj !== undefined) {
       obj.jsonObj = message.jsonObj;
     }
@@ -186,7 +169,6 @@ export const VariableValue = {
   },
   fromPartial<I extends Exact<DeepPartial<VariableValue>, I>>(object: I): VariableValue {
     const message = createBaseVariableValue();
-    message.type = object.type ?? VariableType.JSON_OBJ;
     message.jsonObj = object.jsonObj ?? undefined;
     message.jsonArr = object.jsonArr ?? undefined;
     message.double = object.double ?? undefined;

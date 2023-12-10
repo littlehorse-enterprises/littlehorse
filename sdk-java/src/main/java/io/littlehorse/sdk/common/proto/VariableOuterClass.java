@@ -35,20 +35,17 @@ public final class VariableOuterClass {
     java.lang.String[] descriptorData = {
       "\n\016variable.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\022common_enums.pro" +
-      "to\032\017object_id.proto\"\216\002\n\rVariableValue\022\'\n" +
-      "\004type\030\001 \001(\0162\031.littlehorse.VariableType\022\025" +
-      "\n\010json_obj\030\002 \001(\tH\000\210\001\001\022\025\n\010json_arr\030\003 \001(\tH" +
-      "\001\210\001\001\022\023\n\006double\030\004 \001(\001H\002\210\001\001\022\021\n\004bool\030\005 \001(\010H" +
-      "\003\210\001\001\022\020\n\003str\030\006 \001(\tH\004\210\001\001\022\020\n\003int\030\007 \001(\003H\005\210\001\001" +
-      "\022\022\n\005bytes\030\010 \001(\014H\006\210\001\001B\013\n\t_json_objB\013\n\t_js" +
-      "on_arrB\t\n\007_doubleB\007\n\005_boolB\006\n\004_strB\006\n\004_i" +
-      "ntB\010\n\006_bytes\"\265\001\n\010Variable\022#\n\002id\030\001 \001(\0132\027." +
-      "littlehorse.VariableId\022)\n\005value\030\002 \001(\0132\032." +
-      "littlehorse.VariableValue\022.\n\ncreated_at\030" +
-      "\003 \001(\0132\032.google.protobuf.Timestamp\022)\n\nwf_" +
-      "spec_id\030\004 \001(\0132\025.littlehorse.WfSpecIdBG\n\037" +
-      "io.littlehorse.sdk.common.protoP\001Z\007.;mod" +
-      "el\252\002\030LittleHorse.Common.Protob\006proto3"
+      "to\032\017object_id.proto\"\227\001\n\rVariableValue\022\022\n" +
+      "\010json_obj\030\002 \001(\tH\000\022\022\n\010json_arr\030\003 \001(\tH\000\022\020\n" +
+      "\006double\030\004 \001(\001H\000\022\016\n\004bool\030\005 \001(\010H\000\022\r\n\003str\030\006" +
+      " \001(\tH\000\022\r\n\003int\030\007 \001(\003H\000\022\017\n\005bytes\030\010 \001(\014H\000B\007" +
+      "\n\005valueJ\004\010\001\020\002\"\265\001\n\010Variable\022#\n\002id\030\001 \001(\0132\027" +
+      ".littlehorse.VariableId\022)\n\005value\030\002 \001(\0132\032" +
+      ".littlehorse.VariableValue\022.\n\ncreated_at" +
+      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022)\n\nwf" +
+      "_spec_id\030\004 \001(\0132\025.littlehorse.WfSpecIdBG\n" +
+      "\037io.littlehorse.sdk.common.protoP\001Z\007.;mo" +
+      "del\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -62,7 +59,7 @@ public final class VariableOuterClass {
     internal_static_littlehorse_VariableValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_VariableValue_descriptor,
-        new java.lang.String[] { "Type", "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", });
+        new java.lang.String[] { "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "Value", });
     internal_static_littlehorse_Variable_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_Variable_fieldAccessorTable = new
