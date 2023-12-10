@@ -72,7 +72,8 @@ signing {
 
 repositories {
     // Use Maven Central for resolving dependencies.
-    mavenCentral()
+    // mavenCentral()
+    mavenLocal()
 }
 
 dependencies {

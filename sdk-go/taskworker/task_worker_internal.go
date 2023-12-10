@@ -379,8 +379,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model
 		if err != nil {
 			msg := "Failed calculating input variable " + taskFuncArg.Name + ": " + err.Error()
 			taskResult.LogOutput = &model.VariableValue{
-				Str:  &msg,
-				Type: model.VariableType_STR,
+				Value: &model.VariableValue_Str{Str: msg},
 			}
 			taskResult.Status = model.TaskStatus_TASK_INPUT_VAR_SUB_ERROR
 			return taskResult
@@ -406,8 +405,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model
 					msg += "\n\n\n\n" + workerContext.GetLogOutput()
 				}
 				taskResult.LogOutput = &model.VariableValue{
-					Str:  &msg,
-					Type: model.VariableType_STR,
+					Value: &model.VariableValue_Str{Str: msg},
 				}
 				taskResult.Status = model.TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR
 				return taskResult
@@ -416,8 +414,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model
 			if workerContext.GetLogOutput() != "" {
 				msg := workerContext.GetLogOutput()
 				taskResult.LogOutput = &model.VariableValue{
-					Str:  &msg,
-					Type: model.VariableType_STR,
+					Value: &model.VariableValue_Str{Str: msg},
 				}
 			}
 			taskResult.Status = model.TaskStatus_TASK_SUCCESS

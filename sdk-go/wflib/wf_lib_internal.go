@@ -529,7 +529,7 @@ func (t *WorkflowThread) addVariable(
 		if err != nil {
 			log.Fatal(err)
 		}
-		if defaultVarVal.Type != varType {
+		if common.GetVarType(defaultVarVal.GetValue()) != varType {
 			log.Fatal("provided default value for variable " + name + " didn't match type " + varType.String())
 		}
 		varDef.DefaultValue = defaultVarVal
@@ -931,8 +931,7 @@ func (t *WorkflowThread) sleep(sleepSeconds int) {
 				RawSeconds: &model.VariableAssignment{
 					Source: &model.VariableAssignment_LiteralValue{
 						LiteralValue: &model.VariableValue{
-							Type: model.VariableType_INT,
-							Int:  &sleepSeconds64,
+							Value: &model.VariableValue_Int{Int: sleepSeconds64},
 						},
 					},
 				},

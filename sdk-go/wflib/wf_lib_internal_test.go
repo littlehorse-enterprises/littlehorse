@@ -44,7 +44,7 @@ func TestUserTaskAssignToUser(t *testing.T) {
 
 	assert.NotNil(t, utNode.UserId)
 	assert.Nil(t, utNode.UserGroup)
-	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
+	assert.Equal(t, "yoda", utNode.UserId.GetLiteralValue().GetStr())
 }
 
 func TestUserTaskAssignToUserByVar(t *testing.T) {
@@ -87,8 +87,8 @@ func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 
 	assert.NotNil(t, utNode.UserId)
 	assert.NotNil(t, utNode.UserGroup)
-	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
-	assert.Equal(t, "jedi-council", *(utNode.UserGroup.GetLiteralValue().Str))
+	assert.Equal(t, "yoda", utNode.UserId.GetLiteralValue().GetStr())
+	assert.Equal(t, "jedi-council", utNode.UserGroup.GetLiteralValue().GetStr())
 }
 
 func TestAssignToGroup(t *testing.T) {
@@ -109,7 +109,7 @@ func TestAssignToGroup(t *testing.T) {
 
 	assignment := utNode.GetUserGroup()
 	assert.NotNil(t, assignment)
-	assert.Equal(t, "jedi-council", *(assignment.GetLiteralValue().Str))
+	assert.Equal(t, "jedi-council", assignment.GetLiteralValue().GetStr())
 }
 
 func TestReleaseToGroup(t *testing.T) {
@@ -134,8 +134,8 @@ func TestReleaseToGroup(t *testing.T) {
 	assert.NotNil(t, reassign)
 	assert.NotNil(t, reassign.GetUserGroup())
 
-	group := reassign.GetUserGroup().GetLiteralValue().Str
-	assert.Equal(t, "jedi-council", *group)
+	group := reassign.GetUserGroup().GetLiteralValue().GetStr()
+	assert.Equal(t, "jedi-council", group)
 }
 
 func TestReassignToGroup(t *testing.T) {
@@ -162,7 +162,7 @@ func TestReassignToGroup(t *testing.T) {
 	assert.NotNil(t, reassign.GetUserGroup())
 	assert.Nil(t, reassign.GetUserId())
 
-	assert.Equal(t, group, *(reassign.GetUserGroup().GetLiteralValue().Str))
+	assert.Equal(t, group, reassign.GetUserGroup().GetLiteralValue().GetStr())
 }
 
 func TestParallelSpawnThreads(t *testing.T) {
@@ -227,7 +227,7 @@ func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	spawnNode := entrypoint.Nodes["1-some-threads-START_MULTIPLE_THREADS"].GetStartMultipleThreads()
 	assert.Equal(t, len(spawnNode.Variables), 1)
 
-	assert.Equal(t, int64(1234), *spawnNode.Variables["asdf"].GetLiteralValue().Int)
+	assert.Equal(t, int64(1234), spawnNode.Variables["asdf"].GetLiteralValue().GetInt())
 }
 
 func TestFormatString(t *testing.T) {
@@ -247,7 +247,7 @@ func TestFormatString(t *testing.T) {
 	formatAssn := spawnNode.Variables[0].GetFormatString()
 
 	assert.NotNil(t, formatAssn)
-	assert.Equal(t, *formatAssn.Format.GetLiteralValue().Str, "input {0}")
+	assert.Equal(t, formatAssn.Format.GetLiteralValue().GetStr(), "input {0}")
 	assert.Equal(t, len(formatAssn.GetArgs()), 1)
 	assert.Equal(t, formatAssn.Args[0].GetVariableName(), "my-str")
 }
