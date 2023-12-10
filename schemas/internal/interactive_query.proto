@@ -31,11 +31,6 @@ message WaitForCommandResponse {
 }
 
 message ScanFilter {
-    message VariableMatch {
-        string var_name = 1;
-        VariableValue value = 2;
-    }
-    
     oneof criteria {
         LHStatus wf_run_status = 1;
         VariableMatch variable_match = 2;

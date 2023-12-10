@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -13,6 +14,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
@@ -30,13 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchWfRunRequestModel
-        extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel, SearchWfRunReply> {
+extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel, SearchWfRunReply> {
 
     // from proto
     private String wfSpecName;
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
     private LHStatus status;
+    private List<VariableMatchModel> variableMatches = new ArrayList<>();
 
     private Date earliestStart;
     private Date latestStart;
@@ -72,6 +75,10 @@ public class SearchWfRunRequestModel
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
 
+        for (VariableMatch vm : p.getVariableFiltersList()) {
+            variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
+        }
+
         this.executionContext = context;
     }
 
@@ -90,6 +97,10 @@ public class SearchWfRunRequestModel
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
 
+        for (VariableMatchModel vmm : variableMatches) {
+            out.addVariableFilters(vmm.toProto());
+        }
+
         return out;
     }
 
@@ -104,12 +115,11 @@ public class SearchWfRunRequestModel
 
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "If wfSpecMajorVersion is provided, you must also provide wfSpecRevision");
+                out.add(new Attribute("majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
+            } else {
+                out.add(new Attribute(
+                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
             }
-            out.add(new Attribute(
-                    "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
         } else {
             if (wfSpecRevision != null) {
                 throw new LHApiException(

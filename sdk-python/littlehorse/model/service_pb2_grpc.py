@@ -190,11 +190,6 @@ class LHPublicApiStub(object):
                 request_serializer=service__pb2.SearchExternalEventRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventIdList.FromString,
                 )
-        self.FindWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/FindWfRun',
-                request_serializer=service__pb2.FindWfRunRequest.SerializeToString,
-                response_deserializer=service__pb2.WfRunIdList.FromString,
-                )
         self.SearchTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchTaskDef',
                 request_serializer=service__pb2.SearchTaskDefRequest.SerializeToString,
@@ -508,12 +503,6 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def FindWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def SearchTaskDef(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -813,11 +802,6 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     servicer.SearchExternalEvent,
                     request_deserializer=service__pb2.SearchExternalEventRequest.FromString,
                     response_serializer=service__pb2.ExternalEventIdList.SerializeToString,
-            ),
-            'FindWfRun': grpc.unary_unary_rpc_method_handler(
-                    servicer.FindWfRun,
-                    request_deserializer=service__pb2.FindWfRunRequest.FromString,
-                    response_serializer=service__pb2.WfRunIdList.SerializeToString,
             ),
             'SearchTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchTaskDef,
@@ -1497,23 +1481,6 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEvent',
             service__pb2.SearchExternalEventRequest.SerializeToString,
             service__pb2.ExternalEventIdList.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def FindWfRun(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/FindWfRun',
-            service__pb2.FindWfRunRequest.SerializeToString,
-            service__pb2.WfRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

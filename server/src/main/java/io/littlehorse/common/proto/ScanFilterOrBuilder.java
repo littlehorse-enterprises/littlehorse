@@ -24,19 +24,19 @@ public interface ScanFilterOrBuilder extends
   io.littlehorse.sdk.common.proto.LHStatus getWfRunStatus();
 
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    * @return Whether the variableMatch field is set.
    */
   boolean hasVariableMatch();
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    * @return The variableMatch.
    */
-  io.littlehorse.common.proto.ScanFilter.VariableMatch getVariableMatch();
+  io.littlehorse.sdk.common.proto.VariableMatch getVariableMatch();
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    */
-  io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder getVariableMatchOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableMatchOrBuilder();
 
   io.littlehorse.common.proto.ScanFilter.CriteriaCase getCriteriaCase();
 }

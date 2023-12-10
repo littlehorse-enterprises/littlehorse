@@ -38,754 +38,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.ScanFilter.class, io.littlehorse.common.proto.ScanFilter.Builder.class);
   }
 
-  public interface VariableMatchOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.ScanFilter.VariableMatch)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string var_name = 1;</code>
-     * @return The varName.
-     */
-    java.lang.String getVarName();
-    /**
-     * <code>string var_name = 1;</code>
-     * @return The bytes for varName.
-     */
-    com.google.protobuf.ByteString
-        getVarNameBytes();
-
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     * @return Whether the value field is set.
-     */
-    boolean hasValue();
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     * @return The value.
-     */
-    io.littlehorse.sdk.common.proto.VariableValue getValue();
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     */
-    io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.ScanFilter.VariableMatch}
-   */
-  public static final class VariableMatch extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.ScanFilter.VariableMatch)
-      VariableMatchOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use VariableMatch.newBuilder() to construct.
-    private VariableMatch(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private VariableMatch() {
-      varName_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new VariableMatch();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_ScanFilter_VariableMatch_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_ScanFilter_VariableMatch_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.ScanFilter.VariableMatch.class, io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder.class);
-    }
-
-    public static final int VAR_NAME_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object varName_ = "";
-    /**
-     * <code>string var_name = 1;</code>
-     * @return The varName.
-     */
-    @java.lang.Override
-    public java.lang.String getVarName() {
-      java.lang.Object ref = varName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        varName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string var_name = 1;</code>
-     * @return The bytes for varName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getVarNameBytes() {
-      java.lang.Object ref = varName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        varName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int VALUE_FIELD_NUMBER = 2;
-    private io.littlehorse.sdk.common.proto.VariableValue value_;
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     * @return Whether the value field is set.
-     */
-    @java.lang.Override
-    public boolean hasValue() {
-      return value_ != null;
-    }
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     * @return The value.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValue getValue() {
-      return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-    }
-    /**
-     * <code>.littlehorse.VariableValue value = 2;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
-      return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, varName_);
-      }
-      if (value_ != null) {
-        output.writeMessage(2, getValue());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, varName_);
-      }
-      if (value_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getValue());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.common.proto.ScanFilter.VariableMatch)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.common.proto.ScanFilter.VariableMatch other = (io.littlehorse.common.proto.ScanFilter.VariableMatch) obj;
-
-      if (!getVarName()
-          .equals(other.getVarName())) return false;
-      if (hasValue() != other.hasValue()) return false;
-      if (hasValue()) {
-        if (!getValue()
-            .equals(other.getValue())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + VAR_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getVarName().hashCode();
-      if (hasValue()) {
-        hash = (37 * hash) + VALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getValue().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.common.proto.ScanFilter.VariableMatch prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.ScanFilter.VariableMatch}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.ScanFilter.VariableMatch)
-        io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_ScanFilter_VariableMatch_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_ScanFilter_VariableMatch_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.common.proto.ScanFilter.VariableMatch.class, io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder.class);
-      }
-
-      // Construct using io.littlehorse.common.proto.ScanFilter.VariableMatch.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        varName_ = "";
-        value_ = null;
-        if (valueBuilder_ != null) {
-          valueBuilder_.dispose();
-          valueBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_ScanFilter_VariableMatch_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.ScanFilter.VariableMatch getDefaultInstanceForType() {
-        return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.ScanFilter.VariableMatch build() {
-        io.littlehorse.common.proto.ScanFilter.VariableMatch result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.ScanFilter.VariableMatch buildPartial() {
-        io.littlehorse.common.proto.ScanFilter.VariableMatch result = new io.littlehorse.common.proto.ScanFilter.VariableMatch(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.common.proto.ScanFilter.VariableMatch result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.varName_ = varName_;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.value_ = valueBuilder_ == null
-              ? value_
-              : valueBuilder_.build();
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.common.proto.ScanFilter.VariableMatch) {
-          return mergeFrom((io.littlehorse.common.proto.ScanFilter.VariableMatch)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.common.proto.ScanFilter.VariableMatch other) {
-        if (other == io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance()) return this;
-        if (!other.getVarName().isEmpty()) {
-          varName_ = other.varName_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (other.hasValue()) {
-          mergeValue(other.getValue());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                varName_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getValueFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object varName_ = "";
-      /**
-       * <code>string var_name = 1;</code>
-       * @return The varName.
-       */
-      public java.lang.String getVarName() {
-        java.lang.Object ref = varName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          varName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string var_name = 1;</code>
-       * @return The bytes for varName.
-       */
-      public com.google.protobuf.ByteString
-          getVarNameBytes() {
-        java.lang.Object ref = varName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          varName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string var_name = 1;</code>
-       * @param value The varName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setVarName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        varName_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string var_name = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearVarName() {
-        varName_ = getDefaultInstance().getVarName();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string var_name = 1;</code>
-       * @param value The bytes for varName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setVarNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        varName_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private io.littlehorse.sdk.common.proto.VariableValue value_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       * @return Whether the value field is set.
-       */
-      public boolean hasValue() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       * @return The value.
-       */
-      public io.littlehorse.sdk.common.proto.VariableValue getValue() {
-        if (valueBuilder_ == null) {
-          return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-        } else {
-          return valueBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
-        if (valueBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          value_ = value;
-        } else {
-          valueBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public Builder setValue(
-          io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
-        if (valueBuilder_ == null) {
-          value_ = builderForValue.build();
-        } else {
-          valueBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
-        if (valueBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            value_ != null &&
-            value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
-            getValueBuilder().mergeFrom(value);
-          } else {
-            value_ = value;
-          }
-        } else {
-          valueBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        value_ = null;
-        if (valueBuilder_ != null) {
-          valueBuilder_.dispose();
-          valueBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getValueFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
-        if (valueBuilder_ != null) {
-          return valueBuilder_.getMessageOrBuilder();
-        } else {
-          return value_ == null ?
-              io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableValue value = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
-          getValueFieldBuilder() {
-        if (valueBuilder_ == null) {
-          valueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
-                  getValue(),
-                  getParentForChildren(),
-                  isClean());
-          value_ = null;
-        }
-        return valueBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.ScanFilter.VariableMatch)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.ScanFilter.VariableMatch)
-    private static final io.littlehorse.common.proto.ScanFilter.VariableMatch DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.common.proto.ScanFilter.VariableMatch();
-    }
-
-    public static io.littlehorse.common.proto.ScanFilter.VariableMatch getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<VariableMatch>
-        PARSER = new com.google.protobuf.AbstractParser<VariableMatch>() {
-      @java.lang.Override
-      public VariableMatch parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<VariableMatch> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<VariableMatch> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.common.proto.ScanFilter.VariableMatch getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private int criteriaCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object criteria_;
@@ -861,7 +113,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int VARIABLE_MATCH_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    * @return Whether the variableMatch field is set.
    */
   @java.lang.Override
@@ -869,25 +121,25 @@ private static final long serialVersionUID = 0L;
     return criteriaCase_ == 2;
   }
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    * @return The variableMatch.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ScanFilter.VariableMatch getVariableMatch() {
+  public io.littlehorse.sdk.common.proto.VariableMatch getVariableMatch() {
     if (criteriaCase_ == 2) {
-       return (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_;
+       return (io.littlehorse.sdk.common.proto.VariableMatch) criteria_;
     }
-    return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+   * <code>.littlehorse.VariableMatch variable_match = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder getVariableMatchOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableMatchOrBuilder() {
     if (criteriaCase_ == 2) {
-       return (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_;
+       return (io.littlehorse.sdk.common.proto.VariableMatch) criteria_;
     }
-    return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -908,7 +160,7 @@ private static final long serialVersionUID = 0L;
       output.writeEnum(1, ((java.lang.Integer) criteria_));
     }
     if (criteriaCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableMatch) criteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -925,7 +177,7 @@ private static final long serialVersionUID = 0L;
     }
     if (criteriaCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableMatch) criteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1358,9 +610,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ScanFilter.VariableMatch, io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder, io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder> variableMatchBuilder_;
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> variableMatchBuilder_;
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      * @return Whether the variableMatch field is set.
      */
     @java.lang.Override
@@ -1368,27 +620,27 @@ private static final long serialVersionUID = 0L;
       return criteriaCase_ == 2;
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      * @return The variableMatch.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ScanFilter.VariableMatch getVariableMatch() {
+    public io.littlehorse.sdk.common.proto.VariableMatch getVariableMatch() {
       if (variableMatchBuilder_ == null) {
         if (criteriaCase_ == 2) {
-          return (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_;
+          return (io.littlehorse.sdk.common.proto.VariableMatch) criteria_;
         }
-        return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
       } else {
         if (criteriaCase_ == 2) {
           return variableMatchBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
-    public Builder setVariableMatch(io.littlehorse.common.proto.ScanFilter.VariableMatch value) {
+    public Builder setVariableMatch(io.littlehorse.sdk.common.proto.VariableMatch value) {
       if (variableMatchBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1402,10 +654,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
     public Builder setVariableMatch(
-        io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
       if (variableMatchBuilder_ == null) {
         criteria_ = builderForValue.build();
         onChanged();
@@ -1416,13 +668,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
-    public Builder mergeVariableMatch(io.littlehorse.common.proto.ScanFilter.VariableMatch value) {
+    public Builder mergeVariableMatch(io.littlehorse.sdk.common.proto.VariableMatch value) {
       if (variableMatchBuilder_ == null) {
         if (criteriaCase_ == 2 &&
-            criteria_ != io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance()) {
-          criteria_ = io.littlehorse.common.proto.ScanFilter.VariableMatch.newBuilder((io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_)
+            criteria_ != io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance()) {
+          criteria_ = io.littlehorse.sdk.common.proto.VariableMatch.newBuilder((io.littlehorse.sdk.common.proto.VariableMatch) criteria_)
               .mergeFrom(value).buildPartial();
         } else {
           criteria_ = value;
@@ -1439,7 +691,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
     public Builder clearVariableMatch() {
       if (variableMatchBuilder_ == null) {
@@ -1458,38 +710,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
-    public io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder getVariableMatchBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getVariableMatchBuilder() {
       return getVariableMatchFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder getVariableMatchOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableMatchOrBuilder() {
       if ((criteriaCase_ == 2) && (variableMatchBuilder_ != null)) {
         return variableMatchBuilder_.getMessageOrBuilder();
       } else {
         if (criteriaCase_ == 2) {
-          return (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_;
+          return (io.littlehorse.sdk.common.proto.VariableMatch) criteria_;
         }
-        return io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ScanFilter.VariableMatch variable_match = 2;</code>
+     * <code>.littlehorse.VariableMatch variable_match = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ScanFilter.VariableMatch, io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder, io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
         getVariableMatchFieldBuilder() {
       if (variableMatchBuilder_ == null) {
         if (!(criteriaCase_ == 2)) {
-          criteria_ = io.littlehorse.common.proto.ScanFilter.VariableMatch.getDefaultInstance();
+          criteria_ = io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance();
         }
         variableMatchBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ScanFilter.VariableMatch, io.littlehorse.common.proto.ScanFilter.VariableMatch.Builder, io.littlehorse.common.proto.ScanFilter.VariableMatchOrBuilder>(
-                (io.littlehorse.common.proto.ScanFilter.VariableMatch) criteria_,
+            io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableMatch) criteria_,
                 getParentForChildren(),
                 isClean());
         criteria_ = null;

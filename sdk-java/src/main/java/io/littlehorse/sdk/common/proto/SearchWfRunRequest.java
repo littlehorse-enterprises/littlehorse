@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
     wfSpecName_ = "";
     status_ = 0;
+    variableFilters_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -234,6 +235,47 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
+  public static final int VARIABLE_FILTERS_FIELD_NUMBER = 9;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_;
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
+    return variableFilters_;
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
+      getVariableFiltersOrBuilderList() {
+    return variableFilters_;
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  @java.lang.Override
+  public int getVariableFiltersCount() {
+    return variableFilters_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
+    return variableFilters_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+      int index) {
+    return variableFilters_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -271,6 +313,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000040) != 0)) {
       output.writeMessage(8, getLatestStart());
+    }
+    for (int i = 0; i < variableFilters_.size(); i++) {
+      output.writeMessage(9, variableFilters_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -311,6 +356,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000040) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getLatestStart());
+    }
+    for (int i = 0; i < variableFilters_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, variableFilters_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -363,6 +412,8 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
+    if (!getVariableFiltersList()
+        .equals(other.getVariableFiltersList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -403,6 +454,10 @@ private static final long serialVersionUID = 0L;
     if (hasLatestStart()) {
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
+    }
+    if (getVariableFiltersCount() > 0) {
+      hash = (37 * hash) + VARIABLE_FILTERS_FIELD_NUMBER;
+      hash = (53 * hash) + getVariableFiltersList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -536,6 +591,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEarliestStartFieldBuilder();
         getLatestStartFieldBuilder();
+        getVariableFiltersFieldBuilder();
       }
     }
     @java.lang.Override
@@ -558,6 +614,13 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
+      if (variableFiltersBuilder_ == null) {
+        variableFilters_ = java.util.Collections.emptyList();
+      } else {
+        variableFilters_ = null;
+        variableFiltersBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -584,9 +647,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.SearchWfRunRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchWfRunRequest result = new io.littlehorse.sdk.common.proto.SearchWfRunRequest(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.SearchWfRunRequest result) {
+      if (variableFiltersBuilder_ == null) {
+        if (((bitField0_ & 0x00000100) != 0)) {
+          variableFilters_ = java.util.Collections.unmodifiableList(variableFilters_);
+          bitField0_ = (bitField0_ & ~0x00000100);
+        }
+        result.variableFilters_ = variableFilters_;
+      } else {
+        result.variableFilters_ = variableFiltersBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.SearchWfRunRequest result) {
@@ -700,6 +776,32 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
+      if (variableFiltersBuilder_ == null) {
+        if (!other.variableFilters_.isEmpty()) {
+          if (variableFilters_.isEmpty()) {
+            variableFilters_ = other.variableFilters_;
+            bitField0_ = (bitField0_ & ~0x00000100);
+          } else {
+            ensureVariableFiltersIsMutable();
+            variableFilters_.addAll(other.variableFilters_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.variableFilters_.isEmpty()) {
+          if (variableFiltersBuilder_.isEmpty()) {
+            variableFiltersBuilder_.dispose();
+            variableFiltersBuilder_ = null;
+            variableFilters_ = other.variableFilters_;
+            bitField0_ = (bitField0_ & ~0x00000100);
+            variableFiltersBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getVariableFiltersFieldBuilder() : null;
+          } else {
+            variableFiltersBuilder_.addAllMessages(other.variableFilters_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -770,6 +872,19 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000080;
               break;
             } // case 66
+            case 74: {
+              io.littlehorse.sdk.common.proto.VariableMatch m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.VariableMatch.parser(),
+                      extensionRegistry);
+              if (variableFiltersBuilder_ == null) {
+                ensureVariableFiltersIsMutable();
+                variableFilters_.add(m);
+              } else {
+                variableFiltersBuilder_.addMessage(m);
+              }
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1315,6 +1430,246 @@ private static final long serialVersionUID = 0L;
         latestStart_ = null;
       }
       return latestStartBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_ =
+      java.util.Collections.emptyList();
+    private void ensureVariableFiltersIsMutable() {
+      if (!((bitField0_ & 0x00000100) != 0)) {
+        variableFilters_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMatch>(variableFilters_);
+        bitField0_ |= 0x00000100;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> variableFiltersBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
+      if (variableFiltersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(variableFilters_);
+      } else {
+        return variableFiltersBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public int getVariableFiltersCount() {
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.size();
+      } else {
+        return variableFiltersBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.get(index);
+      } else {
+        return variableFiltersBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder setVariableFilters(
+        int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
+      if (variableFiltersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableFiltersIsMutable();
+        variableFilters_.set(index, value);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder setVariableFilters(
+        int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableFiltersBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder addVariableFilters(io.littlehorse.sdk.common.proto.VariableMatch value) {
+      if (variableFiltersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(value);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder addVariableFilters(
+        int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
+      if (variableFiltersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(index, value);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder addVariableFilters(
+        io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(builderForValue.build());
+        onChanged();
+      } else {
+        variableFiltersBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder addVariableFilters(
+        int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableFiltersBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder addAllVariableFilters(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMatch> values) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, variableFilters_);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder clearVariableFilters() {
+      if (variableFiltersBuilder_ == null) {
+        variableFilters_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000100);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public Builder removeVariableFilters(int index) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.remove(index);
+        onChanged();
+      } else {
+        variableFiltersBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getVariableFiltersBuilder(
+        int index) {
+      return getVariableFiltersFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+        int index) {
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.get(index);  } else {
+        return variableFiltersBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
+         getVariableFiltersOrBuilderList() {
+      if (variableFiltersBuilder_ != null) {
+        return variableFiltersBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(variableFilters_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder() {
+      return getVariableFiltersFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder(
+        int index) {
+      return getVariableFiltersFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch.Builder> 
+         getVariableFiltersBuilderList() {
+      return getVariableFiltersFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
+        getVariableFiltersFieldBuilder() {
+      if (variableFiltersBuilder_ == null) {
+        variableFiltersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder>(
+                variableFilters_,
+                ((bitField0_ & 0x00000100) != 0),
+                getParentForChildren(),
+                isClean());
+        variableFilters_ = null;
+      }
+      return variableFiltersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

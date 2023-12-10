@@ -96,6 +96,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
+                    List.of(
+                            Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                            new GetableIndex<>(
+                                List.of(
+                                    Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                                    Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                                Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
                         List.of(
                                 Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
@@ -110,6 +119,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
             }
             case "status" -> {
                 return List.of(new IndexedField(key, this.getStatus().toString(), tagStorageType.get()));
+            }
+            case "majorVersion" -> {
+                return List.of(new IndexedField(key, wfSpecId.getName() + "/" + LHUtil.toLHDbVersionFormat(wfSpecId.getMajorVersion()), TagStorageType.LOCAL));
             }
             case "wfSpecId" -> {
                 return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));

@@ -153,8 +153,16 @@ class RunWfRequest(_message.Message):
     id: str
     def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
 
+class VariableMatch(_message.Message):
+    __slots__ = ["var_name", "value"]
+    VAR_NAME_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    var_name: str
+    value: _variable_pb2.VariableValue
+    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+
 class SearchWfRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start"]
+    __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -163,6 +171,7 @@ class SearchWfRunRequest(_message.Message):
     STATUS_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    VARIABLE_FILTERS_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     wf_spec_name: str
@@ -171,30 +180,8 @@ class SearchWfRunRequest(_message.Message):
     status: _common_enums_pb2.LHStatus
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-
-class FindWfRunRequest(_message.Message):
-    __slots__ = ["wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "variable_matches", "earliest_start", "latest_start"]
-    class VariableMatch(_message.Message):
-        __slots__ = ["var_name", "value"]
-        VAR_NAME_FIELD_NUMBER: _ClassVar[int]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        var_name: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
-    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
-    VARIABLE_MATCHES_FIELD_NUMBER: _ClassVar[int]
-    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
-    LATEST_START_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_name: str
-    wf_spec_major_version: int
-    wf_spec_revision: int
-    variable_matches: _containers.RepeatedCompositeFieldContainer[FindWfRunRequest.VariableMatch]
-    earliest_start: _timestamp_pb2.Timestamp
-    latest_start: _timestamp_pb2.Timestamp
-    def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., variable_matches: _Optional[_Iterable[_Union[FindWfRunRequest.VariableMatch, _Mapping]]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    variable_filters: _containers.RepeatedCompositeFieldContainer[VariableMatch]
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., variable_filters: _Optional[_Iterable[_Union[VariableMatch, _Mapping]]] = ...) -> None: ...
 
 class WfRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

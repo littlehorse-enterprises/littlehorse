@@ -108,4 +108,28 @@ public interface SearchWfRunRequestOrBuilder extends
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> 
+      getVariableFiltersList();
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index);
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  int getVariableFiltersCount();
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
+      getVariableFiltersOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+      int index);
 }
