@@ -361,7 +361,8 @@ public class GetableManagerTest {
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.setValue(new VariableValueModel(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape"))));
+        variable.setValue(new VariableValueModel(
+                Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape"))));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");

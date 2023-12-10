@@ -425,7 +425,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             // If this happens, then there is a seriously impossible bug.
             throw new IllegalStateException("Should be impossible for out to be null");
         }
-    
+
         return new VariableValueModel(out);
     }
 

@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;

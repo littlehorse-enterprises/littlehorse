@@ -64,7 +64,6 @@ public class VariableMapping {
             case JSON_OBJ:
                 log.info("Info: Will use Jackson to deserialize Json into {}", type.getName());
                 break;
-            case NULL:
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
         }
@@ -86,7 +85,7 @@ public class VariableMapping {
         String jsonStr = null;
 
         // We've already done validation for the
-        switch (val.getType()) {
+        switch (val.getValueCase()) {
             case INT:
                 if (type == Long.class || type == long.class) {
                     return val.getInt();
@@ -108,13 +107,11 @@ public class VariableMapping {
             case JSON_ARR:
                 jsonStr = val.getJsonArr();
                 break;
-            case NULL:
-                return null;
             case JSON_OBJ:
                 jsonStr = val.getJsonObj();
                 break;
-            case UNRECOGNIZED:
-                throw new RuntimeException("Unrecognized variable value type");
+            case VALUE_NOT_SET:
+                return null;
         }
 
         try {

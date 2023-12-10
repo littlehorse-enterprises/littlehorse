@@ -32,7 +32,6 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;

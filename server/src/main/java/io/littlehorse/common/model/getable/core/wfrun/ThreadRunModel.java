@@ -784,7 +784,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
                 // Finally, format the String.
                 try {
-                    val = new VariableValueModel(MessageFormat.format(formatStringVarVal.getStrVal(), formatArgs.toArray(new Object[0])));
+                    val = new VariableValueModel(
+                            MessageFormat.format(formatStringVarVal.getStrVal(), formatArgs.toArray(new Object[0])));
                 } catch (RuntimeException e) {
                     throw new LHVarSubError(e, "Error formatting variable");
                 }

@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
@@ -109,27 +110,20 @@ public class LHLibUtil {
 
         VariableValue.Builder out = VariableValue.newBuilder();
         if (o == null) {
-            out.setType(VariableType.NULL);
+            // nothing to do
         } else if (Long.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableType.INT);
             out.setInt((Long) o);
         } else if (Integer.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableType.INT);
             out.setInt((Integer) o);
         } else if (Double.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableType.DOUBLE);
             out.setDouble((Double) o);
         } else if (Float.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableType.DOUBLE);
             out.setDouble((Float) o);
         } else if (o instanceof String) {
-            out.setType(VariableType.STR);
             out.setStr((String) o);
         } else if (o instanceof Boolean) {
-            out.setType(VariableType.BOOL);
             out.setBool((Boolean) o);
         } else if (o instanceof byte[]) {
-            out.setType(VariableType.BYTES);
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
@@ -142,15 +136,40 @@ public class LHLibUtil {
             }
 
             if (List.class.isAssignableFrom(o.getClass())) {
-                out.setType(VariableType.JSON_ARR);
                 out.setJsonArr(jsonStr);
             } else {
-                out.setType(VariableType.JSON_OBJ);
                 out.setJsonObj(jsonStr);
             }
         }
 
         return out.build();
+    }
+
+    /**
+     * Converts a ValueCase (from the VariableValue.value oneof field) to a VariableType Enum.
+     * @param valueCase is the ValueCase from the VariableValue.
+     * @return the corresponding VariableType.
+     */
+    public static VariableType fromValueCase(ValueCase valueCase) {
+        switch (valueCase) {
+            case STR:
+                return VariableType.STR;
+            case BYTES:
+                return VariableType.BYTES;
+            case INT:
+                return VariableType.INT;
+            case DOUBLE:
+                return VariableType.DOUBLE;
+            case JSON_ARR:
+                return VariableType.JSON_ARR;
+            case JSON_OBJ:
+                return VariableType.JSON_OBJ;
+            case BOOL:
+                return VariableType.BOOL;
+            case VALUE_NOT_SET:
+            default:
+                return null;
+        }
     }
 
     public static boolean isINT(Class<?> cls) {
@@ -200,9 +219,9 @@ public class LHLibUtil {
     }
 
     public static boolean areVariableValuesEqual(VariableValue a, VariableValue b) {
-        if (a.getType() != b.getType()) return false;
+        if (a.getValueCase() != b.getValueCase()) return false;
 
-        switch (a.getType()) {
+        switch (a.getValueCase()) {
             case INT:
                 return a.getInt() == b.getInt();
             case DOUBLE:
@@ -217,11 +236,9 @@ public class LHLibUtil {
                 return a.getJsonObj().equals(b.getJsonObj());
             case BYTES:
                 return a.getBytes().equals(b.getBytes());
-            case NULL:
+            case VALUE_NOT_SET:
                 return true;
-            case UNRECOGNIZED:
-            default:
-                throw new RuntimeException("Not possible");
         }
+        throw new IllegalStateException("Not possible to get here");
     }
 }

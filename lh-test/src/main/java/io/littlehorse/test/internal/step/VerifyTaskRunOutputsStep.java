@@ -59,9 +59,9 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
     }
 
     private boolean areEqual(VariableValue first, VariableValue second) {
-        if (first.getType() != second.getType()) return false;
+        if (first.getValueCase() != second.getValueCase()) return false;
 
-        switch (first.getType()) {
+        switch (first.getValueCase()) {
             case INT:
                 return first.getInt() == second.getInt();
             default:
