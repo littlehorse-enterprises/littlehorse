@@ -334,9 +334,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             rawNodeOutput.put(field.getKey(), field.getValue().getVal());
         }
         validateMandatoryFieldsFromCompletedEvent(userTaskFieldsGroupedByName.values(), rawNodeOutput.keySet());
-        VariableValueModel output = new VariableValueModel();
-        output.setType(VariableType.JSON_OBJ);
-        output.setJsonObjVal(rawNodeOutput);
+        VariableValueModel output = new VariableValueModel(rawNodeOutput);
         this.status = UserTaskRunStatus.DONE;
 
         getNodeRun().complete(output, new Date());

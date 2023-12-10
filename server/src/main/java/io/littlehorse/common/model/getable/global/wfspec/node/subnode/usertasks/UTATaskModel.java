@@ -67,7 +67,7 @@ public class UTATaskModel extends LHSerializable<UTATask> {
             throw new LHVarSubError(null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getType());
         }
 
-        Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.intVal));
+        Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.getIntVal()));
         LHTimer timer = new LHTimer(
                 new CommandModel(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime));
         ProcessorExecutionContext processorExecutionContext =

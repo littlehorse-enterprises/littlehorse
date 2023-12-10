@@ -134,14 +134,14 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
             try {
                 VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
                         .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
-                if (timeoutSeconds.type != VariableType.INT) {
+                if (timeoutSeconds.getType() != VariableType.INT) {
                     throw new LHVarSubError(
-                            null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.type + " not INT!");
+                            null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.getType() + " not INT!");
                 }
 
                 LHTimer timer = new LHTimer();
                 timer.key = nodeRun.getPartitionKey().get();
-                timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
+                timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
 
                 CommandModel cmd = new CommandModel();
                 ExternalEventTimeoutModel timeoutEvt = new ExternalEventTimeoutModel(nodeRun.getId());

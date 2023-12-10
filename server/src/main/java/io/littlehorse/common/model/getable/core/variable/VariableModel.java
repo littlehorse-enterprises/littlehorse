@@ -13,7 +13,6 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -155,7 +154,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
         // Current behavior is that null variables are NOT indexed. This may change in future
         // releases, but it will be a backwards-compatible change.
-        if (value.getType() == VariableType.NULL) {
+        if (value.getType() == null) {
             return List.of();
         }
 

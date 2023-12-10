@@ -81,17 +81,17 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {
         switch (type) {
             case RAW_SECONDS:
-                long timeToSleep = thread.assignVariable(rawSeconds).asInt().intVal;
+                long timeToSleep = thread.assignVariable(rawSeconds).asInt().getIntVal();
                 return new Date(System.currentTimeMillis() + (1000 * timeToSleep));
             case ISO_DATE:
-                String dateStr = thread.assignVariable(isoDate).asStr().strVal;
+                String dateStr = thread.assignVariable(isoDate).asStr().getStrVal();
                 try {
                     return new Date(Instant.parse(dateStr).toEpochMilli());
                 } catch (Exception exn) {
                     throw new LHVarSubError(exn, "failed parsing date string " + dateStr + ": " + exn.getMessage());
                 }
             case TIMESTAMP:
-                long ts = thread.assignVariable(timestamp).asInt().intVal;
+                long ts = thread.assignVariable(timestamp).asInt().getIntVal();
                 return new Date(ts);
             case SLEEPLENGTH_NOT_SET:
         }

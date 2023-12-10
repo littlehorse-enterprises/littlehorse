@@ -270,7 +270,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
             } else {
                 // TODO: Will need to update this when we add the required variable feature.
                 val = new VariableValueModel();
-                val.type = VariableType.NULL;
             }
 
             try {

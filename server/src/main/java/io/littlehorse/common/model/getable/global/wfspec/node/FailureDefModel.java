@@ -77,12 +77,10 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
                 out.content = thread.assignVariable(this.content);
             } catch (LHVarSubError exn) {
                 out.content = new VariableValueModel();
-                out.content.type = VariableType.NULL;
                 out.message += "\n\nWARNING: Unable to assign output content: " + exn.getMessage();
             }
         } else {
             out.content = new VariableValueModel();
-            out.content.type = VariableType.NULL;
         }
         return out;
     }

@@ -85,7 +85,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitForModel ttwf : getThreads()) {
             int threadRunNumber = thread.assignVariable(ttwf.getThreadRunNumber())
                     .asInt()
-                    .intVal
+                    .getIntVal()
                     .intValue();
             out.add(new WaitForThreadModel(nodeRun, threadRunNumber, processorContext.currentCommand()));
         }

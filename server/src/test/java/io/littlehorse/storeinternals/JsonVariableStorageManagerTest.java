@@ -74,9 +74,7 @@ public class JsonVariableStorageManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef, indices, false)));
         });
-        VariableValueModel variableValue = new VariableValueModel();
-        variableValue.setType(VariableType.JSON_OBJ);
-        variableValue.setJsonObjVal(map);
+        VariableValueModel variableValue = new VariableValueModel(map);
         variable.setValue(variableValue);
         getableManager.put(variable);
         getableManager.commit();

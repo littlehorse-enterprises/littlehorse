@@ -46,7 +46,6 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     STR: _ClassVar[VariableType]
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
-    NULL: _ClassVar[VariableType]
 
 class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -91,7 +90,6 @@ BOOL: VariableType
 STR: VariableType
 INT: VariableType
 BYTES: VariableType
-NULL: VariableType
 CHILD_FAILURE: LHErrorType
 VAR_SUB_ERROR: LHErrorType
 VAR_MUTATION_ERROR: LHErrorType

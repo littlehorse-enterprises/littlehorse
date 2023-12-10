@@ -699,7 +699,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            if (val.type != requiredVarDef.getType() && val.type != VariableType.NULL) {
+            if (val.getType() != requiredVarDef.getType() && val.getType() != null) {
                 throw new LHVarSubError(
                         null,
                         "Variable " + varName + " should be " + requiredVarDef.getType() + " but is of type "
@@ -783,10 +783,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 }
 
                 // Finally, format the String.
-                val = new VariableValueModel();
-                val.type = VariableType.STR;
                 try {
-                    val.strVal = MessageFormat.format(formatStringVarVal.strVal, formatArgs.toArray(new Object[0]));
+                    val = new VariableValueModel(MessageFormat.format(formatStringVarVal.getStrVal(), formatArgs.toArray(new Object[0])));
                 } catch (RuntimeException e) {
                     throw new LHVarSubError(e, "Error formatting variable");
                 }
@@ -938,13 +936,13 @@ class Comparer {
     public static boolean contains(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         // Can only do for Str, Arr, and Obj
 
-        if (left.type == VariableType.STR) {
-            String rStr = right.asStr().strVal;
+        if (left.getType() == VariableType.STR) {
+            String rStr = right.asStr().getStrVal();
 
-            return left.asStr().strVal.contains(rStr);
-        } else if (left.type == VariableType.JSON_ARR) {
+            return left.asStr().getStrVal().contains(rStr);
+        } else if (left.getType() == VariableType.JSON_ARR) {
             Object rObj = right.getVal();
-            List<Object> lhs = left.asArr().jsonArrVal;
+            List<Object> lhs = left.asArr().getJsonArrVal();
 
             for (Object o : lhs) {
                 if (LHUtil.deepEquals(o, rObj)) {
@@ -952,10 +950,10 @@ class Comparer {
                 }
             }
             return false;
-        } else if (left.type == VariableType.JSON_OBJ) {
-            return left.asObj().jsonObjVal.containsKey(right.asStr().strVal);
+        } else if (left.getType() == VariableType.JSON_OBJ) {
+            return left.asObj().getJsonObjVal().containsKey(right.asStr().getStrVal());
         } else {
-            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.type);
+            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getType());
         }
     }
 }

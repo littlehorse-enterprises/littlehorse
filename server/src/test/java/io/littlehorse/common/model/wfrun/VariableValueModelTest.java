@@ -17,15 +17,15 @@ public class VariableValueModelTest {
     void castDoubleToInt() throws LHVarSubError {
         VariableValueModel doubleVarval = new VariableValueModel(22.1);
 
-        assertThat(doubleVarval.type).isEqualTo(VariableType.DOUBLE);
+        assertThat(doubleVarval.getType()).isEqualTo(VariableType.DOUBLE);
 
         assertDoesNotThrow(() -> {
             doubleVarval.asInt();
         });
         VariableValueModel intVarVal = doubleVarval.asInt();
 
-        assertThat(intVarVal.type).isEqualTo(VariableType.INT);
-        assertThat(intVarVal.intVal).isEqualTo(22);
+        assertThat(intVarVal.getType()).isEqualTo(VariableType.INT);
+        assertThat(intVarVal.getIntVal()).isEqualTo(22);
     }
 
     @Test
@@ -33,8 +33,8 @@ public class VariableValueModelTest {
         VariableValueModel doubleVarval = new VariableValueModel(22.1);
 
         VariableValueModel strVarVal = doubleVarval.asStr();
-        assertThat(strVarVal.type).isEqualTo(VariableType.STR);
-        assertThat(strVarVal.strVal).isEqualTo("22.1");
+        assertThat(strVarVal.getType()).isEqualTo(VariableType.STR);
+        assertThat(strVarVal.getStrVal()).isEqualTo("22.1");
     }
 
     class ObjVarThing {
@@ -51,16 +51,16 @@ public class VariableValueModelTest {
         ObjVarThing thing = new ObjVarThing("Hi There");
         VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing), mock());
 
-        assertThat(first.type).isEqualTo(VariableType.JSON_OBJ);
-        assertThat(first.jsonObjVal.get("foo")).isEqualTo("Hi There");
+        assertThat(first.getType()).isEqualTo(VariableType.JSON_OBJ);
+        assertThat(first.getJsonObjVal().get("foo")).isEqualTo("Hi There");
 
         // copy
         VariableValueModel second = first.asObj();
-        assertThat(second.type).isEqualTo(VariableType.JSON_OBJ);
-        assertThat(second.jsonObjVal.get("foo")).isEqualTo("Hi There");
+        assertThat(second.getType()).isEqualTo(VariableType.JSON_OBJ);
+        assertThat(second.getJsonObjVal().get("foo")).isEqualTo("Hi There");
 
-        second.jsonObjVal.put("foo", "bar");
-        assertThat(second.jsonObjVal.get("foo")).isEqualTo("bar");
-        assertThat(first.jsonObjVal.get("foo")).isEqualTo("Hi There");
+        second.getJsonObjVal().put("foo", "bar");
+        assertThat(second.getJsonObjVal().get("foo")).isEqualTo("bar");
+        assertThat(first.getJsonObjVal().get("foo")).isEqualTo("Hi There");
     }
 }

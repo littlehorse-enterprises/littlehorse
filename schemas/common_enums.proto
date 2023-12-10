@@ -48,7 +48,6 @@ enum VariableType {
   STR = 4;
   INT = 5;
   BYTES = 6;
-  NULL = 7;
 }
 
 enum LHErrorType {

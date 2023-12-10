@@ -89,9 +89,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
             nodeRun.fail(failure, time);
         } else {
             // Then the variable output of this node is just the int thread id.
-            VariableValueModel output = new VariableValueModel();
-            output.type = VariableType.INT;
-            output.intVal = Long.valueOf(child.number);
+            VariableValueModel output = new VariableValueModel(child.number);
 
             nodeRun.complete(output, time);
         }

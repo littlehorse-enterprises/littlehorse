@@ -304,7 +304,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
 
-            if (val.type != varDef.getType() && val.type != VariableType.NULL) {
+            if (val.getType() != varDef.getType() && val.getType() != null) {
                 throw new LHValidationError(
                         null, "Var " + e.getKey() + " should be " + varDef.getType() + " but is " + val.getType());
             }
