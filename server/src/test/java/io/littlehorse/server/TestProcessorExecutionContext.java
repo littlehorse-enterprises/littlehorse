@@ -2,6 +2,11 @@ package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.Command;
+import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.DefaultModelStore;
+import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -18,6 +23,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
+    private final DefaultModelStore metadataStore;
 
     public TestProcessorExecutionContext(
             Command currentCommand,
@@ -31,6 +37,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         this.metadataCache = metadataCache;
         this.lhConfig = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
+        metadataStore = ModelStore.defaultStore(processorContext.getStateStore(ServerTopology.METADATA_STORE), this);
     }
 
     public static TestProcessorExecutionContext create(
@@ -49,5 +56,10 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
                 globalTaskQueueManager,
                 metadataCache,
                 server);
+    }
+
+    @Override
+    public MetadataManager metadataManager() {
+        return new MetadataManager(metadataStore, null);
     }
 }
