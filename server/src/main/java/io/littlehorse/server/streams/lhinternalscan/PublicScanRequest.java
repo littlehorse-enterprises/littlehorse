@@ -6,10 +6,13 @@ import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+
 import java.util.List;
 
 /**
@@ -99,4 +102,8 @@ public abstract class PublicScanRequest<
     public abstract TagStorageType indexTypeForSearch() throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
+
+    public List<ScanFilterModel> getFilters() {
+        return List.of();
+    }
 }

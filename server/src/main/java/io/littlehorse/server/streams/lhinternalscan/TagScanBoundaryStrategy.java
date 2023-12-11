@@ -1,9 +1,14 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.util.LHUtil;
+import lombok.Getter;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 

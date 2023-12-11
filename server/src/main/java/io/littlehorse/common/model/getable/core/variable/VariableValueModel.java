@@ -558,4 +558,15 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         }
         return valuePair;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof VariableValueModel)) return false;
+        VariableValueModel o = (VariableValueModel) other;
+
+        if (o.getType() != getType()) return false;
+
+        // TODO: Support json path.
+        return (o.getVal().equals(getVal()));
+    }
 }

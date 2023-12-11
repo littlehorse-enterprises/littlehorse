@@ -10,20 +10,26 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMatch;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import kotlin.NotImplementedError;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,27 +143,24 @@ extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        List<String> searchAttributeKeys =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        return new WfRunModel()
-                .getIndexConfigurations().stream()
-                        .filter(getableIndexConfiguration ->
-                                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst()
-                        .orElse(null);
+        // This will be more complex when we have REMOTE tags again.
+        return TagStorageType.LOCAL;
     }
 
     @Override
     public LHStore getStoreType() {
-        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return LHStore.CORE;
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+    }
+
+    @Override
+    public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
+        // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
+        List<ScanFilterModel> out = new ArrayList<>();
     }
 }
