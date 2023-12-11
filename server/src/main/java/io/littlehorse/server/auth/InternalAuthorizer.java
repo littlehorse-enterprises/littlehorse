@@ -35,6 +35,7 @@ public class InternalAuthorizer implements ServerAuthorizer {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+        call.getMethodDescriptor();
         String clientId = headers.get(CLIENT_ID);
         String tenantId = headers.get(TENANT_ID);
         Objects.requireNonNull(clientId);

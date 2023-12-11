@@ -150,6 +150,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -976,7 +977,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getAllInternalHosts();
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
-        return internalComms.getAdvertisedHost(host, listenerName);
+    public LHHostInfo getAdvertisedHost(
+            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
+        return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
     }
 }

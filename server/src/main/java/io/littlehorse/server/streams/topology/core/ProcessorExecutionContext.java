@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
@@ -134,7 +135,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     }
 
     public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
-        return server.getAdvertisedHost(host, listenerName);
+        return server.getAdvertisedHost(host, listenerName, InternalCallCredentials.forContext(this));
     }
 
     @Override
