@@ -598,7 +598,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.BOOL,
                                                 'bool': false
                                             }
                                         }
@@ -613,7 +612,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.BOOL,
                                                 'bool': false
                                             }
                                         }
@@ -678,7 +676,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                 'userTaskDefName': 'fraud-detection-fraud-form-2',
                                 'userGroup': {
                                     'literalValue': {
-                                        'type': VariableType.STR,
                                         'str': 'fraud-detection'
                                     }
                                 },
@@ -1454,7 +1451,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.INT,
                                                 'int': 0
                                             }
                                         }
@@ -1469,7 +1465,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.INT,
                                                 'int': 0
                                             }
                                         }
@@ -1491,7 +1486,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                     'lhsName': 'number-of-donuts',
                                     'operation': VariableMutationType.SUBTRACT,
                                     'literalValue': {
-                                        'type': VariableType.INT,
                                         'int': 1
                                     }
                                 }
@@ -1521,7 +1515,6 @@ describe('mapping WfSpec nodes from proto to react flow structure', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.INT,
                                                 'int': 0
                                             }
                                         }
@@ -2066,7 +2059,6 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.BOOL,
                                                 'bool': false
                                             }
                                         }
@@ -2081,7 +2073,6 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                                         },
                                         'right': {
                                             'literalValue': {
-                                                'type': VariableType.BOOL,
                                                 'bool': false
                                             }
                                         }
@@ -2173,7 +2164,6 @@ describe('layout WfRuns highlighting the executed nodes from the wfRun', () => {
                                 'userTaskDefName': 'risk-approval-form',
                                 'userGroup': {
                                     'literalValue': {
-                                        'type': VariableType.STR,
                                         'str': 'risk-management'
                                     }
                                 },

@@ -35,9 +35,7 @@ describe('extracts edge label out of a LH Node', () => {
                         variableName
                     },
                     'right': {
-                        'literalValue': {
-                            'type': VariableType.NULL
-                        }
+                        'literalValue': {}
                     }
                 }
             })
@@ -60,9 +58,7 @@ describe('extracts edge label out of a LH Node', () => {
                         variableName
                     },
                     'right': {
-                        'literalValue': {
-                            'type': VariableType.NULL
-                        }
+                        'literalValue': {}
                     }
                 }
             })
@@ -219,9 +215,7 @@ describe('extracts edge label out of a LH Node', () => {
                 'condition': {
                     comparator,
                     'left': {
-                        'literalValue': {
-                            'type': VariableType.NULL
-                        }
+                        'literalValue': {}
                     },
                     'right': {
                         variableName
@@ -243,9 +237,7 @@ describe('extracts edge label out of a LH Node', () => {
                 'condition': {
                     'comparator': Comparator.GREATER_THAN,
                     'left': {
-                        'literalValue': {
-                            'type': VariableType.NULL
-                        }
+                        'literalValue': {}
                     },
                     'right': {
                         jsonPath,
