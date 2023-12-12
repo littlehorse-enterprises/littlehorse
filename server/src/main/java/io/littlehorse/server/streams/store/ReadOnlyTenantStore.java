@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -82,6 +83,11 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
                 appendTenantPrefixTo(Storeable.getFullStoreKey(cls, start)),
                 appendTenantPrefixTo(Storeable.getFullStoreKey(cls, end)),
                 cls);
+    }
+
+    @Override
+    public <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls) {
+        return serdeModelStore.iterate(start, end, cls);
     }
 
     protected String appendTenantPrefixTo(String key) {

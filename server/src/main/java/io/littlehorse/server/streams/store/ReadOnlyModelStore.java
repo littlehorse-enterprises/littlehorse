@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -36,4 +37,6 @@ public interface ReadOnlyModelStore {
     <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls);
 
     <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls);
+
+    <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls);
 }

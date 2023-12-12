@@ -265,31 +265,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder getReassignedUserTaskOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
    * @return Whether the cancelUserTask field is set.
    */
   boolean hasCancelUserTask();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
    * @return The cancelUserTask.
    */
   io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest getCancelUserTask();
   /**
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
+   */
+  io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   * @return Whether the bulkJob field is set.
    */
-  io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
+  boolean hasBulkJob();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   * @return The bulkJob.
+   */
+  io.littlehorse.common.proto.BulkUpdateJob getBulkJob();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   */
+  io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
