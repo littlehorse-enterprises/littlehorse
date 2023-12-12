@@ -310,7 +310,7 @@ class WfRunVariable:
 
         if default_value is not None:
             self.default_value = to_variable_value(default_value)
-            if self.default_value.type != self.type:
+            if self.default_value.WhichOneof("value") != str(VariableType.Name(self.type)).lower():
                 raise TypeError(
                     f"Default value is not a {VariableType.Name(variable_type)}"
                 )
