@@ -17,13 +17,12 @@ public final class HeadersUtil {
     /**
      * Extract tenantId from metadata headers
      * @param metadata Kafka Streams Headers
-     * @return TenantId
-     * @throws IllegalArgumentException if @{@link LHConstants#TENANT_ID_HEADER_NAME}
+     * @return TenantId from metadata or default tenant id if not present
      */
     public static String tenantIdFromMetadata(Headers metadata) {
         Header header = metadata.lastHeader(LHConstants.TENANT_ID_HEADER_NAME);
         if (header == null) {
-            throw new IllegalArgumentException(LHConstants.TENANT_ID_HEADER_NAME + " header is not present");
+            return LHConstants.DEFAULT_TENANT;
         }
         return new String(header.value());
     }

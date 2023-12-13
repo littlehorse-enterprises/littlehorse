@@ -37,7 +37,7 @@ public class MetadataCommandExecution implements ExecutionContext {
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ModelStore.defaultStore(nativeMetadataStore, this),
-                tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata)));
+                ModelStore.tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(

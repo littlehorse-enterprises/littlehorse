@@ -1,10 +1,8 @@
 package io.littlehorse.server.streams.store;
 
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Objects;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -35,37 +33,21 @@ public interface ModelStore extends ReadOnlyModelStore {
 
     static ModelStore instanceFor(
             KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        if (Objects.equals(tenantId, LHConstants.DEFAULT_TENANT)) {
-            return ModelStore.defaultStore(nativeStore, executionContext);
-        } else {
-            return new TenantModelStore(nativeStore, tenantId, executionContext);
-        }
+        return new TenantModelStore(nativeStore, tenantId, executionContext);
     }
 
     static TenantModelStore tenantStoreFor(
             KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        if (tenantId != null && !tenantId.equals(LHConstants.DEFAULT_TENANT)) {
-            return new TenantModelStore(nativeStore, tenantId, executionContext);
-        } else {
-            return null;
-        }
+        return new TenantModelStore(nativeStore, tenantId, executionContext);
     }
 
     static ReadOnlyTenantStore tenantStoreFor(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        if (tenantId != null && !tenantId.equals(LHConstants.DEFAULT_TENANT)) {
-            return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
-        } else {
-            return null;
-        }
+        return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
     }
 
     static ReadOnlyModelStore instanceFor(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
-        if (Objects.equals(tenantId, LHConstants.DEFAULT_TENANT)) {
-            return ModelStore.defaultStore(nativeStore, executionContext);
-        } else {
-            return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
-        }
+        return new ReadOnlyTenantStore(nativeStore, tenantId, executionContext);
     }
 }
