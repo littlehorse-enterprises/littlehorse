@@ -18,7 +18,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         return fullStoreKey.substring(fullStoreKey.indexOf('/') + 1);
     }
 
-    public static String getSubstorePrefix(Class<? extends Storeable> cls) {
+    public static String getSubstorePrefix(Class<? extends Storeable<?>> cls) {
         return getSubstorePrefix(getStoreableType(cls));
     }
 
@@ -26,7 +26,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         return getSubstorePrefix(type) + storeKey;
     }
 
-    public static String getFullStoreKey(Class<? extends Storeable> cls, String storeKey) {
+    public static String getFullStoreKey(Class<? extends Storeable<?>> cls, String storeKey) {
         return getSubstorePrefix(getStoreableType(cls)) + storeKey;
     }
 
@@ -34,7 +34,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public abstract StoreableType getType();
 
-    public static StoreableType getStoreableType(Class<? extends Storeable> cls) {
+    public static StoreableType getStoreableType(Class<? extends Storeable<?>> cls) {
         switch (cls.getSimpleName()) {
             case "StoredGetable":
                 return StoreableType.STORED_GETABLE;

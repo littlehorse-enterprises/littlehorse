@@ -82,7 +82,9 @@ public class CommandProcessorTest {
         Command commandToExecute =
                 Command.newBuilder().setRunWf(runWfSubCommand).build();
         processorContext = TestProcessorExecutionContext.create(
-                commandToExecute, HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL), mockProcessorContext);
+                commandToExecute,
+                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL),
+                mockProcessorContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
