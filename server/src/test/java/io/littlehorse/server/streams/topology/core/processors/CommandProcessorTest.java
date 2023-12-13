@@ -89,6 +89,7 @@ public class CommandProcessorTest {
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
         processorContext.getableManager().put(nodeRun);
+        processorContext.getableManager().commit();
         final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
                 TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, processorContext);
         defaultStore.put(scheduledTask);

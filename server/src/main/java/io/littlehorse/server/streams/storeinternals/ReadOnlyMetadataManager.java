@@ -1,14 +1,12 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.server.streams.store.LHIterator;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ReadOnlyModelDefaultStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
@@ -74,10 +72,6 @@ public class ReadOnlyMetadataManager {
             result.add(tagLHIterKeyValue.getValue());
         });
         return result;
-    }
-
-    public <T extends LHSerializable<?>> LHIterator<T> range(String start, String end, Class<T> cls) {
-        return tenantStore.iterate(start, end, cls);
     }
 
     public <U extends Message, T extends GlobalGetable<U>> T lastFromPrefix(String prefix) {
