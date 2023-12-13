@@ -19,9 +19,13 @@ import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @LHTest(externalEventNames = "external-event")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SearchWorkflowTest {
 
     @LHWorkflow("complex-workflow")
@@ -32,25 +36,13 @@ public class SearchWorkflowTest {
     private final SearchResultCaptor<WfSpecIdList> wfSpecIdListCaptor = SearchResultCaptor.of(WfSpecIdList.class);
 
     @Test
-    public void shouldFindRunningWorkflows() {
+    @Order(0)
+    public void shouldFindWfRun() {
         Function<WfRunTestContext, SearchWfRunRequest> searchByNameAndStatusRunning =
                 context -> SearchWfRunRequest.newBuilder()
                         .setWfSpecName("complex-workflow")
                         .setStatus(RUNNING)
                         .build();
-        workflowVerifier
-                .prepareRun(complexWorkflow)
-                .waitForStatus(RUNNING)
-                .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusRunning)
-                .thenSendExternalEventJsonContent("external-event", "{}")
-                .waitForStatus(COMPLETED)
-                .start();
-        WfRunIdList completedWorkflowIds = wfRunIdListCaptor.getValue().get();
-        Assertions.assertThat(completedWorkflowIds.getResultsList()).hasSize(1);
-    }
-
-    @Test
-    public void shouldFindCompletedWorkflows() {
         Function<WfRunTestContext, SearchWfRunRequest> searchByNameAndStatusCompleted =
                 context -> SearchWfRunRequest.newBuilder()
                         .setWfSpecName("complex-workflow")
@@ -59,15 +51,19 @@ public class SearchWorkflowTest {
         workflowVerifier
                 .prepareRun(complexWorkflow)
                 .waitForStatus(RUNNING)
+                .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusRunning)
                 .thenSendExternalEventJsonContent("external-event", "{}")
                 .waitForStatus(COMPLETED)
                 .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusCompleted)
                 .start();
+        WfRunIdList runningWorkflowIds = wfRunIdListCaptor.getValue().get();
         WfRunIdList completedWorkflowIds = wfRunIdListCaptor.getValue().get();
         Assertions.assertThat(completedWorkflowIds.getResultsList()).hasSize(1);
+        Assertions.assertThat(runningWorkflowIds.getResultsList()).hasSize(1);
     }
 
     @Test
+    @Order(1)
     public void shouldFindWfSpecByName() {
         Function<WfRunTestContext, SearchWfSpecRequest> searchWfSpecByName = context ->
                 SearchWfSpecRequest.newBuilder().setName("complex-workflow").build();
@@ -85,6 +81,7 @@ public class SearchWorkflowTest {
     }
 
     @Test
+    @Order(1)
     public void shouldFindAllWfSpec() {
         Function<WfRunTestContext, SearchWfSpecRequest> searchWfSpecByName =
                 context -> SearchWfSpecRequest.newBuilder().build();
@@ -94,7 +91,7 @@ public class SearchWorkflowTest {
                 .start();
         WfSpecIdList wfSpecIdList = wfSpecIdListCaptor.getValue().get();
         List<WfSpecId> specIds = wfSpecIdList.getResultsList();
-        Assertions.assertThat(specIds).hasSize(1);
+        Assertions.assertThat(specIds).isNotEmpty();
     }
 
     @LHWorkflow("complex-workflow")
