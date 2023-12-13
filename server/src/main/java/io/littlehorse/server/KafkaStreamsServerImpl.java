@@ -150,6 +150,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -233,6 +234,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private static final boolean ENABLE_STALE_STORES = true;
 
     private RequestExecutionContext requestContext() {
+
         return contextKey.get();
     }
 
@@ -266,7 +268,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 this::readOnlyStore);
 
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, this::readOnlyStore);
     }
 
     public String getInstanceId() {
@@ -865,7 +867,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                         commandMetadata.toArray());
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
+    public ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
@@ -975,7 +977,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getAllInternalHosts();
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
-        return internalComms.getAdvertisedHost(host, listenerName);
+    public LHHostInfo getAdvertisedHost(
+            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
+        return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
     }
 }

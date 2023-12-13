@@ -35,6 +35,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.server.auth.InternalAuthorizer;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -43,6 +45,7 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
@@ -60,6 +63,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +107,8 @@ public class BackendInternalComms implements Closeable {
             KafkaStreams timerStreams,
             Executor executor,
             MetadataCache metadataCache,
-            Context.Key<RequestExecutionContext> contextKey) {
+            Context.Key<RequestExecutionContext> contextKey,
+            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -126,6 +131,7 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .addService(new InterBrokerCommServer())
+                .intercept(new InternalAuthorizer(contextKey, storeProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
@@ -226,9 +232,10 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
+    public LHHostInfo getAdvertisedHost(
+            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
-                getPublicListenersForHost(new HostInfo(host.host, host.port));
+                getPublicListenersForHost(new HostInfo(host.host, host.port), internalCredentials);
 
         LHHostInfo desiredHost = advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
@@ -252,7 +259,8 @@ public class BackendInternalComms implements Closeable {
 
         for (HostModel host : hosts) {
             try {
-                out.add(getAdvertisedHost(host, listenerName));
+                // Potential NPE if this method gets invoked, currently is not used
+                out.add(getAdvertisedHost(host, listenerName, null));
             } catch (StatusRuntimeException exn) {
                 log.warn("Host '{}:{}' unreachable: ", host.host, host.port, exn);
                 // The reason why we don'swallow the exception when one host is unreachable is
@@ -267,13 +275,14 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(HostInfo streamsHost) {
+    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(
+            HostInfo streamsHost, InternalCallCredentials internalCredentials) {
         if (otherHosts.get(streamsHost) != null) {
             return otherHosts.get(streamsHost);
         }
 
         InternalGetAdvertisedHostsResponse info =
-                getInternalClient(streamsHost).getAdvertisedHosts(Empty.getDefaultInstance());
+                getInternalClient(streamsHost, internalCredentials).getAdvertisedHosts(Empty.getDefaultInstance());
 
         otherHosts.put(streamsHost, info);
         return info;
@@ -321,12 +330,17 @@ public class BackendInternalComms implements Closeable {
         return ModelStore.instanceFor(rawStore, authContext.tenantId(), requestContext);
     }
 
+    public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
+        return LHInternalsGrpc.newBlockingStub(getChannel(host)).withCallCredentials(internalCredentials);
+    }
+
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        return LHInternalsGrpc.newBlockingStub(getChannel(host));
+        return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
     private LHInternalsStub getInternalAsyncClient(HostInfo host) {
-        return LHInternalsGrpc.newStub(getChannel(host));
+        return LHInternalsGrpc.newStub(getChannel(host))
+                .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
     }
 
     private ManagedChannel getChannel(HostInfo host) {
