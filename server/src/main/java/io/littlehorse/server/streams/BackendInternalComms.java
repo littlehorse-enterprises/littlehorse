@@ -24,6 +24,7 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
@@ -37,6 +38,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -60,6 +62,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -389,16 +392,16 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> ctx) {
+        public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> observer) {
             InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
             try {
                 InternalScanResponse reply = doScan(lhis);
-                ctx.onNext(reply);
-                ctx.onCompleted();
+                observer.onNext(reply);
+                observer.onCompleted();
             } catch (LHApiException exn) {
-                ctx.onError(exn);
+                observer.onError(exn);
             } catch (Exception exn) {
-                ctx.onError(new LHApiException(Status.UNKNOWN, exn));
+                observer.onError(new LHApiException(Status.UNKNOWN, exn));
             }
         }
 
@@ -621,6 +624,7 @@ public class BackendInternalComms implements Closeable {
             newReq.objectType = search.objectType;
             newReq.storeName = search.storeName;
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
+            newReq.filters = search.filters;
 
             InternalScanResponse reply;
             reply = stub.internalScan(newReq.toProto().build());
@@ -715,7 +719,7 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore);
+                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore, req.filters);
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
@@ -756,7 +760,8 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            ReadOnlyModelStore store) {
+            ReadOnlyModelStore store,
+            List<ScanFilterModel> filters) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
@@ -778,11 +783,24 @@ public class BackendInternalComms implements Closeable {
         }
         endKey += "~";
 
+        Predicate<Tag> passesFilter = tag -> {
+            if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
+                throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
+            }
+
+            WfRunIdModel wfRunId =
+                    (WfRunIdModel) ObjectIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
+            return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
+        };
+
         try (LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)) {
             boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
+                if (!passesFilter.test(tag)) {
+                    continue;
+                }
                 if (--limit < 0) {
                     bookmarkOut = PartitionBookmarkPb.newBuilder()
                             .setParttion(partition)

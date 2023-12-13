@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter;
 
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -14,13 +13,24 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.VariableMatch
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 
-
 public class ScanFilterModel extends LHSerializable<ScanFilter> {
 
     private CriteriaCase type;
     private LHStatus wfRunStatus;
     private VariableMatchModel variableMatch;
-    
+
+    public ScanFilterModel() {}
+
+    public ScanFilterModel(VariableMatchModel variableMatch) {
+        this.type = CriteriaCase.VARIABLE_MATCH;
+        this.variableMatch = variableMatch;
+    }
+
+    public ScanFilterModel(LHStatus status) {
+        this.wfRunStatus = status;
+        this.type = CriteriaCase.WF_RUN_STATUS;
+    }
+
     @Override
     public Class<ScanFilter> getProtoBaseClass() {
         return ScanFilter.class;
@@ -30,7 +40,7 @@ public class ScanFilterModel extends LHSerializable<ScanFilter> {
     public ScanFilter.Builder toProto() {
         ScanFilter.Builder out = ScanFilter.newBuilder();
 
-        switch(type) {
+        switch (type) {
             case VARIABLE_MATCH:
                 out.setVariableMatch(variableMatch.toProto());
                 break;
@@ -47,7 +57,7 @@ public class ScanFilterModel extends LHSerializable<ScanFilter> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         ScanFilter p = (ScanFilter) proto;
         type = p.getCriteriaCase();
-        switch(type) {
+        switch (type) {
             case VARIABLE_MATCH:
                 variableMatch = LHSerializable.fromProto(p.getVariableMatch(), VariableMatchModel.class, ctx);
                 break;

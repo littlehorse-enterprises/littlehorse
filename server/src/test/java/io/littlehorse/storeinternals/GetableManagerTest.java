@@ -102,8 +102,10 @@ public class GetableManagerTest {
         assertThat(localStoreWrapper.get("3/0000000", StoredGetable.class)).isNotNull();
         List<String> keysBeforeDelete = getAllKeys(store);
         assertThat(keysBeforeDelete)
-                .hasSize(4)
+                .hasSize(6)
                 .anyMatch(key -> key.contains("0/3/0000000"))
+                .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name"))
+                .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name/00000__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000__status_RUNNING"));
@@ -145,9 +147,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_true"))
+                .anyMatch(key -> key.contains("5/5/__majorVersion_testWfSpecName/00000__variableName_true"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_true"));
     }
 
@@ -176,8 +179,9 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_ThisShouldBeLocal"))
                 .anyMatch(
                         key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
     }
@@ -242,9 +246,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_20"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_20"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_20"));
     }
 
@@ -307,9 +312,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_21.0"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_21.0"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
@@ -389,7 +395,7 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(9)
+                .hasSize(13)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
@@ -511,9 +517,9 @@ public class GetableManagerTest {
             node.getTaskNode().getTaskDefId().setName("input-name2");
         });
         return Stream.of(
-                Arguments.of(wfRunModel, 3),
+                Arguments.of(wfRunModel, 5),
                 Arguments.of(taskRun, 2),
-                Arguments.of(variable, 2),
+                Arguments.of(variable, 3),
                 Arguments.of(externalEvent, 2));
     }
 }
