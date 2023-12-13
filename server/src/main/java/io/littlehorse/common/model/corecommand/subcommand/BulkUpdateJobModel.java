@@ -12,10 +12,13 @@ import io.littlehorse.common.model.corecommand.subcommand.job.BulkJob;
 import io.littlehorse.common.model.corecommand.subcommand.job.NoOpJobModel;
 import io.littlehorse.common.proto.BulkUpdateJob;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
+import org.apache.commons.lang3.time.DateUtils;
 
 public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
 
@@ -56,23 +59,22 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        job.init(this.startKey, this.endKey);
-        String lastKey = null;
-        while (job.hasNext() && shouldContinue()) {
-            lastKey = job.processOneRecord();
+        Date limitTime = DateUtils.addSeconds(new Date(), config.getMaxBulkJobDuration());
+        try (LHKeyValueIterator<?> range =
+                executionContext.getableManager().range(startKey, endKey, StoredGetable.class)) {
+            String lastKey = null;
+            Date iterationTime = new Date();
+            while (range.hasNext() && iterationTime.compareTo(limitTime) <= 0) {
+                lastKey = job.processOneRecord(range.next());
+            }
+            if (range.hasNext() && lastKey != null) {
+                scheduleNextIteration(
+                        lastKey,
+                        executionContext.getTaskManager(),
+                        DateUtils.addSeconds(iterationTime, config.getBulkJobGracePeriod()));
+            }
+            return Empty.getDefaultInstance();
         }
-        if (job.hasNext() && lastKey != null) {
-            scheduleNextIteration(lastKey, executionContext.getTaskManager());
-        }
-        return Empty.getDefaultInstance();
-    }
-
-    private void scheduleNextIteration(String lastKey, LHTaskManager taskManager) {
-        taskManager.scheduleTimer(new LHTimer(new CommandModel(this, new Date())));
-    }
-
-    private boolean shouldContinue() {
-        return true;
     }
 
     @Override
@@ -88,5 +90,18 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
     @Override
     public String getPartitionKey() {
         return String.valueOf(partitionKey); // ??
+    }
+
+    private void scheduleNextIteration(String lastKey, LHTaskManager taskManager, Date nextBulkDate) {
+        taskManager.scheduleTimer(new LHTimer(buildNextCommand(lastKey, nextBulkDate)));
+    }
+
+    private CommandModel buildNextCommand(String lastKey, Date nextBulkDate) {
+        BulkUpdateJobModel nextBulkJob = new BulkUpdateJobModel();
+        nextBulkJob.partitionKey = partitionKey;
+        nextBulkJob.startKey = startKey;
+        nextBulkJob.endKey = endKey;
+        nextBulkJob.resumeFromKey = lastKey;
+        return new CommandModel(nextBulkJob, nextBulkDate);
     }
 }
