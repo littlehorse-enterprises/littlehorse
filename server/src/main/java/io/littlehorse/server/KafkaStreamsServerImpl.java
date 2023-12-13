@@ -807,7 +807,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 .setMajorVersion(0)
                 .setMinorVersion(7)
                 .setMajorVersion(0)
-                .setPreReleaseIdentifier("alpha.1")
+                .setPreReleaseIdentifier("alpha.4")
                 .build());
         ctx.onCompleted();
     }
