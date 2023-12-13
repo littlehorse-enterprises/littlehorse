@@ -76,9 +76,7 @@ def to_variable_value(value: Any) -> VariableValue:
                 json_arr=json.dumps(value, default=json_encoder),
             )
 
-        return VariableValue(
-            json_obj=json.dumps(value, default=json_encoder)
-        )
+        return VariableValue(json_obj=json.dumps(value, default=json_encoder))
     except Exception as e:
         raise SerdeException(
             f"Error when serializing value: '{value}' of type '{type(value)}'"
@@ -110,9 +108,9 @@ def extract_value(lh_value: VariableValue) -> Any:
         return None
 
     try:
-        if set_oneof == 'json_obj':
+        if set_oneof == "json_obj":
             return json.loads(lh_value.json_obj)
-        if set_oneof == 'json_arr':
+        if set_oneof == "json_arr":
             return json.loads(lh_value.json_arr)
     except Exception as e:
         raise SerdeException(f"Error when deserializing {lh_value}") from e

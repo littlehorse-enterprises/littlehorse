@@ -54,9 +54,7 @@ class TestProtoUtils(unittest.TestCase):
         # JSON_OBJ
         input_dict = {"name": self.faker.name(), "income": self.faker.random_int()}
         value = json.dumps(input_dict)
-        result = extract_value(
-            VariableValue(json_obj=value)
-        )
+        result = extract_value(VariableValue(json_obj=value))
         self.assertEqual(result, input_dict)
 
         # JSON_ARR
@@ -65,9 +63,7 @@ class TestProtoUtils(unittest.TestCase):
             {"name": self.faker.name(), "income": self.faker.random_int()},
         ]
         value = json.dumps(input_list)
-        result = extract_value(
-            VariableValue(json_arr=value)
-        )
+        result = extract_value(VariableValue(json_arr=value))
         self.assertEqual(result, input_list)
 
         # NULL
@@ -91,22 +87,22 @@ class TestProtoUtils(unittest.TestCase):
 
         value = 1
         result = to_variable_value(value)
-        self.assertEqual(result, VariableValue( int=value))
+        self.assertEqual(result, VariableValue(int=value))
 
         # DOUBLE
         value = random()
         result = to_variable_value(value)
-        self.assertEqual(result, VariableValue( double=value))
+        self.assertEqual(result, VariableValue(double=value))
 
         # BOOLEAN
         value = self.faker.boolean()
         result = to_variable_value(value)
-        self.assertEqual(result, VariableValue( bool=value))
+        self.assertEqual(result, VariableValue(bool=value))
 
         # BYTES
         value = self.faker.binary()
         result = to_variable_value(value)
-        self.assertEqual(result, VariableValue( bytes=value))
+        self.assertEqual(result, VariableValue(bytes=value))
 
         # NULL
         result = to_variable_value(None)
@@ -197,9 +193,7 @@ class TestProtoUtils(unittest.TestCase):
         )
 
     def test_serde_error_when_deserializing(self):
-        variable_value = VariableValue(
-            json_obj='{"timestamp": 79797689'  # not closed
-        )
+        variable_value = VariableValue(json_obj='{"timestamp": 79797689')  # not closed
 
         with self.assertRaises(SerdeException) as exception_context:
             extract_value(variable_value)
@@ -214,9 +208,7 @@ class TestProtoUtils(unittest.TestCase):
         variable = to_variable_assignment(10)
         self.assertEqual(
             variable,
-            VariableAssignment(
-                literal_value=VariableValue(int=10)
-            ),
+            VariableAssignment(literal_value=VariableValue(int=10)),
         )
 
         # a NodeOutput
@@ -247,16 +239,10 @@ class TestProtoUtils(unittest.TestCase):
             VariableAssignment(
                 format_string=VariableAssignment.FormatString(
                     format=VariableAssignment(
-                        literal_value=VariableValue(
-                            str="format {0}"
-                        )
+                        literal_value=VariableValue(str="format {0}")
                     ),
                     args=[
-                        VariableAssignment(
-                            literal_value=VariableValue(
-                                str="my-var"
-                            )
-                        )
+                        VariableAssignment(literal_value=VariableValue(str="my-var"))
                     ],
                 )
             ),
