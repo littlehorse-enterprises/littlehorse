@@ -27,6 +27,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
     private String endKey;
     private String resumeFromKey;
     private BulkJob job;
+    private NoOpJobModel noOpJob;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
@@ -40,7 +41,10 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
 
     private BulkJob resolveJob(BulkUpdateJob jobProto, ExecutionContext context) {
         return switch (jobProto.getJobCase()) {
-            case NO_OP -> LHSerializable.fromProto(jobProto.getNoOp(), NoOpJobModel.class, context);
+            case NO_OP -> {
+                this.noOpJob = LHSerializable.fromProto(jobProto.getNoOp(), NoOpJobModel.class, context);
+                yield noOpJob;
+            }
             default -> throw new IllegalArgumentException("%s not supported yet".formatted(jobProto.getJobCase()));
         };
     }
@@ -53,6 +57,9 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
         builder.setEndKey(endKey);
         if (resumeFromKey != null) {
             builder.setResumeFromKey(resumeFromKey);
+        }
+        if (this.noOpJob != null) {
+            builder.setNoOp(noOpJob.toProto());
         }
         return builder;
     }
