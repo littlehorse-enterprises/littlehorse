@@ -63,4 +63,9 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
+
+    @Override
+    public <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls) {
+        return new LHIterator<>(nativeStore.range(start, end), cls, executionContext);
+    }
 }

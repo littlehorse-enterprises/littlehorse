@@ -51,6 +51,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
     public static final String NUM_STREAM_THREADS_KEY = "LHS_STREAMS_NUM_THREADS";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
+    public static final String MAX_BULK_JOB_ITER_DURATION_MS = "LHS_MAX_BULK_JOB_ITER_DURATION_MS";
+    public static final String BULK_JOB_DELAY_INTERVAL_SECONDS = "LHS_BULK_JOB_DELAY_INTERVAL_SECONDS";
     public static final String COMMIT_INTERVAL_KEY = "LHS_STREAMS_COMMIT_INTERVAL";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
@@ -744,6 +746,14 @@ public class LHServerConfig extends ConfigBase {
 
     public int getStandbyReplicas() {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STANDBY_REPLICAS_KEY, "0"));
+    }
+
+    public int getMaxBulkJobIterDurationMs() {
+        return Integer.valueOf(getOrSetDefault(MAX_BULK_JOB_ITER_DURATION_MS, "20"));
+    }
+
+    public int getBulkJobDelayIntervalSeconds() {
+        return Integer.valueOf(getOrSetDefault(BULK_JOB_DELAY_INTERVAL_SECONDS, "0"));
     }
 
     public int getWarmupReplicas() {
