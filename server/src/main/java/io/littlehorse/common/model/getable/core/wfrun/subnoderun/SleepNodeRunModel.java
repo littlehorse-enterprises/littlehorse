@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -82,7 +81,6 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     public void processSleepNodeMatured(SleepNodeMaturedModel evt) {
         VariableValueModel nullOutput = new VariableValueModel();
-        nullOutput.type = VariableType.NULL;
 
         // mark when we actually processed the completion, not when it was "supposed"
         // to come in. In cases where there's a large backlog of scheduler events,

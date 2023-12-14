@@ -13,7 +13,6 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -109,6 +108,13 @@ public class VariableModel extends CoreGetable<Variable> {
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
                         variable -> ((VariableModel) variable).isIndexable()),
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                                Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
+                        Optional.empty(),
+                        variable -> ((VariableModel) variable).isIndexable()),
+
                 // with workflow name only
                 new GetableIndex<>(
                         List.of(
@@ -135,6 +141,12 @@ public class VariableModel extends CoreGetable<Variable> {
             case "wfSpecId" -> {
                 return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
+            case "majorVersion" -> {
+                return List.of(new IndexedField(
+                        key,
+                        wfSpecId.getName() + "/" + LHUtil.toLHDbVersionFormat(wfSpecId.getMajorVersion()),
+                        TagStorageType.LOCAL));
+            }
             case "variable" -> {
                 return getDynamicFields();
             }
@@ -155,7 +167,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
         // Current behavior is that null variables are NOT indexed. This may change in future
         // releases, but it will be a backwards-compatible change.
-        if (value.getType() == VariableType.NULL) {
+        if (value.getType() == null) {
             return List.of();
         }
 

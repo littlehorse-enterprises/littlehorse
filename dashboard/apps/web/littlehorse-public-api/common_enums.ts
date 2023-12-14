@@ -295,7 +295,6 @@ export enum VariableType {
   STR = "STR",
   INT = "INT",
   BYTES = "BYTES",
-  NULL = "NULL",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -322,9 +321,6 @@ export function variableTypeFromJSON(object: any): VariableType {
     case 6:
     case "BYTES":
       return VariableType.BYTES;
-    case 7:
-    case "NULL":
-      return VariableType.NULL;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -348,8 +344,6 @@ export function variableTypeToJSON(object: VariableType): string {
       return "INT";
     case VariableType.BYTES:
       return "BYTES";
-    case VariableType.NULL:
-      return "NULL";
     case VariableType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -372,8 +366,6 @@ export function variableTypeToNumber(object: VariableType): number {
       return 5;
     case VariableType.BYTES:
       return 6;
-    case VariableType.NULL:
-      return 7;
     case VariableType.UNRECOGNIZED:
     default:
       return -1;

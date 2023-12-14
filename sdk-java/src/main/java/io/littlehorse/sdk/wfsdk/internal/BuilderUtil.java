@@ -3,7 +3,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 
 class BuilderUtil {
@@ -12,7 +11,7 @@ class BuilderUtil {
         VariableAssignment.Builder builder = VariableAssignment.newBuilder();
 
         if (variable == null) {
-            builder.setLiteralValue(VariableValue.newBuilder().setType(VariableType.NULL));
+            builder.setLiteralValue(VariableValue.newBuilder());
         } else if (variable.getClass().equals(WfRunVariableImpl.class)) {
             WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
             if (wrv.jsonPath != null) {

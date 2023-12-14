@@ -27,8 +27,8 @@ It's also possible to pass a null input:
 lhctl postEvent <wfRunId> <externalEventName> NULL
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 3 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> NULL")
+		if len(args) < 2 {
+			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send a null payload)")
 		}
 
 		wfRunId, eedName, varTypeStr := args[0], args[1], args[2]
@@ -43,13 +43,6 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 		varTypeEnum := model.VariableType(varType)
 
 		content := &model.VariableValue{
-			Type: model.VariableType_NULL,
-		}
-
-		if len(args) == 3 && varTypeEnum != model.VariableType_NULL {
-			log.Fatal(
-				"Payload is required",
-			)
 		}
 
 		if len(args) == 4 {

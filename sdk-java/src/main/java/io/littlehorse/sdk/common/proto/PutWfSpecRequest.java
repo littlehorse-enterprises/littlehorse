@@ -236,6 +236,32 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
+  public static final int PARENT_WF_SPEC_FIELD_NUMBER = 9;
+  private io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference parentWfSpec_;
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return Whether the parentWfSpec field is set.
+   */
+  @java.lang.Override
+  public boolean hasParentWfSpec() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return The parentWfSpec.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference getParentWfSpec() {
+    return parentWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance() : parentWfSpec_;
+  }
+  /**
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder() {
+    return parentWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance() : parentWfSpec_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -264,6 +290,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(8, getRetentionPolicy());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(9, getParentWfSpec());
     }
     getUnknownFields().writeTo(output);
   }
@@ -294,6 +323,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getRetentionPolicy());
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, getParentWfSpec());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -320,6 +353,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
+    if (hasParentWfSpec() != other.hasParentWfSpec()) return false;
+    if (hasParentWfSpec()) {
+      if (!getParentWfSpec()
+          .equals(other.getParentWfSpec())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -342,6 +380,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (hasRetentionPolicy()) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
+    }
+    if (hasParentWfSpec()) {
+      hash = (37 * hash) + PARENT_WF_SPEC_FIELD_NUMBER;
+      hash = (53 * hash) + getParentWfSpec().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -496,6 +538,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getRetentionPolicyFieldBuilder();
+        getParentWfSpecFieldBuilder();
       }
     }
     @java.lang.Override
@@ -509,6 +552,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (retentionPolicyBuilder_ != null) {
         retentionPolicyBuilder_.dispose();
         retentionPolicyBuilder_ = null;
+      }
+      parentWfSpec_ = null;
+      if (parentWfSpecBuilder_ != null) {
+        parentWfSpecBuilder_.dispose();
+        parentWfSpecBuilder_ = null;
       }
       return this;
     }
@@ -559,6 +607,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.parentWfSpec_ = parentWfSpecBuilder_ == null
+            ? parentWfSpec_
+            : parentWfSpecBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -623,6 +677,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
+      if (other.hasParentWfSpec()) {
+        mergeParentWfSpec(other.getParentWfSpec());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -675,6 +732,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000008;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  getParentWfSpecFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1080,6 +1144,125 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         retentionPolicy_ = null;
       }
       return retentionPolicyBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference parentWfSpec_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder> parentWfSpecBuilder_;
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     * @return Whether the parentWfSpec field is set.
+     */
+    public boolean hasParentWfSpec() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     * @return The parentWfSpec.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference getParentWfSpec() {
+      if (parentWfSpecBuilder_ == null) {
+        return parentWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance() : parentWfSpec_;
+      } else {
+        return parentWfSpecBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public Builder setParentWfSpec(io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference value) {
+      if (parentWfSpecBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        parentWfSpec_ = value;
+      } else {
+        parentWfSpecBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public Builder setParentWfSpec(
+        io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder builderForValue) {
+      if (parentWfSpecBuilder_ == null) {
+        parentWfSpec_ = builderForValue.build();
+      } else {
+        parentWfSpecBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public Builder mergeParentWfSpec(io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference value) {
+      if (parentWfSpecBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          parentWfSpec_ != null &&
+          parentWfSpec_ != io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance()) {
+          getParentWfSpecBuilder().mergeFrom(value);
+        } else {
+          parentWfSpec_ = value;
+        }
+      } else {
+        parentWfSpecBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public Builder clearParentWfSpec() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      parentWfSpec_ = null;
+      if (parentWfSpecBuilder_ != null) {
+        parentWfSpecBuilder_.dispose();
+        parentWfSpecBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder getParentWfSpecBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getParentWfSpecFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder() {
+      if (parentWfSpecBuilder_ != null) {
+        return parentWfSpecBuilder_.getMessageOrBuilder();
+      } else {
+        return parentWfSpec_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance() : parentWfSpec_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder> 
+        getParentWfSpecFieldBuilder() {
+      if (parentWfSpecBuilder_ == null) {
+        parentWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder>(
+                getParentWfSpec(),
+                getParentForChildren(),
+                isClean());
+        parentWfSpec_ = null;
+      }
+      return parentWfSpecBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

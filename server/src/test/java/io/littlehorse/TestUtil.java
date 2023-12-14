@@ -148,9 +148,7 @@ public class TestUtil {
     }
 
     public static VariableValueModel variableValue() {
-        VariableValueModel variableValue = new VariableValueModel();
-        variableValue.setStrVal("testVarValue");
-        variableValue.setType(VariableType.STR);
+        VariableValueModel variableValue = new VariableValueModel("testVarValue");
         return variableValue;
     }
 

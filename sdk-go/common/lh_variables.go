@@ -3,7 +3,6 @@ package common
 import (
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"reflect"
 	"strconv"
 
@@ -11,22 +10,25 @@ import (
 )
 
 func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue, error) {
-	out := &model.VariableValue{
-		Type: varType,
-	}
+	out := &model.VariableValue{}
 
 	var err error = nil
 
 	switch varType {
 	case model.VariableType_BYTES:
-		out.Bytes, err = base64.RawStdEncoding.DecodeString(input)
+		var bytesResult []byte
+		bytesResult, err = base64.RawStdEncoding.DecodeString(input)
+
+		out.Value = &model.VariableValue_Bytes{
+			Bytes: bytesResult,
+		}
 
 	case model.VariableType_JSON_OBJ:
 		jsonObj := make(map[string]interface{})
 		// Just deserialize it to make sure it's legal
 		err = json.Unmarshal([]byte(input), &jsonObj)
 		if err == nil {
-			out.JsonObj = &input
+			out.Value = &model.VariableValue_JsonObj{JsonObj: input}
 		}
 
 	case model.VariableType_JSON_ARR:
@@ -34,30 +36,35 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 		// Just deserialize it to make sure it's legal
 		err = json.Unmarshal([]byte(input), &jsonArr)
 		if err == nil {
-			out.JsonArr = &input
+			out.Value = &model.VariableValue_JsonArr{JsonArr: input}
 		}
 
 	case model.VariableType_INT:
 		// GoLang has this weird thing with scope of variables in switch...
 		var tmp int64
 		tmp, err = strconv.ParseInt(input, 10, 64)
-		out.Int = &tmp
+		if err != nil {
+			out.Value = &model.VariableValue_Int{Int: tmp}
+		}
 
 	case model.VariableType_BOOL:
 		var tmp bool
 		tmp, err = strconv.ParseBool(input)
-		out.Bool = &tmp
+		if err != nil {
+			out.Value = &model.VariableValue_Bool{Bool: tmp}
+		}
 
 	case model.VariableType_DOUBLE:
 		var tmp float64
 		tmp, err = strconv.ParseFloat(input, 64)
-		out.Double = &tmp
+		if (err != nil) {
+			out.Value = &model.VariableValue_Double{Double: tmp}
+		}
 
 	case model.VariableType_STR:
-		out.Str = &input
-
-	case model.VariableType_NULL:
-		return nil, errors.New("creating void value not allowed here")
+		out.Value = &model.VariableValue_Str{
+			Str: input,
+		}
 	}
 
 	if err != nil {
@@ -99,9 +106,7 @@ func InterfaceToVarVal(someInterface interface{}) (*model.VariableValue, error) 
 
 	isPtr, _ := GetIsPtrAndType(reflect.TypeOf(someInterface))
 	if someInterface == nil {
-		return &model.VariableValue{
-			Type: model.VariableType_NULL,
-		}, nil
+		return &model.VariableValue{}, nil
 	}
 
 	var actualThing interface{}
@@ -117,45 +122,34 @@ func InterfaceToVarVal(someInterface interface{}) (*model.VariableValue, error) 
 	}
 
 	if actualThing == nil {
-		return &model.VariableValue{
-			Type: model.VariableType_NULL,
-		}, nil
+		return &model.VariableValue{}, nil
 	}
 
 	switch e := actualThing.(type) {
 	case int:
 		tmp := int64(e)
-		out.Int = &tmp
-		out.Type = model.VariableType_INT
+		out.Value = &model.VariableValue_Int{Int: tmp}
 	case int16:
 		tmp := int64(e)
-		out.Int = &tmp
-		out.Type = model.VariableType_INT
+		out.Value = &model.VariableValue_Int{Int: tmp}
 	case int32:
 		tmp := int64(e)
-		out.Int = &tmp
-		out.Type = model.VariableType_INT
+		out.Value = &model.VariableValue_Int{Int: tmp}
 	case int64:
 		tmp := int64(e)
-		out.Int = &tmp
-		out.Type = model.VariableType_INT
+		out.Value = &model.VariableValue_Int{Int: tmp}
 	case float32:
 		tmp := float64(e)
-		out.Double = &tmp
-		out.Type = model.VariableType_DOUBLE
+		out.Value = &model.VariableValue_Double{Double: tmp}
 	case float64:
 		tmp := float64(e)
-		out.Double = &tmp
-		out.Type = model.VariableType_DOUBLE
+		out.Value = &model.VariableValue_Double{Double: tmp}
 	case string:
-		out.Str = &e
-		out.Type = model.VariableType_STR
+		out.Value = &model.VariableValue_Str{Str: e}
 	case bool:
-		out.Type = model.VariableType_BOOL
-		out.Bool = &e
+		out.Value = &model.VariableValue_Bool{Bool: e}
 	case []byte:
-		out.Bytes = e
-		out.Type = model.VariableType_BYTES
+		out.Value = &model.VariableValue_Bytes{Bytes: e}
 	default:
 		isAList := reflect.TypeOf(e).Kind() == reflect.Slice
 		var b []byte
@@ -163,11 +157,9 @@ func InterfaceToVarVal(someInterface interface{}) (*model.VariableValue, error) 
 		if err == nil {
 			tmp := string(b)
 			if isAList {
-				out.JsonArr = &tmp
-				out.Type = model.VariableType_JSON_ARR
+				out.Value = &model.VariableValue_JsonArr{JsonArr: tmp}
 			} else {
-				out.JsonObj = &tmp
-				out.Type = model.VariableType_JSON_OBJ
+				out.Value = &model.VariableValue_JsonObj{JsonObj: tmp}
 			}
 		}
 	}

@@ -2,9 +2,12 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -13,19 +16,23 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,6 +44,7 @@ public class SearchWfRunRequestModel
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
     private LHStatus status;
+    private List<VariableMatchModel> variableMatches = new ArrayList<>();
 
     private Date earliestStart;
     private Date latestStart;
@@ -72,6 +80,10 @@ public class SearchWfRunRequestModel
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
 
+        for (VariableMatch vm : p.getVariableFiltersList()) {
+            variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
+        }
+
         this.executionContext = context;
     }
 
@@ -90,6 +102,10 @@ public class SearchWfRunRequestModel
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
 
+        for (VariableMatchModel vmm : variableMatches) {
+            out.addVariableFilters(vmm.toProto());
+        }
+
         return out;
     }
 
@@ -104,12 +120,12 @@ public class SearchWfRunRequestModel
 
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "If wfSpecMajorVersion is provided, you must also provide wfSpecRevision");
+                out.add(new Attribute(
+                        "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
+            } else {
+                out.add(new Attribute(
+                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
             }
-            out.add(new Attribute(
-                    "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
         } else {
             if (wfSpecRevision != null) {
                 throw new LHApiException(
@@ -127,27 +143,51 @@ public class SearchWfRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        List<String> searchAttributeKeys =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        return new WfRunModel()
-                .getIndexConfigurations().stream()
-                        .filter(getableIndexConfiguration ->
-                                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst()
-                        .orElse(null);
+        // This will be more complex when we have REMOTE tags again.
+        return TagStorageType.LOCAL;
     }
 
     @Override
     public LHStore getStoreType() {
-        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return LHStore.CORE;
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+    }
+
+    @Override
+    public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
+        // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
+
+        WfSpecModel wfSpec = ctx.service().getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
+        if (wfSpec == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Couldn't find wfSpec %s %d %d".formatted(wfSpecName, wfSpecMajorVersion, wfSpecRevision));
+        }
+
+        ThreadSpecModel thread = wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName());
+        Map<String, ThreadVarDefModel> vars = thread.getVariableDefs().stream()
+                .collect(Collectors.toMap(var -> var.getVarDef().getName(), var -> var));
+
+        List<ScanFilterModel> out = new ArrayList<>();
+        for (VariableMatchModel variableMatch : variableMatches) {
+            ThreadVarDefModel var = vars.get(variableMatch.getVarName());
+
+            if (var == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Variable %s not present in main thread of workflow %s"
+                                .formatted(variableMatch.getVarName(), wfSpecName));
+            }
+
+            // TODO: Validation for the variable type.
+            out.add(new ScanFilterModel(variableMatch));
+        }
+
+        return out;
     }
 }

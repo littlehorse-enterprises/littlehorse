@@ -1,0 +1,21 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+message BulkUpdateJob {
+  int32 partition = 1;
+  string start_key = 2;
+  string end_key = 3;
+  optional string resume_from_key = 5;
+  // Will contain a "iter_type"
+
+  oneof job {
+    NoOpJob no_op = 6;
+  }
+}
+
+message NoOpJob {
+  // Will be removed in the future when we add an actual job
+}

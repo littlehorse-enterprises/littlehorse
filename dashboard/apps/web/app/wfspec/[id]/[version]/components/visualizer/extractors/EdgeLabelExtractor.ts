@@ -131,7 +131,7 @@ const getLiteralValueForNumericalComparator = (edgeCondition: EdgeCondition, sid
         return edgeCondition[side]?.literalValue?.double
     }
 
-    if (edgeCondition[side]?.literalValue?.type === VariableType.NULL) {
+    if (edgeCondition[side]?.literalValue?.str === undefined) {
         return 'NULL'
     }
 

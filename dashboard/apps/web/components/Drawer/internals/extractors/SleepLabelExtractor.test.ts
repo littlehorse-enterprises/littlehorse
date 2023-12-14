@@ -15,7 +15,6 @@ for either of them it can be a variable or a literal value, if a literal value o
         const sleepNode: SleepNode = {
             'rawSeconds': {
                 'literalValue': {
-                    'type': VariableType.INT,
                     'int': expectedNumberOfSeconds
                 }
             }

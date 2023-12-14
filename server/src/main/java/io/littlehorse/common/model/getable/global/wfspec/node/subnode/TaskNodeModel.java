@@ -18,7 +18,6 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -167,11 +166,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            if (val.type != requiredVarDef.getType() && val.type != VariableType.NULL) {
+            if (val.getType() != requiredVarDef.getType() && val.getType() != null) {
                 throw new LHVarSubError(
                         null,
                         "Variable " + varName + " should be " + requiredVarDef.getType() + " but is of type "
-                                + val.type);
+                                + val.getType());
             }
             out.add(new VarNameAndValModel(varName, val));
         }

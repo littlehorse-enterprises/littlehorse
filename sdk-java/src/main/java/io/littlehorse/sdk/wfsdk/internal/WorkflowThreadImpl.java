@@ -494,8 +494,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
         VariableAssignment timeoutValue = VariableAssignment.newBuilder()
-                .setLiteralValue(
-                        VariableValue.newBuilder().setInt(timeoutSeconds).setType(VariableType.INT))
+                .setLiteralValue(VariableValue.newBuilder().setInt(timeoutSeconds))
                 .build();
 
         if (n.getNodeCase() == NodeCase.TASK) {

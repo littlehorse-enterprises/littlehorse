@@ -52,15 +52,15 @@ function WfVariable(props: WfVariableProps) {
     }
 
     const onVariableValueClick = () => {
-        if (wfVariableValue?.type === VariableType.JSON_OBJ) {
+        if (wfVariableValue?.jsonObj != undefined) {
             props.setToggleSideBar(true, false, JSON.parse(wfVariableValue.jsonObj || '{}'), 'json')
         }
 
-        if (wfVariableValue?.type === VariableType.JSON_ARR) {
+        if (wfVariableValue?.jsonArr != undefined) {
             props.setToggleSideBar(true, false, JSON.parse(wfVariableValue.jsonArr || '[]'), 'json')
         }
 
-        if (wfVariableValue?.type === VariableType.STR) {
+        if (wfVariableValue?.str != undefined) {
             props.setToggleSideBar(true, false, wfVariableValue.str || '', 'json')
         }
     }
@@ -80,7 +80,7 @@ function WfVariable(props: WfVariableProps) {
             return false
         }
 
-        return  wfVariable.type === VariableType.JSON_OBJ || wfVariable.type === VariableType.JSON_ARR || wfVariable.type === VariableType.STR
+        return  wfVariable.jsonObj != undefined || wfVariable.jsonArr != undefined || wfVariable.str != undefined
     }
 
     useEffect(() => {

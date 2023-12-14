@@ -78,7 +78,7 @@
       }
 
       &.tEXIT {
-        width: 57px;
+        width: 200px;
         border-radius: 64px;
         border: 1px solid var(--color-success, #34c759);
         background: rgba(52, 199, 89, 0.2);
@@ -117,5 +117,11 @@
       // END
 
     }
+  }
+}
+
+.custom-smart-edge {
+  &__label {
+    max-width: 200px;
   }
 }

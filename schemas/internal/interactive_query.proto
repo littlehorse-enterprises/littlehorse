@@ -7,6 +7,7 @@ option java_package = "io.littlehorse.common.proto";
 import "google/protobuf/timestamp.proto";
 import "storage.proto";
 import "service.proto";
+import "common_enums.proto";
 
 message GetObjectRequest {
     GetableClassEnum object_type = 1;
@@ -26,6 +27,13 @@ message WaitForCommandResponse {
     string command_id = 1;
     google.protobuf.Timestamp result_time = 2;
     bytes result = 3;
+}
+
+message ScanFilter {
+    oneof criteria {
+        LHStatus wf_run_status = 1;
+        VariableMatch variable_match = 2;
+    }
 }
 
 message InternalScanPb {
@@ -55,6 +63,7 @@ message InternalScanPb {
         TagScanPb tag_scan = 8;
     }
     string tenant_id = 9;
+    repeated ScanFilter filters = 10;
 }
 
 message InternalGetAdvertisedHostsResponse {

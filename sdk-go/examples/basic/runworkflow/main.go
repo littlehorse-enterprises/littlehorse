@@ -27,8 +27,7 @@ func main() {
 			WfSpecName: "my-workflow",
 			Variables: map[string]*model.VariableValue{
 				"name": {
-					Str:  &name,
-					Type: model.VariableType_STR,
+					Value: &model.VariableValue_Str{Str: name},
 				},
 			},
 		})

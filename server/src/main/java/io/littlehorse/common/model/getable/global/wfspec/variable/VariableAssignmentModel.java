@@ -99,7 +99,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
             baseType = varDef.getType();
         } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
-            baseType = rhsLiteralValue.type;
+            baseType = rhsLiteralValue.getType();
         } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
             baseType = VariableType.STR;
         } else {

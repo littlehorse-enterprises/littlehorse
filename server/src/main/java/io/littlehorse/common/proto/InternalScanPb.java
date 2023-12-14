@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
     storeName_ = "";
     partitionKey_ = "";
     tenantId_ = "";
+    filters_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -2046,6 +2047,47 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int FILTERS_FIELD_NUMBER = 10;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.common.proto.ScanFilter> filters_;
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.ScanFilter> getFiltersList() {
+    return filters_;
+  }
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
+      getFiltersOrBuilderList() {
+    return filters_;
+  }
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  @java.lang.Override
+  public int getFiltersCount() {
+    return filters_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ScanFilter getFilters(int index) {
+    return filters_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
+      int index) {
+    return filters_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -2086,6 +2128,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 9, tenantId_);
+    }
+    for (int i = 0; i < filters_.size(); i++) {
+      output.writeMessage(10, filters_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -2129,6 +2174,10 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, tenantId_);
     }
+    for (int i = 0; i < filters_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, filters_.get(i));
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -2162,6 +2211,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTenantId()
         .equals(other.getTenantId())) return false;
+    if (!getFiltersList()
+        .equals(other.getFiltersList())) return false;
     if (!getScanBoundaryCase().equals(other.getScanBoundaryCase())) return false;
     switch (scanBoundaryCase_) {
       case 7:
@@ -2204,6 +2255,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
     hash = (53 * hash) + getTenantId().hashCode();
+    if (getFiltersCount() > 0) {
+      hash = (37 * hash) + FILTERS_FIELD_NUMBER;
+      hash = (53 * hash) + getFiltersList().hashCode();
+    }
     switch (scanBoundaryCase_) {
       case 7:
         hash = (37 * hash) + BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER;
@@ -2347,6 +2402,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getBookmarkFieldBuilder();
+        getFiltersFieldBuilder();
       }
     }
     @java.lang.Override
@@ -2370,6 +2426,13 @@ private static final long serialVersionUID = 0L;
         tagScanBuilder_.clear();
       }
       tenantId_ = "";
+      if (filtersBuilder_ == null) {
+        filters_ = java.util.Collections.emptyList();
+      } else {
+        filters_ = null;
+        filtersBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000200);
       scanBoundaryCase_ = 0;
       scanBoundary_ = null;
       return this;
@@ -2398,10 +2461,23 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.InternalScanPb buildPartial() {
       io.littlehorse.common.proto.InternalScanPb result = new io.littlehorse.common.proto.InternalScanPb(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanPb result) {
+      if (filtersBuilder_ == null) {
+        if (((bitField0_ & 0x00000200) != 0)) {
+          filters_ = java.util.Collections.unmodifiableList(filters_);
+          bitField0_ = (bitField0_ & ~0x00000200);
+        }
+        result.filters_ = filters_;
+      } else {
+        result.filters_ = filtersBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.common.proto.InternalScanPb result) {
@@ -2519,6 +2595,32 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000100;
         onChanged();
       }
+      if (filtersBuilder_ == null) {
+        if (!other.filters_.isEmpty()) {
+          if (filters_.isEmpty()) {
+            filters_ = other.filters_;
+            bitField0_ = (bitField0_ & ~0x00000200);
+          } else {
+            ensureFiltersIsMutable();
+            filters_.addAll(other.filters_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.filters_.isEmpty()) {
+          if (filtersBuilder_.isEmpty()) {
+            filtersBuilder_.dispose();
+            filtersBuilder_ = null;
+            filters_ = other.filters_;
+            bitField0_ = (bitField0_ & ~0x00000200);
+            filtersBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getFiltersFieldBuilder() : null;
+          } else {
+            filtersBuilder_.addAllMessages(other.filters_);
+          }
+        }
+      }
       switch (other.getScanBoundaryCase()) {
         case BOUNDED_OBJECT_ID_SCAN: {
           mergeBoundedObjectIdScan(other.getBoundedObjectIdScan());
@@ -2609,6 +2711,19 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000100;
               break;
             } // case 74
+            case 82: {
+              io.littlehorse.common.proto.ScanFilter m =
+                  input.readMessage(
+                      io.littlehorse.common.proto.ScanFilter.parser(),
+                      extensionRegistry);
+              if (filtersBuilder_ == null) {
+                ensureFiltersIsMutable();
+                filters_.add(m);
+              } else {
+                filtersBuilder_.addMessage(m);
+              }
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3433,6 +3548,246 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000100;
       onChanged();
       return this;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.ScanFilter> filters_ =
+      java.util.Collections.emptyList();
+    private void ensureFiltersIsMutable() {
+      if (!((bitField0_ & 0x00000200) != 0)) {
+        filters_ = new java.util.ArrayList<io.littlehorse.common.proto.ScanFilter>(filters_);
+        bitField0_ |= 0x00000200;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ScanFilter, io.littlehorse.common.proto.ScanFilter.Builder, io.littlehorse.common.proto.ScanFilterOrBuilder> filtersBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ScanFilter> getFiltersList() {
+      if (filtersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(filters_);
+      } else {
+        return filtersBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public int getFiltersCount() {
+      if (filtersBuilder_ == null) {
+        return filters_.size();
+      } else {
+        return filtersBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public io.littlehorse.common.proto.ScanFilter getFilters(int index) {
+      if (filtersBuilder_ == null) {
+        return filters_.get(index);
+      } else {
+        return filtersBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder setFilters(
+        int index, io.littlehorse.common.proto.ScanFilter value) {
+      if (filtersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFiltersIsMutable();
+        filters_.set(index, value);
+        onChanged();
+      } else {
+        filtersBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder setFilters(
+        int index, io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
+      if (filtersBuilder_ == null) {
+        ensureFiltersIsMutable();
+        filters_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        filtersBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder addFilters(io.littlehorse.common.proto.ScanFilter value) {
+      if (filtersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFiltersIsMutable();
+        filters_.add(value);
+        onChanged();
+      } else {
+        filtersBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder addFilters(
+        int index, io.littlehorse.common.proto.ScanFilter value) {
+      if (filtersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFiltersIsMutable();
+        filters_.add(index, value);
+        onChanged();
+      } else {
+        filtersBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder addFilters(
+        io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
+      if (filtersBuilder_ == null) {
+        ensureFiltersIsMutable();
+        filters_.add(builderForValue.build());
+        onChanged();
+      } else {
+        filtersBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder addFilters(
+        int index, io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
+      if (filtersBuilder_ == null) {
+        ensureFiltersIsMutable();
+        filters_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        filtersBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder addAllFilters(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.ScanFilter> values) {
+      if (filtersBuilder_ == null) {
+        ensureFiltersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, filters_);
+        onChanged();
+      } else {
+        filtersBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder clearFilters() {
+      if (filtersBuilder_ == null) {
+        filters_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000200);
+        onChanged();
+      } else {
+        filtersBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public Builder removeFilters(int index) {
+      if (filtersBuilder_ == null) {
+        ensureFiltersIsMutable();
+        filters_.remove(index);
+        onChanged();
+      } else {
+        filtersBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public io.littlehorse.common.proto.ScanFilter.Builder getFiltersBuilder(
+        int index) {
+      return getFiltersFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
+        int index) {
+      if (filtersBuilder_ == null) {
+        return filters_.get(index);  } else {
+        return filtersBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
+         getFiltersOrBuilderList() {
+      if (filtersBuilder_ != null) {
+        return filtersBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(filters_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public io.littlehorse.common.proto.ScanFilter.Builder addFiltersBuilder() {
+      return getFiltersFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.ScanFilter.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public io.littlehorse.common.proto.ScanFilter.Builder addFiltersBuilder(
+        int index) {
+      return getFiltersFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.ScanFilter.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ScanFilter.Builder> 
+         getFiltersBuilderList() {
+      return getFiltersFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ScanFilter, io.littlehorse.common.proto.ScanFilter.Builder, io.littlehorse.common.proto.ScanFilterOrBuilder> 
+        getFiltersFieldBuilder() {
+      if (filtersBuilder_ == null) {
+        filtersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.ScanFilter, io.littlehorse.common.proto.ScanFilter.Builder, io.littlehorse.common.proto.ScanFilterOrBuilder>(
+                filters_,
+                ((bitField0_ & 0x00000200) != 0),
+                getParentForChildren(),
+                isClean());
+        filters_ = null;
+      }
+      return filtersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

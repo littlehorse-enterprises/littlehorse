@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.StartThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,9 +88,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
             nodeRun.fail(failure, time);
         } else {
             // Then the variable output of this node is just the int thread id.
-            VariableValueModel output = new VariableValueModel();
-            output.type = VariableType.INT;
-            output.intVal = Long.valueOf(child.number);
+            VariableValueModel output = new VariableValueModel(child.number);
 
             nodeRun.complete(output, time);
         }

@@ -16,11 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private VariableValue() {
-    type_ = 0;
-    jsonObj_ = "";
-    jsonArr_ = "";
-    str_ = "";
-    bytes_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -43,66 +38,104 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.VariableValue.class, io.littlehorse.sdk.common.proto.VariableValue.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_ = 0;
-  /**
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
-  }
-  /**
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  private int valueCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object value_;
+  public enum ValueCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    JSON_OBJ(2),
+    JSON_ARR(3),
+    DOUBLE(4),
+    BOOL(5),
+    STR(6),
+    INT(7),
+    BYTES(8),
+    VALUE_NOT_SET(0);
+    private final int value;
+    private ValueCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ValueCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ValueCase forNumber(int value) {
+      switch (value) {
+        case 2: return JSON_OBJ;
+        case 3: return JSON_ARR;
+        case 4: return DOUBLE;
+        case 5: return BOOL;
+        case 6: return STR;
+        case 7: return INT;
+        case 8: return BYTES;
+        case 0: return VALUE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public ValueCase
+  getValueCase() {
+    return ValueCase.forNumber(
+        valueCase_);
   }
 
   public static final int JSON_OBJ_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object jsonObj_ = "";
   /**
-   * <code>optional string json_obj = 2;</code>
+   * <code>string json_obj = 2;</code>
    * @return Whether the jsonObj field is set.
    */
-  @java.lang.Override
   public boolean hasJsonObj() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return valueCase_ == 2;
   }
   /**
-   * <code>optional string json_obj = 2;</code>
+   * <code>string json_obj = 2;</code>
    * @return The jsonObj.
    */
-  @java.lang.Override
   public java.lang.String getJsonObj() {
-    java.lang.Object ref = jsonObj_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 2) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      jsonObj_ = s;
+      if (valueCase_ == 2) {
+        value_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string json_obj = 2;</code>
+   * <code>string json_obj = 2;</code>
    * @return The bytes for jsonObj.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getJsonObjBytes() {
-    java.lang.Object ref = jsonObj_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 2) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      jsonObj_ = b;
+      if (valueCase_ == 2) {
+        value_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -110,46 +143,51 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int JSON_ARR_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object jsonArr_ = "";
   /**
-   * <code>optional string json_arr = 3;</code>
+   * <code>string json_arr = 3;</code>
    * @return Whether the jsonArr field is set.
    */
-  @java.lang.Override
   public boolean hasJsonArr() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return valueCase_ == 3;
   }
   /**
-   * <code>optional string json_arr = 3;</code>
+   * <code>string json_arr = 3;</code>
    * @return The jsonArr.
    */
-  @java.lang.Override
   public java.lang.String getJsonArr() {
-    java.lang.Object ref = jsonArr_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 3) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      jsonArr_ = s;
+      if (valueCase_ == 3) {
+        value_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string json_arr = 3;</code>
+   * <code>string json_arr = 3;</code>
    * @return The bytes for jsonArr.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getJsonArrBytes() {
-    java.lang.Object ref = jsonArr_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 3) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      jsonArr_ = b;
+      if (valueCase_ == 3) {
+        value_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -157,84 +195,93 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DOUBLE_FIELD_NUMBER = 4;
-  private double double_ = 0D;
   /**
-   * <code>optional double double = 4;</code>
+   * <code>double double = 4;</code>
    * @return Whether the double field is set.
    */
   @java.lang.Override
   public boolean hasDouble() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return valueCase_ == 4;
   }
   /**
-   * <code>optional double double = 4;</code>
+   * <code>double double = 4;</code>
    * @return The double.
    */
   @java.lang.Override
   public double getDouble() {
-    return double_;
+    if (valueCase_ == 4) {
+      return (java.lang.Double) value_;
+    }
+    return 0D;
   }
 
   public static final int BOOL_FIELD_NUMBER = 5;
-  private boolean bool_ = false;
   /**
-   * <code>optional bool bool = 5;</code>
+   * <code>bool bool = 5;</code>
    * @return Whether the bool field is set.
    */
   @java.lang.Override
   public boolean hasBool() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return valueCase_ == 5;
   }
   /**
-   * <code>optional bool bool = 5;</code>
+   * <code>bool bool = 5;</code>
    * @return The bool.
    */
   @java.lang.Override
   public boolean getBool() {
-    return bool_;
+    if (valueCase_ == 5) {
+      return (java.lang.Boolean) value_;
+    }
+    return false;
   }
 
   public static final int STR_FIELD_NUMBER = 6;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object str_ = "";
   /**
-   * <code>optional string str = 6;</code>
+   * <code>string str = 6;</code>
    * @return Whether the str field is set.
    */
-  @java.lang.Override
   public boolean hasStr() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return valueCase_ == 6;
   }
   /**
-   * <code>optional string str = 6;</code>
+   * <code>string str = 6;</code>
    * @return The str.
    */
-  @java.lang.Override
   public java.lang.String getStr() {
-    java.lang.Object ref = str_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 6) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      str_ = s;
+      if (valueCase_ == 6) {
+        value_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string str = 6;</code>
+   * <code>string str = 6;</code>
    * @return The bytes for str.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getStrBytes() {
-    java.lang.Object ref = str_;
+    java.lang.Object ref = "";
+    if (valueCase_ == 6) {
+      ref = value_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      str_ = b;
+      if (valueCase_ == 6) {
+        value_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -242,41 +289,45 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int INT_FIELD_NUMBER = 7;
-  private long int_ = 0L;
   /**
-   * <code>optional int64 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return Whether the int field is set.
    */
   @java.lang.Override
   public boolean hasInt() {
-    return ((bitField0_ & 0x00000020) != 0);
+    return valueCase_ == 7;
   }
   /**
-   * <code>optional int64 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return The int.
    */
   @java.lang.Override
   public long getInt() {
-    return int_;
+    if (valueCase_ == 7) {
+      return (java.lang.Long) value_;
+    }
+    return 0L;
   }
 
   public static final int BYTES_FIELD_NUMBER = 8;
-  private com.google.protobuf.ByteString bytes_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <code>optional bytes bytes = 8;</code>
+   * <code>bytes bytes = 8;</code>
    * @return Whether the bytes field is set.
    */
   @java.lang.Override
   public boolean hasBytes() {
-    return ((bitField0_ & 0x00000040) != 0);
+    return valueCase_ == 8;
   }
   /**
-   * <code>optional bytes bytes = 8;</code>
+   * <code>bytes bytes = 8;</code>
    * @return The bytes.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString getBytes() {
-    return bytes_;
+    if (valueCase_ == 8) {
+      return (com.google.protobuf.ByteString) value_;
+    }
+    return com.google.protobuf.ByteString.EMPTY;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -293,29 +344,30 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(1, type_);
+    if (valueCase_ == 2) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, value_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, jsonObj_);
+    if (valueCase_ == 3) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, value_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, jsonArr_);
+    if (valueCase_ == 4) {
+      output.writeDouble(
+          4, (double)((java.lang.Double) value_));
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeDouble(4, double_);
+    if (valueCase_ == 5) {
+      output.writeBool(
+          5, (boolean)((java.lang.Boolean) value_));
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeBool(5, bool_);
+    if (valueCase_ == 6) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, value_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, str_);
+    if (valueCase_ == 7) {
+      output.writeInt64(
+          7, (long)((java.lang.Long) value_));
     }
-    if (((bitField0_ & 0x00000020) != 0)) {
-      output.writeInt64(7, int_);
-    }
-    if (((bitField0_ & 0x00000040) != 0)) {
-      output.writeBytes(8, bytes_);
+    if (valueCase_ == 8) {
+      output.writeBytes(
+          8, (com.google.protobuf.ByteString) value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -326,34 +378,34 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (valueCase_ == 2) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, value_);
+    }
+    if (valueCase_ == 3) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, value_);
+    }
+    if (valueCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeDoubleSize(
+            4, (double)((java.lang.Double) value_));
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, jsonObj_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, jsonArr_);
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (valueCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeDoubleSize(4, double_);
+        .computeBoolSize(
+            5, (boolean)((java.lang.Boolean) value_));
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (valueCase_ == 6) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, value_);
+    }
+    if (valueCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(5, bool_);
+        .computeInt64Size(
+            7, (long)((java.lang.Long) value_));
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, str_);
-    }
-    if (((bitField0_ & 0x00000020) != 0)) {
+    if (valueCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(7, int_);
-    }
-    if (((bitField0_ & 0x00000040) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(8, bytes_);
+        .computeBytesSize(
+            8, (com.google.protobuf.ByteString) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -370,42 +422,39 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.VariableValue other = (io.littlehorse.sdk.common.proto.VariableValue) obj;
 
-    if (type_ != other.type_) return false;
-    if (hasJsonObj() != other.hasJsonObj()) return false;
-    if (hasJsonObj()) {
-      if (!getJsonObj()
-          .equals(other.getJsonObj())) return false;
-    }
-    if (hasJsonArr() != other.hasJsonArr()) return false;
-    if (hasJsonArr()) {
-      if (!getJsonArr()
-          .equals(other.getJsonArr())) return false;
-    }
-    if (hasDouble() != other.hasDouble()) return false;
-    if (hasDouble()) {
-      if (java.lang.Double.doubleToLongBits(getDouble())
-          != java.lang.Double.doubleToLongBits(
-              other.getDouble())) return false;
-    }
-    if (hasBool() != other.hasBool()) return false;
-    if (hasBool()) {
-      if (getBool()
-          != other.getBool()) return false;
-    }
-    if (hasStr() != other.hasStr()) return false;
-    if (hasStr()) {
-      if (!getStr()
-          .equals(other.getStr())) return false;
-    }
-    if (hasInt() != other.hasInt()) return false;
-    if (hasInt()) {
-      if (getInt()
-          != other.getInt()) return false;
-    }
-    if (hasBytes() != other.hasBytes()) return false;
-    if (hasBytes()) {
-      if (!getBytes()
-          .equals(other.getBytes())) return false;
+    if (!getValueCase().equals(other.getValueCase())) return false;
+    switch (valueCase_) {
+      case 2:
+        if (!getJsonObj()
+            .equals(other.getJsonObj())) return false;
+        break;
+      case 3:
+        if (!getJsonArr()
+            .equals(other.getJsonArr())) return false;
+        break;
+      case 4:
+        if (java.lang.Double.doubleToLongBits(getDouble())
+            != java.lang.Double.doubleToLongBits(
+                other.getDouble())) return false;
+        break;
+      case 5:
+        if (getBool()
+            != other.getBool()) return false;
+        break;
+      case 6:
+        if (!getStr()
+            .equals(other.getStr())) return false;
+        break;
+      case 7:
+        if (getInt()
+            != other.getInt()) return false;
+        break;
+      case 8:
+        if (!getBytes()
+            .equals(other.getBytes())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -418,38 +467,40 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
-    if (hasJsonObj()) {
-      hash = (37 * hash) + JSON_OBJ_FIELD_NUMBER;
-      hash = (53 * hash) + getJsonObj().hashCode();
-    }
-    if (hasJsonArr()) {
-      hash = (37 * hash) + JSON_ARR_FIELD_NUMBER;
-      hash = (53 * hash) + getJsonArr().hashCode();
-    }
-    if (hasDouble()) {
-      hash = (37 * hash) + DOUBLE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getDouble()));
-    }
-    if (hasBool()) {
-      hash = (37 * hash) + BOOL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getBool());
-    }
-    if (hasStr()) {
-      hash = (37 * hash) + STR_FIELD_NUMBER;
-      hash = (53 * hash) + getStr().hashCode();
-    }
-    if (hasInt()) {
-      hash = (37 * hash) + INT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getInt());
-    }
-    if (hasBytes()) {
-      hash = (37 * hash) + BYTES_FIELD_NUMBER;
-      hash = (53 * hash) + getBytes().hashCode();
+    switch (valueCase_) {
+      case 2:
+        hash = (37 * hash) + JSON_OBJ_FIELD_NUMBER;
+        hash = (53 * hash) + getJsonObj().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + JSON_ARR_FIELD_NUMBER;
+        hash = (53 * hash) + getJsonArr().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + DOUBLE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getDouble()));
+        break;
+      case 5:
+        hash = (37 * hash) + BOOL_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getBool());
+        break;
+      case 6:
+        hash = (37 * hash) + STR_FIELD_NUMBER;
+        hash = (53 * hash) + getStr().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + INT_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getInt());
+        break;
+      case 8:
+        hash = (37 * hash) + BYTES_FIELD_NUMBER;
+        hash = (53 * hash) + getBytes().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -582,14 +633,8 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      type_ = 0;
-      jsonObj_ = "";
-      jsonArr_ = "";
-      double_ = 0D;
-      bool_ = false;
-      str_ = "";
-      int_ = 0L;
-      bytes_ = com.google.protobuf.ByteString.EMPTY;
+      valueCase_ = 0;
+      value_ = null;
       return this;
     }
 
@@ -617,45 +662,18 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.VariableValue buildPartial() {
       io.littlehorse.sdk.common.proto.VariableValue result = new io.littlehorse.sdk.common.proto.VariableValue(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableValue result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.type_ = type_;
-      }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.jsonObj_ = jsonObj_;
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.jsonArr_ = jsonArr_;
-        to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.double_ = double_;
-        to_bitField0_ |= 0x00000004;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.bool_ = bool_;
-        to_bitField0_ |= 0x00000008;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.str_ = str_;
-        to_bitField0_ |= 0x00000010;
-      }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.int_ = int_;
-        to_bitField0_ |= 0x00000020;
-      }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.bytes_ = bytes_;
-        to_bitField0_ |= 0x00000040;
-      }
-      result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableValue result) {
+      result.valueCase_ = valueCase_;
+      result.value_ = this.value_;
     }
 
     @java.lang.Override
@@ -702,35 +720,44 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableValue other) {
       if (other == io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
-      }
-      if (other.hasJsonObj()) {
-        jsonObj_ = other.jsonObj_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (other.hasJsonArr()) {
-        jsonArr_ = other.jsonArr_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
-      if (other.hasDouble()) {
-        setDouble(other.getDouble());
-      }
-      if (other.hasBool()) {
-        setBool(other.getBool());
-      }
-      if (other.hasStr()) {
-        str_ = other.str_;
-        bitField0_ |= 0x00000020;
-        onChanged();
-      }
-      if (other.hasInt()) {
-        setInt(other.getInt());
-      }
-      if (other.hasBytes()) {
-        setBytes(other.getBytes());
+      switch (other.getValueCase()) {
+        case JSON_OBJ: {
+          valueCase_ = 2;
+          value_ = other.value_;
+          onChanged();
+          break;
+        }
+        case JSON_ARR: {
+          valueCase_ = 3;
+          value_ = other.value_;
+          onChanged();
+          break;
+        }
+        case DOUBLE: {
+          setDouble(other.getDouble());
+          break;
+        }
+        case BOOL: {
+          setBool(other.getBool());
+          break;
+        }
+        case STR: {
+          valueCase_ = 6;
+          value_ = other.value_;
+          onChanged();
+          break;
+        }
+        case INT: {
+          setInt(other.getInt());
+          break;
+        }
+        case BYTES: {
+          setBytes(other.getBytes());
+          break;
+        }
+        case VALUE_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -758,44 +785,42 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              type_ = input.readEnum();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
             case 18: {
-              jsonObj_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              java.lang.String s = input.readStringRequireUtf8();
+              valueCase_ = 2;
+              value_ = s;
               break;
             } // case 18
             case 26: {
-              jsonArr_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              java.lang.String s = input.readStringRequireUtf8();
+              valueCase_ = 3;
+              value_ = s;
               break;
             } // case 26
             case 33: {
-              double_ = input.readDouble();
-              bitField0_ |= 0x00000008;
+              value_ = input.readDouble();
+              valueCase_ = 4;
               break;
             } // case 33
             case 40: {
-              bool_ = input.readBool();
-              bitField0_ |= 0x00000010;
+              value_ = input.readBool();
+              valueCase_ = 5;
               break;
             } // case 40
             case 50: {
-              str_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000020;
+              java.lang.String s = input.readStringRequireUtf8();
+              valueCase_ = 6;
+              value_ = s;
               break;
             } // case 50
             case 56: {
-              int_ = input.readInt64();
-              bitField0_ |= 0x00000040;
+              value_ = input.readInt64();
+              valueCase_ = 7;
               break;
             } // case 56
             case 66: {
-              bytes_ = input.readBytes();
-              bitField0_ |= 0x00000080;
+              value_ = input.readBytes();
+              valueCase_ = 8;
               break;
             } // case 66
             default: {
@@ -813,127 +838,103 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int valueCase_ = 0;
+    private java.lang.Object value_;
+    public ValueCase
+        getValueCase() {
+      return ValueCase.forNumber(
+          valueCase_);
+    }
+
+    public Builder clearValue() {
+      valueCase_ = 0;
+      value_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private int type_ = 0;
     /**
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTypeValue(int value) {
-      type_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000001;
-      type_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object jsonObj_ = "";
-    /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @return Whether the jsonObj field is set.
      */
+    @java.lang.Override
     public boolean hasJsonObj() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return valueCase_ == 2;
     }
     /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @return The jsonObj.
      */
+    @java.lang.Override
     public java.lang.String getJsonObj() {
-      java.lang.Object ref = jsonObj_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 2) {
+        ref = value_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        jsonObj_ = s;
+        if (valueCase_ == 2) {
+          value_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @return The bytes for jsonObj.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getJsonObjBytes() {
-      java.lang.Object ref = jsonObj_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 2) {
+        ref = value_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        jsonObj_ = b;
+        if (valueCase_ == 2) {
+          value_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @param value The jsonObj to set.
      * @return This builder for chaining.
      */
     public Builder setJsonObj(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      jsonObj_ = value;
-      bitField0_ |= 0x00000002;
+      valueCase_ = 2;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearJsonObj() {
-      jsonObj_ = getDefaultInstance().getJsonObj();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
+      if (valueCase_ == 2) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string json_obj = 2;</code>
+     * <code>string json_obj = 2;</code>
      * @param value The bytes for jsonObj to set.
      * @return This builder for chaining.
      */
@@ -941,78 +942,92 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      jsonObj_ = value;
-      bitField0_ |= 0x00000002;
+      valueCase_ = 2;
+      value_ = value;
       onChanged();
       return this;
     }
 
-    private java.lang.Object jsonArr_ = "";
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @return Whether the jsonArr field is set.
      */
+    @java.lang.Override
     public boolean hasJsonArr() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return valueCase_ == 3;
     }
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @return The jsonArr.
      */
+    @java.lang.Override
     public java.lang.String getJsonArr() {
-      java.lang.Object ref = jsonArr_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 3) {
+        ref = value_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        jsonArr_ = s;
+        if (valueCase_ == 3) {
+          value_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @return The bytes for jsonArr.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getJsonArrBytes() {
-      java.lang.Object ref = jsonArr_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 3) {
+        ref = value_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        jsonArr_ = b;
+        if (valueCase_ == 3) {
+          value_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @param value The jsonArr to set.
      * @return This builder for chaining.
      */
     public Builder setJsonArr(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      jsonArr_ = value;
-      bitField0_ |= 0x00000004;
+      valueCase_ = 3;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearJsonArr() {
-      jsonArr_ = getDefaultInstance().getJsonArr();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
+      if (valueCase_ == 3) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string json_arr = 3;</code>
+     * <code>string json_arr = 3;</code>
      * @param value The bytes for jsonArr to set.
      * @return This builder for chaining.
      */
@@ -1020,158 +1035,176 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      jsonArr_ = value;
-      bitField0_ |= 0x00000004;
+      valueCase_ = 3;
+      value_ = value;
       onChanged();
       return this;
     }
 
-    private double double_ ;
     /**
-     * <code>optional double double = 4;</code>
+     * <code>double double = 4;</code>
      * @return Whether the double field is set.
      */
-    @java.lang.Override
     public boolean hasDouble() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return valueCase_ == 4;
     }
     /**
-     * <code>optional double double = 4;</code>
+     * <code>double double = 4;</code>
      * @return The double.
      */
-    @java.lang.Override
     public double getDouble() {
-      return double_;
+      if (valueCase_ == 4) {
+        return (java.lang.Double) value_;
+      }
+      return 0D;
     }
     /**
-     * <code>optional double double = 4;</code>
+     * <code>double double = 4;</code>
      * @param value The double to set.
      * @return This builder for chaining.
      */
     public Builder setDouble(double value) {
 
-      double_ = value;
-      bitField0_ |= 0x00000008;
+      valueCase_ = 4;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional double double = 4;</code>
+     * <code>double double = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearDouble() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      double_ = 0D;
-      onChanged();
+      if (valueCase_ == 4) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
 
-    private boolean bool_ ;
     /**
-     * <code>optional bool bool = 5;</code>
+     * <code>bool bool = 5;</code>
      * @return Whether the bool field is set.
      */
-    @java.lang.Override
     public boolean hasBool() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return valueCase_ == 5;
     }
     /**
-     * <code>optional bool bool = 5;</code>
+     * <code>bool bool = 5;</code>
      * @return The bool.
      */
-    @java.lang.Override
     public boolean getBool() {
-      return bool_;
+      if (valueCase_ == 5) {
+        return (java.lang.Boolean) value_;
+      }
+      return false;
     }
     /**
-     * <code>optional bool bool = 5;</code>
+     * <code>bool bool = 5;</code>
      * @param value The bool to set.
      * @return This builder for chaining.
      */
     public Builder setBool(boolean value) {
 
-      bool_ = value;
-      bitField0_ |= 0x00000010;
+      valueCase_ = 5;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool bool = 5;</code>
+     * <code>bool bool = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearBool() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      bool_ = false;
-      onChanged();
+      if (valueCase_ == 5) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
 
-    private java.lang.Object str_ = "";
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @return Whether the str field is set.
      */
+    @java.lang.Override
     public boolean hasStr() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return valueCase_ == 6;
     }
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @return The str.
      */
+    @java.lang.Override
     public java.lang.String getStr() {
-      java.lang.Object ref = str_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 6) {
+        ref = value_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        str_ = s;
+        if (valueCase_ == 6) {
+          value_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @return The bytes for str.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStrBytes() {
-      java.lang.Object ref = str_;
+      java.lang.Object ref = "";
+      if (valueCase_ == 6) {
+        ref = value_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        str_ = b;
+        if (valueCase_ == 6) {
+          value_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @param value The str to set.
      * @return This builder for chaining.
      */
     public Builder setStr(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      str_ = value;
-      bitField0_ |= 0x00000020;
+      valueCase_ = 6;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearStr() {
-      str_ = getDefaultInstance().getStr();
-      bitField0_ = (bitField0_ & ~0x00000020);
-      onChanged();
+      if (valueCase_ == 6) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string str = 6;</code>
+     * <code>string str = 6;</code>
      * @param value The bytes for str to set.
      * @return This builder for chaining.
      */
@@ -1179,89 +1212,93 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      str_ = value;
-      bitField0_ |= 0x00000020;
+      valueCase_ = 6;
+      value_ = value;
       onChanged();
       return this;
     }
 
-    private long int_ ;
     /**
-     * <code>optional int64 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return Whether the int field is set.
      */
-    @java.lang.Override
     public boolean hasInt() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return valueCase_ == 7;
     }
     /**
-     * <code>optional int64 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return The int.
      */
-    @java.lang.Override
     public long getInt() {
-      return int_;
+      if (valueCase_ == 7) {
+        return (java.lang.Long) value_;
+      }
+      return 0L;
     }
     /**
-     * <code>optional int64 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @param value The int to set.
      * @return This builder for chaining.
      */
     public Builder setInt(long value) {
 
-      int_ = value;
-      bitField0_ |= 0x00000040;
+      valueCase_ = 7;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional int64 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearInt() {
-      bitField0_ = (bitField0_ & ~0x00000040);
-      int_ = 0L;
-      onChanged();
+      if (valueCase_ == 7) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
 
-    private com.google.protobuf.ByteString bytes_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>optional bytes bytes = 8;</code>
+     * <code>bytes bytes = 8;</code>
      * @return Whether the bytes field is set.
      */
-    @java.lang.Override
     public boolean hasBytes() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return valueCase_ == 8;
     }
     /**
-     * <code>optional bytes bytes = 8;</code>
+     * <code>bytes bytes = 8;</code>
      * @return The bytes.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString getBytes() {
-      return bytes_;
+      if (valueCase_ == 8) {
+        return (com.google.protobuf.ByteString) value_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
     }
     /**
-     * <code>optional bytes bytes = 8;</code>
+     * <code>bytes bytes = 8;</code>
      * @param value The bytes to set.
      * @return This builder for chaining.
      */
     public Builder setBytes(com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
-      bytes_ = value;
-      bitField0_ |= 0x00000080;
+      valueCase_ = 8;
+      value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bytes bytes = 8;</code>
+     * <code>bytes bytes = 8;</code>
      * @return This builder for chaining.
      */
     public Builder clearBytes() {
-      bitField0_ = (bitField0_ & ~0x00000080);
-      bytes_ = getDefaultInstance().getBytes();
-      onChanged();
+      if (valueCase_ == 8) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
     @java.lang.Override

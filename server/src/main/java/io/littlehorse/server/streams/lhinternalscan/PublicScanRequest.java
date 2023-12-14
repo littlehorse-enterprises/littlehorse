@@ -8,8 +8,10 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch() throws LHApiException {
+    public InternalScan getInternalSearch(RequestExecutionContext ctx) throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         InternalScan out = getableSearch.buildInternalScan(indexTypeForSearch());
@@ -53,10 +55,9 @@ public abstract class PublicScanRequest<
         out.bookmark = bookmark;
 
         out.objectType = getObjectType();
-
         out.resultType = getResultType();
-
         out.storeName = getStoreType().getStoreName();
+        out.filters = getFilters(ctx);
         return out;
     }
 
@@ -99,4 +100,8 @@ public abstract class PublicScanRequest<
     public abstract TagStorageType indexTypeForSearch() throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
+
+    public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) {
+        return List.of();
+    }
 }

@@ -54,33 +54,29 @@ def to_variable_value(value: Any) -> VariableValue:
         return value
 
     if value is None:
-        return VariableValue(type=VariableType.NULL)
+        return VariableValue()
     if isinstance(value, bool):
-        return VariableValue(type=VariableType.BOOL, bool=value)
+        return VariableValue(bool=value)
     if isinstance(value, str):
-        return VariableValue(type=VariableType.STR, str=value)
+        return VariableValue(str=value)
     if isinstance(value, int):
-        return VariableValue(type=VariableType.INT, int=value)
+        return VariableValue(int=value)
     if isinstance(value, float):
-        return VariableValue(type=VariableType.DOUBLE, double=value)
+        return VariableValue(double=value)
     if isinstance(value, bytes):
-        return VariableValue(type=VariableType.BYTES, bytes=value)
+        return VariableValue(bytes=value)
 
     try:
         if isinstance(value, dict):
             return VariableValue(
-                type=VariableType.JSON_OBJ,
                 json_obj=json.dumps(value, default=json_encoder),
             )
         if isinstance(value, list):
             return VariableValue(
-                type=VariableType.JSON_ARR,
                 json_arr=json.dumps(value, default=json_encoder),
             )
 
-        return VariableValue(
-            type=VariableType.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
-        )
+        return VariableValue(json_obj=json.dumps(value, default=json_encoder))
     except Exception as e:
         raise SerdeException(
             f"Error when serializing value: '{value}' of type '{type(value)}'"
@@ -96,21 +92,25 @@ def extract_value(lh_value: VariableValue) -> Any:
     Returns:
         Any: Python value.
     """
-    if lh_value.type == VariableType.STR:
+    set_oneof = lh_value.WhichOneof("value")
+
+    if set_oneof == "str":
         return lh_value.str
-    if lh_value.type == VariableType.INT:
+    if set_oneof == "int":
         return lh_value.int
-    if lh_value.type == VariableType.DOUBLE:
+    if set_oneof == "double":
         return lh_value.double
-    if lh_value.type == VariableType.BYTES:
+    if set_oneof == "bytes":
         return lh_value.bytes
-    if lh_value.type == VariableType.BOOL:
+    if set_oneof == "bool":
         return lh_value.bool
+    if set_oneof is None:
+        return None
 
     try:
-        if lh_value.type == VariableType.JSON_OBJ:
+        if set_oneof == "json_obj":
             return json.loads(lh_value.json_obj)
-        if lh_value.type == VariableType.JSON_ARR:
+        if set_oneof == "json_arr":
             return json.loads(lh_value.json_arr)
     except Exception as e:
         raise SerdeException(f"Error when deserializing {lh_value}") from e

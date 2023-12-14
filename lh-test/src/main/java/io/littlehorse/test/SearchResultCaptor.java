@@ -25,8 +25,23 @@ public final class SearchResultCaptor<T extends Message> {
         return captured;
     }
 
+    public CapturedResult<T> skip() {
+        SkipResult skipResult = new SkipResult();
+        results.add(skipResult);
+        return skipResult;
+    }
+
     public CapturedResult<T> getValue() {
-        return results.get(currentIndex.getAndIncrement());
+        CapturedResult<T> result;
+        do {
+            final int index = currentIndex.getAndIncrement();
+            if (index < results.size()) {
+                result = results.get(index);
+            } else {
+                result = null;
+            }
+        } while (result == null || result.getClass().isAssignableFrom(SkipResult.class));
+        return result;
     }
 
     private final class CapturedResultImpl implements CapturedResult<T> {
@@ -43,6 +58,24 @@ public final class SearchResultCaptor<T extends Message> {
                 throw new IllegalStateException("Already has value");
             }
             value = result;
+        }
+
+        @Override
+        public Class<T> type() {
+            return target;
+        }
+    }
+
+    private final class SkipResult implements CapturedResult<T> {
+
+        @Override
+        public T get() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(T result) {
+            // skip
         }
 
         @Override

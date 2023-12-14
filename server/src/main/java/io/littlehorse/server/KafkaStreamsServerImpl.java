@@ -51,6 +51,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEven
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -95,6 +96,7 @@ import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
+import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.NodeRunIdList;
@@ -148,6 +150,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -231,6 +234,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private static final boolean ENABLE_STALE_STORES = true;
 
     private RequestExecutionContext requestContext() {
+
         return contextKey.get();
     }
 
@@ -264,7 +268,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 this::readOnlyStore);
 
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, this::readOnlyStore);
     }
 
     public String getInstanceId() {
@@ -285,6 +289,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.WRITE_METADATA)
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, PutPrincipalRequestModel.class, requestContext());
@@ -292,6 +297,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
         WfSpecModel wfSpec = requestContext().service().getWfSpec(req.getName(), majorVersion, null);
@@ -305,6 +311,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), null);
         if (utd == null) {
@@ -316,6 +323,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
@@ -329,6 +337,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
         TaskDefModel td = getServiceFromContext().getTaskDef(req.getName());
         if (td == null) {
@@ -340,6 +349,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = getServiceFromContext().getExternalEventDef(req.getName());
         if (eed == null) {
@@ -352,12 +362,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, TaskDef.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.RUN)
     public void putExternalEvent(PutExternalEventRequest req, StreamObserver<ExternalEvent> ctx) {
         PutExternalEventRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventRequestModel.class, requestContext());
@@ -365,6 +377,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.WRITE_METADATA)
     public void putExternalEventDef(PutExternalEventDefRequest req, StreamObserver<ExternalEventDef> ctx) {
         PutExternalEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventDefRequestModel.class, requestContext());
@@ -372,6 +385,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void putUserTaskDef(PutUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         PutUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutUserTaskDefRequestModel.class, requestContext());
@@ -379,6 +393,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         AssignUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, AssignUserTaskRunRequestModel.class, requestContext());
@@ -386,6 +401,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void completeUserTaskRun(CompleteUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         CompleteUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CompleteUserTaskRunRequestModel.class, requestContext());
@@ -393,6 +409,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void cancelUserTaskRun(CancelUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         CancelUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CancelUserTaskRunRequestModel.class, requestContext());
@@ -400,12 +417,22 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
+        MigrateWfSpecRequestModel reqModel =
+                LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskRuns(ListTaskRunsRequest req, StreamObserver<TaskRunList> ctx) {
         ListTaskRunsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskRunsRequestModel.class, requestContext());
@@ -413,6 +440,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void listUserTaskRuns(ListUserTaskRunRequest req, StreamObserver<UserTaskRunList> ctx) {
         ListUserTaskRunRequestModel requestModel =
                 LHSerializable.fromProto(req, ListUserTaskRunRequestModel.class, requestContext());
@@ -420,17 +448,20 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
         return new PollTaskRequestObserver(ctx, taskQueueManager, requestContext());
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void registerTaskWorker(
             RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getClientId());
@@ -453,12 +484,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfRun(WfRunId req, StreamObserver<WfRun> ctx) {
         WfRunIdModel id = LHSerializable.fromProto(req, WfRunIdModel.class, requestContext());
         try {
@@ -472,6 +505,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getNodeRun(NodeRunId req, StreamObserver<NodeRun> ctx) {
         NodeRunIdModel id = LHSerializable.fromProto(req, NodeRunIdModel.class, requestContext());
         try {
@@ -485,6 +519,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getTaskRun(TaskRunId req, StreamObserver<TaskRun> ctx) {
         TaskRunIdModel id = LHSerializable.fromProto(req, TaskRunIdModel.class, requestContext());
         try {
@@ -498,6 +533,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void getUserTaskRun(UserTaskRunId req, StreamObserver<UserTaskRun> ctx) {
         UserTaskRunIdModel id = LHSerializable.fromProto(req, UserTaskRunIdModel.class, requestContext());
         try {
@@ -511,6 +547,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getVariable(VariableId req, StreamObserver<Variable> ctx) {
         VariableIdModel id = LHSerializable.fromProto(req, VariableIdModel.class, requestContext());
         try {
@@ -524,6 +561,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void getExternalEvent(ExternalEventId req, StreamObserver<ExternalEvent> ctx) {
         ExternalEventIdModel id = LHSerializable.fromProto(req, ExternalEventIdModel.class, requestContext());
         try {
@@ -537,17 +575,20 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.WRITE_METADATA)
     public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
         PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Tenant.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchWfRun(SearchWfRunRequest req, StreamObserver<WfRunIdList> ctx) {
         handleScan(SearchWfRunRequestModel.fromProto(req, requestContext()), ctx, SearchWfRunReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void searchExternalEvent(SearchExternalEventRequest req, StreamObserver<ExternalEventIdList> ctx) {
         SearchExternalEventRequestModel see =
                 LHSerializable.fromProto(req, SearchExternalEventRequestModel.class, requestContext());
@@ -555,31 +596,37 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchNodeRun(SearchNodeRunRequest req, StreamObserver<NodeRunIdList> ctx) {
         handleScan(SearchNodeRunRequestModel.fromProto(req, requestContext()), ctx, SearchNodeRunReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void searchTaskRun(SearchTaskRunRequest req, StreamObserver<TaskRunIdList> ctx) {
         handleScan(SearchTaskRunRequestModel.fromProto(req, requestContext()), ctx, SearchTaskRunReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void searchUserTaskRun(SearchUserTaskRunRequest req, StreamObserver<UserTaskRunIdList> ctx) {
         handleScan(SearchUserTaskRunRequestModel.fromProto(req, requestContext()), ctx, SearchUserTaskRunReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchVariable(SearchVariableRequest req, StreamObserver<VariableIdList> ctx) {
         handleScan(SearchVariableRequestModel.fromProto(req, requestContext()), ctx, SearchVariableReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchTaskDef(SearchTaskDefRequest req, StreamObserver<TaskDefIdList> ctx) {
         handleScan(SearchTaskDefRequestModel.fromProto(req, requestContext()), ctx, SearchTaskDefReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void searchUserTaskDef(SearchUserTaskDefRequest req, StreamObserver<UserTaskDefIdList> ctx) {
         handleScan(SearchUserTaskDefRequestModel.fromProto(req, requestContext()), ctx, SearchUserTaskDefReply.class);
     }
@@ -591,6 +638,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void searchExternalEventDef(SearchExternalEventDefRequest req, StreamObserver<ExternalEventDefIdList> ctx) {
         handleScan(
                 SearchExternalEventDefRequestModel.fromProto(req, requestContext()),
@@ -628,7 +676,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
 
         try {
-            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch());
+            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(requestContext()));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }
@@ -647,18 +695,21 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listNodeRuns(ListNodeRunsRequest req, StreamObserver<NodeRunList> ctx) {
         ListNodeRunsRequestModel lnr = LHSerializable.fromProto(req, ListNodeRunsRequestModel.class, requestContext());
         handleScan(lnr, ctx, ListNodeRunReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listVariables(ListVariablesRequest req, StreamObserver<VariableList> ctx) {
         ListVariablesRequestModel lv = LHSerializable.fromProto(req, ListVariablesRequestModel.class, requestContext());
         handleScan(lv, ctx, ListVariablesReply.class);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void listExternalEvents(ListExternalEventsRequest req, StreamObserver<ExternalEventList> ctx) {
         ListExternalEventsRequestModel lv =
                 LHSerializable.fromProto(req, ListExternalEventsRequestModel.class, requestContext());
@@ -666,6 +717,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listTaskDefMetrics(ListTaskMetricsRequest req, StreamObserver<ListTaskMetricsResponse> ctx) {
         ListTaskMetricsRequestModel ltm =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
@@ -673,6 +725,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listWfSpecMetrics(ListWfMetricsRequest req, StreamObserver<ListWfMetricsResponse> ctx) {
         ListWfMetricsRequestModel ltm =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
@@ -680,12 +733,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void stopWfRun(StopWfRunRequest req, StreamObserver<Empty> ctx) {
         StopWfRunRequestModel reqModel = LHSerializable.fromProto(req, StopWfRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<Empty> ctx) {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
@@ -693,6 +748,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void deleteWfRun(DeleteWfRunRequest req, StreamObserver<Empty> ctx) {
         DeleteWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteWfRunRequestModel.class, requestContext());
@@ -700,6 +756,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void deleteWfSpec(DeleteWfSpecRequest req, StreamObserver<Empty> ctx) {
         DeleteWfSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteWfSpecRequestModel.class, requestContext());
@@ -707,6 +764,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void deleteTaskDef(DeleteTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteTaskDefRequestModel.class, requestContext());
@@ -714,6 +772,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void deleteUserTaskDef(DeleteUserTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteUserTaskDefRequestModel.class, requestContext());
@@ -721,6 +780,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.WRITE_METADATA)
     public void deleteExternalEventDef(DeleteExternalEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteExternalEventDefRequestModel deedr =
                 LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class, requestContext());
@@ -741,12 +801,15 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(
+            resources = {},
+            actions = {})
     public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
                 .setMinorVersion(7)
                 .setMajorVersion(0)
-                .setPreReleaseIdentifier("alpha.1")
+                .setPreReleaseIdentifier("alpha.4")
                 .build());
         ctx.onCompleted();
     }
@@ -804,7 +867,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                         commandMetadata.toArray());
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
+    public ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
@@ -914,7 +977,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getAllInternalHosts();
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
-        return internalComms.getAdvertisedHost(host, listenerName);
+    public LHHostInfo getAdvertisedHost(
+            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
+        return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
     }
 }

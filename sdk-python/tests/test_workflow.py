@@ -74,7 +74,7 @@ class TestNodeOutput(unittest.TestCase):
 class TestWfRunVariable(unittest.TestCase):
     def test_value_is_not_none(self):
         variable = WfRunVariable("my-var", VariableType.STR, "my-str")
-        self.assertEqual(variable.default_value.type, VariableType.STR)
+        self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
         variable = WfRunVariable("my-var", VariableType.STR)
@@ -237,9 +237,7 @@ class TestThreadBuilder(unittest.TestCase):
                                 failure_name="my_failure_name",
                                 message="my message",
                                 content=VariableAssignment(
-                                    literal_value=VariableValue(
-                                        type=VariableType.STR, str="my output"
-                                    )
+                                    literal_value=VariableValue(str="my output")
                                 ),
                             )
                         ),
@@ -303,14 +301,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.GREATER_THAN,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=20
-                                        )
+                                        literal_value=VariableValue(int=20)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=10
-                                        )
+                                        literal_value=VariableValue(int=10)
                                     ),
                                 ),
                             ),
@@ -319,14 +313,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.LESS_THAN_EQ,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=20
-                                        )
+                                        literal_value=VariableValue(int=20)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=10
-                                        )
+                                        literal_value=VariableValue(int=10)
                                     ),
                                 ),
                             ),
@@ -390,14 +380,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=4
-                                        )
+                                        literal_value=VariableValue(int=4)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=5
-                                        )
+                                        literal_value=VariableValue(int=5)
                                     ),
                                 ),
                             ),
@@ -406,14 +392,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.GREATER_THAN_EQ,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=4
-                                        )
+                                        literal_value=VariableValue(int=4)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=5
-                                        )
+                                        literal_value=VariableValue(int=5)
                                     ),
                                 ),
                             ),
@@ -465,14 +447,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=4
-                                        )
+                                        literal_value=VariableValue(int=4)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=5
-                                        )
+                                        literal_value=VariableValue(int=5)
                                     ),
                                 ),
                             ),
@@ -481,14 +459,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.GREATER_THAN_EQ,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=4
-                                        )
+                                        literal_value=VariableValue(int=4)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=5
-                                        )
+                                        literal_value=VariableValue(int=5)
                                     ),
                                 ),
                             ),
@@ -506,14 +480,10 @@ class TestThreadBuilder(unittest.TestCase):
                                 condition=EdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=4
-                                        )
+                                        literal_value=VariableValue(int=4)
                                     ),
                                     right=VariableAssignment(
-                                        literal_value=VariableValue(
-                                            type=VariableType.INT, int=5
-                                        )
+                                        literal_value=VariableValue(int=5)
                                     ),
                                 ),
                             ),
@@ -733,9 +703,7 @@ class TestThreadBuilder(unittest.TestCase):
                             VariableMutation(
                                 lhs_name="value",
                                 operation=VariableMutationType.MULTIPLY,
-                                literal_value=VariableValue(
-                                    int=2, type=VariableType.INT
-                                ),
+                                literal_value=VariableValue(int=2),
                             )
                         ],
                     ),

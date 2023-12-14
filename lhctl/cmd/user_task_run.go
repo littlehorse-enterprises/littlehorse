@@ -256,7 +256,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	if err != nil {
 		log.Fatal(err)
 	}
-	completeUserTask.UserId = *userIdVarVal.Str
+	completeUserTask.UserId = userIdVarVal.GetStr()
 
 	// Prompt for all of the fields and build the result
 	for _, field := range userTaskDef.Fields {

@@ -24,6 +24,7 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
@@ -35,14 +36,18 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.server.auth.InternalAuthorizer;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
@@ -60,6 +65,8 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +110,8 @@ public class BackendInternalComms implements Closeable {
             KafkaStreams timerStreams,
             Executor executor,
             MetadataCache metadataCache,
-            Context.Key<RequestExecutionContext> contextKey) {
+            Context.Key<RequestExecutionContext> contextKey,
+            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -126,6 +134,7 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .addService(new InterBrokerCommServer())
+                .intercept(new InternalAuthorizer(contextKey, storeProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
@@ -226,9 +235,10 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
+    public LHHostInfo getAdvertisedHost(
+            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
-                getPublicListenersForHost(new HostInfo(host.host, host.port));
+                getPublicListenersForHost(new HostInfo(host.host, host.port), internalCredentials);
 
         LHHostInfo desiredHost = advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
@@ -252,7 +262,8 @@ public class BackendInternalComms implements Closeable {
 
         for (HostModel host : hosts) {
             try {
-                out.add(getAdvertisedHost(host, listenerName));
+                // Potential NPE if this method gets invoked, currently is not used
+                out.add(getAdvertisedHost(host, listenerName, null));
             } catch (StatusRuntimeException exn) {
                 log.warn("Host '{}:{}' unreachable: ", host.host, host.port, exn);
                 // The reason why we don'swallow the exception when one host is unreachable is
@@ -267,13 +278,14 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(HostInfo streamsHost) {
+    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(
+            HostInfo streamsHost, InternalCallCredentials internalCredentials) {
         if (otherHosts.get(streamsHost) != null) {
             return otherHosts.get(streamsHost);
         }
 
         InternalGetAdvertisedHostsResponse info =
-                getInternalClient(streamsHost).getAdvertisedHosts(Empty.getDefaultInstance());
+                getInternalClient(streamsHost, internalCredentials).getAdvertisedHosts(Empty.getDefaultInstance());
 
         otherHosts.put(streamsHost, info);
         return info;
@@ -321,12 +333,17 @@ public class BackendInternalComms implements Closeable {
         return ModelStore.instanceFor(rawStore, authContext.tenantId(), requestContext);
     }
 
+    public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
+        return LHInternalsGrpc.newBlockingStub(getChannel(host)).withCallCredentials(internalCredentials);
+    }
+
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        return LHInternalsGrpc.newBlockingStub(getChannel(host));
+        return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
     private LHInternalsStub getInternalAsyncClient(HostInfo host) {
-        return LHInternalsGrpc.newStub(getChannel(host));
+        return LHInternalsGrpc.newStub(getChannel(host))
+                .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
     }
 
     private ManagedChannel getChannel(HostInfo host) {
@@ -389,16 +406,16 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> ctx) {
+        public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> observer) {
             InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
             try {
                 InternalScanResponse reply = doScan(lhis);
-                ctx.onNext(reply);
-                ctx.onCompleted();
+                observer.onNext(reply);
+                observer.onCompleted();
             } catch (LHApiException exn) {
-                ctx.onError(exn);
+                observer.onError(exn);
             } catch (Exception exn) {
-                ctx.onError(new LHApiException(Status.UNKNOWN, exn));
+                observer.onError(new LHApiException(Status.UNKNOWN, exn));
             }
         }
 
@@ -508,17 +525,15 @@ public class BackendInternalComms implements Closeable {
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
         if (partBookmark == null) {
-            startKey = req.boundedObjectIdScan.getStartObjectId();
+            startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
         } else {
             startKey = partBookmark.getLastKey();
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<?> iter = store.range(
-                StoredGetable.getRocksDBKey(startKey, req.getObjectType()),
-                StoredGetable.getRocksDBKey(endKey, req.getObjectType()),
-                StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter =
+                store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -623,6 +638,7 @@ public class BackendInternalComms implements Closeable {
             newReq.objectType = search.objectType;
             newReq.storeName = search.storeName;
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
+            newReq.filters = search.filters;
 
             InternalScanResponse reply;
             reply = stub.internalScan(newReq.toProto().build());
@@ -717,7 +733,7 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore);
+                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore, req.filters);
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
@@ -758,7 +774,8 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            ReadOnlyModelStore store) {
+            ReadOnlyModelStore store,
+            List<ScanFilterModel> filters) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
@@ -780,11 +797,24 @@ public class BackendInternalComms implements Closeable {
         }
         endKey += "~";
 
+        Predicate<Tag> passesFilter = tag -> {
+            if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
+                throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
+            }
+
+            WfRunIdModel wfRunId =
+                    (WfRunIdModel) ObjectIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
+            return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
+        };
+
         try (LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)) {
             boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
+                if (!passesFilter.test(tag)) {
+                    continue;
+                }
                 if (--limit < 0) {
                     bookmarkOut = PartitionBookmarkPb.newBuilder()
                             .setParttion(partition)

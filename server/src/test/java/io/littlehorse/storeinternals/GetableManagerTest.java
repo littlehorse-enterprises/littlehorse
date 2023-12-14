@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -101,8 +102,10 @@ public class GetableManagerTest {
         assertThat(localStoreWrapper.get("3/0000000", StoredGetable.class)).isNotNull();
         List<String> keysBeforeDelete = getAllKeys(store);
         assertThat(keysBeforeDelete)
-                .hasSize(4)
+                .hasSize(6)
                 .anyMatch(key -> key.contains("0/3/0000000"))
+                .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name"))
+                .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name/00000__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000__status_RUNNING"));
@@ -128,8 +131,7 @@ public class GetableManagerTest {
     void storeBooleanVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.BOOL);
-        variable.getValue().setBoolVal(true);
+        variable.setValue(new VariableValueModel(true));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -145,9 +147,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_true"))
+                .anyMatch(key -> key.contains("5/5/__majorVersion_testWfSpecName/00000__variableName_true"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_true"));
     }
 
@@ -155,8 +158,7 @@ public class GetableManagerTest {
     void storeLocalStringVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.STR);
-        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable.setValue(new VariableValueModel("ThisShouldBeLocal"));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -177,8 +179,9 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_ThisShouldBeLocal"))
                 .anyMatch(
                         key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
     }
@@ -222,8 +225,7 @@ public class GetableManagerTest {
     void storeLocalIntVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.INT);
-        variable.getValue().setIntVal(20L);
+        variable.setValue(new VariableValueModel(20L));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -244,9 +246,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_20"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_20"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_20"));
     }
 
@@ -288,8 +291,7 @@ public class GetableManagerTest {
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.DOUBLE);
-        variable.getValue().setDoubleVal(21.0);
+        variable.setValue(new VariableValueModel(21.0));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -310,9 +312,10 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(3)
+                .hasSize(4)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_21.0"))
+                .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_21.0"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
@@ -364,9 +367,8 @@ public class GetableManagerTest {
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.JSON_OBJ);
-        variable.getValue()
-                .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
+        variable.setValue(new VariableValueModel(
+                Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape"))));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -393,7 +395,7 @@ public class GetableManagerTest {
 
         final var keys = getAllKeys(store);
         assertThat(keys)
-                .hasSize(9)
+                .hasSize(13)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
                 .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
@@ -498,8 +500,7 @@ public class GetableManagerTest {
         TaskRunModel taskRun = TestUtil.taskRun();
         VariableModel variable = TestUtil.variable("0000000");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.STR);
-        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable.setValue(new VariableValueModel("ThisShouldBeLocal"));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -516,9 +517,9 @@ public class GetableManagerTest {
             node.getTaskNode().getTaskDefId().setName("input-name2");
         });
         return Stream.of(
-                Arguments.of(wfRunModel, 3),
+                Arguments.of(wfRunModel, 5),
                 Arguments.of(taskRun, 2),
-                Arguments.of(variable, 2),
+                Arguments.of(variable, 3),
                 Arguments.of(externalEvent, 2));
     }
 }

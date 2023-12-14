@@ -5,7 +5,6 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.sdk.common.proto.EntrypointRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
@@ -36,7 +35,6 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
     public void arrive(Date time) {
         nodeRun.setStatus(LHStatus.COMPLETED);
         VariableValueModel result = new VariableValueModel();
-        result.setType(VariableType.NULL);
         nodeRun.complete(result, time);
     }
 }
