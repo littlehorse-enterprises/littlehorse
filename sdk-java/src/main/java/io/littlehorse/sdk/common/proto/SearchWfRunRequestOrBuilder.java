@@ -108,4 +108,58 @@ public interface SearchWfRunRequestOrBuilder extends
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
+
+  /**
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> 
+      getVariableFiltersList();
+  /**
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index);
+  /**
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  int getVariableFiltersCount();
+  /**
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
+      getVariableFiltersOrBuilderList();
+  /**
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+      int index);
 }

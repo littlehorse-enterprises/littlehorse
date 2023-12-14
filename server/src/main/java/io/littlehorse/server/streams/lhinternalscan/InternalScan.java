@@ -8,8 +8,12 @@ import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
+import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +32,8 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
     public ScanBoundaryCase type;
     public TagScanPb tagScan;
     public BoundedObjectIdScanPb boundedObjectIdScan;
+
+    public List<ScanFilterModel> filters = new ArrayList<>();
 
     public Class<InternalScanPb> getProtoBaseClass() {
         return InternalScanPb.class;
@@ -56,6 +62,10 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 throw new RuntimeException("not possible");
         }
 
+        for (ScanFilterModel filter : filters) {
+            out.addFilters(filter.toProto());
+        }
+
         return out;
     }
 
@@ -80,6 +90,10 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 break;
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("Not possible");
+        }
+
+        for (ScanFilter filter : p.getFiltersList()) {
+            filters.add(LHSerializable.fromProto(filter, ScanFilterModel.class, context));
         }
     }
 }

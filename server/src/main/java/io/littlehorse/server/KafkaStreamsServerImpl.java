@@ -676,7 +676,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
 
         try {
-            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch());
+            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(requestContext()));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }

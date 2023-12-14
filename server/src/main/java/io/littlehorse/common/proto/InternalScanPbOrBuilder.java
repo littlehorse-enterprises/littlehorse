@@ -136,5 +136,29 @@ public interface InternalScanPbOrBuilder extends
   com.google.protobuf.ByteString
       getTenantIdBytes();
 
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.ScanFilter> 
+      getFiltersList();
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  io.littlehorse.common.proto.ScanFilter getFilters(int index);
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  int getFiltersCount();
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
+      getFiltersOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.ScanFilter filters = 10;</code>
+   */
+  io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
+      int index);
+
   io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
 }

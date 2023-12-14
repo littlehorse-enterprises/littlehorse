@@ -186,6 +186,11 @@ export interface RunWfRequest_VariablesEntry {
   value: VariableValue | undefined;
 }
 
+export interface VariableMatch {
+  varName: string;
+  value: VariableValue | undefined;
+}
+
 export interface SearchWfRunRequest {
   bookmark?: Uint8Array | undefined;
   limit?: number | undefined;
@@ -194,7 +199,15 @@ export interface SearchWfRunRequest {
   wfSpecRevision?: number | undefined;
   status?: LHStatus | undefined;
   earliestStart?: string | undefined;
-  latestStart?: string | undefined;
+  latestStart?:
+    | string
+    | undefined;
+  /**
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   */
+  variableFilters: VariableMatch[];
 }
 
 export interface WfRunIdList {
@@ -1843,6 +1856,82 @@ export const RunWfRequest_VariablesEntry = {
   },
 };
 
+function createBaseVariableMatch(): VariableMatch {
+  return { varName: "", value: undefined };
+}
+
+export const VariableMatch = {
+  encode(message: VariableMatch, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.varName !== "") {
+      writer.uint32(10).string(message.varName);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableMatch {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableMatch();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.varName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VariableMatch {
+    return {
+      varName: isSet(object.varName) ? globalThis.String(object.varName) : "",
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: VariableMatch): unknown {
+    const obj: any = {};
+    if (message.varName !== "") {
+      obj.varName = message.varName;
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VariableMatch>, I>>(base?: I): VariableMatch {
+    return VariableMatch.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<VariableMatch>, I>>(object: I): VariableMatch {
+    const message = createBaseVariableMatch();
+    message.varName = object.varName ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseSearchWfRunRequest(): SearchWfRunRequest {
   return {
     bookmark: undefined,
@@ -1853,6 +1942,7 @@ function createBaseSearchWfRunRequest(): SearchWfRunRequest {
     status: undefined,
     earliestStart: undefined,
     latestStart: undefined,
+    variableFilters: [],
   };
 }
 
@@ -1881,6 +1971,9 @@ export const SearchWfRunRequest = {
     }
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.variableFilters) {
+      VariableMatch.encode(v!, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1948,6 +2041,13 @@ export const SearchWfRunRequest = {
 
           message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.variableFilters.push(VariableMatch.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1967,6 +2067,9 @@ export const SearchWfRunRequest = {
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : undefined,
       earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
       latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
+      variableFilters: globalThis.Array.isArray(object?.variableFilters)
+        ? object.variableFilters.map((e: any) => VariableMatch.fromJSON(e))
+        : [],
     };
   },
 
@@ -1996,6 +2099,9 @@ export const SearchWfRunRequest = {
     if (message.latestStart !== undefined) {
       obj.latestStart = message.latestStart;
     }
+    if (message.variableFilters?.length) {
+      obj.variableFilters = message.variableFilters.map((e) => VariableMatch.toJSON(e));
+    }
     return obj;
   },
 
@@ -2012,6 +2118,7 @@ export const SearchWfRunRequest = {
     message.status = object.status ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
+    message.variableFilters = object.variableFilters?.map((e) => VariableMatch.fromPartial(e)) || [];
     return message;
   },
 };

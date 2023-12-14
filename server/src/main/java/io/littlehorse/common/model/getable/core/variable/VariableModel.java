@@ -108,6 +108,13 @@ public class VariableModel extends CoreGetable<Variable> {
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
                         variable -> ((VariableModel) variable).isIndexable()),
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                                Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
+                        Optional.empty(),
+                        variable -> ((VariableModel) variable).isIndexable()),
+
                 // with workflow name only
                 new GetableIndex<>(
                         List.of(
@@ -133,6 +140,12 @@ public class VariableModel extends CoreGetable<Variable> {
             }
             case "wfSpecId" -> {
                 return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
+            }
+            case "majorVersion" -> {
+                return List.of(new IndexedField(
+                        key,
+                        wfSpecId.getName() + "/" + LHUtil.toLHDbVersionFormat(wfSpecId.getMajorVersion()),
+                        TagStorageType.LOCAL));
             }
             case "variable" -> {
                 return getDynamicFields();
