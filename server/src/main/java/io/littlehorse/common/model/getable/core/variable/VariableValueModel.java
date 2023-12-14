@@ -453,8 +453,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel asStr() throws LHVarSubError {
-        // TODO: Is this what we want?
-        if (type == ValueCase.VALUE_NOT_SET) return new VariableValueModel("null");
+        if (type == ValueCase.VALUE_NOT_SET) return new VariableValueModel();
 
         return new VariableValueModel(getVal().toString());
     }
