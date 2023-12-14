@@ -33,18 +33,17 @@ public final class Job {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tjob.proto\022\013littlehorse\032\017object_id.prot" +
-      "o\"\246\001\n\rBulkUpdateJob\022\021\n\tpartition\030\001 \001(\005\022\021" +
-      "\n\tstart_key\030\002 \001(\t\022\017\n\007end_key\030\003 \001(\t\022\034\n\017re" +
-      "sume_from_key\030\005 \001(\tH\001\210\001\001\022%\n\005no_op\030\006 \001(\0132" +
-      "\024.littlehorse.NoOpJobH\000B\005\n\003jobB\022\n\020_resum" +
-      "e_from_key\"\t\n\007NoOpJobB\037\n\033io.littlehorse." +
-      "common.protoP\001b\006proto3"
+      "\n\tjob.proto\022\013littlehorse\"\246\001\n\rBulkUpdateJ" +
+      "ob\022\021\n\tpartition\030\001 \001(\005\022\021\n\tstart_key\030\002 \001(\t" +
+      "\022\017\n\007end_key\030\003 \001(\t\022\034\n\017resume_from_key\030\005 \001" +
+      "(\tH\001\210\001\001\022%\n\005no_op\030\006 \001(\0132\024.littlehorse.NoO" +
+      "pJobH\000B\005\n\003jobB\022\n\020_resume_from_key\"\t\n\007NoO" +
+      "pJobB\037\n\033io.littlehorse.common.protoP\001b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
     internal_static_littlehorse_BulkUpdateJob_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -58,7 +57,6 @@ public final class Job {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_NoOpJob_descriptor,
         new java.lang.String[] { });
-    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

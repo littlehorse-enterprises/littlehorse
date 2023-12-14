@@ -32,7 +32,6 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -334,9 +333,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             rawNodeOutput.put(field.getKey(), field.getValue().getVal());
         }
         validateMandatoryFieldsFromCompletedEvent(userTaskFieldsGroupedByName.values(), rawNodeOutput.keySet());
-        VariableValueModel output = new VariableValueModel();
-        output.setType(VariableType.JSON_OBJ);
-        output.setJsonObjVal(rawNodeOutput);
+        VariableValueModel output = new VariableValueModel(rawNodeOutput);
         this.status = UserTaskRunStatus.DONE;
 
         getNodeRun().complete(output, new Date());

@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.ReportTaskObserver;
@@ -308,7 +307,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             output += "\n\n\n\n" + ctx.getLogOutput();
         }
 
-        return VariableValue.newBuilder().setStr(output).setType(VariableType.STR);
+        return VariableValue.newBuilder().setStr(output);
     }
 
     private io.littlehorse.sdk.common.proto.LHTaskException exnToTaskException(LHTaskException exn) {

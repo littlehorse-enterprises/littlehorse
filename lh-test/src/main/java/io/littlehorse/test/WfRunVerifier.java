@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -80,10 +79,8 @@ public class WfRunVerifier extends AbstractVerifier {
     public WfRunVerifier thenSendExternalEventJsonContent(String externalEventName, Object content) {
         try {
             String json = LHLibUtil.serializeToJson(content);
-            VariableValue externalEventContent = VariableValue.newBuilder()
-                    .setType(VariableType.JSON_OBJ)
-                    .setJsonObj(json)
-                    .build();
+            VariableValue externalEventContent =
+                    VariableValue.newBuilder().setJsonObj(json).build();
             steps.add(new SendExternalEventStep(externalEventName, externalEventContent, steps.size() + 1));
         } catch (JsonProcessingException e) {
             throw new LHTestInitializationException(e);

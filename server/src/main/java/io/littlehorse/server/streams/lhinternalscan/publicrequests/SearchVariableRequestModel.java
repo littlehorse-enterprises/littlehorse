@@ -171,14 +171,14 @@ public class SearchVariableRequestModel
     }
 
     private String getVariableValue(VariableValue value) throws LHApiException {
-        return switch (value.getType()) {
+        return switch (value.getValueCase()) {
             case STR -> value.getStr();
             case BOOL -> String.valueOf(value.getBool());
             case INT -> String.valueOf(value.getInt());
             case DOUBLE -> String.valueOf(value.getDouble());
             default -> {
                 throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Search for %s not supported".formatted(value.getType()));
+                        Status.INVALID_ARGUMENT, "Search for %s not supported".formatted(value.getValueCase()));
             }
         };
     }

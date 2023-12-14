@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -128,8 +129,7 @@ public class GetableManagerTest {
     void storeBooleanVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.BOOL);
-        variable.getValue().setBoolVal(true);
+        variable.setValue(new VariableValueModel(true));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -155,8 +155,7 @@ public class GetableManagerTest {
     void storeLocalStringVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.STR);
-        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable.setValue(new VariableValueModel("ThisShouldBeLocal"));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -222,8 +221,7 @@ public class GetableManagerTest {
     void storeLocalIntVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.INT);
-        variable.getValue().setIntVal(20L);
+        variable.setValue(new VariableValueModel(20L));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -288,8 +286,7 @@ public class GetableManagerTest {
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.DOUBLE);
-        variable.getValue().setDoubleVal(21.0);
+        variable.setValue(new VariableValueModel(21.0));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -364,9 +361,8 @@ public class GetableManagerTest {
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.JSON_OBJ);
-        variable.getValue()
-                .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
+        variable.setValue(new VariableValueModel(
+                Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape"))));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
@@ -498,8 +494,7 @@ public class GetableManagerTest {
         TaskRunModel taskRun = TestUtil.taskRun();
         VariableModel variable = TestUtil.variable("0000000");
         variable.getId().setName("variableName");
-        variable.getValue().setType(VariableType.STR);
-        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable.setValue(new VariableValueModel("ThisShouldBeLocal"));
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");

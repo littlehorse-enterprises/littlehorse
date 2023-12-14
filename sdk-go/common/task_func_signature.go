@@ -108,103 +108,106 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTask, context *WorkerContext) 
 
 	isPtr, reflectType := a.getType()
 
-	switch varVal.Type {
-	case model.VariableType_INT:
+	// switch varVal.Type {
+	switch varVal.GetValue().(type) {
+	case *model.VariableValue_Int:
 		switch reflectType {
 		case reflect.Int:
 			if isPtr {
-				result := int(*varVal.Int)
+				result := int(varVal.GetInt())
 				return &result, nil
 			} else {
-				return int(*varVal.Int), nil
+				return int(varVal.GetInt()), nil
 			}
 		case reflect.Int16:
 			if isPtr {
-				result := int16(*varVal.Int)
+				result := int16(varVal.GetInt())
 				return &result, nil
 			} else {
-				return int16(*varVal.Int), nil
+				return int16(varVal.GetInt()), nil
 			}
 		case reflect.Int32:
 			if isPtr {
-				result := int32(*varVal.Int)
+				result := int32(varVal.GetInt())
 				return &result, nil
 			} else {
-				return int32(*varVal.Int), nil
+				return int32(varVal.GetInt()), nil
 			}
 		case reflect.Int64:
 			if isPtr {
-				result := int32(*varVal.Int)
+				result := int32(varVal.GetInt())
 				return &result, nil
 			} else {
-				return int32(*varVal.Int), nil
+				return int32(varVal.GetInt()), nil
 			}
 		}
 		return nil, errors.New(
 			"task input variable was of type INT but task function needed " + reflectType.String(),
 		)
 
-	case model.VariableType_DOUBLE:
+	case *model.VariableValue_Double:
 		switch a.Type.Kind() {
 		case reflect.Float32:
 			if isPtr {
-				result := float32(*varVal.Double)
+				result := float32(varVal.GetDouble())
 				return &result, nil
 			} else {
-				return float32(*varVal.Double), nil
+				return float32(varVal.GetDouble()), nil
 			}
 		case reflect.Float64:
 			if isPtr {
-				result := float64(*varVal.Double)
+				result := float64(varVal.GetDouble())
 				return &result, nil
 			} else {
-				return float64(*varVal.Double), nil
+				return float64(varVal.GetDouble()), nil
 			}
 		}
 		return nil, errors.New(
 			"task input variable was of type DOUBLE but task function needed " + reflectType.String(),
 		)
 
-	case model.VariableType_BOOL:
+	case *model.VariableValue_Bool:
 		if reflectType != reflect.Bool {
 			return nil, errors.New(
 				"task input variable was of type BOOL but task function needed " + reflectType.String(),
 			)
 		}
 		if isPtr {
-			return varVal.Bool, nil
+			tmp := varVal.GetBool()
+			return &tmp, nil
 		} else {
-			return *varVal.Bool, nil
+			return varVal.GetBool(), nil
 		}
 
-	case model.VariableType_STR:
+	case *model.VariableValue_Str:
 		if reflectType != reflect.String {
 			return nil, errors.New(
 				"task input variable was of type STR but task function needed " + reflectType.String(),
 			)
 		}
 		if isPtr {
-			return varVal.Str, nil
+			tmp := varVal.GetStr()
+			return &tmp, nil
 		} else {
-			return *varVal.Str, nil
+			return varVal.GetStr(), nil
 		}
 
-	case model.VariableType_BYTES:
+	case *model.VariableValue_Bytes:
 		return loadByteArr(varVal, a.Type)
 
-	case model.VariableType_JSON_ARR:
+	case *model.VariableValue_JsonArr:
 		if !isPtr {
 			panic("task accepts a slice as an input variable; only pointers to slice are supported")
 		}
 		return loadJsonArr(varVal, a.Type)
 
-	case model.VariableType_JSON_OBJ:
+	case *model.VariableValue_JsonObj:
 		if !isPtr {
 			panic("task accepts a struct as an input variable; only pointers to struct are supported")
 		}
 		return loadJsonObj(varVal, a.Type)
 
-	case model.VariableType_NULL:
+	case nil:
 		if !isPtr {
 			return nil, errors.New("got a NULL assignment for a non-pointer variable")
 		}
@@ -224,17 +227,17 @@ func (a *TaskFuncArg) getType() (bool, reflect.Kind) {
 func loadByteArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
 	switch kind.Kind() {
 	case reflect.Slice, reflect.Array:
-		return []byte(varVal.Bytes), nil
+		return []byte(varVal.GetBytes()), nil
 	case reflect.Uint:
-		return uint(varVal.Bytes[8]), nil
+		return uint(varVal.GetBytes()[8]), nil
 	case reflect.Uint8:
-		return uint8(varVal.Bytes[8]), nil
+		return uint8(varVal.GetBytes()[8]), nil
 	case reflect.Uint16:
-		return binary.BigEndian.Uint16(varVal.Bytes), nil
+		return binary.BigEndian.Uint16(varVal.GetBytes()), nil
 	case reflect.Uint32:
-		return binary.BigEndian.Uint32(varVal.Bytes), nil
+		return binary.BigEndian.Uint32(varVal.GetBytes()), nil
 	case reflect.Uint64:
-		return binary.BigEndian.Uint64(varVal.Bytes), nil
+		return binary.BigEndian.Uint64(varVal.GetBytes()), nil
 	}
 	return nil, errors.New(
 		"task input variable was of type BYTES but task function needed " + kind.Kind().String(),
@@ -242,7 +245,7 @@ func loadByteArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, e
 }
 
 func loadJsonArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
-	strPointerValue := derefString(varVal.JsonArr)
+	strPointerValue := varVal.GetJsonArr()
 	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
 
 	obj := reflect.New(kind.Elem())
@@ -256,7 +259,7 @@ func loadJsonArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, e
 }
 
 func loadJsonObj(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
-	strPointerValue := derefString(varVal.JsonObj)
+	strPointerValue := varVal.GetJsonObj()
 	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
 
 	obj := reflect.New(kind.Elem())

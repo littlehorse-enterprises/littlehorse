@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.FailureDef;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,12 +76,10 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
                 out.content = thread.assignVariable(this.content);
             } catch (LHVarSubError exn) {
                 out.content = new VariableValueModel();
-                out.content.type = VariableType.NULL;
                 out.message += "\n\nWARNING: Unable to assign output content: " + exn.getMessage();
             }
         } else {
             out.content = new VariableValueModel();
-            out.content.type = VariableType.NULL;
         }
         return out;
     }
