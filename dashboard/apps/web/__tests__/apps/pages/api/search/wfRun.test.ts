@@ -34,6 +34,7 @@ describe('WFRun API', () => {
             wfSpecRevision: 0,
             earliestStart: '2023-11-11T12:12:12Z',
             latestStart: '2023-11-11T14:12:12Z',
+            variableFilters: [],
             bookmark: Uint8Array.from([
                 65, 95, 66, 79, 79,
                 75, 77, 65, 82, 75
