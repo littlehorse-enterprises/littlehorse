@@ -19,7 +19,7 @@ private static final long serialVersionUID = 0L;
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
     wfSpecName_ = "";
     status_ = 0;
-    variableFilters_ = java.util.Collections.emptyList();
+    whereClauses_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -235,45 +235,75 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
-  public static final int VARIABLE_FILTERS_FIELD_NUMBER = 9;
+  public static final int WHERE_CLAUSES_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_;
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> whereClauses_;
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
-    return variableFilters_;
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getWhereClausesList() {
+    return whereClauses_;
   }
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-      getVariableFiltersOrBuilderList() {
-    return variableFilters_;
+      getWhereClausesOrBuilderList() {
+    return whereClauses_;
   }
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   @java.lang.Override
-  public int getVariableFiltersCount() {
-    return variableFilters_.size();
+  public int getWhereClausesCount() {
+    return whereClauses_.size();
   }
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
-    return variableFilters_.get(index);
+  public io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index) {
+    return whereClauses_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
       int index) {
-    return variableFilters_.get(index);
+    return whereClauses_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -314,8 +344,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000040) != 0)) {
       output.writeMessage(8, getLatestStart());
     }
-    for (int i = 0; i < variableFilters_.size(); i++) {
-      output.writeMessage(9, variableFilters_.get(i));
+    for (int i = 0; i < whereClauses_.size(); i++) {
+      output.writeMessage(9, whereClauses_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -357,9 +387,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getLatestStart());
     }
-    for (int i = 0; i < variableFilters_.size(); i++) {
+    for (int i = 0; i < whereClauses_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, variableFilters_.get(i));
+        .computeMessageSize(9, whereClauses_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -412,8 +442,8 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
-    if (!getVariableFiltersList()
-        .equals(other.getVariableFiltersList())) return false;
+    if (!getWhereClausesList()
+        .equals(other.getWhereClausesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -455,9 +485,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
     }
-    if (getVariableFiltersCount() > 0) {
-      hash = (37 * hash) + VARIABLE_FILTERS_FIELD_NUMBER;
-      hash = (53 * hash) + getVariableFiltersList().hashCode();
+    if (getWhereClausesCount() > 0) {
+      hash = (37 * hash) + WHERE_CLAUSES_FIELD_NUMBER;
+      hash = (53 * hash) + getWhereClausesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -591,7 +621,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEarliestStartFieldBuilder();
         getLatestStartFieldBuilder();
-        getVariableFiltersFieldBuilder();
+        getWhereClausesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -614,11 +644,11 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      if (variableFiltersBuilder_ == null) {
-        variableFilters_ = java.util.Collections.emptyList();
+      if (whereClausesBuilder_ == null) {
+        whereClauses_ = java.util.Collections.emptyList();
       } else {
-        variableFilters_ = null;
-        variableFiltersBuilder_.clear();
+        whereClauses_ = null;
+        whereClausesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000100);
       return this;
@@ -654,14 +684,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.SearchWfRunRequest result) {
-      if (variableFiltersBuilder_ == null) {
+      if (whereClausesBuilder_ == null) {
         if (((bitField0_ & 0x00000100) != 0)) {
-          variableFilters_ = java.util.Collections.unmodifiableList(variableFilters_);
+          whereClauses_ = java.util.Collections.unmodifiableList(whereClauses_);
           bitField0_ = (bitField0_ & ~0x00000100);
         }
-        result.variableFilters_ = variableFilters_;
+        result.whereClauses_ = whereClauses_;
       } else {
-        result.variableFilters_ = variableFiltersBuilder_.build();
+        result.whereClauses_ = whereClausesBuilder_.build();
       }
     }
 
@@ -776,29 +806,29 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
-      if (variableFiltersBuilder_ == null) {
-        if (!other.variableFilters_.isEmpty()) {
-          if (variableFilters_.isEmpty()) {
-            variableFilters_ = other.variableFilters_;
+      if (whereClausesBuilder_ == null) {
+        if (!other.whereClauses_.isEmpty()) {
+          if (whereClauses_.isEmpty()) {
+            whereClauses_ = other.whereClauses_;
             bitField0_ = (bitField0_ & ~0x00000100);
           } else {
-            ensureVariableFiltersIsMutable();
-            variableFilters_.addAll(other.variableFilters_);
+            ensureWhereClausesIsMutable();
+            whereClauses_.addAll(other.whereClauses_);
           }
           onChanged();
         }
       } else {
-        if (!other.variableFilters_.isEmpty()) {
-          if (variableFiltersBuilder_.isEmpty()) {
-            variableFiltersBuilder_.dispose();
-            variableFiltersBuilder_ = null;
-            variableFilters_ = other.variableFilters_;
+        if (!other.whereClauses_.isEmpty()) {
+          if (whereClausesBuilder_.isEmpty()) {
+            whereClausesBuilder_.dispose();
+            whereClausesBuilder_ = null;
+            whereClauses_ = other.whereClauses_;
             bitField0_ = (bitField0_ & ~0x00000100);
-            variableFiltersBuilder_ = 
+            whereClausesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getVariableFiltersFieldBuilder() : null;
+                 getWhereClausesFieldBuilder() : null;
           } else {
-            variableFiltersBuilder_.addAllMessages(other.variableFilters_);
+            whereClausesBuilder_.addAllMessages(other.whereClauses_);
           }
         }
       }
@@ -877,11 +907,11 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(
                       io.littlehorse.sdk.common.proto.VariableMatch.parser(),
                       extensionRegistry);
-              if (variableFiltersBuilder_ == null) {
-                ensureVariableFiltersIsMutable();
-                variableFilters_.add(m);
+              if (whereClausesBuilder_ == null) {
+                ensureWhereClausesIsMutable();
+                whereClauses_.add(m);
               } else {
-                variableFiltersBuilder_.addMessage(m);
+                whereClausesBuilder_.addMessage(m);
               }
               break;
             } // case 74
@@ -1432,244 +1462,352 @@ private static final long serialVersionUID = 0L;
       return latestStartBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> whereClauses_ =
       java.util.Collections.emptyList();
-    private void ensureVariableFiltersIsMutable() {
+    private void ensureWhereClausesIsMutable() {
       if (!((bitField0_ & 0x00000100) != 0)) {
-        variableFilters_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMatch>(variableFilters_);
+        whereClauses_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMatch>(whereClauses_);
         bitField0_ |= 0x00000100;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> variableFiltersBuilder_;
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> whereClausesBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
-      if (variableFiltersBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(variableFilters_);
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getWhereClausesList() {
+      if (whereClausesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(whereClauses_);
       } else {
-        return variableFiltersBuilder_.getMessageList();
+        return whereClausesBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public int getVariableFiltersCount() {
-      if (variableFiltersBuilder_ == null) {
-        return variableFilters_.size();
+    public int getWhereClausesCount() {
+      if (whereClausesBuilder_ == null) {
+        return whereClauses_.size();
       } else {
-        return variableFiltersBuilder_.getCount();
+        return whereClausesBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
-      if (variableFiltersBuilder_ == null) {
-        return variableFilters_.get(index);
+    public io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index) {
+      if (whereClausesBuilder_ == null) {
+        return whereClauses_.get(index);
       } else {
-        return variableFiltersBuilder_.getMessage(index);
+        return whereClausesBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder setVariableFilters(
+    public Builder setWhereClauses(
         int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (variableFiltersBuilder_ == null) {
+      if (whereClausesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureVariableFiltersIsMutable();
-        variableFilters_.set(index, value);
+        ensureWhereClausesIsMutable();
+        whereClauses_.set(index, value);
         onChanged();
       } else {
-        variableFiltersBuilder_.setMessage(index, value);
+        whereClausesBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder setVariableFilters(
+    public Builder setWhereClauses(
         int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (variableFiltersBuilder_ == null) {
-        ensureVariableFiltersIsMutable();
-        variableFilters_.set(index, builderForValue.build());
+      if (whereClausesBuilder_ == null) {
+        ensureWhereClausesIsMutable();
+        whereClauses_.set(index, builderForValue.build());
         onChanged();
       } else {
-        variableFiltersBuilder_.setMessage(index, builderForValue.build());
+        whereClausesBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder addVariableFilters(io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (variableFiltersBuilder_ == null) {
+    public Builder addWhereClauses(io.littlehorse.sdk.common.proto.VariableMatch value) {
+      if (whereClausesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureVariableFiltersIsMutable();
-        variableFilters_.add(value);
+        ensureWhereClausesIsMutable();
+        whereClauses_.add(value);
         onChanged();
       } else {
-        variableFiltersBuilder_.addMessage(value);
+        whereClausesBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder addVariableFilters(
+    public Builder addWhereClauses(
         int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (variableFiltersBuilder_ == null) {
+      if (whereClausesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureVariableFiltersIsMutable();
-        variableFilters_.add(index, value);
+        ensureWhereClausesIsMutable();
+        whereClauses_.add(index, value);
         onChanged();
       } else {
-        variableFiltersBuilder_.addMessage(index, value);
+        whereClausesBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder addVariableFilters(
+    public Builder addWhereClauses(
         io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (variableFiltersBuilder_ == null) {
-        ensureVariableFiltersIsMutable();
-        variableFilters_.add(builderForValue.build());
+      if (whereClausesBuilder_ == null) {
+        ensureWhereClausesIsMutable();
+        whereClauses_.add(builderForValue.build());
         onChanged();
       } else {
-        variableFiltersBuilder_.addMessage(builderForValue.build());
+        whereClausesBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder addVariableFilters(
+    public Builder addWhereClauses(
         int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (variableFiltersBuilder_ == null) {
-        ensureVariableFiltersIsMutable();
-        variableFilters_.add(index, builderForValue.build());
+      if (whereClausesBuilder_ == null) {
+        ensureWhereClausesIsMutable();
+        whereClauses_.add(index, builderForValue.build());
         onChanged();
       } else {
-        variableFiltersBuilder_.addMessage(index, builderForValue.build());
+        whereClausesBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder addAllVariableFilters(
+    public Builder addAllWhereClauses(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMatch> values) {
-      if (variableFiltersBuilder_ == null) {
-        ensureVariableFiltersIsMutable();
+      if (whereClausesBuilder_ == null) {
+        ensureWhereClausesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, variableFilters_);
+            values, whereClauses_);
         onChanged();
       } else {
-        variableFiltersBuilder_.addAllMessages(values);
+        whereClausesBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder clearVariableFilters() {
-      if (variableFiltersBuilder_ == null) {
-        variableFilters_ = java.util.Collections.emptyList();
+    public Builder clearWhereClauses() {
+      if (whereClausesBuilder_ == null) {
+        whereClauses_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
-        variableFiltersBuilder_.clear();
+        whereClausesBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public Builder removeVariableFilters(int index) {
-      if (variableFiltersBuilder_ == null) {
-        ensureVariableFiltersIsMutable();
-        variableFilters_.remove(index);
+    public Builder removeWhereClauses(int index) {
+      if (whereClausesBuilder_ == null) {
+        ensureWhereClausesIsMutable();
+        whereClauses_.remove(index);
         onChanged();
       } else {
-        variableFiltersBuilder_.remove(index);
+        whereClausesBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getVariableFiltersBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getWhereClausesBuilder(
         int index) {
-      return getVariableFiltersFieldBuilder().getBuilder(index);
+      return getWhereClausesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
         int index) {
-      if (variableFiltersBuilder_ == null) {
-        return variableFilters_.get(index);  } else {
-        return variableFiltersBuilder_.getMessageOrBuilder(index);
+      if (whereClausesBuilder_ == null) {
+        return whereClauses_.get(index);  } else {
+        return whereClausesBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-         getVariableFiltersOrBuilderList() {
-      if (variableFiltersBuilder_ != null) {
-        return variableFiltersBuilder_.getMessageOrBuilderList();
+         getWhereClausesOrBuilderList() {
+      if (whereClausesBuilder_ != null) {
+        return whereClausesBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(variableFilters_);
+        return java.util.Collections.unmodifiableList(whereClauses_);
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder() {
-      return getVariableFiltersFieldBuilder().addBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addWhereClausesBuilder() {
+      return getWhereClausesFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addWhereClausesBuilder(
         int index) {
-      return getVariableFiltersFieldBuilder().addBuilder(
+      return getWhereClausesFieldBuilder().addBuilder(
           index, io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+     * <pre>
+     * Allows filtering WfRun's based on the value of the Variables. This ONLY
+     * works for the Variables in the entrypiont threadrun (that is, variables
+     * where the threadRunNumber == 0).
+     * </pre>
+     *
+     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch.Builder> 
-         getVariableFiltersBuilderList() {
-      return getVariableFiltersFieldBuilder().getBuilderList();
+         getWhereClausesBuilderList() {
+      return getWhereClausesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-        getVariableFiltersFieldBuilder() {
-      if (variableFiltersBuilder_ == null) {
-        variableFiltersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+        getWhereClausesFieldBuilder() {
+      if (whereClausesBuilder_ == null) {
+        whereClausesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder>(
-                variableFilters_,
+                whereClauses_,
                 ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
-        variableFilters_ = null;
+        whereClauses_ = null;
       }
-      return variableFiltersBuilder_;
+      return whereClausesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

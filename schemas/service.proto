@@ -93,7 +93,7 @@ message RunWfRequest {
   optional string id = 5;
 }
 
-message Where {
+message VariableMatch {
     string var_name = 1;
     VariableValue value = 2;
 }
@@ -113,7 +113,7 @@ message SearchWfRunRequest {
     // Allows filtering WfRun's based on the value of the Variables. This ONLY
     // works for the Variables in the entrypiont threadrun (that is, variables
     // where the threadRunNumber == 0).
-    repeated Where where_clauses = 9;
+    repeated VariableMatch where_clauses = 9;
 }
 
 message WfRunIdList {

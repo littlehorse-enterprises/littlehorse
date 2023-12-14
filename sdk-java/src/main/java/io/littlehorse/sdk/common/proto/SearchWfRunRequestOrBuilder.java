@@ -110,26 +110,56 @@ public interface SearchWfRunRequestOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> 
-      getVariableFiltersList();
+      getWhereClausesList();
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index);
+  io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index);
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
-  int getVariableFiltersCount();
+  int getWhereClausesCount();
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-      getVariableFiltersOrBuilderList();
+      getWhereClausesOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
+   * <pre>
+   * Allows filtering WfRun's based on the value of the Variables. This ONLY
+   * works for the Variables in the entrypiont threadrun (that is, variables
+   * where the threadRunNumber == 0).
+   * </pre>
+   *
+   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
+  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
       int index);
 }
