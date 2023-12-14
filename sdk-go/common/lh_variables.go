@@ -57,7 +57,7 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 	case model.VariableType_DOUBLE:
 		var tmp float64
 		tmp, err = strconv.ParseFloat(input, 64)
-		if (err != nil) {
+		if err != nil {
 			out.Value = &model.VariableValue_Double{Double: tmp}
 		}
 
