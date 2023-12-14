@@ -90,6 +90,11 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
         return serdeModelStore.iterate(start, end, cls);
     }
 
+    @Override
+    public <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls) {
+        return serdeModelStore.iterate(start, end, cls);
+    }
+
     protected String appendTenantPrefixTo(String key) {
         return tenantId + "/" + key;
     }
