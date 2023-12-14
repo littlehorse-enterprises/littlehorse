@@ -24,7 +24,6 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
         this.id = id;
     }
 
-
     public String getId() {
         return id;
     }

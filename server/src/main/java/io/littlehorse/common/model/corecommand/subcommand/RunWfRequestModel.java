@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.ParentWfSpecReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
@@ -94,12 +95,33 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
             throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }
 
+        // Validate the requests
+        if (spec.getParentWfSpec() != null && parentWfRunId == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "WfSpec %s requires a parent WfRun ID from WfSpec %s"
+                            .formatted(wfSpecName, spec.getParentWfSpec().getWfSpecName()));
+        }
+        if (parentWfRunId != null && spec.getParentWfSpec() == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "WfSpec %s does not refer to a parent WfSpec.".formatted(wfSpecName));
+        }
+
         // Validate that parent WfRun exists and is on this partition.
         if (parentWfRunId != null) {
+            ParentWfSpecReferenceModel parentSpec = spec.getParentWfSpec();
             WfRunModel parent = processorContext.getableManager().get(parentWfRunId);
             if (parent == null) {
                 throw new LHApiException(
-                        Status.FAILED_PRECONDITION, "Parent WfRun %s not found.".formatted(parentWfRunId.toString()));
+                        Status.FAILED_PRECONDITION,
+                        "Parent WfRun of type %s with id %s not found."
+                                .formatted(parentSpec.getWfSpecName(), parentWfRunId.toString()));
+            }
+            if (!parent.getWfSpec().getName().equals(spec.getParentWfSpec().getWfSpecName())) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Parent WfRun is of incorrect type %s but should be %s"
+                                .formatted(parent.getWfSpec().getName(), parentSpec.getWfSpecName()));
             }
         }
 
