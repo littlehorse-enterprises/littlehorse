@@ -67,6 +67,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -103,6 +105,7 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
+    private final Pattern objectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -582,10 +585,15 @@ public class BackendInternalComms implements Closeable {
 
             // TODO: This is a leaky abstraction.
             String storeableKey = next.getKey();
-            String objectIdStr = storeableKey.substring(storeableKey.indexOf("/") + 1);
-
-            return ByteString.copyFrom(
-                    ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
+            Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
+            if (matcher.find()) {
+                int prefixEndIndex = matcher.end(0);
+                String objectIdStr = storeableKey.substring(prefixEndIndex);
+                return ByteString.copyFrom(
+                        ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
+            } else {
+                throw new IllegalStateException("Invalid object id");
+            }
         } else {
             throw new RuntimeException("Impossible: unknown result type");
         }
