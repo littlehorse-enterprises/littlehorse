@@ -34,11 +34,13 @@ if [ "$1" = 'dashboard' ]; then
             exit 1
         fi
 
-      export AUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
       export NEXTAUTH_URL=${LHD_OAUTH_CALLBACK_URL}
       export KEYCLOAK_CLIENT_ID=${LHD_OAUTH_CLIENT_ID}
       export KEYCLOAK_CLIENT_SECRET=${LHD_OAUTH_CLIENT_SECRET}
       export KEYCLOAK_ISSUER_URI=${LHD_OAUTH_SERVER_URL}
+      export AUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
+    else
+      export AUTH_SECRET=$(uuidgen)
     fi
 
     pnpm run build
