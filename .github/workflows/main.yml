@@ -138,6 +138,7 @@ jobs:
         run: |
           npm install pnpm --global
           pnpm install
+          pnpm build
           pnpm test
   publish-dashboard-docker-image:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
