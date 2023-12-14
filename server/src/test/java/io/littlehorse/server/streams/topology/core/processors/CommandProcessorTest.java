@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -81,7 +82,9 @@ public class CommandProcessorTest {
         Command commandToExecute =
                 Command.newBuilder().setRunWf(runWfSubCommand).build();
         processorContext = TestProcessorExecutionContext.create(
-                commandToExecute, HeadersUtil.metadataHeadersFor("myTenant", "myPrincipal"), mockProcessorContext);
+                commandToExecute,
+                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL),
+                mockProcessorContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
