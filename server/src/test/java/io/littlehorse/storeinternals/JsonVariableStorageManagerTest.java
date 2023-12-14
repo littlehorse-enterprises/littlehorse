@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -49,7 +50,7 @@ public class JsonVariableStorageManagerTest {
 
     private ModelStore storeWrapper;
 
-    private String tenantId = "myTenant";
+    private String tenantId = LHConstants.DEFAULT_TENANT;
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;

@@ -52,7 +52,7 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
      * Make sure to `.close()` the result!
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String key, Class<T> cls) {
-        return serdeModelStore.prefixScan(appendTenantPrefixTo(key), cls);
+        return serdeModelStore.prefixScan(appendTenantPrefixTo(Storeable.getFullStoreKey(cls, key)), cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
@@ -78,7 +78,10 @@ public class ReadOnlyTenantStore implements ReadOnlyModelStore {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        return serdeModelStore.range(appendTenantPrefixTo(start), appendTenantPrefixTo(end), cls);
+        return serdeModelStore.range(
+                appendTenantPrefixTo(Storeable.getFullStoreKey(cls, start)),
+                appendTenantPrefixTo(Storeable.getFullStoreKey(cls, end)),
+                cls);
     }
 
     protected String appendTenantPrefixTo(String key) {
