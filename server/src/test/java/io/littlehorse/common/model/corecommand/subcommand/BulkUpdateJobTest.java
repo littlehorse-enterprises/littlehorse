@@ -45,7 +45,7 @@ public class BulkUpdateJobTest {
 
     @Test
     public void shouldExecuteBulkUpdateFromBeginningToEnd() {
-        when(lhConfig.getMaxBulkJobDuration()).thenReturn(1);
+        when(lhConfig.getMaxBulkJobIterDurationMs()).thenReturn(1);
         WfRunModel wfRun1 = TestUtil.wfRun(UUID.randomUUID().toString());
         WfRunModel wfRun2 = TestUtil.wfRun(UUID.randomUUID().toString());
         WfRunModel wfRun3 = TestUtil.wfRun(UUID.randomUUID().toString());

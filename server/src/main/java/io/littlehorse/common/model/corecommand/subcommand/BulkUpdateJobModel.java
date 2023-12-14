@@ -59,7 +59,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        Date limitTime = DateUtils.addSeconds(new Date(), config.getMaxBulkJobDuration());
+        Date limitTime = DateUtils.addMilliseconds(new Date(), config.getMaxBulkJobIterDurationMs());
         try (LHKeyValueIterator<?> range =
                 executionContext.getableManager().range(startKey, endKey, StoredGetable.class)) {
             String lastKey = null;
@@ -71,7 +71,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
                 scheduleNextIteration(
                         lastKey,
                         executionContext.getTaskManager(),
-                        DateUtils.addSeconds(iterationTime, config.getBulkJobGracePeriod()));
+                        DateUtils.addSeconds(iterationTime, config.getBulkJobDelayIntervalSeconds()));
             }
             return Empty.getDefaultInstance();
         }
