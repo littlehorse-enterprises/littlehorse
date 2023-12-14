@@ -207,7 +207,7 @@ export interface SearchWfRunRequest {
    * works for the Variables in the entrypiont threadrun (that is, variables
    * where the threadRunNumber == 0).
    */
-  whereClauses: VariableMatch[];
+  variableFilters: VariableMatch[];
 }
 
 export interface WfRunIdList {
@@ -1942,7 +1942,7 @@ function createBaseSearchWfRunRequest(): SearchWfRunRequest {
     status: undefined,
     earliestStart: undefined,
     latestStart: undefined,
-    whereClauses: [],
+    variableFilters: [],
   };
 }
 
@@ -1972,7 +1972,7 @@ export const SearchWfRunRequest = {
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(66).fork()).ldelim();
     }
-    for (const v of message.whereClauses) {
+    for (const v of message.variableFilters) {
       VariableMatch.encode(v!, writer.uint32(74).fork()).ldelim();
     }
     return writer;
@@ -2046,7 +2046,7 @@ export const SearchWfRunRequest = {
             break;
           }
 
-          message.whereClauses.push(VariableMatch.decode(reader, reader.uint32()));
+          message.variableFilters.push(VariableMatch.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2067,8 +2067,8 @@ export const SearchWfRunRequest = {
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : undefined,
       earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
       latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-      whereClauses: globalThis.Array.isArray(object?.whereClauses)
-        ? object.whereClauses.map((e: any) => VariableMatch.fromJSON(e))
+      variableFilters: globalThis.Array.isArray(object?.variableFilters)
+        ? object.variableFilters.map((e: any) => VariableMatch.fromJSON(e))
         : [],
     };
   },
@@ -2099,8 +2099,8 @@ export const SearchWfRunRequest = {
     if (message.latestStart !== undefined) {
       obj.latestStart = message.latestStart;
     }
-    if (message.whereClauses?.length) {
-      obj.whereClauses = message.whereClauses.map((e) => VariableMatch.toJSON(e));
+    if (message.variableFilters?.length) {
+      obj.variableFilters = message.variableFilters.map((e) => VariableMatch.toJSON(e));
     }
     return obj;
   },
@@ -2118,7 +2118,7 @@ export const SearchWfRunRequest = {
     message.status = object.status ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
-    message.whereClauses = object.whereClauses?.map((e) => VariableMatch.fromPartial(e)) || [];
+    message.variableFilters = object.variableFilters?.map((e) => VariableMatch.fromPartial(e)) || [];
     return message;
   },
 };

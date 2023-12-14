@@ -19,7 +19,7 @@ private static final long serialVersionUID = 0L;
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
     wfSpecName_ = "";
     status_ = 0;
-    whereClauses_ = java.util.Collections.emptyList();
+    variableFilters_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -235,9 +235,9 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
-  public static final int WHERE_CLAUSES_FIELD_NUMBER = 9;
+  public static final int VARIABLE_FILTERS_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> whereClauses_;
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_;
   /**
    * <pre>
    * Allows filtering WfRun's based on the value of the Variables. This ONLY
@@ -245,11 +245,11 @@ private static final long serialVersionUID = 0L;
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getWhereClausesList() {
-    return whereClauses_;
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
+    return variableFilters_;
   }
   /**
    * <pre>
@@ -258,12 +258,12 @@ private static final long serialVersionUID = 0L;
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-      getWhereClausesOrBuilderList() {
-    return whereClauses_;
+      getVariableFiltersOrBuilderList() {
+    return variableFilters_;
   }
   /**
    * <pre>
@@ -272,11 +272,11 @@ private static final long serialVersionUID = 0L;
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   @java.lang.Override
-  public int getWhereClausesCount() {
-    return whereClauses_.size();
+  public int getVariableFiltersCount() {
+    return variableFilters_.size();
   }
   /**
    * <pre>
@@ -285,11 +285,11 @@ private static final long serialVersionUID = 0L;
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index) {
-    return whereClauses_.get(index);
+  public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
+    return variableFilters_.get(index);
   }
   /**
    * <pre>
@@ -298,12 +298,12 @@ private static final long serialVersionUID = 0L;
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
+  public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
       int index) {
-    return whereClauses_.get(index);
+    return variableFilters_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -344,8 +344,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000040) != 0)) {
       output.writeMessage(8, getLatestStart());
     }
-    for (int i = 0; i < whereClauses_.size(); i++) {
-      output.writeMessage(9, whereClauses_.get(i));
+    for (int i = 0; i < variableFilters_.size(); i++) {
+      output.writeMessage(9, variableFilters_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -387,9 +387,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getLatestStart());
     }
-    for (int i = 0; i < whereClauses_.size(); i++) {
+    for (int i = 0; i < variableFilters_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, whereClauses_.get(i));
+        .computeMessageSize(9, variableFilters_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -442,8 +442,8 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
-    if (!getWhereClausesList()
-        .equals(other.getWhereClausesList())) return false;
+    if (!getVariableFiltersList()
+        .equals(other.getVariableFiltersList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -485,9 +485,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
     }
-    if (getWhereClausesCount() > 0) {
-      hash = (37 * hash) + WHERE_CLAUSES_FIELD_NUMBER;
-      hash = (53 * hash) + getWhereClausesList().hashCode();
+    if (getVariableFiltersCount() > 0) {
+      hash = (37 * hash) + VARIABLE_FILTERS_FIELD_NUMBER;
+      hash = (53 * hash) + getVariableFiltersList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -621,7 +621,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEarliestStartFieldBuilder();
         getLatestStartFieldBuilder();
-        getWhereClausesFieldBuilder();
+        getVariableFiltersFieldBuilder();
       }
     }
     @java.lang.Override
@@ -644,11 +644,11 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      if (whereClausesBuilder_ == null) {
-        whereClauses_ = java.util.Collections.emptyList();
+      if (variableFiltersBuilder_ == null) {
+        variableFilters_ = java.util.Collections.emptyList();
       } else {
-        whereClauses_ = null;
-        whereClausesBuilder_.clear();
+        variableFilters_ = null;
+        variableFiltersBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000100);
       return this;
@@ -684,14 +684,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.SearchWfRunRequest result) {
-      if (whereClausesBuilder_ == null) {
+      if (variableFiltersBuilder_ == null) {
         if (((bitField0_ & 0x00000100) != 0)) {
-          whereClauses_ = java.util.Collections.unmodifiableList(whereClauses_);
+          variableFilters_ = java.util.Collections.unmodifiableList(variableFilters_);
           bitField0_ = (bitField0_ & ~0x00000100);
         }
-        result.whereClauses_ = whereClauses_;
+        result.variableFilters_ = variableFilters_;
       } else {
-        result.whereClauses_ = whereClausesBuilder_.build();
+        result.variableFilters_ = variableFiltersBuilder_.build();
       }
     }
 
@@ -806,29 +806,29 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
-      if (whereClausesBuilder_ == null) {
-        if (!other.whereClauses_.isEmpty()) {
-          if (whereClauses_.isEmpty()) {
-            whereClauses_ = other.whereClauses_;
+      if (variableFiltersBuilder_ == null) {
+        if (!other.variableFilters_.isEmpty()) {
+          if (variableFilters_.isEmpty()) {
+            variableFilters_ = other.variableFilters_;
             bitField0_ = (bitField0_ & ~0x00000100);
           } else {
-            ensureWhereClausesIsMutable();
-            whereClauses_.addAll(other.whereClauses_);
+            ensureVariableFiltersIsMutable();
+            variableFilters_.addAll(other.variableFilters_);
           }
           onChanged();
         }
       } else {
-        if (!other.whereClauses_.isEmpty()) {
-          if (whereClausesBuilder_.isEmpty()) {
-            whereClausesBuilder_.dispose();
-            whereClausesBuilder_ = null;
-            whereClauses_ = other.whereClauses_;
+        if (!other.variableFilters_.isEmpty()) {
+          if (variableFiltersBuilder_.isEmpty()) {
+            variableFiltersBuilder_.dispose();
+            variableFiltersBuilder_ = null;
+            variableFilters_ = other.variableFilters_;
             bitField0_ = (bitField0_ & ~0x00000100);
-            whereClausesBuilder_ = 
+            variableFiltersBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getWhereClausesFieldBuilder() : null;
+                 getVariableFiltersFieldBuilder() : null;
           } else {
-            whereClausesBuilder_.addAllMessages(other.whereClauses_);
+            variableFiltersBuilder_.addAllMessages(other.variableFilters_);
           }
         }
       }
@@ -907,11 +907,11 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(
                       io.littlehorse.sdk.common.proto.VariableMatch.parser(),
                       extensionRegistry);
-              if (whereClausesBuilder_ == null) {
-                ensureWhereClausesIsMutable();
-                whereClauses_.add(m);
+              if (variableFiltersBuilder_ == null) {
+                ensureVariableFiltersIsMutable();
+                variableFilters_.add(m);
               } else {
-                whereClausesBuilder_.addMessage(m);
+                variableFiltersBuilder_.addMessage(m);
               }
               break;
             } // case 74
@@ -1462,17 +1462,17 @@ private static final long serialVersionUID = 0L;
       return latestStartBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> whereClauses_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> variableFilters_ =
       java.util.Collections.emptyList();
-    private void ensureWhereClausesIsMutable() {
+    private void ensureVariableFiltersIsMutable() {
       if (!((bitField0_ & 0x00000100) != 0)) {
-        whereClauses_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMatch>(whereClauses_);
+        variableFilters_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMatch>(variableFilters_);
         bitField0_ |= 0x00000100;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> whereClausesBuilder_;
+        io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> variableFiltersBuilder_;
 
     /**
      * <pre>
@@ -1481,13 +1481,13 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getWhereClausesList() {
-      if (whereClausesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(whereClauses_);
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> getVariableFiltersList() {
+      if (variableFiltersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(variableFilters_);
       } else {
-        return whereClausesBuilder_.getMessageList();
+        return variableFiltersBuilder_.getMessageList();
       }
     }
     /**
@@ -1497,13 +1497,13 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public int getWhereClausesCount() {
-      if (whereClausesBuilder_ == null) {
-        return whereClauses_.size();
+    public int getVariableFiltersCount() {
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.size();
       } else {
-        return whereClausesBuilder_.getCount();
+        return variableFiltersBuilder_.getCount();
       }
     }
     /**
@@ -1513,13 +1513,13 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index) {
-      if (whereClausesBuilder_ == null) {
-        return whereClauses_.get(index);
+    public io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index) {
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.get(index);
       } else {
-        return whereClausesBuilder_.getMessage(index);
+        return variableFiltersBuilder_.getMessage(index);
       }
     }
     /**
@@ -1529,19 +1529,19 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder setWhereClauses(
+    public Builder setVariableFilters(
         int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (whereClausesBuilder_ == null) {
+      if (variableFiltersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureWhereClausesIsMutable();
-        whereClauses_.set(index, value);
+        ensureVariableFiltersIsMutable();
+        variableFilters_.set(index, value);
         onChanged();
       } else {
-        whereClausesBuilder_.setMessage(index, value);
+        variableFiltersBuilder_.setMessage(index, value);
       }
       return this;
     }
@@ -1552,16 +1552,16 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder setWhereClauses(
+    public Builder setVariableFilters(
         int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (whereClausesBuilder_ == null) {
-        ensureWhereClausesIsMutable();
-        whereClauses_.set(index, builderForValue.build());
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.set(index, builderForValue.build());
         onChanged();
       } else {
-        whereClausesBuilder_.setMessage(index, builderForValue.build());
+        variableFiltersBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
@@ -1572,18 +1572,18 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder addWhereClauses(io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (whereClausesBuilder_ == null) {
+    public Builder addVariableFilters(io.littlehorse.sdk.common.proto.VariableMatch value) {
+      if (variableFiltersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureWhereClausesIsMutable();
-        whereClauses_.add(value);
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(value);
         onChanged();
       } else {
-        whereClausesBuilder_.addMessage(value);
+        variableFiltersBuilder_.addMessage(value);
       }
       return this;
     }
@@ -1594,19 +1594,19 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder addWhereClauses(
+    public Builder addVariableFilters(
         int index, io.littlehorse.sdk.common.proto.VariableMatch value) {
-      if (whereClausesBuilder_ == null) {
+      if (variableFiltersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureWhereClausesIsMutable();
-        whereClauses_.add(index, value);
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(index, value);
         onChanged();
       } else {
-        whereClausesBuilder_.addMessage(index, value);
+        variableFiltersBuilder_.addMessage(index, value);
       }
       return this;
     }
@@ -1617,16 +1617,16 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder addWhereClauses(
+    public Builder addVariableFilters(
         io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (whereClausesBuilder_ == null) {
-        ensureWhereClausesIsMutable();
-        whereClauses_.add(builderForValue.build());
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(builderForValue.build());
         onChanged();
       } else {
-        whereClausesBuilder_.addMessage(builderForValue.build());
+        variableFiltersBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
@@ -1637,16 +1637,16 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder addWhereClauses(
+    public Builder addVariableFilters(
         int index, io.littlehorse.sdk.common.proto.VariableMatch.Builder builderForValue) {
-      if (whereClausesBuilder_ == null) {
-        ensureWhereClausesIsMutable();
-        whereClauses_.add(index, builderForValue.build());
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.add(index, builderForValue.build());
         onChanged();
       } else {
-        whereClausesBuilder_.addMessage(index, builderForValue.build());
+        variableFiltersBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
@@ -1657,17 +1657,17 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder addAllWhereClauses(
+    public Builder addAllVariableFilters(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMatch> values) {
-      if (whereClausesBuilder_ == null) {
-        ensureWhereClausesIsMutable();
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, whereClauses_);
+            values, variableFilters_);
         onChanged();
       } else {
-        whereClausesBuilder_.addAllMessages(values);
+        variableFiltersBuilder_.addAllMessages(values);
       }
       return this;
     }
@@ -1678,15 +1678,15 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder clearWhereClauses() {
-      if (whereClausesBuilder_ == null) {
-        whereClauses_ = java.util.Collections.emptyList();
+    public Builder clearVariableFilters() {
+      if (variableFiltersBuilder_ == null) {
+        variableFilters_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
-        whereClausesBuilder_.clear();
+        variableFiltersBuilder_.clear();
       }
       return this;
     }
@@ -1697,15 +1697,15 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public Builder removeWhereClauses(int index) {
-      if (whereClausesBuilder_ == null) {
-        ensureWhereClausesIsMutable();
-        whereClauses_.remove(index);
+    public Builder removeVariableFilters(int index) {
+      if (variableFiltersBuilder_ == null) {
+        ensureVariableFiltersIsMutable();
+        variableFilters_.remove(index);
         onChanged();
       } else {
-        whereClausesBuilder_.remove(index);
+        variableFiltersBuilder_.remove(index);
       }
       return this;
     }
@@ -1716,11 +1716,11 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getWhereClausesBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder getVariableFiltersBuilder(
         int index) {
-      return getWhereClausesFieldBuilder().getBuilder(index);
+      return getVariableFiltersFieldBuilder().getBuilder(index);
     }
     /**
      * <pre>
@@ -1729,13 +1729,13 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
         int index) {
-      if (whereClausesBuilder_ == null) {
-        return whereClauses_.get(index);  } else {
-        return whereClausesBuilder_.getMessageOrBuilder(index);
+      if (variableFiltersBuilder_ == null) {
+        return variableFilters_.get(index);  } else {
+        return variableFiltersBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
@@ -1745,14 +1745,14 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-         getWhereClausesOrBuilderList() {
-      if (whereClausesBuilder_ != null) {
-        return whereClausesBuilder_.getMessageOrBuilderList();
+         getVariableFiltersOrBuilderList() {
+      if (variableFiltersBuilder_ != null) {
+        return variableFiltersBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(whereClauses_);
+        return java.util.Collections.unmodifiableList(variableFilters_);
       }
     }
     /**
@@ -1762,10 +1762,10 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addWhereClausesBuilder() {
-      return getWhereClausesFieldBuilder().addBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder() {
+      return getVariableFiltersFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
     }
     /**
@@ -1775,11 +1775,11 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addWhereClausesBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMatch.Builder addVariableFiltersBuilder(
         int index) {
-      return getWhereClausesFieldBuilder().addBuilder(
+      return getVariableFiltersFieldBuilder().addBuilder(
           index, io.littlehorse.sdk.common.proto.VariableMatch.getDefaultInstance());
     }
     /**
@@ -1789,25 +1789,25 @@ private static final long serialVersionUID = 0L;
      * where the threadRunNumber == 0).
      * </pre>
      *
-     * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+     * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableMatch.Builder> 
-         getWhereClausesBuilderList() {
-      return getWhereClausesFieldBuilder().getBuilderList();
+         getVariableFiltersBuilderList() {
+      return getVariableFiltersFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-        getWhereClausesFieldBuilder() {
-      if (whereClausesBuilder_ == null) {
-        whereClausesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+        getVariableFiltersFieldBuilder() {
+      if (variableFiltersBuilder_ == null) {
+        variableFiltersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableMatch, io.littlehorse.sdk.common.proto.VariableMatch.Builder, io.littlehorse.sdk.common.proto.VariableMatchOrBuilder>(
-                whereClauses_,
+                variableFilters_,
                 ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
-        whereClauses_ = null;
+        variableFilters_ = null;
       }
-      return whereClausesBuilder_;
+      return variableFiltersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

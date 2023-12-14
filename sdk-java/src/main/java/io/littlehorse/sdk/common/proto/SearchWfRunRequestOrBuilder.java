@@ -116,10 +116,10 @@ public interface SearchWfRunRequestOrBuilder extends
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VariableMatch> 
-      getWhereClausesList();
+      getVariableFiltersList();
   /**
    * <pre>
    * Allows filtering WfRun's based on the value of the Variables. This ONLY
@@ -127,9 +127,9 @@ public interface SearchWfRunRequestOrBuilder extends
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableMatch getWhereClauses(int index);
+  io.littlehorse.sdk.common.proto.VariableMatch getVariableFilters(int index);
   /**
    * <pre>
    * Allows filtering WfRun's based on the value of the Variables. This ONLY
@@ -137,9 +137,9 @@ public interface SearchWfRunRequestOrBuilder extends
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
-  int getWhereClausesCount();
+  int getVariableFiltersCount();
   /**
    * <pre>
    * Allows filtering WfRun's based on the value of the Variables. This ONLY
@@ -147,10 +147,10 @@ public interface SearchWfRunRequestOrBuilder extends
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMatchOrBuilder> 
-      getWhereClausesOrBuilderList();
+      getVariableFiltersOrBuilderList();
   /**
    * <pre>
    * Allows filtering WfRun's based on the value of the Variables. This ONLY
@@ -158,8 +158,8 @@ public interface SearchWfRunRequestOrBuilder extends
    * where the threadRunNumber == 0).
    * </pre>
    *
-   * <code>repeated .littlehorse.VariableMatch where_clauses = 9;</code>
+   * <code>repeated .littlehorse.VariableMatch variable_filters = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getWhereClausesOrBuilder(
+  io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
       int index);
 }

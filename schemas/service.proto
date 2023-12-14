@@ -113,7 +113,7 @@ message SearchWfRunRequest {
     // Allows filtering WfRun's based on the value of the Variables. This ONLY
     // works for the Variables in the entrypiont threadrun (that is, variables
     // where the threadRunNumber == 0).
-    repeated VariableMatch where_clauses = 9;
+    repeated VariableMatch variable_filters = 9;
 }
 
 message WfRunIdList {
