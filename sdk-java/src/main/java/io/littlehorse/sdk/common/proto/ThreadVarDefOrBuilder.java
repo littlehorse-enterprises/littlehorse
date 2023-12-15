@@ -57,10 +57,4 @@ public interface ThreadVarDefOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
       int index);
-
-  /**
-   * <code>bool from_parent = 5;</code>
-   * @return The fromParent.
-   */
-  boolean getFromParent();
 }

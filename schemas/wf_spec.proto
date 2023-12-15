@@ -60,8 +60,6 @@ message ThreadVarDef {
   bool required = 2;
   bool searchable = 3;
   repeated JsonIndex json_indexes = 4;
-
-  bool from_parent = 5;
 }
 
 message ThreadSpec {

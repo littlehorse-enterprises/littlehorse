@@ -65,18 +65,16 @@ class SearchableVariableDef(_message.Message):
     def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ...) -> None: ...
 
 class ThreadVarDef(_message.Message):
-    __slots__ = ["var_def", "required", "searchable", "json_indexes", "from_parent"]
+    __slots__ = ["var_def", "required", "searchable", "json_indexes"]
     VAR_DEF_FIELD_NUMBER: _ClassVar[int]
     REQUIRED_FIELD_NUMBER: _ClassVar[int]
     SEARCHABLE_FIELD_NUMBER: _ClassVar[int]
     JSON_INDEXES_FIELD_NUMBER: _ClassVar[int]
-    FROM_PARENT_FIELD_NUMBER: _ClassVar[int]
     var_def: _common_wfspec_pb2.VariableDef
     required: bool
     searchable: bool
     json_indexes: _containers.RepeatedCompositeFieldContainer[JsonIndex]
-    from_parent: bool
-    def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ..., required: bool = ..., searchable: bool = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ..., from_parent: bool = ...) -> None: ...
+    def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ..., required: bool = ..., searchable: bool = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ...) -> None: ...
 
 class ThreadSpec(_message.Message):
     __slots__ = ["nodes", "variable_defs", "interrupt_defs", "retention_policy"]

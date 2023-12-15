@@ -81,7 +81,6 @@ export interface ThreadVarDef {
   required: boolean;
   searchable: boolean;
   jsonIndexes: JsonIndex[];
-  fromParent: boolean;
 }
 
 export interface ThreadSpec {
@@ -848,7 +847,7 @@ export const SearchableVariableDef = {
 };
 
 function createBaseThreadVarDef(): ThreadVarDef {
-  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [], fromParent: false };
+  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [] };
 }
 
 export const ThreadVarDef = {
@@ -864,9 +863,6 @@ export const ThreadVarDef = {
     }
     for (const v of message.jsonIndexes) {
       JsonIndex.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.fromParent === true) {
-      writer.uint32(40).bool(message.fromParent);
     }
     return writer;
   },
@@ -906,13 +902,6 @@ export const ThreadVarDef = {
 
           message.jsonIndexes.push(JsonIndex.decode(reader, reader.uint32()));
           continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.fromParent = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -930,7 +919,6 @@ export const ThreadVarDef = {
       jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
         ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
         : [],
-      fromParent: isSet(object.fromParent) ? globalThis.Boolean(object.fromParent) : false,
     };
   },
 
@@ -948,9 +936,6 @@ export const ThreadVarDef = {
     if (message.jsonIndexes?.length) {
       obj.jsonIndexes = message.jsonIndexes.map((e) => JsonIndex.toJSON(e));
     }
-    if (message.fromParent === true) {
-      obj.fromParent = message.fromParent;
-    }
     return obj;
   },
 
@@ -965,7 +950,6 @@ export const ThreadVarDef = {
     message.required = object.required ?? false;
     message.searchable = object.searchable ?? false;
     message.jsonIndexes = object.jsonIndexes?.map((e) => JsonIndex.fromPartial(e)) || [];
-    message.fromParent = object.fromParent ?? false;
     return message;
   },
 };
