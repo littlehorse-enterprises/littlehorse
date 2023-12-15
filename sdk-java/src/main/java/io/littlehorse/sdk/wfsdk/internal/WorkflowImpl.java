@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
+import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -93,6 +94,9 @@ public class WorkflowImpl extends Workflow {
 
         if (wfRetentionPolicy != null) {
             spec.setRetentionPolicy(wfRetentionPolicy);
+        }
+        if (parentWfSpecName != null) {
+            spec.setParentWfSpec(ParentWfSpecReference.newBuilder().setWfSpecName(parentWfSpecName));
         }
 
         return spec.build();
