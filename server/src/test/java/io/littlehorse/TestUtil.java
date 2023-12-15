@@ -55,7 +55,7 @@ public class TestUtil {
         WfRunModel wfRunModel = new WfRunModel();
         wfRunModel.setId(new WfRunIdModel(id));
         wfRunModel.setWfSpecId(new WfSpecIdModel("test-spec-name", 0, 0));
-        wfRunModel.status = LHStatus.RUNNING;
+        wfRunModel.transitionTo(LHStatus.RUNNING);
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
     }

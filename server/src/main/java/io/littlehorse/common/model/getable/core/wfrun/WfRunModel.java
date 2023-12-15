@@ -42,6 +42,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.LHEventBus;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,8 +50,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +68,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
 
-    public LHStatus status;
+    @Setter(AccessLevel.NONE)
+    private LHStatus status;
+
     public Date startTime;
     public Date endTime;
     private List<ThreadRunModel> threadRuns = new ArrayList<>();
@@ -148,6 +153,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void transitionTo(LHStatus newStatus) {
+        ProcessorExecutionContext processorContext =
+                this.executionContext.castOnSupport(ProcessorExecutionContext.class);
+        Objects.requireNonNull(processorContext, "WfRun status can only be changed in processor context");
+        LHEventBus.LHEvent statusChangedEvent = LHEventBus.newEvent(wfSpecId, status, newStatus);
+        this.status = newStatus;
+        processorContext.eventBus().dispatch(statusChangedEvent);
     }
 
     @Override

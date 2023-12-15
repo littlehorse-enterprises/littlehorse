@@ -43,6 +43,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
+    private final LHEventBus eventBus;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -66,6 +67,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
         this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
+        this.eventBus = new LHEventBus();
     }
 
     /**
@@ -146,6 +148,10 @@ public class ProcessorExecutionContext implements ExecutionContext {
     @Override
     public LHServerConfig serverConfig() {
         return config;
+    }
+
+    public LHEventBus eventBus() {
+        return eventBus;
     }
 
     private AuthorizationContext authContextFor() {

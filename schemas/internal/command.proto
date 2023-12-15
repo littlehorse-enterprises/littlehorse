@@ -64,16 +64,35 @@ message MetadataCommand {
     }
 }
 
+message AggregateMetric {
+    AggregatedMetricId id = 1;
+    oneof status_changed {
+        LHStatusChanged lh_status = 2;
+        TaskStatusChanged task_status = 3;
+    }
+}
+
+message LHStatusChanged {
+    LHStatus previous_status = 1;
+    LHStatus new_status = 2;
+}
+
+message TaskStatusChanged {
+    TaskStatus previous_state = 1;
+    TaskStatus new_state = 2;
+}
+
 // This is the repartition command
 message RepartitionCommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
 
     oneof repartition_command {
-        TaskMetricUpdatePb task_metric_update = 3;
-        WfMetricUpdatePb wf_metric_update = 4;
+        TaskMetricUpdatePb task_metric_update = 3; // deprecate??
+        WfMetricUpdatePb wf_metric_update = 4; // deprecate??
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
+        AggregateMetric aggregate_metric = 7;
     }
 }
 
