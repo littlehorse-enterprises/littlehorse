@@ -66,6 +66,7 @@ private static final long serialVersionUID = 0L;
     TRIGGERED_TASK_RUN(17),
     REASSIGNED_USER_TASK(18),
     CANCEL_USER_TASK(19),
+    BULK_JOB(20),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -99,6 +100,7 @@ private static final long serialVersionUID = 0L;
         case 17: return TRIGGERED_TASK_RUN;
         case 18: return REASSIGNED_USER_TASK;
         case 19: return CANCEL_USER_TASK;
+        case 20: return BULK_JOB;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -654,10 +656,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int CANCEL_USER_TASK_FIELD_NUMBER = 19;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
    * @return Whether the cancelUserTask field is set.
    */
@@ -666,10 +664,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 19;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
    * @return The cancelUserTask.
    */
@@ -681,10 +675,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
    */
   @java.lang.Override
@@ -693,6 +683,49 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
+  }
+
+  public static final int BULK_JOB_FIELD_NUMBER = 20;
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   * @return Whether the bulkJob field is set.
+   */
+  @java.lang.Override
+  public boolean hasBulkJob() {
+    return commandCase_ == 20;
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   * @return The bulkJob.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkUpdateJob getBulkJob() {
+    if (commandCase_ == 20) {
+       return (io.littlehorse.common.proto.BulkUpdateJob) command_;
+    }
+    return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder() {
+    if (commandCase_ == 20) {
+       return (io.littlehorse.common.proto.BulkUpdateJob) command_;
+    }
+    return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -762,6 +795,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 19) {
       output.writeMessage(19, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 20) {
+      output.writeMessage(20, (io.littlehorse.common.proto.BulkUpdateJob) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -842,6 +878,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 19) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(19, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 20) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(20, (io.littlehorse.common.proto.BulkUpdateJob) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -934,6 +974,10 @@ private static final long serialVersionUID = 0L;
         if (!getCancelUserTask()
             .equals(other.getCancelUserTask())) return false;
         break;
+      case 20:
+        if (!getBulkJob()
+            .equals(other.getBulkJob())) return false;
+        break;
       case 0:
       default:
     }
@@ -1020,6 +1064,10 @@ private static final long serialVersionUID = 0L;
       case 19:
         hash = (37 * hash) + CANCEL_USER_TASK_FIELD_NUMBER;
         hash = (53 * hash) + getCancelUserTask().hashCode();
+        break;
+      case 20:
+        hash = (37 * hash) + BULK_JOB_FIELD_NUMBER;
+        hash = (53 * hash) + getBulkJob().hashCode();
         break;
       case 0:
       default:
@@ -1213,6 +1261,9 @@ private static final long serialVersionUID = 0L;
       if (cancelUserTaskBuilder_ != null) {
         cancelUserTaskBuilder_.clear();
       }
+      if (bulkJobBuilder_ != null) {
+        bulkJobBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1328,6 +1379,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 19 &&
           cancelUserTaskBuilder_ != null) {
         result.command_ = cancelUserTaskBuilder_.build();
+      }
+      if (commandCase_ == 20 &&
+          bulkJobBuilder_ != null) {
+        result.command_ = bulkJobBuilder_.build();
       }
     }
 
@@ -1446,6 +1501,10 @@ private static final long serialVersionUID = 0L;
         }
         case CANCEL_USER_TASK: {
           mergeCancelUserTask(other.getCancelUserTask());
+          break;
+        }
+        case BULK_JOB: {
+          mergeBulkJob(other.getBulkJob());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1602,6 +1661,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 19;
               break;
             } // case 154
+            case 162: {
+              input.readMessage(
+                  getBulkJobFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 20;
+              break;
+            } // case 162
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3965,10 +4031,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder> cancelUserTaskBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      * @return Whether the cancelUserTask field is set.
      */
@@ -3977,10 +4039,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 19;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      * @return The cancelUserTask.
      */
@@ -3999,10 +4057,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     public Builder setCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest value) {
@@ -4019,10 +4073,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     public Builder setCancelUserTask(
@@ -4037,10 +4087,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     public Builder mergeCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest value) {
@@ -4064,10 +4110,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     public Builder clearCancelUserTask() {
@@ -4087,20 +4129,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder getCancelUserTaskBuilder() {
       return getCancelUserTaskFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     @java.lang.Override
@@ -4115,10 +4149,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 19;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -4138,6 +4168,184 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 19;
       onChanged();
       return cancelUserTaskBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder> bulkJobBuilder_;
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     * @return Whether the bulkJob field is set.
+     */
+    @java.lang.Override
+    public boolean hasBulkJob() {
+      return commandCase_ == 20;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     * @return The bulkJob.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkUpdateJob getBulkJob() {
+      if (bulkJobBuilder_ == null) {
+        if (commandCase_ == 20) {
+          return (io.littlehorse.common.proto.BulkUpdateJob) command_;
+        }
+        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
+      } else {
+        if (commandCase_ == 20) {
+          return bulkJobBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    public Builder setBulkJob(io.littlehorse.common.proto.BulkUpdateJob value) {
+      if (bulkJobBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        bulkJobBuilder_.setMessage(value);
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    public Builder setBulkJob(
+        io.littlehorse.common.proto.BulkUpdateJob.Builder builderForValue) {
+      if (bulkJobBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        bulkJobBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    public Builder mergeBulkJob(io.littlehorse.common.proto.BulkUpdateJob value) {
+      if (bulkJobBuilder_ == null) {
+        if (commandCase_ == 20 &&
+            command_ != io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.BulkUpdateJob.newBuilder((io.littlehorse.common.proto.BulkUpdateJob) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 20) {
+          bulkJobBuilder_.mergeFrom(value);
+        } else {
+          bulkJobBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    public Builder clearBulkJob() {
+      if (bulkJobBuilder_ == null) {
+        if (commandCase_ == 20) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 20) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        bulkJobBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    public io.littlehorse.common.proto.BulkUpdateJob.Builder getBulkJobBuilder() {
+      return getBulkJobFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder() {
+      if ((commandCase_ == 20) && (bulkJobBuilder_ != null)) {
+        return bulkJobBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 20) {
+          return (io.littlehorse.common.proto.BulkUpdateJob) command_;
+        }
+        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder> 
+        getBulkJobFieldBuilder() {
+      if (bulkJobBuilder_ == null) {
+        if (!(commandCase_ == 20)) {
+          command_ = io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
+        }
+        bulkJobBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder>(
+                (io.littlehorse.common.proto.BulkUpdateJob) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 20;
+      onChanged();
+      return bulkJobBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
@@ -54,6 +55,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public TriggeredTaskRun triggeredTaskRun;
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
+    private BulkUpdateJobModel bulkJob;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -128,6 +130,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case CANCEL_USER_TASK:
                 out.setCancelUserTask(cancelUserTaskRun.toProto());
                 break;
+            case BULK_JOB:
+                out.setBulkJob(bulkJob.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -197,6 +202,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 cancelUserTaskRun =
                         LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
+            case BULK_JOB:
+                bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -237,6 +245,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return reassignUserTask;
             case CANCEL_USER_TASK:
                 return cancelUserTaskRun;
+            case BULK_JOB:
+                return bulkJob;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -292,6 +302,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
+        } else if (cls.equals(BulkUpdateJobModel.class)) {
+            type = CommandCase.BULK_JOB;
+            bulkJob = (BulkUpdateJobModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

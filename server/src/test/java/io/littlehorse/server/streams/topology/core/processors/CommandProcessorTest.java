@@ -91,6 +91,8 @@ public class CommandProcessorTest {
         processorContext.getableManager().put(nodeRun);
         final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
                 TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, processorContext);
+        processorContext.getTaskManager().scheduleTask(scheduledTask);
+        processorContext.endExecution();
         defaultStore.put(scheduledTask);
         commandProcessor.init(mockProcessorContext);
         verify(server, times(1)).onTaskScheduled(eq(scheduledTask.getTaskDefId()), any());

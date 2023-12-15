@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -69,5 +70,10 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return serdeModelStore.range(Storeable.getFullStoreKey(cls, start), Storeable.getFullStoreKey(cls, end), cls);
+    }
+
+    @Override
+    public <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls) {
+        return serdeModelStore.iterate(start, end, cls);
     }
 }
