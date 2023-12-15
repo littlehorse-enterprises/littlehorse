@@ -142,6 +142,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (ThreadVarDefModel tvdm : frozenVariables.values()) {
             out.addFrozenVariables(tvdm.toProto());
         }
+        if (parentWfSpec != null) out.setParentWfSpec(parentWfSpec.toProto());
 
         return out;
     }
@@ -179,6 +180,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
+        }
+
+        if (proto.hasParentWfSpec()) {
+            parentWfSpec = LHSerializable.fromProto(
+                    proto.getParentWfSpec(), ParentWfSpecReferenceModel.class, executionContext);
         }
     }
 
