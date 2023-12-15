@@ -2,6 +2,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -60,6 +61,9 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
+        if (parentWfRunId != null) {
+            out.setParentWfRunId(parentWfRunId.toProto());
+        }
         return out;
     }
 
@@ -73,6 +77,10 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue(), context));
+        }
+
+        if (p.hasParentWfRunId()) {
+            parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
         }
     }
 

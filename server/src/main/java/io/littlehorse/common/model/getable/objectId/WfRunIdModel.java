@@ -11,11 +11,14 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
 
     private String id;
+
+    @Setter
     private WfRunIdModel parentWfRunId;
 
     public WfRunIdModel() {}

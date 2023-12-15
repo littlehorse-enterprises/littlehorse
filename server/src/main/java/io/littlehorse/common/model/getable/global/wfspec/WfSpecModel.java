@@ -423,6 +423,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         GetableManager getableManager = processorContext.getableManager();
         WfRunModel out = new WfRunModel(processorContext);
         out.setId(new WfRunIdModel(evt.getId()));
+        if (evt.getParentWfRunId() != null) out.getId().setParentWfRunId(evt.getParentWfRunId());
 
         out.setWfSpec(this);
         out.setWfSpecId(getObjectId());
