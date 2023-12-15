@@ -93,6 +93,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
+        if (parentWfSpec!= null) spec.setParentWfSpec(parentWfSpec);
 
         spec.setRetentionPolicy(retentionPolicy);
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
