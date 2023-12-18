@@ -54,6 +54,7 @@ To get started *developing* LittleHorse, check out the [Development Guide](docs/
 
 - [Server Configurations](docs/SERVER_CONFIGURATIONS.md)
 - [Workers/Clients Configurations](docs/CLIENT_CONFIGURATIONS.md)
+- [Dashboard Configurations](docs/DASHBOARD_CONFIGURATIONS.md)
 
 ## License
 

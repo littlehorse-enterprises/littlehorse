@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { parseValueByType } from '../../helpers/parseValueByType'
-import { VariableType } from '../../littlehorse-public-api/common_enums'
 import type { VariableValue } from '../../littlehorse-public-api/variable'
 import { parseKey } from './internals/drawerInternals'
 import type { LHException } from './internals/FailureInformation'

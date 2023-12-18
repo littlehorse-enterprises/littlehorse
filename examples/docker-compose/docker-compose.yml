@@ -43,8 +43,9 @@ services:
     container_name: lh-dashboard
     image: public.ecr.aws/littlehorse/lh-dashboard:latest
     environment:
-      API_URL: littlehorse:2023
-      AUTHENTICATION_ENABLED: "false"
+      LHD_API_HOST: littlehorse
+      LHD_API_PORT: 2023
+      LHD_OAUTH_ENABLED: false
     restart: on-failure
     healthcheck:
       test: curl -f localhost:8080
