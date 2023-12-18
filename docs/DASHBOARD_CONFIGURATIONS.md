@@ -92,7 +92,7 @@ info [here](https://next-auth.js.org/configuration/options#nextauth_url).
 ### `LHD_OAUTH_ENCRYPT_SECRET`
 
 Used by the Dashboard to encrypt the internal JWT.
-Mandatory if `LHD_OAUTH_ENABLED` is `true`. . More
+Mandatory if `LHD_OAUTH_ENABLED` is `true`. More
 info [here](https://next-auth.js.org/configuration/options#nextauth_secret).
 
 - **Type:** string
