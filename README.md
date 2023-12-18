@@ -1,6 +1,6 @@
-<div style="text-align: center;">
-<img alt="LH" src="https://littlehorse.dev/img/logo.jpg" width="50%">
-</div>
+<p align="center">
+<img alt="LH" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/master/docs/images/black-logo-500px.png" width="60%">
+</p>
 
 # LittleHorse
 
