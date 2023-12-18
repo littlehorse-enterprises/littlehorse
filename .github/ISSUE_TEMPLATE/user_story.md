@@ -29,9 +29,9 @@ Unless we consider our team mate is still in a phase where he/she has just joine
 
 **Component**
 
-* Dashboard
-* LH Server
-* Python SDK
-* Go SDK
-* Java SDK
-* C# SDK
+* [] Dashboard
+* [] LH Server
+* [] Python SDK
+* [] Go SDK
+* [] Java SDK
+* [] C# SDK
