@@ -6,7 +6,8 @@ define: &exclude |
       ^sdk-java/src/main/java/io/littlehorse/common/proto/|
       ^sdk-go/common/model/|
       ^sdk-python/littlehorse/model/|
-      ^dashboard/apps/web/littlehorse-public-api/
+      ^dashboard/apps/web/littlehorse-public-api/|
+      ^docs/images/
   )
 
 repos:
