@@ -40,31 +40,55 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   boolean hasTaskMetricUpdate();
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
   io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate();
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    */
   io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
 
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return Whether the wfMetricUpdate field is set.
    */
   boolean hasWfMetricUpdate();
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return The wfMetricUpdate.
    */
   io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate();
   /**
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
    * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    */
   io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
@@ -98,6 +122,21 @@ public interface RepartitionCommandPbOrBuilder extends
    * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
    */
   io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder();
+
+  /**
+   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
+   * @return Whether the aggregateMetric field is set.
+   */
+  boolean hasAggregateMetric();
+  /**
+   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
+   * @return The aggregateMetric.
+   */
+  io.littlehorse.common.proto.AggregateMetric getAggregateMetric();
+  /**
+   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
+   */
+  io.littlehorse.common.proto.AggregateMetricOrBuilder getAggregateMetricOrBuilder();
 
   io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

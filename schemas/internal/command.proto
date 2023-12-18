@@ -64,16 +64,21 @@ message MetadataCommand {
     }
 }
 
-message AggregateMetric {
+message AggregateMetrics {
     AggregatedMetricId id = 1;
-    oneof status_changed {
+    repeated StatusChanged status_changed = 2;
+}
+
+message StatusChanged {
+    google.protobuf.Timestamp time = 1;
+    oneof status {
         LHStatusChanged lh_status = 2;
         TaskStatusChanged task_status = 3;
     }
 }
 
 message LHStatusChanged {
-    LHStatus previous_status = 1;
+    optional LHStatus previous_status = 1;
     LHStatus new_status = 2;
 }
 

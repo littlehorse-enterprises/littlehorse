@@ -89,6 +89,11 @@ public final class ObjectId {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_TenantId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_AggregatedMetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_AggregatedMetricId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -128,9 +133,12 @@ public final class ObjectId {
       "\0225\n\013window_type\030\002 \001(\0162 .littlehorse.Metr" +
       "icsWindowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.li" +
       "ttlehorse.WfSpecId\"\031\n\013PrincipalId\022\n\n\002id\030" +
-      "\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\tBG\n\037io.litt" +
-      "lehorse.sdk.common.protoP\001Z\007.;model\252\002\030Li" +
-      "ttleHorse.Common.Protob\006proto3"
+      "\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\t\"^\n\022Aggrega" +
+      "tedMetricId\022+\n\nwf_spec_id\030\001 \001(\0132\025.little" +
+      "horse.WfSpecIdH\000\022\025\n\013specific_id\030\002 \001(\tH\000B" +
+      "\004\n\002idBG\n\037io.littlehorse.sdk.common.proto" +
+      "P\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -228,6 +236,12 @@ public final class ObjectId {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TenantId_descriptor,
         new java.lang.String[] { "Id", });
+    internal_static_littlehorse_AggregatedMetricId_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_littlehorse_AggregatedMetricId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_AggregatedMetricId_descriptor,
+        new java.lang.String[] { "WfSpecId", "SpecificId", "Id", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
   }
