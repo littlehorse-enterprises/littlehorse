@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
@@ -22,6 +22,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -38,8 +39,8 @@ public class LHTenantStoreTest {
             .withLoggingDisabled()
             .build();
 
-    @Mock
-    private ExecutionContext executionContext;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ProcessorExecutionContext executionContext;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();

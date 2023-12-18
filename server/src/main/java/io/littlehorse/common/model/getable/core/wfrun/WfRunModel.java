@@ -50,10 +50,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -68,8 +66,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
 
-    @Setter(AccessLevel.NONE)
-    private LHStatus status;
+    public LHStatus status;
 
     public Date startTime;
     public Date endTime;
@@ -153,15 +150,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
                 .orElse(null);
-    }
-
-    public void transitionTo(LHStatus newStatus) {
-        ProcessorExecutionContext processorContext =
-                this.executionContext.castOnSupport(ProcessorExecutionContext.class);
-        Objects.requireNonNull(processorContext, "WfRun status can only be changed in processor context");
-        LHEventBus.LHEvent statusChangedEvent = LHEventBus.newEvent(wfSpecId, status, newStatus);
-        this.status = newStatus;
-        processorContext.eventBus().dispatch(statusChangedEvent);
     }
 
     @Override
@@ -557,9 +545,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
         advance(time);
     }
 
-    private void setStatus(LHStatus status) {
+    public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         this.status = status;
+        LHEventBus.LHEvent statusChangedEvent = LHEventBus.newEvent(wfSpecId, status, status);
+        processorContext.eventBus().dispatch(statusChangedEvent);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -608,14 +598,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
             // design.
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
-                setStatus(LHStatus.COMPLETED);
+                transitionTo(LHStatus.COMPLETED);
                 log.info("Completed WfRun {} at {} ", id, new Date());
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
-                setStatus(LHStatus.ERROR);
+                transitionTo(LHStatus.ERROR);
             } else if (newStatus == LHStatus.EXCEPTION) {
                 endTime = time;
-                setStatus(LHStatus.EXCEPTION);
+                transitionTo(LHStatus.EXCEPTION);
             }
         }
 

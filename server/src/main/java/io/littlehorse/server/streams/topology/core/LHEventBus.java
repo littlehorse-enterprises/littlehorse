@@ -50,7 +50,7 @@ public class LHEventBus {
 
         public LHWfRunEvent(String wfSpecName, int wfSpecVersion, LHStatus previousStatus, LHStatus newStatus) {
             super(wfSpecName, wfSpecVersion);
-            this.previousStatus = Objects.requireNonNull(previousStatus);
+            this.previousStatus = previousStatus;
             this.newStatus = Objects.requireNonNull(newStatus);
         }
     }

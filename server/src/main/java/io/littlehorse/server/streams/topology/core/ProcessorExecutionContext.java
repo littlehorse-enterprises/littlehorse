@@ -43,7 +43,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
-    private final LHEventBus eventBus;
+    private LHEventBus eventBus;
+    private MetricsAggregation metricsAggregator;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -67,7 +68,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
         this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
-        this.eventBus = new LHEventBus();
     }
 
     /**
@@ -126,6 +126,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
+        if (metricsAggregator != null) {
+            metricsAggregator.maybePersistState();
+        }
     }
 
     public CommandModel currentCommand() {
@@ -151,6 +154,11 @@ public class ProcessorExecutionContext implements ExecutionContext {
     }
 
     public LHEventBus eventBus() {
+        if (eventBus == null) {
+            eventBus = new LHEventBus();
+            metricsAggregator = new MetricsAggregation(getableManager());
+            eventBus.subscribe(metricsAggregator);
+        }
         return eventBus;
     }
 

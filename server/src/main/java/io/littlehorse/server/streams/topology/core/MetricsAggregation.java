@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHEvent;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHWfRunEvent;
 import java.util.Date;
@@ -12,6 +13,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MetricsAggregation implements LHEventBus.Subscriber {
     private final Map<Object, MetricCounter> metrics = new HashMap<>();
+    private boolean dirtyState = false;
+    private final GetableManager getableManager;
+
+    public MetricsAggregation(GetableManager getableManager) {
+        this.getableManager = getableManager;
+    }
+
     @Override
     public void listen(LHEvent event) {
         Object newMetric;
@@ -23,6 +31,11 @@ public class MetricsAggregation implements LHEventBus.Subscriber {
         }
         MetricCounter counter = metrics.getOrDefault(newMetric, new MetricCounter());
         counter.increment(event.getCreationDate());
+        dirtyState = true;
+    }
+
+    public void maybePersistState() {
+        // this.getableManager.put();
     }
 
     private static final class MetricCounter {
@@ -36,7 +49,7 @@ public class MetricsAggregation implements LHEventBus.Subscriber {
         }
     }
 
-    private class WorkflowMetricCounter {
+    private static class WorkflowMetricCounter {
         private final String wfSpecName;
         private final int wfSpecVersion;
         private final LHStatus status;

@@ -1,6 +1,5 @@
 package io.littlehorse;
 
-import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -55,7 +54,7 @@ public class TestUtil {
         WfRunModel wfRunModel = new WfRunModel();
         wfRunModel.setId(new WfRunIdModel(id));
         wfRunModel.setWfSpecId(new WfSpecIdModel("test-spec-name", 0, 0));
-        wfRunModel.transitionTo(LHStatus.RUNNING);
+        wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
     }
@@ -179,14 +178,6 @@ public class TestUtil {
         TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
         return taskNode;
-    }
-
-    public static AbstractGetable<?> getable(Class<?> getableClass, String id) {
-        if (getableClass.equals(WfRunModel.class)) {
-            return wfRun(id);
-        } else {
-            throw new IllegalArgumentException("There is no test data for " + getableClass.getName());
-        }
     }
 
     public static Tag tag() {
