@@ -10,7 +10,7 @@ public class WaitForExternalEventWorker {
         WaitForExternalEventWorker.class
     );
 
-    @LHTaskMethod("ask-for-name")
+    @LHTaskMethod("ask-for-person-details")
     public String askForName() {
         log.debug("Executing ask-for-name");
         return "Hi what's your name?";
@@ -21,4 +21,8 @@ public class WaitForExternalEventWorker {
         log.debug("Executing greet");
         return "Hello there, " + name;
     }
+}
+
+class Person {
+    public String name;
 }

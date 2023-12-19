@@ -35,14 +35,14 @@ public class ExternalEventExample {
         return new WorkflowImpl(
             "example-external-event",
             wf -> {
-                WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
+                WfRunVariable name = wf.addVariable("person", VariableType.STR).searchable();
 
-                wf.execute("ask-for-name");
+                wf.execute("ask-for-person-details");
 
                 wf.mutate(
                     name,
                     VariableMutationType.ASSIGN,
-                    wf.waitForEvent("name-event")
+                    wf.waitForEvent("name-event").jsonPath("$.name")
                 );
 
                 wf.execute("greet", name);
@@ -63,7 +63,7 @@ public class ExternalEventExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "ask-for-name", config),
+            new LHTaskWorker(executable, "ask-for-person-details", config),
             new LHTaskWorker(executable, "greet", config)
         );
 

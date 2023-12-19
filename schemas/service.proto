@@ -33,6 +33,15 @@ message PutWfSpecRequest {
   string entrypoint_thread_name = 6;
   optional WorkflowRetentionPolicy retention_policy = 8;
   reserved 9;
+  optional WorkflowIdempotency indempotency_policy = 10;
+}
+
+enum WorkflowIdempotency {
+  NON_MUTABLE = 0;
+  REVISION_ONLY = 1;
+  ALLOW_ALL = 2;
+  IDEMPOTENCY = 3;
+
 }
 
 message PutTaskDefRequest {
