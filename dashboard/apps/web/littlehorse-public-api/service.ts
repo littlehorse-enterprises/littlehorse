@@ -55,6 +55,67 @@ import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } f
 
 export const protobufPackage = "littlehorse";
 
+export enum WorkflowIdempotency {
+  NON_MUTABLE = "NON_MUTABLE",
+  REVISION_ONLY = "REVISION_ONLY",
+  ALLOW_ALL = "ALLOW_ALL",
+  IDEMPOTENCY = "IDEMPOTENCY",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function workflowIdempotencyFromJSON(object: any): WorkflowIdempotency {
+  switch (object) {
+    case 0:
+    case "NON_MUTABLE":
+      return WorkflowIdempotency.NON_MUTABLE;
+    case 1:
+    case "REVISION_ONLY":
+      return WorkflowIdempotency.REVISION_ONLY;
+    case 2:
+    case "ALLOW_ALL":
+      return WorkflowIdempotency.ALLOW_ALL;
+    case 3:
+    case "IDEMPOTENCY":
+      return WorkflowIdempotency.IDEMPOTENCY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WorkflowIdempotency.UNRECOGNIZED;
+  }
+}
+
+export function workflowIdempotencyToJSON(object: WorkflowIdempotency): string {
+  switch (object) {
+    case WorkflowIdempotency.NON_MUTABLE:
+      return "NON_MUTABLE";
+    case WorkflowIdempotency.REVISION_ONLY:
+      return "REVISION_ONLY";
+    case WorkflowIdempotency.ALLOW_ALL:
+      return "ALLOW_ALL";
+    case WorkflowIdempotency.IDEMPOTENCY:
+      return "IDEMPOTENCY";
+    case WorkflowIdempotency.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function workflowIdempotencyToNumber(object: WorkflowIdempotency): number {
+  switch (object) {
+    case WorkflowIdempotency.NON_MUTABLE:
+      return 0;
+    case WorkflowIdempotency.REVISION_ONLY:
+      return 1;
+    case WorkflowIdempotency.ALLOW_ALL:
+      return 2;
+    case WorkflowIdempotency.IDEMPOTENCY:
+      return 3;
+    case WorkflowIdempotency.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 export enum LHHealthResult {
   LH_HEALTH_RUNNING = "LH_HEALTH_RUNNING",
   LH_HEALTH_REBALANCING = "LH_HEALTH_REBALANCING",
@@ -117,6 +178,7 @@ export interface PutWfSpecRequest {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
+  indempotencyPolicy?: WorkflowIdempotency | undefined;
 }
 
 export interface PutWfSpecRequest_ThreadSpecsEntry {
@@ -692,7 +754,13 @@ export const GetLatestUserTaskDefRequest = {
 };
 
 function createBasePutWfSpecRequest(): PutWfSpecRequest {
-  return { name: "", threadSpecs: {}, entrypointThreadName: "", retentionPolicy: undefined };
+  return {
+    name: "",
+    threadSpecs: {},
+    entrypointThreadName: "",
+    retentionPolicy: undefined,
+    indempotencyPolicy: undefined,
+  };
 }
 
 export const PutWfSpecRequest = {
@@ -708,6 +776,9 @@ export const PutWfSpecRequest = {
     }
     if (message.retentionPolicy !== undefined) {
       WorkflowRetentionPolicy.encode(message.retentionPolicy, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.indempotencyPolicy !== undefined) {
+      writer.uint32(80).int32(workflowIdempotencyToNumber(message.indempotencyPolicy));
     }
     return writer;
   },
@@ -750,6 +821,13 @@ export const PutWfSpecRequest = {
 
           message.retentionPolicy = WorkflowRetentionPolicy.decode(reader, reader.uint32());
           continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.indempotencyPolicy = workflowIdempotencyFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -771,6 +849,9 @@ export const PutWfSpecRequest = {
       entrypointThreadName: isSet(object.entrypointThreadName) ? globalThis.String(object.entrypointThreadName) : "",
       retentionPolicy: isSet(object.retentionPolicy)
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
+        : undefined,
+      indempotencyPolicy: isSet(object.indempotencyPolicy)
+        ? workflowIdempotencyFromJSON(object.indempotencyPolicy)
         : undefined,
     };
   },
@@ -795,6 +876,9 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       obj.retentionPolicy = WorkflowRetentionPolicy.toJSON(message.retentionPolicy);
     }
+    if (message.indempotencyPolicy !== undefined) {
+      obj.indempotencyPolicy = workflowIdempotencyToJSON(message.indempotencyPolicy);
+    }
     return obj;
   },
 
@@ -817,6 +901,7 @@ export const PutWfSpecRequest = {
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? WorkflowRetentionPolicy.fromPartial(object.retentionPolicy)
       : undefined;
+    message.indempotencyPolicy = object.indempotencyPolicy ?? undefined;
     return message;
   },
 };
