@@ -297,7 +297,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public void addMutationToCurrentNode(VariableMutation mutation) {
         checkIfIsActive();
         Node.Builder builder = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        builder.addVariableMutations(mutation);
+        //        builder.addVariableMutations(mutation);
         spec.putNodes(lastNodeName, builder.build());
     }
 

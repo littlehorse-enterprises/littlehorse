@@ -571,18 +571,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-        try {
-            mutateVariables(output);
-        } catch (LHVarSubError exn) {
-            fail(
-                    new FailureModel("Failed mutating variables: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
-                    eventTime);
-            return;
-        }
+        //        try {
+        //            mutateVariables(output);
+        //        } catch (LHVarSubError exn) {
+        //            fail(
+        //                    new FailureModel("Failed mutating variables: " + exn.getMessage(),
+        // LHConstants.VAR_MUTATION_ERROR),
+        //                    eventTime);
+        //            return;
+        //        }
 
         if (status == LHStatus.RUNNING) {
             // If we got here, then we're good.
-            advanceFrom(getCurrentNode());
+            advanceFrom(output, getCurrentNode());
         }
         getWfRun().advance(eventTime);
     }
@@ -596,6 +597,40 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             try {
                 if (evaluateEdge(e)) {
                     nextNode = e.getSinkNode();
+                    break;
+                }
+            } catch (LHVarSubError exn) {
+                log.error("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
+                fail(
+                        new FailureModel(
+                                "Failed evaluating outgoing edge: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
+                        new Date());
+                return;
+            }
+        }
+        if (nextNode == null) {
+            // TODO: Later versions should validate wfSpec's so that this is not
+            // possible
+            fail(
+                    new FailureModel(
+                            "WfSpec was invalid. There were no activated outgoing edges" + " from a non-exit node.",
+                            LHConstants.INTERNAL_ERROR),
+                    new Date());
+        } else {
+            activateNode(nextNode);
+        }
+    }
+
+    public void advanceFrom(VariableValueModel output, NodeModel curNode) {
+        if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
+            return;
+        }
+        NodeModel nextNode = null;
+        for (EdgeModel e : curNode.outgoingEdges) {
+            try {
+                if (evaluateEdge(e)) {
+                    nextNode = e.getSinkNode();
+                    mutateVariables(output, e.getVariableMutations());
                     break;
                 }
             } catch (LHVarSubError exn) {
@@ -710,15 +745,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
-    private void mutateVariables(VariableValueModel nodeOutput) throws LHVarSubError {
-        NodeModel node = getCurrentNode();
-
+    private void mutateVariables(VariableValueModel nodeOutput, List<VariableMutationModel> variableMutations)
+            throws LHVarSubError {
         // Need to do this atomically in a transaction, so that if one of the
         // mutations fail then none of them occur.
         // That's why we write to an in-memory Map. If all mutations succeed,
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValueModel> varCache = new HashMap<>();
-        for (VariableMutationModel mut : node.variableMutations) {
+        for (VariableMutationModel mut : variableMutations) {
             try {
                 mut.execute(this, varCache, nodeOutput);
             } catch (LHVarSubError exn) {
