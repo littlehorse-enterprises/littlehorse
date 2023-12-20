@@ -54,6 +54,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
@@ -411,6 +413,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void advance(Date time) {
+        if (getWfSpec().getMigration() != null) {
+            startMigration();
+        }
+
         boolean statusChanged = false;
         // Update status and then advance
         for (ThreadRunModel thread : threadRuns) {
@@ -444,7 +450,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // Now we remove any old threadruns that we don't want anymore.
         for (int i = threadRuns.size() - 1; i >= 0; i--) {
             ThreadRunModel thread = threadRuns.get(i);
-            ThreadSpecModel spec = thread.getThreadSpecModel();
+            ThreadSpecModel spec = thread.getThreadSpec();
             if (spec.getRetentionPolicy() != null) {
                 if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
                     removeThreadRun(thread);
@@ -609,5 +615,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
         advance(time);
+    }
+
+    private void startMigration() {
+        // TODO: For each ThreadRun, we should add the ThreadMigrationModel if there is one.
+        throw new NotImplementedException();
     }
 }

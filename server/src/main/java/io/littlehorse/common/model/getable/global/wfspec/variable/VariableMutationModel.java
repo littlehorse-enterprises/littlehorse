@@ -122,7 +122,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         VariableValueModel lhsVal = getLhsValue(thread, txnCache);
         VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
         VariableType lhsRealType =
-                thread.getThreadSpecModel().getVarDef(lhsName).getVarDef().getType();
+                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getType();
 
         try {
             // NOTE Part 2: see below

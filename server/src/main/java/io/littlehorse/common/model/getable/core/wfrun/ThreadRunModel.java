@@ -20,6 +20,8 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedMod
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.NodeMigrationModel;
+import io.littlehorse.common.model.getable.global.wfspec.ThreadSpecMigrationModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -44,6 +46,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
@@ -52,6 +55,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -83,14 +88,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadType type;
 
-    private ExecutionContext executionContext;
+    private ExecutionContext ctx;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
+    private ThreadSpecMigrationModel migration;
 
     public ThreadRunModel() {}
 
     public ThreadRunModel(ProcessorExecutionContext processorContext) {
-        this.executionContext = processorContext;
+        this.ctx = processorContext;
         this.processorContext = processorContext;
     }
 
@@ -102,7 +108,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, executionContext);
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, ctx);
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -132,7 +138,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
-        executionContext = context;
+        ctx = context;
         processorContext = context.castOnSupport(ProcessorExecutionContext.class);
         type = proto.getType();
     }
@@ -187,18 +193,20 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public WfRunModel wfRun;
 
-    private ThreadSpecModel threadSpecModel;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private ThreadSpecModel threadSpecModelDoNotUseMe;
 
-    public ThreadSpecModel getThreadSpecModel() {
-        if (threadSpecModel == null) {
-            threadSpecModel = wfRun.getWfSpec().threadSpecs.get(threadSpecName);
+    public ThreadSpecModel getThreadSpec() {
+        if (threadSpecModelDoNotUseMe == null) {
+            threadSpecModelDoNotUseMe = ctx.metadataManager().get(wfSpecId).threadSpecs.get(threadSpecName);
         }
-        return threadSpecModel;
+        return threadSpecModelDoNotUseMe;
     }
 
     public NodeModel getCurrentNode() {
         NodeRunModel currRun = getCurrentNodeRun();
-        ThreadSpecModel t = getThreadSpecModel();
+        ThreadSpecModel t = getThreadSpec();
         if (currRun == null) {
             return t.nodes.get(t.entrypointNodeName);
         }
@@ -222,7 +230,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void processExternalEvent(ExternalEventModel e) {
         ExternalEventDefIdModel extEvtId = e.getId().getExternalEventDefId();
-        InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtId.getName());
+        InterruptDefModel idef = getThreadSpec().getInterruptDefFor(extEvtId.getName());
         if (idef != null) {
             // trigger interrupt
             initializeInterrupt(e, idef);
@@ -354,6 +362,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * Checks if the status can be changed. Returns true if status did change.
      */
     public boolean updateStatus() {
+        if (migration != null) {
+            NodeMigrationModel nodeMigration = migration.getNodeMigrations().get(this.getCurrentNodeRun().getNodeName());
+            if (nodeMigration != null) {
+                migration.execute(this);
+            }
+        }
+
         if (status == LHStatus.COMPLETED || status == LHStatus.ERROR) {
             return false;
         } else if (status == LHStatus.RUNNING) {
@@ -830,7 +845,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      *                       definition or its parents definition
      */
     private void applyVarMutationOnAppropriateThread(String varName, VariableMutator function) throws LHVarSubError {
-        if (getThreadSpecModel().localGetVarDef(varName) != null) {
+        if (getThreadSpec().localGetVarDef(varName) != null) {
             function.apply(wfRun.getId(), this.number, wfRun);
         } else {
             if (getParent() != null) {

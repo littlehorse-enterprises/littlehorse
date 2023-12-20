@@ -328,7 +328,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     public boolean isInProgress() {
-        return (status != LHStatus.COMPLETED && status != LHStatus.HALTED && status != LHStatus.ERROR);
+        return (status != LHStatus.COMPLETED && status != LHStatus.HALTED && status != LHStatus.ERROR && status != LHStatus.EXCEPTION);
     }
 
     public boolean isCompletedOrRecoveredFromFailure() {
@@ -355,7 +355,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     public NodeModel getNode() {
-        return getThreadRun().getThreadSpecModel().nodes.get(nodeName);
+        return getThreadRun().getThreadSpec().nodes.get(nodeName);
     }
 
     public NodeCase getNodeType() {
