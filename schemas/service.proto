@@ -37,11 +37,9 @@ message PutWfSpecRequest {
 }
 
 enum WorkflowIdempotency {
-  NON_MUTABLE = 0;
-  REVISION_ONLY = 1;
-  ALLOW_ALL = 2;
-  IDEMPOTENCY = 3;
-
+  IDEMPOTENT = 0;
+  MINOR_REVISION_ONLY = 1;
+  IMMUTABLE = 2;
 }
 
 message PutTaskDefRequest {

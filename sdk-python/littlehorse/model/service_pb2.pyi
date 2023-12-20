@@ -22,20 +22,18 @@ DESCRIPTOR: _descriptor.FileDescriptor
 
 class WorkflowIdempotency(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    NON_MUTABLE: _ClassVar[WorkflowIdempotency]
-    REVISION_ONLY: _ClassVar[WorkflowIdempotency]
-    ALLOW_ALL: _ClassVar[WorkflowIdempotency]
-    IDEMPOTENCY: _ClassVar[WorkflowIdempotency]
+    IDEMPOTENT: _ClassVar[WorkflowIdempotency]
+    MINOR_REVISION_ONLY: _ClassVar[WorkflowIdempotency]
+    IMMUTABLE: _ClassVar[WorkflowIdempotency]
 
 class LHHealthResult(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     LH_HEALTH_RUNNING: _ClassVar[LHHealthResult]
     LH_HEALTH_REBALANCING: _ClassVar[LHHealthResult]
     LH_HEALTH_ERROR: _ClassVar[LHHealthResult]
-NON_MUTABLE: WorkflowIdempotency
-REVISION_ONLY: WorkflowIdempotency
-ALLOW_ALL: WorkflowIdempotency
-IDEMPOTENCY: WorkflowIdempotency
+IDEMPOTENT: WorkflowIdempotency
+MINOR_REVISION_ONLY: WorkflowIdempotency
+IMMUTABLE: WorkflowIdempotency
 LH_HEALTH_RUNNING: LHHealthResult
 LH_HEALTH_REBALANCING: LHHealthResult
 LH_HEALTH_ERROR: LHHealthResult

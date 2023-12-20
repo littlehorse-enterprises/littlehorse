@@ -56,27 +56,23 @@ import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } f
 export const protobufPackage = "littlehorse";
 
 export enum WorkflowIdempotency {
-  NON_MUTABLE = "NON_MUTABLE",
-  REVISION_ONLY = "REVISION_ONLY",
-  ALLOW_ALL = "ALLOW_ALL",
-  IDEMPOTENCY = "IDEMPOTENCY",
+  IDEMPOTENT = "IDEMPOTENT",
+  MINOR_REVISION_ONLY = "MINOR_REVISION_ONLY",
+  IMMUTABLE = "IMMUTABLE",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
 export function workflowIdempotencyFromJSON(object: any): WorkflowIdempotency {
   switch (object) {
     case 0:
-    case "NON_MUTABLE":
-      return WorkflowIdempotency.NON_MUTABLE;
+    case "IDEMPOTENT":
+      return WorkflowIdempotency.IDEMPOTENT;
     case 1:
-    case "REVISION_ONLY":
-      return WorkflowIdempotency.REVISION_ONLY;
+    case "MINOR_REVISION_ONLY":
+      return WorkflowIdempotency.MINOR_REVISION_ONLY;
     case 2:
-    case "ALLOW_ALL":
-      return WorkflowIdempotency.ALLOW_ALL;
-    case 3:
-    case "IDEMPOTENCY":
-      return WorkflowIdempotency.IDEMPOTENCY;
+    case "IMMUTABLE":
+      return WorkflowIdempotency.IMMUTABLE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -86,14 +82,12 @@ export function workflowIdempotencyFromJSON(object: any): WorkflowIdempotency {
 
 export function workflowIdempotencyToJSON(object: WorkflowIdempotency): string {
   switch (object) {
-    case WorkflowIdempotency.NON_MUTABLE:
-      return "NON_MUTABLE";
-    case WorkflowIdempotency.REVISION_ONLY:
-      return "REVISION_ONLY";
-    case WorkflowIdempotency.ALLOW_ALL:
-      return "ALLOW_ALL";
-    case WorkflowIdempotency.IDEMPOTENCY:
-      return "IDEMPOTENCY";
+    case WorkflowIdempotency.IDEMPOTENT:
+      return "IDEMPOTENT";
+    case WorkflowIdempotency.MINOR_REVISION_ONLY:
+      return "MINOR_REVISION_ONLY";
+    case WorkflowIdempotency.IMMUTABLE:
+      return "IMMUTABLE";
     case WorkflowIdempotency.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -102,14 +96,12 @@ export function workflowIdempotencyToJSON(object: WorkflowIdempotency): string {
 
 export function workflowIdempotencyToNumber(object: WorkflowIdempotency): number {
   switch (object) {
-    case WorkflowIdempotency.NON_MUTABLE:
+    case WorkflowIdempotency.IDEMPOTENT:
       return 0;
-    case WorkflowIdempotency.REVISION_ONLY:
+    case WorkflowIdempotency.MINOR_REVISION_ONLY:
       return 1;
-    case WorkflowIdempotency.ALLOW_ALL:
+    case WorkflowIdempotency.IMMUTABLE:
       return 2;
-    case WorkflowIdempotency.IDEMPOTENCY:
-      return 3;
     case WorkflowIdempotency.UNRECOGNIZED:
     default:
       return -1;

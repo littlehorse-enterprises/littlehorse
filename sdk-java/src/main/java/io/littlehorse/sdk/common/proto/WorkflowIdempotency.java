@@ -9,40 +9,32 @@ package io.littlehorse.sdk.common.proto;
 public enum WorkflowIdempotency
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>NON_MUTABLE = 0;</code>
+   * <code>IDEMPOTENT = 0;</code>
    */
-  NON_MUTABLE(0),
+  IDEMPOTENT(0),
   /**
-   * <code>REVISION_ONLY = 1;</code>
+   * <code>MINOR_REVISION_ONLY = 1;</code>
    */
-  REVISION_ONLY(1),
+  MINOR_REVISION_ONLY(1),
   /**
-   * <code>ALLOW_ALL = 2;</code>
+   * <code>IMMUTABLE = 2;</code>
    */
-  ALLOW_ALL(2),
-  /**
-   * <code>IDEMPOTENCY = 3;</code>
-   */
-  IDEMPOTENCY(3),
+  IMMUTABLE(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>NON_MUTABLE = 0;</code>
+   * <code>IDEMPOTENT = 0;</code>
    */
-  public static final int NON_MUTABLE_VALUE = 0;
+  public static final int IDEMPOTENT_VALUE = 0;
   /**
-   * <code>REVISION_ONLY = 1;</code>
+   * <code>MINOR_REVISION_ONLY = 1;</code>
    */
-  public static final int REVISION_ONLY_VALUE = 1;
+  public static final int MINOR_REVISION_ONLY_VALUE = 1;
   /**
-   * <code>ALLOW_ALL = 2;</code>
+   * <code>IMMUTABLE = 2;</code>
    */
-  public static final int ALLOW_ALL_VALUE = 2;
-  /**
-   * <code>IDEMPOTENCY = 3;</code>
-   */
-  public static final int IDEMPOTENCY_VALUE = 3;
+  public static final int IMMUTABLE_VALUE = 2;
 
 
   public final int getNumber() {
@@ -69,10 +61,9 @@ public enum WorkflowIdempotency
    */
   public static WorkflowIdempotency forNumber(int value) {
     switch (value) {
-      case 0: return NON_MUTABLE;
-      case 1: return REVISION_ONLY;
-      case 2: return ALLOW_ALL;
-      case 3: return IDEMPOTENCY;
+      case 0: return IDEMPOTENT;
+      case 1: return MINOR_REVISION_ONLY;
+      case 2: return IMMUTABLE;
       default: return null;
     }
   }
