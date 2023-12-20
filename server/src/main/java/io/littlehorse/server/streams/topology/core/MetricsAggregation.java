@@ -1,41 +1,52 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.littlehorse.common.model.PartitionMetricsModel;
+import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHEvent;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHWfRunEvent;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MetricsAggregation implements LHEventBus.Subscriber {
     private final Map<Object, MetricCounter> metrics = new HashMap<>();
     private boolean dirtyState = false;
-    private final GetableManager getableManager;
+    private final TenantModelStore modelStore;
+    private PartitionMetricsModel aggregateModel;
 
-    public MetricsAggregation(GetableManager getableManager) {
-        this.getableManager = getableManager;
+    public MetricsAggregation(TenantModelStore modelStore) {
+        this.modelStore = modelStore;
     }
 
     @Override
     public void listen(LHEvent event) {
-        Object newMetric;
         if (event instanceof LHWfRunEvent wfRunEvent) {
-            newMetric = new WorkflowMetricCounter(
-                    event.getWfSpecName(), event.getWfSpecVersion(), wfRunEvent.getNewStatus());
+            LHStatusChangedModel statusChanged = new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
+            currentAggregateCommand().addMetric(wfRunEvent.getWfSPecId(), wfRunEvent.getTenantId(), statusChanged, wfRunEvent.getCreationDate());
         } else {
             throw new IllegalArgumentException("");
         }
-        MetricCounter counter = metrics.getOrDefault(newMetric, new MetricCounter());
-        counter.increment(event.getCreationDate());
         dirtyState = true;
     }
 
+    private PartitionMetricsModel currentAggregateCommand() {
+        if(aggregateModel == null) {
+            aggregateModel = Optional.ofNullable(modelStore.get("PEDRO", PartitionMetricsModel.class))
+                    .orElse(new PartitionMetricsModel());
+        }
+        return aggregateModel;
+    }
     public void maybePersistState() {
-        // this.getableManager.put();
+        if(dirtyState) {
+            this.modelStore.put(currentAggregateCommand());
+        }
     }
 
     private static final class MetricCounter {

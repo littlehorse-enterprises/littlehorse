@@ -8,24 +8,29 @@ public interface TaskStatusChangedOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-   * @return The enum numeric value on the wire for previousState.
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return Whether the previousStatus field is set.
    */
-  int getPreviousStateValue();
+  boolean hasPreviousStatus();
   /**
-   * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-   * @return The previousState.
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return The enum numeric value on the wire for previousStatus.
    */
-  io.littlehorse.sdk.common.proto.TaskStatus getPreviousState();
+  int getPreviousStatusValue();
+  /**
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return The previousStatus.
+   */
+  io.littlehorse.sdk.common.proto.TaskStatus getPreviousStatus();
 
   /**
-   * <code>.littlehorse.TaskStatus new_state = 2;</code>
-   * @return The enum numeric value on the wire for newState.
+   * <code>.littlehorse.TaskStatus new_status = 2;</code>
+   * @return The enum numeric value on the wire for newStatus.
    */
-  int getNewStateValue();
+  int getNewStatusValue();
   /**
-   * <code>.littlehorse.TaskStatus new_state = 2;</code>
-   * @return The newState.
+   * <code>.littlehorse.TaskStatus new_status = 2;</code>
+   * @return The newStatus.
    */
-  io.littlehorse.sdk.common.proto.TaskStatus getNewState();
+  io.littlehorse.sdk.common.proto.TaskStatus getNewStatus();
 }

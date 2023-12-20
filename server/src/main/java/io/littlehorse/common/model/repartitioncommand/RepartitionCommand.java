@@ -2,6 +2,7 @@ package io.littlehorse.common.model.repartitioncommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
@@ -28,6 +29,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public WfMetricUpdate wfMetricPartitionWindow;
     private CreateRemoteTag createRemoteTag;
     private RemoveRemoteTag removeRemoteTag;
+    private AggregateWfMetricsModel aggregateWfMetrics;
 
     public Class<RepartitionCommandPb> getProtoBaseClass() {
         return RepartitionCommandPb.class;
@@ -54,6 +56,9 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         } else if (subCommand.getClass().equals(RemoveRemoteTag.class)) {
             type = RepartitionCommandCase.REMOVE_REMOTE_TAG;
             removeRemoteTag = (RemoveRemoteTag) subCommand;
+        } else if (subCommand.getClass().equals(AggregateWfMetricsModel.class)) {
+            type = RepartitionCommandCase.AGGREGATE_WF_METRICS;
+            aggregateWfMetrics = (AggregateWfMetricsModel) subCommand;
         } else {
             throw new RuntimeException("Unknown class!");
         }
@@ -69,6 +74,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 return createRemoteTag;
             case REMOVE_REMOTE_TAG:
                 return removeRemoteTag;
+            case AGGREGATE_WF_METRICS:
+                return aggregateWfMetrics;
             default:
                 throw new RuntimeException("Unrecognized!");
         }
@@ -95,6 +102,9 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 break;
             case REMOVE_REMOTE_TAG:
                 out.setRemoveRemoteTag(removeRemoteTag.toProto());
+                break;
+            case AGGREGATE_WF_METRICS:
+                out.setAggregateWfMetrics(aggregateWfMetrics.toProto());
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -124,6 +134,9 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 break;
             case REMOVE_REMOTE_TAG:
                 removeRemoteTag = LHSerializable.fromProto(p.getRemoveRemoteTag(), RemoveRemoteTag.class, context);
+                break;
+            case AGGREGATE_WF_METRICS:
+                aggregateWfMetrics = LHSerializable.fromProto(p.getAggregateWfMetrics(), AggregateWfMetricsModel.class, context);
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");

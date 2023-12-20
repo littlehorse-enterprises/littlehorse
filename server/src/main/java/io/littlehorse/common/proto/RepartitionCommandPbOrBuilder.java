@@ -124,19 +124,19 @@ public interface RepartitionCommandPbOrBuilder extends
   io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder();
 
   /**
-   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
-   * @return Whether the aggregateMetric field is set.
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return Whether the aggregateWfMetrics field is set.
    */
-  boolean hasAggregateMetric();
+  boolean hasAggregateWfMetrics();
   /**
-   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
-   * @return The aggregateMetric.
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return The aggregateWfMetrics.
    */
-  io.littlehorse.common.proto.AggregateMetric getAggregateMetric();
+  io.littlehorse.common.proto.AggregateWfMetrics getAggregateWfMetrics();
   /**
-   * <code>.littlehorse.AggregateMetric aggregate_metric = 7;</code>
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
    */
-  io.littlehorse.common.proto.AggregateMetricOrBuilder getAggregateMetricOrBuilder();
+  io.littlehorse.common.proto.AggregateWfMetricsOrBuilder getAggregateWfMetricsOrBuilder();
 
   io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

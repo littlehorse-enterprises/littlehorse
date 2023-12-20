@@ -64,9 +64,24 @@ message MetadataCommand {
     }
 }
 
-message AggregateMetrics {
-    AggregatedMetricId id = 1;
-    repeated StatusChanged status_changed = 2;
+message AggregateWfMetrics {
+    WfSpecId wf_spec_id = 1;
+    string tenant_id = 2;
+    repeated StatusChanged changes = 3;
+}
+
+message PartitionMetrics {
+    repeated MetricsByTenant metrics_by_tenant = 1;
+}
+
+message MetricsByTenant {
+    string tenant_id = 1;
+    map<string, StatusChanges> lh_status_changes = 2;
+    map<string, StatusChanges> task_status_changes = 3;
+}
+
+message StatusChanges {
+    repeated StatusChanged changes = 1;
 }
 
 message StatusChanged {
@@ -75,6 +90,7 @@ message StatusChanged {
         LHStatusChanged lh_status = 2;
         TaskStatusChanged task_status = 3;
     }
+    string principal_id = 4;
 }
 
 message LHStatusChanged {
@@ -83,8 +99,8 @@ message LHStatusChanged {
 }
 
 message TaskStatusChanged {
-    TaskStatus previous_state = 1;
-    TaskStatus new_state = 2;
+    optional TaskStatus previous_status = 1;
+    TaskStatus new_status = 2;
 }
 
 // This is the repartition command
@@ -97,7 +113,7 @@ message RepartitionCommandPb {
         WfMetricUpdatePb wf_metric_update = 4; // deprecate??
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
-        AggregateMetric aggregate_metric = 7;
+        AggregateWfMetrics aggregate_wf_metrics = 7;
     }
 }
 

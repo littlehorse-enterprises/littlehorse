@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import io.littlehorse.sdk.common.proto.TaskDef;
 import lombok.Getter;
 
 /**
@@ -25,21 +27,21 @@ public class LHEventBus {
         this.subscribers.add(subscriber);
     }
 
-    public static LHEvent newEvent(WfSpecIdModel wfSpecId, LHStatus previousStatus, LHStatus newStatus) {
-        return new LHWfRunEvent(wfSpecId.getName(), wfSpecId.getMajorVersion(), previousStatus, newStatus);
+    public static LHEvent newEvent(WfSpecIdModel wfSpecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
+        return new LHWfRunEvent(wfSpecId, tenantId, previousStatus, newStatus);
     }
 
     @Getter
     public static class LHEvent {
 
-        private final String wfSpecName;
-        private final int wfSpecVersion;
+        private final WfSpecIdModel wfSPecId;
         private final Date creationDate;
+        private final String tenantId;
 
-        public LHEvent(String wfSpecName, int wfSpecVersion) {
+        public LHEvent(WfSpecIdModel wfSPecId, String tenantId) {
             this.creationDate = new Date();
-            this.wfSpecName = Objects.requireNonNull(wfSpecName);
-            this.wfSpecVersion = wfSpecVersion;
+            this.wfSPecId = wfSPecId;
+            this.tenantId = tenantId;
         }
     }
 
@@ -48,8 +50,8 @@ public class LHEventBus {
         private final LHStatus previousStatus;
         private final LHStatus newStatus;
 
-        public LHWfRunEvent(String wfSpecName, int wfSpecVersion, LHStatus previousStatus, LHStatus newStatus) {
-            super(wfSpecName, wfSpecVersion);
+        public LHWfRunEvent(WfSpecIdModel wfSPecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
+            super(wfSPecId, tenantId);
             this.previousStatus = previousStatus;
             this.newStatus = Objects.requireNonNull(newStatus);
         }

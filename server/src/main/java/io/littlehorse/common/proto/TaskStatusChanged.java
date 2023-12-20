@@ -16,8 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskStatusChanged() {
-    previousState_ = 0;
-    newState_ = 0;
+    previousStatus_ = 0;
+    newStatus_ = 0;
   }
 
   @java.lang.Override
@@ -40,39 +40,47 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TaskStatusChanged.class, io.littlehorse.common.proto.TaskStatusChanged.Builder.class);
   }
 
-  public static final int PREVIOUS_STATE_FIELD_NUMBER = 1;
-  private int previousState_ = 0;
+  private int bitField0_;
+  public static final int PREVIOUS_STATUS_FIELD_NUMBER = 1;
+  private int previousStatus_ = 0;
   /**
-   * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-   * @return The enum numeric value on the wire for previousState.
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return Whether the previousStatus field is set.
    */
-  @java.lang.Override public int getPreviousStateValue() {
-    return previousState_;
+  @java.lang.Override public boolean hasPreviousStatus() {
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-   * @return The previousState.
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return The enum numeric value on the wire for previousStatus.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getPreviousState() {
-    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(previousState_);
+  @java.lang.Override public int getPreviousStatusValue() {
+    return previousStatus_;
+  }
+  /**
+   * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+   * @return The previousStatus.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getPreviousStatus() {
+    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(previousStatus_);
     return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
   }
 
-  public static final int NEW_STATE_FIELD_NUMBER = 2;
-  private int newState_ = 0;
+  public static final int NEW_STATUS_FIELD_NUMBER = 2;
+  private int newStatus_ = 0;
   /**
-   * <code>.littlehorse.TaskStatus new_state = 2;</code>
-   * @return The enum numeric value on the wire for newState.
+   * <code>.littlehorse.TaskStatus new_status = 2;</code>
+   * @return The enum numeric value on the wire for newStatus.
    */
-  @java.lang.Override public int getNewStateValue() {
-    return newState_;
+  @java.lang.Override public int getNewStatusValue() {
+    return newStatus_;
   }
   /**
-   * <code>.littlehorse.TaskStatus new_state = 2;</code>
-   * @return The newState.
+   * <code>.littlehorse.TaskStatus new_status = 2;</code>
+   * @return The newStatus.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getNewState() {
-    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(newState_);
+  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getNewStatus() {
+    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(newStatus_);
     return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
   }
 
@@ -90,11 +98,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (previousState_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
-      output.writeEnum(1, previousState_);
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeEnum(1, previousStatus_);
     }
-    if (newState_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
-      output.writeEnum(2, newState_);
+    if (newStatus_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
+      output.writeEnum(2, newStatus_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -105,13 +113,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (previousState_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, previousState_);
+        .computeEnumSize(1, previousStatus_);
     }
-    if (newState_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
+    if (newStatus_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, newState_);
+        .computeEnumSize(2, newStatus_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -128,8 +136,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TaskStatusChanged other = (io.littlehorse.common.proto.TaskStatusChanged) obj;
 
-    if (previousState_ != other.previousState_) return false;
-    if (newState_ != other.newState_) return false;
+    if (hasPreviousStatus() != other.hasPreviousStatus()) return false;
+    if (hasPreviousStatus()) {
+      if (previousStatus_ != other.previousStatus_) return false;
+    }
+    if (newStatus_ != other.newStatus_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -141,10 +152,12 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + PREVIOUS_STATE_FIELD_NUMBER;
-    hash = (53 * hash) + previousState_;
-    hash = (37 * hash) + NEW_STATE_FIELD_NUMBER;
-    hash = (53 * hash) + newState_;
+    if (hasPreviousStatus()) {
+      hash = (37 * hash) + PREVIOUS_STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + previousStatus_;
+    }
+    hash = (37 * hash) + NEW_STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + newStatus_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -276,8 +289,8 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      previousState_ = 0;
-      newState_ = 0;
+      previousStatus_ = 0;
+      newStatus_ = 0;
       return this;
     }
 
@@ -311,12 +324,15 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.common.proto.TaskStatusChanged result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.previousState_ = previousState_;
+        result.previousStatus_ = previousStatus_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.newState_ = newState_;
+        result.newStatus_ = newStatus_;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -363,11 +379,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TaskStatusChanged other) {
       if (other == io.littlehorse.common.proto.TaskStatusChanged.getDefaultInstance()) return this;
-      if (other.previousState_ != 0) {
-        setPreviousStateValue(other.getPreviousStateValue());
+      if (other.hasPreviousStatus()) {
+        setPreviousStatus(other.getPreviousStatus());
       }
-      if (other.newState_ != 0) {
-        setNewStateValue(other.getNewStateValue());
+      if (other.newStatus_ != 0) {
+        setNewStatusValue(other.getNewStatusValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -396,12 +412,12 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              previousState_ = input.readEnum();
+              previousStatus_ = input.readEnum();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
             case 16: {
-              newState_ = input.readEnum();
+              newStatus_ = input.readEnum();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
@@ -422,108 +438,115 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int previousState_ = 0;
+    private int previousStatus_ = 0;
     /**
-     * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-     * @return The enum numeric value on the wire for previousState.
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+     * @return Whether the previousStatus field is set.
      */
-    @java.lang.Override public int getPreviousStateValue() {
-      return previousState_;
+    @java.lang.Override public boolean hasPreviousStatus() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-     * @param value The enum numeric value on the wire for previousState to set.
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+     * @return The enum numeric value on the wire for previousStatus.
+     */
+    @java.lang.Override public int getPreviousStatusValue() {
+      return previousStatus_;
+    }
+    /**
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+     * @param value The enum numeric value on the wire for previousStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setPreviousStateValue(int value) {
-      previousState_ = value;
+    public Builder setPreviousStatusValue(int value) {
+      previousStatus_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-     * @return The previousState.
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+     * @return The previousStatus.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskStatus getPreviousState() {
-      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(previousState_);
+    public io.littlehorse.sdk.common.proto.TaskStatus getPreviousStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(previousStatus_);
       return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.TaskStatus previous_state = 1;</code>
-     * @param value The previousState to set.
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
+     * @param value The previousStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setPreviousState(io.littlehorse.sdk.common.proto.TaskStatus value) {
+    public Builder setPreviousStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000001;
-      previousState_ = value.getNumber();
+      previousStatus_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskStatus previous_state = 1;</code>
+     * <code>optional .littlehorse.TaskStatus previous_status = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPreviousState() {
+    public Builder clearPreviousStatus() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      previousState_ = 0;
+      previousStatus_ = 0;
       onChanged();
       return this;
     }
 
-    private int newState_ = 0;
+    private int newStatus_ = 0;
     /**
-     * <code>.littlehorse.TaskStatus new_state = 2;</code>
-     * @return The enum numeric value on the wire for newState.
+     * <code>.littlehorse.TaskStatus new_status = 2;</code>
+     * @return The enum numeric value on the wire for newStatus.
      */
-    @java.lang.Override public int getNewStateValue() {
-      return newState_;
+    @java.lang.Override public int getNewStatusValue() {
+      return newStatus_;
     }
     /**
-     * <code>.littlehorse.TaskStatus new_state = 2;</code>
-     * @param value The enum numeric value on the wire for newState to set.
+     * <code>.littlehorse.TaskStatus new_status = 2;</code>
+     * @param value The enum numeric value on the wire for newStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setNewStateValue(int value) {
-      newState_ = value;
+    public Builder setNewStatusValue(int value) {
+      newStatus_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskStatus new_state = 2;</code>
-     * @return The newState.
+     * <code>.littlehorse.TaskStatus new_status = 2;</code>
+     * @return The newStatus.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskStatus getNewState() {
-      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(newState_);
+    public io.littlehorse.sdk.common.proto.TaskStatus getNewStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(newStatus_);
       return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.TaskStatus new_state = 2;</code>
-     * @param value The newState to set.
+     * <code>.littlehorse.TaskStatus new_status = 2;</code>
+     * @param value The newStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setNewState(io.littlehorse.sdk.common.proto.TaskStatus value) {
+    public Builder setNewStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000002;
-      newState_ = value.getNumber();
+      newStatus_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TaskStatus new_state = 2;</code>
+     * <code>.littlehorse.TaskStatus new_status = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearNewState() {
+    public Builder clearNewStatus() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      newState_ = 0;
+      newStatus_ = 0;
       onChanged();
       return this;
     }

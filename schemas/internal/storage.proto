@@ -20,6 +20,7 @@ enum StoreableType {
     TASK_METRIC_UPDATE = 3;
     LH_TIMER = 4;
     TAG = 5;
+    PARTITION_METRICS = 6;
 }
 
 enum GetableClassEnum {

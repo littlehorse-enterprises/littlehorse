@@ -13,6 +13,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -156,7 +157,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public LHEventBus eventBus() {
         if (eventBus == null) {
             eventBus = new LHEventBus();
-            metricsAggregator = new MetricsAggregation(getableManager());
+            metricsAggregator = new MetricsAggregation((TenantModelStore) coreStore); // hack
             eventBus.subscribe(metricsAggregator);
         }
         return eventBus;

@@ -52,5 +52,17 @@ public interface StatusChangedOrBuilder extends
    */
   io.littlehorse.common.proto.TaskStatusChangedOrBuilder getTaskStatusOrBuilder();
 
+  /**
+   * <code>string principal_id = 4;</code>
+   * @return The principalId.
+   */
+  java.lang.String getPrincipalId();
+  /**
+   * <code>string principal_id = 4;</code>
+   * @return The bytes for principalId.
+   */
+  com.google.protobuf.ByteString
+      getPrincipalIdBytes();
+
   io.littlehorse.common.proto.StatusChanged.StatusCase getStatusCase();
 }

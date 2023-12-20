@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private StatusChanged() {
+    principalId_ = "";
   }
 
   @java.lang.Override
@@ -168,6 +169,45 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskStatusChanged.getDefaultInstance();
   }
 
+  public static final int PRINCIPAL_ID_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object principalId_ = "";
+  /**
+   * <code>string principal_id = 4;</code>
+   * @return The principalId.
+   */
+  @java.lang.Override
+  public java.lang.String getPrincipalId() {
+    java.lang.Object ref = principalId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      principalId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string principal_id = 4;</code>
+   * @return The bytes for principalId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getPrincipalIdBytes() {
+    java.lang.Object ref = principalId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      principalId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -191,6 +231,9 @@ private static final long serialVersionUID = 0L;
     if (statusCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.common.proto.TaskStatusChanged) status_);
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(principalId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, principalId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -212,6 +255,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.common.proto.TaskStatusChanged) status_);
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(principalId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, principalId_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -232,6 +278,8 @@ private static final long serialVersionUID = 0L;
       if (!getTime()
           .equals(other.getTime())) return false;
     }
+    if (!getPrincipalId()
+        .equals(other.getPrincipalId())) return false;
     if (!getStatusCase().equals(other.getStatusCase())) return false;
     switch (statusCase_) {
       case 2:
@@ -260,6 +308,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
     }
+    hash = (37 * hash) + PRINCIPAL_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getPrincipalId().hashCode();
     switch (statusCase_) {
       case 2:
         hash = (37 * hash) + LH_STATUS_FIELD_NUMBER;
@@ -414,6 +464,7 @@ private static final long serialVersionUID = 0L;
       if (taskStatusBuilder_ != null) {
         taskStatusBuilder_.clear();
       }
+      principalId_ = "";
       statusCase_ = 0;
       status_ = null;
       return this;
@@ -454,6 +505,9 @@ private static final long serialVersionUID = 0L;
         result.time_ = timeBuilder_ == null
             ? time_
             : timeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.principalId_ = principalId_;
       }
     }
 
@@ -517,6 +571,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasTime()) {
         mergeTime(other.getTime());
       }
+      if (!other.getPrincipalId().isEmpty()) {
+        principalId_ = other.principalId_;
+        bitField0_ |= 0x00000008;
+        onChanged();
+      }
       switch (other.getStatusCase()) {
         case LH_STATUS: {
           mergeLhStatus(other.getLhStatus());
@@ -577,6 +636,11 @@ private static final long serialVersionUID = 0L;
               statusCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              principalId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1010,6 +1074,78 @@ private static final long serialVersionUID = 0L;
       statusCase_ = 3;
       onChanged();
       return taskStatusBuilder_;
+    }
+
+    private java.lang.Object principalId_ = "";
+    /**
+     * <code>string principal_id = 4;</code>
+     * @return The principalId.
+     */
+    public java.lang.String getPrincipalId() {
+      java.lang.Object ref = principalId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        principalId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string principal_id = 4;</code>
+     * @return The bytes for principalId.
+     */
+    public com.google.protobuf.ByteString
+        getPrincipalIdBytes() {
+      java.lang.Object ref = principalId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        principalId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string principal_id = 4;</code>
+     * @param value The principalId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPrincipalId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      principalId_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string principal_id = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPrincipalId() {
+      principalId_ = getDefaultInstance().getPrincipalId();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string principal_id = 4;</code>
+     * @param value The bytes for principalId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPrincipalIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      principalId_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

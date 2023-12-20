@@ -48,6 +48,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.WF_METRIC_UPDATE;
             case "TaskMetricUpdate":
                 return StoreableType.TASK_METRIC_UPDATE;
+            case "PartitionMetricsModel":
+                return StoreableType.PARTITION_METRICS;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }
