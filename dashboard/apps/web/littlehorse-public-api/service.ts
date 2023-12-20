@@ -55,54 +55,54 @@ import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } f
 
 export const protobufPackage = "littlehorse";
 
-export enum WorkflowIdempotency {
-  IDEMPOTENT = "IDEMPOTENT",
+export enum AllowedUpdateType {
+  ALL = "ALL",
   MINOR_REVISION_ONLY = "MINOR_REVISION_ONLY",
-  IMMUTABLE = "IMMUTABLE",
+  NONE = "NONE",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function workflowIdempotencyFromJSON(object: any): WorkflowIdempotency {
+export function allowedUpdateTypeFromJSON(object: any): AllowedUpdateType {
   switch (object) {
     case 0:
-    case "IDEMPOTENT":
-      return WorkflowIdempotency.IDEMPOTENT;
+    case "ALL":
+      return AllowedUpdateType.ALL;
     case 1:
     case "MINOR_REVISION_ONLY":
-      return WorkflowIdempotency.MINOR_REVISION_ONLY;
+      return AllowedUpdateType.MINOR_REVISION_ONLY;
     case 2:
-    case "IMMUTABLE":
-      return WorkflowIdempotency.IMMUTABLE;
+    case "NONE":
+      return AllowedUpdateType.NONE;
     case -1:
     case "UNRECOGNIZED":
     default:
-      return WorkflowIdempotency.UNRECOGNIZED;
+      return AllowedUpdateType.UNRECOGNIZED;
   }
 }
 
-export function workflowIdempotencyToJSON(object: WorkflowIdempotency): string {
+export function allowedUpdateTypeToJSON(object: AllowedUpdateType): string {
   switch (object) {
-    case WorkflowIdempotency.IDEMPOTENT:
-      return "IDEMPOTENT";
-    case WorkflowIdempotency.MINOR_REVISION_ONLY:
+    case AllowedUpdateType.ALL:
+      return "ALL";
+    case AllowedUpdateType.MINOR_REVISION_ONLY:
       return "MINOR_REVISION_ONLY";
-    case WorkflowIdempotency.IMMUTABLE:
-      return "IMMUTABLE";
-    case WorkflowIdempotency.UNRECOGNIZED:
+    case AllowedUpdateType.NONE:
+      return "NONE";
+    case AllowedUpdateType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
 }
 
-export function workflowIdempotencyToNumber(object: WorkflowIdempotency): number {
+export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   switch (object) {
-    case WorkflowIdempotency.IDEMPOTENT:
+    case AllowedUpdateType.ALL:
       return 0;
-    case WorkflowIdempotency.MINOR_REVISION_ONLY:
+    case AllowedUpdateType.MINOR_REVISION_ONLY:
       return 1;
-    case WorkflowIdempotency.IMMUTABLE:
+    case AllowedUpdateType.NONE:
       return 2;
-    case WorkflowIdempotency.UNRECOGNIZED:
+    case AllowedUpdateType.UNRECOGNIZED:
     default:
       return -1;
   }
@@ -170,7 +170,7 @@ export interface PutWfSpecRequest {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
-  indempotencyPolicy?: WorkflowIdempotency | undefined;
+  allowedUpdates?: AllowedUpdateType | undefined;
 }
 
 export interface PutWfSpecRequest_ThreadSpecsEntry {
@@ -746,13 +746,7 @@ export const GetLatestUserTaskDefRequest = {
 };
 
 function createBasePutWfSpecRequest(): PutWfSpecRequest {
-  return {
-    name: "",
-    threadSpecs: {},
-    entrypointThreadName: "",
-    retentionPolicy: undefined,
-    indempotencyPolicy: undefined,
-  };
+  return { name: "", threadSpecs: {}, entrypointThreadName: "", retentionPolicy: undefined, allowedUpdates: undefined };
 }
 
 export const PutWfSpecRequest = {
@@ -769,8 +763,8 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       WorkflowRetentionPolicy.encode(message.retentionPolicy, writer.uint32(66).fork()).ldelim();
     }
-    if (message.indempotencyPolicy !== undefined) {
-      writer.uint32(80).int32(workflowIdempotencyToNumber(message.indempotencyPolicy));
+    if (message.allowedUpdates !== undefined) {
+      writer.uint32(80).int32(allowedUpdateTypeToNumber(message.allowedUpdates));
     }
     return writer;
   },
@@ -818,7 +812,7 @@ export const PutWfSpecRequest = {
             break;
           }
 
-          message.indempotencyPolicy = workflowIdempotencyFromJSON(reader.int32());
+          message.allowedUpdates = allowedUpdateTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -842,9 +836,7 @@ export const PutWfSpecRequest = {
       retentionPolicy: isSet(object.retentionPolicy)
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
-      indempotencyPolicy: isSet(object.indempotencyPolicy)
-        ? workflowIdempotencyFromJSON(object.indempotencyPolicy)
-        : undefined,
+      allowedUpdates: isSet(object.allowedUpdates) ? allowedUpdateTypeFromJSON(object.allowedUpdates) : undefined,
     };
   },
 
@@ -868,8 +860,8 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       obj.retentionPolicy = WorkflowRetentionPolicy.toJSON(message.retentionPolicy);
     }
-    if (message.indempotencyPolicy !== undefined) {
-      obj.indempotencyPolicy = workflowIdempotencyToJSON(message.indempotencyPolicy);
+    if (message.allowedUpdates !== undefined) {
+      obj.allowedUpdates = allowedUpdateTypeToJSON(message.allowedUpdates);
     }
     return obj;
   },
@@ -893,7 +885,7 @@ export const PutWfSpecRequest = {
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? WorkflowRetentionPolicy.fromPartial(object.retentionPolicy)
       : undefined;
-    message.indempotencyPolicy = object.indempotencyPolicy ?? undefined;
+    message.allowedUpdates = object.allowedUpdates ?? undefined;
     return message;
   },
 };

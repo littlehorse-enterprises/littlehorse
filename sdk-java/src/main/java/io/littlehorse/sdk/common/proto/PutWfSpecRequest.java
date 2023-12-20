@@ -18,7 +18,7 @@ private static final long serialVersionUID = 0L;
   private PutWfSpecRequest() {
     name_ = "";
     entrypointThreadName_ = "";
-    indempotencyPolicy_ = 0;
+    allowedUpdates_ = 0;
   }
 
   @java.lang.Override
@@ -237,29 +237,29 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
-  public static final int INDEMPOTENCY_POLICY_FIELD_NUMBER = 10;
-  private int indempotencyPolicy_ = 0;
+  public static final int ALLOWED_UPDATES_FIELD_NUMBER = 10;
+  private int allowedUpdates_ = 0;
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return Whether the indempotencyPolicy field is set.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return Whether the allowedUpdates field is set.
    */
-  @java.lang.Override public boolean hasIndempotencyPolicy() {
+  @java.lang.Override public boolean hasAllowedUpdates() {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return The enum numeric value on the wire for indempotencyPolicy.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The enum numeric value on the wire for allowedUpdates.
    */
-  @java.lang.Override public int getIndempotencyPolicyValue() {
-    return indempotencyPolicy_;
+  @java.lang.Override public int getAllowedUpdatesValue() {
+    return allowedUpdates_;
   }
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return The indempotencyPolicy.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The allowedUpdates.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.WorkflowIdempotency getIndempotencyPolicy() {
-    io.littlehorse.sdk.common.proto.WorkflowIdempotency result = io.littlehorse.sdk.common.proto.WorkflowIdempotency.forNumber(indempotencyPolicy_);
-    return result == null ? io.littlehorse.sdk.common.proto.WorkflowIdempotency.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates() {
+    io.littlehorse.sdk.common.proto.AllowedUpdateType result = io.littlehorse.sdk.common.proto.AllowedUpdateType.forNumber(allowedUpdates_);
+    return result == null ? io.littlehorse.sdk.common.proto.AllowedUpdateType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -292,7 +292,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       output.writeMessage(8, getRetentionPolicy());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeEnum(10, indempotencyPolicy_);
+      output.writeEnum(10, allowedUpdates_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -325,7 +325,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(10, indempotencyPolicy_);
+        .computeEnumSize(10, allowedUpdates_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -353,9 +353,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
-    if (hasIndempotencyPolicy() != other.hasIndempotencyPolicy()) return false;
-    if (hasIndempotencyPolicy()) {
-      if (indempotencyPolicy_ != other.indempotencyPolicy_) return false;
+    if (hasAllowedUpdates() != other.hasAllowedUpdates()) return false;
+    if (hasAllowedUpdates()) {
+      if (allowedUpdates_ != other.allowedUpdates_) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -380,9 +380,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
     }
-    if (hasIndempotencyPolicy()) {
-      hash = (37 * hash) + INDEMPOTENCY_POLICY_FIELD_NUMBER;
-      hash = (53 * hash) + indempotencyPolicy_;
+    if (hasAllowedUpdates()) {
+      hash = (37 * hash) + ALLOWED_UPDATES_FIELD_NUMBER;
+      hash = (53 * hash) + allowedUpdates_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -551,7 +551,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         retentionPolicyBuilder_.dispose();
         retentionPolicyBuilder_ = null;
       }
-      indempotencyPolicy_ = 0;
+      allowedUpdates_ = 0;
       return this;
     }
 
@@ -603,7 +603,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.indempotencyPolicy_ = indempotencyPolicy_;
+        result.allowedUpdates_ = allowedUpdates_;
         to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
@@ -669,8 +669,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
-      if (other.hasIndempotencyPolicy()) {
-        setIndempotencyPolicy(other.getIndempotencyPolicy());
+      if (other.hasAllowedUpdates()) {
+        setAllowedUpdates(other.getAllowedUpdates());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -725,7 +725,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               break;
             } // case 66
             case 80: {
-              indempotencyPolicy_ = input.readEnum();
+              allowedUpdates_ = input.readEnum();
               bitField0_ |= 0x00000010;
               break;
             } // case 80
@@ -1136,62 +1136,62 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return retentionPolicyBuilder_;
     }
 
-    private int indempotencyPolicy_ = 0;
+    private int allowedUpdates_ = 0;
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-     * @return Whether the indempotencyPolicy field is set.
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * @return Whether the allowedUpdates field is set.
      */
-    @java.lang.Override public boolean hasIndempotencyPolicy() {
+    @java.lang.Override public boolean hasAllowedUpdates() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-     * @return The enum numeric value on the wire for indempotencyPolicy.
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * @return The enum numeric value on the wire for allowedUpdates.
      */
-    @java.lang.Override public int getIndempotencyPolicyValue() {
-      return indempotencyPolicy_;
+    @java.lang.Override public int getAllowedUpdatesValue() {
+      return allowedUpdates_;
     }
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-     * @param value The enum numeric value on the wire for indempotencyPolicy to set.
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * @param value The enum numeric value on the wire for allowedUpdates to set.
      * @return This builder for chaining.
      */
-    public Builder setIndempotencyPolicyValue(int value) {
-      indempotencyPolicy_ = value;
+    public Builder setAllowedUpdatesValue(int value) {
+      allowedUpdates_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-     * @return The indempotencyPolicy.
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * @return The allowedUpdates.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowIdempotency getIndempotencyPolicy() {
-      io.littlehorse.sdk.common.proto.WorkflowIdempotency result = io.littlehorse.sdk.common.proto.WorkflowIdempotency.forNumber(indempotencyPolicy_);
-      return result == null ? io.littlehorse.sdk.common.proto.WorkflowIdempotency.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates() {
+      io.littlehorse.sdk.common.proto.AllowedUpdateType result = io.littlehorse.sdk.common.proto.AllowedUpdateType.forNumber(allowedUpdates_);
+      return result == null ? io.littlehorse.sdk.common.proto.AllowedUpdateType.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-     * @param value The indempotencyPolicy to set.
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * @param value The allowedUpdates to set.
      * @return This builder for chaining.
      */
-    public Builder setIndempotencyPolicy(io.littlehorse.sdk.common.proto.WorkflowIdempotency value) {
+    public Builder setAllowedUpdates(io.littlehorse.sdk.common.proto.AllowedUpdateType value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000010;
-      indempotencyPolicy_ = value.getNumber();
+      allowedUpdates_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
+     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @return This builder for chaining.
      */
-    public Builder clearIndempotencyPolicy() {
+    public Builder clearAllowedUpdates() {
       bitField0_ = (bitField0_ & ~0x00000010);
-      indempotencyPolicy_ = 0;
+      allowedUpdates_ = 0;
       onChanged();
       return this;
     }

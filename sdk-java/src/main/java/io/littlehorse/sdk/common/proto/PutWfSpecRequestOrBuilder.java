@@ -81,18 +81,18 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return Whether the indempotencyPolicy field is set.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return Whether the allowedUpdates field is set.
    */
-  boolean hasIndempotencyPolicy();
+  boolean hasAllowedUpdates();
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return The enum numeric value on the wire for indempotencyPolicy.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The enum numeric value on the wire for allowedUpdates.
    */
-  int getIndempotencyPolicyValue();
+  int getAllowedUpdatesValue();
   /**
-   * <code>optional .littlehorse.WorkflowIdempotency indempotency_policy = 10;</code>
-   * @return The indempotencyPolicy.
+   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The allowedUpdates.
    */
-  io.littlehorse.sdk.common.proto.WorkflowIdempotency getIndempotencyPolicy();
+  io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates();
 }

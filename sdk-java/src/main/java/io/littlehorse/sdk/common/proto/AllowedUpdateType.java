@@ -4,37 +4,37 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.WorkflowIdempotency}
+ * Protobuf enum {@code littlehorse.AllowedUpdateType}
  */
-public enum WorkflowIdempotency
+public enum AllowedUpdateType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>IDEMPOTENT = 0;</code>
+   * <code>ALL = 0;</code>
    */
-  IDEMPOTENT(0),
+  ALL(0),
   /**
    * <code>MINOR_REVISION_ONLY = 1;</code>
    */
   MINOR_REVISION_ONLY(1),
   /**
-   * <code>IMMUTABLE = 2;</code>
+   * <code>NONE = 2;</code>
    */
-  IMMUTABLE(2),
+  NONE(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>IDEMPOTENT = 0;</code>
+   * <code>ALL = 0;</code>
    */
-  public static final int IDEMPOTENT_VALUE = 0;
+  public static final int ALL_VALUE = 0;
   /**
    * <code>MINOR_REVISION_ONLY = 1;</code>
    */
   public static final int MINOR_REVISION_ONLY_VALUE = 1;
   /**
-   * <code>IMMUTABLE = 2;</code>
+   * <code>NONE = 2;</code>
    */
-  public static final int IMMUTABLE_VALUE = 2;
+  public static final int NONE_VALUE = 2;
 
 
   public final int getNumber() {
@@ -51,7 +51,7 @@ public enum WorkflowIdempotency
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static WorkflowIdempotency valueOf(int value) {
+  public static AllowedUpdateType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -59,24 +59,24 @@ public enum WorkflowIdempotency
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static WorkflowIdempotency forNumber(int value) {
+  public static AllowedUpdateType forNumber(int value) {
     switch (value) {
-      case 0: return IDEMPOTENT;
+      case 0: return ALL;
       case 1: return MINOR_REVISION_ONLY;
-      case 2: return IMMUTABLE;
+      case 2: return NONE;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<WorkflowIdempotency>
+  public static com.google.protobuf.Internal.EnumLiteMap<AllowedUpdateType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      WorkflowIdempotency> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<WorkflowIdempotency>() {
-          public WorkflowIdempotency findValueByNumber(int number) {
-            return WorkflowIdempotency.forNumber(number);
+      AllowedUpdateType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<AllowedUpdateType>() {
+          public AllowedUpdateType findValueByNumber(int number) {
+            return AllowedUpdateType.forNumber(number);
           }
         };
 
@@ -97,9 +97,9 @@ public enum WorkflowIdempotency
     return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(0);
   }
 
-  private static final WorkflowIdempotency[] VALUES = values();
+  private static final AllowedUpdateType[] VALUES = values();
 
-  public static WorkflowIdempotency valueOf(
+  public static AllowedUpdateType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -113,10 +113,10 @@ public enum WorkflowIdempotency
 
   private final int value;
 
-  private WorkflowIdempotency(int value) {
+  private AllowedUpdateType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.WorkflowIdempotency)
+  // @@protoc_insertion_point(enum_scope:littlehorse.AllowedUpdateType)
 }
 
