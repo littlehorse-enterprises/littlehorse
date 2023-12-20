@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import io.littlehorse.sdk.common.proto.TaskDef;
 import lombok.Getter;
 
 /**
@@ -27,7 +25,8 @@ public class LHEventBus {
         this.subscribers.add(subscriber);
     }
 
-    public static LHEvent newEvent(WfSpecIdModel wfSpecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
+    public static LHEvent newEvent(
+            WfSpecIdModel wfSpecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
         return new LHWfRunEvent(wfSpecId, tenantId, previousStatus, newStatus);
     }
 

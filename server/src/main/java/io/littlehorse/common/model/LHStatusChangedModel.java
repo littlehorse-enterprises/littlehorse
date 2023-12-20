@@ -14,7 +14,8 @@ public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
     private LHStatus previousStatus;
     private LHStatus newStatus;
 
-    public LHStatusChangedModel(){}
+    public LHStatusChangedModel() {}
+
     public LHStatusChangedModel(LHStatus previousStatus, LHStatus newStatus) {
         this.previousStatus = previousStatus;
         this.newStatus = newStatus;
@@ -23,7 +24,7 @@ public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         LHStatusChanged p = (LHStatusChanged) proto;
-        if(p.hasPreviousStatus()) {
+        if (p.hasPreviousStatus()) {
             this.previousStatus = p.getPreviousStatus();
         }
         newStatus = p.getNewStatus();

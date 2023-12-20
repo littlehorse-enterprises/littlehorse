@@ -8,9 +8,8 @@ import io.littlehorse.common.proto.StatusChanged;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-
 import java.util.Date;
+import lombok.Getter;
 
 @Getter
 public class StatusChangedModel extends LHSerializable<StatusChanged> {
@@ -22,6 +21,7 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     public StatusChangedModel() {
         // used by LHSerializable
     }
+
     public StatusChangedModel(Date time, LHStatusChangedModel lhStatusChanged) {
         this.time = time;
         this.lhStatusChanged = lhStatusChanged;
@@ -36,11 +36,11 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         StatusChanged p = (StatusChanged) proto;
         time = LHUtil.fromProtoTs(p.getTime());
-        if(p.getStatusCase().equals(StatusChanged.StatusCase.LH_STATUS)) {
+        if (p.getStatusCase().equals(StatusChanged.StatusCase.LH_STATUS)) {
             lhStatusChanged = LHSerializable.fromProto(p.getLhStatus(), LHStatusChangedModel.class, context);
         } else if (p.getStatusCase().equals(StatusChanged.StatusCase.TASK_STATUS)) {
             taskStatusChanged = LHSerializable.fromProto(p.getTaskStatus(), TaskStatusChangedModel.class, context);
-        }else {
+        } else {
             throw new LHApiException(Status.INTERNAL, "Unrecognized status case: " + p.getStatusCase());
         }
     }
@@ -49,7 +49,7 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     public StatusChanged.Builder toProto() {
         StatusChanged.Builder out = StatusChanged.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-        if(lhStatusChanged != null) {
+        if (lhStatusChanged != null) {
             out.setLhStatus(lhStatusChanged.toProto());
         } else if (taskStatusChanged != null) {
             out.setTaskStatus(taskStatusChanged.toProto());

@@ -1,12 +1,11 @@
 package io.littlehorse.server.streams.topology.core;
 
-import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.LHStatusChangedModel;
+import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHEvent;
 import io.littlehorse.server.streams.topology.core.LHEventBus.LHWfRunEvent;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +27,14 @@ public class MetricsAggregation implements LHEventBus.Subscriber {
     @Override
     public void listen(LHEvent event) {
         if (event instanceof LHWfRunEvent wfRunEvent) {
-            LHStatusChangedModel statusChanged = new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
-            currentAggregateCommand().addMetric(wfRunEvent.getWfSPecId(), wfRunEvent.getTenantId(), statusChanged, wfRunEvent.getCreationDate());
+            LHStatusChangedModel statusChanged =
+                    new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
+            currentAggregateCommand()
+                    .addMetric(
+                            wfRunEvent.getWfSPecId(),
+                            wfRunEvent.getTenantId(),
+                            statusChanged,
+                            wfRunEvent.getCreationDate());
         } else {
             throw new IllegalArgumentException("");
         }
@@ -37,14 +42,15 @@ public class MetricsAggregation implements LHEventBus.Subscriber {
     }
 
     private PartitionMetricsModel currentAggregateCommand() {
-        if(aggregateModel == null) {
+        if (aggregateModel == null) {
             aggregateModel = Optional.ofNullable(modelStore.get("PEDRO", PartitionMetricsModel.class))
                     .orElse(new PartitionMetricsModel());
         }
         return aggregateModel;
     }
+
     public void maybePersistState() {
-        if(dirtyState) {
+        if (dirtyState) {
             this.modelStore.put(currentAggregateCommand());
         }
     }

@@ -186,19 +186,26 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        TenantModelStore coreDefaultStore =
-                ModelStore.tenantStoreFor(ctx.getStateStore(ServerTopology.CORE_STORE), ReadOnlyModelStore.DEFAULT_TENANT, new BackgroundContext());
+        TenantModelStore coreDefaultStore = ModelStore.tenantStoreFor(
+                ctx.getStateStore(ServerTopology.CORE_STORE),
+                ReadOnlyModelStore.DEFAULT_TENANT,
+                new BackgroundContext());
         PartitionMetricsModel pedro = coreDefaultStore.get("PEDRO", PartitionMetricsModel.class);
 
-        if(pedro != null) {
+        if (pedro != null) {
             for (AggregateWfMetricsModel aggregateWfMetrics : pedro.buildWfRepartitionCommands()) {
-                RepartitionCommand repartitionCommand = new RepartitionCommand(aggregateWfMetrics, new Date(), aggregateWfMetrics.getPartitionKey());
+                RepartitionCommand repartitionCommand =
+                        new RepartitionCommand(aggregateWfMetrics, new Date(), aggregateWfMetrics.getPartitionKey());
                 CommandProcessorOutput cpo = new CommandProcessorOutput();
                 cpo.partitionKey = aggregateWfMetrics.getPartitionKey();
                 cpo.topic = this.config.getRepartitionTopicName();
                 cpo.payload = repartitionCommand;
-                Record<String, CommandProcessorOutput> out =
-                        new Record<>(cpo.partitionKey, cpo, System.currentTimeMillis(), HeadersUtil.metadataHeadersFor(aggregateWfMetrics.getTenantId(), LHConstants.ANONYMOUS_PRINCIPAL));
+                Record<String, CommandProcessorOutput> out = new Record<>(
+                        cpo.partitionKey,
+                        cpo,
+                        System.currentTimeMillis(),
+                        HeadersUtil.metadataHeadersFor(
+                                aggregateWfMetrics.getTenantId(), LHConstants.ANONYMOUS_PRINCIPAL));
                 this.ctx.forward(out);
             }
             coreDefaultStore.delete(pedro);

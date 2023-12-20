@@ -13,14 +13,13 @@ import io.littlehorse.common.proto.StatusChanges;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import lombok.Getter;
 
 @Getter
 public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
@@ -28,20 +27,25 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     private final Map<WfMetricId, StatusChangesModel> wfMetrics = new HashMap<>();
     private final Map<TaskMetricId, StatusChangesModel> taskMetrics = new HashMap<>();
 
-
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PartitionMetrics p = (PartitionMetrics) proto;
         for (MetricsByTenant metricsByTenant : p.getMetricsByTenantList()) {
             String tenantId = metricsByTenant.getTenantId();
-            for (Map.Entry<String, StatusChanges> wfMetricEntry : metricsByTenant.getLhStatusChangesMap().entrySet()) {
-                WfSpecIdModel wfSpecId = (WfSpecIdModel) ObjectIdModel.fromString(wfMetricEntry.getKey(), WfSpecIdModel.class);
-                StatusChangesModel statusChanges = LHSerializable.fromProto(wfMetricEntry.getValue(), StatusChangesModel.class, context);
+            for (Map.Entry<String, StatusChanges> wfMetricEntry :
+                    metricsByTenant.getLhStatusChangesMap().entrySet()) {
+                WfSpecIdModel wfSpecId =
+                        (WfSpecIdModel) ObjectIdModel.fromString(wfMetricEntry.getKey(), WfSpecIdModel.class);
+                StatusChangesModel statusChanges =
+                        LHSerializable.fromProto(wfMetricEntry.getValue(), StatusChangesModel.class, context);
                 wfMetrics.put(new WfMetricId(wfSpecId, tenantId), statusChanges);
             }
-            for (Map.Entry<String, StatusChanges> taskMetricEntry : metricsByTenant.getTaskStatusChangesMap().entrySet()) {
-                TaskDefIdModel taskDefId = (TaskDefIdModel) ObjectIdModel.fromString(taskMetricEntry.getKey(), TaskDefIdModel.class);
-                StatusChangesModel statusChanges = LHSerializable.fromProto(taskMetricEntry.getValue(), StatusChangesModel.class, context);
+            for (Map.Entry<String, StatusChanges> taskMetricEntry :
+                    metricsByTenant.getTaskStatusChangesMap().entrySet()) {
+                TaskDefIdModel taskDefId =
+                        (TaskDefIdModel) ObjectIdModel.fromString(taskMetricEntry.getKey(), TaskDefIdModel.class);
+                StatusChangesModel statusChanges =
+                        LHSerializable.fromProto(taskMetricEntry.getValue(), StatusChangesModel.class, context);
                 taskMetrics.put(new TaskMetricId(taskDefId, tenantId), statusChanges);
             }
         }
@@ -54,17 +58,21 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         for (Map.Entry<WfMetricId, StatusChangesModel> wfMetric : wfMetrics.entrySet()) {
             WfMetricId metricId = wfMetric.getKey();
             StatusChangesModel changes = wfMetric.getValue();
-            MetricsByTenant.Builder metricsByTenantProto = metricsByTenant.getOrDefault(metricId.tenantId(), MetricsByTenant.newBuilder());
+            MetricsByTenant.Builder metricsByTenantProto =
+                    metricsByTenant.getOrDefault(metricId.tenantId(), MetricsByTenant.newBuilder());
             metricsByTenantProto.setTenantId(metricId.tenantId());
-            metricsByTenantProto.putLhStatusChanges(metricId.wfSpecId().toString(), changes.toProto().build());
+            metricsByTenantProto.putLhStatusChanges(
+                    metricId.wfSpecId().toString(), changes.toProto().build());
             metricsByTenant.putIfAbsent(metricId.tenantId(), metricsByTenantProto);
         }
         for (Map.Entry<TaskMetricId, StatusChangesModel> metrics : taskMetrics.entrySet()) {
             TaskMetricId taskMetric = metrics.getKey();
             StatusChangesModel changes = metrics.getValue();
-            MetricsByTenant.Builder metricsByTenantProto = metricsByTenant.getOrDefault(taskMetric.tenantId(), MetricsByTenant.newBuilder());
+            MetricsByTenant.Builder metricsByTenantProto =
+                    metricsByTenant.getOrDefault(taskMetric.tenantId(), MetricsByTenant.newBuilder());
             metricsByTenantProto.setTenantId(taskMetric.tenantId());
-            metricsByTenantProto.putTaskStatusChanges(taskMetric.taskDefId().toString(), changes.toProto().build());
+            metricsByTenantProto.putTaskStatusChanges(
+                    taskMetric.taskDefId().toString(), changes.toProto().build());
             metricsByTenant.putIfAbsent(taskMetric.tenantId(), metricsByTenantProto);
         }
         List<MetricsByTenant> metrics = metricsByTenant.values().stream()
@@ -103,13 +111,13 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         return StoreableType.PARTITION_METRICS;
     }
 
-    public List<AggregateWfMetricsModel> buildWfRepartitionCommands(){
+    public List<AggregateWfMetricsModel> buildWfRepartitionCommands() {
         Function<Map.Entry<WfMetricId, StatusChangesModel>, AggregateWfMetricsModel> transformMetricEntryToCommand =
                 metricEntry -> new AggregateWfMetricsModel(
-                        metricEntry.getKey().wfSpecId(), metricEntry.getValue().statusChanges, metricEntry.getKey().tenantId()
-                );
-        return wfMetrics.entrySet().stream()
-                .map(transformMetricEntryToCommand).toList();
+                        metricEntry.getKey().wfSpecId(),
+                        metricEntry.getValue().statusChanges,
+                        metricEntry.getKey().tenantId());
+        return wfMetrics.entrySet().stream().map(transformMetricEntryToCommand).toList();
     }
 
     private record WfMetricId(WfSpecIdModel wfSpecId, String tenantId) {

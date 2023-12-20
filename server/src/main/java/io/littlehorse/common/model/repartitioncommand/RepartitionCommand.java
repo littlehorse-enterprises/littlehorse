@@ -136,7 +136,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 removeRemoteTag = LHSerializable.fromProto(p.getRemoveRemoteTag(), RemoveRemoteTag.class, context);
                 break;
             case AGGREGATE_WF_METRICS:
-                aggregateWfMetrics = LHSerializable.fromProto(p.getAggregateWfMetrics(), AggregateWfMetricsModel.class, context);
+                aggregateWfMetrics =
+                        LHSerializable.fromProto(p.getAggregateWfMetrics(), AggregateWfMetricsModel.class, context);
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");

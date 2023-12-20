@@ -547,7 +547,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        LHEventBus.LHEvent statusChangedEvent = LHEventBus.newEvent(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
+        LHEventBus.LHEvent statusChangedEvent =
+                LHEventBus.newEvent(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         this.status = status;
         processorContext.eventBus().dispatch(statusChangedEvent);
 

@@ -13,12 +13,10 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     private TaskStatus previousStatus;
     private TaskStatus newStatus;
 
-
-
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         TaskStatusChanged p = (TaskStatusChanged) proto;
-        if(p.hasPreviousStatus()) {
+        if (p.hasPreviousStatus()) {
             this.previousStatus = p.getPreviousStatus();
         }
         this.newStatus = p.getNewStatus();
@@ -27,7 +25,7 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     @Override
     public TaskStatusChanged.Builder toProto() {
         TaskStatusChanged.Builder out = TaskStatusChanged.newBuilder();
-        if(previousStatus != null){
+        if (previousStatus != null) {
             out.setPreviousStatus(previousStatus);
         }
         out.setNewStatus(newStatus);

@@ -6,7 +6,6 @@ import io.littlehorse.common.proto.StatusChanged;
 import io.littlehorse.common.proto.StatusChanges;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
