@@ -1,7 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ASChildThreadFails extends WorkflowLogicTest {
 
-    public ASChildThreadFails(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public ASChildThreadFails(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -48,7 +48,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
         return Arrays.asList(new ASSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(500);

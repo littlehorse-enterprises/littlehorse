@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal.step;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.test.internal.LHTestException;
@@ -18,7 +18,7 @@ public abstract class AbstractStep implements Step {
     }
 
     @Override
-    public void execute(Object context, LHPublicApiBlockingStub lhClient) {
+    public void execute(Object context, LittleHorseBlockingStub lhClient) {
         try {
             tryExecute(context, lhClient);
         } catch (Throwable throwable) {
@@ -27,7 +27,7 @@ public abstract class AbstractStep implements Step {
         }
     }
 
-    private void printWfRun(String id, LHPublicApiBlockingStub lhClient) {
+    private void printWfRun(String id, LittleHorseBlockingStub lhClient) {
         WfRunId wfRunId = WfRunId.newBuilder().setId(id).build();
         WfRun wfRun = lhClient.getWfRun(wfRunId);
         logger.debug(LHLibUtil.protoToJson(wfRun));
@@ -37,5 +37,5 @@ public abstract class AbstractStep implements Step {
         throw new StepExecutionException(id, ex);
     }
 
-    abstract void tryExecute(Object context, LHPublicApiBlockingStub lhClient);
+    abstract void tryExecute(Object context, LittleHorseBlockingStub lhClient);
 }

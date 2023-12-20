@@ -1,6 +1,6 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.function.Consumer;
@@ -15,7 +15,7 @@ public class VerifyWfRunStep extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LHPublicApiBlockingStub lhClient) {
+    public void tryExecute(Object context, LittleHorseBlockingStub lhClient) {
         WfRunId wfRunId = WfRunId.newBuilder().setId(context.toString()).build();
         WfRun wfRun = lhClient.getWfRun(wfRunId);
         wfRunMatcher.accept(wfRun);

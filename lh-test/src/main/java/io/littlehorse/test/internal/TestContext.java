@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -34,7 +34,7 @@ import org.awaitility.Awaitility;
 public class TestContext {
 
     private final LHConfig LHConfig;
-    private final LHPublicApiBlockingStub lhClient;
+    private final LittleHorseBlockingStub lhClient;
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
 
@@ -183,7 +183,7 @@ public class TestContext {
         }
     }
 
-    public LHPublicApiBlockingStub getLhClient() {
+    public LittleHorseBlockingStub getLhClient() {
         return lhClient;
     }
 }

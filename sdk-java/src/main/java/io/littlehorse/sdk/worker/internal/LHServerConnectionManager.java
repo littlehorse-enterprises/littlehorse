@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
@@ -45,7 +45,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public TaskDef taskDef;
 
     private List<LHServerConnection> runningConnections;
-    private LHPublicApiStub bootstrapStub;
+    private LittleHorseStub bootstrapStub;
     private ExecutorService threadPool;
     private Semaphore workerSemaphore;
     private Thread rebalanceThread;
@@ -89,7 +89,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         });
     }
 
-    public void submitTaskForExecution(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+    public void submitTaskForExecution(ScheduledTask scheduledTask, LittleHorseStub specificStub) {
         try {
             this.workerSemaphore.acquire();
         } catch (InterruptedException exn) {
@@ -100,7 +100,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         });
     }
 
-    private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+    private void doTask(ScheduledTask scheduledTask, LittleHorseStub specificStub) {
         ReportTaskRun result = executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();

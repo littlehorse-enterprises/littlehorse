@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AOExternalEventBasic extends WorkflowLogicTest {
 
-    public AOExternalEventBasic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public AOExternalEventBasic(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -42,7 +42,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return Arrays.asList(new AOSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 sendEventBeforeWfRun(client),
@@ -51,7 +51,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
                 dontSendEvent(client));
     }
 
-    private String sendEventBeforeWfRun(LHPublicApiBlockingStub client)
+    private String sendEventBeforeWfRun(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         ExternalEventId extEvtId = sendEvent(client, wfRunId, "ao-my-event", "evt-content", null);
@@ -70,7 +70,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String sendEventAfterWfRun(LHPublicApiBlockingStub client)
+    private String sendEventAfterWfRun(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         // here only difference is we run the workflow first
@@ -95,7 +95,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String sendTwoEventsBefore(LHPublicApiBlockingStub client)
+    private String sendTwoEventsBefore(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         ExternalEventId extEvtIdOne = sendEvent(client, wfRunId, "ao-my-event", "evt-content", null);
@@ -120,7 +120,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String dontSendEvent(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
+    private String dontSendEvent(LittleHorseBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         // TODO: Inspect the node run a bit

@@ -1,6 +1,6 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -20,7 +20,7 @@ public class WaitForStatusStep<V> extends MatchStep<V> {
     }
 
     @Override
-    public void tryExecute(Object context, LHPublicApiBlockingStub lhClient) {
+    public void tryExecute(Object context, LittleHorseBlockingStub lhClient) {
         Callable<V> statusFunctionExecution = () -> statusFunction.apply(context);
         waitUntilMatch(statusFunctionExecution);
     }

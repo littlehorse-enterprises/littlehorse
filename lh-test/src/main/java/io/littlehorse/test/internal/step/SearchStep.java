@@ -1,6 +1,6 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.test.CapturedResult;
 import io.littlehorse.test.WfRunTestContext;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ public class SearchStep<I, O> implements Step {
     }
 
     private Method findTargetRpc(Class<?> requestType, Class<?> responseType) {
-        for (Method declaredMethod : LHPublicApiBlockingStub.class.getDeclaredMethods()) {
+        for (Method declaredMethod : LittleHorseBlockingStub.class.getDeclaredMethods()) {
             boolean match = Arrays.equals(declaredMethod.getParameterTypes(), new Class[] {requestType})
                     && declaredMethod.getReturnType().equals(responseType);
             if (match) {
@@ -34,7 +34,7 @@ public class SearchStep<I, O> implements Step {
     }
 
     @Override
-    public void execute(Object context, LHPublicApiBlockingStub lhClient) {
+    public void execute(Object context, LittleHorseBlockingStub lhClient) {
         WfRunTestContext wfRunContext = context::toString;
         try {
             Object response = targetRpc.invoke(lhClient, requestBuilder.apply(wfRunContext));

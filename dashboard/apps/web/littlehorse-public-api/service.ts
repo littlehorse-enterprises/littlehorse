@@ -7116,10 +7116,10 @@ export const ServerVersionResponse = {
   },
 };
 
-export type LHPublicApiDefinition = typeof LHPublicApiDefinition;
-export const LHPublicApiDefinition = {
-  name: "LHPublicApi",
-  fullName: "littlehorse.LHPublicApi",
+export type LittleHorseDefinition = typeof LittleHorseDefinition;
+export const LittleHorseDefinition = {
+  name: "LittleHorse",
+  fullName: "littlehorse.LittleHorse",
   methods: {
     putTaskDef: {
       name: "PutTaskDef",
@@ -7564,7 +7564,7 @@ export const LHPublicApiDefinition = {
   },
 } as const;
 
-export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
+export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTaskDef(request: PutTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   getTaskDef(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   putExternalEventDef(
@@ -7706,7 +7706,7 @@ export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersionResponse>>;
 }
 
-export interface LHPublicApiClient<CallOptionsExt = {}> {
+export interface LittleHorseClient<CallOptionsExt = {}> {
   putTaskDef(request: DeepPartial<PutTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   getTaskDef(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   putExternalEventDef(

@@ -86,7 +86,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventList;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
 import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
 import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
@@ -217,7 +217,7 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
-public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
+public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     private LHServerConfig config;
     private TaskQueueManager taskQueueManager;

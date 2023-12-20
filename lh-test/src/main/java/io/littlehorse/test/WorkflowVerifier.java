@@ -1,6 +1,6 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WorkflowVerifier {
 
-    private final LHPublicApiBlockingStub lhClient;
+    private final LittleHorseBlockingStub lhClient;
     private final TestContext context;
 
     public WorkflowVerifier(TestContext context) {
@@ -20,7 +20,7 @@ public class WorkflowVerifier {
         return new WfRunVerifier(context, workflow, List.of(args));
     }
 
-    public LHPublicApiBlockingStub getLhClient() {
+    public LittleHorseBlockingStub getLhClient() {
         return lhClient;
     }
 }

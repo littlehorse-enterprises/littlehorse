@@ -10,7 +10,7 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -37,7 +37,7 @@ public class AEImproperTaskNode extends Test {
     private String successWfRun;
     private LHTaskWorker worker;
 
-    public AEImproperTaskNode(LHPublicApiBlockingStub client, LHConfig config) {
+    public AEImproperTaskNode(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

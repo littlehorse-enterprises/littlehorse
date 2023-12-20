@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
@@ -68,7 +68,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         thread.assignUserTask(USER_TASK, "obiwan", null);
     }
 
-    public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHConfig config) {
+    public AFTaskAndUserTaskSearch(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

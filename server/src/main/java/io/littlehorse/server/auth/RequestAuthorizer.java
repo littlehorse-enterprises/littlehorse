@@ -13,7 +13,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.Authorize;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -92,7 +92,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
 
         {
             for (MethodDescriptor<?, ?> method :
-                    LHPublicApiGrpc.getServiceDescriptor().getMethods()) {
+                    LittleHorseGrpc.getServiceDescriptor().getMethods()) {
                 String methodName = method.getBareMethodName();
                 methodMetadata.put(methodName, new AuthMetadata(methodName, adminActions, adminResources));
             }

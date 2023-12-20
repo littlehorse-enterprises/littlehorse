@@ -4,7 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -84,7 +84,7 @@ public class InterruptHandlerExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -147,7 +147,7 @@ public class InterruptHandlerExample {
         }
     }
 
-    private static Optional<ExternalEventDef> getExternalExternalEventDef(LHPublicApiBlockingStub client, String externalEventName) {
+    private static Optional<ExternalEventDef> getExternalExternalEventDef(LittleHorseBlockingStub client, String externalEventName) {
         try{
             return Optional.of(client.getExternalEventDef(ExternalEventDefId.newBuilder().setName(externalEventName).build()));
         }catch (StatusRuntimeException exception){

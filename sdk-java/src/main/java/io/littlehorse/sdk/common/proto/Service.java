@@ -642,7 +642,7 @@ public final class Service {
       "ifier\030\004 \001(\tH\000\210\001\001B\031\n\027_pre_release_identif" +
       "ier*W\n\016LHHealthResult\022\025\n\021LH_HEALTH_RUNNI" +
       "NG\020\000\022\031\n\025LH_HEALTH_REBALANCING\020\001\022\023\n\017LH_HE" +
-      "ALTH_ERROR\020\0022\344\"\n\013LHPublicApi\022D\n\nPutTaskD" +
+      "ALTH_ERROR\020\0022\344\"\n\013LittleHorse\022D\n\nPutTaskD" +
       "ef\022\036.littlehorse.PutTaskDefRequest\032\024.lit" +
       "tlehorse.TaskDef\"\000\022<\n\nGetTaskDef\022\026.littl" +
       "ehorse.TaskDefId\032\024.littlehorse.TaskDef\"\000" +

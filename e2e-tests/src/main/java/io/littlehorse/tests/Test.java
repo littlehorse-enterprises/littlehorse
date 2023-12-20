@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -60,10 +60,10 @@ import java.util.UUID;
  */
 public abstract class Test {
 
-    protected LHPublicApiBlockingStub client;
+    protected LittleHorseBlockingStub client;
     protected LHConfig workerConfig;
 
-    public Test(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public Test(LittleHorseBlockingStub client, LHConfig workerConfig) {
         this.client = client;
         this.workerConfig = workerConfig;
     }
@@ -74,7 +74,7 @@ public abstract class Test {
 
     public abstract void test() throws Exception;
 
-    public void assertStatus(LHPublicApiBlockingStub client, String wfRunId, LHStatus status)
+    public void assertStatus(LittleHorseBlockingStub client, String wfRunId, LHStatus status)
             throws TestFailure, IOException {
         WfRun wfRun = getWfRun(client, wfRunId);
         if (wfRun.getStatus() != status) {
@@ -84,7 +84,7 @@ public abstract class Test {
         }
     }
 
-    public WfRun getWfRun(LHPublicApiBlockingStub client, String id) throws TestFailure, IOException {
+    public WfRun getWfRun(LittleHorseBlockingStub client, String id) throws TestFailure, IOException {
         WfRun result;
         try {
             result = client.getWfRun(WfRunId.newBuilder().setId(id).build());
@@ -108,7 +108,7 @@ public abstract class Test {
     }
 
     public void assertVarEqual(
-            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String name, Object desiredValue)
+            LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, String name, Object desiredValue)
             throws TestFailure {
         VariableValue var = getVariable(client, wfRunId, threadRunNumber, name).getValue();
 
@@ -177,7 +177,7 @@ public abstract class Test {
     }
 
     public void assertTaskOutput(
-            LHPublicApiBlockingStub client,
+            LittleHorseBlockingStub client,
             String wfRunId,
             int threadRunNumber,
             int nodeRunPosition,
@@ -203,7 +203,7 @@ public abstract class Test {
         }
     }
 
-    public TaskRun getTaskRun(LHPublicApiBlockingStub client, TaskRunId taskRunId) throws TestFailure, IOException {
+    public TaskRun getTaskRun(LittleHorseBlockingStub client, TaskRunId taskRunId) throws TestFailure, IOException {
         TaskRun result;
         try {
             result = client.getTaskRun(taskRunId);
@@ -217,7 +217,7 @@ public abstract class Test {
         return result;
     }
 
-    public NodeRun getNodeRun(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, int nodeRunPosition)
+    public NodeRun getNodeRun(LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, int nodeRunPosition)
             throws TestFailure, IOException {
         NodeRun result;
         try {
@@ -238,7 +238,7 @@ public abstract class Test {
         return result;
     }
 
-    public UserTaskRun getUserTaskRun(LHPublicApiBlockingStub client, UserTaskRunId id)
+    public UserTaskRun getUserTaskRun(LittleHorseBlockingStub client, UserTaskRunId id)
             throws TestFailure, IOException {
         UserTaskRun result;
         try {
@@ -254,7 +254,7 @@ public abstract class Test {
         return result;
     }
 
-    public Variable getVariable(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String name)
+    public Variable getVariable(LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, String name)
             throws TestFailure {
         Variable result;
 
@@ -275,7 +275,7 @@ public abstract class Test {
         return result;
     }
 
-    public List<?> getVarAsList(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String varName)
+    public List<?> getVarAsList(LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, String varName)
             throws TestFailure {
         VariableValue varVal =
                 getVariable(client, wfRunId, threadRunNumber, varName).getValue();
@@ -287,7 +287,7 @@ public abstract class Test {
     }
 
     public <T> T getVarAsObj(
-            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String varName, Class<T> cls)
+            LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, String varName, Class<T> cls)
             throws TestFailure {
         VariableValue varVal =
                 getVariable(client, wfRunId, threadRunNumber, varName).getValue();
@@ -303,7 +303,7 @@ public abstract class Test {
     }
 
     protected ExternalEventId sendEvent(
-            LHPublicApiBlockingStub client, String wfRunId, String eventName, Object content, String guid)
+            LittleHorseBlockingStub client, String wfRunId, String eventName, Object content, String guid)
             throws TestFailure, IOException {
         VariableValue varVal = objToVarVal(content, "Failed converting event input");
         if (guid == null) {
@@ -327,7 +327,7 @@ public abstract class Test {
                 .build();
     }
 
-    protected ExternalEvent getExternalEvent(LHPublicApiBlockingStub client, ExternalEventId eventId)
+    protected ExternalEvent getExternalEvent(LittleHorseBlockingStub client, ExternalEventId eventId)
             throws TestFailure, IOException {
         ExternalEvent reply;
         try {
@@ -338,7 +338,7 @@ public abstract class Test {
         return reply;
     }
 
-    public void assertThreadStatus(LHPublicApiBlockingStub client, String wfRunId, int threadRunId, LHStatus status)
+    public void assertThreadStatus(LittleHorseBlockingStub client, String wfRunId, int threadRunId, LHStatus status)
             throws TestFailure, IOException {
         WfRun wfRun = getWfRun(client, wfRunId);
         if (wfRun.getThreadRuns(threadRunId).getStatus() != status) {
@@ -353,7 +353,7 @@ public abstract class Test {
         }
     }
 
-    public List<VariableValue> getTaskRunOutputs(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber)
+    public List<VariableValue> getTaskRunOutputs(LittleHorseBlockingStub client, String wfRunId, int threadRunNumber)
             throws TestFailure, IOException {
         List<VariableValue> out = new ArrayList<>();
 
@@ -376,7 +376,7 @@ public abstract class Test {
     }
 
     public void assertTaskOutputsMatch(
-            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, Object... desiredOutputs)
+            LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, Object... desiredOutputs)
             throws TestFailure, IOException {
         List<VariableValue> actual = getTaskRunOutputs(client, wfRunId, threadRunNumber);
 

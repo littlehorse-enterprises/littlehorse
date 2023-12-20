@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal.step;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunList;
@@ -22,7 +22,7 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LHPublicApiBlockingStub lhClient) {
+    public void tryExecute(Object context, LittleHorseBlockingStub lhClient) {
         // unclear why context is an object...
         String wfRunId = context.toString();
 

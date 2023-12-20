@@ -6,7 +6,7 @@ from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
 from littlehorse.auth import OAuthCredentialsProvider
-from littlehorse.model.service_pb2_grpc import LHPublicApiStub
+from littlehorse.model.service_pb2_grpc import LittleHorseStub
 from littlehorse.utils import read_binary
 import logging
 
@@ -348,9 +348,9 @@ class LHConfig:
         server: Optional[str] = None,
         name: str = "default",
         async_channel: bool = False,
-    ) -> LHPublicApiStub:
+    ) -> LittleHorseStub:
         """Gets a gRPC stub for the LH Public API
-        on the configured bootstrap server. It creates a new LHPublicApiStub,
+        on the configured bootstrap server. It creates a new LittleHorseStub,
         but reuse a grpc.Channel.
 
         Args:
@@ -361,7 +361,7 @@ class LHConfig:
             will use asyncio. Defaults to False.
 
         Returns:
-            LHPublicApiStub: A gRPC stub.
+            LittleHorseStub: A gRPC stub.
         """
         channel_id = ChannelId(server or self.bootstrap_server, name, async_channel)
         channel = self._opened_channels.get(channel_id)
@@ -372,4 +372,4 @@ class LHConfig:
         else:
             self._log.debug("Reusing channel %s", channel_id)
 
-        return LHPublicApiStub(channel)
+        return LittleHorseStub(channel)
