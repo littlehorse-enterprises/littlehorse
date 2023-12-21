@@ -53,6 +53,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
 
+        out.setAllowedUpdates(allowedUpdateType);
+
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             out.putThreadSpecs(e.getKey(), e.getValue().toProto().build());
         }
@@ -100,12 +102,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
+        spec.validateAndMaybeBumpVersion(optWfSpec);
         if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
             return oldVersion.toProto().build();
         }
 
         verifyUpdateType(allowedUpdateType, spec, optWfSpec);
-        spec.validateAndMaybeBumpVersion(optWfSpec);
         metadataManager.put(spec);
         return spec.toProto().build();
     }
@@ -116,10 +118,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
                 if (oldSpec.isPresent() && WfSpecUtil.hasBreakingChanges(spec, oldSpec.get())) {
                     throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting WfSpec has a breaking change.");
                 }
+                break;
             case NONE:
                 if (oldSpec.isPresent()) {
                     throw new LHApiException(Status.ALREADY_EXISTS, "WfSpec already exists.");
                 }
+                break;
             default:
                 break;
         }

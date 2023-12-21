@@ -6,6 +6,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -124,6 +125,11 @@ public abstract class Workflow {
      */
     public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc) {
         return new WorkflowImpl(name, entrypointThreadFunc);
+    }
+
+    public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
+        this.spec.setAllowedUpdates(allowedUpdateType);
+        return this;
     }
 
     /**
