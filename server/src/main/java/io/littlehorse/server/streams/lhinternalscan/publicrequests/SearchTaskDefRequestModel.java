@@ -71,8 +71,8 @@ public class SearchTaskDefRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+    public ScanBoundary<?, TaskDefIdModel> getScanBoundary(RequestExecutionContext ctx) {
         String scanPrefix = prefix != null ? prefix : "";
-        return new BoundedObjectIdScanModel(GetableClassEnum.TASK_DEF, scanPrefix);
+        return new BoundedObjectIdScanModel<TaskDefIdModel>(GetableClassEnum.TASK_DEF, scanPrefix);
     }
 }

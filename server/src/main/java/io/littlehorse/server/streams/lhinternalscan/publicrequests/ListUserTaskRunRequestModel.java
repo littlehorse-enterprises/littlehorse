@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.LHStoreType;
@@ -58,7 +59,7 @@ public class ListUserTaskRunRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
-        return new BoundedObjectIdScanModel(GetableClassEnum.USER_TASK_RUN, wfRunId);
+    public ScanBoundary<?, TaskRunIdModel> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+        return new BoundedObjectIdScanModel<>(GetableClassEnum.USER_TASK_RUN, wfRunId);
     }
 }

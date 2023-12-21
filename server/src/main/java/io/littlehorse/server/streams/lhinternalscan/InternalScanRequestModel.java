@@ -4,6 +4,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanRequest;
@@ -25,12 +27,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @Setter
-public class InternalScanRequestModel extends LHSerializable<InternalScanRequest> {
+public class InternalScanRequestModel<T extends CoreObjectId<?, ?, ?>> extends LHSerializable<InternalScanRequest> {
 
     private ScanResultTypePb resultType;
     private int limit;
@@ -41,8 +42,8 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     private String partitionKey;
 
     private ScanBoundaryCase type;
-    private TagScanModel tagScan;
-    private BoundedObjectIdScanModel boundedObjectIdScan;
+    private TagScanModel<T> tagScan;
+    private BoundedObjectIdScanModel<T> boundedObjectIdScan;
 
     private List<ScanFilterModel> filters = new ArrayList<>();
 
@@ -51,7 +52,7 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
 
     public InternalScanRequestModel() {}
 
-    public InternalScanRequestModel(ScanBoundary<?> boundary, RequestExecutionContext ctx) {
+    public InternalScanRequestModel(ScanBoundary<?, T> boundary, RequestExecutionContext ctx) {
         this.setScanBoundary(boundary);
     }
 
@@ -92,6 +93,7 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void initFrom(Message proto, ExecutionContext context) {
         InternalScanRequest p = (InternalScanRequest) proto;
         resultType = p.getResultType();
@@ -120,7 +122,7 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
         }
     }
 
-    public ScanBoundary<?> getScanBoundary() {
+    public ScanBoundary<?, T> getScanBoundary() {
         switch (type) {
             case TAG_SCAN:
                 return tagScan;
@@ -131,13 +133,14 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
         throw new IllegalStateException("Scan boundary wasn't set");
     }
 
-    public void setScanBoundary(ScanBoundary<?> boundary) {
+    @SuppressWarnings("unchecked")
+    public void setScanBoundary(ScanBoundary<?, T> boundary) {
         if (boundary instanceof TagScanModel) {
             type = ScanBoundaryCase.TAG_SCAN;
-            this.tagScan = (TagScanModel) boundary;
+            this.tagScan = (TagScanModel<T>) boundary;
         } else if (boundary instanceof BoundedObjectIdScanModel) {
             type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-            boundedObjectIdScan = (BoundedObjectIdScanModel) boundary;
+            boundedObjectIdScan = (BoundedObjectIdScanModel<T>) boundary;
         } else {
             throw new IllegalArgumentException("Unrecognized ScanBoundary type %s"
                     .formatted(boundary.getClass().getSimpleName()));
@@ -145,11 +148,23 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     }
 
     public boolean matches(LHIterKeyValue<?> record, RequestExecutionContext ctx) {
-        throw new NotImplementedException();
+        // TODO: re-enable this
+        return true;
     }
 
-    public ByteString convertToResult(LHIterKeyValue<?> record, RequestExecutionContext ctx) {
-        throw new NotImplementedException();
+    @SuppressWarnings("unchecked")
+    public <U extends Message, V extends CoreGetable<U>> ByteString convertToResult(
+            LHIterKeyValue<?> record, RequestExecutionContext ctx) {
+        byte[] out;
+        // First, get the described object id
+        T recordId = getScanBoundary().iterToObjectId(record);
+        if (resultType == ScanResultTypePb.OBJECT_ID) {
+            out = recordId.toBytes();
+        } else {
+            out = ctx.getableManager().get(recordId).toBytes();
+        }
+
+        return ByteString.copyFrom(out);
     }
 
     /**

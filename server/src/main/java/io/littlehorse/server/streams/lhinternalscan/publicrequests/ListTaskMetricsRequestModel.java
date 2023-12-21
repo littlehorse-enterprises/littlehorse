@@ -76,10 +76,11 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+    public ScanBoundary<?, ?> getScanBoundary(RequestExecutionContext ctx) {
+        // Tech debt: TaskMetricsId is not a CoreObjectId
         Date earliestWindowStart =
                 new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows));
-        return new BoundedObjectIdScanModel(
+        return new BoundedObjectIdScanModel<>(
                 new TaskDefMetricsIdModel(earliestWindowStart, windowLength, taskDefId),
                 new TaskDefMetricsIdModel(lastWindowStart, windowLength, taskDefId));
     }

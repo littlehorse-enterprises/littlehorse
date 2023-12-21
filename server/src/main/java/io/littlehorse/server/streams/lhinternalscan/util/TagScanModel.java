@@ -2,10 +2,13 @@ package io.littlehorse.server.streams.lhinternalscan.util;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagScan;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -14,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import lombok.Setter;
 
-public class TagScanModel extends ScanBoundary<TagScan> {
+public class TagScanModel<T extends ObjectIdModel<?, ?, ?>> extends ScanBoundary<TagScan, T> {
 
     private GetableClassEnum scanObjectType;
     private List<Attribute> attributes;
@@ -94,12 +97,20 @@ public class TagScanModel extends ScanBoundary<TagScan> {
         return Tag.class;
     }
 
-    public TagScanModel addAttributes(String key, String val) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public T iterToObjectId(LHIterKeyValue<?> iter) {
+        Tag tag = (Tag) iter.getValue();
+        String objectId = tag.getDescribedObjectId();
+        return (T) ObjectIdModel.fromString(objectId, AbstractGetable.getIdCls(scanObjectType));
+    }
+
+    public TagScanModel<T> addAttributes(String key, String val) {
         attributes.add(new Attribute(key, val));
         return this;
     }
 
-    public TagScanModel add(Attribute attr) {
+    public TagScanModel<T> add(Attribute attr) {
         attributes.add(attr);
         return this;
     }

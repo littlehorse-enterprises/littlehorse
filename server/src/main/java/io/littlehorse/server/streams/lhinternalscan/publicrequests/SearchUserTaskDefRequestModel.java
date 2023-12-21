@@ -101,7 +101,7 @@ public class SearchUserTaskDefRequestModel
     }
 
     @Override
-    public BoundedObjectIdScanModel getScanBoundary(RequestExecutionContext ctx) {
+    public BoundedObjectIdScanModel<UserTaskDefIdModel> getScanBoundary(RequestExecutionContext ctx) {
         String scanPrefix;
         if (prefix != null && !prefix.equals("")) {
             scanPrefix = prefix;
@@ -110,6 +110,6 @@ public class SearchUserTaskDefRequestModel
         } else {
             scanPrefix = "";
         }
-        return new BoundedObjectIdScanModel(GetableClassEnum.USER_TASK_DEF, scanPrefix);
+        return new BoundedObjectIdScanModel<UserTaskDefIdModel>(GetableClassEnum.USER_TASK_DEF, scanPrefix);
     }
 }

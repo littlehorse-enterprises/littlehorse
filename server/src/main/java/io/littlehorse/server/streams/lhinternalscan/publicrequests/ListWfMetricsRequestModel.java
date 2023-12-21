@@ -70,10 +70,11 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+    public ScanBoundary<?, ?> getScanBoundary(RequestExecutionContext ctx) {
+        // TODO: Handle repartitioned getables
         Date earliestWindowStart =
                 new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows));
-        return new BoundedObjectIdScanModel(
+        return new BoundedObjectIdScanModel<>(
                 new WfSpecMetricsIdModel(earliestWindowStart, windowLength, wfSpecId),
                 new WfSpecMetricsIdModel(lastWindowStart, windowLength, wfSpecId));
     }

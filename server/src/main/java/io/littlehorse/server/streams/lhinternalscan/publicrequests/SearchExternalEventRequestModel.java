@@ -115,12 +115,12 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+    public ScanBoundary<?, ExternalEventIdModel> getScanBoundary(RequestExecutionContext ctx) {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return new BoundedObjectIdScanModel(GetableClassEnum.EXTERNAL_EVENT, wfRunId.toString());
+            return new BoundedObjectIdScanModel<>(GetableClassEnum.EXTERNAL_EVENT, wfRunId.toString());
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            TagScanModel result =
-                    new TagScanModel(getObjectType()).addAttributes("extEvtDefName", externalEventDefName);
+            TagScanModel<ExternalEventIdModel> result =
+                    new TagScanModel<ExternalEventIdModel>(getObjectType()).addAttributes("extEvtDefName", externalEventDefName);
             if (isClaimed.isPresent()) {
                 result.addAttributes("isClaimed", isClaimed.get().toString());
             }

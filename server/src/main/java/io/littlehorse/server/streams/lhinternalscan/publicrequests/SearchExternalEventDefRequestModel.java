@@ -76,8 +76,8 @@ public class SearchExternalEventDefRequestModel
     }
 
     @Override
-    public BoundedObjectIdScanModel getScanBoundary(RequestExecutionContext ctx) {
+    public BoundedObjectIdScanModel<ExternalEventDefIdModel> getScanBoundary(RequestExecutionContext ctx) {
         String scanPrefix = prefix != null ? prefix : "";
-        return new BoundedObjectIdScanModel(getObjectType(), scanPrefix);
+        return new BoundedObjectIdScanModel<>(getObjectType(), scanPrefix);
     }
 }

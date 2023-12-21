@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.LHStoreType;
@@ -52,7 +53,7 @@ public class ListNodeRunsRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
-        return new BoundedObjectIdScanModel(getObjectType(), wfRunId);
+    public ScanBoundary<?, NodeRunIdModel> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+        return new BoundedObjectIdScanModel<>(getObjectType(), wfRunId);
     }
 }

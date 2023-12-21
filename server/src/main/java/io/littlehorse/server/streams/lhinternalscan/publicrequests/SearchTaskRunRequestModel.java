@@ -85,13 +85,13 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public TagScanModel getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+    public TagScanModel<TaskRunIdModel> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
         // Return error to client if the TaskDef doesn't exist
         TaskDefModel taskDef = ctx.service().getTaskDef(taskDefName);
         if (taskDef == null)
             throw new LHApiException(Status.INVALID_ARGUMENT, "No such taskDef %s".formatted(taskDefName));
 
-        TagScanModel out = new TagScanModel(GetableClassEnum.TASK_RUN, earliestStart, latestStart);
+        TagScanModel<TaskRunIdModel> out = new TagScanModel<>(GetableClassEnum.TASK_RUN, earliestStart, latestStart);
         out.add(new Attribute("taskDefName", taskDefName));
 
         if (status != null) {

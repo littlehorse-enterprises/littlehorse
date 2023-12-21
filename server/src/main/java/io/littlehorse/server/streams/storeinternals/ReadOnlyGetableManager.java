@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+// TODO: This needs some help, since it has stuff related to writing.
 public class ReadOnlyGetableManager {
 
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();

@@ -107,15 +107,15 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+    public ScanBoundary<?, WfSpecIdModel> getScanBoundary(RequestExecutionContext ctx) {
         if (name != null && !name.equals("")) {
-            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, name + "/");
+            return new BoundedObjectIdScanModel<>(GetableClassEnum.WF_SPEC, name + "/");
         } else if (prefix != null && !prefix.isEmpty()) {
-            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, prefix);
+            return new BoundedObjectIdScanModel<>(GetableClassEnum.WF_SPEC, prefix);
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
-            return new TagScanModel(GetableClassEnum.WF_SPEC).add(new Attribute("taskDef", taskDefName));
+            return new TagScanModel<WfSpecIdModel>(GetableClassEnum.WF_SPEC).add(new Attribute("taskDef", taskDefName));
         } else {
-            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, "");
+            return new BoundedObjectIdScanModel<>(GetableClassEnum.WF_SPEC, "");
         }
     }
 }

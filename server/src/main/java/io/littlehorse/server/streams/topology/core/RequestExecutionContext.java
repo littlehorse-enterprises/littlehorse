@@ -4,6 +4,8 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -15,6 +17,8 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+
+import com.google.protobuf.Message;
 
 public class RequestExecutionContext implements ExecutionContext {
 
@@ -29,6 +33,7 @@ public class RequestExecutionContext implements ExecutionContext {
             String tenantId,
             ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore,
             ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore,
+            ReadOnlyKeyValueStore<String, Bytes> nativeRepartitionStore,
             MetadataCache metadataCache,
             LHServerConfig lhConfig) {
         if (tenantId == null) {

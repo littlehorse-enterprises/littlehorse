@@ -2,13 +2,15 @@ package io.littlehorse.server.streams.lhinternalscan.util;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BoundedObjectIdScan;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
-public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> {
+public class BoundedObjectIdScanModel<T extends ObjectIdModel<?, ?, ?>> extends ScanBoundary<BoundedObjectIdScan, T> {
 
     private String startObjectId;
     private String endObjectId;
@@ -69,5 +71,12 @@ public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> 
     @SuppressWarnings("unchecked")
     public Class<? extends Storeable<?>> getIterType() {
         return (Class<? extends Storeable<?>>) StoredGetable.class;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T iterToObjectId(LHIterKeyValue<?> iter) {
+        String objectId = iter.getKey();
+        return (T) ObjectIdModel.fromString(objectId, AbstractGetable.getIdCls(scanObjectType));
     }
 }

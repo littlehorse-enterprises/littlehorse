@@ -465,7 +465,20 @@ public class BackendInternalComms implements Closeable {
             scanRemoteHost(search, otherHost, response);
         }
 
+        if (isNothingLeft(response.getUpdatedBookmark(), search.getStoreName())) response.clearUpdatedBookmark();
+
         return response.build();
+    }
+
+    /**
+     * Determines whether a bookmark denotes a searc that is already completed.
+     * @param bookmark is a bookmark
+     * @param storeName is the store that we're searching in
+     * @return true if we've finished the search.
+     */
+    private boolean isNothingLeft(BookmarkPb bookmark, String storeName) {
+        int numPartitions = storeName.equals(ServerTopology.METADATA_STORE) ? 1 : config.getClusterPartitions();
+        return bookmark.getCompletedPartitionsCount() == numPartitions;
     }
 
     /**

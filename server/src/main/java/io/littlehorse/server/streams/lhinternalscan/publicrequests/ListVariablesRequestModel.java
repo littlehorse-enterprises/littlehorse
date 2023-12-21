@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.LHStoreType;
@@ -49,8 +50,8 @@ public class ListVariablesRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
-        return new BoundedObjectIdScanModel(GetableClassEnum.VARIABLE, wfRunId);
+    public ScanBoundary<?, VariableIdModel> getScanBoundary(RequestExecutionContext ctx) {
+        return new BoundedObjectIdScanModel<>(GetableClassEnum.VARIABLE, wfRunId);
     }
 
     @Override

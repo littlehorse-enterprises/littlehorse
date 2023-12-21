@@ -109,9 +109,9 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagScanModel getScanBoundary(RequestExecutionContext ctx) {
+    public TagScanModel<UserTaskRunIdModel> getScanBoundary(RequestExecutionContext ctx) {
         // Ordering is important. See UserTaskRunModel#getIndexConfigurations()
-        TagScanModel attributes = new TagScanModel(GetableClassEnum.USER_TASK_RUN);
+        TagScanModel<UserTaskRunIdModel> attributes = new TagScanModel<>(GetableClassEnum.USER_TASK_RUN);
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));
         }

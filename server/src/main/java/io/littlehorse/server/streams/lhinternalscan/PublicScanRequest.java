@@ -49,9 +49,9 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScanRequestModel getInternalSearch(RequestExecutionContext ctx) throws LHApiException {
-        ScanBoundary<?> scanBoundary = getScanBoundary(ctx);
-        InternalScanRequestModel out = new InternalScanRequestModel(scanBoundary, ctx);
+    public InternalScanRequestModel<?> getInternalSearch(RequestExecutionContext ctx) throws LHApiException {
+        ScanBoundary<?, ?> scanBoundary = getScanBoundary(ctx);
+        InternalScanRequestModel<?> out = new InternalScanRequestModel(scanBoundary, ctx);
 
         out.setResultType(getResultType());
         if (out.getLimit() == 0) out.setLimit(getLimit());
@@ -67,7 +67,7 @@ public abstract class PublicScanRequest<
      * @return a ScanBoundary.
      * @throws LHApiException if the search parameters specified by the client are invalid.
      */
-    public abstract ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException;
+    public abstract ScanBoundary<?, ?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException;
 
     /**
      * This method can be overriden to specify filters that filter out results returned by the

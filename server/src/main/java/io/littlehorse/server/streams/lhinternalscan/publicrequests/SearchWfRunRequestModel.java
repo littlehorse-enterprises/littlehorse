@@ -112,8 +112,8 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
-        TagScanModel out = new TagScanModel(getObjectType());
+    public ScanBoundary<?, WfRunIdModel> getScanBoundary(RequestExecutionContext ctx) {
+        TagScanModel<WfRunIdModel> out = new TagScanModel<>(getObjectType());
 
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {

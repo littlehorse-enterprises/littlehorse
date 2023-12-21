@@ -93,7 +93,7 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+    public ScanBoundary<?, VariableIdModel> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
         // First, do some validation
         WfSpecModel spec = ctx.service().getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
         if (spec == null) {
@@ -116,7 +116,7 @@ public class SearchVariableRequestModel
         }
 
         // Now that we know it's a valid query, we can process it.
-        TagScanModel out = new TagScanModel(GetableClassEnum.VARIABLE);
+        TagScanModel<VariableIdModel> out = new TagScanModel<>(GetableClassEnum.VARIABLE);
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "If providing version, must also provide revision");

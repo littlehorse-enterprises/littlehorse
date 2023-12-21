@@ -89,8 +89,8 @@ public class SearchNodeRunRequestModel
     }
 
     @Override
-    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
-        return new TagScanModel(getObjectType(), earliestStart, latestStart)
+    public ScanBoundary<?, NodeRunIdModel> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+        return new TagScanModel<NodeRunIdModel>(getObjectType(), earliestStart, latestStart)
                 .addAttributes("status", status.toString())
                 .addAttributes("type", nodeType.toString());
     }
