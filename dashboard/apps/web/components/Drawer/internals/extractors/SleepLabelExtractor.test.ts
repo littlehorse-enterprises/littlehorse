@@ -1,5 +1,4 @@
 import type { SleepNode } from '../../../../littlehorse-public-api/wf_spec'
-import { VariableType } from '../../../../littlehorse-public-api/common_enums'
 import SleepLabelExtractor from './SleepLabelExtractor'
 
 describe('extracts label out of sleep values', () => {

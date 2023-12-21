@@ -1,6 +1,5 @@
 import { Comparator } from '../../../../../../../littlehorse-public-api/common_wfspec'
 import type { Edge, EdgeCondition } from '../../../../../../../littlehorse-public-api/wf_spec'
-import { VariableType } from '../../../../../../../littlehorse-public-api/common_enums'
 
 enum Side {
     LEFT = 'left',
