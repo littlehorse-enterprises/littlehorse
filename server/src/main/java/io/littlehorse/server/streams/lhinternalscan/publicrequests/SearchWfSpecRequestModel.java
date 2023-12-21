@@ -2,29 +2,22 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest.WfSpecCriteriaCase;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
+import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.List;
-import java.util.Optional;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -109,43 +102,20 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public List<Attribute> getSearchAttributes() {
-        return List.of(new Attribute("taskDef", taskDefName));
+    public LHStoreType getStoreType() {
+        return LHStoreType.METADATA;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        if (taskDefName != null) {
-            List<String> attributes =
-                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-            for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration :
-                    new WfSpecModel().getIndexConfigurations()) {
-                if (indexConfiguration.searchAttributesMatch(attributes)
-                        && indexConfiguration.getTagStorageType().isPresent()) {
-                    return indexConfiguration.getTagStorageType().get();
-                }
-            }
-            return null;
-        } else {
-            return TagStorageType.LOCAL;
-        }
-    }
-
-    @Override
-    public LHStore getStoreType() {
-        return LHStore.GLOBAL_METADATA;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
         if (name != null && !name.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name + "/", name + "/~");
+            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, name + "/");
         } else if (prefix != null && !prefix.isEmpty()) {
-            return ObjectIdScanBoundaryStrategy.metadataSearchFor(prefix);
+            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, prefix);
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
-            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
+            return new TagScanModel(GetableClassEnum.WF_SPEC).add(new Attribute("taskDef", taskDefName));
         } else {
-            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+            return new BoundedObjectIdScanModel(GetableClassEnum.WF_SPEC, "");
         }
     }
 }

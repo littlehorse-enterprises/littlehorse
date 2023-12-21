@@ -1,21 +1,18 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventDefIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -29,13 +26,14 @@ public class SearchExternalEventDefRequestModel
 
     public String prefix;
 
+    @Override
     public Class<SearchExternalEventDefRequest> getProtoBaseClass() {
         return SearchExternalEventDefRequest.class;
     }
 
     @Override
-    public LHStore getStoreType() {
-        return LHStore.GLOBAL_METADATA;
+    public LHStoreType getStoreType() {
+        return LHStoreType.METADATA;
     }
 
     public GetableClassEnum getObjectType() {
@@ -56,6 +54,7 @@ public class SearchExternalEventDefRequestModel
         if (p.hasPrefix()) prefix = p.getPrefix();
     }
 
+    @Override
     public SearchExternalEventDefRequest.Builder toProto() {
         SearchExternalEventDefRequest.Builder out = SearchExternalEventDefRequest.newBuilder();
         if (bookmark != null) {
@@ -77,16 +76,8 @@ public class SearchExternalEventDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
-        } else {
-            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
-        }
+    public BoundedObjectIdScanModel getScanBoundary(RequestExecutionContext ctx) {
+        String scanPrefix = prefix != null ? prefix : "";
+        return new BoundedObjectIdScanModel(getObjectType(), scanPrefix);
     }
 }

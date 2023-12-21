@@ -62,13 +62,13 @@ public interface TagScanOrBuilder extends
       int index);
 
   /**
-   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-   * @return The enum numeric value on the wire for objectType.
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+   * @return The enum numeric value on the wire for scanObjectType.
    */
-  int getObjectTypeValue();
+  int getScanObjectTypeValue();
   /**
-   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-   * @return The objectType.
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+   * @return The scanObjectType.
    */
-  io.littlehorse.common.proto.GetableClassEnum getObjectType();
+  io.littlehorse.common.proto.GetableClassEnum getScanObjectType();
 }

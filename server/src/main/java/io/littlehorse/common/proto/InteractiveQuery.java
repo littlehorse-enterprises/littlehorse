@@ -106,46 +106,46 @@ public final class InteractiveQuery {
       ".Timestamp\022\016\n\006result\030\003 \001(\014\"~\n\nScanFilter" +
       "\022.\n\rwf_run_status\030\001 \001(\0162\025.littlehorse.LH" +
       "StatusH\000\0224\n\016variable_match\030\002 \001(\0132\032.littl" +
-      "ehorse.VariableMatchH\000B\n\n\010criteria\"\227\002\n\007T" +
+      "ehorse.VariableMatchH\000B\n\n\010criteria\"\234\002\n\007T" +
       "agScan\022=\n\024earliest_create_time\030\001 \001(\0132\032.g" +
       "oogle.protobuf.TimestampH\000\210\001\001\022;\n\022latest_" +
       "create_time\030\002 \001(\0132\032.google.protobuf.Time" +
       "stampH\001\210\001\001\022,\n\nattributes\030\003 \003(\0132\030.littleh" +
-      "orse.AttributePb\0222\n\013object_type\030\004 \001(\0162\035." +
-      "littlehorse.GetableClassEnumB\027\n\025_earlies" +
-      "t_create_timeB\025\n\023_latest_create_time\"\\\n\023" +
-      "BoundedObjectIdScan\022\027\n\017start_object_id\030\001" +
-      " \001(\t\022\032\n\rend_object_id\030\002 \001(\tH\000\210\001\001B\020\n\016_end" +
-      "_object_id\"\204\004\n\023InternalScanRequest\0222\n\013re" +
-      "sult_type\030\001 \001(\0162\035.littlehorse.ScanResult" +
-      "TypePb\022\r\n\005limit\030\002 \001(\005\022.\n\010bookmark\030\003 \001(\0132" +
-      "\027.littlehorse.BookmarkPbH\001\210\001\001\0229\n\022result_" +
-      "object_type\030\004 \001(\0162\035.littlehorse.GetableC" +
-      "lassEnum\0224\n\020scan_object_type\030\005 \001(\0162\032.lit" +
-      "tlehorse.StoreableType\022\022\n\nstore_name\030\006 \001" +
-      "(\t\022\032\n\rpartition_key\030\007 \001(\tH\002\210\001\001\022B\n\026bounde" +
-      "d_object_id_scan\030\010 \001(\0132 .littlehorse.Bou" +
-      "ndedObjectIdScanH\000\022(\n\010tag_scan\030\t \001(\0132\024.l" +
-      "ittlehorse.TagScanH\000\022\021\n\ttenant_id\030\n \001(\t\022" +
-      "(\n\007filters\030\013 \003(\0132\027.littlehorse.ScanFilte" +
-      "rB\017\n\rscan_boundaryB\013\n\t_bookmarkB\020\n\016_part" +
-      "ition_key\"\266\001\n\"InternalGetAdvertisedHosts" +
-      "Response\022I\n\005hosts\030\001 \003(\0132:.littlehorse.In" +
-      "ternalGetAdvertisedHostsResponse.HostsEn" +
-      "try\032E\n\nHostsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030" +
-      "\002 \001(\0132\027.littlehorse.LHHostInfo:\0028\001\"Z\n\024In" +
-      "ternalScanResponse\022\017\n\007results\030\001 \003(\014\0221\n\020u" +
-      "pdated_bookmark\030\002 \001(\0132\027.littlehorse.Book" +
-      "markPb\"K\n\023PartitionBookmarkPb\022\020\n\010parttio" +
-      "n\030\001 \001(\005\022\025\n\010last_key\030\002 \001(\tH\000\210\001\001B\013\n\t_last_" +
-      "key\"\334\001\n\nBookmarkPb\022Q\n\026in_progress_partit" +
-      "ions\030\001 \003(\01321.littlehorse.BookmarkPb.InPr" +
-      "ogressPartitionsEntry\022\034\n\024completed_parti" +
-      "tions\030\002 \003(\005\032]\n\031InProgressPartitionsEntry" +
-      "\022\013\n\003key\030\001 \001(\005\022/\n\005value\030\002 \001(\0132 .littlehor" +
-      "se.PartitionBookmarkPb:\0028\001*-\n\020ScanResult" +
-      "TypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io." +
-      "littlehorse.common.protoP\001b\006proto3"
+      "orse.AttributePb\0227\n\020scan_object_type\030\004 \001" +
+      "(\0162\035.littlehorse.GetableClassEnumB\027\n\025_ea" +
+      "rliest_create_timeB\025\n\023_latest_create_tim" +
+      "e\"\225\001\n\023BoundedObjectIdScan\022\027\n\017start_objec" +
+      "t_id\030\001 \001(\t\022\032\n\rend_object_id\030\002 \001(\tH\000\210\001\001\0227" +
+      "\n\020scan_object_type\030\003 \001(\0162\035.littlehorse.G" +
+      "etableClassEnumB\020\n\016_end_object_id\"\273\003\n\023In" +
+      "ternalScanRequest\0222\n\013result_type\030\001 \001(\0162\035" +
+      ".littlehorse.ScanResultTypePb\022\r\n\005limit\030\002" +
+      " \001(\005\022.\n\010bookmark\030\003 \001(\0132\027.littlehorse.Boo" +
+      "kmarkPbH\001\210\001\001\0229\n\022result_object_type\030\004 \001(\016" +
+      "2\035.littlehorse.GetableClassEnum\022\022\n\nstore" +
+      "_name\030\005 \001(\t\022\032\n\rpartition_key\030\006 \001(\tH\002\210\001\001\022" +
+      "B\n\026bounded_object_id_scan\030\007 \001(\0132 .little" +
+      "horse.BoundedObjectIdScanH\000\022(\n\010tag_scan\030" +
+      "\010 \001(\0132\024.littlehorse.TagScanH\000\022(\n\007filters" +
+      "\030\t \003(\0132\027.littlehorse.ScanFilterB\017\n\rscan_" +
+      "boundaryB\013\n\t_bookmarkB\020\n\016_partition_key\"" +
+      "\266\001\n\"InternalGetAdvertisedHostsResponse\022I" +
+      "\n\005hosts\030\001 \003(\0132:.littlehorse.InternalGetA" +
+      "dvertisedHostsResponse.HostsEntry\032E\n\nHos" +
+      "tsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.li" +
+      "ttlehorse.LHHostInfo:\0028\001\"Z\n\024InternalScan" +
+      "Response\022\017\n\007results\030\001 \003(\014\0221\n\020updated_boo" +
+      "kmark\030\002 \001(\0132\027.littlehorse.BookmarkPb\"K\n\023" +
+      "PartitionBookmarkPb\022\020\n\010parttion\030\001 \001(\005\022\025\n" +
+      "\010last_key\030\002 \001(\tH\000\210\001\001B\013\n\t_last_key\"\334\001\n\nBo" +
+      "okmarkPb\022Q\n\026in_progress_partitions\030\001 \003(\013" +
+      "21.littlehorse.BookmarkPb.InProgressPart" +
+      "itionsEntry\022\034\n\024completed_partitions\030\002 \003(" +
+      "\005\032]\n\031InProgressPartitionsEntry\022\013\n\003key\030\001 " +
+      "\001(\005\022/\n\005value\030\002 \001(\0132 .littlehorse.Partiti" +
+      "onBookmarkPb:\0028\001*-\n\020ScanResultTypePb\022\r\n\t" +
+      "OBJECT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io.littlehors" +
+      "e.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -190,19 +190,19 @@ public final class InteractiveQuery {
     internal_static_littlehorse_TagScan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TagScan_descriptor,
-        new java.lang.String[] { "EarliestCreateTime", "LatestCreateTime", "Attributes", "ObjectType", "EarliestCreateTime", "LatestCreateTime", });
+        new java.lang.String[] { "EarliestCreateTime", "LatestCreateTime", "Attributes", "ScanObjectType", "EarliestCreateTime", "LatestCreateTime", });
     internal_static_littlehorse_BoundedObjectIdScan_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_BoundedObjectIdScan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_BoundedObjectIdScan_descriptor,
-        new java.lang.String[] { "StartObjectId", "EndObjectId", "EndObjectId", });
+        new java.lang.String[] { "StartObjectId", "EndObjectId", "ScanObjectType", "EndObjectId", });
     internal_static_littlehorse_InternalScanRequest_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_InternalScanRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InternalScanRequest_descriptor,
-        new java.lang.String[] { "ResultType", "Limit", "Bookmark", "ResultObjectType", "ScanObjectType", "StoreName", "PartitionKey", "BoundedObjectIdScan", "TagScan", "TenantId", "Filters", "ScanBoundary", "Bookmark", "PartitionKey", });
+        new java.lang.String[] { "ResultType", "Limit", "Bookmark", "ResultObjectType", "StoreName", "PartitionKey", "BoundedObjectIdScan", "TagScan", "Filters", "ScanBoundary", "Bookmark", "PartitionKey", });
     internal_static_littlehorse_InternalGetAdvertisedHostsResponse_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_InternalGetAdvertisedHostsResponse_fieldAccessorTable = new

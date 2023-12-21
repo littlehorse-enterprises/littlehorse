@@ -1,27 +1,25 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHStore;
+import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
+import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.ArrayList;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +35,12 @@ public class SearchTaskRunRequestModel
     private Date earliestStart;
     private Date latestStart;
 
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.TASK_RUN;
     }
 
+    @Override
     public Class<SearchTaskRunRequest> getProtoBaseClass() {
         return SearchTaskRunRequest.class;
     }
@@ -64,6 +64,7 @@ public class SearchTaskRunRequestModel
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
     }
 
+    @Override
     public SearchTaskRunRequest.Builder toProto() {
         SearchTaskRunRequest.Builder out = SearchTaskRunRequest.newBuilder().setTaskDefName(taskDefName);
 
@@ -84,8 +85,13 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public List<Attribute> getSearchAttributes() {
-        List<Attribute> out = new ArrayList<>();
+    public TagScanModel getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+        // Return error to client if the TaskDef doesn't exist
+        TaskDefModel taskDef = ctx.service().getTaskDef(taskDefName);
+        if (taskDef == null)
+            throw new LHApiException(Status.INVALID_ARGUMENT, "No such taskDef %s".formatted(taskDefName));
+
+        TagScanModel out = new TagScanModel(GetableClassEnum.TASK_RUN, earliestStart, latestStart);
         out.add(new Attribute("taskDefName", taskDefName));
 
         if (status != null) {
@@ -96,18 +102,7 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
-    }
-
-    @Override
-    public LHStore getStoreType() {
-        return LHStore.CORE;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return new TagScanBoundaryStrategy(
-                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+    public LHStoreType getStoreType() {
+        return LHStoreType.CORE;
     }
 }

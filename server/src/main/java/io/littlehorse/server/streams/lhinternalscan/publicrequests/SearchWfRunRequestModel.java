@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -12,7 +11,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
@@ -20,11 +19,11 @@ import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.VariableMatchModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
+import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,13 +48,17 @@ public class SearchWfRunRequestModel
     private Date earliestStart;
     private Date latestStart;
 
-    // not from proto
-    private ExecutionContext executionContext;
-
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
     }
 
+    @Override
+    public LHStoreType getStoreType() {
+        return LHStoreType.CORE;
+    }
+
+    @Override
     public Class<SearchWfRunRequest> getProtoBaseClass() {
         return SearchWfRunRequest.class;
     }
@@ -84,10 +86,9 @@ public class SearchWfRunRequestModel
         for (VariableMatch vm : p.getVariableFiltersList()) {
             variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
         }
-
-        this.executionContext = context;
     }
 
+    @Override
     public SearchWfRunRequest.Builder toProto() {
         SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder().setWfSpecName(wfSpecName);
         if (bookmark != null) {
@@ -110,14 +111,9 @@ public class SearchWfRunRequestModel
         return out;
     }
 
-    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto, ExecutionContext context) {
-        SearchWfRunRequestModel out = new SearchWfRunRequestModel();
-        out.initFrom(proto, context);
-        return out;
-    }
-
-    public List<Attribute> getSearchAttributes() {
-        List<Attribute> out = new ArrayList<>();
+    @Override
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+        TagScanModel out = new TagScanModel(getObjectType());
 
         if (wfSpecMajorVersion != null) {
             if (wfSpecRevision == null) {
@@ -138,25 +134,7 @@ public class SearchWfRunRequestModel
         if (status != null) {
             out.add(new Attribute("status", status.toString()));
         }
-
         return out;
-    }
-
-    @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        // This will be more complex when we have REMOTE tags again.
-        return TagStorageType.LOCAL;
-    }
-
-    @Override
-    public LHStore getStoreType() {
-        return LHStore.CORE;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return new TagScanBoundaryStrategy(
-                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 
     @Override
@@ -189,6 +167,12 @@ public class SearchWfRunRequestModel
             out.add(new ScanFilterModel(variableMatch));
         }
 
+        return out;
+    }
+
+    public static SearchWfRunRequestModel fromProto(SearchWfRunRequest proto, ExecutionContext context) {
+        SearchWfRunRequestModel out = new SearchWfRunRequestModel();
+        out.initFrom(proto, context);
         return out;
     }
 }

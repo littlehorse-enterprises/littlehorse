@@ -2,23 +2,23 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 
@@ -41,8 +41,8 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public LHStore getStoreType() {
-        return LHStore.REPARTITION;
+    public LHStoreType getStoreType() {
+        return LHStoreType.REPARTITION;
     }
 
     public ListTaskMetricsRequest.Builder toProto() {
@@ -65,13 +65,9 @@ public class ListTaskMetricsRequestModel
         limit = numWindows;
     }
 
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.TASK_DEF_METRICS;
-    }
-
-    @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
     }
 
     @Override
@@ -80,12 +76,11 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = TaskDefMetricsModel.getObjectId(windowLength, lastWindowStart, taskDefId.toString());
-        String startKey = TaskDefMetricsModel.getObjectId(
-                windowLength,
-                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows)),
-                taskDefId.toString());
-        return new ObjectIdScanBoundaryStrategy(taskDefId.toString(), startKey, endKey);
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+        Date earliestWindowStart =
+                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows));
+        return new BoundedObjectIdScanModel(
+                new TaskDefMetricsIdModel(earliestWindowStart, windowLength, taskDefId),
+                new TaskDefMetricsIdModel(lastWindowStart, windowLength, taskDefId));
     }
 }

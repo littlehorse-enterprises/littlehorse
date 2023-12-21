@@ -31,6 +31,11 @@ public abstract class PublicScanRequest<
 
     public abstract GetableClassEnum getObjectType();
 
+    /**
+     * Whether we should return a list of objects or a list of objct id's to the caller.
+     * You should override this method if you want to return a list of objects.
+     * @return whether to return object id's or objects
+     */
     public ScanResultTypePb getResultType() {
         return ScanResultTypePb.OBJECT_ID;
     }
@@ -48,12 +53,10 @@ public abstract class PublicScanRequest<
         ScanBoundary<?> scanBoundary = getScanBoundary(ctx);
         InternalScanRequestModel out = new InternalScanRequestModel(scanBoundary, ctx);
 
-        if (out.getLimit() == 0) out.setLimit(getLimit());
-
-        out.setBookmark(bookmark);
-        out.setObjectType(getObjectType());
         out.setResultType(getResultType());
-        out.setStoreType(getStoreType());
+        if (out.getLimit() == 0) out.setLimit(getLimit());
+        out.setBookmark(bookmark);
+        out.setStoreName(getStoreType().name());
         out.setFilters(getFilters(ctx));
         return out;
     }

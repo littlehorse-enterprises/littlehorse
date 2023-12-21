@@ -2,21 +2,18 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.InternalScanRequest;
-import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventList;
 import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 
@@ -44,29 +41,18 @@ public class ListExternalEventsRequestModel
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
     }
 
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
     }
 
-    public InternalScanRequest.Builder getBaseSearch(RequestExecutionContext ctx) {}
-
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
+    public LHStoreType getStoreType() {
+        return LHStoreType.CORE;
     }
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return ObjectIdScanBoundaryStrategy.from(wfRunId);
-    }
-
-    @Override
-    public ScanResultTypePb getResultType() {
-        return ScanResultTypePb.OBJECT;
-    }
-
-    @Override
-    public LHStore getStoreType() {
-        return LHStore.CORE;
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException {
+        return new BoundedObjectIdScanModel(getObjectType(), wfRunId);
     }
 }

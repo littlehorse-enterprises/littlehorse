@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private BoundedObjectIdScan() {
     startObjectId_ = "";
     endObjectId_ = "";
+    scanObjectType_ = 0;
   }
 
   @java.lang.Override
@@ -127,6 +128,24 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SCAN_OBJECT_TYPE_FIELD_NUMBER = 3;
+  private int scanObjectType_ = 0;
+  /**
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+   * @return The enum numeric value on the wire for scanObjectType.
+   */
+  @java.lang.Override public int getScanObjectTypeValue() {
+    return scanObjectType_;
+  }
+  /**
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+   * @return The scanObjectType.
+   */
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnum getScanObjectType() {
+    io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(scanObjectType_);
+    return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -147,6 +166,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, endObjectId_);
     }
+    if (scanObjectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
+      output.writeEnum(3, scanObjectType_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -161,6 +183,10 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, endObjectId_);
+    }
+    if (scanObjectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(3, scanObjectType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -184,6 +210,7 @@ private static final long serialVersionUID = 0L;
       if (!getEndObjectId()
           .equals(other.getEndObjectId())) return false;
     }
+    if (scanObjectType_ != other.scanObjectType_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -201,6 +228,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + END_OBJECT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getEndObjectId().hashCode();
     }
+    hash = (37 * hash) + SCAN_OBJECT_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + scanObjectType_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -334,6 +363,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       startObjectId_ = "";
       endObjectId_ = "";
+      scanObjectType_ = 0;
       return this;
     }
 
@@ -374,6 +404,9 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.endObjectId_ = endObjectId_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.scanObjectType_ = scanObjectType_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -432,6 +465,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.scanObjectType_ != 0) {
+        setScanObjectTypeValue(other.getScanObjectTypeValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -468,6 +504,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              scanObjectType_ = input.readEnum();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -632,6 +673,59 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       endObjectId_ = value;
       bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
+    private int scanObjectType_ = 0;
+    /**
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+     * @return The enum numeric value on the wire for scanObjectType.
+     */
+    @java.lang.Override public int getScanObjectTypeValue() {
+      return scanObjectType_;
+    }
+    /**
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+     * @param value The enum numeric value on the wire for scanObjectType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setScanObjectTypeValue(int value) {
+      scanObjectType_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+     * @return The scanObjectType.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.GetableClassEnum getScanObjectType() {
+      io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(scanObjectType_);
+      return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+     * @param value The scanObjectType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setScanObjectType(io.littlehorse.common.proto.GetableClassEnum value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000004;
+      scanObjectType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearScanObjectType() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      scanObjectType_ = 0;
       onChanged();
       return this;
     }

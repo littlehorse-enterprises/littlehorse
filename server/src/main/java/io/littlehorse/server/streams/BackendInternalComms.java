@@ -59,7 +59,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -487,7 +486,7 @@ public class BackendInternalComms implements Closeable {
         String startKey = bkmk == null ? query.getScanBoundary().getStartKey() : bkmk.getLastKey();
         String endKey = query.getScanBoundary().getEndKey();
 
-        Class<? extends Storeable<?>> cls = Storeable.getStoreableClass(query.getScanObjectType());
+        Class<? extends Storeable<?>> cls = query.getScanBoundary().getIterType();
 
         try (LHKeyValueIterator<?> iter = partitionStore.range(startKey, endKey, cls)) {
             while (iter.hasNext() && response.getResultsCount() < query.getLimit()) {

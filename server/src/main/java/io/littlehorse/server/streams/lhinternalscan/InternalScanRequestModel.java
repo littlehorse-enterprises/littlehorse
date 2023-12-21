@@ -4,30 +4,24 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.Storeable;
-import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanRequest;
 import io.littlehorse.common.proto.InternalScanRequest.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
 import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
 import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +35,6 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     private ScanResultTypePb resultType;
     private int limit;
     private BookmarkPb bookmark;
-    private StoreableType scanObjectType;
     private GetableClassEnum resultObjectType;
     private String storeName;
 
@@ -73,7 +66,6 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
                 .setLimit(limit)
                 .setStoreName(storeName)
                 .setResultObjectType(resultObjectType)
-                .setScanObjectType(scanObjectType)
                 .setResultType(resultType);
 
         if (bookmark != null) out.setBookmark(bookmark);
@@ -105,7 +97,6 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
         resultType = p.getResultType();
         limit = p.getLimit();
         if (p.hasBookmark()) bookmark = p.getBookmark();
-        scanObjectType = p.getScanObjectType();
         resultObjectType = p.getResultObjectType();
         storeName = p.getStoreName();
 
@@ -195,30 +186,29 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
         return Utils.toPositive(Utils.murmur2(key.getBytes())) % totalPartitions;
     }
 
-    private ByteString iterKeyValueToInternalScanResult(
-            LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
+    // private ByteString iterKeyValueToInternalScanResult(LHIterKeyValue<? extends Storeable<?>> next) {
 
-        if (resultType == ScanResultTypePb.OBJECT) {
-            StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
+    //     if (resultType == ScanResultTypePb.OBJECT) {
+    //         StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
 
-            return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
+    //         return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
 
-        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+    //     } else if (resultType == ScanResultTypePb.OBJECT_ID) {
+    //         Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(scanObjectType);
 
-            // TODO: This is a leaky abstraction.
-            String storeableKey = next.getKey();
-            Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
-            if (matcher.find()) {
-                int prefixEndIndex = matcher.end(0);
-                String objectIdStr = storeableKey.substring(prefixEndIndex);
-                return ByteString.copyFrom(
-                        ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
-            } else {
-                throw new IllegalStateException("Invalid object id");
-            }
-        } else {
-            throw new RuntimeException("Impossible: unknown result type");
-        }
-    }
+    //         // TODO: This is a leaky abstraction.
+    //         String storeableKey = next.getKey();
+    //         Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
+    //         if (matcher.find()) {
+    //             int prefixEndIndex = matcher.end(0);
+    //             String objectIdStr = storeableKey.substring(prefixEndIndex);
+    //             return ByteString.copyFrom(
+    //                     ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
+    //         } else {
+    //             throw new IllegalStateException("Invalid object id");
+    //         }
+    //     } else {
+    //         throw new RuntimeException("Impossible: unknown result type");
+    //     }
+    // }
 }

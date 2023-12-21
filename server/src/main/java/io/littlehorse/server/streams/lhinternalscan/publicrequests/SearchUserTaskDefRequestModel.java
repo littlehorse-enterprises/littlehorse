@@ -1,22 +1,19 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest.UserTaskDefCriteriaCase;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdList;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +39,8 @@ public class SearchUserTaskDefRequestModel
     }
 
     @Override
-    public LHStore getStoreType() {
-        return LHStore.GLOBAL_METADATA;
+    public LHStoreType getStoreType() {
+        return LHStoreType.METADATA;
     }
 
     public GetableClassEnum getObjectType() {
@@ -75,6 +72,7 @@ public class SearchUserTaskDefRequestModel
         }
     }
 
+    @Override
     public SearchUserTaskDefRequest.Builder toProto() {
         SearchUserTaskDefRequest.Builder out = SearchUserTaskDefRequest.newBuilder();
         if (bookmark != null) {
@@ -103,18 +101,15 @@ public class SearchUserTaskDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+    public BoundedObjectIdScanModel getScanBoundary(RequestExecutionContext ctx) {
+        String scanPrefix;
         if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            scanPrefix = prefix;
         } else if (name != null && !name.isEmpty()) {
-            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name, name + "/");
+            scanPrefix = name + "/";
         } else {
-            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+            scanPrefix = "";
         }
+        return new BoundedObjectIdScanModel(GetableClassEnum.USER_TASK_DEF, scanPrefix);
     }
 }

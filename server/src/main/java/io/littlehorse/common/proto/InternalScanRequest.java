@@ -18,10 +18,8 @@ private static final long serialVersionUID = 0L;
   private InternalScanRequest() {
     resultType_ = 0;
     resultObjectType_ = 0;
-    scanObjectType_ = 0;
     storeName_ = "";
     partitionKey_ = "";
-    tenantId_ = "";
     filters_ = java.util.Collections.emptyList();
   }
 
@@ -52,8 +50,8 @@ private static final long serialVersionUID = 0L;
   public enum ScanBoundaryCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    BOUNDED_OBJECT_ID_SCAN(8),
-    TAG_SCAN(9),
+    BOUNDED_OBJECT_ID_SCAN(7),
+    TAG_SCAN(8),
     SCANBOUNDARY_NOT_SET(0);
     private final int value;
     private ScanBoundaryCase(int value) {
@@ -71,8 +69,8 @@ private static final long serialVersionUID = 0L;
 
     public static ScanBoundaryCase forNumber(int value) {
       switch (value) {
-        case 8: return BOUNDED_OBJECT_ID_SCAN;
-        case 9: return TAG_SCAN;
+        case 7: return BOUNDED_OBJECT_ID_SCAN;
+        case 8: return TAG_SCAN;
         case 0: return SCANBOUNDARY_NOT_SET;
         default: return null;
       }
@@ -161,29 +159,11 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
   }
 
-  public static final int SCAN_OBJECT_TYPE_FIELD_NUMBER = 5;
-  private int scanObjectType_ = 0;
-  /**
-   * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-   * @return The enum numeric value on the wire for scanObjectType.
-   */
-  @java.lang.Override public int getScanObjectTypeValue() {
-    return scanObjectType_;
-  }
-  /**
-   * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-   * @return The scanObjectType.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.StoreableType getScanObjectType() {
-    io.littlehorse.common.proto.StoreableType result = io.littlehorse.common.proto.StoreableType.forNumber(scanObjectType_);
-    return result == null ? io.littlehorse.common.proto.StoreableType.UNRECOGNIZED : result;
-  }
-
-  public static final int STORE_NAME_FIELD_NUMBER = 6;
+  public static final int STORE_NAME_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
   private volatile java.lang.Object storeName_ = "";
   /**
-   * <code>string store_name = 6;</code>
+   * <code>string store_name = 5;</code>
    * @return The storeName.
    */
   @java.lang.Override
@@ -200,7 +180,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string store_name = 6;</code>
+   * <code>string store_name = 5;</code>
    * @return The bytes for storeName.
    */
   @java.lang.Override
@@ -218,7 +198,7 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PARTITION_KEY_FIELD_NUMBER = 7;
+  public static final int PARTITION_KEY_FIELD_NUMBER = 6;
   @SuppressWarnings("serial")
   private volatile java.lang.Object partitionKey_ = "";
   /**
@@ -227,7 +207,7 @@ private static final long serialVersionUID = 0L;
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return Whether the partitionKey field is set.
    */
   @java.lang.Override
@@ -240,7 +220,7 @@ private static final long serialVersionUID = 0L;
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The partitionKey.
    */
   @java.lang.Override
@@ -262,7 +242,7 @@ private static final long serialVersionUID = 0L;
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The bytes for partitionKey.
    */
   @java.lang.Override
@@ -280,119 +260,80 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER = 8;
+  public static final int BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER = 7;
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    * @return Whether the boundedObjectIdScan field is set.
    */
   @java.lang.Override
   public boolean hasBoundedObjectIdScan() {
-    return scanBoundaryCase_ == 8;
+    return scanBoundaryCase_ == 7;
   }
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    * @return The boundedObjectIdScan.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.BoundedObjectIdScan getBoundedObjectIdScan() {
-    if (scanBoundaryCase_ == 8) {
+    if (scanBoundaryCase_ == 7) {
        return (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_;
     }
     return io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.BoundedObjectIdScanOrBuilder getBoundedObjectIdScanOrBuilder() {
-    if (scanBoundaryCase_ == 8) {
+    if (scanBoundaryCase_ == 7) {
        return (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_;
     }
     return io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
   }
 
-  public static final int TAG_SCAN_FIELD_NUMBER = 9;
+  public static final int TAG_SCAN_FIELD_NUMBER = 8;
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    * @return Whether the tagScan field is set.
    */
   @java.lang.Override
   public boolean hasTagScan() {
-    return scanBoundaryCase_ == 9;
+    return scanBoundaryCase_ == 8;
   }
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    * @return The tagScan.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TagScan getTagScan() {
-    if (scanBoundaryCase_ == 9) {
+    if (scanBoundaryCase_ == 8) {
        return (io.littlehorse.common.proto.TagScan) scanBoundary_;
     }
     return io.littlehorse.common.proto.TagScan.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TagScanOrBuilder getTagScanOrBuilder() {
-    if (scanBoundaryCase_ == 9) {
+    if (scanBoundaryCase_ == 8) {
        return (io.littlehorse.common.proto.TagScan) scanBoundary_;
     }
     return io.littlehorse.common.proto.TagScan.getDefaultInstance();
   }
 
-  public static final int TENANT_ID_FIELD_NUMBER = 10;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
-  /**
-   * <code>string tenant_id = 10;</code>
-   * @return The tenantId.
-   */
-  @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string tenant_id = 10;</code>
-   * @return The bytes for tenantId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int FILTERS_FIELD_NUMBER = 11;
+  public static final int FILTERS_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.common.proto.ScanFilter> filters_;
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.ScanFilter> getFiltersList() {
     return filters_;
   }
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
@@ -400,21 +341,21 @@ private static final long serialVersionUID = 0L;
     return filters_;
   }
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   @java.lang.Override
   public int getFiltersCount() {
     return filters_.size();
   }
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.ScanFilter getFilters(int index) {
     return filters_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
@@ -448,26 +389,20 @@ private static final long serialVersionUID = 0L;
     if (resultObjectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       output.writeEnum(4, resultObjectType_);
     }
-    if (scanObjectType_ != io.littlehorse.common.proto.StoreableType.STORED_GETABLE.getNumber()) {
-      output.writeEnum(5, scanObjectType_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(storeName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, storeName_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, storeName_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, partitionKey_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, partitionKey_);
+    }
+    if (scanBoundaryCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_);
     }
     if (scanBoundaryCase_ == 8) {
-      output.writeMessage(8, (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_);
-    }
-    if (scanBoundaryCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.common.proto.TagScan) scanBoundary_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 10, tenantId_);
+      output.writeMessage(8, (io.littlehorse.common.proto.TagScan) scanBoundary_);
     }
     for (int i = 0; i < filters_.size(); i++) {
-      output.writeMessage(11, filters_.get(i));
+      output.writeMessage(9, filters_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -494,30 +429,23 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, resultObjectType_);
     }
-    if (scanObjectType_ != io.littlehorse.common.proto.StoreableType.STORED_GETABLE.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, scanObjectType_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(storeName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, storeName_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, storeName_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, partitionKey_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, partitionKey_);
+    }
+    if (scanBoundaryCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_);
     }
     if (scanBoundaryCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_);
-    }
-    if (scanBoundaryCase_ == 9) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.common.proto.TagScan) scanBoundary_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, tenantId_);
+        .computeMessageSize(8, (io.littlehorse.common.proto.TagScan) scanBoundary_);
     }
     for (int i = 0; i < filters_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, filters_.get(i));
+        .computeMessageSize(9, filters_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -543,7 +471,6 @@ private static final long serialVersionUID = 0L;
           .equals(other.getBookmark())) return false;
     }
     if (resultObjectType_ != other.resultObjectType_) return false;
-    if (scanObjectType_ != other.scanObjectType_) return false;
     if (!getStoreName()
         .equals(other.getStoreName())) return false;
     if (hasPartitionKey() != other.hasPartitionKey()) return false;
@@ -551,17 +478,15 @@ private static final long serialVersionUID = 0L;
       if (!getPartitionKey()
           .equals(other.getPartitionKey())) return false;
     }
-    if (!getTenantId()
-        .equals(other.getTenantId())) return false;
     if (!getFiltersList()
         .equals(other.getFiltersList())) return false;
     if (!getScanBoundaryCase().equals(other.getScanBoundaryCase())) return false;
     switch (scanBoundaryCase_) {
-      case 8:
+      case 7:
         if (!getBoundedObjectIdScan()
             .equals(other.getBoundedObjectIdScan())) return false;
         break;
-      case 9:
+      case 8:
         if (!getTagScan()
             .equals(other.getTagScan())) return false;
         break;
@@ -589,26 +514,22 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + RESULT_OBJECT_TYPE_FIELD_NUMBER;
     hash = (53 * hash) + resultObjectType_;
-    hash = (37 * hash) + SCAN_OBJECT_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + scanObjectType_;
     hash = (37 * hash) + STORE_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getStoreName().hashCode();
     if (hasPartitionKey()) {
       hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
       hash = (53 * hash) + getPartitionKey().hashCode();
     }
-    hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTenantId().hashCode();
     if (getFiltersCount() > 0) {
       hash = (37 * hash) + FILTERS_FIELD_NUMBER;
       hash = (53 * hash) + getFiltersList().hashCode();
     }
     switch (scanBoundaryCase_) {
-      case 8:
+      case 7:
         hash = (37 * hash) + BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER;
         hash = (53 * hash) + getBoundedObjectIdScan().hashCode();
         break;
-      case 9:
+      case 8:
         hash = (37 * hash) + TAG_SCAN_FIELD_NUMBER;
         hash = (53 * hash) + getTagScan().hashCode();
         break;
@@ -761,7 +682,6 @@ private static final long serialVersionUID = 0L;
         bookmarkBuilder_ = null;
       }
       resultObjectType_ = 0;
-      scanObjectType_ = 0;
       storeName_ = "";
       partitionKey_ = "";
       if (boundedObjectIdScanBuilder_ != null) {
@@ -770,14 +690,13 @@ private static final long serialVersionUID = 0L;
       if (tagScanBuilder_ != null) {
         tagScanBuilder_.clear();
       }
-      tenantId_ = "";
       if (filtersBuilder_ == null) {
         filters_ = java.util.Collections.emptyList();
       } else {
         filters_ = null;
         filtersBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000400);
+      bitField0_ = (bitField0_ & ~0x00000100);
       scanBoundaryCase_ = 0;
       scanBoundary_ = null;
       return this;
@@ -815,9 +734,9 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanRequest result) {
       if (filtersBuilder_ == null) {
-        if (((bitField0_ & 0x00000400) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           filters_ = java.util.Collections.unmodifiableList(filters_);
-          bitField0_ = (bitField0_ & ~0x00000400);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.filters_ = filters_;
       } else {
@@ -844,17 +763,11 @@ private static final long serialVersionUID = 0L;
         result.resultObjectType_ = resultObjectType_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.scanObjectType_ = scanObjectType_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.storeName_ = storeName_;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.partitionKey_ = partitionKey_;
         to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000200) != 0)) {
-        result.tenantId_ = tenantId_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -862,11 +775,11 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.common.proto.InternalScanRequest result) {
       result.scanBoundaryCase_ = scanBoundaryCase_;
       result.scanBoundary_ = this.scanBoundary_;
-      if (scanBoundaryCase_ == 8 &&
+      if (scanBoundaryCase_ == 7 &&
           boundedObjectIdScanBuilder_ != null) {
         result.scanBoundary_ = boundedObjectIdScanBuilder_.build();
       }
-      if (scanBoundaryCase_ == 9 &&
+      if (scanBoundaryCase_ == 8 &&
           tagScanBuilder_ != null) {
         result.scanBoundary_ = tagScanBuilder_.build();
       }
@@ -928,29 +841,21 @@ private static final long serialVersionUID = 0L;
       if (other.resultObjectType_ != 0) {
         setResultObjectTypeValue(other.getResultObjectTypeValue());
       }
-      if (other.scanObjectType_ != 0) {
-        setScanObjectTypeValue(other.getScanObjectTypeValue());
-      }
       if (!other.getStoreName().isEmpty()) {
         storeName_ = other.storeName_;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       if (other.hasPartitionKey()) {
         partitionKey_ = other.partitionKey_;
-        bitField0_ |= 0x00000040;
-        onChanged();
-      }
-      if (!other.getTenantId().isEmpty()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (filtersBuilder_ == null) {
         if (!other.filters_.isEmpty()) {
           if (filters_.isEmpty()) {
             filters_ = other.filters_;
-            bitField0_ = (bitField0_ & ~0x00000400);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensureFiltersIsMutable();
             filters_.addAll(other.filters_);
@@ -963,7 +868,7 @@ private static final long serialVersionUID = 0L;
             filtersBuilder_.dispose();
             filtersBuilder_ = null;
             filters_ = other.filters_;
-            bitField0_ = (bitField0_ & ~0x00000400);
+            bitField0_ = (bitField0_ & ~0x00000100);
             filtersBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getFiltersFieldBuilder() : null;
@@ -1033,41 +938,31 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
-            case 40: {
-              scanObjectType_ = input.readEnum();
+            case 42: {
+              storeName_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
-            } // case 40
+            } // case 42
             case 50: {
-              storeName_ = input.readStringRequireUtf8();
+              partitionKey_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000020;
               break;
             } // case 50
             case 58: {
-              partitionKey_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000040;
+              input.readMessage(
+                  getBoundedObjectIdScanFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              scanBoundaryCase_ = 7;
               break;
             } // case 58
             case 66: {
               input.readMessage(
-                  getBoundedObjectIdScanFieldBuilder().getBuilder(),
+                  getTagScanFieldBuilder().getBuilder(),
                   extensionRegistry);
               scanBoundaryCase_ = 8;
               break;
             } // case 66
             case 74: {
-              input.readMessage(
-                  getTagScanFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              scanBoundaryCase_ = 9;
-              break;
-            } // case 74
-            case 82: {
-              tenantId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000200;
-              break;
-            } // case 82
-            case 90: {
               io.littlehorse.common.proto.ScanFilter m =
                   input.readMessage(
                       io.littlehorse.common.proto.ScanFilter.parser(),
@@ -1079,7 +974,7 @@ private static final long serialVersionUID = 0L;
                 filtersBuilder_.addMessage(m);
               }
               break;
-            } // case 90
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1369,62 +1264,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int scanObjectType_ = 0;
-    /**
-     * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-     * @return The enum numeric value on the wire for scanObjectType.
-     */
-    @java.lang.Override public int getScanObjectTypeValue() {
-      return scanObjectType_;
-    }
-    /**
-     * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-     * @param value The enum numeric value on the wire for scanObjectType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setScanObjectTypeValue(int value) {
-      scanObjectType_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-     * @return The scanObjectType.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.StoreableType getScanObjectType() {
-      io.littlehorse.common.proto.StoreableType result = io.littlehorse.common.proto.StoreableType.forNumber(scanObjectType_);
-      return result == null ? io.littlehorse.common.proto.StoreableType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-     * @param value The scanObjectType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setScanObjectType(io.littlehorse.common.proto.StoreableType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000010;
-      scanObjectType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearScanObjectType() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      scanObjectType_ = 0;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object storeName_ = "";
     /**
-     * <code>string store_name = 6;</code>
+     * <code>string store_name = 5;</code>
      * @return The storeName.
      */
     public java.lang.String getStoreName() {
@@ -1440,7 +1282,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string store_name = 6;</code>
+     * <code>string store_name = 5;</code>
      * @return The bytes for storeName.
      */
     public com.google.protobuf.ByteString
@@ -1457,7 +1299,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string store_name = 6;</code>
+     * <code>string store_name = 5;</code>
      * @param value The storeName to set.
      * @return This builder for chaining.
      */
@@ -1465,22 +1307,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       storeName_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>string store_name = 6;</code>
+     * <code>string store_name = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearStoreName() {
       storeName_ = getDefaultInstance().getStoreName();
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
     }
     /**
-     * <code>string store_name = 6;</code>
+     * <code>string store_name = 5;</code>
      * @param value The bytes for storeName to set.
      * @return This builder for chaining.
      */
@@ -1489,7 +1331,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       storeName_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1501,11 +1343,11 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @return Whether the partitionKey field is set.
      */
     public boolean hasPartitionKey() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -1513,7 +1355,7 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @return The partitionKey.
      */
     public java.lang.String getPartitionKey() {
@@ -1534,7 +1376,7 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @return The bytes for partitionKey.
      */
     public com.google.protobuf.ByteString
@@ -1556,7 +1398,7 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @param value The partitionKey to set.
      * @return This builder for chaining.
      */
@@ -1564,7 +1406,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       partitionKey_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1574,12 +1416,12 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearPartitionKey() {
       partitionKey_ = getDefaultInstance().getPartitionKey();
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
@@ -1589,7 +1431,7 @@ private static final long serialVersionUID = 0L;
      * store are scanned. Otherwise, only the parttion given by the 
      * </pre>
      *
-     * <code>optional string partition_key = 7;</code>
+     * <code>optional string partition_key = 6;</code>
      * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
      */
@@ -1598,7 +1440,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       partitionKey_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1606,33 +1448,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BoundedObjectIdScan, io.littlehorse.common.proto.BoundedObjectIdScan.Builder, io.littlehorse.common.proto.BoundedObjectIdScanOrBuilder> boundedObjectIdScanBuilder_;
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      * @return Whether the boundedObjectIdScan field is set.
      */
     @java.lang.Override
     public boolean hasBoundedObjectIdScan() {
-      return scanBoundaryCase_ == 8;
+      return scanBoundaryCase_ == 7;
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      * @return The boundedObjectIdScan.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.BoundedObjectIdScan getBoundedObjectIdScan() {
       if (boundedObjectIdScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           return (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_;
         }
         return io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
       } else {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           return boundedObjectIdScanBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     public Builder setBoundedObjectIdScan(io.littlehorse.common.proto.BoundedObjectIdScan value) {
       if (boundedObjectIdScanBuilder_ == null) {
@@ -1644,11 +1486,11 @@ private static final long serialVersionUID = 0L;
       } else {
         boundedObjectIdScanBuilder_.setMessage(value);
       }
-      scanBoundaryCase_ = 8;
+      scanBoundaryCase_ = 7;
       return this;
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     public Builder setBoundedObjectIdScan(
         io.littlehorse.common.proto.BoundedObjectIdScan.Builder builderForValue) {
@@ -1658,15 +1500,15 @@ private static final long serialVersionUID = 0L;
       } else {
         boundedObjectIdScanBuilder_.setMessage(builderForValue.build());
       }
-      scanBoundaryCase_ = 8;
+      scanBoundaryCase_ = 7;
       return this;
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     public Builder mergeBoundedObjectIdScan(io.littlehorse.common.proto.BoundedObjectIdScan value) {
       if (boundedObjectIdScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 8 &&
+        if (scanBoundaryCase_ == 7 &&
             scanBoundary_ != io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance()) {
           scanBoundary_ = io.littlehorse.common.proto.BoundedObjectIdScan.newBuilder((io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_)
               .mergeFrom(value).buildPartial();
@@ -1675,27 +1517,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           boundedObjectIdScanBuilder_.mergeFrom(value);
         } else {
           boundedObjectIdScanBuilder_.setMessage(value);
         }
       }
-      scanBoundaryCase_ = 8;
+      scanBoundaryCase_ = 7;
       return this;
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     public Builder clearBoundedObjectIdScan() {
       if (boundedObjectIdScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
           onChanged();
         }
       } else {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
         }
@@ -1704,33 +1546,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     public io.littlehorse.common.proto.BoundedObjectIdScan.Builder getBoundedObjectIdScanBuilder() {
       return getBoundedObjectIdScanFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.BoundedObjectIdScanOrBuilder getBoundedObjectIdScanOrBuilder() {
-      if ((scanBoundaryCase_ == 8) && (boundedObjectIdScanBuilder_ != null)) {
+      if ((scanBoundaryCase_ == 7) && (boundedObjectIdScanBuilder_ != null)) {
         return boundedObjectIdScanBuilder_.getMessageOrBuilder();
       } else {
-        if (scanBoundaryCase_ == 8) {
+        if (scanBoundaryCase_ == 7) {
           return (io.littlehorse.common.proto.BoundedObjectIdScan) scanBoundary_;
         }
         return io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+     * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BoundedObjectIdScan, io.littlehorse.common.proto.BoundedObjectIdScan.Builder, io.littlehorse.common.proto.BoundedObjectIdScanOrBuilder> 
         getBoundedObjectIdScanFieldBuilder() {
       if (boundedObjectIdScanBuilder_ == null) {
-        if (!(scanBoundaryCase_ == 8)) {
+        if (!(scanBoundaryCase_ == 7)) {
           scanBoundary_ = io.littlehorse.common.proto.BoundedObjectIdScan.getDefaultInstance();
         }
         boundedObjectIdScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1740,7 +1582,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         scanBoundary_ = null;
       }
-      scanBoundaryCase_ = 8;
+      scanBoundaryCase_ = 7;
       onChanged();
       return boundedObjectIdScanBuilder_;
     }
@@ -1748,33 +1590,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TagScan, io.littlehorse.common.proto.TagScan.Builder, io.littlehorse.common.proto.TagScanOrBuilder> tagScanBuilder_;
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      * @return Whether the tagScan field is set.
      */
     @java.lang.Override
     public boolean hasTagScan() {
-      return scanBoundaryCase_ == 9;
+      return scanBoundaryCase_ == 8;
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      * @return The tagScan.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TagScan getTagScan() {
       if (tagScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           return (io.littlehorse.common.proto.TagScan) scanBoundary_;
         }
         return io.littlehorse.common.proto.TagScan.getDefaultInstance();
       } else {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           return tagScanBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.TagScan.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     public Builder setTagScan(io.littlehorse.common.proto.TagScan value) {
       if (tagScanBuilder_ == null) {
@@ -1786,11 +1628,11 @@ private static final long serialVersionUID = 0L;
       } else {
         tagScanBuilder_.setMessage(value);
       }
-      scanBoundaryCase_ = 9;
+      scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     public Builder setTagScan(
         io.littlehorse.common.proto.TagScan.Builder builderForValue) {
@@ -1800,15 +1642,15 @@ private static final long serialVersionUID = 0L;
       } else {
         tagScanBuilder_.setMessage(builderForValue.build());
       }
-      scanBoundaryCase_ = 9;
+      scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     public Builder mergeTagScan(io.littlehorse.common.proto.TagScan value) {
       if (tagScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9 &&
+        if (scanBoundaryCase_ == 8 &&
             scanBoundary_ != io.littlehorse.common.proto.TagScan.getDefaultInstance()) {
           scanBoundary_ = io.littlehorse.common.proto.TagScan.newBuilder((io.littlehorse.common.proto.TagScan) scanBoundary_)
               .mergeFrom(value).buildPartial();
@@ -1817,27 +1659,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           tagScanBuilder_.mergeFrom(value);
         } else {
           tagScanBuilder_.setMessage(value);
         }
       }
-      scanBoundaryCase_ = 9;
+      scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     public Builder clearTagScan() {
       if (tagScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
           onChanged();
         }
       } else {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
         }
@@ -1846,33 +1688,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     public io.littlehorse.common.proto.TagScan.Builder getTagScanBuilder() {
       return getTagScanFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TagScanOrBuilder getTagScanOrBuilder() {
-      if ((scanBoundaryCase_ == 9) && (tagScanBuilder_ != null)) {
+      if ((scanBoundaryCase_ == 8) && (tagScanBuilder_ != null)) {
         return tagScanBuilder_.getMessageOrBuilder();
       } else {
-        if (scanBoundaryCase_ == 9) {
+        if (scanBoundaryCase_ == 8) {
           return (io.littlehorse.common.proto.TagScan) scanBoundary_;
         }
         return io.littlehorse.common.proto.TagScan.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TagScan tag_scan = 9;</code>
+     * <code>.littlehorse.TagScan tag_scan = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TagScan, io.littlehorse.common.proto.TagScan.Builder, io.littlehorse.common.proto.TagScanOrBuilder> 
         getTagScanFieldBuilder() {
       if (tagScanBuilder_ == null) {
-        if (!(scanBoundaryCase_ == 9)) {
+        if (!(scanBoundaryCase_ == 8)) {
           scanBoundary_ = io.littlehorse.common.proto.TagScan.getDefaultInstance();
         }
         tagScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1882,89 +1724,17 @@ private static final long serialVersionUID = 0L;
                 isClean());
         scanBoundary_ = null;
       }
-      scanBoundaryCase_ = 9;
+      scanBoundaryCase_ = 8;
       onChanged();
       return tagScanBuilder_;
-    }
-
-    private java.lang.Object tenantId_ = "";
-    /**
-     * <code>string tenant_id = 10;</code>
-     * @return The tenantId.
-     */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string tenant_id = 10;</code>
-     * @return The bytes for tenantId.
-     */
-    public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string tenant_id = 10;</code>
-     * @param value The tenantId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTenantId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
-      bitField0_ |= 0x00000200;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string tenant_id = 10;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
-      bitField0_ = (bitField0_ & ~0x00000200);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string tenant_id = 10;</code>
-     * @param value The bytes for tenantId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTenantIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      tenantId_ = value;
-      bitField0_ |= 0x00000200;
-      onChanged();
-      return this;
     }
 
     private java.util.List<io.littlehorse.common.proto.ScanFilter> filters_ =
       java.util.Collections.emptyList();
     private void ensureFiltersIsMutable() {
-      if (!((bitField0_ & 0x00000400) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         filters_ = new java.util.ArrayList<io.littlehorse.common.proto.ScanFilter>(filters_);
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -1972,7 +1742,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.ScanFilter, io.littlehorse.common.proto.ScanFilter.Builder, io.littlehorse.common.proto.ScanFilterOrBuilder> filtersBuilder_;
 
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public java.util.List<io.littlehorse.common.proto.ScanFilter> getFiltersList() {
       if (filtersBuilder_ == null) {
@@ -1982,7 +1752,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public int getFiltersCount() {
       if (filtersBuilder_ == null) {
@@ -1992,7 +1762,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public io.littlehorse.common.proto.ScanFilter getFilters(int index) {
       if (filtersBuilder_ == null) {
@@ -2002,7 +1772,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder setFilters(
         int index, io.littlehorse.common.proto.ScanFilter value) {
@@ -2019,7 +1789,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder setFilters(
         int index, io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
@@ -2033,7 +1803,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder addFilters(io.littlehorse.common.proto.ScanFilter value) {
       if (filtersBuilder_ == null) {
@@ -2049,7 +1819,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder addFilters(
         int index, io.littlehorse.common.proto.ScanFilter value) {
@@ -2066,7 +1836,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder addFilters(
         io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
@@ -2080,7 +1850,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder addFilters(
         int index, io.littlehorse.common.proto.ScanFilter.Builder builderForValue) {
@@ -2094,7 +1864,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder addAllFilters(
         java.lang.Iterable<? extends io.littlehorse.common.proto.ScanFilter> values) {
@@ -2109,12 +1879,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder clearFilters() {
       if (filtersBuilder_ == null) {
         filters_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         filtersBuilder_.clear();
@@ -2122,7 +1892,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public Builder removeFilters(int index) {
       if (filtersBuilder_ == null) {
@@ -2135,14 +1905,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public io.littlehorse.common.proto.ScanFilter.Builder getFiltersBuilder(
         int index) {
       return getFiltersFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
         int index) {
@@ -2152,7 +1922,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
          getFiltersOrBuilderList() {
@@ -2163,14 +1933,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public io.littlehorse.common.proto.ScanFilter.Builder addFiltersBuilder() {
       return getFiltersFieldBuilder().addBuilder(
           io.littlehorse.common.proto.ScanFilter.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public io.littlehorse.common.proto.ScanFilter.Builder addFiltersBuilder(
         int index) {
@@ -2178,7 +1948,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.ScanFilter.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+     * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
      */
     public java.util.List<io.littlehorse.common.proto.ScanFilter.Builder> 
          getFiltersBuilderList() {
@@ -2191,7 +1961,7 @@ private static final long serialVersionUID = 0L;
         filtersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.ScanFilter, io.littlehorse.common.proto.ScanFilter.Builder, io.littlehorse.common.proto.ScanFilterOrBuilder>(
                 filters_,
-                ((bitField0_ & 0x00000400) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         filters_ = null;

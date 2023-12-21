@@ -1,24 +1,37 @@
 package io.littlehorse.server.streams.lhinternalscan.util;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BoundedObjectIdScan;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> {
 
     private String startObjectId;
     private String endObjectId;
+    private GetableClassEnum scanObjectType;
 
     public BoundedObjectIdScanModel() {}
 
-    public BoundedObjectIdScanModel(ObjectIdModel<?, ?, ?> startObjectId) {
-        this.startObjectId = startObjectId.toString();
+    public BoundedObjectIdScanModel(GetableClassEnum scanObjectType, ObjectIdModel<?, ?, ?> startObjectId) {
+        this.startObjectId = startObjectId.toString() + "/";
+        this.endObjectId = this.startObjectId + "~";
+        this.scanObjectType = scanObjectType;
     }
 
     public BoundedObjectIdScanModel(ObjectIdModel<?, ?, ?> startObjectId, ObjectIdModel<?, ?, ?> endObjectId) {
         this.startObjectId = startObjectId.toString();
         this.endObjectId = endObjectId.toString();
+        this.scanObjectType = startObjectId.getType();
+    }
+
+    public BoundedObjectIdScanModel(GetableClassEnum scanObjectType, String prefix) {
+        this.scanObjectType = scanObjectType;
+        this.startObjectId = prefix;
+        this.endObjectId = prefix + "~";
     }
 
     @Override
@@ -28,7 +41,8 @@ public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> 
 
     @Override
     public BoundedObjectIdScan.Builder toProto() {
-        BoundedObjectIdScan.Builder out = BoundedObjectIdScan.newBuilder().setStartObjectId(startObjectId);
+        BoundedObjectIdScan.Builder out =
+                BoundedObjectIdScan.newBuilder().setStartObjectId(startObjectId).setScanObjectType(scanObjectType);
         if (endObjectId != null) out.setEndObjectId(endObjectId);
         return out;
     }
@@ -37,6 +51,7 @@ public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> 
     public void initFrom(Message proto, ExecutionContext ignored) {
         BoundedObjectIdScan p = (BoundedObjectIdScan) proto;
         startObjectId = p.getStartObjectId();
+        scanObjectType = p.getScanObjectType();
         if (p.hasEndObjectId()) endObjectId = p.getEndObjectId();
     }
 
@@ -48,5 +63,11 @@ public class BoundedObjectIdScanModel extends ScanBoundary<BoundedObjectIdScan> 
     @Override
     public String getEndKey() {
         return endObjectId == null ? startObjectId + "~" : endObjectId;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<? extends Storeable<?>> getIterType() {
+        return (Class<? extends Storeable<?>>) StoredGetable.class;
     }
 }

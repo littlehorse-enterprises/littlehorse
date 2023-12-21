@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan.util;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
 
 public abstract class ScanBoundary<T extends Message> extends LHSerializable<T> {
 
@@ -20,4 +21,10 @@ public abstract class ScanBoundary<T extends Message> extends LHSerializable<T> 
      * range scan.
      */
     public abstract String getEndKey();
+
+    /**
+     * Returns the type of thing that we scan over.
+     * @return the type of thing we scan over.
+     */
+    public abstract Class<? extends Storeable<?>> getIterType();
 }

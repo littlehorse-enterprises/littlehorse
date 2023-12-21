@@ -40,12 +40,13 @@ message TagScan {
     optional google.protobuf.Timestamp earliest_create_time = 1;
     optional google.protobuf.Timestamp latest_create_time = 2;
     repeated AttributePb attributes = 3;
-    GetableClassEnum object_type = 4;
+    GetableClassEnum scan_object_type = 4;
 }
 
 message BoundedObjectIdScan {
     string start_object_id = 1;
     optional string end_object_id = 2;
+    GetableClassEnum scan_object_type = 3;
 }
 
 message InternalScanRequest {
@@ -53,19 +54,17 @@ message InternalScanRequest {
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
     GetableClassEnum result_object_type = 4;
-    StoreableType scan_object_type = 5;
-    string store_name = 6;
+    string store_name = 5;
 
     // The partition key of the request. If nul, then all partitions of the
     // store are scanned. Otherwise, only the parttion given by the 
-    optional string partition_key = 7;
+    optional string partition_key = 6;
 
     oneof scan_boundary {
-        BoundedObjectIdScan bounded_object_id_scan = 8;
-        TagScan tag_scan = 9;
+        BoundedObjectIdScan bounded_object_id_scan = 7;
+        TagScan tag_scan = 8;
     }
-    string tenant_id = 10;
-    repeated ScanFilter filters = 11;
+    repeated ScanFilter filters = 9;
 }
 
 message InternalGetAdvertisedHostsResponse {

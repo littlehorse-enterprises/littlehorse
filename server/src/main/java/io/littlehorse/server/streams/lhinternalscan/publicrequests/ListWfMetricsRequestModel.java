@@ -2,23 +2,23 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 
 public class ListWfMetricsRequestModel
@@ -31,8 +31,8 @@ public class ListWfMetricsRequestModel
     public MetricsWindowLength windowLength;
 
     @Override
-    public LHStore getStoreType() {
-        return LHStore.REPARTITION;
+    public LHStoreType getStoreType() {
+        return LHStoreType.REPARTITION;
     }
 
     public Class<ListWfMetricsRequest> getProtoBaseClass() {
@@ -59,13 +59,9 @@ public class ListWfMetricsRequestModel
         limit = numWindows;
     }
 
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_SPEC_METRICS;
-    }
-
-    @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        return null;
     }
 
     @Override
@@ -74,12 +70,11 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = WfSpecMetricsModel.getObjectId(windowLength, lastWindowStart, wfSpecId);
-        String startKey = WfSpecMetricsModel.getObjectId(
-                windowLength,
-                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows)),
-                wfSpecId);
-        return new ObjectIdScanBoundaryStrategy(wfSpecId.toString(), startKey, endKey);
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
+        Date earliestWindowStart =
+                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows));
+        return new BoundedObjectIdScanModel(
+                new WfSpecMetricsIdModel(earliestWindowStart, windowLength, wfSpecId),
+                new WfSpecMetricsIdModel(lastWindowStart, windowLength, wfSpecId));
     }
 }

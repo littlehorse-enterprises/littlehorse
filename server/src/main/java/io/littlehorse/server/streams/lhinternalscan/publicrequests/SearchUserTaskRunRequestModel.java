@@ -1,11 +1,10 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHStore;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
@@ -13,15 +12,12 @@ import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
+import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.ArrayList;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -113,10 +109,9 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public List<Attribute> getSearchAttributes() {
+    public TagScanModel getScanBoundary(RequestExecutionContext ctx) {
         // Ordering is important. See UserTaskRunModel#getIndexConfigurations()
-
-        List<Attribute> attributes = new ArrayList<>();
+        TagScanModel attributes = new TagScanModel(GetableClassEnum.USER_TASK_RUN);
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));
         }
@@ -131,32 +126,14 @@ public class SearchUserTaskRunRequestModel
         if (userGroup != null) {
             attributes.add(new Attribute("userGroup", this.userGroup));
         }
+
+        attributes.setEarliestCreateTime(earliestStart);
+        attributes.setLatestCreateTime(latestStart);
         return attributes;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        // Everything is local.
-        return TagStorageType.LOCAL;
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return new TagScanBoundaryStrategy(
-                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
-    }
-
-    // private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {
-    //     return new UserTaskRunModel()
-    //             .getIndexConfigurations().stream()
-    //                     .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
-    //                     .map(GetableIndex::getTagStorageType)
-    //                     .filter(Optional::isPresent)
-    //                     .map(Optional::get)
-    //                     .findFirst();
-    // }
-
-    public LHStore getStoreType() {
-        return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+    public LHStoreType getStoreType() {
+        return LHStoreType.CORE;
     }
 }

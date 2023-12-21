@@ -51,23 +51,12 @@ public interface InternalScanRequestOrBuilder extends
   io.littlehorse.common.proto.GetableClassEnum getResultObjectType();
 
   /**
-   * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-   * @return The enum numeric value on the wire for scanObjectType.
-   */
-  int getScanObjectTypeValue();
-  /**
-   * <code>.littlehorse.StoreableType scan_object_type = 5;</code>
-   * @return The scanObjectType.
-   */
-  io.littlehorse.common.proto.StoreableType getScanObjectType();
-
-  /**
-   * <code>string store_name = 6;</code>
+   * <code>string store_name = 5;</code>
    * @return The storeName.
    */
   java.lang.String getStoreName();
   /**
-   * <code>string store_name = 6;</code>
+   * <code>string store_name = 5;</code>
    * @return The bytes for storeName.
    */
   com.google.protobuf.ByteString
@@ -79,7 +68,7 @@ public interface InternalScanRequestOrBuilder extends
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return Whether the partitionKey field is set.
    */
   boolean hasPartitionKey();
@@ -89,7 +78,7 @@ public interface InternalScanRequestOrBuilder extends
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The partitionKey.
    */
   java.lang.String getPartitionKey();
@@ -99,74 +88,62 @@ public interface InternalScanRequestOrBuilder extends
    * store are scanned. Otherwise, only the parttion given by the 
    * </pre>
    *
-   * <code>optional string partition_key = 7;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The bytes for partitionKey.
    */
   com.google.protobuf.ByteString
       getPartitionKeyBytes();
 
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    * @return Whether the boundedObjectIdScan field is set.
    */
   boolean hasBoundedObjectIdScan();
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    * @return The boundedObjectIdScan.
    */
   io.littlehorse.common.proto.BoundedObjectIdScan getBoundedObjectIdScan();
   /**
-   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 8;</code>
+   * <code>.littlehorse.BoundedObjectIdScan bounded_object_id_scan = 7;</code>
    */
   io.littlehorse.common.proto.BoundedObjectIdScanOrBuilder getBoundedObjectIdScanOrBuilder();
 
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    * @return Whether the tagScan field is set.
    */
   boolean hasTagScan();
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    * @return The tagScan.
    */
   io.littlehorse.common.proto.TagScan getTagScan();
   /**
-   * <code>.littlehorse.TagScan tag_scan = 9;</code>
+   * <code>.littlehorse.TagScan tag_scan = 8;</code>
    */
   io.littlehorse.common.proto.TagScanOrBuilder getTagScanOrBuilder();
 
   /**
-   * <code>string tenant_id = 10;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 10;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
-
-  /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   java.util.List<io.littlehorse.common.proto.ScanFilter> 
       getFiltersList();
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   io.littlehorse.common.proto.ScanFilter getFilters(int index);
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   int getFiltersCount();
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.ScanFilterOrBuilder> 
       getFiltersOrBuilderList();
   /**
-   * <code>repeated .littlehorse.ScanFilter filters = 11;</code>
+   * <code>repeated .littlehorse.ScanFilter filters = 9;</code>
    */
   io.littlehorse.common.proto.ScanFilterOrBuilder getFiltersOrBuilder(
       int index);

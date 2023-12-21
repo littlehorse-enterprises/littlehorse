@@ -17,7 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private TagScan() {
     attributes_ = java.util.Collections.emptyList();
-    objectType_ = 0;
+    scanObjectType_ = 0;
   }
 
   @java.lang.Override
@@ -134,21 +134,21 @@ private static final long serialVersionUID = 0L;
     return attributes_.get(index);
   }
 
-  public static final int OBJECT_TYPE_FIELD_NUMBER = 4;
-  private int objectType_ = 0;
+  public static final int SCAN_OBJECT_TYPE_FIELD_NUMBER = 4;
+  private int scanObjectType_ = 0;
   /**
-   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-   * @return The enum numeric value on the wire for objectType.
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+   * @return The enum numeric value on the wire for scanObjectType.
    */
-  @java.lang.Override public int getObjectTypeValue() {
-    return objectType_;
+  @java.lang.Override public int getScanObjectTypeValue() {
+    return scanObjectType_;
   }
   /**
-   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-   * @return The objectType.
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+   * @return The scanObjectType.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnum getObjectType() {
-    io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(objectType_);
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnum getScanObjectType() {
+    io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(scanObjectType_);
     return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
   }
 
@@ -175,8 +175,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < attributes_.size(); i++) {
       output.writeMessage(3, attributes_.get(i));
     }
-    if (objectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
-      output.writeEnum(4, objectType_);
+    if (scanObjectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
+      output.writeEnum(4, scanObjectType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -199,9 +199,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, attributes_.get(i));
     }
-    if (objectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
+    if (scanObjectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(4, objectType_);
+        .computeEnumSize(4, scanObjectType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -230,7 +230,7 @@ private static final long serialVersionUID = 0L;
     }
     if (!getAttributesList()
         .equals(other.getAttributesList())) return false;
-    if (objectType_ != other.objectType_) return false;
+    if (scanObjectType_ != other.scanObjectType_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -254,8 +254,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
       hash = (53 * hash) + getAttributesList().hashCode();
     }
-    hash = (37 * hash) + OBJECT_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + objectType_;
+    hash = (37 * hash) + SCAN_OBJECT_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + scanObjectType_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -412,7 +412,7 @@ private static final long serialVersionUID = 0L;
         attributesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
-      objectType_ = 0;
+      scanObjectType_ = 0;
       return this;
     }
 
@@ -473,7 +473,7 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.objectType_ = objectType_;
+        result.scanObjectType_ = scanObjectType_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -554,8 +554,8 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.objectType_ != 0) {
-        setObjectTypeValue(other.getObjectTypeValue());
+      if (other.scanObjectType_ != 0) {
+        setScanObjectTypeValue(other.getScanObjectTypeValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -611,7 +611,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 32: {
-              objectType_ = input.readEnum();
+              scanObjectType_ = input.readEnum();
               bitField0_ |= 0x00000008;
               break;
             } // case 32
@@ -1110,55 +1110,55 @@ private static final long serialVersionUID = 0L;
       return attributesBuilder_;
     }
 
-    private int objectType_ = 0;
+    private int scanObjectType_ = 0;
     /**
-     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-     * @return The enum numeric value on the wire for objectType.
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+     * @return The enum numeric value on the wire for scanObjectType.
      */
-    @java.lang.Override public int getObjectTypeValue() {
-      return objectType_;
+    @java.lang.Override public int getScanObjectTypeValue() {
+      return scanObjectType_;
     }
     /**
-     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-     * @param value The enum numeric value on the wire for objectType to set.
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+     * @param value The enum numeric value on the wire for scanObjectType to set.
      * @return This builder for chaining.
      */
-    public Builder setObjectTypeValue(int value) {
-      objectType_ = value;
+    public Builder setScanObjectTypeValue(int value) {
+      scanObjectType_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-     * @return The objectType.
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+     * @return The scanObjectType.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GetableClassEnum getObjectType() {
-      io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(objectType_);
+    public io.littlehorse.common.proto.GetableClassEnum getScanObjectType() {
+      io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(scanObjectType_);
       return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
-     * @param value The objectType to set.
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
+     * @param value The scanObjectType to set.
      * @return This builder for chaining.
      */
-    public Builder setObjectType(io.littlehorse.common.proto.GetableClassEnum value) {
+    public Builder setScanObjectType(io.littlehorse.common.proto.GetableClassEnum value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000008;
-      objectType_ = value.getNumber();
+      scanObjectType_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum scan_object_type = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearObjectType() {
+    public Builder clearScanObjectType() {
       bitField0_ = (bitField0_ & ~0x00000008);
-      objectType_ = 0;
+      scanObjectType_ = 0;
       onChanged();
       return this;
     }

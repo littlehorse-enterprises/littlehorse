@@ -3,27 +3,24 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase;
-import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.lhinternalscan.util.BoundedObjectIdScanModel;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
+import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -118,43 +115,23 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch() throws LHApiException {
-        List<String> searchAttributes =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =
-                new ExternalEventModel().getIndexConfigurations();
-        GetableIndex<? extends AbstractGetable<?>> getableIndex = indexConfigurations.stream()
-                .filter(getableIndexConfiguration -> {
-                    return getableIndexConfiguration.searchAttributesMatch(searchAttributes);
-                })
-                .findFirst()
-                .orElse(null);
-        if (getableIndex != null) {
-            return getableIndex.getTagStorageType().get();
-        } else {
-            return TagStorageType.LOCAL;
-        }
-    }
-
-    @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+    public ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return ObjectIdScanBoundaryStrategy.from(wfRunId);
+            return new BoundedObjectIdScanModel(GetableClassEnum.EXTERNAL_EVENT, wfRunId.toString());
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
+            TagScanModel result =
+                    new TagScanModel(getObjectType()).addAttributes("extEvtDefName", externalEventDefName);
+            if (isClaimed.isPresent()) {
+                result.addAttributes("isClaimed", isClaimed.get().toString());
+            }
+            return result;
         } else {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unrecognized search criteria: %s".formatted(type));
         }
     }
 
     @Override
-    public LHStore getStoreType() {
-        if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return LHStore.CORE;
-        } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            return LHStore.REPARTITION;
-        } else {
-            throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
-        }
+    public LHStoreType getStoreType() {
+        return LHStoreType.CORE;
     }
 }

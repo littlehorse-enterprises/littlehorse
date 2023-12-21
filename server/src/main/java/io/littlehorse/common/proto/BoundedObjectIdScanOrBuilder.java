@@ -35,4 +35,15 @@ public interface BoundedObjectIdScanOrBuilder extends
    */
   com.google.protobuf.ByteString
       getEndObjectIdBytes();
+
+  /**
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+   * @return The enum numeric value on the wire for scanObjectType.
+   */
+  int getScanObjectTypeValue();
+  /**
+   * <code>.littlehorse.GetableClassEnum scan_object_type = 3;</code>
+   * @return The scanObjectType.
+   */
+  io.littlehorse.common.proto.GetableClassEnum getScanObjectType();
 }
