@@ -814,6 +814,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -872,6 +873,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -927,6 +929,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -983,6 +986,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -1039,6 +1043,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -1095,6 +1100,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={
@@ -1160,6 +1166,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
+                allowed_updates="ALL",
                 entrypoint_thread_name="entrypoint",
                 name="my-wf",
                 thread_specs={

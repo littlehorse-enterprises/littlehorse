@@ -127,6 +127,14 @@ public abstract class Workflow {
         return new WorkflowImpl(name, entrypointThreadFunc);
     }
 
+    /**
+     * Defines the type of update to perform when saving the WfSpec:
+     * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
+     * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
+     * AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
+     * @param allowedUpdateType
+     * @return this Worflow
+     */
     public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
         this.spec.setAllowedUpdates(allowedUpdateType);
         return this;
