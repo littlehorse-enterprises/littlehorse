@@ -4,13 +4,18 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.StatusChangedModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.repartitioned.MetricWindowModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.StatusChanged;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,12 +75,23 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
 
     @Override
     public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
-        log.info("para el wfspec %s hay %s cambios de estados".formatted(wfSpecId.getName(), changes.size()));
-        for (StatusChangedModel change : changes) {
-            log.info("cambio desde %s hasta %s"
-                    .formatted(
-                            change.getLhStatusChanged().getPreviousStatus(),
-                            change.getLhStatusChanged().getNewStatus()));
+        List<MetricsWindowLength> validWindowTypes = Arrays.stream(MetricsWindowLength.values())
+                .filter(windowType -> !windowType.equals(MetricsWindowLength.UNRECOGNIZED))
+                .toList();
+        for (MetricsWindowLength validWindowType : validWindowTypes) {
+            String windowId = LHUtil.getCompositeId(validWindowType.name(), wfSpecId.toString(), tenantId);
+            MetricWindowModel metricWindow = repartitionedStore.get(windowId, MetricWindowModel.class);
+            if (metricWindow == null) {
+                metricWindow = new MetricWindowModel(validWindowType, wfSpecId, tenantId);
+                repartitionedStore.put(windowId, metricWindow);
+            }
+            String aggregationId = metricWindow.currentAggregationId();
+            WfMetricUpdate updateMetric = repartitionedStore.get(aggregationId, WfMetricUpdate.class);
+            if (updateMetric == null) {
+                updateMetric = new WfMetricUpdate(new Date(), validWindowType, wfSpecId);
+            }
+            updateMetric.totalStarted = updateMetric.totalStarted + 1;
+            repartitionedStore.put("2/" + aggregationId, updateMetric);
         }
     }
 }

@@ -21,6 +21,7 @@ enum StoreableType {
     LH_TIMER = 4;
     TAG = 5;
     PARTITION_METRICS = 6;
+    METRIC_WINDOW = 7;
 }
 
 enum GetableClassEnum {
