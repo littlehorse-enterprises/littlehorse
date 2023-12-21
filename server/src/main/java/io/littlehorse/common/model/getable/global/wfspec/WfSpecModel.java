@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -33,7 +32,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -401,25 +399,6 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             id.setMajorVersion(old.getId().getMajorVersion());
             id.setRevision(old.getId().getRevision() + 1);
         }
-    }
-
-    /**
-     * This method returns true when two WfSpecModels are equal
-     * excluding `majorVersion`, `revision` and `createdAt`
-     * @param to WfSpecModel to be compared
-     * @return true when it is equal, false otherwise.
-     */
-    public boolean equals(WfSpecModel to) {
-        WfSpec.Builder copy = this.toProto();
-        Timestamp date = LHUtil.fromDate(new Date());
-        sanitize(copy, date);
-        WfSpec.Builder toCopy = to.toProto();
-        sanitize(toCopy, date);
-        return Arrays.equals(copy.build().toByteArray(), toCopy.build().toByteArray());
-    }
-
-    private void sanitize(WfSpec.Builder spec, Timestamp date) {
-        spec.setId(WfSpecId.newBuilder().setName(spec.getId().getName())).setCreatedAt(date);
     }
 
     /*
