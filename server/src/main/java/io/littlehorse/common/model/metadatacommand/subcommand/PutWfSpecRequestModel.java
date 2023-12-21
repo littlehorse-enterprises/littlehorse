@@ -11,6 +11,8 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.WfSpecUtil;
+import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -30,6 +32,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public Map<String, ThreadSpecModel> threadSpecs;
     public String entrypointThreadName;
     public WorkflowRetentionPolicyModel retentionPolicy;
+    public AllowedUpdateType allowedUpdateType;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -61,6 +64,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
+        allowedUpdateType = p.hasAllowedUpdates() ? p.getAllowedUpdates() : AllowedUpdateType.ALL;
         if (p.hasRetentionPolicy())
             retentionPolicy =
                     LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
@@ -96,9 +100,29 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
+        if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
+            return oldVersion.toProto().build();
+        }
+
+        verifyUpdateType(allowedUpdateType, spec, optWfSpec);
         spec.validateAndMaybeBumpVersion(optWfSpec);
         metadataManager.put(spec);
         return spec.toProto().build();
+    }
+
+    private void verifyUpdateType(AllowedUpdateType updateType, WfSpecModel spec, Optional<WfSpecModel> oldSpec) {
+        switch (updateType) {
+            case MINOR_REVISION_ONLY:
+                if (oldSpec.isPresent() && WfSpecUtil.hasBreakingChanges(spec, oldSpec.get())) {
+                    throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting WfSpec has a breaking change.");
+                }
+            case NONE:
+                if (oldSpec.isPresent()) {
+                    throw new LHApiException(Status.ALREADY_EXISTS, "WfSpec already exists.");
+                }
+            default:
+                break;
+        }
     }
 
     public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p, ExecutionContext context) {
