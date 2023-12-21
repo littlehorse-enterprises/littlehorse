@@ -2,15 +2,13 @@ package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
-import io.littlehorse.server.streams.storeinternals.index.Attribute;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.lhinternalscan.util.ScanBoundary;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.List;
 
@@ -30,7 +28,6 @@ public abstract class PublicScanRequest<
 
     protected BookmarkPb bookmark;
     protected Integer limit;
-    protected GetableSearch getableSearch;
 
     public abstract GetableClassEnum getObjectType();
 
@@ -38,7 +35,7 @@ public abstract class PublicScanRequest<
         return ScanResultTypePb.OBJECT_ID;
     }
 
-    public abstract LHStore getStoreType();
+    public abstract LHStoreType getStoreType();
 
     public int getLimit() {
         if (limit == null) {
@@ -47,60 +44,35 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(RequestExecutionContext ctx) throws LHApiException {
-        SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
-        getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
-        InternalScan out = getableSearch.buildInternalScan(indexTypeForSearch());
-        if (out.limit == 0) out.limit = getLimit();
-        out.bookmark = bookmark;
+    public InternalScanRequestModel getInternalSearch(RequestExecutionContext ctx) throws LHApiException {
+        ScanBoundary<?> scanBoundary = getScanBoundary(ctx);
+        InternalScanRequestModel out = new InternalScanRequestModel(scanBoundary, ctx);
 
-        out.objectType = getObjectType();
-        out.resultType = getResultType();
-        out.storeName = getStoreType().getStoreName();
-        out.filters = getFilters(ctx);
+        if (out.getLimit() == 0) out.setLimit(getLimit());
+
+        out.setBookmark(bookmark);
+        out.setObjectType(getObjectType());
+        out.setResultType(getResultType());
+        out.setStoreType(getStoreType());
+        out.setFilters(getFilters(ctx));
         return out;
     }
 
     /**
-     * Retrieves the attribute string used for search operations. The attribute
-     * string is intended
-     * to be used by the {@link
-     * io.littlehorse.server.streams.BackendInternalComms#doScan(InternalScan)}
-     * method to
-     * perform scans over stored tags.
-     *
-     * @return The attribute string in the format:
-     *         VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
-     * @throws LHApiException if there are invalid options in the input
-     *                           arguments.
+     * Returns a ScanBoundary object that provides start and end boundaries for the specific scan.
+     * @param ctx is the RequestExecutionContext.
+     * @return a ScanBoundary.
+     * @throws LHApiException if the search parameters specified by the client are invalid.
      */
-    public String getSearchAttributeString() throws LHApiException {
-        return Tag.getAttributeString(getObjectType(), getSearchAttributes());
-    }
+    public abstract ScanBoundary<?> getScanBoundary(RequestExecutionContext ctx) throws LHApiException;
 
     /**
-     * Builds search attributes based on the provided search input arguments. This
-     * method is intended to be overridden by subclasses to implement custom logic.
-     *
-     * @return {@link Attribute} containing attributes associated with the search
-     *         operation.
-     * @throws LHApiException if there are invalid options in the input
-     *                           arguments.
+     * This method can be overriden to specify filters that filter out results returned by the
+     * range scan over the `getScanBoundary()`. Only entries satisfying all of the filters will
+     * be returned in the final result to the client.
+     * @param ctx is a RequestExecutionContext.
+     * @return a list of filters to apply to each request.
      */
-    public List<Attribute> getSearchAttributes() throws LHApiException {
-        return List.of();
-    }
-
-    /**
-     * Returns the storage type to be used by this search operation.
-     *
-     * @return The storage type or null if not specified in the configuration.
-     * @throws LHApiException if there are validation errors in the input.
-     */
-    public abstract TagStorageType indexTypeForSearch() throws LHApiException;
-
-    public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
-
     public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) {
         return List.of();
     }

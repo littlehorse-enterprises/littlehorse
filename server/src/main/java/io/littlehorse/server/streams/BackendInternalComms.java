@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.ChannelCredentials;
@@ -24,28 +23,21 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.*;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
-import io.littlehorse.server.streams.lhinternalscan.InternalScan;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
+import io.littlehorse.server.streams.lhinternalscan.InternalScanRequestModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
-import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -57,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,12 +59,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -104,7 +95,6 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
-    private final Pattern objectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -256,11 +246,10 @@ public class BackendInternalComms implements Closeable {
         return desiredHost;
     }
 
-    public List<io.littlehorse.sdk.common.proto.LHHostInfo> getAllAdvertisedHosts(String listenerName)
-            throws LHBadRequestError {
+    public List<LHHostInfo> getAllAdvertisedHosts(String listenerName) throws LHBadRequestError {
         Set<HostModel> hosts = getAllInternalHosts();
 
-        List<io.littlehorse.sdk.common.proto.LHHostInfo> out = new ArrayList<>();
+        List<LHHostInfo> out = new ArrayList<>();
 
         for (HostModel host : hosts) {
             try {
@@ -408,8 +397,9 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> observer) {
-            InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
+        public void internalScan(InternalScanRequest req, StreamObserver<InternalScanResponse> observer) {
+            InternalScanRequestModel lhis =
+                    LHSerializable.fromProto(req, InternalScanRequestModel.class, executionContext());
             try {
                 InternalScanResponse reply = doScan(lhis);
                 observer.onNext(reply);
@@ -445,408 +435,137 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    /*
-     * EMPLOYEE_TODO: Make this asynchronous rather than blocking.
-     *
-     * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
+    public InternalScanResponse doScan(InternalScanRequestModel search) {
+        // First, figure out which partitions need to be addressed.
+        Set<Integer> unfinishedPartitions = search.getIncompletePartitions(config);
+
+        Set<Integer> localUnfinishedPartitions = unfinishedPartitions.stream()
+                .filter(partition -> isLocalPartition(partition, search.getStoreName()))
+                .collect(Collectors.toSet());
+
+        // These are the hosts that have unfinished data.
+        Set<HostInfo> remoteHostsWithData = unfinishedPartitions.stream()
+                .filter(partition -> !localUnfinishedPartitions.contains(partition))
+                .map(partition -> getHostForPartition(partition, search.getStoreName()))
+                .collect(Collectors.toSet());
+
+        // Address all of the local partitions first. Once those have been addressed,
+        // pass the request along and search the remote partitions on the other hosts.
+        Iterator<Integer> iter = localUnfinishedPartitions.iterator();
+        InternalScanResponse.Builder response = InternalScanResponse.newBuilder();
+
+        while (iter.hasNext() && response.getResultsCount() < search.getLimit()) {
+            int partition = iter.next();
+            scanLocalPartition(search, partition, response);
+        }
+
+        // Next: Scan the remote partitions
+        Iterator<HostInfo> otherHosts = remoteHostsWithData.iterator();
+        while (otherHosts.hasNext() && response.getResultsCount() < search.getLimit()) {
+            HostInfo otherHost = otherHosts.next();
+            scanRemoteHost(search, otherHost, response);
+        }
+
+        return response.build();
+    }
+
+    /**
+     * Scans a single partition and returns the results, and an optional String denoting
+     * the next key to resume from in case of an incomplete scan.
+     * @param query is the query to execute over the partition.
+     * @param partition is the partition to scan.
+     * @return a pair of results, nextKey
      */
-    public InternalScanResponse doScan(InternalScan search) {
-        if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
-            return objectIdPrefixScan(search);
-        } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
-            return specificPartitionTagScan(search);
-        } else if (search.partitionKey == null && search.type == ScanBoundaryCase.TAG_SCAN) {
-            return allPartitionTagScan(search);
-        } else {
-            throw new RuntimeException("Impossible: Unrecognized search type");
+    private void scanLocalPartition(
+            InternalScanRequestModel query, int partition, InternalScanResponse.Builder response) {
+        if (query.getBookmark().getCompletedPartitionsList().contains(partition)) {
+            throw new IllegalStateException("Scanning the same partition twice!");
         }
-    }
+        ReadOnlyModelStore partitionStore = getStore(partition, false, query.getStoreName());
 
-    private InternalScanResponse specificPartitionTagScan(InternalScan search) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                search.getStoreName(), search.getPartitionKey(), Serdes.String().serializer());
-        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
-        HostInfo activeHost = meta.activeHost();
+        PartitionBookmarkPb bkmk = query.getBookmark().getInProgressPartitionsOrDefault(partition, null);
+        String startKey = bkmk == null ? query.getScanBoundary().getStartKey() : bkmk.getLastKey();
+        String endKey = query.getScanBoundary().getEndKey();
 
-        if (activeHost.equals(thisHost)) {
+        Class<? extends Storeable<?>> cls = Storeable.getStoreableClass(query.getScanObjectType());
 
-            ReadOnlyTenantScopedStore store = getStore(meta.partition(), false, search.getStoreName());
-            String prefix = search.getTagScan().getKeyPrefix() + "/";
-
-            try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
-                List<ByteString> matchingObjectIds = new ArrayList<>();
-
-                while (tagScanResultIterator.hasNext()) {
-                    LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
-                    Tag matchingTag = currentItem.getValue();
-
-                    ObjectIdModel<?, ?, ?> matchingObjectId = ObjectIdModel.fromString(
-                            matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
-                    matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
-
-                    if (matchingObjectIds.size() == search.getLimit()) {
-                        break;
-                    }
+        try (LHKeyValueIterator<?> iter = partitionStore.range(startKey, endKey, cls)) {
+            while (iter.hasNext() && response.getResultsCount() < query.getLimit()) {
+                LHIterKeyValue<?> next = iter.next();
+                if (query.matches(next, executionContext())) {
+                    response.addResults(query.convertToResult(next, executionContext()));
                 }
-                out.addAllResults(matchingObjectIds);
             }
-        } else {
-            InternalScanResponse reply =
-                    getInternalClient(activeHost).internalScan(search.toProto().build());
-            out.addAllResults(reply.getResultsList());
-        }
 
-        return out.build();
-    }
-
-    private InternalScanResponse objectIdPrefixScan(InternalScan search) throws StatusRuntimeException {
-        HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
-
-        if (getHostForKey(search.storeName, search.partitionKey).equals(thisHost)) {
-            return objectIdPrefixScanOnThisHost(search);
-        } else {
-            return getInternalClient(correctHost).internalScan(search.toProto().build());
-        }
-    }
-
-    private InternalScanResponse objectIdPrefixScanOnThisHost(InternalScan req) {
-        int curLimit = req.limit;
-        BookmarkPb reqBookmark = req.bookmark;
-        if (reqBookmark == null) {
-            reqBookmark = BookmarkPb.newBuilder().build();
-        }
-        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
-
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                req.storeName, req.partitionKey, Serdes.String().serializer());
-        int partition = meta.partition();
-
-        ReadOnlyTenantScopedStore store = getStore(partition, false, req.storeName);
-        PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
-
-        String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
-        String startKey;
-        if (partBookmark == null) {
-            startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
-        } else {
-            startKey = partBookmark.getLastKey();
-        }
-        String bookmarkKey = null;
-        boolean brokenBecauseOutOfData = true;
-
-        try (LHKeyValueIterator<?> iter =
-                store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
-
-            while (iter.hasNext()) {
-                LHIterKeyValue<? extends Storeable<?>> next = iter.next();
-                if (--curLimit < 0) {
-                    bookmarkKey = next.getKey();
-                    brokenBecauseOutOfData = false;
-                    break;
-                }
-                out.addResults(iterKeyValueToInternalScanResult(next, req.resultType, req.objectType));
-            }
-        }
-
-        if (!brokenBecauseOutOfData) {
-            // Then we have more data for the next request, so we want to return
-            // a bookmark.
-
-            PartitionBookmarkPb nextBookmark = PartitionBookmarkPb.newBuilder()
-                    .setParttion(partition)
-                    .setLastKey(bookmarkKey)
-                    .build();
-
-            out.setUpdatedBookmark(BookmarkPb.newBuilder().putInProgressPartitions(partition, nextBookmark));
-        } else {
-            // If we never set `bookmarkKey`, then we know that we read all of the
-            // data. So we don't set a bookmark on the response.
-            if (bookmarkKey != null) {
-                throw new RuntimeException("not possible");
-            }
-        }
-
-        curLimit -= out.getResultsCount();
-
-        return out.build();
-    }
-
-    private ByteString iterKeyValueToInternalScanResult(
-            LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
-
-        if (resultType == ScanResultTypePb.OBJECT) {
-            StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
-
-            return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
-
-        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
-
-            // TODO: This is a leaky abstraction.
-            String storeableKey = next.getKey();
-            Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
-            if (matcher.find()) {
-                int prefixEndIndex = matcher.end(0);
-                String objectIdStr = storeableKey.substring(prefixEndIndex);
-                return ByteString.copyFrom(
-                        ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
+            if (iter.hasNext()) {
+                String nextKey = iter.next().getKey();
+                response.getUpdatedBookmarkBuilder()
+                        .putInProgressPartitions(
+                                partition,
+                                PartitionBookmarkPb.newBuilder()
+                                        .setParttion(partition)
+                                        .setLastKey(nextKey)
+                                        .build());
             } else {
-                throw new IllegalStateException("Invalid object id");
+                response.getUpdatedBookmarkBuilder().removeInProgressPartitions(partition);
+                response.getUpdatedBookmarkBuilder().addCompletedPartitions(partition);
             }
-        } else {
-            throw new RuntimeException("Impossible: unknown result type");
         }
     }
 
-    private InternalScanResponse allPartitionTagScan(InternalScan search) {
-        int limit = search.limit;
+    private void scanRemoteHost(
+            InternalScanRequestModel search, HostInfo remoteHost, InternalScanResponse.Builder response) {
 
-        // First, see what results we have locally. Then if we need more results
-        // to hit the limit, we query another host.
-        // How do we know which host to query? Well, we find a partition which
-        // hasn't been completed yet (by consulting the Bookmark), and then
-        // query the owner of that partition.
+        InternalScanRequest.Builder requestBuilder = search.toProto();
+        requestBuilder.setBookmark(response.getUpdatedBookmark());
+        requestBuilder.setLimit(search.getLimit() - response.getResultsCount());
 
-        InternalScanResponse out = localAllPartitionTagScan(search);
-        if (out.getResultsCount() >= limit) {
-            // Then we've gotten all the data the client asked for.
-            return out;
-        }
-        if (!out.hasUpdatedBookmark()) {
-            // Then we've gotten all the data there is.
-            return out;
-        }
+        InternalScanResponse remoteResponse = getInternalClient(remoteHost).internalScan(requestBuilder.build());
+        response.addAllResults(remoteResponse.getResultsList());
 
-        // OK, now we need to figure out a host to query.
+        response.getUpdatedBookmarkBuilder()
+                .putAllInProgressPartitions(remoteResponse.getUpdatedBookmark().getInProgressPartitionsMap());
 
-        // We *know* that if a partition is in the bookmark, then that partition
-        // is still in progress. We can infer that the partition probably doesn't
-        // live on this host, because otherwise the query would have either pulled
-        // to the end of that partition or returned because it reached the limit.
-        // Note however, it's POSSIBLE that the partition lives on this host if
-        // there was a rebalance between the first request and the second request.
-        // That's quite unlikely.
-
-        // Basically, what we need to do is find the set of all partitions that
-        // AREN'T in the BookmarkPb::getCompletedPartitionsList();
-        while (out.hasUpdatedBookmark() && out.getResultsCount() < search.limit) {
-            HostInfo otherHost = getHostForPartition(getRandomUnfinishedPartition(out.getUpdatedBookmark()));
-            if (otherHost.equals(thisHost)) {
-                throw new IllegalStateException(
-                        "Exhausted local partitions but getRandomUnfinishedPartition returned local partition");
-            }
-            LHInternalsBlockingStub stub = getInternalClient(otherHost);
-
-            InternalScan newReq = new InternalScan();
-            newReq.bookmark = out.getUpdatedBookmark();
-            newReq.limit = search.limit - out.getResultsCount();
-            newReq.tagScan = search.tagScan;
-            newReq.type = ScanBoundaryCase.TAG_SCAN;
-            newReq.objectType = search.objectType;
-            newReq.storeName = search.storeName;
-            newReq.resultType = ScanResultTypePb.OBJECT_ID;
-            newReq.filters = search.filters;
-
-            InternalScanResponse reply;
-            reply = stub.internalScan(newReq.toProto().build());
-            InternalScanResponse.Builder newOutBuilder = InternalScanResponse.newBuilder()
-                    .addAllResults(out.getResultsList())
-                    .addAllResults(reply.getResultsList());
-
-            if (reply.hasUpdatedBookmark()) {
-                newOutBuilder.setUpdatedBookmark(reply.getUpdatedBookmark());
-            } else {
-                newOutBuilder.clearUpdatedBookmark();
-            }
-            out = newOutBuilder.build();
-        }
-
-        return out;
+        response.getUpdatedBookmarkBuilder()
+                .clearCompletedPartitions()
+                .addAllCompletedPartitions(remoteResponse.getUpdatedBookmark().getCompletedPartitionsList());
     }
 
-    private HostInfo getHostForPartition(int partition) {
+    private boolean isLocalPartition(int partition, String storeName) {
+        if (storeName.equals(ServerTopology.METADATA_STORE)) {
+            // Every host has the metadata store since it's a global store.
+            return true;
+        } else if (storeName.equals(ServerTopology.CORE_STORE)) {
+            return getLocalActiveCommandProcessorPartitions().contains(partition);
+        } else if (storeName.equals(ServerTopology.CORE_REPARTITION_STORE)) {
+            return getLocalActiveRepartitionedPartitions().contains(partition);
+        }
+        throw new IllegalArgumentException("Unrecognized store name %s".formatted(storeName));
+    }
+
+    private HostInfo getHostForPartition(int partition, String storeName) {
         if (partition >= config.getClusterPartitions()) {
             throw new LHMisconfigurationException("Unrecognized partition");
         }
+        if (!storeName.equals(ServerTopology.CORE_STORE) && !storeName.equals(ServerTopology.CORE_REPARTITION_STORE)) {
+            throw new IllegalArgumentException("Invalid storename %s".formatted(storeName));
+        }
+
+        Predicate<TopicPartition> isForCorrectHost = storeName.equals(ServerTopology.CORE_STORE)
+                ? (tp) -> isCommandProcessor(tp, config)
+                : (tp) -> isRepartitionedPartition(tp, config);
 
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();
         for (StreamsMetadata meta : all) {
             for (TopicPartition tp : meta.topicPartitions()) {
                 if (tp.partition() != partition) continue;
-                if (isCommandProcessor(tp, config)) {
+                if (isForCorrectHost.test(tp)) {
                     return meta.hostInfo();
                 }
             }
         }
         throw new LHApiException(
                 Status.UNAVAILABLE, "Streams application is in %s state".formatted(coreStreams.state()));
-    }
-
-    private HostInfo getHostForKey(String storeName, String partitionKey) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
-        return meta.activeHost();
-    }
-
-    /*
-     * Precondition: bm represents bookmark for uncompleted LOCAL search (not a
-     * REMOTE_HASH search).
-     */
-    private Set<Integer> getUnfininshedPartitions(BookmarkPb bm) {
-        Set<Integer> out = new HashSet<>();
-        for (int i = 0; i < config.getClusterPartitions(); i++) {
-            out.add(i);
-        }
-        out.removeAll(bm.getCompletedPartitionsList());
-
-        return out;
-    }
-
-    private int getRandomUnfinishedPartition(BookmarkPb bm) {
-        Set<Integer> unfinished = getUnfininshedPartitions(bm);
-        for (int i : unfinished) {
-            return i;
-        }
-        throw new RuntimeException("Not possible");
-    }
-
-    private InternalScanResponse localAllPartitionTagScan(InternalScan req) {
-        log.debug("Local Tag prefix scan");
-        if (req.partitionKey != null) {
-            throw new IllegalArgumentException("called localAllPartitionTagScan with partitionKey");
-        }
-
-        int curLimit = req.limit;
-
-        BookmarkPb reqBookmark = req.bookmark;
-        if (reqBookmark == null) {
-            reqBookmark = BookmarkPb.newBuilder().build();
-        }
-
-        BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
-        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
-
-        // iterate through all active and standby local partitions
-        for (int partition : getLocalActiveCommandProcessorPartitions()) {
-            ReadOnlyTenantScopedStore partStore = getStore(partition, false, req.storeName);
-            if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
-                // This partition has already been accounted for
-                continue;
-            }
-            PartitionBookmarkPb partBookmark = null;
-            if (reqBookmark != null) {
-                partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
-            }
-
-            // Add all matching objects from that partition
-            Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore, req.filters);
-
-            curLimit -= result.getLeft().size();
-            out.addAllResults(result.getLeft());
-            PartitionBookmarkPb thisPartionBookmark = result.getRight();
-            if (thisPartionBookmark == null) {
-                // then the partition is done
-                outBookmark.addCompletedPartitions(partition);
-                outBookmark.removeInProgressPartitions(partition);
-            } else {
-                outBookmark.putInProgressPartitions(partition, thisPartionBookmark);
-            }
-
-            if (curLimit == 0) {
-                break;
-            }
-            if (curLimit < 0) {
-                throw new RuntimeException("WTF?");
-            }
-        }
-
-        if (outBookmark.getCompletedPartitionsCount() < config.getClusterPartitions()) {
-            out.setUpdatedBookmark(outBookmark);
-        } else {
-            // Then every partition has been scanned, so the paginated query is
-            // complete. That means we don't return a bookmark.
-            out.clearUpdatedBookmark();
-        }
-        return out.build();
-    }
-
-    /*
-     * Tag Scans only return object id's. That's because `Tag`s function as a
-     * secondary index.
-     */
-    private Pair<List<ByteString>, PartitionBookmarkPb> onePartitionPaginatedTagScan(
-            TagScanPb tagPrefixScan,
-            PartitionBookmarkPb bookmark,
-            int limit,
-            GetableClassEnum objectType,
-            int partition,
-            ReadOnlyTenantScopedStore store,
-            List<ScanFilterModel> filters) {
-        PartitionBookmarkPb bookmarkOut = null;
-        List<ByteString> idsOut = new ArrayList<>();
-
-        String startKey;
-        String endKey;
-
-        if (bookmark == null) {
-            startKey = tagPrefixScan.getKeyPrefix() + "/";
-            if (tagPrefixScan.hasEarliestCreateTime()) {
-                startKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime())) + "/";
-            }
-        } else {
-            startKey = bookmark.getLastKey();
-        }
-
-        endKey = tagPrefixScan.getKeyPrefix() + "/";
-        if (tagPrefixScan.hasLatestCreateTime()) {
-            endKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime())) + "/";
-        }
-        endKey += "~";
-
-        Predicate<Tag> passesFilter = tag -> {
-            if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
-                throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
-            }
-
-            WfRunIdModel wfRunId =
-                    (WfRunIdModel) ObjectIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
-            return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
-        };
-
-        try (LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)) {
-            boolean brokenBecauseOutOfData = true;
-            while (iter.hasNext()) {
-                LHIterKeyValue<Tag> next = iter.next();
-                Tag tag = next.getValue();
-                if (!passesFilter.test(tag)) {
-                    continue;
-                }
-                if (--limit < 0) {
-                    bookmarkOut = PartitionBookmarkPb.newBuilder()
-                            .setParttion(partition)
-                            .setLastKey(tag.getStoreKey())
-                            .build();
-
-                    // broke loop because we filled up the limit
-                    brokenBecauseOutOfData = false;
-                    break;
-                }
-
-                // Turn the ID String into the ObjectId structure, then serialize it
-                // to proto
-                Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
-                idsOut.add(ObjectIdModel.fromString(next.getValue().describedObjectId, idCls)
-                        .toProto()
-                        .build()
-                        .toByteString());
-            }
-
-            if (brokenBecauseOutOfData) {
-                bookmarkOut = null;
-            }
-        }
-        return Pair.of(idsOut, bookmarkOut);
     }
 
     private Set<Integer> getLocalActiveCommandProcessorPartitions() {
@@ -865,6 +584,29 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
+    private Set<Integer> getLocalActiveRepartitionedPartitions() {
+        Set<Integer> out = new HashSet<>();
+
+        for (ThreadMetadata thread : coreStreams.metadataForLocalThreads()) {
+            for (TaskMetadata activeTask : thread.activeTasks()) {
+                // We only want to query active partitions.
+                // Additionally, there may be many tasks...we only want the ones
+                // that are for the command processor.
+                if (isRepartitionedPartition(activeTask, config)) {
+                    out.add(activeTask.taskId().partition());
+                }
+            }
+        }
+        return out;
+    }
+
+    private static boolean isRepartitionedPartition(TaskMetadata task, LHServerConfig config) {
+        for (TopicPartition tPart : task.topicPartitions()) {
+            if (isRepartitionedPartition(tPart, config)) return true;
+        }
+        return false;
+    }
+
     private static boolean isCommandProcessor(TaskMetadata task, LHServerConfig config) {
         for (TopicPartition tPart : task.topicPartitions()) {
             if (isCommandProcessor(tPart, config)) return true;
@@ -874,5 +616,9 @@ public class BackendInternalComms implements Closeable {
 
     private static boolean isCommandProcessor(TopicPartition tPart, LHServerConfig config) {
         return tPart.topic().equals(config.getCoreCmdTopicName());
+    }
+
+    private static boolean isRepartitionedPartition(TopicPartition tPart, LHServerConfig config) {
+        return tPart.topic().equals(config.getRepartitionTopicName());
     }
 }

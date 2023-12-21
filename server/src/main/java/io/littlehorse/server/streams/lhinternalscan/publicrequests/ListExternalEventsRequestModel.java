@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalScanRequest;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -17,6 +18,7 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 
 public class ListExternalEventsRequestModel
         extends PublicScanRequest<
@@ -45,6 +47,8 @@ public class ListExternalEventsRequestModel
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
     }
+
+    public InternalScanRequest.Builder getBaseSearch(RequestExecutionContext ctx) {}
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {

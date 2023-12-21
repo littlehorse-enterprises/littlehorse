@@ -25,17 +25,17 @@ public final class InternalServer {
     java.lang.String[] descriptorData = {
       "\n\025internal_server.proto\022\013littlehorse\032\033go" +
       "ogle/protobuf/empty.proto\032\027interactive_q" +
-      "uery.proto2\353\002\n\013LHInternals\022L\n\tGetObject\022" +
+      "uery.proto2\360\002\n\013LHInternals\022L\n\tGetObject\022" +
       "\035.littlehorse.GetObjectRequest\032\036.littleh" +
-      "orse.GetObjectResponse\"\000\022P\n\014InternalScan" +
-      "\022\033.littlehorse.InternalScanPb\032!.littleho" +
-      "rse.InternalScanResponse\"\000\022[\n\016WaitForCom" +
-      "mand\022\".littlehorse.WaitForCommandRequest" +
-      "\032#.littlehorse.WaitForCommandResponse\"\000\022" +
-      "_\n\022GetAdvertisedHosts\022\026.google.protobuf." +
-      "Empty\032/.littlehorse.InternalGetAdvertise" +
-      "dHostsResponse\"\000B\037\n\033io.littlehorse.commo" +
-      "n.protoP\001b\006proto3"
+      "orse.GetObjectResponse\"\000\022U\n\014InternalScan" +
+      "\022 .littlehorse.InternalScanRequest\032!.lit" +
+      "tlehorse.InternalScanResponse\"\000\022[\n\016WaitF" +
+      "orCommand\022\".littlehorse.WaitForCommandRe" +
+      "quest\032#.littlehorse.WaitForCommandRespon" +
+      "se\"\000\022_\n\022GetAdvertisedHosts\022\026.google.prot" +
+      "obuf.Empty\032/.littlehorse.InternalGetAdve" +
+      "rtisedHostsResponse\"\000B\037\n\033io.littlehorse." +
+      "common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

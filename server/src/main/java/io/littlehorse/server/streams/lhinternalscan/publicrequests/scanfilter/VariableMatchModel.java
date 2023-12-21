@@ -1,4 +1,4 @@
-package io.littlehorse.server.streams.lhinternalscan.publicrequests;
+package io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;

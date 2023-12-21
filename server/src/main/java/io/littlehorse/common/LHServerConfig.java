@@ -34,7 +34,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,10 +108,6 @@ public class LHServerConfig extends ConfigBase {
     private Admin kafkaAdmin;
     private LHProducer producer;
     private LHProducer txnProducer;
-
-    public int getHotMetadataPartition() {
-        return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
-    }
 
     /*
      * Kafka Streams does not currently expose any way to control the prefix of

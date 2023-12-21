@@ -36,34 +36,36 @@ message ScanFilter {
     }
 }
 
-message InternalScanPb {
-    message TagScanPb {
-        optional google.protobuf.Timestamp earliest_create_time = 1;
-        optional google.protobuf.Timestamp latest_create_time = 2;
-        string key_prefix = 3;
-    }
+message TagScan {
+    optional google.protobuf.Timestamp earliest_create_time = 1;
+    optional google.protobuf.Timestamp latest_create_time = 2;
+    repeated AttributePb attributes = 3;
+    GetableClassEnum object_type = 4;
+}
 
-    message BoundedObjectIdScanPb {
-        string start_object_id = 1;
-        optional string end_object_id = 2;
-    }
+message BoundedObjectIdScan {
+    string start_object_id = 1;
+    optional string end_object_id = 2;
+}
 
+message InternalScanRequest {
     ScanResultTypePb result_type = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
-    GetableClassEnum object_type = 4;
-    string store_name = 5;
+    GetableClassEnum result_object_type = 4;
+    StoreableType scan_object_type = 5;
+    string store_name = 6;
 
-    // If this is set: Remote Tag Scan
-    // Else: Local Tag Scan
-    optional string partition_key = 6;
+    // The partition key of the request. If nul, then all partitions of the
+    // store are scanned. Otherwise, only the parttion given by the 
+    optional string partition_key = 7;
 
     oneof scan_boundary {
-        BoundedObjectIdScanPb bounded_object_id_scan = 7;
-        TagScanPb tag_scan = 8;
+        BoundedObjectIdScan bounded_object_id_scan = 8;
+        TagScan tag_scan = 9;
     }
-    string tenant_id = 9;
-    repeated ScanFilter filters = 10;
+    string tenant_id = 10;
+    repeated ScanFilter filters = 11;
 }
 
 message InternalGetAdvertisedHostsResponse {
@@ -71,11 +73,10 @@ message InternalGetAdvertisedHostsResponse {
 }
 
 enum ScanResultTypePb {
-    // Just return the IDs of the objects.
+    // Returns only the Object Id for the scanned objects. Always valid.
     OBJECT_ID = 0;
 
-    // Return the objects themselves. This can only be done for the object id prefix
-    // scan type.
+    // Returns the actual scanned object. Not valid for REMOTE tag scan.
     OBJECT = 1;
 }
 

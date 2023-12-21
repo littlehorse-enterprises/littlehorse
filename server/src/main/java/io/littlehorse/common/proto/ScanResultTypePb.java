@@ -10,7 +10,7 @@ public enum ScanResultTypePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <pre>
-   * Just return the IDs of the objects.
+   * Returns only the Object Id for the scanned objects. Always valid.
    * </pre>
    *
    * <code>OBJECT_ID = 0;</code>
@@ -18,8 +18,7 @@ public enum ScanResultTypePb
   OBJECT_ID(0),
   /**
    * <pre>
-   * Return the objects themselves. This can only be done for the object id prefix
-   * scan type.
+   * Returns the actual scanned object. Not valid for REMOTE tag scan.
    * </pre>
    *
    * <code>OBJECT = 1;</code>
@@ -30,7 +29,7 @@ public enum ScanResultTypePb
 
   /**
    * <pre>
-   * Just return the IDs of the objects.
+   * Returns only the Object Id for the scanned objects. Always valid.
    * </pre>
    *
    * <code>OBJECT_ID = 0;</code>
@@ -38,8 +37,7 @@ public enum ScanResultTypePb
   public static final int OBJECT_ID_VALUE = 0;
   /**
    * <pre>
-   * Return the objects themselves. This can only be done for the object id prefix
-   * scan type.
+   * Returns the actual scanned object. Not valid for REMOTE tag scan.
    * </pre>
    *
    * <code>OBJECT = 1;</code>
