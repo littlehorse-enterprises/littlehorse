@@ -78,8 +78,7 @@ public class WorkflowIdempotencyTest {
 
             assertThat(updatedSpec.getId().getMajorVersion())
                     .isEqualTo(originalSpec.getId().getMajorVersion() + 1);
-            assertThat(updatedSpec.getId().getRevision())
-                    .isEqualTo(0);
+            assertThat(updatedSpec.getId().getRevision()).isEqualTo(0);
         }
     }
 
