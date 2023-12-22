@@ -3,7 +3,7 @@ package io.littlehorse.test;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class AbstractVerifier implements Verifier {
-    protected final LHPublicApiBlockingStub lhClient;
+    protected final LittleHorseBlockingStub lhClient;
     protected final Workflow workflow;
     private final Collection<Arg> workflowArgs;
 

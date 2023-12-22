@@ -55,8 +55,8 @@ type serverConnection struct {
 	manager        *serverConnectionManager
 	host           *model.LHHostInfo
 	running        bool
-	pollTaskClient *model.LHPublicApi_PollTaskClient
-	grpcClient     *model.LHPublicApiClient
+	pollTaskClient *model.LittleHorse_PollTaskClient
+	grpcClient     *model.LittleHorseClient
 }
 
 func newServerConnection(
@@ -323,11 +323,11 @@ func (m *serverConnectionManager) onConnectionClosed(conn *serverConnection) {
 
 // stores the info related to the task and which stub it should connect to
 type taskExecutionInfo struct {
-	specificStub *model.LHPublicApiClient
+	specificStub *model.LittleHorseClient
 	task         *model.ScheduledTask
 }
 
-func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LHPublicApiClient) {
+func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LittleHorseClient) {
 	taskToExecution := &taskExecutionInfo{
 		specificStub: specificStub,
 		task:         task,

@@ -1,8 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
 
-    public AYExtEvtFollowedBySpawnThread(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public AYExtEvtFollowedBySpawnThread(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -42,7 +42,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
         return Arrays.asList(new AYSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         List<String> out = new ArrayList<>();
 

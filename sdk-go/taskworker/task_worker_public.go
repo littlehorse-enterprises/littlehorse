@@ -7,7 +7,7 @@ import (
 
 type LHTaskWorker struct {
 	config    *common.LHConfig
-	grpcStub  *model.LHPublicApiClient
+	grpcStub  *model.LittleHorseClient
 	taskFunc  interface{}
 	taskSig   *common.TaskFuncSignature
 	manager   *serverConnectionManager

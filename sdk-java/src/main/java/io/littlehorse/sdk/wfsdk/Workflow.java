@@ -7,7 +7,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -169,7 +169,7 @@ public abstract class Workflow {
      * @param client is an LHClient.
      * @return true if the workflow spec is registered or false otherwise
      */
-    public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
+    public boolean doesWfSpecExist(LittleHorseBlockingStub client) {
         try {
             client.getLatestWfSpec(
                     GetLatestWfSpecRequest.newBuilder().setName(name).build());
@@ -190,7 +190,7 @@ public abstract class Workflow {
      * @param majorVersion the workflow Major Version
      * @return true if the workflow spec is registered for this Major Version or false otherwise
      */
-    public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer majorVersion) {
+    public boolean doesWfSpecExist(LittleHorseBlockingStub client, Integer majorVersion) {
         // TODO: LH-282, support revision versioning here.
         if (majorVersion == null) return doesWfSpecExist(client);
 
@@ -215,7 +215,7 @@ public abstract class Workflow {
      *
      * @param client is an LHClient.
      */
-    public void registerWfSpec(LHPublicApiBlockingStub client) {
+    public void registerWfSpec(LittleHorseBlockingStub client) {
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 

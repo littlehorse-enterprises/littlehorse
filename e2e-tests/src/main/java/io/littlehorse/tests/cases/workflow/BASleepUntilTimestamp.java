@@ -1,8 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class BASleepUntilTimestamp extends WorkflowLogicTest {
 
-    public BASleepUntilTimestamp(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public BASleepUntilTimestamp(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -38,7 +38,7 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
         return new ArrayList<>();
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(
                 client, Arg.of("timestamp-to-wait-for", new Date(System.currentTimeMillis() + (1000 * 2)).getTime()));

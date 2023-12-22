@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal.step;
 
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -18,7 +18,7 @@ public class SendExternalEventStep extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LHPublicApiGrpc.LHPublicApiBlockingStub lhClient) {
+    public void tryExecute(Object context, LittleHorseGrpc.LittleHorseBlockingStub lhClient) {
         PutExternalEventRequest externalEventRequest = PutExternalEventRequest.newBuilder()
                 .setWfRunId(WfRunId.newBuilder().setId(context.toString()))
                 .setContent(content)

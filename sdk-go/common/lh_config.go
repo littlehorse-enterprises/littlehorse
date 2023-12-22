@@ -70,7 +70,7 @@ type LHConfig struct {
 	GrpcKeepaliveTimeMs    int64
 	GrpcKeepaliveTimeoutMs int64
 
-	clients  map[string]*model.LHPublicApiClient
+	clients  map[string]*model.LittleHorseClient
 	channels map[string]*grpc.ClientConn
 
 	OauthConfig *auth.OauthConfig
@@ -117,7 +117,7 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 	return config.channels[url], nil
 }
 
-func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
+func (l *LHConfig) GetGrpcClient() (*model.LittleHorseClient, error) {
 	url := l.ApiHost + ":" + l.ApiPort
 	if l.ApiProtocol != DEFAULT_PROTOCOL && l.ApiProtocol != TLS_PROTOCOL {
 		return nil, fmt.Errorf("invalid protocol: %s", l.ApiProtocol)
@@ -125,13 +125,13 @@ func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
 	return l.GetGrpcClientForHost(url)
 }
 
-func (l *LHConfig) GetGrpcClientForHost(url string) (*model.LHPublicApiClient, error) {
+func (l *LHConfig) GetGrpcClientForHost(url string) (*model.LittleHorseClient, error) {
 	if l.clients[url] == nil {
 		conn, err := l.GetGrpcConn(l.ApiHost + ":" + l.ApiPort)
 		if err != nil {
 			return nil, err
 		}
-		temp := model.NewLHPublicApiClient(conn)
+		temp := model.NewLittleHorseClient(conn)
 		l.clients[url] = &temp
 	}
 
@@ -162,7 +162,7 @@ func NewConfigFromEnv() *LHConfig {
 		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
 
-		clients:  make(map[string]*model.LHPublicApiClient),
+		clients:  make(map[string]*model.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
 
 		OauthConfig: &auth.OauthConfig{
@@ -200,7 +200,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
 
-		clients:  make(map[string]*model.LHPublicApiClient),
+		clients:  make(map[string]*model.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
 
 		OauthConfig: &auth.OauthConfig{

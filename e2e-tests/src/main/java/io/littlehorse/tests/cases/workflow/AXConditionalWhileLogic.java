@@ -2,7 +2,7 @@ package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class AXConditionalWhileLogic extends WorkflowLogicTest {
 
-    public AXConditionalWhileLogic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public AXConditionalWhileLogic(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -46,7 +46,7 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
         return Arrays.asList(new AXSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithInputsAndCheckPath(client, 3, 3, 2, 1),

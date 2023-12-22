@@ -1,8 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -20,7 +20,7 @@ import java.util.List;
 // safeguards of the java wf sdk. But we might do that test in the future.
 public class BCChildFinishesFirst extends WorkflowLogicTest {
 
-    public BCChildFinishesFirst(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public BCChildFinishesFirst(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -58,7 +58,7 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
         return Arrays.asList(new BCSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(100);

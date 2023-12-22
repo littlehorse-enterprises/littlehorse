@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -49,7 +49,7 @@ public class LHTaskWorker implements Closeable {
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;
     private String taskDefName;
-    private LHPublicApiBlockingStub grpcClient;
+    private LittleHorseBlockingStub grpcClient;
 
     private static final long KEEP_ALIVE_TIMEOUT = 60_000;
 

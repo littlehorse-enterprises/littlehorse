@@ -470,7 +470,7 @@ message ServerVersionResponse {
   optional string pre_release_identifier = 4;
 }
 
-service LHPublicApi {
+service LittleHorse {
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
 

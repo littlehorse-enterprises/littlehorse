@@ -217,7 +217,7 @@ public class ParallelApprovalExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
