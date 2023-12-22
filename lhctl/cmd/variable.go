@@ -63,7 +63,7 @@ var searchVariableCmd = &cobra.Command{
 	Use:   "variable",
 	Short: "Search for Variables by their value",
 	Long: `
-Search for variables by specifying the value 
+Search for variables by specifying the value
 Search for Variable's by providing the WfRunId OR by specifying the name, type, and
 value of variable to search for.
 

@@ -94,7 +94,7 @@ public enum LHHealthResult
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(0);
+    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(1);
   }
 
   private static final LHHealthResult[] VALUES = values();

@@ -56,4 +56,3 @@ Result:
 ## Configurations
 
 - [Server Configurations](../docs/SERVER_CONFIGURATIONS.md)
-- [Workers/Clients Configurations](../docs/CLIENT_CONFIGURATIONS.md)

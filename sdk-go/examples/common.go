@@ -7,7 +7,7 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
-func LoadConfigAndClient() (*common.LHConfig, *model.LHPublicApiClient) {
+func LoadConfigAndClient() (*common.LHConfig, *model.LittleHorseClient) {
 	config, err := common.NewConfigFromProps("${HOME}/.config/littlehorse.config")
 	if err != nil {
 		log.Fatal(err)

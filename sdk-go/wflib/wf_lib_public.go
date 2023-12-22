@@ -110,6 +110,11 @@ func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
 
+func (l *LHWorkflow) WithUpdateType(updateType model.AllowedUpdateType) *LHWorkflow {
+	l.spec.AllowedUpdates = updateType
+	return l
+}
+
 func (t *WorkflowThread) AddVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {

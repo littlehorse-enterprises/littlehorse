@@ -2,8 +2,8 @@ package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -23,7 +23,7 @@ public class BEUserTasksCancel extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "be-some-usertask";
 
-    public BEUserTasksCancel(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public BEUserTasksCancel(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -52,7 +52,7 @@ public class BEUserTasksCancel extends UserTaskWorkflowTest {
         return Arrays.asList(new BECancelTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         List<String> out = new ArrayList<>();
 

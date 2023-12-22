@@ -28,10 +28,10 @@ from littlehorse.model.object_id_pb2 import (
     TaskDefId,
 )
 from littlehorse.model.service_pb2 import (
-    GetLatestWfSpecRequest,
     PutExternalEventDefRequest,
     PutTaskDefRequest,
     PutWfSpecRequest,
+    AllowedUpdateType,
 )
 from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
@@ -1400,12 +1400,16 @@ ThreadInitializer = Callable[[WorkflowThread], None]
 
 
 class Workflow:
-    def __init__(self, name: str, entrypoint: ThreadInitializer) -> None:
+    def __init__(
+        self,
+        name: str,
+        entrypoint: ThreadInitializer,
+    ) -> None:
         """Workflow.
 
         Args:
             name (str): Name of WfSpec.
-            entrypoint (ThreadInitializer):Is the entrypoint thread function.
+            entrypoint (ThreadInitializer): Is the entrypoint thread function.
         """
         if name is None:
             raise ValueError("Name cannot be None")
@@ -1414,6 +1418,7 @@ class Workflow:
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
+        self._allowed_updates: Optional[AllowedUpdateType] = None
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1447,6 +1452,15 @@ class Workflow:
     def __str__(self) -> str:
         return to_json(self.compile())
 
+    def with_update_type(self, update_type: AllowedUpdateType) -> None:
+        """
+        Defines the type of update to perform when saving the WfSpec:
+            AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version (either major or revision).
+            AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision if the change is a major version it fails.
+            AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+        """
+        self._allowed_updates = update_type
+
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
 
@@ -1468,32 +1482,18 @@ class Workflow:
             name=self.name,
             entrypoint_thread_name=ENTRYPOINT,
             thread_specs=thread_specs,
+            allowed_updates=self._allowed_updates,
         )
 
 
-def create_workflow_spec(
-    workflow: Workflow, config: LHConfig, skip_if_already_exists: bool = True
-) -> None:
+def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
     """Creates a given workflow spec at the LH Server.
 
     Args:
         workflow (Workflow): The workflow.
         config (LHConfig): The configuration to get connected to the LH Server.
-        skip_if_already_exists (bool, optional): If the workflow exits and
-        this is True, then it does not create a new version,
-        else it creates a new version. Defaults to True.
     """
     stub = config.stub()
-
-    if skip_if_already_exists:
-        try:
-            stub.GetLatestWfSpec(GetLatestWfSpecRequest(name=workflow.name))
-            logging.info(f"Workflow {workflow.name} already exits, skipping")
-            return
-        except RpcError as e:
-            if e.code() != StatusCode.NOT_FOUND:
-                raise e
-
     request = workflow.compile()
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request)

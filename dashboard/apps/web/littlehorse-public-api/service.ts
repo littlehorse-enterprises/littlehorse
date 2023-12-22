@@ -55,6 +55,65 @@ import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } f
 
 export const protobufPackage = "littlehorse";
 
+/**
+ * Defines the allowed update type
+ * ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+ * NO_UPDATES - Reject any update
+ */
+export enum AllowedUpdateType {
+  ALL_UPDATES = "ALL_UPDATES",
+  MINOR_REVISION_UPDATES = "MINOR_REVISION_UPDATES",
+  NO_UPDATES = "NO_UPDATES",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function allowedUpdateTypeFromJSON(object: any): AllowedUpdateType {
+  switch (object) {
+    case 0:
+    case "ALL_UPDATES":
+      return AllowedUpdateType.ALL_UPDATES;
+    case 1:
+    case "MINOR_REVISION_UPDATES":
+      return AllowedUpdateType.MINOR_REVISION_UPDATES;
+    case 2:
+    case "NO_UPDATES":
+      return AllowedUpdateType.NO_UPDATES;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return AllowedUpdateType.UNRECOGNIZED;
+  }
+}
+
+export function allowedUpdateTypeToJSON(object: AllowedUpdateType): string {
+  switch (object) {
+    case AllowedUpdateType.ALL_UPDATES:
+      return "ALL_UPDATES";
+    case AllowedUpdateType.MINOR_REVISION_UPDATES:
+      return "MINOR_REVISION_UPDATES";
+    case AllowedUpdateType.NO_UPDATES:
+      return "NO_UPDATES";
+    case AllowedUpdateType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
+  switch (object) {
+    case AllowedUpdateType.ALL_UPDATES:
+      return 0;
+    case AllowedUpdateType.MINOR_REVISION_UPDATES:
+      return 1;
+    case AllowedUpdateType.NO_UPDATES:
+      return 2;
+    case AllowedUpdateType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 export enum LHHealthResult {
   LH_HEALTH_RUNNING = "LH_HEALTH_RUNNING",
   LH_HEALTH_REBALANCING = "LH_HEALTH_REBALANCING",
@@ -117,6 +176,7 @@ export interface PutWfSpecRequest {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
+  allowedUpdates: AllowedUpdateType;
 }
 
 export interface PutWfSpecRequest_ThreadSpecsEntry {
@@ -692,7 +752,13 @@ export const GetLatestUserTaskDefRequest = {
 };
 
 function createBasePutWfSpecRequest(): PutWfSpecRequest {
-  return { name: "", threadSpecs: {}, entrypointThreadName: "", retentionPolicy: undefined };
+  return {
+    name: "",
+    threadSpecs: {},
+    entrypointThreadName: "",
+    retentionPolicy: undefined,
+    allowedUpdates: AllowedUpdateType.ALL_UPDATES,
+  };
 }
 
 export const PutWfSpecRequest = {
@@ -708,6 +774,9 @@ export const PutWfSpecRequest = {
     }
     if (message.retentionPolicy !== undefined) {
       WorkflowRetentionPolicy.encode(message.retentionPolicy, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
+      writer.uint32(80).int32(allowedUpdateTypeToNumber(message.allowedUpdates));
     }
     return writer;
   },
@@ -750,6 +819,13 @@ export const PutWfSpecRequest = {
 
           message.retentionPolicy = WorkflowRetentionPolicy.decode(reader, reader.uint32());
           continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.allowedUpdates = allowedUpdateTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -772,6 +848,9 @@ export const PutWfSpecRequest = {
       retentionPolicy: isSet(object.retentionPolicy)
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
+      allowedUpdates: isSet(object.allowedUpdates)
+        ? allowedUpdateTypeFromJSON(object.allowedUpdates)
+        : AllowedUpdateType.ALL_UPDATES,
     };
   },
 
@@ -795,6 +874,9 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       obj.retentionPolicy = WorkflowRetentionPolicy.toJSON(message.retentionPolicy);
     }
+    if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
+      obj.allowedUpdates = allowedUpdateTypeToJSON(message.allowedUpdates);
+    }
     return obj;
   },
 
@@ -817,6 +899,7 @@ export const PutWfSpecRequest = {
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? WorkflowRetentionPolicy.fromPartial(object.retentionPolicy)
       : undefined;
+    message.allowedUpdates = object.allowedUpdates ?? AllowedUpdateType.ALL_UPDATES;
     return message;
   },
 };
@@ -7116,10 +7199,10 @@ export const ServerVersionResponse = {
   },
 };
 
-export type LHPublicApiDefinition = typeof LHPublicApiDefinition;
-export const LHPublicApiDefinition = {
-  name: "LHPublicApi",
-  fullName: "littlehorse.LHPublicApi",
+export type LittleHorseDefinition = typeof LittleHorseDefinition;
+export const LittleHorseDefinition = {
+  name: "LittleHorse",
+  fullName: "littlehorse.LittleHorse",
   methods: {
     putTaskDef: {
       name: "PutTaskDef",
@@ -7564,7 +7647,7 @@ export const LHPublicApiDefinition = {
   },
 } as const;
 
-export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
+export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTaskDef(request: PutTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   getTaskDef(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   putExternalEventDef(
@@ -7706,7 +7789,7 @@ export interface LHPublicApiServiceImplementation<CallContextExt = {}> {
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersionResponse>>;
 }
 
-export interface LHPublicApiClient<CallOptionsExt = {}> {
+export interface LittleHorseClient<CallOptionsExt = {}> {
   putTaskDef(request: DeepPartial<PutTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   getTaskDef(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   putExternalEventDef(

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"context"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ a WfRun, to searching for various objects.
 `,
 }
 
-var globalClient *model.LHPublicApiClient
+var globalClient *model.LittleHorseClient
 var globalConfig *common.LHConfig
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -60,7 +61,7 @@ func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
 	return *globalConfig
 }
 
-func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
+func getGlobalClient(cmd *cobra.Command) model.LittleHorseClient {
 	if globalClient != nil {
 		return *globalClient
 	}

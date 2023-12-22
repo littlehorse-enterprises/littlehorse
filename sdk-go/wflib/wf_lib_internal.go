@@ -535,7 +535,7 @@ func (t *WorkflowThread) addVariable(
 		if err != nil {
 			log.Fatal(err)
 		}
-		if common.GetVarType(defaultVarVal.GetValue()) != varType {
+		if *common.GetVarType(defaultVarVal) != varType {
 			log.Fatal("provided default value for variable " + name + " didn't match type " + varType.String())
 		}
 		varDef.DefaultValue = defaultVarVal

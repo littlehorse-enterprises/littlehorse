@@ -4,8 +4,8 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -35,7 +35,7 @@ public class ADTaskDefDeleted extends Test {
     private LHTaskWorker worker1;
     private LHTaskWorker worker2;
 
-    public ADTaskDefDeleted(LHPublicApiBlockingStub client, LHConfig config) {
+    public ADTaskDefDeleted(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

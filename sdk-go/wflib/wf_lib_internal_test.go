@@ -3,6 +3,7 @@ package wflib_test
 import (
 	"testing"
 
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 	"github.com/stretchr/testify/assert"
@@ -373,4 +374,56 @@ func TestCatchAnyFailure(t *testing.T) {
 	_, ok := putWf.ThreadSpecs[handler.HandlerSpecName]
 	assert.True(t, ok)
 	assert.Nil(t, handler.GetFailureToCatch())
+}
+
+type someObject struct {
+	Foo int32
+	Bar string
+}
+
+func TestVarValToVarType(t *testing.T) {
+	// Int
+	varVal, err := common.InterfaceToVarVal(123)
+	assert.Nil(t, err)
+	varType := common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_INT)
+
+	// Str
+	varVal, err = common.InterfaceToVarVal("hello there")
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_STR)
+
+	// Str pointer
+	mystr := "hello there"
+	varVal, err = common.InterfaceToVarVal(&mystr)
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_STR)
+	assert.Equal(t, varVal.GetStr(), mystr)
+
+	// struct/JSON_OBJ
+	varVal, err = common.InterfaceToVarVal(someObject{
+		Foo: 137,
+		Bar: "meaningoflife",
+	})
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_JSON_OBJ)
+
+	// Nil varval
+	varVal = &model.VariableValue{}
+	varType = common.VarValToVarType(varVal)
+	assert.Nil(t, varType)
+}
+
+func TestUpdateType(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		nodeOutput := t.Execute("some-task")
+		t.HandleAnyFailure(&nodeOutput, someHandler)
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+
+	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NO_UPDATES)
 }

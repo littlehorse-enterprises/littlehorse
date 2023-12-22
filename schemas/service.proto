@@ -33,6 +33,17 @@ message PutWfSpecRequest {
   string entrypoint_thread_name = 6;
   optional WorkflowRetentionPolicy retention_policy = 8;
   reserved 9;
+  AllowedUpdateType allowed_updates = 10;
+}
+
+// Defines the allowed update type
+// ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+// MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+// NO_UPDATES - Reject any update
+enum AllowedUpdateType {
+  ALL_UPDATES = 0;
+  MINOR_REVISION_UPDATES = 1;
+  NO_UPDATES = 2;
 }
 
 message PutTaskDefRequest {
@@ -470,7 +481,7 @@ message ServerVersionResponse {
   optional string pre_release_identifier = 4;
 }
 
-service LHPublicApi {
+service LittleHorse {
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
 

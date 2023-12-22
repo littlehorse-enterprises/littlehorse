@@ -7,9 +7,9 @@ import io.grpc.TlsChannelCredentials;
 import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import java.io.File;
@@ -142,7 +142,7 @@ public class LHConfig extends ConfigBase {
      * @return a blocking gRPC stub for the configured host/port.
      * @throws IOException if stub creation fails.
      */
-    public LHPublicApiBlockingStub getBlockingStub() throws IOException {
+    public LittleHorseBlockingStub getBlockingStub() throws IOException {
         return getBlockingStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -153,7 +153,7 @@ public class LHConfig extends ConfigBase {
      * @return an async gRPC stub for the configured host/port.
      * @throws IOException if stub creation fails.
      */
-    public LHPublicApiStub getAsyncStub() throws IOException {
+    public LittleHorseStub getAsyncStub() throws IOException {
         return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -196,11 +196,11 @@ public class LHConfig extends ConfigBase {
      * @return an async gRPC stub for that host/port combo.
      * @throws IOException if stub creation fails.
      */
-    public LHPublicApiStub getAsyncStub(String host, int port) throws IOException {
+    public LittleHorseStub getAsyncStub(String host, int port) throws IOException {
         if (isOauth()) {
-            return LHPublicApiGrpc.newStub(getChannel(host, port)).withCallCredentials(oauthCredentialsProvider);
+            return LittleHorseGrpc.newStub(getChannel(host, port)).withCallCredentials(oauthCredentialsProvider);
         }
-        return LHPublicApiGrpc.newStub(getChannel(host, port));
+        return LittleHorseGrpc.newStub(getChannel(host, port));
     }
 
     /**
@@ -213,12 +213,12 @@ public class LHConfig extends ConfigBase {
      * @return a blocking gRPC stub for that host/port combo.
      * @throws IOException if stub creation fails.
      */
-    public LHPublicApiBlockingStub getBlockingStub(String host, int port) throws IOException {
+    public LittleHorseBlockingStub getBlockingStub(String host, int port) throws IOException {
         if (isOauth()) {
-            return LHPublicApiGrpc.newBlockingStub(getChannel(host, port))
+            return LittleHorseGrpc.newBlockingStub(getChannel(host, port))
                     .withCallCredentials(oauthCredentialsProvider);
         }
-        return LHPublicApiGrpc.newBlockingStub(getChannel(host, port));
+        return LittleHorseGrpc.newBlockingStub(getChannel(host, port));
     }
 
     /**

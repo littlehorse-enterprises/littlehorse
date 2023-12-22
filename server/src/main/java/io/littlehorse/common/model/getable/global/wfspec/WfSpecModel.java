@@ -18,6 +18,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.WfSpecUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
@@ -355,44 +356,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             }
         }
 
-        // Now, what we need to do is determine whether we have a new major version
-        // or a new minor revision.
-        boolean breakingChange = false;
-
-        // Rules for minor revision:
-        // - set of searchable variables matches previous version
-        // - set of required variables matches previous version
-        //
-        // If that's not satisfied, then we have a "major" version update.
-        //
-        // TODO: This is an O(N^3) implementation (I think...? Dunno, I'm tired)
-        // TODO: This would fail a LeetCode interview.
-        for (String requiredVar : old.getRequiredVariables().keySet()) {
-            if (!getRequiredVariables().containsKey(requiredVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String requiredVar : getRequiredVariables().keySet()) {
-            if (!old.getRequiredVariables().containsKey(requiredVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String searchableVar : old.getSearchableVariables().keySet()) {
-            if (!getSearchableVariables().containsKey(searchableVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String searchableVar : getSearchableVariables().keySet()) {
-            if (!old.getSearchableVariables().containsKey(searchableVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-
-        if (breakingChange) {
+        if (WfSpecUtil.hasBreakingChanges(this, old)) {
             id.setMajorVersion(old.getId().getMajorVersion() + 1);
             id.setRevision(0);
         } else {

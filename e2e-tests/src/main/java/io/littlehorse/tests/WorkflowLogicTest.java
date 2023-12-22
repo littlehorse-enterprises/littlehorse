@@ -11,8 +11,8 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -40,7 +40,7 @@ public abstract class WorkflowLogicTest extends Test {
     private static final int WAIT_TIME_BETWEEN_REGISTER = 500;
     private static Logger log = LoggerFactory.getLogger(WorkflowLogicTest.class);
 
-    public abstract List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public abstract List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, IOException, InterruptedException;
 
     protected abstract Workflow getWorkflowImpl();
@@ -53,7 +53,7 @@ public abstract class WorkflowLogicTest extends Test {
     private int majorVersion; // usually will be 0
     private int revision; // usually will be 0
 
-    public WorkflowLogicTest(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public WorkflowLogicTest(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
         wfRunIds = new ArrayList<>();
     }
@@ -118,7 +118,7 @@ public abstract class WorkflowLogicTest extends Test {
         return result.toString();
     }
 
-    protected void deploy(LHPublicApiBlockingStub client, LHConfig workerConfig) throws TestFailure {
+    protected void deploy(LittleHorseBlockingStub client, LHConfig workerConfig) throws TestFailure {
         workers = new ArrayList<>();
 
         // Now need to create LHTaskWorkers and run them for all worker objects.
@@ -194,11 +194,11 @@ public abstract class WorkflowLogicTest extends Test {
         return out;
     }
 
-    protected String runWf(LHPublicApiBlockingStub client, Arg... params) throws TestFailure, IOException {
+    protected String runWf(LittleHorseBlockingStub client, Arg... params) throws TestFailure, IOException {
         return runWf(generateGuid(), client, params);
     }
 
-    protected String runWf(String id, LHPublicApiBlockingStub client, Arg... params) throws TestFailure, IOException {
+    protected String runWf(String id, LittleHorseBlockingStub client, Arg... params) throws TestFailure, IOException {
         RunWfRequest.Builder b = RunWfRequest.newBuilder()
                 .setWfSpecName(getWorkflowName())
                 .setMajorVersion(majorVersion)
@@ -226,7 +226,7 @@ public abstract class WorkflowLogicTest extends Test {
         return resultingId.getId();
     }
 
-    protected String runWithInputsAndCheckPath(LHPublicApiBlockingStub client, Object input, Object... expectedPath)
+    protected String runWithInputsAndCheckPath(LittleHorseBlockingStub client, Object input, Object... expectedPath)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(100 * (expectedPath.length + 1));

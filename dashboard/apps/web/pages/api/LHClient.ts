@@ -1,7 +1,7 @@
 import type { Channel } from 'nice-grpc'
 import { ChannelCredentials, createChannel, createClientFactory } from 'nice-grpc'
 import type { Client } from 'nice-grpc/src/client/Client'
-import { LHPublicApiDefinition } from '../../littlehorse-public-api/service'
+import { LittleHorseDefinition } from '../../littlehorse-public-api/service'
 import { Metadata } from 'nice-grpc-common'
 import * as fs from 'fs'
 
@@ -11,7 +11,7 @@ export default class LHClient {
     private constructor() {
     }
 
-    public static getInstance(accessToken?: string): Client<LHPublicApiDefinition> {
+    public static getInstance(accessToken?: string): Client<LittleHorseDefinition> {
         if (process.env.API_URL === undefined) {
             throw new Error('Not able to get the API URL from your configuration.')
         }
@@ -26,14 +26,14 @@ export default class LHClient {
                         'Authorization',
                         `Bearer ${accessToken}`,
                     ),
-                })).create(LHPublicApiDefinition, LHClient.channel)
+                })).create(LittleHorseDefinition, LHClient.channel)
         } else {
             this.createUniqueInsecureChannel(process.env.API_URL)
 
             return createClientFactory().use((call, options) =>
                 call.next(call.request, {
                     ...options,
-                })).create(LHPublicApiDefinition, LHClient.channel)
+                })).create(LittleHorseDefinition, LHClient.channel)
         }
     }
 
