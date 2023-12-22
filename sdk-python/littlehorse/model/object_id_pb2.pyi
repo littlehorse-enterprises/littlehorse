@@ -125,11 +125,3 @@ class TenantId(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
-
-class AggregatedMetricId(_message.Message):
-    __slots__ = ["wf_spec_id", "specific_id"]
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-    SPECIFIC_ID_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_id: WfSpecId
-    specific_id: str
-    def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., specific_id: _Optional[str] = ...) -> None: ...

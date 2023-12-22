@@ -85,11 +85,6 @@ export interface TenantId {
   id: string;
 }
 
-export interface AggregatedMetricId {
-  wfSpecId?: WfSpecId | undefined;
-  specificId?: string | undefined;
-}
-
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -1208,82 +1203,6 @@ export const TenantId = {
   fromPartial<I extends Exact<DeepPartial<TenantId>, I>>(object: I): TenantId {
     const message = createBaseTenantId();
     message.id = object.id ?? "";
-    return message;
-  },
-};
-
-function createBaseAggregatedMetricId(): AggregatedMetricId {
-  return { wfSpecId: undefined, specificId: undefined };
-}
-
-export const AggregatedMetricId = {
-  encode(message: AggregatedMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.specificId !== undefined) {
-      writer.uint32(18).string(message.specificId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AggregatedMetricId {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAggregatedMetricId();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.specificId = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AggregatedMetricId {
-    return {
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      specificId: isSet(object.specificId) ? globalThis.String(object.specificId) : undefined,
-    };
-  },
-
-  toJSON(message: AggregatedMetricId): unknown {
-    const obj: any = {};
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
-    }
-    if (message.specificId !== undefined) {
-      obj.specificId = message.specificId;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<AggregatedMetricId>, I>>(base?: I): AggregatedMetricId {
-    return AggregatedMetricId.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<AggregatedMetricId>, I>>(object: I): AggregatedMetricId {
-    const message = createBaseAggregatedMetricId();
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
-    message.specificId = object.specificId ?? undefined;
     return message;
   },
 };

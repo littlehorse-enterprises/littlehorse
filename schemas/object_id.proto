@@ -84,10 +84,3 @@ message PrincipalId {
 message TenantId {
   string id = 1;
 }
-
-message AggregatedMetricId {
-  oneof id {
-    WfSpecId wf_spec_id = 1;
-    string specific_id = 2;
-  }
-}
