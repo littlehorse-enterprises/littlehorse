@@ -1,0 +1,28 @@
+name: Enhancement
+description: Minor change, refactor or enhancement
+labels: ["enhancement"]
+projects: ["littlehorse-enterprises/1"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Describe the context and any relevant information about this enhancement.
+    validations:
+      required: true
+  - type: checkboxes
+    id: components
+    validations:
+        required: true
+    attributes:
+      label: Components
+      description: You may select more than one or more.
+      options:
+        - label: Dashboard
+        - label: Server
+        - label: Python SDK
+        - label: Go SDK
+        - label: Java SDK
+        - label: C# SDK
+        - label: LH Control
+        - label: LH Tests Utils
