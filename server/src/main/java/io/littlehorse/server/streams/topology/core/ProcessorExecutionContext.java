@@ -13,7 +13,6 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -44,8 +43,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
-    private LHEventBus eventBus;
-    private MetricsAggregation metricsAggregator;
+    private GetableUpdates getableUpdates;
+    private MetricsUpdater metricsAggregator;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -154,13 +153,13 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return config;
     }
 
-    public LHEventBus eventBus() {
-        if (eventBus == null) {
-            eventBus = new LHEventBus();
-            metricsAggregator = new MetricsAggregation((TenantModelStore) coreStore); // hack
-            eventBus.subscribe(metricsAggregator);
+    public GetableUpdates getableUpdates() {
+        if (getableUpdates == null) {
+            getableUpdates = new GetableUpdates();
+            metricsAggregator = new MetricsUpdater(ModelStore.defaultStore(nativeCoreStore(), this));
+            getableUpdates.subscribe(metricsAggregator);
         }
-        return eventBus;
+        return getableUpdates;
     }
 
     private AuthorizationContext authContextFor() {

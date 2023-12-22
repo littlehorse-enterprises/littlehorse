@@ -40,6 +40,18 @@ public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
         return out;
     }
 
+    public boolean isStarted() {
+        return this.getPreviousStatus() == null && this.getNewStatus().equals(LHStatus.RUNNING);
+    }
+
+    public boolean isCompleted() {
+        return this.getNewStatus().equals(LHStatus.COMPLETED);
+    }
+
+    public boolean isErrored() {
+        return this.getNewStatus().equals(LHStatus.ERROR);
+    }
+
     @Override
     public Class<LHStatusChanged> getProtoBaseClass() {
         return LHStatusChanged.class;

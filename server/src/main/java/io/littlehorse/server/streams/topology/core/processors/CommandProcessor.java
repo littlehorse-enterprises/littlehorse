@@ -14,6 +14,7 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.DefaultModelStore;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -186,11 +187,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        TenantModelStore coreDefaultStore = ModelStore.tenantStoreFor(
-                ctx.getStateStore(ServerTopology.CORE_STORE),
-                ReadOnlyModelStore.DEFAULT_TENANT,
-                new BackgroundContext());
-        PartitionMetricsModel pedro = coreDefaultStore.get("PEDRO", PartitionMetricsModel.class);
+        DefaultModelStore coreDefaultStore =
+                ModelStore.defaultStore(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
+        PartitionMetricsModel pedro =
+                coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
 
         if (pedro != null) {
             for (AggregateWfMetricsModel aggregateWfMetrics : pedro.buildWfRepartitionCommands()) {

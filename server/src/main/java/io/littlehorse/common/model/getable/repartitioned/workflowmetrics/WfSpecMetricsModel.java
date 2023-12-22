@@ -88,11 +88,6 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
         return new WfSpecMetricsIdModel(time, windowType, wfSpecId).toString();
     }
 
-    /*public static String getObjectId(WfSpecMetricsQueryRequest request, ExecutionContext executionContext) {
-        request.getWfSpecId();
-        return new WfSpecMetricsIdModel(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowLength(), request.getWfSpecId());
-    }*/
-
     public WfSpecMetricsIdModel getObjectId() {
         return new WfSpecMetricsIdModel(windowStart, type, wfSpecId);
     }

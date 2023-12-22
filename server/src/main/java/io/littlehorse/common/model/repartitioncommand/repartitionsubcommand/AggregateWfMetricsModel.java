@@ -14,7 +14,6 @@ import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.StatusChanged;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streams.store.ModelStore;
@@ -93,14 +92,15 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
             String aggregationId = metricWindow.currentAggregationId();
             repartitionedStore.put(
                     Storeable.getFullStoreKey(MetricWindowModel.class, metricWindow.getStoreKey()), metricWindow);
-            StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedGetable =
+            // TODO: we should use GetableManager somehow.
+            StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetrics =
                     (StoredGetable<WfSpecMetrics, WfSpecMetricsModel>) repartitionedStore.get(
                             WfSpecMetricsIdModel.fromString(aggregationId, WfSpecMetricsIdModel.class));
             WfSpecMetricsModel updateMetric;
-            if (storedGetable == null) {
-                updateMetric = new WfSpecMetricsModel(metricWindow.lastWindowStart, windowType, wfSpecId);
+            if (storedMetrics == null) {
+                updateMetric = new WfSpecMetricsModel(metricWindow.getLastWindowStart(), windowType, wfSpecId);
             } else {
-                updateMetric = storedGetable.getStoredObject();
+                updateMetric = storedMetrics.getStoredObject();
             }
             mutateCurrentWfMetric(updateMetric);
             repartitionedStore.put(new StoredGetable<>(updateMetric));
@@ -115,12 +115,14 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
                 .map(StatusChangedModel::getLhStatusChanged)
                 .toList();
         for (LHStatusChangedModel wfStatusChange : wfStatusChanges) {
-            if (wfStatusChange.getPreviousStatus() == null
-                    && wfStatusChange.getNewStatus().equals(LHStatus.RUNNING)) {
+            if (wfStatusChange.isStarted()) {
                 currentWfMetric.totalStarted += 1;
             }
-            if (wfStatusChange.getNewStatus().equals(LHStatus.COMPLETED)) {
+            if (wfStatusChange.isCompleted()) {
                 currentWfMetric.totalCompleted += 1;
+            }
+            if (wfStatusChange.isErrored()) {
+                currentWfMetric.totalErrored += 1;
             }
         }
     }

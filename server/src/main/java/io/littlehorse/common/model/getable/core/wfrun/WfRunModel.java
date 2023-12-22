@@ -42,7 +42,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.LHEventBus;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -547,10 +547,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        LHEventBus.LHEvent statusChangedEvent =
-                LHEventBus.newEvent(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
+        GetableUpdates.GetableStatusUpdate statusChanged =
+                GetableUpdates.create(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         this.status = status;
-        processorContext.eventBus().dispatch(statusChangedEvent);
+        processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {

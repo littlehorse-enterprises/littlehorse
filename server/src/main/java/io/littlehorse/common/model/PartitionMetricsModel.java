@@ -1,6 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -103,7 +104,7 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
 
     @Override
     public String getStoreKey() {
-        return "PEDRO";
+        return LHConstants.PARTITION_METRICS_KEY;
     }
 
     @Override

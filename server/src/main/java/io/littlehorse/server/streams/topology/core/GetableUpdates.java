@@ -11,33 +11,33 @@ import lombok.Getter;
 /**
  * Hold information about new events related to WfRuns
  */
-public class LHEventBus {
+public class GetableUpdates {
 
-    private final List<Subscriber> subscribers = new ArrayList<>();
+    private final List<GetableStatusListener> getableStatusListeners = new ArrayList<>();
 
-    LHEventBus() {}
+    GetableUpdates() {}
 
-    public void dispatch(LHEvent event) {
-        subscribers.forEach(subscriber -> subscriber.listen(event));
+    public void dispatch(GetableStatusUpdate statusUpdate) {
+        getableStatusListeners.forEach(getableStatusListener -> getableStatusListener.listen(statusUpdate));
     }
 
-    public void subscribe(Subscriber subscriber) {
-        this.subscribers.add(subscriber);
+    public void subscribe(GetableStatusListener getableStatusListener) {
+        this.getableStatusListeners.add(getableStatusListener);
     }
 
-    public static LHEvent newEvent(
+    public static GetableStatusUpdate create(
             WfSpecIdModel wfSpecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
-        return new LHWfRunEvent(wfSpecId, tenantId, previousStatus, newStatus);
+        return new WfRunStatusUpdate(wfSpecId, tenantId, previousStatus, newStatus);
     }
 
     @Getter
-    public static class LHEvent {
+    public static class GetableStatusUpdate {
 
         private final WfSpecIdModel wfSPecId;
         private final Date creationDate;
         private final String tenantId;
 
-        public LHEvent(WfSpecIdModel wfSPecId, String tenantId) {
+        public GetableStatusUpdate(WfSpecIdModel wfSPecId, String tenantId) {
             this.creationDate = new Date();
             this.wfSPecId = wfSPecId;
             this.tenantId = tenantId;
@@ -45,18 +45,18 @@ public class LHEventBus {
     }
 
     @Getter
-    public static class LHWfRunEvent extends LHEvent {
+    public static class WfRunStatusUpdate extends GetableStatusUpdate {
         private final LHStatus previousStatus;
         private final LHStatus newStatus;
 
-        public LHWfRunEvent(WfSpecIdModel wfSPecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
+        public WfRunStatusUpdate(WfSpecIdModel wfSPecId, String tenantId, LHStatus previousStatus, LHStatus newStatus) {
             super(wfSPecId, tenantId);
             this.previousStatus = previousStatus;
             this.newStatus = Objects.requireNonNull(newStatus);
         }
     }
 
-    public interface Subscriber {
-        void listen(LHEvent event);
+    public interface GetableStatusListener {
+        void listen(GetableStatusUpdate event);
     }
 }

@@ -16,11 +16,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
 
 public class MetricWindowModel extends Storeable<MetricWindow> {
 
     private String tenantId;
-    public Date lastWindowStart;
+
+    @Getter
+    private Date lastWindowStart;
+
     private MetricsWindowLength type;
     private WfSpecIdModel wfSPecId;
     private TaskDefIdModel taskDefId;
