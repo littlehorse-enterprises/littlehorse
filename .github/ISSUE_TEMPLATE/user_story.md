@@ -1,8 +1,8 @@
 ---
 name: User story
-about: New feature or enhancement
+about: New feature or enhancement.
 title: ''
-labels: user story
+labels: feature
 assignees: ''
 
 ---
