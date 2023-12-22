@@ -12,8 +12,6 @@ body:
       required: true
   - type: checkboxes
     id: components
-    validations:
-        required: true
     attributes:
       label: Components
       description: You may select more than one or more.
