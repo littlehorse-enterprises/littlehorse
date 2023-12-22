@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.MetricWindow;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
@@ -15,12 +16,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class MetricWindowModel extends Storeable<MetricWindow> {
 
     private String tenantId;
-    private Date lastWindowStart;
+    public Date lastWindowStart;
     private MetricsWindowLength type;
     private WfSpecIdModel wfSPecId;
     private TaskDefIdModel taskDefId;
@@ -89,10 +89,9 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
         LocalDateTime lastWindow =
                 lastWindowStart.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime plus = lastWindow.plus(windowLengthMillis, TimeUnit.MILLISECONDS.toChronoUnit());
-        if (now.isBefore(plus)) {
-            return LHUtil.getCompositeId(
-                    LHUtil.toLhDbFormat(lastWindowStart), type.name(), tenantId, wfSPecId.toString());
+        if (now.isEqual(plus) || now.isAfter(plus)) {
+            lastWindowStart = new Date();
         }
-        throw new NotImplementedException();
+        return new WfSpecMetricsIdModel(lastWindowStart, type, wfSPecId).toString();
     }
 }

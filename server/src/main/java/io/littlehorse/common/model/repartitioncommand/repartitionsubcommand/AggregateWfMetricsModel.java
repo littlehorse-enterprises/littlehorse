@@ -2,21 +2,27 @@ package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.StatusChangedModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.MetricWindowModel;
+import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.StatusChanged;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -70,28 +76,52 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
 
     @Override
     public String getPartitionKey() {
-        return wfSpecId.getName();
+        return wfSpecId.toString();
     }
 
     @Override
     public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
-        List<MetricsWindowLength> validWindowTypes = Arrays.stream(MetricsWindowLength.values())
-                .filter(windowType -> !windowType.equals(MetricsWindowLength.UNRECOGNIZED))
-                .toList();
-        for (MetricsWindowLength validWindowType : validWindowTypes) {
-            String windowId = LHUtil.getCompositeId(validWindowType.name(), wfSpecId.toString(), tenantId);
+        for (MetricsWindowLength windowType : MetricsWindowLength.values()) {
+            if (windowType.equals(MetricsWindowLength.UNRECOGNIZED)) {
+                continue;
+            }
+            String windowId = LHUtil.getCompositeId(windowType.name(), wfSpecId.toString(), tenantId);
             MetricWindowModel metricWindow = repartitionedStore.get(windowId, MetricWindowModel.class);
             if (metricWindow == null) {
-                metricWindow = new MetricWindowModel(validWindowType, wfSpecId, tenantId);
-                repartitionedStore.put(windowId, metricWindow);
+                metricWindow = new MetricWindowModel(windowType, wfSpecId, tenantId);
             }
             String aggregationId = metricWindow.currentAggregationId();
-            WfMetricUpdate updateMetric = repartitionedStore.get(aggregationId, WfMetricUpdate.class);
-            if (updateMetric == null) {
-                updateMetric = new WfMetricUpdate(new Date(), validWindowType, wfSpecId);
+            repartitionedStore.put(
+                    Storeable.getFullStoreKey(MetricWindowModel.class, metricWindow.getStoreKey()), metricWindow);
+            StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedGetable =
+                    (StoredGetable<WfSpecMetrics, WfSpecMetricsModel>) repartitionedStore.get(
+                            WfSpecMetricsIdModel.fromString(aggregationId, WfSpecMetricsIdModel.class));
+            WfSpecMetricsModel updateMetric;
+            if (storedGetable == null) {
+                updateMetric = new WfSpecMetricsModel(metricWindow.lastWindowStart, windowType, wfSpecId);
+            } else {
+                updateMetric = storedGetable.getStoredObject();
             }
-            updateMetric.totalStarted = updateMetric.totalStarted + 1;
-            repartitionedStore.put("2/" + aggregationId, updateMetric);
+            mutateCurrentWfMetric(updateMetric);
+            repartitionedStore.put(new StoredGetable<>(updateMetric));
+        }
+    }
+
+    private void mutateCurrentWfMetric(WfSpecMetricsModel currentWfMetric) {
+        Predicate<StatusChangedModel> isWfStatusChange =
+                statusChangedModel -> statusChangedModel.getLhStatusChanged() != null;
+        List<LHStatusChangedModel> wfStatusChanges = changes.stream()
+                .filter(isWfStatusChange)
+                .map(StatusChangedModel::getLhStatusChanged)
+                .toList();
+        for (LHStatusChangedModel wfStatusChange : wfStatusChanges) {
+            if (wfStatusChange.getPreviousStatus() == null
+                    && wfStatusChange.getNewStatus().equals(LHStatus.RUNNING)) {
+                currentWfMetric.totalStarted += 1;
+            }
+            if (wfStatusChange.getNewStatus().equals(LHStatus.COMPLETED)) {
+                currentWfMetric.totalCompleted += 1;
+            }
         }
     }
 }
