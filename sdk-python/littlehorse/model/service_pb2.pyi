@@ -20,11 +20,20 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class AllowedUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    ALL_UPDATES: _ClassVar[AllowedUpdateType]
+    MINOR_REVISION_UPDATES: _ClassVar[AllowedUpdateType]
+    NO_UPDATES: _ClassVar[AllowedUpdateType]
+
 class LHHealthResult(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     LH_HEALTH_RUNNING: _ClassVar[LHHealthResult]
     LH_HEALTH_REBALANCING: _ClassVar[LHHealthResult]
     LH_HEALTH_ERROR: _ClassVar[LHHealthResult]
+ALL_UPDATES: AllowedUpdateType
+MINOR_REVISION_UPDATES: AllowedUpdateType
+NO_UPDATES: AllowedUpdateType
 LH_HEALTH_RUNNING: LHHealthResult
 LH_HEALTH_REBALANCING: LHHealthResult
 LH_HEALTH_ERROR: LHHealthResult
@@ -36,7 +45,7 @@ class GetLatestUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class PutWfSpecRequest(_message.Message):
-    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy"]
+    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy", "allowed_updates"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -48,11 +57,13 @@ class PutWfSpecRequest(_message.Message):
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
     thread_specs: _containers.MessageMap[str, _wf_spec_pb2.ThreadSpec]
     entrypoint_thread_name: str
     retention_policy: _wf_spec_pb2.WorkflowRetentionPolicy
-    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ...) -> None: ...
+    allowed_updates: AllowedUpdateType
+    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars"]

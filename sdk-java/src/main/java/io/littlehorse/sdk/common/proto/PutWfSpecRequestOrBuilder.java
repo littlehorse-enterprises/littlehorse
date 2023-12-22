@@ -79,4 +79,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
+
+  /**
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The enum numeric value on the wire for allowedUpdates.
+   */
+  int getAllowedUpdatesValue();
+  /**
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * @return The allowedUpdates.
+   */
+  io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates();
 }

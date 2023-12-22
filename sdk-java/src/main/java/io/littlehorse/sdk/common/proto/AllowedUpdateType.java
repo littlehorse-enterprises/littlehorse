@@ -4,37 +4,44 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.LHHealthResult}
+ * <pre>
+ * Defines the allowed update type
+ * ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+ * NO_UPDATES - Reject any update
+ * </pre>
+ *
+ * Protobuf enum {@code littlehorse.AllowedUpdateType}
  */
-public enum LHHealthResult
+public enum AllowedUpdateType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>LH_HEALTH_RUNNING = 0;</code>
+   * <code>ALL_UPDATES = 0;</code>
    */
-  LH_HEALTH_RUNNING(0),
+  ALL_UPDATES(0),
   /**
-   * <code>LH_HEALTH_REBALANCING = 1;</code>
+   * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
-  LH_HEALTH_REBALANCING(1),
+  MINOR_REVISION_UPDATES(1),
   /**
-   * <code>LH_HEALTH_ERROR = 2;</code>
+   * <code>NO_UPDATES = 2;</code>
    */
-  LH_HEALTH_ERROR(2),
+  NO_UPDATES(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>LH_HEALTH_RUNNING = 0;</code>
+   * <code>ALL_UPDATES = 0;</code>
    */
-  public static final int LH_HEALTH_RUNNING_VALUE = 0;
+  public static final int ALL_UPDATES_VALUE = 0;
   /**
-   * <code>LH_HEALTH_REBALANCING = 1;</code>
+   * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
-  public static final int LH_HEALTH_REBALANCING_VALUE = 1;
+  public static final int MINOR_REVISION_UPDATES_VALUE = 1;
   /**
-   * <code>LH_HEALTH_ERROR = 2;</code>
+   * <code>NO_UPDATES = 2;</code>
    */
-  public static final int LH_HEALTH_ERROR_VALUE = 2;
+  public static final int NO_UPDATES_VALUE = 2;
 
 
   public final int getNumber() {
@@ -51,7 +58,7 @@ public enum LHHealthResult
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static LHHealthResult valueOf(int value) {
+  public static AllowedUpdateType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -59,24 +66,24 @@ public enum LHHealthResult
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static LHHealthResult forNumber(int value) {
+  public static AllowedUpdateType forNumber(int value) {
     switch (value) {
-      case 0: return LH_HEALTH_RUNNING;
-      case 1: return LH_HEALTH_REBALANCING;
-      case 2: return LH_HEALTH_ERROR;
+      case 0: return ALL_UPDATES;
+      case 1: return MINOR_REVISION_UPDATES;
+      case 2: return NO_UPDATES;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<LHHealthResult>
+  public static com.google.protobuf.Internal.EnumLiteMap<AllowedUpdateType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      LHHealthResult> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<LHHealthResult>() {
-          public LHHealthResult findValueByNumber(int number) {
-            return LHHealthResult.forNumber(number);
+      AllowedUpdateType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<AllowedUpdateType>() {
+          public AllowedUpdateType findValueByNumber(int number) {
+            return AllowedUpdateType.forNumber(number);
           }
         };
 
@@ -94,12 +101,12 @@ public enum LHHealthResult
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(1);
+    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(0);
   }
 
-  private static final LHHealthResult[] VALUES = values();
+  private static final AllowedUpdateType[] VALUES = values();
 
-  public static LHHealthResult valueOf(
+  public static AllowedUpdateType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -113,10 +120,10 @@ public enum LHHealthResult
 
   private final int value;
 
-  private LHHealthResult(int value) {
+  private AllowedUpdateType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.LHHealthResult)
+  // @@protoc_insertion_point(enum_scope:littlehorse.AllowedUpdateType)
 }
 
