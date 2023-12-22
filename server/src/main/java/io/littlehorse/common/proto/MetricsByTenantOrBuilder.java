@@ -20,10 +20,18 @@ public interface MetricsByTenantOrBuilder extends
       getTenantIdBytes();
 
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   int getLhStatusChangesCount();
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   boolean containsLhStatusChanges(
@@ -35,11 +43,19 @@ public interface MetricsByTenantOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.common.proto.StatusChanges>
   getLhStatusChanges();
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.StatusChanges>
   getLhStatusChangesMap();
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   /* nullable */
@@ -48,16 +64,28 @@ io.littlehorse.common.proto.StatusChanges getLhStatusChangesOrDefault(
       /* nullable */
 io.littlehorse.common.proto.StatusChanges defaultValue);
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   io.littlehorse.common.proto.StatusChanges getLhStatusChangesOrThrow(
       java.lang.String key);
 
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   int getTaskStatusChangesCount();
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   boolean containsTaskStatusChanges(
@@ -69,11 +97,19 @@ io.littlehorse.common.proto.StatusChanges defaultValue);
   java.util.Map<java.lang.String, io.littlehorse.common.proto.StatusChanges>
   getTaskStatusChanges();
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.StatusChanges>
   getTaskStatusChangesMap();
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   /* nullable */
@@ -82,6 +118,10 @@ io.littlehorse.common.proto.StatusChanges getTaskStatusChangesOrDefault(
       /* nullable */
 io.littlehorse.common.proto.StatusChanges defaultValue);
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   io.littlehorse.common.proto.StatusChanges getTaskStatusChangesOrThrow(

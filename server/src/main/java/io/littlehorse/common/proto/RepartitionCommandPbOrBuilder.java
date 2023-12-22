@@ -67,33 +67,6 @@ public interface RepartitionCommandPbOrBuilder extends
   io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
 
   /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return Whether the wfMetricUpdate field is set.
-   */
-  boolean hasWfMetricUpdate();
-  /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return The wfMetricUpdate.
-   */
-  io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate();
-  /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   */
-  io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
-
-  /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
    * @return Whether the createRemoteTag field is set.
    */

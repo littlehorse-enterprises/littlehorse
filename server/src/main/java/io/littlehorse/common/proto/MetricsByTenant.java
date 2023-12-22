@@ -119,6 +119,10 @@ private static final long serialVersionUID = 0L;
     return internalGetLhStatusChanges().getMap().size();
   }
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   @java.lang.Override
@@ -136,6 +140,10 @@ private static final long serialVersionUID = 0L;
     return getLhStatusChangesMap();
   }
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   @java.lang.Override
@@ -143,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return internalGetLhStatusChanges().getMap();
   }
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   @java.lang.Override
@@ -157,6 +169,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * workflow runs status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
    */
   @java.lang.Override
@@ -198,6 +214,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     return internalGetTaskStatusChanges().getMap().size();
   }
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   @java.lang.Override
@@ -215,6 +235,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     return getTaskStatusChangesMap();
   }
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   @java.lang.Override
@@ -222,6 +246,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     return internalGetTaskStatusChanges().getMap();
   }
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   @java.lang.Override
@@ -236,6 +264,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * task run status changes
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
    */
   @java.lang.Override
@@ -779,6 +811,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetLhStatusChanges().getMap().size();
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     @java.lang.Override
@@ -796,6 +832,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return getLhStatusChangesMap();
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     @java.lang.Override
@@ -803,6 +843,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetLhStatusChanges().getMap();
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     @java.lang.Override
@@ -817,6 +861,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     @java.lang.Override
@@ -837,6 +885,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     public Builder removeLhStatusChanges(
@@ -856,6 +908,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetMutableLhStatusChanges().getMutableMap();
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     public Builder putLhStatusChanges(
@@ -869,6 +925,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * workflow runs status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
      */
     public Builder putAllLhStatusChanges(
@@ -906,6 +966,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetTaskStatusChanges().getMap().size();
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     @java.lang.Override
@@ -923,6 +987,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return getTaskStatusChangesMap();
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     @java.lang.Override
@@ -930,6 +998,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetTaskStatusChanges().getMap();
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     @java.lang.Override
@@ -944,6 +1016,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     @java.lang.Override
@@ -964,6 +1040,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     public Builder removeTaskStatusChanges(
@@ -983,6 +1063,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetMutableTaskStatusChanges().getMutableMap();
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     public Builder putTaskStatusChanges(
@@ -996,6 +1080,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * task run status changes
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
      */
     public Builder putAllTaskStatusChanges(

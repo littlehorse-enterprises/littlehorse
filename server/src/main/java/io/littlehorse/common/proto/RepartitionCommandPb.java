@@ -51,7 +51,6 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     TASK_METRIC_UPDATE(3),
-    WF_METRIC_UPDATE(4),
     CREATE_REMOTE_TAG(5),
     REMOVE_REMOTE_TAG(6),
     AGGREGATE_WF_METRICS(7),
@@ -73,7 +72,6 @@ private static final long serialVersionUID = 0L;
     public static RepartitionCommandCase forNumber(int value) {
       switch (value) {
         case 3: return TASK_METRIC_UPDATE;
-        case 4: return WF_METRIC_UPDATE;
         case 5: return CREATE_REMOTE_TAG;
         case 6: return REMOVE_REMOTE_TAG;
         case 7: return AGGREGATE_WF_METRICS;
@@ -208,49 +206,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
   }
 
-  public static final int WF_METRIC_UPDATE_FIELD_NUMBER = 4;
-  /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return Whether the wfMetricUpdate field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfMetricUpdate() {
-    return repartitionCommandCase_ == 4;
-  }
-  /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return The wfMetricUpdate.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate() {
-    if (repartitionCommandCase_ == 4) {
-       return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * deprecate??
-   * </pre>
-   *
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
-    if (repartitionCommandCase_ == 4) {
-       return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-  }
-
   public static final int CREATE_REMOTE_TAG_FIELD_NUMBER = 5;
   /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
@@ -367,9 +322,6 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
     }
-    if (repartitionCommandCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
-    }
     if (repartitionCommandCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
     }
@@ -398,10 +350,6 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
-    }
-    if (repartitionCommandCase_ == 4) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
     }
     if (repartitionCommandCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
@@ -446,10 +394,6 @@ private static final long serialVersionUID = 0L;
         if (!getTaskMetricUpdate()
             .equals(other.getTaskMetricUpdate())) return false;
         break;
-      case 4:
-        if (!getWfMetricUpdate()
-            .equals(other.getWfMetricUpdate())) return false;
-        break;
       case 5:
         if (!getCreateRemoteTag()
             .equals(other.getCreateRemoteTag())) return false;
@@ -488,10 +432,6 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + TASK_METRIC_UPDATE_FIELD_NUMBER;
         hash = (53 * hash) + getTaskMetricUpdate().hashCode();
-        break;
-      case 4:
-        hash = (37 * hash) + WF_METRIC_UPDATE_FIELD_NUMBER;
-        hash = (53 * hash) + getWfMetricUpdate().hashCode();
         break;
       case 5:
         hash = (37 * hash) + CREATE_REMOTE_TAG_FIELD_NUMBER;
@@ -652,9 +592,6 @@ private static final long serialVersionUID = 0L;
       if (taskMetricUpdateBuilder_ != null) {
         taskMetricUpdateBuilder_.clear();
       }
-      if (wfMetricUpdateBuilder_ != null) {
-        wfMetricUpdateBuilder_.clear();
-      }
       if (createRemoteTagBuilder_ != null) {
         createRemoteTagBuilder_.clear();
       }
@@ -719,10 +656,6 @@ private static final long serialVersionUID = 0L;
       if (repartitionCommandCase_ == 3 &&
           taskMetricUpdateBuilder_ != null) {
         result.repartitionCommand_ = taskMetricUpdateBuilder_.build();
-      }
-      if (repartitionCommandCase_ == 4 &&
-          wfMetricUpdateBuilder_ != null) {
-        result.repartitionCommand_ = wfMetricUpdateBuilder_.build();
       }
       if (repartitionCommandCase_ == 5 &&
           createRemoteTagBuilder_ != null) {
@@ -795,10 +728,6 @@ private static final long serialVersionUID = 0L;
           mergeTaskMetricUpdate(other.getTaskMetricUpdate());
           break;
         }
-        case WF_METRIC_UPDATE: {
-          mergeWfMetricUpdate(other.getWfMetricUpdate());
-          break;
-        }
         case CREATE_REMOTE_TAG: {
           mergeCreateRemoteTag(other.getCreateRemoteTag());
           break;
@@ -860,13 +789,6 @@ private static final long serialVersionUID = 0L;
               repartitionCommandCase_ = 3;
               break;
             } // case 26
-            case 34: {
-              input.readMessage(
-                  getWfMetricUpdateFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              repartitionCommandCase_ = 4;
-              break;
-            } // case 34
             case 42: {
               input.readMessage(
                   getCreateRemoteTagFieldBuilder().getBuilder(),
@@ -1294,184 +1216,6 @@ private static final long serialVersionUID = 0L;
       repartitionCommandCase_ = 3;
       onChanged();
       return taskMetricUpdateBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> wfMetricUpdateBuilder_;
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     * @return Whether the wfMetricUpdate field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfMetricUpdate() {
-      return repartitionCommandCase_ == 4;
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     * @return The wfMetricUpdate.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4) {
-          return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          return wfMetricUpdateBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder setWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        repartitionCommand_ = value;
-        onChanged();
-      } else {
-        wfMetricUpdateBuilder_.setMessage(value);
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder setWfMetricUpdate(
-        io.littlehorse.common.proto.WfMetricUpdatePb.Builder builderForValue) {
-      if (wfMetricUpdateBuilder_ == null) {
-        repartitionCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        wfMetricUpdateBuilder_.setMessage(builderForValue.build());
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder mergeWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4 &&
-            repartitionCommand_ != io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance()) {
-          repartitionCommand_ = io.littlehorse.common.proto.WfMetricUpdatePb.newBuilder((io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          repartitionCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          wfMetricUpdateBuilder_.mergeFrom(value);
-        } else {
-          wfMetricUpdateBuilder_.setMessage(value);
-        }
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder clearWfMetricUpdate() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-        }
-        wfMetricUpdateBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public io.littlehorse.common.proto.WfMetricUpdatePb.Builder getWfMetricUpdateBuilder() {
-      return getWfMetricUpdateFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
-      if ((repartitionCommandCase_ == 4) && (wfMetricUpdateBuilder_ != null)) {
-        return wfMetricUpdateBuilder_.getMessageOrBuilder();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * deprecate??
-     * </pre>
-     *
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> 
-        getWfMetricUpdateFieldBuilder() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (!(repartitionCommandCase_ == 4)) {
-          repartitionCommand_ = io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-        }
-        wfMetricUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder>(
-                (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_,
-                getParentForChildren(),
-                isClean());
-        repartitionCommand_ = null;
-      }
-      repartitionCommandCase_ = 4;
-      onChanged();
-      return wfMetricUpdateBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
