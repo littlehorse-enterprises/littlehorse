@@ -1,4 +1,4 @@
-# Basic Example
+ # Basic Example
 
 This is a minimal "hello-world" example of LittleHorse using GoLang.
 
