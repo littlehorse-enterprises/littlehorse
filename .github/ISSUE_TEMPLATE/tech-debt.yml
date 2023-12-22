@@ -1,24 +1,45 @@
-name: User Story
-description: New feature
-labels: ["feature"]
+name: Technical Debt
+description: Technical Debt
+labels: ["tech-debt", "enhancement"]
 projects: ["littlehorse-enterprises/1"]
 body:
   - type: textarea
     id: context
     attributes:
       label: Context
-      description: Describe the context and any relevant information about this enhancement.
+      description: About this tech debt.
+    validations:
+      required: true
+  - type: dropdown
+    id: value
+    attributes:
+      label: Value
+      options:
+        - High
+        - Low
+    validations:
+      required: true
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Effort
+      options:
+        - High
+        - Low
     validations:
       required: true
   - type: textarea
-    id: description
+    id: current-state
     attributes:
-      label: Description
-      description: The User Story.
-      value: |
-        **As a** [description of user]
-        **I want to** [functionality]
-        **So that** [benefit]
+      label: Current State and Pains
+      description: What is happening now?, Why is it painful?.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution and Benefits
+      description: What is the proposals?. List the benefits.
     validations:
       required: true
   - type: textarea
@@ -35,15 +56,10 @@ body:
     validations:
       required: true
   - type: textarea
-    id: scope
+    id: additional-context
     attributes:
-      label: Out of Scope
-      description: Allows to define what is within the scope of the user story and what's not.
-  - type: textarea
-    id: technical-context
-    attributes:
-      label: Technical Context
-      description: Here we need to specify if there are any technical constraints that might guide the implementation of the user story.
+      label: Additional Context
+      description: Add any other context about the problem here.
   - type: checkboxes
     id: components
     attributes:
