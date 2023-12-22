@@ -809,7 +809,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 .setMajorVersion(0)
                 .setMinorVersion(7)
                 .setMajorVersion(0)
-                .setPreReleaseIdentifier("alpha.4")
                 .build());
         ctx.onCompleted();
     }
