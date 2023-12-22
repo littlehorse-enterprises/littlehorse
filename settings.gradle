@@ -1,9 +1,10 @@
 rootProject.name = 'littlehorse'
+
 include(
     'server',
     'sdk-java',
     'e2e-tests',
-    'lh-test'
+    'test-utils'
 )
 
 [
