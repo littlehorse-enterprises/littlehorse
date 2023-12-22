@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanRequest;
@@ -161,7 +162,7 @@ public class InternalScanRequestModel<T extends CoreObjectId<?, ?, ?>> extends L
         if (resultType == ScanResultTypePb.OBJECT_ID) {
             out = recordId.toBytes();
         } else {
-            out = ctx.getableManager().get(recordId).toBytes();
+            out = ctx.lookupGetable((ObjectIdModel<?, U, V>) recordId).toBytes();
         }
 
         return ByteString.copyFrom(out);

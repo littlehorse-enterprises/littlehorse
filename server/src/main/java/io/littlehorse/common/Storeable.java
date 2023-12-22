@@ -1,13 +1,7 @@
 package io.littlehorse.common;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
-// import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
 
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
@@ -38,24 +32,6 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
     public abstract String getStoreKey();
 
     public abstract StoreableType getType();
-
-    public static Class<? extends Storeable<?>> getStoreableClass(StoreableType type) {
-        switch (type) {
-            case STORED_GETABLE:
-                return (Class<? extends Storeable<?>>) StoredGetable.class;
-            case SCHEDULED_TASK:
-                return (Class<? extends Storeable<?>>) ScheduledTaskModel.class;
-            case WF_METRIC_UPDATE:
-                return (Class<? extends Storeable<?>>) WfMetricUpdate.class;
-            case TASK_METRIC_UPDATE:
-                return (Class<? extends Storeable<?>>) TaskMetricUpdate.class;
-            case TAG:
-                return (Class<? extends Storeable<?>>) Tag.class;
-            case LH_TIMER: // apparently LHTimer isn't storeable
-            case UNRECOGNIZED:
-        }
-        throw new IllegalArgumentException("unexpected storeable type");
-    }
 
     public static StoreableType getStoreableType(Class<? extends Storeable<?>> cls) {
         switch (cls.getSimpleName()) {

@@ -80,6 +80,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 tenantId,
                 storeProvider.apply(null, ServerTopology.GLOBAL_METADATA_STORE),
                 storeProvider.apply(null, ServerTopology.CORE_STORE),
+                storeProvider.apply(null, ServerTopology.CORE_REPARTITION_STORE),
                 metadataCache,
                 lhConfig);
     }

@@ -68,7 +68,6 @@ public class BoundedObjectIdScanModel<T extends ObjectIdModel<?, ?, ?>> extends 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Class<? extends Storeable<?>> getIterType() {
         return (Class<? extends Storeable<?>>) StoredGetable.class;
     }
