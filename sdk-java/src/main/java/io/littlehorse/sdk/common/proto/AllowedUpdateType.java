@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines the allowed update type
+ * ALL - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
+ * NONE - Reject any update
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.AllowedUpdateType}
  */
 public enum AllowedUpdateType

@@ -36,6 +36,10 @@ message PutWfSpecRequest {
   optional AllowedUpdateType allowed_updates = 10;
 }
 
+// Defines the allowed update type
+// ALL - Creates either a revision or majorVersion when WfSpec changes
+// MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
+// NONE - Reject any update
 enum AllowedUpdateType {
   ALL = 0;
   MINOR_REVISION_ONLY = 1;

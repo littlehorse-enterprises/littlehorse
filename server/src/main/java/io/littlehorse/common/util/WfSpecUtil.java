@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class WfSpecUtil {
+    private WfSpecUtil() {}
+
     /**
      * This method returns true when two WfSpecModels are equal
      * excluding `majorVersion`, `revision` and `createdAt`

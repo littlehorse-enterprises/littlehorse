@@ -34,6 +34,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public WorkflowRetentionPolicyModel retentionPolicy;
     public AllowedUpdateType allowedUpdateType;
 
+    private static AllowedUpdateType defaultUpdateType = AllowedUpdateType.ALL;
+
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
     }
@@ -66,7 +68,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
-        allowedUpdateType = p.hasAllowedUpdates() ? p.getAllowedUpdates() : AllowedUpdateType.ALL;
+        allowedUpdateType = p.hasAllowedUpdates() ? p.getAllowedUpdates() : defaultUpdateType;
         if (p.hasRetentionPolicy())
             retentionPolicy =
                     LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
@@ -104,7 +106,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
 
         spec.validateAndMaybeBumpVersion(optWfSpec);
         if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
-            return oldVersion.toProto().build();
+            return optWfSpec.get().toProto().build();
         }
 
         verifyUpdateType(allowedUpdateType, spec, optWfSpec);

@@ -55,6 +55,12 @@ import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } f
 
 export const protobufPackage = "littlehorse";
 
+/**
+ * Defines the allowed update type
+ * ALL - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
+ * NONE - Reject any update
+ */
 export enum AllowedUpdateType {
   ALL = "ALL",
   MINOR_REVISION_ONLY = "MINOR_REVISION_ONLY",

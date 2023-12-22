@@ -22,6 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Defines the allowed update type
+// ALL - Creates either a revision or majorVersion when WfSpec changes
+// MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
+// NONE - Reject any update
 type AllowedUpdateType int32
 
 const (
