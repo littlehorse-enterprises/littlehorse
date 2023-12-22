@@ -134,7 +134,6 @@ message FailureDef {
 
 message Node {
   repeated Edge outgoing_edges = 1;
-  repeated VariableMutation variable_mutations = 2;
   repeated FailureHandlerDef failure_handlers = 4;
 
   oneof node {
@@ -181,6 +180,7 @@ message EdgeCondition {
 message Edge {
   string sink_node_name = 1;
   optional EdgeCondition condition = 2;
+  repeated VariableMutation variable_mutations = 2;
 }
 
 message NopNode {
