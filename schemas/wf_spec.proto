@@ -180,7 +180,7 @@ message EdgeCondition {
 message Edge {
   string sink_node_name = 1;
   optional EdgeCondition condition = 2;
-  repeated VariableMutation variable_mutations = 2;
+  repeated VariableMutation variable_mutations = 3;
 }
 
 message NopNode {
