@@ -421,9 +421,9 @@ func TestUpdateType(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleAnyFailure(&nodeOutput, someHandler)
-	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NONE)
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
 
 	putWf, _ := wf.Compile()
 
-	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NONE.Enum())
+	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NO_UPDATES)
 }

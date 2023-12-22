@@ -240,21 +240,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   public static final int ALLOWED_UPDATES_FIELD_NUMBER = 10;
   private int allowedUpdates_ = 0;
   /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
-   * @return Whether the allowedUpdates field is set.
-   */
-  @java.lang.Override public boolean hasAllowedUpdates() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   @java.lang.Override public int getAllowedUpdatesValue() {
     return allowedUpdates_;
   }
   /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
    * @return The allowedUpdates.
    */
   @java.lang.Override public io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates() {
@@ -291,7 +284,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(8, getRetentionPolicy());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.AllowedUpdateType.ALL_UPDATES.getNumber()) {
       output.writeEnum(10, allowedUpdates_);
     }
     getUnknownFields().writeTo(output);
@@ -323,7 +316,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getRetentionPolicy());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.AllowedUpdateType.ALL_UPDATES.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(10, allowedUpdates_);
     }
@@ -353,10 +346,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
-    if (hasAllowedUpdates() != other.hasAllowedUpdates()) return false;
-    if (hasAllowedUpdates()) {
-      if (allowedUpdates_ != other.allowedUpdates_) return false;
-    }
+    if (allowedUpdates_ != other.allowedUpdates_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -380,10 +370,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
     }
-    if (hasAllowedUpdates()) {
-      hash = (37 * hash) + ALLOWED_UPDATES_FIELD_NUMBER;
-      hash = (53 * hash) + allowedUpdates_;
-    }
+    hash = (37 * hash) + ALLOWED_UPDATES_FIELD_NUMBER;
+    hash = (53 * hash) + allowedUpdates_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -604,7 +592,6 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.allowedUpdates_ = allowedUpdates_;
-        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -669,8 +656,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
-      if (other.hasAllowedUpdates()) {
-        setAllowedUpdates(other.getAllowedUpdates());
+      if (other.allowedUpdates_ != 0) {
+        setAllowedUpdatesValue(other.getAllowedUpdatesValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1138,21 +1125,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     private int allowedUpdates_ = 0;
     /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
-     * @return Whether the allowedUpdates field is set.
-     */
-    @java.lang.Override public boolean hasAllowedUpdates() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @return The enum numeric value on the wire for allowedUpdates.
      */
     @java.lang.Override public int getAllowedUpdatesValue() {
       return allowedUpdates_;
     }
     /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @param value The enum numeric value on the wire for allowedUpdates to set.
      * @return This builder for chaining.
      */
@@ -1163,7 +1143,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @return The allowedUpdates.
      */
     @java.lang.Override
@@ -1172,7 +1152,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return result == null ? io.littlehorse.sdk.common.proto.AllowedUpdateType.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @param value The allowedUpdates to set.
      * @return This builder for chaining.
      */
@@ -1186,7 +1166,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+     * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
      * @return This builder for chaining.
      */
     public Builder clearAllowedUpdates() {

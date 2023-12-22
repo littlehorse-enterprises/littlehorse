@@ -57,28 +57,28 @@ export const protobufPackage = "littlehorse";
 
 /**
  * Defines the allowed update type
- * ALL - Creates either a revision or majorVersion when WfSpec changes
- * MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
- * NONE - Reject any update
+ * ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+ * NO_UPDATES - Reject any update
  */
 export enum AllowedUpdateType {
-  ALL = "ALL",
-  MINOR_REVISION_ONLY = "MINOR_REVISION_ONLY",
-  NONE = "NONE",
+  ALL_UPDATES = "ALL_UPDATES",
+  MINOR_REVISION_UPDATES = "MINOR_REVISION_UPDATES",
+  NO_UPDATES = "NO_UPDATES",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
 export function allowedUpdateTypeFromJSON(object: any): AllowedUpdateType {
   switch (object) {
     case 0:
-    case "ALL":
-      return AllowedUpdateType.ALL;
+    case "ALL_UPDATES":
+      return AllowedUpdateType.ALL_UPDATES;
     case 1:
-    case "MINOR_REVISION_ONLY":
-      return AllowedUpdateType.MINOR_REVISION_ONLY;
+    case "MINOR_REVISION_UPDATES":
+      return AllowedUpdateType.MINOR_REVISION_UPDATES;
     case 2:
-    case "NONE":
-      return AllowedUpdateType.NONE;
+    case "NO_UPDATES":
+      return AllowedUpdateType.NO_UPDATES;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -88,12 +88,12 @@ export function allowedUpdateTypeFromJSON(object: any): AllowedUpdateType {
 
 export function allowedUpdateTypeToJSON(object: AllowedUpdateType): string {
   switch (object) {
-    case AllowedUpdateType.ALL:
-      return "ALL";
-    case AllowedUpdateType.MINOR_REVISION_ONLY:
-      return "MINOR_REVISION_ONLY";
-    case AllowedUpdateType.NONE:
-      return "NONE";
+    case AllowedUpdateType.ALL_UPDATES:
+      return "ALL_UPDATES";
+    case AllowedUpdateType.MINOR_REVISION_UPDATES:
+      return "MINOR_REVISION_UPDATES";
+    case AllowedUpdateType.NO_UPDATES:
+      return "NO_UPDATES";
     case AllowedUpdateType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -102,11 +102,11 @@ export function allowedUpdateTypeToJSON(object: AllowedUpdateType): string {
 
 export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   switch (object) {
-    case AllowedUpdateType.ALL:
+    case AllowedUpdateType.ALL_UPDATES:
       return 0;
-    case AllowedUpdateType.MINOR_REVISION_ONLY:
+    case AllowedUpdateType.MINOR_REVISION_UPDATES:
       return 1;
-    case AllowedUpdateType.NONE:
+    case AllowedUpdateType.NO_UPDATES:
       return 2;
     case AllowedUpdateType.UNRECOGNIZED:
     default:
@@ -176,7 +176,7 @@ export interface PutWfSpecRequest {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
-  allowedUpdates?: AllowedUpdateType | undefined;
+  allowedUpdates: AllowedUpdateType;
 }
 
 export interface PutWfSpecRequest_ThreadSpecsEntry {
@@ -752,7 +752,13 @@ export const GetLatestUserTaskDefRequest = {
 };
 
 function createBasePutWfSpecRequest(): PutWfSpecRequest {
-  return { name: "", threadSpecs: {}, entrypointThreadName: "", retentionPolicy: undefined, allowedUpdates: undefined };
+  return {
+    name: "",
+    threadSpecs: {},
+    entrypointThreadName: "",
+    retentionPolicy: undefined,
+    allowedUpdates: AllowedUpdateType.ALL_UPDATES,
+  };
 }
 
 export const PutWfSpecRequest = {
@@ -769,7 +775,7 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       WorkflowRetentionPolicy.encode(message.retentionPolicy, writer.uint32(66).fork()).ldelim();
     }
-    if (message.allowedUpdates !== undefined) {
+    if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
       writer.uint32(80).int32(allowedUpdateTypeToNumber(message.allowedUpdates));
     }
     return writer;
@@ -842,7 +848,9 @@ export const PutWfSpecRequest = {
       retentionPolicy: isSet(object.retentionPolicy)
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
-      allowedUpdates: isSet(object.allowedUpdates) ? allowedUpdateTypeFromJSON(object.allowedUpdates) : undefined,
+      allowedUpdates: isSet(object.allowedUpdates)
+        ? allowedUpdateTypeFromJSON(object.allowedUpdates)
+        : AllowedUpdateType.ALL_UPDATES,
     };
   },
 
@@ -866,7 +874,7 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       obj.retentionPolicy = WorkflowRetentionPolicy.toJSON(message.retentionPolicy);
     }
-    if (message.allowedUpdates !== undefined) {
+    if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
       obj.allowedUpdates = allowedUpdateTypeToJSON(message.allowedUpdates);
     }
     return obj;
@@ -891,7 +899,7 @@ export const PutWfSpecRequest = {
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? WorkflowRetentionPolicy.fromPartial(object.retentionPolicy)
       : undefined;
-    message.allowedUpdates = object.allowedUpdates ?? undefined;
+    message.allowedUpdates = object.allowedUpdates ?? AllowedUpdateType.ALL_UPDATES;
     return message;
   },
 };

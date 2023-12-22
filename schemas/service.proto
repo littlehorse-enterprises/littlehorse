@@ -33,17 +33,17 @@ message PutWfSpecRequest {
   string entrypoint_thread_name = 6;
   optional WorkflowRetentionPolicy retention_policy = 8;
   reserved 9;
-  optional AllowedUpdateType allowed_updates = 10;
+  AllowedUpdateType allowed_updates = 10;
 }
 
 // Defines the allowed update type
-// ALL - Creates either a revision or majorVersion when WfSpec changes
-// MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
-// NONE - Reject any update
+// ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+// MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+// NO_UPDATES - Reject any update
 enum AllowedUpdateType {
-  ALL = 0;
-  MINOR_REVISION_ONLY = 1;
-  NONE = 2;
+  ALL_UPDATES = 0;
+  MINOR_REVISION_UPDATES = 1;
+  NO_UPDATES = 2;
 }
 
 message PutTaskDefRequest {

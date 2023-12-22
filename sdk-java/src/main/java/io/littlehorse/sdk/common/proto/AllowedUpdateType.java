@@ -6,9 +6,9 @@ package io.littlehorse.sdk.common.proto;
 /**
  * <pre>
  * Defines the allowed update type
- * ALL - Creates either a revision or majorVersion when WfSpec changes
- * MINOR_REVISION_ONLY - Allow revision updates but reject majorVersion
- * NONE - Reject any update
+ * ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
+ * MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
+ * NO_UPDATES - Reject any update
  * </pre>
  *
  * Protobuf enum {@code littlehorse.AllowedUpdateType}
@@ -16,32 +16,32 @@ package io.littlehorse.sdk.common.proto;
 public enum AllowedUpdateType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>ALL = 0;</code>
+   * <code>ALL_UPDATES = 0;</code>
    */
-  ALL(0),
+  ALL_UPDATES(0),
   /**
-   * <code>MINOR_REVISION_ONLY = 1;</code>
+   * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
-  MINOR_REVISION_ONLY(1),
+  MINOR_REVISION_UPDATES(1),
   /**
-   * <code>NONE = 2;</code>
+   * <code>NO_UPDATES = 2;</code>
    */
-  NONE(2),
+  NO_UPDATES(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>ALL = 0;</code>
+   * <code>ALL_UPDATES = 0;</code>
    */
-  public static final int ALL_VALUE = 0;
+  public static final int ALL_UPDATES_VALUE = 0;
   /**
-   * <code>MINOR_REVISION_ONLY = 1;</code>
+   * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
-  public static final int MINOR_REVISION_ONLY_VALUE = 1;
+  public static final int MINOR_REVISION_UPDATES_VALUE = 1;
   /**
-   * <code>NONE = 2;</code>
+   * <code>NO_UPDATES = 2;</code>
    */
-  public static final int NONE_VALUE = 2;
+  public static final int NO_UPDATES_VALUE = 2;
 
 
   public final int getNumber() {
@@ -68,9 +68,9 @@ public enum AllowedUpdateType
    */
   public static AllowedUpdateType forNumber(int value) {
     switch (value) {
-      case 0: return ALL;
-      case 1: return MINOR_REVISION_ONLY;
-      case 2: return NONE;
+      case 0: return ALL_UPDATES;
+      case 1: return MINOR_REVISION_UPDATES;
+      case 2: return NO_UPDATES;
       default: return null;
     }
   }

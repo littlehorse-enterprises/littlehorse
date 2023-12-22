@@ -81,17 +81,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 
   /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
-   * @return Whether the allowedUpdates field is set.
-   */
-  boolean hasAllowedUpdates();
-  /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   int getAllowedUpdatesValue();
   /**
-   * <code>optional .littlehorse.AllowedUpdateType allowed_updates = 10;</code>
+   * <code>.littlehorse.AllowedUpdateType allowed_updates = 10;</code>
    * @return The allowedUpdates.
    */
   io.littlehorse.sdk.common.proto.AllowedUpdateType getAllowedUpdates();

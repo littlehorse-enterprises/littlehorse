@@ -95,7 +95,7 @@ public class WorkflowIdempotencyTest {
             Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
                         wf.addVariable("variable", VariableType.BOOL).required();
                     })
-                    .withUpdateType(AllowedUpdateType.NONE);
+                    .withUpdateType(AllowedUpdateType.NO_UPDATES);
 
             WfSpec updatedSpec = lhClient.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -117,7 +117,7 @@ public class WorkflowIdempotencyTest {
                         wf.addVariable("variable", VariableType.BOOL).required();
                         wf.addVariable("some", VariableType.STR);
                     })
-                    .withUpdateType(AllowedUpdateType.NONE);
+                    .withUpdateType(AllowedUpdateType.NO_UPDATES);
 
             assertThatThrownBy(() -> lhClient.putWfSpec(updatedWorkflow.compileWorkflow()))
                     .isInstanceOf(StatusRuntimeException.class)
@@ -138,7 +138,7 @@ public class WorkflowIdempotencyTest {
             Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
                         wf.addVariable("variable", VariableType.BOOL).required();
                     })
-                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_ONLY);
+                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             WfSpec updatedSpec = lhClient.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -160,7 +160,7 @@ public class WorkflowIdempotencyTest {
                         wf.addVariable("variable", VariableType.BOOL).required();
                         wf.addVariable("optional", VariableType.STR);
                     })
-                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_ONLY);
+                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             WfSpec updatedSpec = lhClient.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -182,7 +182,7 @@ public class WorkflowIdempotencyTest {
                         wf.addVariable("variable", VariableType.BOOL).required();
                         wf.addVariable("searchable", VariableType.BOOL).searchable();
                     })
-                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_ONLY);
+                    .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             assertThatThrownBy(() -> lhClient.putWfSpec(updatedWorkflow.compileWorkflow()))
                     .isInstanceOf(StatusRuntimeException.class)

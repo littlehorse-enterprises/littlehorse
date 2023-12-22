@@ -1385,27 +1385,21 @@ class Workflow:
         self,
         name: str,
         entrypoint: ThreadInitializer,
-        allowed_updates: AllowedUpdateType = AllowedUpdateType.ALL,
     ) -> None:
         """Workflow.
 
         Args:
             name (str): Name of WfSpec.
             entrypoint (ThreadInitializer): Is the entrypoint thread function.
-            allowed_updates (AllowedUpdateType):
-                Defines the type of update to perform when saving the WfSpec:
-                     AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
-                     AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
-                     AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
         """
         if name is None:
             raise ValueError("Name cannot be None")
 
         self.name = name
-        self._allowed_updates = allowed_updates
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
+        self._allowed_updates: Optional[AllowedUpdateType] = None
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1438,6 +1432,15 @@ class Workflow:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+    def with_update_type(self, update_type: AllowedUpdateType) -> None:
+        """
+        Defines the type of update to perform when saving the WfSpec:
+            AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version (either major or revision).
+            AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision if the change is a major version it fails.
+            AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+        """
+        self._allowed_updates = update_type
 
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.

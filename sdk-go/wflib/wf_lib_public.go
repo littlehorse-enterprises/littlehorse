@@ -111,7 +111,7 @@ func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 }
 
 func (l *LHWorkflow) WithUpdateType(updateType model.AllowedUpdateType) *LHWorkflow {
-	l.spec.AllowedUpdates = &updateType
+	l.spec.AllowedUpdates = updateType
 	return l
 }
 

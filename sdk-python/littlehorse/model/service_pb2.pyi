@@ -22,18 +22,18 @@ DESCRIPTOR: _descriptor.FileDescriptor
 
 class AllowedUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    ALL: _ClassVar[AllowedUpdateType]
-    MINOR_REVISION_ONLY: _ClassVar[AllowedUpdateType]
-    NONE: _ClassVar[AllowedUpdateType]
+    ALL_UPDATES: _ClassVar[AllowedUpdateType]
+    MINOR_REVISION_UPDATES: _ClassVar[AllowedUpdateType]
+    NO_UPDATES: _ClassVar[AllowedUpdateType]
 
 class LHHealthResult(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     LH_HEALTH_RUNNING: _ClassVar[LHHealthResult]
     LH_HEALTH_REBALANCING: _ClassVar[LHHealthResult]
     LH_HEALTH_ERROR: _ClassVar[LHHealthResult]
-ALL: AllowedUpdateType
-MINOR_REVISION_ONLY: AllowedUpdateType
-NONE: AllowedUpdateType
+ALL_UPDATES: AllowedUpdateType
+MINOR_REVISION_UPDATES: AllowedUpdateType
+NO_UPDATES: AllowedUpdateType
 LH_HEALTH_RUNNING: LHHealthResult
 LH_HEALTH_REBALANCING: LHHealthResult
 LH_HEALTH_ERROR: LHHealthResult

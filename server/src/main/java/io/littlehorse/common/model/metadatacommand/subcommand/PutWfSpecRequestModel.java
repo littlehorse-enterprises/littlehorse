@@ -34,8 +34,6 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     public WorkflowRetentionPolicyModel retentionPolicy;
     public AllowedUpdateType allowedUpdateType;
 
-    private static AllowedUpdateType defaultUpdateType = AllowedUpdateType.ALL;
-
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
     }
@@ -68,7 +66,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
-        allowedUpdateType = p.hasAllowedUpdates() ? p.getAllowedUpdates() : defaultUpdateType;
+        allowedUpdateType = p.getAllowedUpdates();
         if (p.hasRetentionPolicy())
             retentionPolicy =
                     LHSerializable.fromProto(p.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
@@ -116,12 +114,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
 
     private void verifyUpdateType(AllowedUpdateType updateType, WfSpecModel spec, Optional<WfSpecModel> oldSpec) {
         switch (updateType) {
-            case MINOR_REVISION_ONLY:
+            case MINOR_REVISION_UPDATES:
                 if (oldSpec.isPresent() && WfSpecUtil.hasBreakingChanges(spec, oldSpec.get())) {
                     throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting WfSpec has a breaking change.");
                 }
                 break;
-            case NONE:
+            case NO_UPDATES:
                 if (oldSpec.isPresent()) {
                     throw new LHApiException(Status.ALREADY_EXISTS, "WfSpec already exists.");
                 }

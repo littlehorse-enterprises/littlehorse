@@ -14,7 +14,7 @@ func Greet(name string) string {
 }
 
 func MyWorkflow(wf *wflib.WorkflowThread) {
-	nameVar := wf.AddVariable("name", model.VariableType_STR).Required()
+	nameVar := wf.AddVariableWithDefault("name", model.VariableType_STR, "Qui-Gon Jinn")
 
 	// Make it searchable
 	nameVar.Searchable()
