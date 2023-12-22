@@ -22,7 +22,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: description
+    id: acceptance-criteria
     attributes:
       label: Acceptance Criteria
       description: Anything that makes this issue complete.
