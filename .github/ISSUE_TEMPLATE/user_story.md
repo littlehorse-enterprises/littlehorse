@@ -11,7 +11,7 @@ assignees: ''
 
 Describe the context and any relevant information about this user story.
 
-**Components:** [Dashboard, Server, Python SDK, Go SDK, Java SDK, C# SDK].
+**Components:** [Dashboard, Server, Python SDK, Go SDK, Java SDK, C# SDK, LH Control, LH Tests Utils].
 
 ### Description
 

@@ -7,9 +7,11 @@ assignees: ''
 
 ---
 
-### Describe the bug
+### Describe the Bug
 
 A clear and concise description of what the bug is.
+
+**Components:** [Dashboard, Server, Python SDK, Go SDK, Java SDK, C# SDK, LH Control, LH Tests Utils].
 
 ### Steps To Reproduce
 
@@ -18,7 +20,7 @@ Click on ....
 Scroll down to ....
 See error
 
-### Expected behavior
+### Expected Behavior
 
 A clear and concise description of what you expected to happen.
 
@@ -26,6 +28,6 @@ A clear and concise description of what you expected to happen.
 
 If applicable, add screenshots to help explain your problem.
 
-### Additional context
+### Additional Context
 
 Add any other context about the problem here.

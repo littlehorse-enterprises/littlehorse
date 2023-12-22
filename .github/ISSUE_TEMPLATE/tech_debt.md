@@ -11,9 +11,9 @@ assignees: ''
 
 About this tech debt.
 
-**Value:**[High, Low].
+**Value:** [High, Low].
 **Effort:** [High, Low].
-**Components:** [Dashboard, Server, Python SDK, Go SDK, Java SDK, C# SDK].
+**Components:** [Dashboard, Server, Python SDK, Go SDK, Java SDK, C# SDK, LH Control, LH Tests Utils].
 
 ### Current State
 
