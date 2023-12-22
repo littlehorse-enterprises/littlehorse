@@ -61,7 +61,7 @@ func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
 	return *globalConfig
 }
 
-func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
+func getGlobalClient(cmd *cobra.Command) model.LittleHorseClient {
 	if globalClient != nil {
 		return *globalClient
 	}
