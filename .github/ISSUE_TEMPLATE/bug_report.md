@@ -1,10 +1,8 @@
 ---
 name: Bug Report
 about: Allows to report any bug/defect you have found in our project
-title: ''
-labels: bug
-assignees: ''
-
+labels: ["bug"]
+projects: ["littlehorse-enterprises/1"]
 ---
 
 ### Describe the Bug

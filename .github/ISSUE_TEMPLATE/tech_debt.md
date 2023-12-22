@@ -1,10 +1,8 @@
 ---
 name: Technical Debt
 about: Technical Debt
-title: ''
-labels: tech-debt
-assignees: ''
-
+labels: ["tech-debt", "enhancement"]
+projects: ["littlehorse-enterprises/1"]
 ---
 
 ### Context

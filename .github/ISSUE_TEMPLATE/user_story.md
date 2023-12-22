@@ -1,10 +1,8 @@
 ---
 name: User Story
 about: New feature or enhancement
-title: ''
-labels: feature
-assignees: ''
-
+labels: ["feature", "enhancement"]
+projects: ["littlehorse-enterprises/1"]
 ---
 
 ### Context
