@@ -28,6 +28,7 @@ type WorkflowThread struct {
 	wf                *LHWorkflow
 	lastNodeName      *string
 	lastNodeCondition *WorkflowCondition
+	variableMutations []*model.VariableMutation
 }
 
 type WfRunVariable struct {
@@ -52,8 +53,7 @@ type UserTaskOutput struct {
 }
 
 type WorkflowCondition struct {
-	spec          *model.EdgeCondition
-	createdAtNode string
+	spec *model.EdgeCondition
 }
 
 type SpawnedThread struct {

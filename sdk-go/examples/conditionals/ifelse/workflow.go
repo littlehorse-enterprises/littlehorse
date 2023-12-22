@@ -23,10 +23,16 @@ func DonutWorkflow(wf *wflib.WorkflowThread) {
 	wf.DoIfElse(
 		wf.Condition(numDonuts, model.Comparator_LESS_THAN, 10),
 		func(t *wflib.WorkflowThread) {
+			t.Mutate(numDonuts, model.VariableMutationType_ASSIGN, 0)
 			t.Execute("eat-another-donut")
+			t.Mutate(numDonuts, model.VariableMutationType_ASSIGN, 1)
 		},
 		func(t *wflib.WorkflowThread) {
+			t.Mutate(numDonuts, model.VariableMutationType_ASSIGN, 2)
 			t.Execute("eat-salad")
+			t.Mutate(numDonuts, model.VariableMutationType_ASSIGN, 3)
 		},
 	)
+
+	wf.Mutate(numDonuts, model.VariableMutationType_ASSIGN, 5)
 }
