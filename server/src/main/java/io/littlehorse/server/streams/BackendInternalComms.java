@@ -38,6 +38,7 @@ import io.littlehorse.server.streams.lhinternalscan.InternalScanRequestModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -301,23 +302,17 @@ public class BackendInternalComms implements Closeable {
     }
 
     public ReadOnlyKeyValueStore<String, Bytes> getRawStore(
-            Integer specificPartition, boolean enableStaleStores, String storeName) {
+            int specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
-        if (enableStaleStores) {
-            params = params.enableStaleStores();
-        }
-
-        if (specificPartition != null) {
-            params = params.withPartition(specificPartition);
-        }
+                params = params.withPartition(specificPartition);
 
         return coreStreams.store(params);
     }
 
-    private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
+    private ReadOnlyTenantScopedStore getStore(int specificPartition, String storeName) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
         return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
@@ -358,7 +353,7 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
 
         ReadOnlyTenantScopedStore store =
-                getStore(partition, false, objectId.getStore().getStoreName());
+                getStore(partition, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
         if (storeResult == null) {
@@ -380,7 +375,7 @@ public class BackendInternalComms implements Closeable {
                     ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
             String storeName = id.getStore().getStoreName();
-            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), false, storeName);
+            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
 
             @SuppressWarnings("unchecked")
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
@@ -493,7 +488,7 @@ public class BackendInternalComms implements Closeable {
         if (query.getBookmark().getCompletedPartitionsList().contains(partition)) {
             throw new IllegalStateException("Scanning the same partition twice!");
         }
-        ReadOnlyModelStore partitionStore = getStore(partition, false, query.getStoreName());
+        ReadOnlyTenantScopedStore partitionStore = getStore(partition, query.getStoreName());
 
         PartitionBookmarkPb bkmk = query.getBookmark().getInProgressPartitionsOrDefault(partition, null);
         String startKey = bkmk == null ? query.getScanBoundary().getStartKey() : bkmk.getLastKey();

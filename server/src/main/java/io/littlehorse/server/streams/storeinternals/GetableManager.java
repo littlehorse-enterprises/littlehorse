@@ -22,6 +22,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 @Slf4j
 public class GetableManager extends ReadOnlyGetableManager {
 
+    protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;

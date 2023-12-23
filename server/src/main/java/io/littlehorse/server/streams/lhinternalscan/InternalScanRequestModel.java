@@ -32,7 +32,7 @@ import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @Setter
-public class InternalScanRequestModel<T extends CoreObjectId<?, ?, ?>> extends LHSerializable<InternalScanRequest> {
+public class InternalScanRequestModel extends LHSerializable<InternalScanRequest> {
 
     private ScanResultTypePb resultType;
     private int limit;
