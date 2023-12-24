@@ -22,7 +22,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * class runs in two modes: Cluster-scoped, or Tenant-scoped. In the Tenant-Scoped mode, a prefix
  * is pre-pended to every key so that we can logically isolate Tenant-Scoped data.
  */
-abstract class ReadOnlyModelStore {
+abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Getter
     protected final String tenantId;
@@ -30,7 +30,7 @@ abstract class ReadOnlyModelStore {
     protected final ExecutionContext executionContext;
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
-    ReadOnlyModelStore(
+    ReadOnlyBaseStoreImpl(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore,
             Optional<String> tenantId,
             ExecutionContext executionContext) {
@@ -43,6 +43,7 @@ abstract class ReadOnlyModelStore {
         this.executionContext = executionContext;
     }
 
+    @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
         Bytes raw = nativeStore.get(keyToLookFor);
@@ -61,6 +62,7 @@ abstract class ReadOnlyModelStore {
      * There is an incoming KIP in Kafka that allows metrics to track leaked RocksDB iterators,
      * once it is implemented, we should track that metric closely.
      */
+    @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String key, Class<T> cls) {
         String actualPrefix = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, key));
 
@@ -73,6 +75,7 @@ abstract class ReadOnlyModelStore {
      * There is an incoming KIP in Kafka that allows metrics to track leaked RocksDB iterators,
      * once it is implemented, we should track that metric closely.
      */
+    @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
         // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
         // However, they do have a reverse range scan. So we take the prefix and
@@ -95,18 +98,13 @@ abstract class ReadOnlyModelStore {
      * @param cls   Storeable Type
      * @return an iter
      */
+    @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
 
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
-
-    // Commented because the old implementation looks suspect, so I don't think
-    // it's actually in use.
-    // public <T extends LHSerializable<?>> LHIterator<T> iterate(String start, String end, Class<T> cls) {
-    //     return serdeModelStore.iterate(start, end, cls);
-    // }
 
     protected String maybeAddTenantPrefix(String key) {
         return tenantId == null ? key : tenantId + "/" + key;

@@ -11,24 +11,22 @@ import org.apache.kafka.streams.state.KeyValueStore;
  * Package-private class that allows you to read and write storeables at either
  * the tenant or cluster scope.
  */
-abstract class ModelStore extends ReadOnlyModelStore {
+abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
 
-    ModelStore(KeyValueStore<String, Bytes> nativeStore, Optional<String> tenantId, ExecutionContext context) {
+    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, Optional<String> tenantId, ExecutionContext context) {
         super(nativeStore, tenantId, context);
         this.nativeStore = nativeStore;
     }
 
+    @Override
     public void put(Storeable<?> thing) {
         String key = maybeAddTenantPrefix(thing.getFullStoreKey());
         nativeStore.put(key, new Bytes(thing.toBytes()));
     }
 
-    public void delete(Storeable<?> thing) {
-        delete(thing.getStoreKey(), thing.getType());
-    }
-
+    @Override
     public void delete(String storeKey, StoreableType type) {
         String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(type, storeKey));
         nativeStore.delete(fullKey);
