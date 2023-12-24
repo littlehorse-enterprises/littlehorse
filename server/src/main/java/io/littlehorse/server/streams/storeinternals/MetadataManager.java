@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.storeinternals;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.DefaultModelStore;
@@ -27,7 +27,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> void put(T getable) {
+    public <U extends Message, T extends MetadataGetable<U>> void put(T getable) {
         ModelStore specificStore =
                 isClusterLevelObject(getable.getObjectId()) || tenantStore == null ? defaultStore : tenantStore;
         // The cast is necessary to tell the store that the ObjectId belongs to a
@@ -48,7 +48,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         }
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends MetadataGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
         ModelStore specificStore = isClusterLevelObject(id) || tenantStore == null ? defaultStore : tenantStore;
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = specificStore.get(id.getStoreableKey(), StoredGetable.class);

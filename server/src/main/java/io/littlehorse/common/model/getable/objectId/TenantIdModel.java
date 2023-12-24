@@ -1,7 +1,8 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.getable.MetadataId;
+
+import io.littlehorse.common.model.getable.ClusterMetadataId;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.Tenant;
@@ -9,7 +10,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
-public class TenantIdModel extends MetadataId<TenantId, Tenant, TenantModel> {
+public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantModel> {
 
     private String id;
 

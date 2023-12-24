@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -36,7 +36,7 @@ public class ReadOnlyMetadataManager {
         this.tenantStore = tenantStore;
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> T get(MetadataId<?, U, T> id) {
+    public <U extends Message, T extends MetadataGetable<U>> T get(MetadataId<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
         ReadOnlyModelStore specificStore = isClusterLevelObject(id) ? defaultStore : tenantStore;
@@ -77,7 +77,7 @@ public class ReadOnlyMetadataManager {
         return result;
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> T lastFromPrefix(String prefix) {
+    public <U extends Message, T extends MetadataGetable<U>> T lastFromPrefix(String prefix) {
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) tenantStore.getLastFromPrefix(prefix, StoredGetable.class);
         if (storeResult == null) return null;
