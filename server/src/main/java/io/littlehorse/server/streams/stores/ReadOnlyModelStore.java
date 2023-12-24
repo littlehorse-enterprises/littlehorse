@@ -1,26 +1,23 @@
 package io.littlehorse.server.streams.stores;
 
-import java.util.Optional;
-
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.Getter;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 /**
  * Package-private class used to implement multiple logical stores within a single Kafka Streams
  * KeyValueStore. This is motivated purely for performance reasons because adding multiple stores
  * leads to a proliferation of open files (RocksDB), many changelog partitions, slower rebalances,
  * more partitions per Streams Transaction (longer commits), and slower flushes.
- * 
+ *
  * In addition to allowing different Storeable's to be stored in logically separated stores, this
  * class runs in two modes: Cluster-scoped, or Tenant-scoped. In the Tenant-Scoped mode, a prefix
  * is pre-pended to every key so that we can logically isolate Tenant-Scoped data.
@@ -34,7 +31,9 @@ abstract class ReadOnlyModelStore {
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
     ReadOnlyModelStore(
-            ReadOnlyKeyValueStore<String, Bytes> nativeStore, Optional<String> tenantId, ExecutionContext executionContext) {
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore,
+            Optional<String> tenantId,
+            ExecutionContext executionContext) {
 
         if (nativeStore == null) {
             throw new NullPointerException();
@@ -66,7 +65,7 @@ abstract class ReadOnlyModelStore {
         String actualPrefix = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, key));
 
         return new LHKeyValueIterator<>(
-            nativeStore.prefixScan(actualPrefix, Serdes.String().serializer()), cls, executionContext);
+                nativeStore.prefixScan(actualPrefix, Serdes.String().serializer()), cls, executionContext);
     }
 
     /**

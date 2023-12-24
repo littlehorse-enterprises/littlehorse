@@ -30,6 +30,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * implementation of Multi-Tenancy much easier: just put a prefix on all keys
  * for a given namespace.
  */
+@Deprecated(forRemoval = true)
 public class ReadOnlyTenantStore implements ReadOnlyModelStore {
 
     @Getter

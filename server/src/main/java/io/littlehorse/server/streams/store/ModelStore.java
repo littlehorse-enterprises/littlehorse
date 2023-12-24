@@ -7,6 +7,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
+@Deprecated(forRemoval = true)
 public interface ModelStore extends ReadOnlyModelStore {
 
     default void delete(Storeable<?> thing) {

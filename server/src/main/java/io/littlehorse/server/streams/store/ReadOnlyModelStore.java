@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 /**
  * TODO: Eduwer, what is this used for?
  */
+@Deprecated(forRemoval = true)
 public interface ReadOnlyModelStore {
 
     String DEFAULT_TENANT = "default";

@@ -1,13 +1,11 @@
 package io.littlehorse.server.streams.stores;
 
-import java.util.Optional;
-
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.KeyValueStore;
-
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 /**
  * Package-private class that allows you to read and write storeables at either
@@ -16,10 +14,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 abstract class ModelStore extends ReadOnlyModelStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
-    
-    ModelStore(
-        KeyValueStore<String, Bytes> nativeStore, Optional<String> tenantId, ExecutionContext context
-    ) {
+
+    ModelStore(KeyValueStore<String, Bytes> nativeStore, Optional<String> tenantId, ExecutionContext context) {
         super(nativeStore, tenantId, context);
         this.nativeStore = nativeStore;
     }

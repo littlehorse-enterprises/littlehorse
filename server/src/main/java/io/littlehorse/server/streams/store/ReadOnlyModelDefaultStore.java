@@ -12,6 +12,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 /**
  * TODO: Eduwer, what is this used for?
  */
+@Deprecated(forRemoval = true)
 public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;

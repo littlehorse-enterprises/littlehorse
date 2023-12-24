@@ -6,6 +6,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Deprecated(forRemoval = true)
 public class TenantModelStore extends ReadOnlyTenantStore implements ModelStore {
 
     private final SerdeModelStore serdeModelStore;

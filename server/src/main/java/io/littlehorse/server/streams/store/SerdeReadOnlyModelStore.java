@@ -11,6 +11,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
+@Deprecated(forRemoval = true)
 class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
 
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;

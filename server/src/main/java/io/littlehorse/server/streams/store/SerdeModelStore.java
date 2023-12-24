@@ -8,6 +8,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
+@Deprecated(forRemoval = true)
 class SerdeModelStore extends SerdeReadOnlyModelStore implements ModelStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
