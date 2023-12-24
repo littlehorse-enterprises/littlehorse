@@ -11,15 +11,17 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MetadataManager extends ReadOnlyMetadataManager {
 
-    private ModelStore defaultStore;
-    private ModelStore tenantStore;
+    private ClusterScopedStore defaultStore;
+    private TenantScopedStore tenantStore;
 
-    public MetadataManager(DefaultModelStore defaultStore, TenantModelStore tenantStore) {
+    public MetadataManager(ClusterScopedStore defaultStore, TenantScopedStore tenantStore) {
         super(defaultStore, tenantStore);
         this.defaultStore = defaultStore;
         this.tenantStore = tenantStore != null ? tenantStore : defaultStore;

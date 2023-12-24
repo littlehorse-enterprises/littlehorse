@@ -14,6 +14,9 @@ import io.littlehorse.server.streams.store.ReadOnlyTenantStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ReadOnlyMetadataManager {
 
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
-    private final ReadOnlyModelStore defaultStore;
-    private final ReadOnlyModelStore tenantStore;
+    private final ReadOnlyClusterScopedStore defaultStore;
+    private final ReadOnlyTenantScopedStore tenantStore;
 
     public ReadOnlyMetadataManager(
-            final ReadOnlyModelDefaultStore defaultStore, final ReadOnlyTenantStore tenantStore) {
+            final ReadOnlyClusterScopedStore defaultStore, final ReadOnlyTenantScopedStore tenantStore) {
         this.defaultStore = defaultStore;
-        this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
+        this.tenantStore = tenantStore;
     }
 
     public <U extends Message, T extends GlobalGetable<U>> T get(MetadataId<?, U, T> id) {

@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -23,12 +23,12 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class GetableStorageManager {
 
     private final CommandModel command;
-    private final ModelStore store;
+    private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
     private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
     public GetableStorageManager(
-            final ModelStore store,
+            final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
