@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.model.getable.ClusterMetadataId;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.proto.GetableClassEnum;

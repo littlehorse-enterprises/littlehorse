@@ -1,4 +1,4 @@
-package io.littlehorse.io.littlehorse.common.model.metadatacommand.subcommand;
+package io.littlehorse.common.model.metadatacommand;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -12,8 +12,8 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -63,10 +63,13 @@ public class PutWfSpecRequestModelTest {
             .build();
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
-    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT_ID, executionContext);
-    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A, executionContext);
+    private TenantScopedStore defaultStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, DEFAULT_TENANT_ID, executionContext);
+    private TenantScopedStore tenantAStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_A, executionContext);
 
-    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B, executionContext);
+    private TenantScopedStore tenantBStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_B, executionContext);
 
     @BeforeEach
     public void setup() {
@@ -98,12 +101,15 @@ public class PutWfSpecRequestModelTest {
 
     void ensureTenantIsolation(
             WfSpecIdModel wfSpecToSearch,
-            ModelStore storeUnderTest,
-            ModelStore firstIsolatedStore,
-            ModelStore secondIsolatedStore) {
-        assertThat(storeUnderTest.get(wfSpecToSearch)).isNotNull();
-        assertThat(firstIsolatedStore.get(wfSpecToSearch)).isNull();
-        assertThat(secondIsolatedStore.get(wfSpecToSearch)).isNull();
+            TenantScopedStore storeUnderTest,
+            TenantScopedStore firstIsolatedStore,
+            TenantScopedStore secondIsolatedStore) {
+        assertThat(storeUnderTest.get(wfSpecToSearch.getStoreableKey(), StoredGetable.class))
+                .isNotNull();
+        assertThat(firstIsolatedStore.get(wfSpecToSearch.getStoreableKey(), StoredGetable.class))
+                .isNull();
+        assertThat(secondIsolatedStore.get(wfSpecToSearch.getStoreableKey(), StoredGetable.class))
+                .isNull();
     }
 
     private PutWfSpecRequest testWorkflowSpec() {

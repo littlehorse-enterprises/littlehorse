@@ -9,7 +9,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMe
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -74,7 +74,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         }
     }
 
-    public void process(ModelStore store, ProcessorContext<Void, Void> ctx) {
+    public void process(TenantScopedStore store, ProcessorContext<Void, Void> ctx) {
         getSubCommand().process(store, ctx);
     }
 

@@ -13,4 +13,6 @@ interface ReadOnlyBaseStore {
     <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls);
 
     <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls);
+
+    <T extends Storeable<?>> T getLastFromPrefix(String prefix, Class<T> cls);
 }

@@ -3,13 +3,12 @@ package io.littlehorse.server.streams.storeinternals;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.MetadataGetable;
-import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.ClusterMetadataId;
+import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.DefaultModelStore;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -18,54 +17,88 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetadataManager extends ReadOnlyMetadataManager {
 
-    private ClusterScopedStore defaultStore;
+    private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantStore;
 
-    public MetadataManager(ClusterScopedStore defaultStore, TenantScopedStore tenantStore) {
-        super(defaultStore, tenantStore);
-        this.defaultStore = defaultStore;
-        this.tenantStore = tenantStore != null ? tenantStore : defaultStore;
+    public MetadataManager(ClusterScopedStore clusterStore, TenantScopedStore tenantStore) {
+        super(clusterStore, tenantStore);
+        this.clusterStore = clusterStore;
+        this.tenantStore = tenantStore;
     }
 
-    public <U extends Message, T extends MetadataGetable<U>> void put(T getable) {
-        ModelStore specificStore =
-                isClusterLevelObject(getable.getObjectId()) || tenantStore == null ? defaultStore : tenantStore;
+    public <U extends Message, T extends ClusterMetadataGetable<U>> void put(T getable) {
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        StoredGetable<?, ?> old = specificStore.get((ObjectIdModel<?, U, T>) getable.getObjectId());
+        StoredGetable<?, ?> old = clusterStore.get(getable.getObjectId().toString(), StoredGetable.class);
         if (old != null) {
             log.trace("removing tags for metadata getable {}", getable.getObjectId());
             for (String tagId : old.getIndexCache().getTagIds()) {
-                specificStore.delete(tagId, StoreableType.TAG);
+                clusterStore.delete(tagId, StoreableType.TAG);
             }
         }
 
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
-        specificStore.put(toStore);
+        clusterStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
-            specificStore.put(tag);
+            clusterStore.put(tag);
         }
     }
 
-    public <U extends Message, T extends MetadataGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
-        ModelStore specificStore = isClusterLevelObject(id) || tenantStore == null ? defaultStore : tenantStore;
+    public <U extends Message, T extends MetadataGetable<U>> void put(T getable) {
+        // The cast is necessary to tell the store that the ObjectId belongs to a
+        // GlobalGetable.
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = specificStore.get(id.getStoreableKey(), StoredGetable.class);
+        StoredGetable<?, ?> old = tenantStore.get(getable.getObjectId().toString(), StoredGetable.class);
+        if (old != null) {
+            log.trace("removing tags for metadata getable {}", getable.getObjectId());
+            for (String tagId : old.getIndexCache().getTagIds()) {
+                tenantStore.delete(tagId, StoreableType.TAG);
+            }
+        }
+
+        StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
+        tenantStore.put(toStore);
+        for (Tag tag : getable.getIndexEntries()) {
+            tenantStore.put(tag);
+        }
+    }
+
+    public <U extends Message, T extends MetadataGetable<U>> void delete(MetadataId<?, U, T> id) {
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> storeResult = tenantStore.get(id.getStoreableKey(), StoredGetable.class);
         log.trace("trying to delete " + id.getStoreableKey());
 
         if (storeResult == null) {
-            specificStore.get(id.getStoreableKey(), StoredGetable.class);
             throw new LHApiException(
                     Status.NOT_FOUND,
                     "Couldn't find provided " + id.getObjectClass().getSimpleName());
         }
 
-        specificStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
+        tenantStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
 
         // Now delete all the tags
         for (String tagId : storeResult.getIndexCache().getTagIds()) {
-            specificStore.delete(tagId, StoreableType.TAG);
+            tenantStore.delete(tagId, StoreableType.TAG);
+        }
+    }
+
+    public <U extends Message, T extends ClusterMetadataGetable<U>> void delete(ClusterMetadataId<?, U, T> id) {
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> storeResult = clusterStore.get(id.getStoreableKey(), StoredGetable.class);
+        log.trace("trying to delete " + id.getStoreableKey());
+
+        if (storeResult == null) {
+            throw new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find provided " + id.getObjectClass().getSimpleName());
+        }
+
+        clusterStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
+
+        // Now delete all the tags
+        for (String tagId : storeResult.getIndexCache().getTagIds()) {
+            clusterStore.delete(tagId, StoreableType.TAG);
         }
     }
 }

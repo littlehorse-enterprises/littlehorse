@@ -43,10 +43,9 @@ import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -329,11 +328,11 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
+    private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
-        return ModelStore.instanceFor(rawStore, authContext.tenantId(), requestContext);
+        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
@@ -370,7 +369,7 @@ public class BackendInternalComms implements Closeable {
     private <U extends Message, T extends AbstractGetable<U>> T getObjectLocal(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
 
-        ReadOnlyModelStore store =
+        ReadOnlyTenantScopedStore store =
                 getStore(partition, false, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
@@ -393,7 +392,7 @@ public class BackendInternalComms implements Closeable {
                     ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
             String storeName = id.getStore().getStoreName();
-            ReadOnlyModelStore store = getStore(request.getPartition(), false, storeName);
+            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), false, storeName);
 
             @SuppressWarnings("unchecked")
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
@@ -471,7 +470,7 @@ public class BackendInternalComms implements Closeable {
 
         if (activeHost.equals(thisHost)) {
 
-            ReadOnlyModelStore store = getStore(meta.partition(), false, search.getStoreName());
+            ReadOnlyTenantScopedStore store = getStore(meta.partition(), false, search.getStoreName());
             String prefix = search.getTagScan().getKeyPrefix() + "/";
 
             try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
@@ -522,7 +521,7 @@ public class BackendInternalComms implements Closeable {
                 req.storeName, req.partitionKey, Serdes.String().serializer());
         int partition = meta.partition();
 
-        ReadOnlyModelStore store = getStore(partition, false, req.storeName);
+        ReadOnlyTenantScopedStore store = getStore(partition, false, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
@@ -729,7 +728,7 @@ public class BackendInternalComms implements Closeable {
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalActiveCommandProcessorPartitions()) {
-            ReadOnlyModelStore partStore = getStore(partition, false, req.storeName);
+            ReadOnlyTenantScopedStore partStore = getStore(partition, false, req.storeName);
             if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
                 // This partition has already been accounted for
                 continue;
@@ -782,7 +781,7 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            ReadOnlyModelStore store,
+            ReadOnlyTenantScopedStore store,
             List<ScanFilterModel> filters) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();

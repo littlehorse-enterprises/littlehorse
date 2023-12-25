@@ -2,19 +2,13 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.RepartitionExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -49,49 +43,12 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         if (record.value() != null) {
             log.debug("Received a metric update!");
             String tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
-            record.value().process(ModelStore.instanceFor(nativeStore, tenantId, repartitionContext), ctx);
+            record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
         }
     }
 
     public void cleanOldMetrics(long timestamp) {
-        final ModelStore defaultStore = ModelStore.defaultStore(nativeStore, null);
-        Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
-        cleanOldTaskMetrics(defaultStore, thirtyDaysAgo);
-        cleanOldWfMetrics(defaultStore, thirtyDaysAgo);
-    }
-
-    private void cleanOldTaskMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<TaskMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
-            while (iter.hasNext()) {
-                log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
-
-                /** LHIterKeyValue<TaskMetricUpdate> next = iter.next();
-                 * TaskMetricUpdate metric = next.getValue();
-                 * store.delete(metric.getStoreKey());
-                 * String taskDefMetricKey = TaskDefMetricsModel.getObjectId(metric.type,
-                 * metric.windowStart,
-                 * metric.taskDefName);
-                 * store.delete(taskDefMetricKey, TaskDefMetricsModel.class);*/
-            }
-        }
-    }
-
-    private void cleanOldWfMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<WfMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
-            while (iter.hasNext()) {
-                log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
-
-                /* * LHIterKeyValue<WfMetricUpdate> next = iter.next();
-                 * WfMetricUpdate metric = next.getValue();
-                 * store.delete(metric.getStoreKey());
-                 * String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
-                 * metric.type, metric.windowStart, metric.wfSpecName, metric.wfSpecVersion);
-                 * store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);*/
-
-            }
-        }
+        log.debug("Skipping the cleaning of old metrics since metrics are currently not implemented");
     }
 
     private RepartitionExecutionContext buildExecutionContext(Headers metadataHeaders) {

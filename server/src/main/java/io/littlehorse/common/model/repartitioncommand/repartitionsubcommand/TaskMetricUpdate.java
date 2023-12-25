@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -136,7 +136,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
     }
 
     @Override
-    public void process(ModelStore store, ProcessorContext<Void, Void> ctx) {
+    public void process(TenantScopedStore store, ProcessorContext<Void, Void> ctx) {
         throw new NotImplementedException("Need to re-implement metrics");
         /*
          * // Update TaskDef-Level Metrics

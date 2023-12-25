@@ -106,6 +106,17 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
 
+    @Override
+    public <T extends Storeable<?>> T getLastFromPrefix(String prefix, Class<T> cls) {
+        try (LHKeyValueIterator<T> iterator = reversePrefixScan(prefix, cls)) {
+            if (iterator.hasNext()) {
+                return iterator.next().getValue();
+            } else {
+                return null;
+            }
+        }
+    }
+
     protected String maybeAddTenantPrefix(String key) {
         return tenantId == null ? key : tenantId + "/" + key;
     }

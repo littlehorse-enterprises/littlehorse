@@ -44,9 +44,10 @@ public class WfService {
             if (majorVersion != null && revision != null) {
                 storedResult = metadataManager.get(new WfSpecIdModel(name, majorVersion, revision));
             } else if (majorVersion != null) {
-                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name, majorVersion));
+                storedResult = metadataManager.getLastFromPrefix(
+                        WfSpecIdModel.getPrefix(name, majorVersion), WfSpecModel.class);
             } else {
-                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name));
+                storedResult = metadataManager.getLastFromPrefix(WfSpecIdModel.getPrefix(name), WfSpecModel.class);
             }
 
             return storedResult;
@@ -64,7 +65,7 @@ public class WfService {
             UserTaskDefIdModel id = new UserTaskDefIdModel(name, version);
             return metadataManager.get(id);
         } else {
-            return metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
+            return metadataManager.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), UserTaskDefModel.class);
         }
     }
 

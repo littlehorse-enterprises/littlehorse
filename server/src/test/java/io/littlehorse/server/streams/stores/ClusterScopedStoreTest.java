@@ -1,4 +1,4 @@
-package io.littlehorse.server.streams.store;
+package io.littlehorse.server.streams.stores;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-public class LHDefaultStoreTest {
+public class ClusterScopedStoreTest {
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
@@ -30,7 +31,7 @@ public class LHDefaultStoreTest {
     @Mock
     private ExecutionContext executionContext;
 
-    private final ModelStore store = ModelStore.defaultStore(nativeInMemoryStore, executionContext);
+    private final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeInMemoryStore, executionContext);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
@@ -50,7 +51,7 @@ public class LHDefaultStoreTest {
                 getableToSave.getStoredObject().getObjectId().getType().getNumber();
         store.put(getableToSave);
         StoredGetable<WfRun, WfRunModel> wfRunWfRunModelStoredGetable =
-                store.get(getableToSave.getStoredObject().getObjectId());
+                store.get(getableToSave.getStoredObject().getObjectId().getStoreableKey(), StoredGetable.class);
         assertThat(wfRunWfRunModelStoredGetable.getStoredObject()).isNotNull();
         List<KeyValue<String, Bytes>> keyValues = ImmutableList.copyOf(nativeInMemoryStore.all());
         assertThat(keyValues).hasSize(1);

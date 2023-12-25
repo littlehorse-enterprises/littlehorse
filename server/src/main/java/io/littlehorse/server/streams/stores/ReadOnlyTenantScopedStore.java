@@ -10,7 +10,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  */
 public interface ReadOnlyTenantScopedStore extends ReadOnlyBaseStore {
 
-    static ReadOnlyTenantScopedStore instanceFrom(
+    static ReadOnlyTenantScopedStore newInstance(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext ctx) {
         return new ReadOnlyTenantScopedStoreImpl(nativeStore, tenantId, ctx);
     }

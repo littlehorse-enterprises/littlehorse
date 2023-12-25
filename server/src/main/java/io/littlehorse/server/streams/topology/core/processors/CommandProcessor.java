@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -12,9 +13,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
-import io.littlehorse.server.streams.store.TenantModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -158,8 +157,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     public void onPartitionClaimed() {
-        TenantModelStore coreDefaultStore =
-                ModelStore.tenantStoreFor(this.nativeStore, ReadOnlyModelStore.DEFAULT_TENANT, new BackgroundContext());
+        TenantScopedStore coreDefaultStore =
+                TenantScopedStore.newInstance(this.nativeStore, LHConstants.DEFAULT_TENANT, new BackgroundContext());
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }

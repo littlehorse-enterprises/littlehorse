@@ -1,4 +1,4 @@
-package io.littlehorse.server.streams.store;
+package io.littlehorse.server.streams.stores;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,8 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
@@ -26,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class LHTenantStoreTest {
+public class TenantScopedStoreTest {
 
     @Mock
     private LHServerConfig lhConfig;
@@ -44,8 +46,10 @@ public class LHTenantStoreTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private final ModelStore storeForTenantA = ModelStore.instanceFor(nativeInMemoryStore, tenantA, executionContext);
-    private final ModelStore storeForTenantB = ModelStore.instanceFor(nativeInMemoryStore, tenantB, executionContext);
+    private final TenantScopedStore storeForTenantA =
+            TenantScopedStore.newInstance(nativeInMemoryStore, tenantA, executionContext);
+    private final TenantScopedStore storeForTenantB =
+            TenantScopedStore.newInstance(nativeInMemoryStore, tenantB, executionContext);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());
@@ -155,9 +159,9 @@ public class LHTenantStoreTest {
                 .isNotNull();
         assertThat(storeForTenantB.get(getableToSave.getStoreKey(), StoredGetable.class))
                 .isNotNull();
-        assertThat(storeForTenantA.get(getableToSave.getStoredObject().getObjectId()))
+        assertThat(storeForTenantA.get(getableToSave.getStoreKey(), StoredGetable.class))
                 .isNotNull();
-        assertThat(storeForTenantB.get(getableToSave.getStoredObject().getObjectId()))
+        assertThat(storeForTenantB.get(getableToSave.getStoreKey(), StoredGetable.class))
                 .isNotNull();
     }
 }

@@ -24,9 +24,9 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Crea
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
@@ -62,7 +62,7 @@ public class GetableManagerTest {
 
     private String tenantId = "myTenant";
 
-    private ModelStore localStoreWrapper;
+    private TenantScopedStore localStoreWrapper;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
@@ -76,7 +76,7 @@ public class GetableManagerTest {
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, tenantId, executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
@@ -89,7 +89,8 @@ public class GetableManagerTest {
         getableManager.commit();
 
         final var keys = getAllKeys(store);
-        assertThat(localStoreWrapper.get(getable.getObjectId())).isNotNull();
+        assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
+                .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
     }
 

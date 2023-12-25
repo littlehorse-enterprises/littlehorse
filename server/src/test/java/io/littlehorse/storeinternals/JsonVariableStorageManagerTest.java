@@ -13,9 +13,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class JsonVariableStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private ModelStore storeWrapper;
+    private TenantScopedStore storeWrapper;
 
     private String tenantId = LHConstants.DEFAULT_TENANT;
 
@@ -82,7 +82,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = ModelStore.instanceFor(store, tenantId, mock());
+        storeWrapper = TenantScopedStore.newInstance(store, tenantId, mock());
         getableManager = new GetableManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
