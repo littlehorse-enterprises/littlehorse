@@ -16,7 +16,7 @@ enum LHStoreType {
 enum StoreableType {
     STORED_GETABLE = 0;
     SCHEDULED_TASK = 1;
-    reserved 2;
+    WF_METRIC_UPDATE = 2;
     TASK_METRIC_UPDATE = 3;
     LH_TIMER = 4;
     TAG = 5;

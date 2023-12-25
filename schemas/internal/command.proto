@@ -67,7 +67,19 @@ message MetadataCommand {
 message AggregateWfMetrics {
     WfSpecId wf_spec_id = 1;
     string tenant_id = 2;
-    repeated StatusChanged changes = 3;
+    repeated WfMetricUpdate metric_updates = 3;
+}
+
+message WfMetricUpdate {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLength type = 2;
+    WfSpecId wf_spec_id = 3;
+    int64 num_entries = 4;
+    int64 start_to_complete_max = 5;
+    int64 start_to_complete_total = 6;
+    int64 total_completed = 7;
+    int64 total_errored = 8;
+    int64 total_started = 9;
 }
 
 message PartitionMetrics {

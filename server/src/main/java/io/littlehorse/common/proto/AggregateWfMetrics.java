@@ -17,7 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private AggregateWfMetrics() {
     tenantId_ = "";
-    changes_ = java.util.Collections.emptyList();
+    metricUpdates_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -105,45 +105,45 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int CHANGES_FIELD_NUMBER = 3;
+  public static final int METRIC_UPDATES_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.common.proto.StatusChanged> changes_;
+  private java.util.List<io.littlehorse.common.proto.WfMetricUpdate> metricUpdates_;
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.StatusChanged> getChangesList() {
-    return changes_;
+  public java.util.List<io.littlehorse.common.proto.WfMetricUpdate> getMetricUpdatesList() {
+    return metricUpdates_;
   }
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.StatusChangedOrBuilder> 
-      getChangesOrBuilderList() {
-    return changes_;
+  public java.util.List<? extends io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
+      getMetricUpdatesOrBuilderList() {
+    return metricUpdates_;
   }
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
-  public int getChangesCount() {
-    return changes_.size();
+  public int getMetricUpdatesCount() {
+    return metricUpdates_.size();
   }
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.StatusChanged getChanges(int index) {
-    return changes_.get(index);
+  public io.littlehorse.common.proto.WfMetricUpdate getMetricUpdates(int index) {
+    return metricUpdates_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.StatusChangedOrBuilder getChangesOrBuilder(
+  public io.littlehorse.common.proto.WfMetricUpdateOrBuilder getMetricUpdatesOrBuilder(
       int index) {
-    return changes_.get(index);
+    return metricUpdates_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -166,8 +166,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, tenantId_);
     }
-    for (int i = 0; i < changes_.size(); i++) {
-      output.writeMessage(3, changes_.get(i));
+    for (int i = 0; i < metricUpdates_.size(); i++) {
+      output.writeMessage(3, metricUpdates_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -185,9 +185,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, tenantId_);
     }
-    for (int i = 0; i < changes_.size(); i++) {
+    for (int i = 0; i < metricUpdates_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, changes_.get(i));
+        .computeMessageSize(3, metricUpdates_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -211,8 +211,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTenantId()
         .equals(other.getTenantId())) return false;
-    if (!getChangesList()
-        .equals(other.getChangesList())) return false;
+    if (!getMetricUpdatesList()
+        .equals(other.getMetricUpdatesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -230,9 +230,9 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
     hash = (53 * hash) + getTenantId().hashCode();
-    if (getChangesCount() > 0) {
-      hash = (37 * hash) + CHANGES_FIELD_NUMBER;
-      hash = (53 * hash) + getChangesList().hashCode();
+    if (getMetricUpdatesCount() > 0) {
+      hash = (37 * hash) + METRIC_UPDATES_FIELD_NUMBER;
+      hash = (53 * hash) + getMetricUpdatesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -371,11 +371,11 @@ private static final long serialVersionUID = 0L;
         wfSpecIdBuilder_ = null;
       }
       tenantId_ = "";
-      if (changesBuilder_ == null) {
-        changes_ = java.util.Collections.emptyList();
+      if (metricUpdatesBuilder_ == null) {
+        metricUpdates_ = java.util.Collections.emptyList();
       } else {
-        changes_ = null;
-        changesBuilder_.clear();
+        metricUpdates_ = null;
+        metricUpdatesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
       return this;
@@ -411,14 +411,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.common.proto.AggregateWfMetrics result) {
-      if (changesBuilder_ == null) {
+      if (metricUpdatesBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0)) {
-          changes_ = java.util.Collections.unmodifiableList(changes_);
+          metricUpdates_ = java.util.Collections.unmodifiableList(metricUpdates_);
           bitField0_ = (bitField0_ & ~0x00000004);
         }
-        result.changes_ = changes_;
+        result.metricUpdates_ = metricUpdates_;
       } else {
-        result.changes_ = changesBuilder_.build();
+        result.metricUpdates_ = metricUpdatesBuilder_.build();
       }
     }
 
@@ -486,29 +486,29 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (changesBuilder_ == null) {
-        if (!other.changes_.isEmpty()) {
-          if (changes_.isEmpty()) {
-            changes_ = other.changes_;
+      if (metricUpdatesBuilder_ == null) {
+        if (!other.metricUpdates_.isEmpty()) {
+          if (metricUpdates_.isEmpty()) {
+            metricUpdates_ = other.metricUpdates_;
             bitField0_ = (bitField0_ & ~0x00000004);
           } else {
-            ensureChangesIsMutable();
-            changes_.addAll(other.changes_);
+            ensureMetricUpdatesIsMutable();
+            metricUpdates_.addAll(other.metricUpdates_);
           }
           onChanged();
         }
       } else {
-        if (!other.changes_.isEmpty()) {
-          if (changesBuilder_.isEmpty()) {
-            changesBuilder_.dispose();
-            changesBuilder_ = null;
-            changes_ = other.changes_;
+        if (!other.metricUpdates_.isEmpty()) {
+          if (metricUpdatesBuilder_.isEmpty()) {
+            metricUpdatesBuilder_.dispose();
+            metricUpdatesBuilder_ = null;
+            metricUpdates_ = other.metricUpdates_;
             bitField0_ = (bitField0_ & ~0x00000004);
-            changesBuilder_ = 
+            metricUpdatesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getChangesFieldBuilder() : null;
+                 getMetricUpdatesFieldBuilder() : null;
           } else {
-            changesBuilder_.addAllMessages(other.changes_);
+            metricUpdatesBuilder_.addAllMessages(other.metricUpdates_);
           }
         }
       }
@@ -551,15 +551,15 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              io.littlehorse.common.proto.StatusChanged m =
+              io.littlehorse.common.proto.WfMetricUpdate m =
                   input.readMessage(
-                      io.littlehorse.common.proto.StatusChanged.parser(),
+                      io.littlehorse.common.proto.WfMetricUpdate.parser(),
                       extensionRegistry);
-              if (changesBuilder_ == null) {
-                ensureChangesIsMutable();
-                changes_.add(m);
+              if (metricUpdatesBuilder_ == null) {
+                ensureMetricUpdatesIsMutable();
+                metricUpdates_.add(m);
               } else {
-                changesBuilder_.addMessage(m);
+                metricUpdatesBuilder_.addMessage(m);
               }
               break;
             } // case 26
@@ -771,244 +771,244 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.common.proto.StatusChanged> changes_ =
+    private java.util.List<io.littlehorse.common.proto.WfMetricUpdate> metricUpdates_ =
       java.util.Collections.emptyList();
-    private void ensureChangesIsMutable() {
+    private void ensureMetricUpdatesIsMutable() {
       if (!((bitField0_ & 0x00000004) != 0)) {
-        changes_ = new java.util.ArrayList<io.littlehorse.common.proto.StatusChanged>(changes_);
+        metricUpdates_ = new java.util.ArrayList<io.littlehorse.common.proto.WfMetricUpdate>(metricUpdates_);
         bitField0_ |= 0x00000004;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.StatusChanged, io.littlehorse.common.proto.StatusChanged.Builder, io.littlehorse.common.proto.StatusChangedOrBuilder> changesBuilder_;
+        io.littlehorse.common.proto.WfMetricUpdate, io.littlehorse.common.proto.WfMetricUpdate.Builder, io.littlehorse.common.proto.WfMetricUpdateOrBuilder> metricUpdatesBuilder_;
 
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.StatusChanged> getChangesList() {
-      if (changesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(changes_);
+    public java.util.List<io.littlehorse.common.proto.WfMetricUpdate> getMetricUpdatesList() {
+      if (metricUpdatesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(metricUpdates_);
       } else {
-        return changesBuilder_.getMessageList();
+        return metricUpdatesBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public int getChangesCount() {
-      if (changesBuilder_ == null) {
-        return changes_.size();
+    public int getMetricUpdatesCount() {
+      if (metricUpdatesBuilder_ == null) {
+        return metricUpdates_.size();
       } else {
-        return changesBuilder_.getCount();
+        return metricUpdatesBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public io.littlehorse.common.proto.StatusChanged getChanges(int index) {
-      if (changesBuilder_ == null) {
-        return changes_.get(index);
+    public io.littlehorse.common.proto.WfMetricUpdate getMetricUpdates(int index) {
+      if (metricUpdatesBuilder_ == null) {
+        return metricUpdates_.get(index);
       } else {
-        return changesBuilder_.getMessage(index);
+        return metricUpdatesBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder setChanges(
-        int index, io.littlehorse.common.proto.StatusChanged value) {
-      if (changesBuilder_ == null) {
+    public Builder setMetricUpdates(
+        int index, io.littlehorse.common.proto.WfMetricUpdate value) {
+      if (metricUpdatesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureChangesIsMutable();
-        changes_.set(index, value);
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.set(index, value);
         onChanged();
       } else {
-        changesBuilder_.setMessage(index, value);
+        metricUpdatesBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder setChanges(
-        int index, io.littlehorse.common.proto.StatusChanged.Builder builderForValue) {
-      if (changesBuilder_ == null) {
-        ensureChangesIsMutable();
-        changes_.set(index, builderForValue.build());
+    public Builder setMetricUpdates(
+        int index, io.littlehorse.common.proto.WfMetricUpdate.Builder builderForValue) {
+      if (metricUpdatesBuilder_ == null) {
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.set(index, builderForValue.build());
         onChanged();
       } else {
-        changesBuilder_.setMessage(index, builderForValue.build());
+        metricUpdatesBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder addChanges(io.littlehorse.common.proto.StatusChanged value) {
-      if (changesBuilder_ == null) {
+    public Builder addMetricUpdates(io.littlehorse.common.proto.WfMetricUpdate value) {
+      if (metricUpdatesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureChangesIsMutable();
-        changes_.add(value);
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.add(value);
         onChanged();
       } else {
-        changesBuilder_.addMessage(value);
+        metricUpdatesBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder addChanges(
-        int index, io.littlehorse.common.proto.StatusChanged value) {
-      if (changesBuilder_ == null) {
+    public Builder addMetricUpdates(
+        int index, io.littlehorse.common.proto.WfMetricUpdate value) {
+      if (metricUpdatesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureChangesIsMutable();
-        changes_.add(index, value);
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.add(index, value);
         onChanged();
       } else {
-        changesBuilder_.addMessage(index, value);
+        metricUpdatesBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder addChanges(
-        io.littlehorse.common.proto.StatusChanged.Builder builderForValue) {
-      if (changesBuilder_ == null) {
-        ensureChangesIsMutable();
-        changes_.add(builderForValue.build());
+    public Builder addMetricUpdates(
+        io.littlehorse.common.proto.WfMetricUpdate.Builder builderForValue) {
+      if (metricUpdatesBuilder_ == null) {
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.add(builderForValue.build());
         onChanged();
       } else {
-        changesBuilder_.addMessage(builderForValue.build());
+        metricUpdatesBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder addChanges(
-        int index, io.littlehorse.common.proto.StatusChanged.Builder builderForValue) {
-      if (changesBuilder_ == null) {
-        ensureChangesIsMutable();
-        changes_.add(index, builderForValue.build());
+    public Builder addMetricUpdates(
+        int index, io.littlehorse.common.proto.WfMetricUpdate.Builder builderForValue) {
+      if (metricUpdatesBuilder_ == null) {
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.add(index, builderForValue.build());
         onChanged();
       } else {
-        changesBuilder_.addMessage(index, builderForValue.build());
+        metricUpdatesBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder addAllChanges(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.StatusChanged> values) {
-      if (changesBuilder_ == null) {
-        ensureChangesIsMutable();
+    public Builder addAllMetricUpdates(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.WfMetricUpdate> values) {
+      if (metricUpdatesBuilder_ == null) {
+        ensureMetricUpdatesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, changes_);
+            values, metricUpdates_);
         onChanged();
       } else {
-        changesBuilder_.addAllMessages(values);
+        metricUpdatesBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder clearChanges() {
-      if (changesBuilder_ == null) {
-        changes_ = java.util.Collections.emptyList();
+    public Builder clearMetricUpdates() {
+      if (metricUpdatesBuilder_ == null) {
+        metricUpdates_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
       } else {
-        changesBuilder_.clear();
+        metricUpdatesBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public Builder removeChanges(int index) {
-      if (changesBuilder_ == null) {
-        ensureChangesIsMutable();
-        changes_.remove(index);
+    public Builder removeMetricUpdates(int index) {
+      if (metricUpdatesBuilder_ == null) {
+        ensureMetricUpdatesIsMutable();
+        metricUpdates_.remove(index);
         onChanged();
       } else {
-        changesBuilder_.remove(index);
+        metricUpdatesBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public io.littlehorse.common.proto.StatusChanged.Builder getChangesBuilder(
+    public io.littlehorse.common.proto.WfMetricUpdate.Builder getMetricUpdatesBuilder(
         int index) {
-      return getChangesFieldBuilder().getBuilder(index);
+      return getMetricUpdatesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public io.littlehorse.common.proto.StatusChangedOrBuilder getChangesOrBuilder(
+    public io.littlehorse.common.proto.WfMetricUpdateOrBuilder getMetricUpdatesOrBuilder(
         int index) {
-      if (changesBuilder_ == null) {
-        return changes_.get(index);  } else {
-        return changesBuilder_.getMessageOrBuilder(index);
+      if (metricUpdatesBuilder_ == null) {
+        return metricUpdates_.get(index);  } else {
+        return metricUpdatesBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.StatusChangedOrBuilder> 
-         getChangesOrBuilderList() {
-      if (changesBuilder_ != null) {
-        return changesBuilder_.getMessageOrBuilderList();
+    public java.util.List<? extends io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
+         getMetricUpdatesOrBuilderList() {
+      if (metricUpdatesBuilder_ != null) {
+        return metricUpdatesBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(changes_);
+        return java.util.Collections.unmodifiableList(metricUpdates_);
       }
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public io.littlehorse.common.proto.StatusChanged.Builder addChangesBuilder() {
-      return getChangesFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.StatusChanged.getDefaultInstance());
+    public io.littlehorse.common.proto.WfMetricUpdate.Builder addMetricUpdatesBuilder() {
+      return getMetricUpdatesFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.WfMetricUpdate.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public io.littlehorse.common.proto.StatusChanged.Builder addChangesBuilder(
+    public io.littlehorse.common.proto.WfMetricUpdate.Builder addMetricUpdatesBuilder(
         int index) {
-      return getChangesFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.StatusChanged.getDefaultInstance());
+      return getMetricUpdatesFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.WfMetricUpdate.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+     * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.StatusChanged.Builder> 
-         getChangesBuilderList() {
-      return getChangesFieldBuilder().getBuilderList();
+    public java.util.List<io.littlehorse.common.proto.WfMetricUpdate.Builder> 
+         getMetricUpdatesBuilderList() {
+      return getMetricUpdatesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.StatusChanged, io.littlehorse.common.proto.StatusChanged.Builder, io.littlehorse.common.proto.StatusChangedOrBuilder> 
-        getChangesFieldBuilder() {
-      if (changesBuilder_ == null) {
-        changesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.StatusChanged, io.littlehorse.common.proto.StatusChanged.Builder, io.littlehorse.common.proto.StatusChangedOrBuilder>(
-                changes_,
+        io.littlehorse.common.proto.WfMetricUpdate, io.littlehorse.common.proto.WfMetricUpdate.Builder, io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
+        getMetricUpdatesFieldBuilder() {
+      if (metricUpdatesBuilder_ == null) {
+        metricUpdatesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.WfMetricUpdate, io.littlehorse.common.proto.WfMetricUpdate.Builder, io.littlehorse.common.proto.WfMetricUpdateOrBuilder>(
+                metricUpdates_,
                 ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),
                 isClean());
-        changes_ = null;
+        metricUpdates_ = null;
       }
-      return changesBuilder_;
+      return metricUpdatesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

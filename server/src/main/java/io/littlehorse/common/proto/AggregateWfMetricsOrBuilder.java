@@ -35,26 +35,26 @@ public interface AggregateWfMetricsOrBuilder extends
       getTenantIdBytes();
 
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
-  java.util.List<io.littlehorse.common.proto.StatusChanged> 
-      getChangesList();
+  java.util.List<io.littlehorse.common.proto.WfMetricUpdate> 
+      getMetricUpdatesList();
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
-  io.littlehorse.common.proto.StatusChanged getChanges(int index);
+  io.littlehorse.common.proto.WfMetricUpdate getMetricUpdates(int index);
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
-  int getChangesCount();
+  int getMetricUpdatesCount();
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.StatusChangedOrBuilder> 
-      getChangesOrBuilderList();
+  java.util.List<? extends io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
+      getMetricUpdatesOrBuilderList();
   /**
-   * <code>repeated .littlehorse.StatusChanged changes = 3;</code>
+   * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
-  io.littlehorse.common.proto.StatusChangedOrBuilder getChangesOrBuilder(
+  io.littlehorse.common.proto.WfMetricUpdateOrBuilder getMetricUpdatesOrBuilder(
       int index);
 }

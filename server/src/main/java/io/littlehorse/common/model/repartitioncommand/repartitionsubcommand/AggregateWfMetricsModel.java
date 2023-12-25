@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.StatusChangedModel;
+import io.littlehorse.common.model.WfMetricUpdateModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.MetricWindowModel;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecM
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.StatusChanged;
+import io.littlehorse.common.proto.WfMetricUpdate;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
@@ -32,15 +34,15 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
 
     private WfSpecIdModel wfSpecId;
     private String tenantId;
-    private final List<StatusChangedModel> changes;
+    private final List<WfMetricUpdateModel> metricUpdates;
 
     public AggregateWfMetricsModel() {
-        this.changes = new ArrayList<>();
+        this.metricUpdates = new ArrayList<>();
     }
 
-    public AggregateWfMetricsModel(WfSpecIdModel wfSpecId, List<StatusChangedModel> changes, String tenantId) {
+    public AggregateWfMetricsModel(WfSpecIdModel wfSpecId, List<WfMetricUpdateModel> metricUpdates, String tenantId) {
         this.wfSpecId = wfSpecId;
-        this.changes = changes;
+        this.metricUpdates = metricUpdates;
         this.tenantId = tenantId;
     }
 
@@ -49,10 +51,10 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
         AggregateWfMetrics p = (AggregateWfMetrics) proto;
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.tenantId = p.getTenantId();
-        changes.clear();
-        p.getChangesList().stream()
-                .map(statusChanged -> LHSerializable.fromProto(statusChanged, StatusChangedModel.class, context))
-                .forEach(changes::add);
+        metricUpdates.clear();
+        for (WfMetricUpdate metricUpdate : p.getMetricUpdatesList()) {
+            metricUpdates.add(LHSerializable.fromProto(metricUpdate, WfMetricUpdateModel.class, context));
+        }
     }
 
     @Override
@@ -60,11 +62,11 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
         AggregateWfMetrics.Builder out = AggregateWfMetrics.newBuilder();
         out.setWfSpecId(wfSpecId.toProto());
         out.setTenantId(tenantId);
-        List<StatusChanged> statusChangesProto = changes.stream()
-                .map(StatusChangedModel::toProto)
-                .map(StatusChanged.Builder::build)
+        List<WfMetricUpdate> metricUpdatesProto = metricUpdates.stream()
+                .map(WfMetricUpdateModel::toProto)
+                .map(WfMetricUpdate.Builder::build)
                 .toList();
-        out.addAllChanges(statusChangesProto);
+        out.addAllMetricUpdates(metricUpdatesProto);
         return out;
     }
 
@@ -108,7 +110,8 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     }
 
     private void mutateCurrentWfMetric(WfSpecMetricsModel currentWfMetric) {
-        Predicate<StatusChangedModel> isWfStatusChange =
+
+        /*Predicate<StatusChangedModel> isWfStatusChange =
                 statusChangedModel -> statusChangedModel.getLhStatusChanged() != null;
         List<LHStatusChangedModel> wfStatusChanges = changes.stream()
                 .filter(isWfStatusChange)
@@ -124,6 +127,6 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
             if (wfStatusChange.isErrored()) {
                 currentWfMetric.totalErrored += 1;
             }
-        }
+        }*/
     }
 }
