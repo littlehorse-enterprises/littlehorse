@@ -7,13 +7,17 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.proto.TaskWorkerGroup;
+import io.littlehorse.common.proto.TaskWorkerMetadata;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
-import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {

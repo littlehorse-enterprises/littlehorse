@@ -4,6 +4,19 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search for Variables by their value. This request is also highly useful to search for
+ * WfRun's based on the value of Variable's that are not in the Entrypoint ThreadRun,
+ * and also when you are using LittleHorse as a data store and need to perform a search.
+ *
+ * You may only search for a Variable that has an index specified on it. This may be done
+ * via th `.searchable()` method on our SDK's.
+ *
+ * Note that we do not yet support searching JSON_OBJ or JSON_ARR fields, but you may
+ * still mark those fields as searchable. We will soon add the ability to query those
+ * fields via the indices.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchVariableRequest}
  */
 public final class SearchVariableRequest extends
@@ -45,6 +58,10 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
@@ -53,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
@@ -64,6 +85,10 @@ private static final long serialVersionUID = 0L;
   public static final int LIMIT_FIELD_NUMBER = 2;
   private int limit_ = 0;
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
@@ -72,6 +97,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
@@ -83,6 +112,10 @@ private static final long serialVersionUID = 0L;
   public static final int VALUE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    * @return Whether the value field is set.
    */
@@ -91,6 +124,10 @@ private static final long serialVersionUID = 0L;
     return value_ != null;
   }
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    * @return The value.
    */
@@ -99,6 +136,10 @@ private static final long serialVersionUID = 0L;
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    */
   @java.lang.Override
@@ -109,6 +150,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 4;
   private int wfSpecMajorVersion_ = 0;
   /**
+   * <pre>
+   * Specifies major version of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 4;</code>
    * @return Whether the wfSpecMajorVersion field is set.
    */
@@ -117,6 +162,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Specifies major version of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 4;</code>
    * @return The wfSpecMajorVersion.
    */
@@ -128,6 +177,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_REVISION_FIELD_NUMBER = 5;
   private int wfSpecRevision_ = 0;
   /**
+   * <pre>
+   * Specifies the revision of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 5;</code>
    * @return Whether the wfSpecRevision field is set.
    */
@@ -136,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Specifies the revision of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 5;</code>
    * @return The wfSpecRevision.
    */
@@ -148,6 +205,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object varName_ = "";
   /**
+   * <pre>
+   * Specifies the name of the variable to search for. This is required.
+   * </pre>
+   *
    * <code>string var_name = 6;</code>
    * @return The varName.
    */
@@ -165,6 +226,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Specifies the name of the variable to search for. This is required.
+   * </pre>
+   *
    * <code>string var_name = 6;</code>
    * @return The bytes for varName.
    */
@@ -187,6 +252,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object wfSpecName_ = "";
   /**
+   * <pre>
+   * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+   * </pre>
+   *
    * <code>string wf_spec_name = 7;</code>
    * @return The wfSpecName.
    */
@@ -204,6 +273,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+   * </pre>
+   *
    * <code>string wf_spec_name = 7;</code>
    * @return The bytes for wfSpecName.
    */
@@ -469,6 +542,19 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search for Variables by their value. This request is also highly useful to search for
+   * WfRun's based on the value of Variable's that are not in the Entrypoint ThreadRun,
+   * and also when you are using LittleHorse as a data store and need to perform a search.
+   *
+   * You may only search for a Variable that has an index specified on it. This may be done
+   * via th `.searchable()` method on our SDK's.
+   *
+   * Note that we do not yet support searching JSON_OBJ or JSON_ARR fields, but you may
+   * still mark those fields as searchable. We will soon add the ability to query those
+   * fields via the indices.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchVariableRequest}
    */
   public static final class Builder extends
@@ -728,6 +814,10 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return Whether the bookmark field is set.
      */
@@ -736,6 +826,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return The bookmark.
      */
@@ -744,6 +838,10 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -756,6 +854,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return This builder for chaining.
      */
@@ -768,6 +870,10 @@ private static final long serialVersionUID = 0L;
 
     private int limit_ ;
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return Whether the limit field is set.
      */
@@ -776,6 +882,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return The limit.
      */
@@ -784,6 +894,10 @@ private static final long serialVersionUID = 0L;
       return limit_;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @param value The limit to set.
      * @return This builder for chaining.
@@ -796,6 +910,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return This builder for chaining.
      */
@@ -810,6 +928,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      * @return Whether the value field is set.
      */
@@ -817,6 +939,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      * @return The value.
      */
@@ -828,6 +954,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -844,6 +974,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder setValue(
@@ -858,6 +992,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -877,6 +1015,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public Builder clearValue() {
@@ -890,6 +1032,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
@@ -898,6 +1044,10 @@ private static final long serialVersionUID = 0L;
       return getValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
@@ -909,6 +1059,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the value that the variable must be. Exact match is required.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -927,6 +1081,10 @@ private static final long serialVersionUID = 0L;
 
     private int wfSpecMajorVersion_ ;
     /**
+     * <pre>
+     * Specifies major version of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 4;</code>
      * @return Whether the wfSpecMajorVersion field is set.
      */
@@ -935,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Specifies major version of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 4;</code>
      * @return The wfSpecMajorVersion.
      */
@@ -943,6 +1105,10 @@ private static final long serialVersionUID = 0L;
       return wfSpecMajorVersion_;
     }
     /**
+     * <pre>
+     * Specifies major version of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 4;</code>
      * @param value The wfSpecMajorVersion to set.
      * @return This builder for chaining.
@@ -955,6 +1121,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies major version of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 4;</code>
      * @return This builder for chaining.
      */
@@ -967,6 +1137,10 @@ private static final long serialVersionUID = 0L;
 
     private int wfSpecRevision_ ;
     /**
+     * <pre>
+     * Specifies the revision of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 5;</code>
      * @return Whether the wfSpecRevision field is set.
      */
@@ -975,6 +1149,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * Specifies the revision of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 5;</code>
      * @return The wfSpecRevision.
      */
@@ -983,6 +1161,10 @@ private static final long serialVersionUID = 0L;
       return wfSpecRevision_;
     }
     /**
+     * <pre>
+     * Specifies the revision of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 5;</code>
      * @param value The wfSpecRevision to set.
      * @return This builder for chaining.
@@ -995,6 +1177,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the revision of the WfSpec for the associated WfRun.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 5;</code>
      * @return This builder for chaining.
      */
@@ -1007,6 +1193,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object varName_ = "";
     /**
+     * <pre>
+     * Specifies the name of the variable to search for. This is required.
+     * </pre>
+     *
      * <code>string var_name = 6;</code>
      * @return The varName.
      */
@@ -1023,6 +1213,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the name of the variable to search for. This is required.
+     * </pre>
+     *
      * <code>string var_name = 6;</code>
      * @return The bytes for varName.
      */
@@ -1040,6 +1234,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the name of the variable to search for. This is required.
+     * </pre>
+     *
      * <code>string var_name = 6;</code>
      * @param value The varName to set.
      * @return This builder for chaining.
@@ -1053,6 +1251,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the name of the variable to search for. This is required.
+     * </pre>
+     *
      * <code>string var_name = 6;</code>
      * @return This builder for chaining.
      */
@@ -1063,6 +1265,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the name of the variable to search for. This is required.
+     * </pre>
+     *
      * <code>string var_name = 6;</code>
      * @param value The bytes for varName to set.
      * @return This builder for chaining.
@@ -1079,6 +1285,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object wfSpecName_ = "";
     /**
+     * <pre>
+     * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+     * </pre>
+     *
      * <code>string wf_spec_name = 7;</code>
      * @return The wfSpecName.
      */
@@ -1095,6 +1305,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+     * </pre>
+     *
      * <code>string wf_spec_name = 7;</code>
      * @return The bytes for wfSpecName.
      */
@@ -1112,6 +1326,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+     * </pre>
+     *
      * <code>string wf_spec_name = 7;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
@@ -1125,6 +1343,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+     * </pre>
+     *
      * <code>string wf_spec_name = 7;</code>
      * @return This builder for chaining.
      */
@@ -1135,6 +1357,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+     * </pre>
+     *
      * <code>string wf_spec_name = 7;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.

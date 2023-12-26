@@ -8,16 +8,28 @@ public interface DeleteUserTaskDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the UserTaskDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the UserTaskDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.UserTaskDefId getId();
   /**
+   * <pre>
+   * The ID of the UserTaskDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getIdOrBuilder();
