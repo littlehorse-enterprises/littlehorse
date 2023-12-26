@@ -79,6 +79,21 @@ public final class CommandOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_LHTimerPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskWorkerMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_TaskWorkerMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskWorkerGroup_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_TaskWorkerGroup_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -195,8 +210,18 @@ public final class CommandOuterClass {
       "\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004" +
       " \001(\014\022\026\n\ttenant_id\030\005 \001(\tH\000\210\001\001\022\031\n\014principa" +
       "l_id\030\006 \001(\tH\001\210\001\001B\014\n\n_tenant_idB\017\n\r_princi" +
-      "pal_idB\037\n\033io.littlehorse.common.protoP\001b" +
-      "\006proto3"
+      "pal_id\"\205\001\n\022TaskWorkerMetadata\022\021\n\tclient_" +
+      "id\030\001 \001(\t\0224\n\020latest_heartbeat\030\002 \001(\0132\032.goo" +
+      "gle.protobuf.Timestamp\022&\n\005hosts\030\003 \003(\0132\027." +
+      "littlehorse.LHHostInfo\"\207\002\n\017TaskWorkerGro" +
+      "up\022*\n\002id\030\001 \001(\0132\036.littlehorse.TaskWorkerG" +
+      "roupId\022.\n\ncreated_at\030\002 \001(\0132\032.google.prot" +
+      "obuf.Timestamp\022C\n\014task_workers\030\003 \003(\0132-.l" +
+      "ittlehorse.TaskWorkerGroup.TaskWorkersEn" +
+      "try\032S\n\020TaskWorkersEntry\022\013\n\003key\030\001 \001(\t\022.\n\005" +
+      "value\030\002 \001(\0132\037.littlehorse.TaskWorkerMeta" +
+      "data:\0028\001B\037\n\033io.littlehorse.common.protoP" +
+      "\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -289,6 +314,24 @@ public final class CommandOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
         new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
+    internal_static_littlehorse_TaskWorkerMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_littlehorse_TaskWorkerMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_TaskWorkerMetadata_descriptor,
+        new java.lang.String[] { "ClientId", "LatestHeartbeat", "Hosts", });
+    internal_static_littlehorse_TaskWorkerGroup_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_littlehorse_TaskWorkerGroup_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_TaskWorkerGroup_descriptor,
+        new java.lang.String[] { "Id", "CreatedAt", "TaskWorkers", });
+    internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_descriptor =
+      internal_static_littlehorse_TaskWorkerGroup_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

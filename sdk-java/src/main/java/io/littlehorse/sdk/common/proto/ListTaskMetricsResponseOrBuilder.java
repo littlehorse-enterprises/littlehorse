@@ -8,24 +8,44 @@ public interface ListTaskMetricsResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * List of TaskDef Metrics Windows
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> 
       getResultsList();
   /**
+   * <pre>
+   * List of TaskDef Metrics Windows
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefMetrics getResults(int index);
   /**
+   * <pre>
+   * List of TaskDef Metrics Windows
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   int getResultsCount();
   /**
+   * <pre>
+   * List of TaskDef Metrics Windows
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> 
       getResultsOrBuilderList();
   /**
+   * <pre>
+   * List of TaskDef Metrics Windows
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultsOrBuilder(

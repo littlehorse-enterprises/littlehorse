@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Information about a specific LH Server to contact.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.LHHostInfo}
  */
 public final class LHHostInfo extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object host_ = "";
   /**
+   * <pre>
+   * The host on the server
+   * </pre>
+   *
    * <code>string host = 1;</code>
    * @return The host.
    */
@@ -60,6 +68,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The host on the server
+   * </pre>
+   *
    * <code>string host = 1;</code>
    * @return The bytes for host.
    */
@@ -81,6 +93,10 @@ private static final long serialVersionUID = 0L;
   public static final int PORT_FIELD_NUMBER = 2;
   private int port_ = 0;
   /**
+   * <pre>
+   * The port for the specified listener.
+   * </pre>
+   *
    * <code>int32 port = 2;</code>
    * @return The port.
    */
@@ -257,6 +273,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Information about a specific LH Server to contact.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.LHHostInfo}
    */
   public static final class Builder extends
@@ -440,6 +460,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object host_ = "";
     /**
+     * <pre>
+     * The host on the server
+     * </pre>
+     *
      * <code>string host = 1;</code>
      * @return The host.
      */
@@ -456,6 +480,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host on the server
+     * </pre>
+     *
      * <code>string host = 1;</code>
      * @return The bytes for host.
      */
@@ -473,6 +501,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host on the server
+     * </pre>
+     *
      * <code>string host = 1;</code>
      * @param value The host to set.
      * @return This builder for chaining.
@@ -486,6 +518,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host on the server
+     * </pre>
+     *
      * <code>string host = 1;</code>
      * @return This builder for chaining.
      */
@@ -496,6 +532,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host on the server
+     * </pre>
+     *
      * <code>string host = 1;</code>
      * @param value The bytes for host to set.
      * @return This builder for chaining.
@@ -512,6 +552,10 @@ private static final long serialVersionUID = 0L;
 
     private int port_ ;
     /**
+     * <pre>
+     * The port for the specified listener.
+     * </pre>
+     *
      * <code>int32 port = 2;</code>
      * @return The port.
      */
@@ -520,6 +564,10 @@ private static final long serialVersionUID = 0L;
       return port_;
     }
     /**
+     * <pre>
+     * The port for the specified listener.
+     * </pre>
+     *
      * <code>int32 port = 2;</code>
      * @param value The port to set.
      * @return This builder for chaining.
@@ -532,6 +580,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The port for the specified listener.
+     * </pre>
+     *
      * <code>int32 port = 2;</code>
      * @return This builder for chaining.
      */

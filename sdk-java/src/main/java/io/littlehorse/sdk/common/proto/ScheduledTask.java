@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
+ * This is used and handled internally by the Task Worker SDK.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ScheduledTask}
  */
 public final class ScheduledTask extends
@@ -42,6 +47,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId taskRunId_;
   /**
+   * <pre>
+   * Id of the TaskRun to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return Whether the taskRunId field is set.
    */
@@ -50,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return taskRunId_ != null;
   }
   /**
+   * <pre>
+   * Id of the TaskRun to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return The taskRunId.
    */
@@ -58,6 +71,10 @@ private static final long serialVersionUID = 0L;
     return taskRunId_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRunId_;
   }
   /**
+   * <pre>
+   * Id of the TaskRun to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +85,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * ID of the TaskDef to which the TaskRun belongs.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -76,6 +97,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * ID of the TaskDef to which the TaskRun belongs.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
@@ -84,6 +109,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * ID of the TaskDef to which the TaskRun belongs.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   @java.lang.Override
@@ -94,6 +123,11 @@ private static final long serialVersionUID = 0L;
   public static final int ATTEMPT_NUMBER_FIELD_NUMBER = 3;
   private int attemptNumber_ = 0;
   /**
+   * <pre>
+   * Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the
+   * first attempt; `1` means this is the first retry, etc.
+   * </pre>
+   *
    * <code>int32 attempt_number = 3;</code>
    * @return The attemptNumber.
    */
@@ -106,6 +140,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> variables_;
   /**
+   * <pre>
+   * Input variables for this TaskRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   @java.lang.Override
@@ -113,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return variables_;
   }
   /**
+   * <pre>
+   * Input variables for this TaskRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   @java.lang.Override
@@ -121,6 +163,10 @@ private static final long serialVersionUID = 0L;
     return variables_;
   }
   /**
+   * <pre>
+   * Input variables for this TaskRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   @java.lang.Override
@@ -128,6 +174,10 @@ private static final long serialVersionUID = 0L;
     return variables_.size();
   }
   /**
+   * <pre>
+   * Input variables for this TaskRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   @java.lang.Override
@@ -135,6 +185,10 @@ private static final long serialVersionUID = 0L;
     return variables_.get(index);
   }
   /**
+   * <pre>
+   * Input variables for this TaskRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   @java.lang.Override
@@ -172,6 +226,12 @@ private static final long serialVersionUID = 0L;
   public static final int SOURCE_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.TaskRunSource source_;
   /**
+   * <pre>
+   * Source of the TaskRun. Currently, there are two options:
+   * 1. A TASK node
+   * 2. A reminder task scheduled by a trigger on a User Task.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return Whether the source field is set.
    */
@@ -180,6 +240,12 @@ private static final long serialVersionUID = 0L;
     return source_ != null;
   }
   /**
+   * <pre>
+   * Source of the TaskRun. Currently, there are two options:
+   * 1. A TASK node
+   * 2. A reminder task scheduled by a trigger on a User Task.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return The source.
    */
@@ -188,6 +254,12 @@ private static final long serialVersionUID = 0L;
     return source_ == null ? io.littlehorse.sdk.common.proto.TaskRunSource.getDefaultInstance() : source_;
   }
   /**
+   * <pre>
+   * Source of the TaskRun. Currently, there are two options:
+   * 1. A TASK node
+   * 2. A reminder task scheduled by a trigger on a User Task.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    */
   @java.lang.Override
@@ -430,6 +502,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
+   * This is used and handled internally by the Task Worker SDK.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ScheduledTask}
    */
   public static final class Builder extends
@@ -740,6 +817,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> taskRunIdBuilder_;
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      * @return Whether the taskRunId field is set.
      */
@@ -747,6 +828,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      * @return The taskRunId.
      */
@@ -758,6 +843,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -774,6 +863,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(
@@ -788,6 +881,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder mergeTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -807,6 +904,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder clearTaskRunId() {
@@ -820,6 +921,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunId.Builder getTaskRunIdBuilder() {
@@ -828,6 +933,10 @@ private static final long serialVersionUID = 0L;
       return getTaskRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunIdOrBuilder() {
@@ -839,6 +948,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Id of the TaskRun to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -859,6 +972,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -866,6 +983,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return The taskDefId.
      */
@@ -877,6 +998,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -893,6 +1018,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(
@@ -907,6 +1036,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -926,6 +1059,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder clearTaskDefId() {
@@ -939,6 +1076,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -947,6 +1088,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -958,6 +1103,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the TaskDef to which the TaskRun belongs.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -976,6 +1125,11 @@ private static final long serialVersionUID = 0L;
 
     private int attemptNumber_ ;
     /**
+     * <pre>
+     * Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the
+     * first attempt; `1` means this is the first retry, etc.
+     * </pre>
+     *
      * <code>int32 attempt_number = 3;</code>
      * @return The attemptNumber.
      */
@@ -984,6 +1138,11 @@ private static final long serialVersionUID = 0L;
       return attemptNumber_;
     }
     /**
+     * <pre>
+     * Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the
+     * first attempt; `1` means this is the first retry, etc.
+     * </pre>
+     *
      * <code>int32 attempt_number = 3;</code>
      * @param value The attemptNumber to set.
      * @return This builder for chaining.
@@ -996,6 +1155,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the
+     * first attempt; `1` means this is the first retry, etc.
+     * </pre>
+     *
      * <code>int32 attempt_number = 3;</code>
      * @return This builder for chaining.
      */
@@ -1019,6 +1183,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VarNameAndVal, io.littlehorse.sdk.common.proto.VarNameAndVal.Builder, io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> variablesBuilder_;
 
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> getVariablesList() {
@@ -1029,6 +1197,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public int getVariablesCount() {
@@ -1039,6 +1211,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal getVariables(int index) {
@@ -1049,6 +1225,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder setVariables(
@@ -1066,6 +1246,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder setVariables(
@@ -1080,6 +1264,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder addVariables(io.littlehorse.sdk.common.proto.VarNameAndVal value) {
@@ -1096,6 +1284,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder addVariables(
@@ -1113,6 +1305,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder addVariables(
@@ -1127,6 +1323,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder addVariables(
@@ -1141,6 +1341,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder addAllVariables(
@@ -1156,6 +1360,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder clearVariables() {
@@ -1169,6 +1377,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public Builder removeVariables(int index) {
@@ -1182,6 +1394,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder getVariablesBuilder(
@@ -1189,6 +1405,10 @@ private static final long serialVersionUID = 0L;
       return getVariablesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder getVariablesOrBuilder(
@@ -1199,6 +1419,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> 
@@ -1210,6 +1434,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder addVariablesBuilder() {
@@ -1217,6 +1445,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VarNameAndVal.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder addVariablesBuilder(
@@ -1225,6 +1457,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VarNameAndVal.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Input variables for this TaskRun.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal.Builder> 
@@ -1369,6 +1605,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunSource, io.littlehorse.sdk.common.proto.TaskRunSource.Builder, io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder> sourceBuilder_;
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      * @return Whether the source field is set.
      */
@@ -1376,6 +1618,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      * @return The source.
      */
@@ -1387,6 +1635,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder setSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
@@ -1403,6 +1657,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder setSource(
@@ -1417,6 +1677,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder mergeSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
@@ -1436,6 +1702,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder clearSource() {
@@ -1449,6 +1721,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSource.Builder getSourceBuilder() {
@@ -1457,6 +1735,12 @@ private static final long serialVersionUID = 0L;
       return getSourceFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder getSourceOrBuilder() {
@@ -1468,6 +1752,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Source of the TaskRun. Currently, there are two options:
+     * 1. A TASK node
+     * 2. A reminder task scheduled by a trigger on a User Task.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

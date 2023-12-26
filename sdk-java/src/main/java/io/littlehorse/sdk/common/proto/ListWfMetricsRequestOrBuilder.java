@@ -8,47 +8,86 @@ public interface ListWfMetricsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return Whether the lastWindowStart field is set.
    */
   boolean hasLastWindowStart();
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return The lastWindowStart.
    */
   com.google.protobuf.Timestamp getLastWindowStart();
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   int getWindowLengthValue();
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowLength();
 
   /**
+   * <pre>
+   * Number of windows to retrieve
+   * </pre>
+   *
    * <code>int32 num_windows = 4;</code>
    * @return The numWindows.
    */

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Deletes a WfRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.DeleteWfRunRequest}
  */
 public final class DeleteWfRunRequest extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId id_;
   /**
+   * <pre>
+   * The ID of the WfRun to delete.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the WfRun to delete.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return The id.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the WfRun to delete.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Deletes a WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.DeleteWfRunRequest}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      * @return The id.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder setId(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder clearId() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getIdBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfRun to delete.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

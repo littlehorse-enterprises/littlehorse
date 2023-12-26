@@ -2,6 +2,7 @@
 
 export const protobufPackage = "littlehorse";
 
+/** Status used for WfRun, ThreadRun, and NodeRun */
 export enum LHStatus {
   STARTING = "STARTING",
   RUNNING = "RUNNING",
@@ -87,9 +88,19 @@ export function lHStatusToNumber(object: LHStatus): number {
   }
 }
 
+/** Status of a Metadata Object, such as WfSpec or TaskDef */
 export enum MetadataStatus {
+  /** ACTIVE - ACTIVE means the object can be used. */
   ACTIVE = "ACTIVE",
+  /**
+   * ARCHIVED - An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+   * existing WfRun's will be allowed to run to completion.
+   */
   ARCHIVED = "ARCHIVED",
+  /**
+   * TERMINATING - A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+   * self-destruct once all of its child WfRun's are terminated.
+   */
   TERMINATING = "TERMINATING",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -140,14 +151,26 @@ export function metadataStatusToNumber(object: MetadataStatus): number {
   }
 }
 
+/** Status of a TaskRun. */
 export enum TaskStatus {
+  /** TASK_SCHEDULED - Scheduled in the Task Queue but not yet picked up by a Task Worker. */
   TASK_SCHEDULED = "TASK_SCHEDULED",
+  /** TASK_RUNNING - Picked up by a Task Worker, but not yet reported or timed out. */
   TASK_RUNNING = "TASK_RUNNING",
+  /** TASK_SUCCESS - Successfully completed. */
   TASK_SUCCESS = "TASK_SUCCESS",
+  /** TASK_FAILED - Task Worker reported a technical failure while attempting to execute the TaskRun */
   TASK_FAILED = "TASK_FAILED",
+  /** TASK_TIMEOUT - Task Worker did not report a result in time. */
   TASK_TIMEOUT = "TASK_TIMEOUT",
+  /** TASK_OUTPUT_SERIALIZING_ERROR - Task Worker reported that it was unable to serialize the output of the TaskRun. */
   TASK_OUTPUT_SERIALIZING_ERROR = "TASK_OUTPUT_SERIALIZING_ERROR",
+  /**
+   * TASK_INPUT_VAR_SUB_ERROR - Task Worker was unable to deserialize the input variables into appropriate language-specific
+   * objects to pass into the Task Function
+   */
   TASK_INPUT_VAR_SUB_ERROR = "TASK_INPUT_VAR_SUB_ERROR",
+  /** TASK_EXCEPTION - Task Function business logic determined that there was a business exception. */
   TASK_EXCEPTION = "TASK_EXCEPTION",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -287,13 +310,24 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
   }
 }
 
+/**
+ * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
+ * VariableValue.
+ */
 export enum VariableType {
+  /** JSON_OBJ - An object represented as a json string. */
   JSON_OBJ = "JSON_OBJ",
+  /** JSON_ARR - A list represented as a json array string. */
   JSON_ARR = "JSON_ARR",
+  /** DOUBLE - A 64-bit floating point number. */
   DOUBLE = "DOUBLE",
+  /** BOOL - A boolean */
   BOOL = "BOOL",
+  /** STR - A string */
   STR = "STR",
+  /** INT - A 64-bit integer */
   INT = "INT",
+  /** BYTES - A byte array */
   BYTES = "BYTES",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -372,15 +406,25 @@ export function variableTypeToNumber(object: VariableType): number {
   }
 }
 
+/** This enum is all of the types of technical failure that can occur in a WfRun. */
 export enum LHErrorType {
+  /** CHILD_FAILURE - A child ThreadRun failed with a technical ERROR. */
   CHILD_FAILURE = "CHILD_FAILURE",
+  /** VAR_SUB_ERROR - Failed substituting input variables into a NodeRun. */
   VAR_SUB_ERROR = "VAR_SUB_ERROR",
+  /** VAR_MUTATION_ERROR - Failed mutating variables after a NodeRun successfully completed. */
   VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR",
+  /** USER_TASK_CANCELLED - A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION) */
   USER_TASK_CANCELLED = "USER_TASK_CANCELLED",
+  /** TIMEOUT - A NodeRun failed due to a timeout. */
   TIMEOUT = "TIMEOUT",
+  /** TASK_FAILURE - A TaskRun failed due to an unexpected error. */
   TASK_FAILURE = "TASK_FAILURE",
+  /** VAR_ERROR - Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR */
   VAR_ERROR = "VAR_ERROR",
+  /** TASK_ERROR - Wrapper for TASK_FALIURE and TIMEOUT */
   TASK_ERROR = "TASK_ERROR",
+  /** INTERNAL_ERROR - An unexpected LittleHorse Internal error occurred. This is not expected to happen. */
   INTERNAL_ERROR = "INTERNAL_ERROR",
   UNRECOGNIZED = "UNRECOGNIZED",
 }

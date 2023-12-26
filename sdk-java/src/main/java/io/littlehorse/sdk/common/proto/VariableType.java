@@ -4,35 +4,68 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
+ * VariableValue.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.VariableType}
  */
 public enum VariableType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * An object represented as a json string.
+   * </pre>
+   *
    * <code>JSON_OBJ = 0;</code>
    */
   JSON_OBJ(0),
   /**
+   * <pre>
+   * A list represented as a json array string.
+   * </pre>
+   *
    * <code>JSON_ARR = 1;</code>
    */
   JSON_ARR(1),
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>DOUBLE = 2;</code>
    */
   DOUBLE(2),
   /**
+   * <pre>
+   * A boolean
+   * </pre>
+   *
    * <code>BOOL = 3;</code>
    */
   BOOL(3),
   /**
+   * <pre>
+   * A string
+   * </pre>
+   *
    * <code>STR = 4;</code>
    */
   STR(4),
   /**
+   * <pre>
+   * A 64-bit integer
+   * </pre>
+   *
    * <code>INT = 5;</code>
    */
   INT(5),
   /**
+   * <pre>
+   * A byte array
+   * </pre>
+   *
    * <code>BYTES = 6;</code>
    */
   BYTES(6),
@@ -40,30 +73,58 @@ public enum VariableType
   ;
 
   /**
+   * <pre>
+   * An object represented as a json string.
+   * </pre>
+   *
    * <code>JSON_OBJ = 0;</code>
    */
   public static final int JSON_OBJ_VALUE = 0;
   /**
+   * <pre>
+   * A list represented as a json array string.
+   * </pre>
+   *
    * <code>JSON_ARR = 1;</code>
    */
   public static final int JSON_ARR_VALUE = 1;
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>DOUBLE = 2;</code>
    */
   public static final int DOUBLE_VALUE = 2;
   /**
+   * <pre>
+   * A boolean
+   * </pre>
+   *
    * <code>BOOL = 3;</code>
    */
   public static final int BOOL_VALUE = 3;
   /**
+   * <pre>
+   * A string
+   * </pre>
+   *
    * <code>STR = 4;</code>
    */
   public static final int STR_VALUE = 4;
   /**
+   * <pre>
+   * A 64-bit integer
+   * </pre>
+   *
    * <code>INT = 5;</code>
    */
   public static final int INT_VALUE = 5;
   /**
+   * <pre>
+   * A byte array
+   * </pre>
+   *
    * <code>BYTES = 6;</code>
    */
   public static final int BYTES_VALUE = 6;

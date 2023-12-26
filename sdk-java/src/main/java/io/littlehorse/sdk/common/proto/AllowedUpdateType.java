@@ -5,10 +5,8 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Defines the allowed update type
- * ALL_UPDATES - Creates either a revision or majorVersion when WfSpec changes
- * MINOR_REVISION_UPDATES - Allow revision updates but reject majorVersion
- * NO_UPDATES - Reject any update
+ * This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same
+ * name previously exists.
  * </pre>
  *
  * Protobuf enum {@code littlehorse.AllowedUpdateType}
@@ -16,14 +14,28 @@ package io.littlehorse.sdk.common.proto;
 public enum AllowedUpdateType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Allows any update: both minor (revsion) changes and breaking (majorVersion) changes
+   * are accepted
+   * </pre>
+   *
    * <code>ALL_UPDATES = 0;</code>
    */
   ALL_UPDATES(0),
   /**
+   * <pre>
+   * Allows only backwards-compatible changes that do not change the required input variables
+   * or the searchable variables in the WfSpec.
+   * </pre>
+   *
    * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
   MINOR_REVISION_UPDATES(1),
   /**
+   * <pre>
+   * Rejects any changes to the WfSpec.
+   * </pre>
+   *
    * <code>NO_UPDATES = 2;</code>
    */
   NO_UPDATES(2),
@@ -31,14 +43,28 @@ public enum AllowedUpdateType
   ;
 
   /**
+   * <pre>
+   * Allows any update: both minor (revsion) changes and breaking (majorVersion) changes
+   * are accepted
+   * </pre>
+   *
    * <code>ALL_UPDATES = 0;</code>
    */
   public static final int ALL_UPDATES_VALUE = 0;
   /**
+   * <pre>
+   * Allows only backwards-compatible changes that do not change the required input variables
+   * or the searchable variables in the WfSpec.
+   * </pre>
+   *
    * <code>MINOR_REVISION_UPDATES = 1;</code>
    */
   public static final int MINOR_REVISION_UPDATES_VALUE = 1;
   /**
+   * <pre>
+   * Rejects any changes to the WfSpec.
+   * </pre>
+   *
    * <code>NO_UPDATES = 2;</code>
    */
   public static final int NO_UPDATES_VALUE = 2;

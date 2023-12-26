@@ -4,43 +4,83 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Enumerates the available operations to mutate a variable in a WfRun.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.VariableMutationType}
  */
 public enum VariableMutationType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Set the variable specified by the LHS to the value of the RHS.
+   * </pre>
+   *
    * <code>ASSIGN = 0;</code>
    */
   ASSIGN(0),
   /**
+   * <pre>
+   * Add the RHS to the LHS.
+   * </pre>
+   *
    * <code>ADD = 1;</code>
    */
   ADD(1),
   /**
+   * <pre>
+   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * </pre>
+   *
    * <code>EXTEND = 2;</code>
    */
   EXTEND(2),
   /**
+   * <pre>
+   * Subtract the RHS from the LHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>SUBTRACT = 3;</code>
    */
   SUBTRACT(3),
   /**
+   * <pre>
+   * Multiply the LHS by the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>MULTIPLY = 4;</code>
    */
   MULTIPLY(4),
   /**
+   * <pre>
+   * Divide the LHS by the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>DIVIDE = 5;</code>
    */
   DIVIDE(5),
   /**
+   * <pre>
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * </pre>
+   *
    * <code>REMOVE_IF_PRESENT = 6;</code>
    */
   REMOVE_IF_PRESENT(6),
   /**
+   * <pre>
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * </pre>
+   *
    * <code>REMOVE_INDEX = 7;</code>
    */
   REMOVE_INDEX(7),
   /**
+   * <pre>
+   * Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
+   * </pre>
+   *
    * <code>REMOVE_KEY = 8;</code>
    */
   REMOVE_KEY(8),
@@ -48,38 +88,74 @@ public enum VariableMutationType
   ;
 
   /**
+   * <pre>
+   * Set the variable specified by the LHS to the value of the RHS.
+   * </pre>
+   *
    * <code>ASSIGN = 0;</code>
    */
   public static final int ASSIGN_VALUE = 0;
   /**
+   * <pre>
+   * Add the RHS to the LHS.
+   * </pre>
+   *
    * <code>ADD = 1;</code>
    */
   public static final int ADD_VALUE = 1;
   /**
+   * <pre>
+   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * </pre>
+   *
    * <code>EXTEND = 2;</code>
    */
   public static final int EXTEND_VALUE = 2;
   /**
+   * <pre>
+   * Subtract the RHS from the LHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>SUBTRACT = 3;</code>
    */
   public static final int SUBTRACT_VALUE = 3;
   /**
+   * <pre>
+   * Multiply the LHS by the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>MULTIPLY = 4;</code>
    */
   public static final int MULTIPLY_VALUE = 4;
   /**
+   * <pre>
+   * Divide the LHS by the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
    * <code>DIVIDE = 5;</code>
    */
   public static final int DIVIDE_VALUE = 5;
   /**
+   * <pre>
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * </pre>
+   *
    * <code>REMOVE_IF_PRESENT = 6;</code>
    */
   public static final int REMOVE_IF_PRESENT_VALUE = 6;
   /**
+   * <pre>
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * </pre>
+   *
    * <code>REMOVE_INDEX = 7;</code>
    */
   public static final int REMOVE_INDEX_VALUE = 7;
   /**
+   * <pre>
+   * Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
+   * </pre>
+   *
    * <code>REMOVE_KEY = 8;</code>
    */
   public static final int REMOVE_KEY_VALUE = 8;
