@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * This is a simple example, which does two things:
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
  * 2. Pass that variable into the execution of the "greet" task.
  */
 public class HundredTasks {
-
-    private static final Logger log = LoggerFactory.getLogger(HundredTasks.class);
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
@@ -82,34 +78,13 @@ public class HundredTasks {
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         for (LHTaskWorker worker : workers) {
-            // Register task if it does not exist
-            if (worker.doesTaskDefExist()) {
-                log.debug(
-                    "Task {} already exists, skipping creation",
-                    worker.getTaskDefName()
-                );
-            } else {
-                log.debug(
-                    "Task {} does not exist, registering it",
-                    worker.getTaskDefName()
-                );
+            // Register task
                 worker.registerTaskDef();
-            }
+
         }
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        // Register a workflow
+        workflow.registerWfSpec(client);
 
         // Run the worker
         for (LHTaskWorker worker : workers) {

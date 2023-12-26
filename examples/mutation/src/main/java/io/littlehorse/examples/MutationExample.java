@@ -13,15 +13,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * In this example you will see how to mutate variables.
  */
 public class MutationExample {
-
-    private static final Logger log = LoggerFactory.getLogger(MutationExample.class);
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
@@ -68,33 +64,11 @@ public class MutationExample {
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
-        // Register task if it does not exist
-        if (worker.doesTaskDefExist()) {
-            log.debug(
-                "Task {} already exists, skipping creation",
-                worker.getTaskDefName()
-            );
-        } else {
-            log.debug(
-                "Task {} does not exist, registering it",
-                worker.getTaskDefName()
-            );
-            worker.registerTaskDef();
-        }
+        // Register task
+        worker.registerTaskDef();
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        // Register a workflow
+        workflow.registerWfSpec(client);
 
         // Run the worker
         worker.start();

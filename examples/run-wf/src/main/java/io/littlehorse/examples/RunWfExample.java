@@ -78,33 +78,11 @@ public class RunWfExample {
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
-        // Register task if it does not exist
-        if (worker.doesTaskDefExist()) {
-            log.debug(
-                "Task {} already exists, skipping creation",
-                worker.getTaskDefName()
-            );
-        } else {
-            log.debug(
-                "Task {} does not exist, registering it",
-                worker.getTaskDefName()
-            );
-            worker.registerTaskDef();
-        }
+        // Register task
+        worker.registerTaskDef();
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        // Register a workflow
+        workflow.registerWfSpec(client);
 
         // In another thread
         Timer timer = new Timer(true);
