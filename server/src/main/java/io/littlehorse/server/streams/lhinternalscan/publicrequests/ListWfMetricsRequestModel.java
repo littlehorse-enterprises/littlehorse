@@ -20,7 +20,6 @@ import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
 
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<
