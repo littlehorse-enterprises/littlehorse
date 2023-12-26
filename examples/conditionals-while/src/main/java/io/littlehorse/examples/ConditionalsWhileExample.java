@@ -39,7 +39,7 @@ public class ConditionalsWhileExample {
                 wf.doWhile(
                         wf.condition(numDonuts, Comparator.GREATER_THAN, 0),
                     handler -> {
-                        wf.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
+                        handler.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
                         handler.execute("eating-donut", numDonuts);
                     }
                 );
