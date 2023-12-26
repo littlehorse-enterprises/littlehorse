@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Request used to create an ExternalEvent.
- * </pre>
- *
  * Protobuf type {@code littlehorse.PutExternalEventRequest}
  */
 public final class PutExternalEventRequest extends
@@ -47,10 +43,6 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
-   * <pre>
-   * The ID of the WfRun that this Event is sent to.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -59,10 +51,6 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
-   * <pre>
-   * The ID of the WfRun that this Event is sent to.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -71,10 +59,6 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
-   * <pre>
-   * The ID of the WfRun that this Event is sent to.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -85,10 +69,6 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
-   * <pre>
-   * The ID of the ExternalEventDef that this event implements.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return Whether the externalEventDefId field is set.
    */
@@ -97,10 +77,6 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ != null;
   }
   /**
-   * <pre>
-   * The ID of the ExternalEventDef that this event implements.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return The externalEventDefId.
    */
@@ -109,10 +85,6 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
   }
   /**
-   * <pre>
-   * The ID of the ExternalEventDef that this event implements.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    */
   @java.lang.Override
@@ -124,15 +96,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object guid_ = "";
   /**
-   * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
-   * 1. WfRunId
-   * 2. ExternalEventDef Name
-   * 3. A guid
-   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-   * in order to make it idempotent. It is a best practice to do so.
-   * </pre>
-   *
    * <code>optional string guid = 3;</code>
    * @return Whether the guid field is set.
    */
@@ -141,15 +104,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
-   * 1. WfRunId
-   * 2. ExternalEventDef Name
-   * 3. A guid
-   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-   * in order to make it idempotent. It is a best practice to do so.
-   * </pre>
-   *
    * <code>optional string guid = 3;</code>
    * @return The guid.
    */
@@ -167,15 +121,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
-   * 1. WfRunId
-   * 2. ExternalEventDef Name
-   * 3. A guid
-   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-   * in order to make it idempotent. It is a best practice to do so.
-   * </pre>
-   *
    * <code>optional string guid = 3;</code>
    * @return The bytes for guid.
    */
@@ -197,10 +142,6 @@ private static final long serialVersionUID = 0L;
   public static final int CONTENT_FIELD_NUMBER = 5;
   private io.littlehorse.sdk.common.proto.VariableValue content_;
   /**
-   * <pre>
-   * The content of this event.
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    * @return Whether the content field is set.
    */
@@ -209,10 +150,6 @@ private static final long serialVersionUID = 0L;
     return content_ != null;
   }
   /**
-   * <pre>
-   * The content of this event.
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    * @return The content.
    */
@@ -221,10 +158,6 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
   /**
-   * <pre>
-   * The content of this event.
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    */
   @java.lang.Override
@@ -235,10 +168,6 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 6;
   private int threadRunNumber_ = 0;
   /**
-   * <pre>
-   * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-   * </pre>
-   *
    * <code>optional int32 thread_run_number = 6;</code>
    * @return Whether the threadRunNumber field is set.
    */
@@ -247,10 +176,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <pre>
-   * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-   * </pre>
-   *
    * <code>optional int32 thread_run_number = 6;</code>
    * @return The threadRunNumber.
    */
@@ -262,11 +187,6 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_POSITION_FIELD_NUMBER = 7;
   private int nodeRunPosition_ = 0;
   /**
-   * <pre>
-   * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-   * In order for this to be set, you must also set thread_run_number.
-   * </pre>
-   *
    * <code>optional int32 node_run_position = 7;</code>
    * @return Whether the nodeRunPosition field is set.
    */
@@ -275,11 +195,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <pre>
-   * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-   * In order for this to be set, you must also set thread_run_number.
-   * </pre>
-   *
    * <code>optional int32 node_run_position = 7;</code>
    * @return The nodeRunPosition.
    */
@@ -530,10 +445,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Request used to create an ExternalEvent.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.PutExternalEventRequest}
    */
   public static final class Builder extends
@@ -796,10 +707,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -807,10 +714,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -822,10 +725,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -842,10 +741,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -860,10 +755,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -883,10 +774,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -900,10 +787,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -912,10 +795,6 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -927,10 +806,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the WfRun that this Event is sent to.
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -951,10 +826,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      * @return Whether the externalEventDefId field is set.
      */
@@ -962,10 +833,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      * @return The externalEventDefId.
      */
@@ -977,10 +844,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -997,10 +860,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder setExternalEventDefId(
@@ -1015,10 +874,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -1038,10 +893,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder clearExternalEventDefId() {
@@ -1055,10 +906,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
@@ -1067,10 +914,6 @@ private static final long serialVersionUID = 0L;
       return getExternalEventDefIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
@@ -1082,10 +925,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the ExternalEventDef that this event implements.
-     * </pre>
-     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1104,15 +943,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object guid_ = "";
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @return Whether the guid field is set.
      */
@@ -1120,15 +950,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @return The guid.
      */
@@ -1145,15 +966,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @return The bytes for guid.
      */
@@ -1171,15 +983,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @param value The guid to set.
      * @return This builder for chaining.
@@ -1193,15 +996,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @return This builder for chaining.
      */
@@ -1212,15 +1006,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
-     * 1. WfRunId
-     * 2. ExternalEventDef Name
-     * 3. A guid
-     * The guid from part 3) can be optionally provided to the PutExternalEventRequest
-     * in order to make it idempotent. It is a best practice to do so.
-     * </pre>
-     *
      * <code>optional string guid = 3;</code>
      * @param value The bytes for guid to set.
      * @return This builder for chaining.
@@ -1239,10 +1024,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      * @return Whether the content field is set.
      */
@@ -1250,10 +1031,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      * @return The content.
      */
@@ -1265,10 +1042,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1285,10 +1058,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public Builder setContent(
@@ -1303,10 +1072,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1326,10 +1091,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public Builder clearContent() {
@@ -1343,10 +1104,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
@@ -1355,10 +1112,6 @@ private static final long serialVersionUID = 0L;
       return getContentFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
@@ -1370,10 +1123,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The content of this event.
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue content = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1392,10 +1141,6 @@ private static final long serialVersionUID = 0L;
 
     private int threadRunNumber_ ;
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-     * </pre>
-     *
      * <code>optional int32 thread_run_number = 6;</code>
      * @return Whether the threadRunNumber field is set.
      */
@@ -1404,10 +1149,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-     * </pre>
-     *
      * <code>optional int32 thread_run_number = 6;</code>
      * @return The threadRunNumber.
      */
@@ -1416,10 +1157,6 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-     * </pre>
-     *
      * <code>optional int32 thread_run_number = 6;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
@@ -1432,10 +1169,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-     * </pre>
-     *
      * <code>optional int32 thread_run_number = 6;</code>
      * @return This builder for chaining.
      */
@@ -1448,11 +1181,6 @@ private static final long serialVersionUID = 0L;
 
     private int nodeRunPosition_ ;
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-     * In order for this to be set, you must also set thread_run_number.
-     * </pre>
-     *
      * <code>optional int32 node_run_position = 7;</code>
      * @return Whether the nodeRunPosition field is set.
      */
@@ -1461,11 +1189,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-     * In order for this to be set, you must also set thread_run_number.
-     * </pre>
-     *
      * <code>optional int32 node_run_position = 7;</code>
      * @return The nodeRunPosition.
      */
@@ -1474,11 +1197,6 @@ private static final long serialVersionUID = 0L;
       return nodeRunPosition_;
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-     * In order for this to be set, you must also set thread_run_number.
-     * </pre>
-     *
      * <code>optional int32 node_run_position = 7;</code>
      * @param value The nodeRunPosition to set.
      * @return This builder for chaining.
@@ -1491,11 +1209,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
-     * In order for this to be set, you must also set thread_run_number.
-     * </pre>
-     *
      * <code>optional int32 node_run_position = 7;</code>
      * @return This builder for chaining.
      */

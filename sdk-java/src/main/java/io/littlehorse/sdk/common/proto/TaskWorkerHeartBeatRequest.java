@@ -4,13 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Message used by Task Worker to register itself to the server and ask for assignments of
- * servers to poll.
- *
- * Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
- * </pre>
- *
  * Protobuf type {@code littlehorse.TaskWorkerHeartBeatRequest}
  */
 public final class TaskWorkerHeartBeatRequest extends
@@ -334,13 +327,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Message used by Task Worker to register itself to the server and ask for assignments of
-   * servers to poll.
-   *
-   * Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.TaskWorkerHeartBeatRequest}
    */
   public static final class Builder extends

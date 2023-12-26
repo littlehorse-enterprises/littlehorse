@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Create a Workflow Run.
- * </pre>
- *
  * Protobuf type {@code littlehorse.RunWfRequest}
  */
 public final class RunWfRequest extends
@@ -61,10 +57,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object wfSpecName_ = "";
   /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
    * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
@@ -82,10 +74,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
    * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
@@ -107,12 +95,6 @@ private static final long serialVersionUID = 0L;
   public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
   private int majorVersion_ = 0;
   /**
-   * <pre>
-   * Optionally specify the major version of the WfSpec to run. This guarantees that
-   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-   * variables) will not change for this app.
-   * </pre>
-   *
    * <code>optional int32 major_version = 2;</code>
    * @return Whether the majorVersion field is set.
    */
@@ -121,12 +103,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Optionally specify the major version of the WfSpec to run. This guarantees that
-   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-   * variables) will not change for this app.
-   * </pre>
-   *
    * <code>optional int32 major_version = 2;</code>
    * @return The majorVersion.
    */
@@ -138,12 +114,6 @@ private static final long serialVersionUID = 0L;
   public static final int REVISION_FIELD_NUMBER = 3;
   private int revision_ = 0;
   /**
-   * <pre>
-   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-   * that run WfRun's.
-   * </pre>
-   *
    * <code>optional int32 revision = 3;</code>
    * @return Whether the revision field is set.
    */
@@ -152,12 +122,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <pre>
-   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-   * that run WfRun's.
-   * </pre>
-   *
    * <code>optional int32 revision = 3;</code>
    * @return The revision.
    */
@@ -193,11 +157,6 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap().size();
   }
   /**
-   * <pre>
-   * A map from Variable Name to Values for those variables. The provided variables are
-   * passed as input to the Entrypoint ThreadRun.
-   * </pre>
-   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
@@ -215,11 +174,6 @@ private static final long serialVersionUID = 0L;
     return getVariablesMap();
   }
   /**
-   * <pre>
-   * A map from Variable Name to Values for those variables. The provided variables are
-   * passed as input to the Entrypoint ThreadRun.
-   * </pre>
-   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
@@ -227,11 +181,6 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap();
   }
   /**
-   * <pre>
-   * A map from Variable Name to Values for those variables. The provided variables are
-   * passed as input to the Entrypoint ThreadRun.
-   * </pre>
-   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
@@ -246,11 +195,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <pre>
-   * A map from Variable Name to Values for those variables. The provided variables are
-   * passed as input to the Entrypoint ThreadRun.
-   * </pre>
-   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
    */
   @java.lang.Override
@@ -269,12 +213,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
-   * <pre>
-   * You can optionally specify the ID of this WfRun. This is a recommended best practice
-   * as it also makes your request idempotent and allows you to easily find the WfRun at
-   * a later time.
-   * </pre>
-   *
    * <code>optional string id = 5;</code>
    * @return Whether the id field is set.
    */
@@ -283,12 +221,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <pre>
-   * You can optionally specify the ID of this WfRun. This is a recommended best practice
-   * as it also makes your request idempotent and allows you to easily find the WfRun at
-   * a later time.
-   * </pre>
-   *
    * <code>optional string id = 5;</code>
    * @return The id.
    */
@@ -306,12 +238,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
-   * <pre>
-   * You can optionally specify the ID of this WfRun. This is a recommended best practice
-   * as it also makes your request idempotent and allows you to easily find the WfRun at
-   * a later time.
-   * </pre>
-   *
    * <code>optional string id = 5;</code>
    * @return The bytes for id.
    */
@@ -556,10 +482,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
-   * <pre>
-   * Create a Workflow Run.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.RunWfRequest}
    */
   public static final class Builder extends
@@ -813,10 +735,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object wfSpecName_ = "";
     /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
      * <code>string wf_spec_name = 1;</code>
      * @return The wfSpecName.
      */
@@ -833,10 +751,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
      * <code>string wf_spec_name = 1;</code>
      * @return The bytes for wfSpecName.
      */
@@ -854,10 +768,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
      * <code>string wf_spec_name = 1;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
@@ -871,10 +781,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
      * <code>string wf_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -885,10 +791,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
      * <code>string wf_spec_name = 1;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
@@ -905,12 +807,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private int majorVersion_ ;
     /**
-     * <pre>
-     * Optionally specify the major version of the WfSpec to run. This guarantees that
-     * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-     * variables) will not change for this app.
-     * </pre>
-     *
      * <code>optional int32 major_version = 2;</code>
      * @return Whether the majorVersion field is set.
      */
@@ -919,12 +815,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * Optionally specify the major version of the WfSpec to run. This guarantees that
-     * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-     * variables) will not change for this app.
-     * </pre>
-     *
      * <code>optional int32 major_version = 2;</code>
      * @return The majorVersion.
      */
@@ -933,12 +823,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return majorVersion_;
     }
     /**
-     * <pre>
-     * Optionally specify the major version of the WfSpec to run. This guarantees that
-     * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-     * variables) will not change for this app.
-     * </pre>
-     *
      * <code>optional int32 major_version = 2;</code>
      * @param value The majorVersion to set.
      * @return This builder for chaining.
@@ -951,12 +835,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * Optionally specify the major version of the WfSpec to run. This guarantees that
-     * the "signature" of the WfSpec (i.e. the required input variables, and searchable
-     * variables) will not change for this app.
-     * </pre>
-     *
      * <code>optional int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
@@ -969,12 +847,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private int revision_ ;
     /**
-     * <pre>
-     * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-     * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-     * that run WfRun's.
-     * </pre>
-     *
      * <code>optional int32 revision = 3;</code>
      * @return Whether the revision field is set.
      */
@@ -983,12 +855,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-     * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-     * that run WfRun's.
-     * </pre>
-     *
      * <code>optional int32 revision = 3;</code>
      * @return The revision.
      */
@@ -997,12 +863,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return revision_;
     }
     /**
-     * <pre>
-     * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-     * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-     * that run WfRun's.
-     * </pre>
-     *
      * <code>optional int32 revision = 3;</code>
      * @param value The revision to set.
      * @return This builder for chaining.
@@ -1015,12 +875,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * Optionally specify the specific revision of the WfSpec to run. It is not recommended
-     * to use this in practice, as the WfSpec logic should be de-coupled from the applications
-     * that run WfRun's.
-     * </pre>
-     *
      * <code>optional int32 revision = 3;</code>
      * @return This builder for chaining.
      */
@@ -1058,11 +912,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetVariables().getMap().size();
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
@@ -1080,11 +929,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getVariablesMap();
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
@@ -1092,11 +936,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetVariables().getMap();
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
@@ -1111,11 +950,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     @java.lang.Override
@@ -1136,11 +970,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder removeVariables(
@@ -1160,11 +989,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetMutableVariables().getMutableMap();
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder putVariables(
@@ -1178,11 +1002,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * A map from Variable Name to Values for those variables. The provided variables are
-     * passed as input to the Entrypoint ThreadRun.
-     * </pre>
-     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 4;</code>
      */
     public Builder putAllVariables(
@@ -1195,12 +1014,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object id_ = "";
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @return Whether the id field is set.
      */
@@ -1208,12 +1021,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @return The id.
      */
@@ -1230,12 +1037,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @return The bytes for id.
      */
@@ -1253,12 +1054,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -1272,12 +1067,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @return This builder for chaining.
      */
@@ -1288,12 +1077,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <pre>
-     * You can optionally specify the ID of this WfRun. This is a recommended best practice
-     * as it also makes your request idempotent and allows you to easily find the WfRun at
-     * a later time.
-     * </pre>
-     *
      * <code>optional string id = 5;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.

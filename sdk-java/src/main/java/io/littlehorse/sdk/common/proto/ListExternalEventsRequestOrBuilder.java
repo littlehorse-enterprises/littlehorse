@@ -8,28 +8,16 @@ public interface ListExternalEventsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The WfRunId for whom we list ExternalEvent's.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
-   * <pre>
-   * The WfRunId for whom we list ExternalEvent's.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
-   * <pre>
-   * The WfRunId for whom we list ExternalEvent's.
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();

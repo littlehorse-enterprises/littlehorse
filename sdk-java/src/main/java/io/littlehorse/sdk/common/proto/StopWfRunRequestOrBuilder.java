@@ -8,40 +8,21 @@ public interface StopWfRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Is the WfRunId
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
-   * <pre>
-   * Is the WfRunId
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
-   * <pre>
-   * Is the WfRunId
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
-   * <pre>
-   * The number of the ThreadRun to halt. Note that halting the entrypoint ThreadRun (which
-   * always has number `0`) causes the whole WfRun to halt. If you do not manually set
-   * the thread_run_number field, it defaults to zero, so stopping the entire WfRun is the
-   * default behavior.
-   * </pre>
-   *
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
    */

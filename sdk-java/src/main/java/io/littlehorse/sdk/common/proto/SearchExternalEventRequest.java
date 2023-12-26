@@ -4,21 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * EVOLVING: Search for ExternalEvent's.
- *
- * Currently, this request allows you to search for ExternalEvent's based on either:
- * 1. A WfRunId
- * 2. An ExternalEventDefName and status.
- *
- * This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
- * It is recommended for applications needing to search by WfRunId to instead use the
- * `rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
- *
- * Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
- * request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
- * </pre>
- *
  * Protobuf type {@code littlehorse.SearchExternalEventRequest}
  */
 public final class SearchExternalEventRequest extends
@@ -82,11 +67,6 @@ private static final long serialVersionUID = 0L;
     boolean getIsClaimed();
   }
   /**
-   * <pre>
-   * EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
-   * and ExternalEventDefName.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest}
    */
   public static final class ByExtEvtDefNameAndStatusRequest extends
@@ -355,11 +335,6 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * <pre>
-     * EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
-     * and ExternalEventDefName.
-     * </pre>
-     *
      * Protobuf type {@code littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest}
      */
     public static final class Builder extends
@@ -765,10 +740,6 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <pre>
-   * Bookmark for cursor-based pagination; pass if applicable.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
@@ -777,10 +748,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Bookmark for cursor-based pagination; pass if applicable.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
@@ -792,10 +759,6 @@ private static final long serialVersionUID = 0L;
   public static final int LIMIT_FIELD_NUMBER = 2;
   private int limit_ = 0;
   /**
-   * <pre>
-   * Maximum results to return in one request.
-   * </pre>
-   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
@@ -804,10 +767,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <pre>
-   * Maximum results to return in one request.
-   * </pre>
-   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
@@ -1096,21 +1055,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * EVOLVING: Search for ExternalEvent's.
-   *
-   * Currently, this request allows you to search for ExternalEvent's based on either:
-   * 1. A WfRunId
-   * 2. An ExternalEventDefName and status.
-   *
-   * This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
-   * It is recommended for applications needing to search by WfRunId to instead use the
-   * `rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
-   *
-   * Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
-   * request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.SearchExternalEventRequest}
    */
   public static final class Builder extends
@@ -1360,10 +1304,6 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return Whether the bookmark field is set.
      */
@@ -1372,10 +1312,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return The bookmark.
      */
@@ -1384,10 +1320,6 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -1400,10 +1332,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return This builder for chaining.
      */
@@ -1416,10 +1344,6 @@ private static final long serialVersionUID = 0L;
 
     private int limit_ ;
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return Whether the limit field is set.
      */
@@ -1428,10 +1352,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return The limit.
      */
@@ -1440,10 +1360,6 @@ private static final long serialVersionUID = 0L;
       return limit_;
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @param value The limit to set.
      * @return This builder for chaining.
@@ -1456,10 +1372,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return This builder for chaining.
      */

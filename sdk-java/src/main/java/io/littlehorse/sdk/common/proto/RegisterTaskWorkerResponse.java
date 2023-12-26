@@ -4,11 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Response containing list of Servers that the Task Worker should connect to and start polling from.
- * Only used internally by the Task Worker SDK.
- * </pre>
- *
  * Protobuf type {@code littlehorse.RegisterTaskWorkerResponse}
  */
 public final class RegisterTaskWorkerResponse extends
@@ -49,10 +44,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> yourHosts_;
   /**
-   * <pre>
-   * The list of LH Server hosts that the Task Worker should start polling.
-   * </pre>
-   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
@@ -60,10 +51,6 @@ private static final long serialVersionUID = 0L;
     return yourHosts_;
   }
   /**
-   * <pre>
-   * The list of LH Server hosts that the Task Worker should start polling.
-   * </pre>
-   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
@@ -72,10 +59,6 @@ private static final long serialVersionUID = 0L;
     return yourHosts_;
   }
   /**
-   * <pre>
-   * The list of LH Server hosts that the Task Worker should start polling.
-   * </pre>
-   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
@@ -83,10 +66,6 @@ private static final long serialVersionUID = 0L;
     return yourHosts_.size();
   }
   /**
-   * <pre>
-   * The list of LH Server hosts that the Task Worker should start polling.
-   * </pre>
-   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
@@ -94,10 +73,6 @@ private static final long serialVersionUID = 0L;
     return yourHosts_.get(index);
   }
   /**
-   * <pre>
-   * The list of LH Server hosts that the Task Worker should start polling.
-   * </pre>
-   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
@@ -109,10 +84,6 @@ private static final long serialVersionUID = 0L;
   public static final int IS_CLUSTER_HEALTHY_FIELD_NUMBER = 2;
   private boolean isClusterHealthy_ = false;
   /**
-   * <pre>
-   * Whether the LH Cluster is healthy.
-   * </pre>
-   *
    * <code>optional bool is_cluster_healthy = 2;</code>
    * @return Whether the isClusterHealthy field is set.
    */
@@ -121,10 +92,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Whether the LH Cluster is healthy.
-   * </pre>
-   *
    * <code>optional bool is_cluster_healthy = 2;</code>
    * @return The isClusterHealthy.
    */
@@ -310,11 +277,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Response containing list of Servers that the Task Worker should connect to and start polling from.
-   * Only used internally by the Task Worker SDK.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.RegisterTaskWorkerResponse}
    */
   public static final class Builder extends
@@ -557,10 +519,6 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.LHHostInfo, io.littlehorse.sdk.common.proto.LHHostInfo.Builder, io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> yourHostsBuilder_;
 
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> getYourHostsList() {
@@ -571,10 +529,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public int getYourHostsCount() {
@@ -585,10 +539,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index) {
@@ -599,10 +549,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder setYourHosts(
@@ -620,10 +566,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder setYourHosts(
@@ -638,10 +580,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(io.littlehorse.sdk.common.proto.LHHostInfo value) {
@@ -658,10 +596,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
@@ -679,10 +613,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
@@ -697,10 +627,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
@@ -715,10 +641,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addAllYourHosts(
@@ -734,10 +656,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder clearYourHosts() {
@@ -751,10 +669,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder removeYourHosts(int index) {
@@ -768,10 +682,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder getYourHostsBuilder(
@@ -779,10 +689,6 @@ private static final long serialVersionUID = 0L;
       return getYourHostsFieldBuilder().getBuilder(index);
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
@@ -793,10 +699,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
@@ -808,10 +710,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addYourHostsBuilder() {
@@ -819,10 +717,6 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addYourHostsBuilder(
@@ -831,10 +725,6 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The list of LH Server hosts that the Task Worker should start polling.
-     * </pre>
-     *
      * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo.Builder> 
@@ -858,10 +748,6 @@ private static final long serialVersionUID = 0L;
 
     private boolean isClusterHealthy_ ;
     /**
-     * <pre>
-     * Whether the LH Cluster is healthy.
-     * </pre>
-     *
      * <code>optional bool is_cluster_healthy = 2;</code>
      * @return Whether the isClusterHealthy field is set.
      */
@@ -870,10 +756,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * Whether the LH Cluster is healthy.
-     * </pre>
-     *
      * <code>optional bool is_cluster_healthy = 2;</code>
      * @return The isClusterHealthy.
      */
@@ -882,10 +764,6 @@ private static final long serialVersionUID = 0L;
       return isClusterHealthy_;
     }
     /**
-     * <pre>
-     * Whether the LH Cluster is healthy.
-     * </pre>
-     *
      * <code>optional bool is_cluster_healthy = 2;</code>
      * @param value The isClusterHealthy to set.
      * @return This builder for chaining.
@@ -898,10 +776,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Whether the LH Cluster is healthy.
-     * </pre>
-     *
      * <code>optional bool is_cluster_healthy = 2;</code>
      * @return This builder for chaining.
      */

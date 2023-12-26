@@ -8,19 +8,11 @@ public interface PutExternalEventDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The name of the resulting ExternalEventDef.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <pre>
-   * The name of the resulting ExternalEventDef.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -28,31 +20,16 @@ public interface PutExternalEventDefRequestOrBuilder extends
       getNameBytes();
 
   /**
-   * <pre>
-   * Policy to determine how long an ExternalEvent is retained after creation if it
-   * is not yet claimed by a WfRun.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
    * @return Whether the retentionPolicy field is set.
    */
   boolean hasRetentionPolicy();
   /**
-   * <pre>
-   * Policy to determine how long an ExternalEvent is retained after creation if it
-   * is not yet claimed by a WfRun.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
    * @return The retentionPolicy.
    */
   io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy getRetentionPolicy();
   /**
-   * <pre>
-   * Policy to determine how long an ExternalEvent is retained after creation if it
-   * is not yet claimed by a WfRun.
-   * </pre>
-   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();

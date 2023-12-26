@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Query to retrieve a specific TaskDef Metrics Window.
- * </pre>
- *
  * Protobuf type {@code littlehorse.TaskDefMetricsQueryRequest}
  */
 public final class TaskDefMetricsQueryRequest extends
@@ -48,11 +44,6 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <pre>
-   * Return the window *containing* this timestamp. The window start is not guaranteed to
-   * align perfectly with the request.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return Whether the windowStart field is set.
    */
@@ -61,11 +52,6 @@ private static final long serialVersionUID = 0L;
     return windowStart_ != null;
   }
   /**
-   * <pre>
-   * Return the window *containing* this timestamp. The window start is not guaranteed to
-   * align perfectly with the request.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return The windowStart.
    */
@@ -74,11 +60,6 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <pre>
-   * Return the window *containing* this timestamp. The window start is not guaranteed to
-   * align perfectly with the request.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    */
   @java.lang.Override
@@ -89,10 +70,6 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_TYPE_FIELD_NUMBER = 2;
   private int windowType_ = 0;
   /**
-   * <pre>
-   * The window size
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The enum numeric value on the wire for windowType.
    */
@@ -100,10 +77,6 @@ private static final long serialVersionUID = 0L;
     return windowType_;
   }
   /**
-   * <pre>
-   * The window size
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The windowType.
    */
@@ -116,10 +89,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object taskDefName_ = "";
   /**
-   * <pre>
-   * The name of the specific TaskDef for which we are calculating metrics.
-   * </pre>
-   *
    * <code>optional string task_def_name = 3;</code>
    * @return Whether the taskDefName field is set.
    */
@@ -128,10 +97,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * The name of the specific TaskDef for which we are calculating metrics.
-   * </pre>
-   *
    * <code>optional string task_def_name = 3;</code>
    * @return The taskDefName.
    */
@@ -149,10 +114,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * The name of the specific TaskDef for which we are calculating metrics.
-   * </pre>
-   *
    * <code>optional string task_def_name = 3;</code>
    * @return The bytes for taskDefName.
    */
@@ -359,10 +320,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Query to retrieve a specific TaskDef Metrics Window.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.TaskDefMetricsQueryRequest}
    */
   public static final class Builder extends
@@ -571,11 +528,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      * @return Whether the windowStart field is set.
      */
@@ -583,11 +535,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      * @return The windowStart.
      */
@@ -599,11 +546,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
@@ -620,11 +562,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public Builder setWindowStart(
@@ -639,11 +576,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
@@ -663,11 +595,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public Builder clearWindowStart() {
@@ -681,11 +608,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
@@ -694,11 +616,6 @@ private static final long serialVersionUID = 0L;
       return getWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -710,11 +627,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Return the window *containing* this timestamp. The window start is not guaranteed to
-     * align perfectly with the request.
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -733,10 +645,6 @@ private static final long serialVersionUID = 0L;
 
     private int windowType_ = 0;
     /**
-     * <pre>
-     * The window size
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return The enum numeric value on the wire for windowType.
      */
@@ -744,10 +652,6 @@ private static final long serialVersionUID = 0L;
       return windowType_;
     }
     /**
-     * <pre>
-     * The window size
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @param value The enum numeric value on the wire for windowType to set.
      * @return This builder for chaining.
@@ -759,10 +663,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The window size
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return The windowType.
      */
@@ -772,10 +672,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
-     * <pre>
-     * The window size
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @param value The windowType to set.
      * @return This builder for chaining.
@@ -790,10 +686,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The window size
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return This builder for chaining.
      */
@@ -806,10 +698,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object taskDefName_ = "";
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @return Whether the taskDefName field is set.
      */
@@ -817,10 +705,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @return The taskDefName.
      */
@@ -837,10 +721,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @return The bytes for taskDefName.
      */
@@ -858,10 +738,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @param value The taskDefName to set.
      * @return This builder for chaining.
@@ -875,10 +751,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @return This builder for chaining.
      */
@@ -889,10 +761,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the specific TaskDef for which we are calculating metrics.
-     * </pre>
-     *
      * <code>optional string task_def_name = 3;</code>
      * @param value The bytes for taskDefName to set.
      * @return This builder for chaining.

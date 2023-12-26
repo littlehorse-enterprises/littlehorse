@@ -8,86 +8,47 @@ public interface ListTaskMetricsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * TaskDef id for whichwe retrieve metrics.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
-   * <pre>
-   * TaskDef id for whichwe retrieve metrics.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
-   * <pre>
-   * TaskDef id for whichwe retrieve metrics.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
-   * <pre>
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return Whether the lastWindowStart field is set.
    */
   boolean hasLastWindowStart();
   /**
-   * <pre>
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return The lastWindowStart.
    */
   com.google.protobuf.Timestamp getLastWindowStart();
   /**
-   * <pre>
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder();
 
   /**
-   * <pre>
-   * Window size
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   int getWindowLengthValue();
   /**
-   * <pre>
-   * Window size
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowLength();
 
   /**
-   * <pre>
-   * Number of windows to retrieve.
-   * </pre>
-   *
    * <code>int32 num_windows = 4;</code>
    * @return The numWindows.
    */

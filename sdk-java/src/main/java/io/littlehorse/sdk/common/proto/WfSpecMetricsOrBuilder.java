@@ -8,123 +8,71 @@ public interface WfSpecMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <pre>
-   * The length of the window
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <pre>
-   * The length of the window
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
-   * <pre>
-   * Total number of WfRun's created for this WfSpec
-   * </pre>
-   *
    * <code>int64 total_started = 4;</code>
    * @return The totalStarted.
    */
   long getTotalStarted();
 
   /**
-   * <pre>
-   * Total number of WfRun's that reached the COMPLETED state
-   * </pre>
-   *
    * <code>int64 total_completed = 5;</code>
    * @return The totalCompleted.
    */
   long getTotalCompleted();
 
   /**
-   * <pre>
-   * Total number of WfRun's that reached the ERROR state
-   * </pre>
-   *
    * <code>int64 total_errored = 6;</code>
    * @return The totalErrored.
    */
   long getTotalErrored();
 
   /**
-   * <pre>
-   * Longest time between a WfRun being started and reaching the COMPLETED state
-   * </pre>
-   *
    * <code>int64 start_to_complete_max = 7;</code>
    * @return The startToCompleteMax.
    */
   long getStartToCompleteMax();
 
   /**
-   * <pre>
-   * Average time that a WfRun took to reach the COMPLETED state
-   * </pre>
-   *
    * <code>int64 start_to_complete_avg = 8;</code>
    * @return The startToCompleteAvg.
    */

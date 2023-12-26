@@ -8,109 +8,60 @@ public interface ScheduledTaskOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Id of the TaskRun to execute.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return Whether the taskRunId field is set.
    */
   boolean hasTaskRunId();
   /**
-   * <pre>
-   * Id of the TaskRun to execute.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return The taskRunId.
    */
   io.littlehorse.sdk.common.proto.TaskRunId getTaskRunId();
   /**
-   * <pre>
-   * Id of the TaskRun to execute.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunIdOrBuilder();
 
   /**
-   * <pre>
-   * ID of the TaskDef to which the TaskRun belongs.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
-   * <pre>
-   * ID of the TaskDef to which the TaskRun belongs.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
-   * <pre>
-   * ID of the TaskDef to which the TaskRun belongs.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
-   * <pre>
-   * Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the
-   * first attempt; `1` means this is the first retry, etc.
-   * </pre>
-   *
    * <code>int32 attempt_number = 3;</code>
    * @return The attemptNumber.
    */
   int getAttemptNumber();
 
   /**
-   * <pre>
-   * Input variables for this TaskRun.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> 
       getVariablesList();
   /**
-   * <pre>
-   * Input variables for this TaskRun.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VarNameAndVal getVariables(int index);
   /**
-   * <pre>
-   * Input variables for this TaskRun.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   int getVariablesCount();
   /**
-   * <pre>
-   * Input variables for this TaskRun.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> 
       getVariablesOrBuilderList();
   /**
-   * <pre>
-   * Input variables for this TaskRun.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VarNameAndVal variables = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder getVariablesOrBuilder(
@@ -132,34 +83,16 @@ public interface ScheduledTaskOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <pre>
-   * Source of the TaskRun. Currently, there are two options:
-   * 1. A TASK node
-   * 2. A reminder task scheduled by a trigger on a User Task.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return Whether the source field is set.
    */
   boolean hasSource();
   /**
-   * <pre>
-   * Source of the TaskRun. Currently, there are two options:
-   * 1. A TASK node
-   * 2. A reminder task scheduled by a trigger on a User Task.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return The source.
    */
   io.littlehorse.sdk.common.proto.TaskRunSource getSource();
   /**
-   * <pre>
-   * Source of the TaskRun. Currently, there are two options:
-   * 1. A TASK node
-   * 2. A reminder task scheduled by a trigger on a User Task.
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder getSourceOrBuilder();

@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Returns the UserTaskDef with a given name and the highest version number.
- * </pre>
- *
  * Protobuf type {@code littlehorse.GetLatestUserTaskDefRequest}
  */
 public final class GetLatestUserTaskDefRequest extends
@@ -47,10 +43,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
-   * <pre>
-   * The name of the UserTaskDef to search for.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -68,10 +60,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * The name of the UserTaskDef to search for.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -247,10 +235,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Returns the UserTaskDef with a given name and the highest version number.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.GetLatestUserTaskDefRequest}
    */
   public static final class Builder extends
@@ -422,10 +406,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
-     * <pre>
-     * The name of the UserTaskDef to search for.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -442,10 +422,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to search for.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -463,10 +439,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to search for.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -480,10 +452,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to search for.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -494,10 +462,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to search for.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.

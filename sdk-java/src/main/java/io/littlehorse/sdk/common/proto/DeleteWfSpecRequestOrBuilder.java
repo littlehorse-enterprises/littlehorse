@@ -8,28 +8,16 @@ public interface DeleteWfSpecRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getId();
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder();

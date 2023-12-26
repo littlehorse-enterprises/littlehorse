@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Deletes a WfSpec
- * </pre>
- *
  * Protobuf type {@code littlehorse.DeleteWfSpecRequest}
  */
 public final class DeleteWfSpecRequest extends
@@ -45,10 +41,6 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId id_;
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -57,10 +49,6 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return The id.
    */
@@ -69,10 +57,6 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
   }
   /**
-   * <pre>
-   * The ID of the WfSpec to delete
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    */
   @java.lang.Override
@@ -243,10 +227,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Deletes a WfSpec
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.DeleteWfSpecRequest}
    */
   public static final class Builder extends
@@ -426,10 +406,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> idBuilder_;
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -437,10 +413,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      * @return The id.
      */
@@ -452,10 +424,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -472,10 +440,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder setId(
@@ -490,10 +454,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -513,10 +473,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder clearId() {
@@ -530,10 +486,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getIdBuilder() {
@@ -542,10 +494,6 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder() {
@@ -557,10 +505,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The ID of the WfSpec to delete
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

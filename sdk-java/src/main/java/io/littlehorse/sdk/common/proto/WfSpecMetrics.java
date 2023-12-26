@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Metrics for a WfSpec in a specific time window
- * </pre>
- *
  * Protobuf type {@code littlehorse.WfSpecMetrics}
  */
 public final class WfSpecMetrics extends
@@ -46,10 +42,6 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -58,10 +50,6 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
@@ -70,10 +58,6 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
-   * <pre>
-   * The WfSpecId that these metrics analyze
-   * </pre>
-   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   @java.lang.Override
@@ -84,10 +68,6 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
@@ -96,10 +76,6 @@ private static final long serialVersionUID = 0L;
     return windowStart_ != null;
   }
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
@@ -108,10 +84,6 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <pre>
-   * The time that the window started
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   @java.lang.Override
@@ -122,10 +94,6 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 3;
   private int type_ = 0;
   /**
-   * <pre>
-   * The length of the window
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -133,10 +101,6 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
-   * <pre>
-   * The length of the window
-   * </pre>
-   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
@@ -148,10 +112,6 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_STARTED_FIELD_NUMBER = 4;
   private long totalStarted_ = 0L;
   /**
-   * <pre>
-   * Total number of WfRun's created for this WfSpec
-   * </pre>
-   *
    * <code>int64 total_started = 4;</code>
    * @return The totalStarted.
    */
@@ -163,10 +123,6 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_COMPLETED_FIELD_NUMBER = 5;
   private long totalCompleted_ = 0L;
   /**
-   * <pre>
-   * Total number of WfRun's that reached the COMPLETED state
-   * </pre>
-   *
    * <code>int64 total_completed = 5;</code>
    * @return The totalCompleted.
    */
@@ -178,10 +134,6 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_ERRORED_FIELD_NUMBER = 6;
   private long totalErrored_ = 0L;
   /**
-   * <pre>
-   * Total number of WfRun's that reached the ERROR state
-   * </pre>
-   *
    * <code>int64 total_errored = 6;</code>
    * @return The totalErrored.
    */
@@ -193,10 +145,6 @@ private static final long serialVersionUID = 0L;
   public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 7;
   private long startToCompleteMax_ = 0L;
   /**
-   * <pre>
-   * Longest time between a WfRun being started and reaching the COMPLETED state
-   * </pre>
-   *
    * <code>int64 start_to_complete_max = 7;</code>
    * @return The startToCompleteMax.
    */
@@ -208,10 +156,6 @@ private static final long serialVersionUID = 0L;
   public static final int START_TO_COMPLETE_AVG_FIELD_NUMBER = 8;
   private long startToCompleteAvg_ = 0L;
   /**
-   * <pre>
-   * Average time that a WfRun took to reach the COMPLETED state
-   * </pre>
-   *
    * <code>int64 start_to_complete_avg = 8;</code>
    * @return The startToCompleteAvg.
    */
@@ -469,10 +413,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Metrics for a WfSpec in a specific time window
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.WfSpecMetrics}
    */
   public static final class Builder extends
@@ -744,10 +684,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -755,10 +691,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return The wfSpecId.
      */
@@ -770,10 +702,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -790,10 +718,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(
@@ -808,10 +732,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -831,10 +751,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder clearWfSpecId() {
@@ -848,10 +764,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -860,10 +772,6 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -875,10 +783,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The WfSpecId that these metrics analyze
-     * </pre>
-     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -899,10 +803,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return Whether the windowStart field is set.
      */
@@ -910,10 +810,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return The windowStart.
      */
@@ -925,10 +821,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
@@ -945,10 +837,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(
@@ -963,10 +851,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
@@ -986,10 +870,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder clearWindowStart() {
@@ -1003,10 +883,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
@@ -1015,10 +891,6 @@ private static final long serialVersionUID = 0L;
       return getWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -1030,10 +902,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The time that the window started
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1052,10 +920,6 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <pre>
-     * The length of the window
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -1063,10 +927,6 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
-     * <pre>
-     * The length of the window
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -1078,10 +938,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The length of the window
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return The type.
      */
@@ -1091,10 +947,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
-     * <pre>
-     * The length of the window
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -1109,10 +961,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The length of the window
-     * </pre>
-     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return This builder for chaining.
      */
@@ -1125,10 +973,6 @@ private static final long serialVersionUID = 0L;
 
     private long totalStarted_ ;
     /**
-     * <pre>
-     * Total number of WfRun's created for this WfSpec
-     * </pre>
-     *
      * <code>int64 total_started = 4;</code>
      * @return The totalStarted.
      */
@@ -1137,10 +981,6 @@ private static final long serialVersionUID = 0L;
       return totalStarted_;
     }
     /**
-     * <pre>
-     * Total number of WfRun's created for this WfSpec
-     * </pre>
-     *
      * <code>int64 total_started = 4;</code>
      * @param value The totalStarted to set.
      * @return This builder for chaining.
@@ -1153,10 +993,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Total number of WfRun's created for this WfSpec
-     * </pre>
-     *
      * <code>int64 total_started = 4;</code>
      * @return This builder for chaining.
      */
@@ -1169,10 +1005,6 @@ private static final long serialVersionUID = 0L;
 
     private long totalCompleted_ ;
     /**
-     * <pre>
-     * Total number of WfRun's that reached the COMPLETED state
-     * </pre>
-     *
      * <code>int64 total_completed = 5;</code>
      * @return The totalCompleted.
      */
@@ -1181,10 +1013,6 @@ private static final long serialVersionUID = 0L;
       return totalCompleted_;
     }
     /**
-     * <pre>
-     * Total number of WfRun's that reached the COMPLETED state
-     * </pre>
-     *
      * <code>int64 total_completed = 5;</code>
      * @param value The totalCompleted to set.
      * @return This builder for chaining.
@@ -1197,10 +1025,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Total number of WfRun's that reached the COMPLETED state
-     * </pre>
-     *
      * <code>int64 total_completed = 5;</code>
      * @return This builder for chaining.
      */
@@ -1213,10 +1037,6 @@ private static final long serialVersionUID = 0L;
 
     private long totalErrored_ ;
     /**
-     * <pre>
-     * Total number of WfRun's that reached the ERROR state
-     * </pre>
-     *
      * <code>int64 total_errored = 6;</code>
      * @return The totalErrored.
      */
@@ -1225,10 +1045,6 @@ private static final long serialVersionUID = 0L;
       return totalErrored_;
     }
     /**
-     * <pre>
-     * Total number of WfRun's that reached the ERROR state
-     * </pre>
-     *
      * <code>int64 total_errored = 6;</code>
      * @param value The totalErrored to set.
      * @return This builder for chaining.
@@ -1241,10 +1057,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Total number of WfRun's that reached the ERROR state
-     * </pre>
-     *
      * <code>int64 total_errored = 6;</code>
      * @return This builder for chaining.
      */
@@ -1257,10 +1069,6 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteMax_ ;
     /**
-     * <pre>
-     * Longest time between a WfRun being started and reaching the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @return The startToCompleteMax.
      */
@@ -1269,10 +1077,6 @@ private static final long serialVersionUID = 0L;
       return startToCompleteMax_;
     }
     /**
-     * <pre>
-     * Longest time between a WfRun being started and reaching the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @param value The startToCompleteMax to set.
      * @return This builder for chaining.
@@ -1285,10 +1089,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Longest time between a WfRun being started and reaching the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @return This builder for chaining.
      */
@@ -1301,10 +1101,6 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteAvg_ ;
     /**
-     * <pre>
-     * Average time that a WfRun took to reach the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_avg = 8;</code>
      * @return The startToCompleteAvg.
      */
@@ -1313,10 +1109,6 @@ private static final long serialVersionUID = 0L;
       return startToCompleteAvg_;
     }
     /**
-     * <pre>
-     * Average time that a WfRun took to reach the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_avg = 8;</code>
      * @param value The startToCompleteAvg to set.
      * @return This builder for chaining.
@@ -1329,10 +1121,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Average time that a WfRun took to reach the COMPLETED state
-     * </pre>
-     *
      * <code>int64 start_to_complete_avg = 8;</code>
      * @return This builder for chaining.
      */

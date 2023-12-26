@@ -8,19 +8,11 @@ public interface PutUserTaskDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The name of the UserTaskDef to create.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <pre>
-   * The name of the UserTaskDef to create.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -28,85 +20,40 @@ public interface PutUserTaskDefRequestOrBuilder extends
       getNameBytes();
 
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
       getFieldsList();
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   int getFieldsCount();
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList();
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index);
 
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
   boolean hasDescription();
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return The description.
    */
   java.lang.String getDescription();
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */

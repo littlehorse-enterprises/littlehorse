@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * The version of the LH Server according to Semantic Versioning
- * </pre>
- *
  * Protobuf type {@code littlehorse.ServerVersionResponse}
  */
 public final class ServerVersionResponse extends
@@ -47,10 +43,6 @@ private static final long serialVersionUID = 0L;
   public static final int MAJOR_VERSION_FIELD_NUMBER = 1;
   private int majorVersion_ = 0;
   /**
-   * <pre>
-   * Server Major Version
-   * </pre>
-   *
    * <code>int32 major_version = 1;</code>
    * @return The majorVersion.
    */
@@ -62,10 +54,6 @@ private static final long serialVersionUID = 0L;
   public static final int MINOR_VERSION_FIELD_NUMBER = 2;
   private int minorVersion_ = 0;
   /**
-   * <pre>
-   * Server Minor Version
-   * </pre>
-   *
    * <code>int32 minor_version = 2;</code>
    * @return The minorVersion.
    */
@@ -77,10 +65,6 @@ private static final long serialVersionUID = 0L;
   public static final int PATCH_VERSION_FIELD_NUMBER = 3;
   private int patchVersion_ = 0;
   /**
-   * <pre>
-   * Server Patch Version
-   * </pre>
-   *
    * <code>int32 patch_version = 3;</code>
    * @return The patchVersion.
    */
@@ -93,11 +77,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object preReleaseIdentifier_ = "";
   /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
    * <code>optional string pre_release_identifier = 4;</code>
    * @return Whether the preReleaseIdentifier field is set.
    */
@@ -106,11 +85,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
    * <code>optional string pre_release_identifier = 4;</code>
    * @return The preReleaseIdentifier.
    */
@@ -128,11 +102,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
    * <code>optional string pre_release_identifier = 4;</code>
    * @return The bytes for preReleaseIdentifier.
    */
@@ -346,10 +315,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * The version of the LH Server according to Semantic Versioning
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.ServerVersionResponse}
    */
   public static final class Builder extends
@@ -560,10 +525,6 @@ private static final long serialVersionUID = 0L;
 
     private int majorVersion_ ;
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
      * <code>int32 major_version = 1;</code>
      * @return The majorVersion.
      */
@@ -572,10 +533,6 @@ private static final long serialVersionUID = 0L;
       return majorVersion_;
     }
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
      * <code>int32 major_version = 1;</code>
      * @param value The majorVersion to set.
      * @return This builder for chaining.
@@ -588,10 +545,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
      * <code>int32 major_version = 1;</code>
      * @return This builder for chaining.
      */
@@ -604,10 +557,6 @@ private static final long serialVersionUID = 0L;
 
     private int minorVersion_ ;
     /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
      * <code>int32 minor_version = 2;</code>
      * @return The minorVersion.
      */
@@ -616,10 +565,6 @@ private static final long serialVersionUID = 0L;
       return minorVersion_;
     }
     /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
      * <code>int32 minor_version = 2;</code>
      * @param value The minorVersion to set.
      * @return This builder for chaining.
@@ -632,10 +577,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
      * <code>int32 minor_version = 2;</code>
      * @return This builder for chaining.
      */
@@ -648,10 +589,6 @@ private static final long serialVersionUID = 0L;
 
     private int patchVersion_ ;
     /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
      * <code>int32 patch_version = 3;</code>
      * @return The patchVersion.
      */
@@ -660,10 +597,6 @@ private static final long serialVersionUID = 0L;
       return patchVersion_;
     }
     /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
      * <code>int32 patch_version = 3;</code>
      * @param value The patchVersion to set.
      * @return This builder for chaining.
@@ -676,10 +609,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
      * <code>int32 patch_version = 3;</code>
      * @return This builder for chaining.
      */
@@ -692,11 +621,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object preReleaseIdentifier_ = "";
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @return Whether the preReleaseIdentifier field is set.
      */
@@ -704,11 +628,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @return The preReleaseIdentifier.
      */
@@ -725,11 +644,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @return The bytes for preReleaseIdentifier.
      */
@@ -747,11 +661,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @param value The preReleaseIdentifier to set.
      * @return This builder for chaining.
@@ -765,11 +674,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @return This builder for chaining.
      */
@@ -780,11 +684,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
      * <code>optional string pre_release_identifier = 4;</code>
      * @param value The bytes for preReleaseIdentifier to set.
      * @return This builder for chaining.

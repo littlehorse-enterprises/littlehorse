@@ -8,44 +8,24 @@ public interface TaskRunListOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * A list of TaskRun Objects
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskRun results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.TaskRun> 
       getResultsList();
   /**
-   * <pre>
-   * A list of TaskRun Objects
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskRun results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRun getResults(int index);
   /**
-   * <pre>
-   * A list of TaskRun Objects
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskRun results = 1;</code>
    */
   int getResultsCount();
   /**
-   * <pre>
-   * A list of TaskRun Objects
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskRun results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.TaskRunOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <pre>
-   * A list of TaskRun Objects
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskRun results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunOrBuilder getResultsOrBuilder(

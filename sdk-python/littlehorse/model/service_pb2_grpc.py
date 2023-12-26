@@ -306,420 +306,331 @@ class LittleHorseServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def PutTaskDef(self, request, context):
-        """Creates a TaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskDef(self, request, context):
-        """Gets a TaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEventDef(self, request, context):
-        """Creates an ExternalEventDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetExternalEventDef(self, request, context):
-        """Gets an ExternalEventDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutWfSpec(self, request, context):
-        """Creates a WfSpec.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfSpec(self, request, context):
-        """Gets a WfSpec.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestWfSpec(self, request, context):
-        """Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def MigrateWfSpec(self, request, context):
-        """EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
-        same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
-        you must update WfRun's that are in the RUNNING state rather than allowing them to run to
-        completion.
-
-        As of 0.7.0, this feature is only partially implemented.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutUserTaskDef(self, request, context):
-        """Creates a UserTaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserTaskDef(self, request, context):
-        """Gets a specific UserTaskDef.
-
-        This RPC is highly useful for applications built around
-        User Tasks. For example, a UI that dynamically displays form fields based on the User Task
-        might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
-        The frontend would inspect the UserTaskDef and display a form field on the browser page
-        for each field in the UserTaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestUserTaskDef(self, request, context):
-        """Returns the most recent UserTaskDef with a specific name.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RunWf(self, request, context):
-        """Runs a WfSpec to create a WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfRun(self, request, context):
-        """Gets a WfRun. Although useful for development and debugging, this RPC is not often
-        used by applications.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserTaskRun(self, request, context):
-        """Loads a specific UserTaskRun. It includes information about to whom the UserTask is
-        currently assigned, history of assignments and reassignments, and any context for that
-        UserTaskRun which is specific to the WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AssignUserTaskRun(self, request, context):
-        """Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
-        action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
-        applications that are using User Tasks to build an internal task-list and wish to
-        administer the tasks.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CompleteUserTaskRun(self, request, context):
-        """Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
-        the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
-        completed, and unblocks the associated ThreadRun in the WfRun.
-
-        This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CancelUserTaskRun(self, request, context):
-        """Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListUserTaskRuns(self, request, context):
-        """Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
-        to model a domain object.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetNodeRun(self, request, context):
-        """Gets a specific NodeRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListNodeRuns(self, request, context):
-        """Lists all NodeRun's for a specific WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskRun(self, request, context):
-        """Gets a specific TaskRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskRuns(self, request, context):
-        """Lists all TaskRun's for a specific WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVariable(self, request, context):
-        """Get the value of a specific Variable. When using a WfRun to model a domain object, this
-        RPC is useful for retrieving information. It is equivalent to looking up the value of a
-        column for a specific row in a SQL table.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListVariables(self, request, context):
-        """List all Variables from a WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Post an ExternalEvent. This RPC is highly useful for 
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetExternalEvent(self, request, context):
-        """Get a specific ExternalEvent.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListExternalEvents(self, request, context):
-        """List ExternalEvent's for a specific WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchWfRun(self, request, context):
-        """Search for WfRun's. This RPC is highly useful for applications that store data
-        in LittleHorse and need to find a specific WfRun based on certain indexed fields.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchNodeRun(self, request, context):
-        """Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
-        your workflows or Task Workers.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchTaskRun(self, request, context):
-        """Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchUserTaskRun(self, request, context):
-        """Search for UserTaskRun's. This RPC is highly useful for applications that connect
-        human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
-        person or group of people.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchVariable(self, request, context):
-        """Search for Variable's. This RPC is highly useful for applications that store data
-        in LittleHorse and need to find a specific WfRun based on certain indexed fields.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEvent(self, request, context):
-        """Search for ExternalEvent's.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchTaskDef(self, request, context):
-        """Search for TaskDef's.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchUserTaskDef(self, request, context):
-        """Search for UserTaskDef's.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchWfSpec(self, request, context):
-        """Search for WfSpec's.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEventDef(self, request, context):
-        """Search for ExteranlEventDef's.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RegisterTaskWorker(self, request, context):
-        """Used by the Task Worker to:
-        1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
-        2. Receive the assignemnt of LH Server's to poll from.
-        Generally, you won't use this request manually.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PollTask(self, request_iterator, context):
-        """Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
-        use this RPC manually.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ReportTask(self, request, context):
-        """Used by Task Workers to report the result of a TaskRun. Generally, you won't use
-        this rpc manually.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def StopWfRun(self, request, context):
-        """Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ResumeWfRun(self, request, context):
-        """Resumes a WfRun or a specific ThreadRun of a WfRun.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWfRun(self, request, context):
-        """Deletes a WfRun. The WfRun cannot be in the RUNNING state.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteTaskDef(self, request, context):
-        """Deletes a TaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWfSpec(self, request, context):
-        """Deletes a WfSpec.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteUserTaskDef(self, request, context):
-        """Deletes a UserTaskDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteExternalEventDef(self, request, context):
-        """Deletes an ExternalEventDef.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskDefMetricsWindow(self, request, context):
-        """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfSpecMetricsWindow(self, request, context):
-        """Returns WfSpec Metrics for a specific WfSpec and a specific time window.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskDefMetrics(self, request, context):
-        """Returns a list of TaskDef Metrics Windows.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfSpecMetrics(self, request, context):
-        """Returns a list of WfSpec Metrics Windows.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutTenant(self, request, context):
-        """EXPERIMENTAL: Creates another Tenant in the LH Server.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutPrincipal(self, request, context):
-        """EXPERIMENTAL: Creates an Principal.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def Whoami(self, request, context):
-        """Returns the Principal of the caller.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetServerVersion(self, request, context):
-        """Gets the version of the LH Server.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

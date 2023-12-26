@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * A list of TaskDef Metrics WIndows
- * </pre>
- *
  * Protobuf type {@code littlehorse.ListTaskMetricsResponse}
  */
 public final class ListTaskMetricsResponse extends
@@ -47,10 +43,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> results_;
   /**
-   * <pre>
-   * List of TaskDef Metrics Windows
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
@@ -58,10 +50,6 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
-   * <pre>
-   * List of TaskDef Metrics Windows
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
@@ -70,10 +58,6 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
-   * <pre>
-   * List of TaskDef Metrics Windows
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
@@ -81,10 +65,6 @@ private static final long serialVersionUID = 0L;
     return results_.size();
   }
   /**
-   * <pre>
-   * List of TaskDef Metrics Windows
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
@@ -92,10 +72,6 @@ private static final long serialVersionUID = 0L;
     return results_.get(index);
   }
   /**
-   * <pre>
-   * List of TaskDef Metrics Windows
-   * </pre>
-   *
    * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
@@ -264,10 +240,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * A list of TaskDef Metrics WIndows
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.ListTaskMetricsResponse}
    */
   public static final class Builder extends
@@ -495,10 +467,6 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TaskDefMetrics, io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder, io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> resultsBuilder_;
 
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> getResultsList() {
@@ -509,10 +477,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public int getResultsCount() {
@@ -523,10 +487,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics getResults(int index) {
@@ -537,10 +497,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder setResults(
@@ -558,10 +514,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder setResults(
@@ -576,10 +528,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(io.littlehorse.sdk.common.proto.TaskDefMetrics value) {
@@ -596,10 +544,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
@@ -617,10 +561,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
@@ -635,10 +575,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
@@ -653,10 +589,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addAllResults(
@@ -672,10 +604,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder clearResults() {
@@ -689,10 +617,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder removeResults(int index) {
@@ -706,10 +630,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder getResultsBuilder(
@@ -717,10 +637,6 @@ private static final long serialVersionUID = 0L;
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultsOrBuilder(
@@ -731,10 +647,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> 
@@ -746,10 +658,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder addResultsBuilder() {
@@ -757,10 +665,6 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.TaskDefMetrics.getDefaultInstance());
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder addResultsBuilder(
@@ -769,10 +673,6 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.TaskDefMetrics.getDefaultInstance());
     }
     /**
-     * <pre>
-     * List of TaskDef Metrics Windows
-     * </pre>
-     *
      * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder> 

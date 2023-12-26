@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * List TaskRun's for a specific WfRun
- * </pre>
- *
  * Protobuf type {@code littlehorse.ListTaskRunsRequest}
  */
 public final class ListTaskRunsRequest extends
@@ -45,10 +41,6 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
-   * <pre>
-   * The WfRun for which to list TaskRun's
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -57,10 +49,6 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
-   * <pre>
-   * The WfRun for which to list TaskRun's
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -69,10 +57,6 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
-   * <pre>
-   * The WfRun for which to list TaskRun's
-   * </pre>
-   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -243,10 +227,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * List TaskRun's for a specific WfRun
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.ListTaskRunsRequest}
    */
   public static final class Builder extends
@@ -426,10 +406,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -437,10 +413,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -452,10 +424,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -472,10 +440,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -490,10 +454,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -513,10 +473,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -530,10 +486,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -542,10 +494,6 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -557,10 +505,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The WfRun for which to list TaskRun's
-     * </pre>
-     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

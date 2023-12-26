@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Request used by the Task Worker SDK to report the result of a TaskRun execution.
- * </pre>
- *
  * Protobuf type {@code littlehorse.ReportTaskRun}
  */
 public final class ReportTaskRun extends
@@ -91,10 +87,6 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId taskRunId_;
   /**
-   * <pre>
-   * ID of the TaskRun
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return Whether the taskRunId field is set.
    */
@@ -103,10 +95,6 @@ private static final long serialVersionUID = 0L;
     return taskRunId_ != null;
   }
   /**
-   * <pre>
-   * ID of the TaskRun
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    * @return The taskRunId.
    */
@@ -115,10 +103,6 @@ private static final long serialVersionUID = 0L;
     return taskRunId_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRunId_;
   }
   /**
-   * <pre>
-   * ID of the TaskRun
-   * </pre>
-   *
    * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -129,10 +113,6 @@ private static final long serialVersionUID = 0L;
   public static final int TIME_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp time_;
   /**
-   * <pre>
-   * When the TaskRun was executed
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp time = 2;</code>
    * @return Whether the time field is set.
    */
@@ -141,10 +121,6 @@ private static final long serialVersionUID = 0L;
     return time_ != null;
   }
   /**
-   * <pre>
-   * When the TaskRun was executed
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp time = 2;</code>
    * @return The time.
    */
@@ -153,10 +129,6 @@ private static final long serialVersionUID = 0L;
     return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
   }
   /**
-   * <pre>
-   * When the TaskRun was executed
-   * </pre>
-   *
    * <code>.google.protobuf.Timestamp time = 2;</code>
    */
   @java.lang.Override
@@ -167,10 +139,6 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 3;
   private int status_ = 0;
   /**
-   * <pre>
-   * Status of the TaskRun
-   * </pre>
-   *
    * <code>.littlehorse.TaskStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -178,10 +146,6 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
-   * <pre>
-   * Status of the TaskRun
-   * </pre>
-   *
    * <code>.littlehorse.TaskStatus status = 3;</code>
    * @return The status.
    */
@@ -193,10 +157,6 @@ private static final long serialVersionUID = 0L;
   public static final int LOG_OUTPUT_FIELD_NUMBER = 5;
   private io.littlehorse.sdk.common.proto.VariableValue logOutput_;
   /**
-   * <pre>
-   * Optional information for logging or exceptions
-   * </pre>
-   *
    * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    * @return Whether the logOutput field is set.
    */
@@ -205,10 +165,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Optional information for logging or exceptions
-   * </pre>
-   *
    * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    * @return The logOutput.
    */
@@ -217,10 +173,6 @@ private static final long serialVersionUID = 0L;
     return logOutput_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : logOutput_;
   }
   /**
-   * <pre>
-   * Optional information for logging or exceptions
-   * </pre>
-   *
    * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    */
   @java.lang.Override
@@ -231,10 +183,6 @@ private static final long serialVersionUID = 0L;
   public static final int ATTEMPT_NUMBER_FIELD_NUMBER = 6;
   private int attemptNumber_ = 0;
   /**
-   * <pre>
-   * Attempt number of the TaskRun
-   * </pre>
-   *
    * <code>int32 attempt_number = 6;</code>
    * @return The attemptNumber.
    */
@@ -245,10 +193,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int OUTPUT_FIELD_NUMBER = 4;
   /**
-   * <pre>
-   * Successfully completed task
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue output = 4;</code>
    * @return Whether the output field is set.
    */
@@ -257,10 +201,6 @@ private static final long serialVersionUID = 0L;
     return resultCase_ == 4;
   }
   /**
-   * <pre>
-   * Successfully completed task
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue output = 4;</code>
    * @return The output.
    */
@@ -272,10 +212,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
   }
   /**
-   * <pre>
-   * Successfully completed task
-   * </pre>
-   *
    * <code>.littlehorse.VariableValue output = 4;</code>
    */
   @java.lang.Override
@@ -288,10 +224,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int ERROR_FIELD_NUMBER = 7;
   /**
-   * <pre>
-   * Technical error
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskError error = 7;</code>
    * @return Whether the error field is set.
    */
@@ -300,10 +232,6 @@ private static final long serialVersionUID = 0L;
     return resultCase_ == 7;
   }
   /**
-   * <pre>
-   * Technical error
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskError error = 7;</code>
    * @return The error.
    */
@@ -315,10 +243,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
   }
   /**
-   * <pre>
-   * Technical error
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskError error = 7;</code>
    */
   @java.lang.Override
@@ -331,10 +255,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int EXCEPTION_FIELD_NUMBER = 8;
   /**
-   * <pre>
-   * Business exception
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskException exception = 8;</code>
    * @return Whether the exception field is set.
    */
@@ -343,10 +263,6 @@ private static final long serialVersionUID = 0L;
     return resultCase_ == 8;
   }
   /**
-   * <pre>
-   * Business exception
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskException exception = 8;</code>
    * @return The exception.
    */
@@ -358,10 +274,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
   }
   /**
-   * <pre>
-   * Business exception
-   * </pre>
-   *
    * <code>.littlehorse.LHTaskException exception = 8;</code>
    */
   @java.lang.Override
@@ -642,10 +554,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Request used by the Task Worker SDK to report the result of a TaskRun execution.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.ReportTaskRun}
    */
   public static final class Builder extends
@@ -982,10 +890,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> taskRunIdBuilder_;
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      * @return Whether the taskRunId field is set.
      */
@@ -993,10 +897,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      * @return The taskRunId.
      */
@@ -1008,10 +908,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -1028,10 +924,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(
@@ -1046,10 +938,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder mergeTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -1069,10 +957,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder clearTaskRunId() {
@@ -1086,10 +970,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunId.Builder getTaskRunIdBuilder() {
@@ -1098,10 +978,6 @@ private static final long serialVersionUID = 0L;
       return getTaskRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunIdOrBuilder() {
@@ -1113,10 +989,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * ID of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskRunId task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1137,10 +1009,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> timeBuilder_;
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      * @return Whether the time field is set.
      */
@@ -1148,10 +1016,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      * @return The time.
      */
@@ -1163,10 +1027,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public Builder setTime(com.google.protobuf.Timestamp value) {
@@ -1183,10 +1043,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public Builder setTime(
@@ -1201,10 +1057,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public Builder mergeTime(com.google.protobuf.Timestamp value) {
@@ -1224,10 +1076,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public Builder clearTime() {
@@ -1241,10 +1089,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
@@ -1253,10 +1097,6 @@ private static final long serialVersionUID = 0L;
       return getTimeFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
@@ -1268,10 +1108,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * When the TaskRun was executed
-     * </pre>
-     *
      * <code>.google.protobuf.Timestamp time = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1290,10 +1126,6 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
-     * <pre>
-     * Status of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskStatus status = 3;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1301,10 +1133,6 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
-     * <pre>
-     * Status of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskStatus status = 3;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1316,10 +1144,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Status of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskStatus status = 3;</code>
      * @return The status.
      */
@@ -1329,10 +1153,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
     }
     /**
-     * <pre>
-     * Status of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskStatus status = 3;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1347,10 +1167,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Status of the TaskRun
-     * </pre>
-     *
      * <code>.littlehorse.TaskStatus status = 3;</code>
      * @return This builder for chaining.
      */
@@ -1365,10 +1181,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> logOutputBuilder_;
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      * @return Whether the logOutput field is set.
      */
@@ -1376,10 +1188,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      * @return The logOutput.
      */
@@ -1391,10 +1199,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public Builder setLogOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1411,10 +1215,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public Builder setLogOutput(
@@ -1429,10 +1229,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public Builder mergeLogOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1452,10 +1248,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public Builder clearLogOutput() {
@@ -1469,10 +1261,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getLogOutputBuilder() {
@@ -1481,10 +1269,6 @@ private static final long serialVersionUID = 0L;
       return getLogOutputFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLogOutputOrBuilder() {
@@ -1496,10 +1280,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Optional information for logging or exceptions
-     * </pre>
-     *
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1518,10 +1298,6 @@ private static final long serialVersionUID = 0L;
 
     private int attemptNumber_ ;
     /**
-     * <pre>
-     * Attempt number of the TaskRun
-     * </pre>
-     *
      * <code>int32 attempt_number = 6;</code>
      * @return The attemptNumber.
      */
@@ -1530,10 +1306,6 @@ private static final long serialVersionUID = 0L;
       return attemptNumber_;
     }
     /**
-     * <pre>
-     * Attempt number of the TaskRun
-     * </pre>
-     *
      * <code>int32 attempt_number = 6;</code>
      * @param value The attemptNumber to set.
      * @return This builder for chaining.
@@ -1546,10 +1318,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Attempt number of the TaskRun
-     * </pre>
-     *
      * <code>int32 attempt_number = 6;</code>
      * @return This builder for chaining.
      */
@@ -1563,10 +1331,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> outputBuilder_;
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      * @return Whether the output field is set.
      */
@@ -1575,10 +1339,6 @@ private static final long serialVersionUID = 0L;
       return resultCase_ == 4;
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      * @return The output.
      */
@@ -1597,10 +1357,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     public Builder setOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1617,10 +1373,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     public Builder setOutput(
@@ -1635,10 +1387,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     public Builder mergeOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1662,10 +1410,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     public Builder clearOutput() {
@@ -1685,20 +1429,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getOutputBuilder() {
       return getOutputFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     @java.lang.Override
@@ -1713,10 +1449,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Successfully completed task
-     * </pre>
-     *
      * <code>.littlehorse.VariableValue output = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1741,10 +1473,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.LHTaskError, io.littlehorse.sdk.common.proto.LHTaskError.Builder, io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder> errorBuilder_;
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      * @return Whether the error field is set.
      */
@@ -1753,10 +1481,6 @@ private static final long serialVersionUID = 0L;
       return resultCase_ == 7;
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      * @return The error.
      */
@@ -1775,10 +1499,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     public Builder setError(io.littlehorse.sdk.common.proto.LHTaskError value) {
@@ -1795,10 +1515,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     public Builder setError(
@@ -1813,10 +1529,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     public Builder mergeError(io.littlehorse.sdk.common.proto.LHTaskError value) {
@@ -1840,10 +1552,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     public Builder clearError() {
@@ -1863,20 +1571,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.LHTaskError.Builder getErrorBuilder() {
       return getErrorFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     @java.lang.Override
@@ -1891,10 +1591,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Technical error
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskError error = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1919,10 +1615,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.LHTaskException, io.littlehorse.sdk.common.proto.LHTaskException.Builder, io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder> exceptionBuilder_;
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      * @return Whether the exception field is set.
      */
@@ -1931,10 +1623,6 @@ private static final long serialVersionUID = 0L;
       return resultCase_ == 8;
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      * @return The exception.
      */
@@ -1953,10 +1641,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     public Builder setException(io.littlehorse.sdk.common.proto.LHTaskException value) {
@@ -1973,10 +1657,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     public Builder setException(
@@ -1991,10 +1671,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     public Builder mergeException(io.littlehorse.sdk.common.proto.LHTaskException value) {
@@ -2018,10 +1694,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     public Builder clearException() {
@@ -2041,20 +1713,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.LHTaskException.Builder getExceptionBuilder() {
       return getExceptionFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     @java.lang.Override
@@ -2069,10 +1733,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Business exception
-     * </pre>
-     *
      * <code>.littlehorse.LHTaskException exception = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

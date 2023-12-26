@@ -4,12 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Search for UserTaskRun's matching certain criteria. The attributes are additive,
- * you may specify any combination of fields in this request. Only UserTaskRun's
- * matching all criteria will be returned.
- * </pre>
- *
  * Protobuf type {@code littlehorse.SearchUserTaskRunRequest}
  */
 public final class SearchUserTaskRunRequest extends
@@ -53,10 +47,6 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <pre>
-   * Bookmark for cursor-based pagination; pass if applicable.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
@@ -65,10 +55,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Bookmark for cursor-based pagination; pass if applicable.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
@@ -80,10 +66,6 @@ private static final long serialVersionUID = 0L;
   public static final int LIMIT_FIELD_NUMBER = 2;
   private int limit_ = 0;
   /**
-   * <pre>
-   * Maximum results to return in one request.
-   * </pre>
-   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
@@ -92,10 +74,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <pre>
-   * Maximum results to return in one request.
-   * </pre>
-   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
@@ -107,10 +85,6 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 3;
   private int status_ = 0;
   /**
-   * <pre>
-   * Status of UserTaskRun's to return.
-   * </pre>
-   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return Whether the status field is set.
    */
@@ -118,10 +92,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <pre>
-   * Status of UserTaskRun's to return.
-   * </pre>
-   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -129,10 +99,6 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
-   * <pre>
-   * Status of UserTaskRun's to return.
-   * </pre>
-   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The status.
    */
@@ -145,10 +111,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userTaskDefName_ = "";
   /**
-   * <pre>
-   * UserTaskDef name to search for.
-   * </pre>
-   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return Whether the userTaskDefName field is set.
    */
@@ -157,10 +119,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <pre>
-   * UserTaskDef name to search for.
-   * </pre>
-   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return The userTaskDefName.
    */
@@ -178,10 +136,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * UserTaskDef name to search for.
-   * </pre>
-   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return The bytes for userTaskDefName.
    */
@@ -204,10 +158,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user id.
-   * </pre>
-   *
    * <code>optional string user_id = 5;</code>
    * @return Whether the userId field is set.
    */
@@ -216,10 +166,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user id.
-   * </pre>
-   *
    * <code>optional string user_id = 5;</code>
    * @return The userId.
    */
@@ -237,10 +183,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user id.
-   * </pre>
-   *
    * <code>optional string user_id = 5;</code>
    * @return The bytes for userId.
    */
@@ -263,10 +205,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userGroup_ = "";
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user group.
-   * </pre>
-   *
    * <code>optional string user_group = 6;</code>
    * @return Whether the userGroup field is set.
    */
@@ -275,10 +213,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user group.
-   * </pre>
-   *
    * <code>optional string user_group = 6;</code>
    * @return The userGroup.
    */
@@ -296,10 +230,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's assigned to this user group.
-   * </pre>
-   *
    * <code>optional string user_group = 6;</code>
    * @return The bytes for userGroup.
    */
@@ -321,10 +251,6 @@ private static final long serialVersionUID = 0L;
   public static final int EARLIEST_START_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp earliestStart_;
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created after this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    * @return Whether the earliestStart field is set.
    */
@@ -333,10 +259,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000040) != 0);
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created after this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    * @return The earliestStart.
    */
@@ -345,10 +267,6 @@ private static final long serialVersionUID = 0L;
     return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created after this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    */
   @java.lang.Override
@@ -359,10 +277,6 @@ private static final long serialVersionUID = 0L;
   public static final int LATEST_START_FIELD_NUMBER = 8;
   private com.google.protobuf.Timestamp latestStart_;
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created before this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    * @return Whether the latestStart field is set.
    */
@@ -371,10 +285,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000080) != 0);
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created before this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    * @return The latestStart.
    */
@@ -383,10 +293,6 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's that were created before this time.
-   * </pre>
-   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    */
   @java.lang.Override
@@ -665,12 +571,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Search for UserTaskRun's matching certain criteria. The attributes are additive,
-   * you may specify any combination of fields in this request. Only UserTaskRun's
-   * matching all criteria will be returned.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.SearchUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -963,10 +863,6 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return Whether the bookmark field is set.
      */
@@ -975,10 +871,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return The bookmark.
      */
@@ -987,10 +879,6 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -1003,10 +891,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Bookmark for cursor-based pagination; pass if applicable.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 1;</code>
      * @return This builder for chaining.
      */
@@ -1019,10 +903,6 @@ private static final long serialVersionUID = 0L;
 
     private int limit_ ;
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return Whether the limit field is set.
      */
@@ -1031,10 +911,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return The limit.
      */
@@ -1043,10 +919,6 @@ private static final long serialVersionUID = 0L;
       return limit_;
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @param value The limit to set.
      * @return This builder for chaining.
@@ -1059,10 +931,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Maximum results to return in one request.
-     * </pre>
-     *
      * <code>optional int32 limit = 2;</code>
      * @return This builder for chaining.
      */
@@ -1075,10 +943,6 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @return Whether the status field is set.
      */
@@ -1086,10 +950,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1097,10 +957,6 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1112,10 +968,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @return The status.
      */
@@ -1125,10 +977,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.UserTaskRunStatus.UNRECOGNIZED : result;
     }
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1143,10 +991,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Status of UserTaskRun's to return.
-     * </pre>
-     *
      * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
      * @return This builder for chaining.
      */
@@ -1159,10 +1003,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userTaskDefName_ = "";
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @return Whether the userTaskDefName field is set.
      */
@@ -1170,10 +1010,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @return The userTaskDefName.
      */
@@ -1190,10 +1026,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @return The bytes for userTaskDefName.
      */
@@ -1211,10 +1043,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @param value The userTaskDefName to set.
      * @return This builder for chaining.
@@ -1228,10 +1056,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @return This builder for chaining.
      */
@@ -1242,10 +1066,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * UserTaskDef name to search for.
-     * </pre>
-     *
      * <code>optional string user_task_def_name = 4;</code>
      * @param value The bytes for userTaskDefName to set.
      * @return This builder for chaining.
@@ -1262,10 +1082,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userId_ = "";
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @return Whether the userId field is set.
      */
@@ -1273,10 +1089,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @return The userId.
      */
@@ -1293,10 +1105,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @return The bytes for userId.
      */
@@ -1314,10 +1122,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -1331,10 +1135,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @return This builder for chaining.
      */
@@ -1345,10 +1145,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user id.
-     * </pre>
-     *
      * <code>optional string user_id = 5;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.
@@ -1365,10 +1161,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userGroup_ = "";
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @return Whether the userGroup field is set.
      */
@@ -1376,10 +1168,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @return The userGroup.
      */
@@ -1396,10 +1184,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @return The bytes for userGroup.
      */
@@ -1417,10 +1201,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @param value The userGroup to set.
      * @return This builder for chaining.
@@ -1434,10 +1214,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @return This builder for chaining.
      */
@@ -1448,10 +1224,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's assigned to this user group.
-     * </pre>
-     *
      * <code>optional string user_group = 6;</code>
      * @param value The bytes for userGroup to set.
      * @return This builder for chaining.
@@ -1470,10 +1242,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      * @return Whether the earliestStart field is set.
      */
@@ -1481,10 +1249,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      * @return The earliestStart.
      */
@@ -1496,10 +1260,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
@@ -1516,10 +1276,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public Builder setEarliestStart(
@@ -1534,10 +1290,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
@@ -1557,10 +1309,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public Builder clearEarliestStart() {
@@ -1574,10 +1322,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
@@ -1586,10 +1330,6 @@ private static final long serialVersionUID = 0L;
       return getEarliestStartFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
@@ -1601,10 +1341,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created after this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1625,10 +1361,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      * @return Whether the latestStart field is set.
      */
@@ -1636,10 +1368,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      * @return The latestStart.
      */
@@ -1651,10 +1379,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public Builder setLatestStart(com.google.protobuf.Timestamp value) {
@@ -1671,10 +1395,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public Builder setLatestStart(
@@ -1689,10 +1409,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
@@ -1712,10 +1428,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public Builder clearLatestStart() {
@@ -1729,10 +1441,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
@@ -1741,10 +1449,6 @@ private static final long serialVersionUID = 0L;
       return getLatestStartFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
@@ -1756,10 +1460,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Search for UserTaskRun's that were created before this time.
-     * </pre>
-     *
      * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

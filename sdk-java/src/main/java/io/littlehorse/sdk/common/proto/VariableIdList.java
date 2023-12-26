@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * This is a list of Variable ID's.
- * </pre>
- *
  * Protobuf type {@code littlehorse.VariableIdList}
  */
 public final class VariableIdList extends
@@ -49,10 +45,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VariableId> results_;
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VariableId results = 1;</code>
    */
   @java.lang.Override
@@ -60,10 +52,6 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VariableId results = 1;</code>
    */
   @java.lang.Override
@@ -72,10 +60,6 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VariableId results = 1;</code>
    */
   @java.lang.Override
@@ -83,10 +67,6 @@ private static final long serialVersionUID = 0L;
     return results_.size();
   }
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VariableId results = 1;</code>
    */
   @java.lang.Override
@@ -94,10 +74,6 @@ private static final long serialVersionUID = 0L;
     return results_.get(index);
   }
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.VariableId results = 1;</code>
    */
   @java.lang.Override
@@ -109,12 +85,6 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 2;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <pre>
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 2;</code>
    * @return Whether the bookmark field is set.
    */
@@ -123,12 +93,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 2;</code>
    * @return The bookmark.
    */
@@ -313,10 +277,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * This is a list of Variable ID's.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.VariableIdList}
    */
   public static final class Builder extends
@@ -559,10 +519,6 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.VariableId.Builder, io.littlehorse.sdk.common.proto.VariableIdOrBuilder> resultsBuilder_;
 
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableId> getResultsList() {
@@ -573,10 +529,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public int getResultsCount() {
@@ -587,10 +539,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableId getResults(int index) {
@@ -601,10 +549,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder setResults(
@@ -622,10 +566,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder setResults(
@@ -640,10 +580,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder addResults(io.littlehorse.sdk.common.proto.VariableId value) {
@@ -660,10 +596,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder addResults(
@@ -681,10 +613,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder addResults(
@@ -699,10 +627,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder addResults(
@@ -717,10 +641,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder addAllResults(
@@ -736,10 +656,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder clearResults() {
@@ -753,10 +669,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public Builder removeResults(int index) {
@@ -770,10 +682,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableId.Builder getResultsBuilder(
@@ -781,10 +689,6 @@ private static final long serialVersionUID = 0L;
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableIdOrBuilder getResultsOrBuilder(
@@ -795,10 +699,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableIdOrBuilder> 
@@ -810,10 +710,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableId.Builder addResultsBuilder() {
@@ -821,10 +717,6 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableId.Builder addResultsBuilder(
@@ -833,10 +725,6 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The resulting object id's.
-     * </pre>
-     *
      * <code>repeated .littlehorse.VariableId results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableId.Builder> 
@@ -860,12 +748,6 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <pre>
-     * The bookmark can be used for cursor-based pagination. If it is null, the server
-     * has returned all results. If it is set, you can pass it into your next request
-     * to resume searching where your previous request left off.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 2;</code>
      * @return Whether the bookmark field is set.
      */
@@ -874,12 +756,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <pre>
-     * The bookmark can be used for cursor-based pagination. If it is null, the server
-     * has returned all results. If it is set, you can pass it into your next request
-     * to resume searching where your previous request left off.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 2;</code>
      * @return The bookmark.
      */
@@ -888,12 +764,6 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
-     * <pre>
-     * The bookmark can be used for cursor-based pagination. If it is null, the server
-     * has returned all results. If it is set, you can pass it into your next request
-     * to resume searching where your previous request left off.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 2;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -906,12 +776,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The bookmark can be used for cursor-based pagination. If it is null, the server
-     * has returned all results. If it is set, you can pass it into your next request
-     * to resume searching where your previous request left off.
-     * </pre>
-     *
      * <code>optional bytes bookmark = 2;</code>
      * @return This builder for chaining.
      */

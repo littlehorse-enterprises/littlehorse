@@ -8,19 +8,11 @@ public interface GetLatestUserTaskDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The name of the UserTaskDef to search for.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <pre>
-   * The name of the UserTaskDef to search for.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */

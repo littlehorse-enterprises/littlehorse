@@ -8,67 +8,35 @@ public interface ExternalEventIdListOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.ExternalEventId results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> 
       getResultsList();
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.ExternalEventId results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventId getResults(int index);
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.ExternalEventId results = 1;</code>
    */
   int getResultsCount();
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.ExternalEventId results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <pre>
-   * The resulting object id's.
-   * </pre>
-   *
    * <code>repeated .littlehorse.ExternalEventId results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getResultsOrBuilder(
       int index);
 
   /**
-   * <pre>
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 2;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
-   * <pre>
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   * </pre>
-   *
    * <code>optional bytes bookmark = 2;</code>
    * @return The bookmark.
    */

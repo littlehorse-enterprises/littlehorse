@@ -4,10 +4,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Creates a UserTaskDef.
- * </pre>
- *
  * Protobuf type {@code littlehorse.PutUserTaskDefRequest}
  */
 public final class PutUserTaskDefRequest extends
@@ -50,10 +46,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
-   * <pre>
-   * The name of the UserTaskDef to create.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -71,10 +63,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * The name of the UserTaskDef to create.
-   * </pre>
-   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -97,12 +85,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_;
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
@@ -110,12 +92,6 @@ private static final long serialVersionUID = 0L;
     return fields_;
   }
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
@@ -124,12 +100,6 @@ private static final long serialVersionUID = 0L;
     return fields_;
   }
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
@@ -137,12 +107,6 @@ private static final long serialVersionUID = 0L;
     return fields_.size();
   }
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
@@ -150,12 +114,6 @@ private static final long serialVersionUID = 0L;
     return fields_.get(index);
   }
   /**
-   * <pre>
-   * The fields that should be presented to the user on the screen in order to fill
-   * out the User Task. Note that these fields also define a data contract for the
-   * result of the UserTaskDef.
-   * </pre>
-   *
    * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
@@ -168,11 +126,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object description_ = "";
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
@@ -181,11 +134,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return The description.
    */
@@ -203,11 +151,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Optional metadata field to store user-defined data. Does not impact workflow
-   * execution.
-   * </pre>
-   *
    * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */
@@ -411,10 +354,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Creates a UserTaskDef.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.PutUserTaskDefRequest}
    */
   public static final class Builder extends
@@ -662,10 +601,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
-     * <pre>
-     * The name of the UserTaskDef to create.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -682,10 +617,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to create.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -703,10 +634,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to create.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -720,10 +647,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to create.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -734,10 +657,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The name of the UserTaskDef to create.
-     * </pre>
-     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -765,12 +684,6 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> fieldsBuilder_;
 
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
@@ -781,12 +694,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public int getFieldsCount() {
@@ -797,12 +704,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
@@ -813,12 +714,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder setFields(
@@ -836,12 +731,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder setFields(
@@ -856,12 +745,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
@@ -878,12 +761,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
@@ -901,12 +778,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
@@ -921,12 +792,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
@@ -941,12 +806,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addAllFields(
@@ -962,12 +821,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder clearFields() {
@@ -981,12 +834,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder removeFields(int index) {
@@ -1000,12 +847,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
@@ -1013,12 +854,6 @@ private static final long serialVersionUID = 0L;
       return getFieldsFieldBuilder().getBuilder(index);
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
@@ -1029,12 +864,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
@@ -1046,12 +875,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
@@ -1059,12 +882,6 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
@@ -1073,12 +890,6 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <pre>
-     * The fields that should be presented to the user on the screen in order to fill
-     * out the User Task. Note that these fields also define a data contract for the
-     * result of the UserTaskDef.
-     * </pre>
-     *
      * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
@@ -1102,11 +913,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object description_ = "";
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @return Whether the description field is set.
      */
@@ -1114,11 +920,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @return The description.
      */
@@ -1135,11 +936,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @return The bytes for description.
      */
@@ -1157,11 +953,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @param value The description to set.
      * @return This builder for chaining.
@@ -1175,11 +966,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @return This builder for chaining.
      */
@@ -1190,11 +976,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Optional metadata field to store user-defined data. Does not impact workflow
-     * execution.
-     * </pre>
-     *
      * <code>optional string description = 3;</code>
      * @param value The bytes for description to set.
      * @return This builder for chaining.
