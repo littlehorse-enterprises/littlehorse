@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.PartitionMetricsModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.store.DefaultModelStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.util.Optional;
@@ -25,8 +24,8 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                     new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
             currentAggregateCommand()
                     .addMetric(
-                            wfRunEvent.getWfSPecId(),
-                            new TenantIdModel(wfRunEvent.getTenantId()),
+                            wfRunEvent.getWfSpecId(),
+                            wfRunEvent.getTenantId(),
                             statusChanged,
                             wfRunEvent.getCreationDate());
         } else {

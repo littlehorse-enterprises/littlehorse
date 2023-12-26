@@ -3,12 +3,16 @@ package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateTaskMetrics;
 import io.littlehorse.common.proto.TaskMetricUpdate;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +62,29 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
     }
 
     @Override
-    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {}
+    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
+        for (TaskMetricUpdateModel metricUpdate : taskMetrics) {
+            StoredGetable<TaskDefMetrics, TaskDefMetricsModel> storedMetrics =
+                    repartitionedStore.get(TaskDefMetricsIdModel.getObjectId(
+                            metricUpdate.getWindowStart(), metricUpdate.getWindowType(), metricUpdate.getTaskDefId()));
+            TaskDefMetricsModel metricToUpdate;
+            if (storedMetrics == null) {
+                metricToUpdate = new TaskDefMetricsModel(
+                        metricUpdate.getWindowStart(), metricUpdate.getWindowType(), metricUpdate.getTaskDefId());
+            } else {
+                metricToUpdate = storedMetrics.getStoredObject();
+            }
+            mergeMetrics(metricToUpdate, metricUpdate);
+            repartitionedStore.put(new StoredGetable<>(metricToUpdate));
+        }
+    }
+
+    private void mergeMetrics(TaskDefMetricsModel taskDefMetric, TaskMetricUpdateModel metricUpdate) {
+        taskDefMetric.totalCompleted += metricUpdate.totalCompleted;
+        taskDefMetric.totalErrored += metricUpdate.totalErrored;
+        taskDefMetric.totalStarted += metricUpdate.totalStarted;
+        taskDefMetric.totalScheduled += metricUpdate.totalScheduled;
+    }
 
     @Override
     public String getPartitionKey() {

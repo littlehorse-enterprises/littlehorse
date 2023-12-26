@@ -3,13 +3,12 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import io.littlehorse.sdk.common.proto.TaskDefId;
-import io.littlehorse.sdk.common.proto.TaskStatus;
 import lombok.Getter;
 
 /**
@@ -57,8 +56,8 @@ public class GetableUpdates {
         private final LHStatus newStatus;
         private final WfSpecIdModel wfSpecId;
 
-
-        public WfRunStatusUpdate(WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
+        public WfRunStatusUpdate(
+                WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
             super(tenantId);
             this.previousStatus = previousStatus;
             this.wfSpecId = wfSpecId;
@@ -72,7 +71,8 @@ public class GetableUpdates {
         private final TaskStatus previousStatus;
         private final TaskStatus newStatus;
 
-        public TaskRunStatusUpdate(TaskDefId taskDefId, TenantIdModel tenantId, TaskStatus previousStatus, TaskStatus newStatus) {
+        public TaskRunStatusUpdate(
+                TaskDefId taskDefId, TenantIdModel tenantId, TaskStatus previousStatus, TaskStatus newStatus) {
             super(tenantId);
             this.taskDefId = taskDefId;
             this.previousStatus = previousStatus;

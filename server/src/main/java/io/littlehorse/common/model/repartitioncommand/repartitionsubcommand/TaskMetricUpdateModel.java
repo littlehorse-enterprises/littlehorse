@@ -25,7 +25,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
 
     private TaskDefIdModel taskDefId;
     public Date windowStart;
-    public MetricsWindowLength type;
+    public MetricsWindowLength windowType;
     public long numEntries;
     public long scheduleToStartMax;
     public long scheduleToStartTotal;
@@ -45,7 +45,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
 
     public TaskMetricUpdateModel(Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
         this.windowStart = windowStart;
-        this.type = type;
+        this.windowType = type;
         this.taskDefId = taskDefId;
     }
 
@@ -56,7 +56,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
     public TaskMetricUpdate.Builder toProto() {
         TaskMetricUpdate.Builder out = TaskMetricUpdate.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
-                .setType(type)
+                .setType(windowType)
                 .setTaskDefId(taskDefId.toProto())
                 .setTotalCompleted(totalCompleted)
                 .setTotalErrored(totalErrored)
@@ -75,7 +75,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
     public void initFrom(Message proto, ExecutionContext context) {
         TaskMetricUpdate p = (TaskMetricUpdate) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
-        type = p.getType();
+        windowType = p.getType();
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
@@ -92,7 +92,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
         if (!o.windowStart.equals(windowStart)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
-        if (!o.type.equals(type)) {
+        if (!o.windowType.equals(windowType)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
 
@@ -125,13 +125,13 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
         out.totalErrored = totalErrored;
         out.windowStart = windowStart;
         out.totalScheduled = totalScheduled;
-        out.type = type;
+        out.type = windowType;
 
         return out;
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsIdModel(windowStart, type, new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC))
+        return new TaskDefMetricsIdModel(windowStart, windowType, new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC))
                 .getStoreableKey();
     }
 
@@ -156,7 +156,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
 
     @Override
     public String getStoreKey() {
-        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefId.toString());
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), windowType.toString(), taskDefId.toString());
     }
 
     public static String getStoreKey(MetricsWindowLength type, Date windowStart, String taskDefName) {
