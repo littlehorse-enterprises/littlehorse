@@ -1,7 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -65,38 +65,38 @@ public class BasicExample {
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-//
-//        // Register task if it does not exist
-//        if (worker.doesTaskDefExist()) {
-//            log.debug(
-//                "Task {} already exists, skipping creation",
-//                worker.getTaskDefName()
-//            );
-//        } else {
-//            log.debug(
-//                "Task {} does not exist, registering it",
-//                worker.getTaskDefName()
-//            );
-//            worker.registerTaskDef();
-//        }
+
+        // Register task if it does not exist
+        if (worker.doesTaskDefExist()) {
+            log.debug(
+                "Task {} already exists, skipping creation",
+                worker.getTaskDefName()
+            );
+        } else {
+            log.debug(
+                "Task {} does not exist, registering it",
+                worker.getTaskDefName()
+            );
+            worker.registerTaskDef();
+        }
 
         // Register a workflow if it does not exist
-        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
-//        if (workflow.doesWfSpecExist(client)) {
-//            log.debug(
-//                "Workflow {} already exists, skipping creation",
-//                workflow.getName()
-//            );
-//        } else {
-//            log.debug(
-//                "Workflow {} does not exist, registering it",
-//                workflow.getName()
-//            );
-//            workflow.registerWfSpec(client);
-//        }
-//
-//        // Run the worker
-//        worker.start();
+        if (workflow.doesWfSpecExist(client)) {
+            log.debug(
+                "Workflow {} already exists, skipping creation",
+                workflow.getName()
+            );
+        } else {
+            log.debug(
+                "Workflow {} does not exist, registering it",
+                workflow.getName()
+            );
+            workflow.registerWfSpec(client);
+        }
+
+        // Run the worker
+        worker.start();
     }
 }

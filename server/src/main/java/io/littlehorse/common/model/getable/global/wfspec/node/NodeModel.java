@@ -46,8 +46,6 @@ public class NodeModel extends LHSerializable<Node> {
     public UserTaskNodeModel userTaskNode;
     private StartMultipleThreadsNodeModel startMultipleThreadsNode;
 
-    //    public List<VariableMutationModel> variableMutations;
-
     public List<FailureHandlerDefModel> failureHandlers;
 
     public Class<Node> getProtoBaseClass() {
@@ -60,10 +58,6 @@ public class NodeModel extends LHSerializable<Node> {
         for (EdgeModel o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
         }
-
-        //        for (VariableMutationModel v : variableMutations) {
-        //            out.addVariableMutations(v.toProto());
-        //        }
 
         for (FailureHandlerDefModel eh : failureHandlers) {
             out.addFailureHandlers(eh.toProto());
@@ -118,12 +112,6 @@ public class NodeModel extends LHSerializable<Node> {
             outgoingEdges.add(edge);
         }
 
-        //        for (VariableMutation vmpb : proto.getVariableMutationsList()) {
-        //            VariableMutationModel vm = new VariableMutationModel();
-        //            vm.initFrom(vmpb, context);
-        //            variableMutations.add(vm);
-        //        }
-
         for (FailureHandlerDef ehpb : proto.getFailureHandlersList()) {
             failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb, context));
         }
@@ -177,7 +165,6 @@ public class NodeModel extends LHSerializable<Node> {
 
     public NodeModel() {
         outgoingEdges = new ArrayList<>();
-        //        variableMutations = new ArrayList<>();
         failureHandlers = new ArrayList<>();
     }
 
@@ -185,23 +172,6 @@ public class NodeModel extends LHSerializable<Node> {
     public String name;
 
     public ThreadSpecModel threadSpecModel;
-
-    //    public Set<String> neededVariableNames() {
-    //        Set<String> out = new HashSet<>();
-    //
-    //        for (VariableMutationModel mut : variableMutations) {
-    //            out.add(mut.lhsName);
-    //            if (mut.rhsSourceVariable != null) {
-    //                if (mut.rhsSourceVariable.getVariableName() != null) {
-    //                    out.add(mut.rhsSourceVariable.getVariableName());
-    //                }
-    //            }
-    //        }
-    //
-    //        out.addAll(getSubNode().getNeededVariableNames());
-    //
-    //        return out;
-    //    }
 
     public void validate() throws LHApiException {
         for (EdgeModel e : outgoingEdges) {

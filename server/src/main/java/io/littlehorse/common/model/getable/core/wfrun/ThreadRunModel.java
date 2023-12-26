@@ -571,15 +571,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-        //        try {
-        //            mutateVariables(output);
-        //        } catch (LHVarSubError exn) {
-        //            fail(
-        //                    new FailureModel("Failed mutating variables: " + exn.getMessage(),
-        // LHConstants.VAR_MUTATION_ERROR),
-        //                    eventTime);
-        //            return;
-        //        }
 
         if (status == LHStatus.RUNNING) {
             // If we got here, then we're good.
