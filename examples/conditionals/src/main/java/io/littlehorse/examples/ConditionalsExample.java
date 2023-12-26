@@ -105,15 +105,11 @@ public class ConditionalsExample {
 
         // Register tasks
         for (LHTaskWorker worker : workers) {
-
             worker.registerTaskDef();
-
         }
 
         // Register a workflow
-
         workflow.registerWfSpec(client);
-
 
         // Run the workers
         for (LHTaskWorker worker : workers) {

@@ -83,8 +83,7 @@ public class HundredTasks {
 
         for (LHTaskWorker worker : workers) {
             // Register task
-                worker.registerTaskDef();
-
+            worker.registerTaskDef();
         }
 
         // Register a workflow

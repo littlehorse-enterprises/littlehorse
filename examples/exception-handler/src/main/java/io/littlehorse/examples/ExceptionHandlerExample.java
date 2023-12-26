@@ -93,9 +93,7 @@ public class ExceptionHandlerExample {
 
         // Register tasks
         for (LHTaskWorker worker : workers) {
-
             worker.registerTaskDef();
-
         }
 
         // Register a workflow

@@ -93,9 +93,7 @@ public class InterruptHandlerExample {
 
         // Register tasks
         for (LHTaskWorker worker : workers) {
-
-                worker.registerTaskDef();
-
+            worker.registerTaskDef();
         }
 
         // Register external
@@ -113,8 +111,7 @@ public class InterruptHandlerExample {
         }
 
         // Register a workflow
-
-            workflow.registerWfSpec(client);
+        workflow.registerWfSpec(client);
 
 
         // Run the workers

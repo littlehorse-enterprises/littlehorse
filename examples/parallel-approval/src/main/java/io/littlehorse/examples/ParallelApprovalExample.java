@@ -229,7 +229,7 @@ public class ParallelApprovalExample {
 
         // Register tasks
         for (LHTaskWorker worker : workers) {
-                worker.registerTaskDef();
+            worker.registerTaskDef();
         }
 
         // Register external event
