@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanRequest;
+import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.InternalScanRequest.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -32,7 +33,7 @@ import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @Setter
-public class InternalScanRequestModel<T extends LHSerializable<?>> extends LHSerializable<InternalScanRequest> {
+public class InternalScanRequestModel extends LHSerializable<InternalScanRequest> {
 
     private ScanResultTypePb resultType;
     private int limit;
@@ -123,7 +124,11 @@ public class InternalScanRequestModel<T extends LHSerializable<?>> extends LHSer
         }
     }
 
-    public ScanBoundary<?, T> getScanBoundary() {
+    public void scanPartition(RequestExecutionContext ctx, int partition, InternalScanResponse.Builder response) {
+
+    }
+
+    public ScanBoundary getScanBoundary() {
         switch (type) {
             case TAG_SCAN:
                 return tagScan;
@@ -135,13 +140,13 @@ public class InternalScanRequestModel<T extends LHSerializable<?>> extends LHSer
     }
 
     @SuppressWarnings("unchecked")
-    public void setScanBoundary(ScanBoundary<?, T> boundary) {
+    public void setScanBoundary(ScanBoundary boundary) {
         if (boundary instanceof TagScanModel) {
             type = ScanBoundaryCase.TAG_SCAN;
-            this.tagScan = (TagScanModel<T>) boundary;
+            this.tagScan = (TagScanModel) boundary;
         } else if (boundary instanceof BoundedObjectIdScanModel) {
             type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-            boundedObjectIdScan = (BoundedObjectIdScanModel<T>) boundary;
+            boundedObjectIdScan = (BoundedObjectIdScanModel) boundary;
         } else {
             throw new IllegalArgumentException("Unrecognized ScanBoundary type %s"
                     .formatted(boundary.getClass().getSimpleName()));
@@ -158,7 +163,7 @@ public class InternalScanRequestModel<T extends LHSerializable<?>> extends LHSer
             LHIterKeyValue<?> record, RequestExecutionContext ctx) {
         byte[] out;
         // First, get the described object id
-        T recordId = getScanBoundary().iterToObjectId(record);
+        var recordId = getScanBoundary().iterToObjectId(record);
         if (resultType == ScanResultTypePb.OBJECT_ID) {
             out = recordId.toBytes();
         } else {
