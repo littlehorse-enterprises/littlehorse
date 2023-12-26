@@ -29,7 +29,7 @@ public class UserTaskIdempotencyTest {
 
     @Test
     void shouldCreateNewVersion() {
-        String taskName = "sample-task";
+        String taskName = "updated-task";
 
         UserTaskSchema schema = new UserTaskSchema(new SampleForm(), taskName);
 
