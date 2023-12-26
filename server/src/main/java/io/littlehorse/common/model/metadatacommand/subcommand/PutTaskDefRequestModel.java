@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.TaskDefUtil;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
@@ -65,13 +66,17 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");
         }
 
-        TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
-        if (oldVersion != null) {
-            throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
-        }
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
+
+        TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
+        if (oldVersion != null) {
+            if (TaskDefUtil.equals(spec, oldVersion))
+                return oldVersion.toProto().build();
+            throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
+        }
+
         metadataManager.put(spec);
 
         return spec.toProto().build();
