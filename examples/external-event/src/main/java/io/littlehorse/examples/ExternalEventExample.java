@@ -1,7 +1,5 @@
 package io.littlehorse.examples;
 
-import io.grpc.StatusRuntimeException;
-import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -95,18 +93,7 @@ public class ExternalEventExample {
 
         // Register tasks if they don't exist
         for (LHTaskWorker worker : workers) {
-            if (worker.doesTaskDefExist()) {
-                log.debug(
-                    "Task {} already exists, skipping creation",
-                    worker.getTaskDefName()
-                );
-            } else {
-                log.debug(
-                    "Task {} does not exist, registering it",
-                    worker.getTaskDefName()
-                );
-                worker.registerTaskDef();
-            }
+            worker.registerTaskDef();
         }
 
         // Register external event if it does not exist
@@ -114,35 +101,16 @@ public class ExternalEventExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            try {
                 client.putExternalEventDef(
                     PutExternalEventDefRequest
                         .newBuilder()
                         .setName(externalEventName)
                         .build()
                 );
-            } catch(StatusRuntimeException exn) {
-                if (exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
-                    log.debug("External event already exists!");
-                } else {
-                    throw exn;
-                }
-            }
         }
 
         // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        workflow.registerWfSpec(client);
 
         // Run the workers
         for (LHTaskWorker worker : workers) {
