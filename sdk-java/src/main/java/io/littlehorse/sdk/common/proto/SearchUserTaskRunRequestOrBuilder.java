@@ -8,54 +8,94 @@ public interface SearchUserTaskRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
   com.google.protobuf.ByteString getBookmark();
 
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
   boolean hasLimit();
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
   int getLimit();
 
   /**
+   * <pre>
+   * Status of UserTaskRun's to return.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return Whether the status field is set.
    */
   boolean hasStatus();
   /**
+   * <pre>
+   * Status of UserTaskRun's to return.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * Status of UserTaskRun's to return.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunStatus getStatus();
 
   /**
+   * <pre>
+   * UserTaskDef name to search for.
+   * </pre>
+   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return Whether the userTaskDefName field is set.
    */
   boolean hasUserTaskDefName();
   /**
+   * <pre>
+   * UserTaskDef name to search for.
+   * </pre>
+   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return The userTaskDefName.
    */
   java.lang.String getUserTaskDefName();
   /**
+   * <pre>
+   * UserTaskDef name to search for.
+   * </pre>
+   *
    * <code>optional string user_task_def_name = 4;</code>
    * @return The bytes for userTaskDefName.
    */
@@ -63,16 +103,28 @@ public interface SearchUserTaskRunRequestOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user id.
+   * </pre>
+   *
    * <code>optional string user_id = 5;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user id.
+   * </pre>
+   *
    * <code>optional string user_id = 5;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user id.
+   * </pre>
+   *
    * <code>optional string user_id = 5;</code>
    * @return The bytes for userId.
    */
@@ -80,16 +132,28 @@ public interface SearchUserTaskRunRequestOrBuilder extends
       getUserIdBytes();
 
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user group.
+   * </pre>
+   *
    * <code>optional string user_group = 6;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user group.
+   * </pre>
+   *
    * <code>optional string user_group = 6;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
+   * <pre>
+   * Search for UserTaskRun's assigned to this user group.
+   * </pre>
+   *
    * <code>optional string user_group = 6;</code>
    * @return The bytes for userGroup.
    */
@@ -97,31 +161,55 @@ public interface SearchUserTaskRunRequestOrBuilder extends
       getUserGroupBytes();
 
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    * @return Whether the earliestStart field is set.
    */
   boolean hasEarliestStart();
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    * @return The earliestStart.
    */
   com.google.protobuf.Timestamp getEarliestStart();
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    * @return Whether the latestStart field is set.
    */
   boolean hasLatestStart();
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    * @return The latestStart.
    */
   com.google.protobuf.Timestamp getLatestStart();
   /**
+   * <pre>
+   * Search for UserTaskRun's that were created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();

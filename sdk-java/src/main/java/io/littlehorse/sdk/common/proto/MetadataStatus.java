@@ -4,19 +4,37 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Status of a Metadata Object, such as WfSpec or TaskDef
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.MetadataStatus}
  */
 public enum MetadataStatus
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * ACTIVE means the object can be used.
+   * </pre>
+   *
    * <code>ACTIVE = 0;</code>
    */
   ACTIVE(0),
   /**
+   * <pre>
+   * An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+   * existing WfRun's will be allowed to run to completion.
+   * </pre>
+   *
    * <code>ARCHIVED = 1;</code>
    */
   ARCHIVED(1),
   /**
+   * <pre>
+   * A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+   * self-destruct once all of its child WfRun's are terminated.
+   * </pre>
+   *
    * <code>TERMINATING = 2;</code>
    */
   TERMINATING(2),
@@ -24,14 +42,28 @@ public enum MetadataStatus
   ;
 
   /**
+   * <pre>
+   * ACTIVE means the object can be used.
+   * </pre>
+   *
    * <code>ACTIVE = 0;</code>
    */
   public static final int ACTIVE_VALUE = 0;
   /**
+   * <pre>
+   * An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+   * existing WfRun's will be allowed to run to completion.
+   * </pre>
+   *
    * <code>ARCHIVED = 1;</code>
    */
   public static final int ARCHIVED_VALUE = 1;
   /**
+   * <pre>
+   * A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+   * self-destruct once all of its child WfRun's are terminated.
+   * </pre>
+   *
    * <code>TERMINATING = 2;</code>
    */
   public static final int TERMINATING_VALUE = 2;

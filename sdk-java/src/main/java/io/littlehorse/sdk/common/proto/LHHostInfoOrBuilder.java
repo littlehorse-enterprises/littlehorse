@@ -8,11 +8,19 @@ public interface LHHostInfoOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The host on the server
+   * </pre>
+   *
    * <code>string host = 1;</code>
    * @return The host.
    */
   java.lang.String getHost();
   /**
+   * <pre>
+   * The host on the server
+   * </pre>
+   *
    * <code>string host = 1;</code>
    * @return The bytes for host.
    */
@@ -20,6 +28,10 @@ public interface LHHostInfoOrBuilder extends
       getHostBytes();
 
   /**
+   * <pre>
+   * The port for the specified listener.
+   * </pre>
+   *
    * <code>int32 port = 2;</code>
    * @return The port.
    */

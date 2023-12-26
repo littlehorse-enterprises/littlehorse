@@ -5,7 +5,7 @@ import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
+import io.littlehorse.common.proto.TaskWorkerMetadata;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;

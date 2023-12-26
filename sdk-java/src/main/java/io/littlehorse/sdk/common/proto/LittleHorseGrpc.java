@@ -1769,6 +1769,9 @@ public final class LittleHorseGrpc {
   public interface AsyncService {
 
     /**
+     * <pre>
+     * Creates a TaskDef.
+     * </pre>
      */
     default void putTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
@@ -1776,6 +1779,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a TaskDef.
+     * </pre>
      */
     default void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
@@ -1783,6 +1789,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates an ExternalEventDef.
+     * </pre>
      */
     default void putExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDef> responseObserver) {
@@ -1790,6 +1799,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets an ExternalEventDef.
+     * </pre>
      */
     default void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDef> responseObserver) {
@@ -1797,6 +1809,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a WfSpec.
+     * </pre>
      */
     default void putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -1804,6 +1819,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfSpec.
+     * </pre>
      */
     default void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -1811,6 +1829,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+     * </pre>
      */
     default void getLatestWfSpec(io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -1818,6 +1839,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+     * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+     * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+     * completion.
+     * As of 0.7.0, this feature is only partially implemented.
+     * </pre>
      */
     default void migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -1825,6 +1853,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a UserTaskDef.
+     * </pre>
      */
     default void putUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -1832,6 +1863,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific UserTaskDef.
+     * This RPC is highly useful for applications built around
+     * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+     * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+     * The frontend would inspect the UserTaskDef and display a form field on the browser page
+     * for each field in the UserTaskDef.
+     * </pre>
      */
     default void getUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -1839,6 +1878,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the most recent UserTaskDef with a specific name.
+     * </pre>
      */
     default void getLatestUserTaskDef(io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -1846,6 +1888,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Runs a WfSpec to create a WfRun.
+     * </pre>
      */
     default void runWf(io.littlehorse.sdk.common.proto.RunWfRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -1853,6 +1898,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfRun. Although useful for development and debugging, this RPC is not often
+     * used by applications.
+     * </pre>
      */
     default void getWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -1860,6 +1909,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+     * currently assigned, history of assignments and reassignments, and any context for that
+     * UserTaskRun which is specific to the WfRun.
+     * </pre>
      */
     default void getUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
@@ -1867,6 +1921,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+     * action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+     * applications that are using User Tasks to build an internal task-list and wish to
+     * administer the tasks.
+     * </pre>
      */
     default void assignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -1874,6 +1934,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+     * the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+     * completed, and unblocks the associated ThreadRun in the WfRun.
+     * This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+     * </pre>
      */
     default void completeUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -1881,6 +1947,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+     * </pre>
      */
     default void cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -1888,6 +1957,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+     * to model an entity.
+     * </pre>
      */
     default void listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList> responseObserver) {
@@ -1895,6 +1968,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific NodeRun.
+     * </pre>
      */
     default void getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRun> responseObserver) {
@@ -1902,6 +1978,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all NodeRun's for a specific WfRun.
+     * </pre>
      */
     default void listNodeRuns(io.littlehorse.sdk.common.proto.ListNodeRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRunList> responseObserver) {
@@ -1909,6 +1988,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific TaskRun.
+     * </pre>
      */
     default void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRun> responseObserver) {
@@ -1916,6 +1998,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all TaskRun's for a specific WfRun.
+     * </pre>
      */
     default void listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
@@ -1923,6 +2008,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get the value of a specific Variable. When using a WfRun to model an entity, this
+     * RPC is useful for retrieving information. It is equivalent to looking up the value of a
+     * column for a specific row in a SQL table.
+     * </pre>
      */
     default void getVariable(io.littlehorse.sdk.common.proto.VariableId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Variable> responseObserver) {
@@ -1930,6 +2020,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List all Variables from a WfRun.
+     * </pre>
      */
     default void listVariables(io.littlehorse.sdk.common.proto.ListVariablesRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.VariableList> responseObserver) {
@@ -1937,6 +2030,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Post an ExternalEvent. This RPC is highly useful for 
+     * </pre>
      */
     default void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
@@ -1944,6 +2040,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific ExternalEvent.
+     * </pre>
      */
     default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
@@ -1951,6 +2050,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List ExternalEvent's for a specific WfRun.
+     * </pre>
      */
     default void listExternalEvents(io.littlehorse.sdk.common.proto.ListExternalEventsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventList> responseObserver) {
@@ -1958,6 +2060,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfRun's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     default void searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList> responseObserver) {
@@ -1965,6 +2071,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+     * your workflows or Task Workers.
+     * </pre>
      */
     default void searchNodeRun(io.littlehorse.sdk.common.proto.SearchNodeRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRunIdList> responseObserver) {
@@ -1972,6 +2082,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+     * </pre>
      */
     default void searchTaskRun(io.littlehorse.sdk.common.proto.SearchTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunIdList> responseObserver) {
@@ -1979,6 +2092,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskRun's. This RPC is highly useful for applications that connect
+     * human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+     * person or group of people.
+     * </pre>
      */
     default void searchUserTaskRun(io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunIdList> responseObserver) {
@@ -1986,6 +2104,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Variable's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     default void searchVariable(io.littlehorse.sdk.common.proto.SearchVariableRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.VariableIdList> responseObserver) {
@@ -1993,6 +2115,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExternalEvent's.
+     * </pre>
      */
     default void searchExternalEvent(io.littlehorse.sdk.common.proto.SearchExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventIdList> responseObserver) {
@@ -2000,6 +2125,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskDef's.
+     * </pre>
      */
     default void searchTaskDef(io.littlehorse.sdk.common.proto.SearchTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefIdList> responseObserver) {
@@ -2007,6 +2135,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskDef's.
+     * </pre>
      */
     default void searchUserTaskDef(io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDefIdList> responseObserver) {
@@ -2014,6 +2145,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfSpec's.
+     * </pre>
      */
     default void searchWfSpec(io.littlehorse.sdk.common.proto.SearchWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecIdList> responseObserver) {
@@ -2021,6 +2155,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExteranlEventDef's.
+     * </pre>
      */
     default void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
@@ -2028,6 +2165,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by the Task Worker to:
+     * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+     * 2. Receive the assignemnt of LH Server's to poll from.
+     * Generally, you won't use this request manually.
+     * </pre>
      */
     default void registerTaskWorker(io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> responseObserver) {
@@ -2035,6 +2178,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+     * use this RPC manually.
+     * </pre>
      */
     default io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskRequest> pollTask(
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskResponse> responseObserver) {
@@ -2042,6 +2189,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+     * this rpc manually.
+     * </pre>
      */
     default void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2049,6 +2200,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * </pre>
      */
     default void stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2056,6 +2210,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Resumes a WfRun or a specific ThreadRun of a WfRun.
+     * </pre>
      */
     default void resumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2063,6 +2220,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+     * </pre>
      */
     default void deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2070,6 +2230,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a TaskDef.
+     * </pre>
      */
     default void deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2077,6 +2240,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfSpec.
+     * </pre>
      */
     default void deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2084,6 +2250,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a UserTaskDef.
+     * </pre>
      */
     default void deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2091,6 +2260,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes an ExternalEventDef.
+     * </pre>
      */
     default void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2098,6 +2270,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+     * </pre>
      */
     default void getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefMetrics> responseObserver) {
@@ -2105,6 +2280,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+     * </pre>
      */
     default void getWfSpecMetricsWindow(io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecMetrics> responseObserver) {
@@ -2112,6 +2290,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of TaskDef Metrics Windows.
+     * </pre>
      */
     default void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
@@ -2119,6 +2300,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of WfSpec Metrics Windows.
+     * </pre>
      */
     default void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
@@ -2126,6 +2310,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * </pre>
      */
     default void putTenant(io.littlehorse.common.proto.PutTenantRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Tenant> responseObserver) {
@@ -2133,6 +2320,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates an Principal.
+     * </pre>
      */
     default void putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
@@ -2140,6 +2330,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the Principal of the caller.
+     * </pre>
      */
     default void whoami(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
@@ -2147,6 +2340,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the version of the LH Server.
+     * </pre>
      */
     default void getServerVersion(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
@@ -2182,6 +2378,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a TaskDef.
+     * </pre>
      */
     public void putTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
@@ -2190,6 +2389,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a TaskDef.
+     * </pre>
      */
     public void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
@@ -2198,6 +2400,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates an ExternalEventDef.
+     * </pre>
      */
     public void putExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDef> responseObserver) {
@@ -2206,6 +2411,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets an ExternalEventDef.
+     * </pre>
      */
     public void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDef> responseObserver) {
@@ -2214,6 +2422,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a WfSpec.
+     * </pre>
      */
     public void putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -2222,6 +2433,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfSpec.
+     * </pre>
      */
     public void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -2230,6 +2444,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+     * </pre>
      */
     public void getLatestWfSpec(io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -2238,6 +2455,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+     * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+     * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+     * completion.
+     * As of 0.7.0, this feature is only partially implemented.
+     * </pre>
      */
     public void migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
@@ -2246,6 +2470,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a UserTaskDef.
+     * </pre>
      */
     public void putUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -2254,6 +2481,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific UserTaskDef.
+     * This RPC is highly useful for applications built around
+     * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+     * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+     * The frontend would inspect the UserTaskDef and display a form field on the browser page
+     * for each field in the UserTaskDef.
+     * </pre>
      */
     public void getUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -2262,6 +2497,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the most recent UserTaskDef with a specific name.
+     * </pre>
      */
     public void getLatestUserTaskDef(io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDef> responseObserver) {
@@ -2270,6 +2508,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Runs a WfSpec to create a WfRun.
+     * </pre>
      */
     public void runWf(io.littlehorse.sdk.common.proto.RunWfRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -2278,6 +2519,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfRun. Although useful for development and debugging, this RPC is not often
+     * used by applications.
+     * </pre>
      */
     public void getWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -2286,6 +2531,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+     * currently assigned, history of assignments and reassignments, and any context for that
+     * UserTaskRun which is specific to the WfRun.
+     * </pre>
      */
     public void getUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
@@ -2294,6 +2544,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+     * action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+     * applications that are using User Tasks to build an internal task-list and wish to
+     * administer the tasks.
+     * </pre>
      */
     public void assignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2302,6 +2558,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+     * the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+     * completed, and unblocks the associated ThreadRun in the WfRun.
+     * This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+     * </pre>
      */
     public void completeUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2310,6 +2572,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+     * </pre>
      */
     public void cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2318,6 +2583,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+     * to model an entity.
+     * </pre>
      */
     public void listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList> responseObserver) {
@@ -2326,6 +2595,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific NodeRun.
+     * </pre>
      */
     public void getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRun> responseObserver) {
@@ -2334,6 +2606,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all NodeRun's for a specific WfRun.
+     * </pre>
      */
     public void listNodeRuns(io.littlehorse.sdk.common.proto.ListNodeRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRunList> responseObserver) {
@@ -2342,6 +2617,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific TaskRun.
+     * </pre>
      */
     public void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRun> responseObserver) {
@@ -2350,6 +2628,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all TaskRun's for a specific WfRun.
+     * </pre>
      */
     public void listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
@@ -2358,6 +2639,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get the value of a specific Variable. When using a WfRun to model an entity, this
+     * RPC is useful for retrieving information. It is equivalent to looking up the value of a
+     * column for a specific row in a SQL table.
+     * </pre>
      */
     public void getVariable(io.littlehorse.sdk.common.proto.VariableId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Variable> responseObserver) {
@@ -2366,6 +2652,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List all Variables from a WfRun.
+     * </pre>
      */
     public void listVariables(io.littlehorse.sdk.common.proto.ListVariablesRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.VariableList> responseObserver) {
@@ -2374,6 +2663,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Post an ExternalEvent. This RPC is highly useful for 
+     * </pre>
      */
     public void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
@@ -2382,6 +2674,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific ExternalEvent.
+     * </pre>
      */
     public void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
@@ -2390,6 +2685,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List ExternalEvent's for a specific WfRun.
+     * </pre>
      */
     public void listExternalEvents(io.littlehorse.sdk.common.proto.ListExternalEventsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventList> responseObserver) {
@@ -2398,6 +2696,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfRun's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public void searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList> responseObserver) {
@@ -2406,6 +2708,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+     * your workflows or Task Workers.
+     * </pre>
      */
     public void searchNodeRun(io.littlehorse.sdk.common.proto.SearchNodeRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRunIdList> responseObserver) {
@@ -2414,6 +2720,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+     * </pre>
      */
     public void searchTaskRun(io.littlehorse.sdk.common.proto.SearchTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunIdList> responseObserver) {
@@ -2422,6 +2731,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskRun's. This RPC is highly useful for applications that connect
+     * human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+     * person or group of people.
+     * </pre>
      */
     public void searchUserTaskRun(io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunIdList> responseObserver) {
@@ -2430,6 +2744,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Variable's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public void searchVariable(io.littlehorse.sdk.common.proto.SearchVariableRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.VariableIdList> responseObserver) {
@@ -2438,6 +2756,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExternalEvent's.
+     * </pre>
      */
     public void searchExternalEvent(io.littlehorse.sdk.common.proto.SearchExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventIdList> responseObserver) {
@@ -2446,6 +2767,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskDef's.
+     * </pre>
      */
     public void searchTaskDef(io.littlehorse.sdk.common.proto.SearchTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefIdList> responseObserver) {
@@ -2454,6 +2778,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskDef's.
+     * </pre>
      */
     public void searchUserTaskDef(io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskDefIdList> responseObserver) {
@@ -2462,6 +2789,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfSpec's.
+     * </pre>
      */
     public void searchWfSpec(io.littlehorse.sdk.common.proto.SearchWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecIdList> responseObserver) {
@@ -2470,6 +2800,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExteranlEventDef's.
+     * </pre>
      */
     public void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
@@ -2478,6 +2811,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by the Task Worker to:
+     * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+     * 2. Receive the assignemnt of LH Server's to poll from.
+     * Generally, you won't use this request manually.
+     * </pre>
      */
     public void registerTaskWorker(io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> responseObserver) {
@@ -2486,6 +2825,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+     * use this RPC manually.
+     * </pre>
      */
     public io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskRequest> pollTask(
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskResponse> responseObserver) {
@@ -2494,6 +2837,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+     * this rpc manually.
+     * </pre>
      */
     public void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2502,6 +2849,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * </pre>
      */
     public void stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2510,6 +2860,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Resumes a WfRun or a specific ThreadRun of a WfRun.
+     * </pre>
      */
     public void resumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2518,6 +2871,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+     * </pre>
      */
     public void deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2526,6 +2882,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a TaskDef.
+     * </pre>
      */
     public void deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2534,6 +2893,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfSpec.
+     * </pre>
      */
     public void deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2542,6 +2904,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a UserTaskDef.
+     * </pre>
      */
     public void deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2550,6 +2915,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes an ExternalEventDef.
+     * </pre>
      */
     public void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2558,6 +2926,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+     * </pre>
      */
     public void getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefMetrics> responseObserver) {
@@ -2566,6 +2937,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+     * </pre>
      */
     public void getWfSpecMetricsWindow(io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecMetrics> responseObserver) {
@@ -2574,6 +2948,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of TaskDef Metrics Windows.
+     * </pre>
      */
     public void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
@@ -2582,6 +2959,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of WfSpec Metrics Windows.
+     * </pre>
      */
     public void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
@@ -2590,6 +2970,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * </pre>
      */
     public void putTenant(io.littlehorse.common.proto.PutTenantRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Tenant> responseObserver) {
@@ -2598,6 +2981,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates an Principal.
+     * </pre>
      */
     public void putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
@@ -2606,6 +2992,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the Principal of the caller.
+     * </pre>
      */
     public void whoami(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
@@ -2614,6 +3003,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the version of the LH Server.
+     * </pre>
      */
     public void getServerVersion(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
@@ -2639,6 +3031,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a TaskDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskDef putTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2646,6 +3041,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a TaskDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskDef getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2653,6 +3051,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates an ExternalEventDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDef putExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2660,6 +3061,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets an ExternalEventDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDef getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2667,6 +3071,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a WfSpec.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpec putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2674,6 +3081,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfSpec.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpec getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2681,6 +3091,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpec getLatestWfSpec(io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2688,6 +3101,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+     * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+     * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+     * completion.
+     * As of 0.7.0, this feature is only partially implemented.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpec migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2695,6 +3115,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a UserTaskDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDef putUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2702,6 +3125,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific UserTaskDef.
+     * This RPC is highly useful for applications built around
+     * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+     * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+     * The frontend would inspect the UserTaskDef and display a form field on the browser page
+     * for each field in the UserTaskDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDef getUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2709,6 +3140,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the most recent UserTaskDef with a specific name.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDef getLatestUserTaskDef(io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2716,6 +3150,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Runs a WfSpec to create a WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfRun runWf(io.littlehorse.sdk.common.proto.RunWfRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2723,6 +3160,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfRun. Although useful for development and debugging, this RPC is not often
+     * used by applications.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfRun getWfRun(io.littlehorse.sdk.common.proto.WfRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2730,6 +3171,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+     * currently assigned, history of assignments and reassignments, and any context for that
+     * UserTaskRun which is specific to the WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRun getUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2737,6 +3183,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+     * action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+     * applications that are using User Tasks to build an internal task-list and wish to
+     * administer the tasks.
+     * </pre>
      */
     public com.google.protobuf.Empty assignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2744,6 +3196,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+     * the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+     * completed, and unblocks the associated ThreadRun in the WfRun.
+     * This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+     * </pre>
      */
     public com.google.protobuf.Empty completeUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2751,6 +3209,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+     * </pre>
      */
     public com.google.protobuf.Empty cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2758,6 +3219,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+     * to model an entity.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunList listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2765,6 +3230,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific NodeRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.NodeRun getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2772,6 +3240,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all NodeRun's for a specific WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.NodeRunList listNodeRuns(io.littlehorse.sdk.common.proto.ListNodeRunsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2779,6 +3250,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific TaskRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskRun getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2786,6 +3260,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all TaskRun's for a specific WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskRunList listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2793,6 +3270,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get the value of a specific Variable. When using a WfRun to model an entity, this
+     * RPC is useful for retrieving information. It is equivalent to looking up the value of a
+     * column for a specific row in a SQL table.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Variable getVariable(io.littlehorse.sdk.common.proto.VariableId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2800,6 +3282,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List all Variables from a WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.VariableList listVariables(io.littlehorse.sdk.common.proto.ListVariablesRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2807,6 +3292,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Post an ExternalEvent. This RPC is highly useful for 
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2814,6 +3302,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific ExternalEvent.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2821,6 +3312,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List ExternalEvent's for a specific WfRun.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventList listExternalEvents(io.littlehorse.sdk.common.proto.ListExternalEventsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2828,6 +3322,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfRun's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdList searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2835,6 +3333,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+     * your workflows or Task Workers.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.NodeRunIdList searchNodeRun(io.littlehorse.sdk.common.proto.SearchNodeRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2842,6 +3344,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskRunIdList searchTaskRun(io.littlehorse.sdk.common.proto.SearchTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2849,6 +3354,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskRun's. This RPC is highly useful for applications that connect
+     * human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+     * person or group of people.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdList searchUserTaskRun(io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2856,6 +3366,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Variable's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.VariableIdList searchVariable(io.littlehorse.sdk.common.proto.SearchVariableRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2863,6 +3377,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExternalEvent's.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventIdList searchExternalEvent(io.littlehorse.sdk.common.proto.SearchExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2870,6 +3387,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskDef's.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdList searchTaskDef(io.littlehorse.sdk.common.proto.SearchTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2877,6 +3397,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskDef's.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDefIdList searchUserTaskDef(io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2884,6 +3407,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfSpec's.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdList searchWfSpec(io.littlehorse.sdk.common.proto.SearchWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2891,6 +3417,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExteranlEventDef's.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdList searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2898,6 +3427,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by the Task Worker to:
+     * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+     * 2. Receive the assignemnt of LH Server's to poll from.
+     * Generally, you won't use this request manually.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse registerTaskWorker(io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2905,6 +3440,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+     * this rpc manually.
+     * </pre>
      */
     public com.google.protobuf.Empty reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2912,6 +3451,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * </pre>
      */
     public com.google.protobuf.Empty stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2919,6 +3461,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Resumes a WfRun or a specific ThreadRun of a WfRun.
+     * </pre>
      */
     public com.google.protobuf.Empty resumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2926,6 +3471,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2933,6 +3481,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a TaskDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2940,6 +3491,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfSpec.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2947,6 +3501,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a UserTaskDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2954,6 +3511,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes an ExternalEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2961,6 +3521,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2968,6 +3531,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpecMetrics getWfSpecMetricsWindow(io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2975,6 +3541,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of TaskDef Metrics Windows.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2982,6 +3551,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of WfSpec Metrics Windows.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2989,6 +3561,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * </pre>
      */
     public io.littlehorse.common.proto.Tenant putTenant(io.littlehorse.common.proto.PutTenantRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -2996,6 +3571,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates an Principal.
+     * </pre>
      */
     public io.littlehorse.common.proto.Principal putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3003,6 +3581,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the Principal of the caller.
+     * </pre>
      */
     public io.littlehorse.common.proto.Principal whoami(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3010,6 +3591,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the version of the LH Server.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ServerVersionResponse getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3034,6 +3618,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a TaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskDef> putTaskDef(
         io.littlehorse.sdk.common.proto.PutTaskDefRequest request) {
@@ -3042,6 +3629,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a TaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskDef> getTaskDef(
         io.littlehorse.sdk.common.proto.TaskDefId request) {
@@ -3050,6 +3640,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates an ExternalEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventDef> putExternalEventDef(
         io.littlehorse.sdk.common.proto.PutExternalEventDefRequest request) {
@@ -3058,6 +3651,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets an ExternalEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventDef> getExternalEventDef(
         io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
@@ -3066,6 +3662,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a WfSpec.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpec> putWfSpec(
         io.littlehorse.sdk.common.proto.PutWfSpecRequest request) {
@@ -3074,6 +3673,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfSpec.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpec> getWfSpec(
         io.littlehorse.sdk.common.proto.WfSpecId request) {
@@ -3082,6 +3684,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpec> getLatestWfSpec(
         io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest request) {
@@ -3090,6 +3695,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+     * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+     * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+     * completion.
+     * As of 0.7.0, this feature is only partially implemented.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpec> migrateWfSpec(
         io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
@@ -3098,6 +3710,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Creates a UserTaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskDef> putUserTaskDef(
         io.littlehorse.sdk.common.proto.PutUserTaskDefRequest request) {
@@ -3106,6 +3721,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific UserTaskDef.
+     * This RPC is highly useful for applications built around
+     * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+     * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+     * The frontend would inspect the UserTaskDef and display a form field on the browser page
+     * for each field in the UserTaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskDef> getUserTaskDef(
         io.littlehorse.sdk.common.proto.UserTaskDefId request) {
@@ -3114,6 +3737,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the most recent UserTaskDef with a specific name.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskDef> getLatestUserTaskDef(
         io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest request) {
@@ -3122,6 +3748,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Runs a WfSpec to create a WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRun> runWf(
         io.littlehorse.sdk.common.proto.RunWfRequest request) {
@@ -3130,6 +3759,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a WfRun. Although useful for development and debugging, this RPC is not often
+     * used by applications.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRun> getWfRun(
         io.littlehorse.sdk.common.proto.WfRunId request) {
@@ -3138,6 +3771,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+     * currently assigned, history of assignments and reassignments, and any context for that
+     * UserTaskRun which is specific to the WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> getUserTaskRun(
         io.littlehorse.sdk.common.proto.UserTaskRunId request) {
@@ -3146,6 +3784,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+     * action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+     * applications that are using User Tasks to build an internal task-list and wish to
+     * administer the tasks.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> assignUserTaskRun(
         io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest request) {
@@ -3154,6 +3798,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+     * the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+     * completed, and unblocks the associated ThreadRun in the WfRun.
+     * This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> completeUserTaskRun(
         io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest request) {
@@ -3162,6 +3812,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> cancelUserTaskRun(
         io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest request) {
@@ -3170,6 +3823,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+     * to model an entity.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRunList> listUserTaskRuns(
         io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request) {
@@ -3178,6 +3835,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific NodeRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.NodeRun> getNodeRun(
         io.littlehorse.sdk.common.proto.NodeRunId request) {
@@ -3186,6 +3846,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all NodeRun's for a specific WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.NodeRunList> listNodeRuns(
         io.littlehorse.sdk.common.proto.ListNodeRunsRequest request) {
@@ -3194,6 +3857,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a specific TaskRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRun> getTaskRun(
         io.littlehorse.sdk.common.proto.TaskRunId request) {
@@ -3202,6 +3868,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists all TaskRun's for a specific WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRunList> listTaskRuns(
         io.littlehorse.sdk.common.proto.ListTaskRunsRequest request) {
@@ -3210,6 +3879,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get the value of a specific Variable. When using a WfRun to model an entity, this
+     * RPC is useful for retrieving information. It is equivalent to looking up the value of a
+     * column for a specific row in a SQL table.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Variable> getVariable(
         io.littlehorse.sdk.common.proto.VariableId request) {
@@ -3218,6 +3892,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List all Variables from a WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.VariableList> listVariables(
         io.littlehorse.sdk.common.proto.ListVariablesRequest request) {
@@ -3226,6 +3903,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Post an ExternalEvent. This RPC is highly useful for 
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> putExternalEvent(
         io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
@@ -3234,6 +3914,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific ExternalEvent.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> getExternalEvent(
         io.littlehorse.sdk.common.proto.ExternalEventId request) {
@@ -3242,6 +3925,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * List ExternalEvent's for a specific WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventList> listExternalEvents(
         io.littlehorse.sdk.common.proto.ListExternalEventsRequest request) {
@@ -3250,6 +3936,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfRun's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRunIdList> searchWfRun(
         io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
@@ -3258,6 +3948,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+     * your workflows or Task Workers.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.NodeRunIdList> searchNodeRun(
         io.littlehorse.sdk.common.proto.SearchNodeRunRequest request) {
@@ -3266,6 +3960,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRunIdList> searchTaskRun(
         io.littlehorse.sdk.common.proto.SearchTaskRunRequest request) {
@@ -3274,6 +3971,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskRun's. This RPC is highly useful for applications that connect
+     * human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+     * person or group of people.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRunIdList> searchUserTaskRun(
         io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest request) {
@@ -3282,6 +3984,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Variable's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.VariableIdList> searchVariable(
         io.littlehorse.sdk.common.proto.SearchVariableRequest request) {
@@ -3290,6 +3996,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExternalEvent's.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventIdList> searchExternalEvent(
         io.littlehorse.sdk.common.proto.SearchExternalEventRequest request) {
@@ -3298,6 +4007,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for TaskDef's.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskDefIdList> searchTaskDef(
         io.littlehorse.sdk.common.proto.SearchTaskDefRequest request) {
@@ -3306,6 +4018,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for UserTaskDef's.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskDefIdList> searchUserTaskDef(
         io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest request) {
@@ -3314,6 +4029,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for WfSpec's.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpecIdList> searchWfSpec(
         io.littlehorse.sdk.common.proto.SearchWfSpecRequest request) {
@@ -3322,6 +4040,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for ExteranlEventDef's.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> searchExternalEventDef(
         io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
@@ -3330,6 +4051,12 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by the Task Worker to:
+     * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+     * 2. Receive the assignemnt of LH Server's to poll from.
+     * Generally, you won't use this request manually.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> registerTaskWorker(
         io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest request) {
@@ -3338,6 +4065,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+     * this rpc manually.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> reportTask(
         io.littlehorse.sdk.common.proto.ReportTaskRun request) {
@@ -3346,6 +4077,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> stopWfRun(
         io.littlehorse.sdk.common.proto.StopWfRunRequest request) {
@@ -3354,6 +4088,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Resumes a WfRun or a specific ThreadRun of a WfRun.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> resumeWfRun(
         io.littlehorse.sdk.common.proto.ResumeWfRunRequest request) {
@@ -3362,6 +4099,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWfRun(
         io.littlehorse.sdk.common.proto.DeleteWfRunRequest request) {
@@ -3370,6 +4110,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a TaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteTaskDef(
         io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request) {
@@ -3378,6 +4121,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WfSpec.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWfSpec(
         io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request) {
@@ -3386,6 +4132,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a UserTaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteUserTaskDef(
         io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request) {
@@ -3394,6 +4143,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes an ExternalEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteExternalEventDef(
         io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
@@ -3402,6 +4154,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskDefMetrics> getTaskDefMetricsWindow(
         io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request) {
@@ -3410,6 +4165,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpecMetrics> getWfSpecMetricsWindow(
         io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request) {
@@ -3418,6 +4176,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of TaskDef Metrics Windows.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> listTaskDefMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
@@ -3426,6 +4187,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns a list of WfSpec Metrics Windows.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> listWfSpecMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
@@ -3434,6 +4198,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Tenant> putTenant(
         io.littlehorse.common.proto.PutTenantRequest request) {
@@ -3442,6 +4209,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Creates an Principal.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Principal> putPrincipal(
         io.littlehorse.common.proto.PutPrincipalRequest request) {
@@ -3450,6 +4220,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Returns the Principal of the caller.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Principal> whoami(
         com.google.protobuf.Empty request) {
@@ -3458,6 +4231,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the version of the LH Server.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ServerVersionResponse> getServerVersion(
         com.google.protobuf.Empty request) {

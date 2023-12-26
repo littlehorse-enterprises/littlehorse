@@ -96,7 +96,7 @@ service LittleHorse {
   rpc CancelUserTaskRun(CancelUserTaskRunRequest) returns (google.protobuf.Empty) {}
   
   // Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
-  // to model a domain object.
+  // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
   // Gets a specific NodeRun.
@@ -111,7 +111,7 @@ service LittleHorse {
   // Lists all TaskRun's for a specific WfRun.
   rpc ListTaskRuns(ListTaskRunsRequest) returns (TaskRunList) {}
 
-  // Get the value of a specific Variable. When using a WfRun to model a domain object, this
+  // Get the value of a specific Variable. When using a WfRun to model an entity, this
   // RPC is useful for retrieving information. It is equivalent to looking up the value of a
   // column for a specific row in a SQL table.
   rpc GetVariable(VariableId) returns (Variable) {}
@@ -279,7 +279,7 @@ message PutUserTaskDefRequest {
   repeated UserTaskField fields = 2;
 
   // Optional metadata field to store user-defined data. Does not impact workflow
-  // execution.
+  // execution. Fine to store up to a few KB of text here.
   optional string description = 3;
 }
 

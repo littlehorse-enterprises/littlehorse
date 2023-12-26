@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Request sent by the Task Worker SDK to tell the Server that the Task Worker is ready
+ * to execute a TaskRun. Generally used only by the Task Worker SDK.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PollTaskRequest}
  */
 public final class PollTaskRequest extends
@@ -44,6 +49,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -52,6 +61,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
@@ -60,6 +73,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
@@ -71,6 +88,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object clientId_ = "";
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 2;</code>
    * @return The clientId.
    */
@@ -88,6 +109,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 2;</code>
    * @return The bytes for clientId.
    */
@@ -110,6 +135,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object taskWorkerVersion_ = "";
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return Whether the taskWorkerVersion field is set.
    */
@@ -118,6 +148,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return The taskWorkerVersion.
    */
@@ -135,6 +170,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return The bytes for taskWorkerVersion.
    */
@@ -341,6 +381,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Request sent by the Task Worker SDK to tell the Server that the Task Worker is ready
+   * to execute a TaskRun. Generally used only by the Task Worker SDK.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PollTaskRequest}
    */
   public static final class Builder extends
@@ -551,6 +596,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -558,6 +607,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
@@ -569,6 +622,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -585,6 +642,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
@@ -599,6 +660,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -618,6 +683,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
@@ -631,6 +700,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -639,6 +712,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -650,6 +727,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the TaskDefId that the Task Worker wants to execute.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -668,6 +749,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object clientId_ = "";
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 2;</code>
      * @return The clientId.
      */
@@ -684,6 +769,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 2;</code>
      * @return The bytes for clientId.
      */
@@ -701,6 +790,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 2;</code>
      * @param value The clientId to set.
      * @return This builder for chaining.
@@ -714,6 +807,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 2;</code>
      * @return This builder for chaining.
      */
@@ -724,6 +821,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 2;</code>
      * @param value The bytes for clientId to set.
      * @return This builder for chaining.
@@ -740,6 +841,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object taskWorkerVersion_ = "";
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @return Whether the taskWorkerVersion field is set.
      */
@@ -747,6 +853,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @return The taskWorkerVersion.
      */
@@ -763,6 +874,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @return The bytes for taskWorkerVersion.
      */
@@ -780,6 +896,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @param value The taskWorkerVersion to set.
      * @return This builder for chaining.
@@ -793,6 +914,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @return This builder for chaining.
      */
@@ -803,6 +929,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optionally specifies the version of the Task Worker, so that it can be recorded
+     * for debugging purposes on the TaskRun itself.
+     * </pre>
+     *
      * <code>optional string task_worker_version = 3;</code>
      * @param value The bytes for taskWorkerVersion to set.
      * @return This builder for chaining.
