@@ -3,50 +3,50 @@
 
 package io.littlehorse.common.proto;
 
-public interface WfMetricUpdatePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WfMetricUpdatePb)
+public interface WfMetricUpdateOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.WfMetricUpdate)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <code>.littlehorse.MetricsWindowLength type = 3;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.MetricsWindowLength type = 3;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
+
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
    * <code>int64 num_entries = 4;</code>

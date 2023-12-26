@@ -379,7 +379,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         out.setWfSpec(this);
         out.setWfSpecId(getObjectId());
         out.startTime = currentCommand.getTime();
-        out.status = LHStatus.RUNNING;
+        out.transitionTo(LHStatus.RUNNING);
 
         out.startThread(
                 entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
