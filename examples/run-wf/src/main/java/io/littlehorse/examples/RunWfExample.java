@@ -9,6 +9,8 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,11 +47,13 @@ public class RunWfExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        Path configPath = Path.of(
+        File configPath = Path.of(
             System.getProperty("user.home"),
             ".config/littlehorse.config"
-        );
-        props.load(new FileInputStream(configPath.toFile()));
+        ).toFile();
+        if(configPath.exists()){
+            props.load(new FileInputStream(configPath));
+        }
         return props;
     }
 

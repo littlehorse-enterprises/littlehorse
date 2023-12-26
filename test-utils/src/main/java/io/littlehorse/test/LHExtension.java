@@ -46,7 +46,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                     continue;
                 }
                 store.put(worker.getTaskDefName(), worker);
-                worker.registerTaskDef(true);
+                worker.registerTaskDef();
                 TaskDefId taskDefId =
                         TaskDefId.newBuilder().setName(worker.getTaskDefName()).build();
                 Awaitility.await()

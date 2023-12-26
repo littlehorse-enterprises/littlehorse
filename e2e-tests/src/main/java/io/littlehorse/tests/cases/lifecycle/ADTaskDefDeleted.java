@@ -50,9 +50,9 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
 
     public void test() throws InterruptedException, IOException {
         worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
-        worker1.registerTaskDef(true);
+        worker1.registerTaskDef();
         worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
-        worker2.registerTaskDef(true);
+        worker2.registerTaskDef();
 
         new WorkflowImpl(WF_SPEC_NAME, thread -> {
                     thread.execute(TASK_DEF_1);

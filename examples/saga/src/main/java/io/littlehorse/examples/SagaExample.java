@@ -6,11 +6,14 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -50,7 +53,8 @@ public class SagaExample {
                 );
 
                 // If there is a failure, we abort it.
-                NodeOutput waitForThread = wf.waitForThreads(sagaThread);
+                NodeOutput waitForThread = wf.waitForThreads(SpawnedThreads.of(sagaThread));
+
                 wf.handleException(
                     waitForThread,
                     null,
@@ -88,11 +92,13 @@ public class SagaExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        Path configPath = Path.of(
+        File configPath = Path.of(
             System.getProperty("user.home"),
             ".config/littlehorse.config"
-        );
-        props.load(new FileInputStream(configPath.toFile()));
+        ).toFile();
+        if(configPath.exists()){
+            props.load(new FileInputStream(configPath));
+        }
         return props;
     }
 
