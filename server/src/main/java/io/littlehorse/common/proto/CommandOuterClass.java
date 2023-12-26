@@ -124,11 +124,6 @@ public final class CommandOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_LHTimerPb_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricWindow_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_MetricWindow_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -273,14 +268,8 @@ public final class CommandOuterClass {
       "stamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007pay" +
       "load\030\004 \001(\014\022\026\n\ttenant_id\030\005 \001(\tH\000\210\001\001\022\031\n\014pr" +
       "incipal_id\030\006 \001(\tH\001\210\001\001B\014\n\n_tenant_idB\017\n\r_" +
-      "principal_id\"\361\001\n\014MetricWindow\022+\n\nwf_spec" +
-      "_id\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\022-\n\013ta" +
-      "sk_def_id\030\002 \001(\0132\026.littlehorse.TaskDefIdH" +
-      "\000\022\021\n\ttenant_id\030\003 \001(\t\0225\n\021last_window_star" +
-      "t\030\004 \001(\0132\032.google.protobuf.Timestamp\022.\n\004t" +
-      "ype\030\005 \001(\0162 .littlehorse.MetricsWindowLen" +
-      "gthB\013\n\tmetric_idB\037\n\033io.littlehorse.commo" +
-      "n.protoP\001b\006proto3"
+      "principal_idB\037\n\033io.littlehorse.common.pr" +
+      "otoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -427,12 +416,6 @@ public final class CommandOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
         new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
-    internal_static_littlehorse_MetricWindow_descriptor =
-      getDescriptor().getMessageTypes().get(20);
-    internal_static_littlehorse_MetricWindow_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_MetricWindow_descriptor,
-        new java.lang.String[] { "WfSpecId", "TaskDefId", "TenantId", "LastWindowStart", "Type", "MetricId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

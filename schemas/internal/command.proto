@@ -200,13 +200,3 @@ message LHTimerPb {
     optional string tenant_id = 5; // default if not set
     optional string principal_id = 6; // anonymous if not set
 }
-
-message MetricWindow {
-    oneof metric_id {
-        WfSpecId wf_spec_id = 1;
-        TaskDefId task_def_id = 2;
-    }
-    string tenant_id = 3;
-    google.protobuf.Timestamp last_window_start = 4;
-    MetricsWindowLength type = 5;
-}
