@@ -57,6 +57,10 @@ public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpe
         return out;
     }
 
+    public static WfSpecMetricsIdModel getObjectId(Date windowStart, MetricsWindowLength type, WfSpecIdModel wfSpecId) {
+        return new WfSpecMetricsIdModel(windowStart, type, wfSpecId);
+    }
+
     @Override
     public String toString() {
         return LHUtil.getCompositeId(wfSpecId.toString(), windowType.toString(), LHUtil.toLhDbFormat(windowStart));

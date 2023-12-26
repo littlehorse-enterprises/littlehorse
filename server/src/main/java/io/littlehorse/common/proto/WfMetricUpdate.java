@@ -83,10 +83,36 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
   }
 
-  public static final int NUM_ENTRIES_FIELD_NUMBER = 3;
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecId() {
+    return wfSpecId_ != null;
+  }
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+
+  public static final int NUM_ENTRIES_FIELD_NUMBER = 4;
   private long numEntries_ = 0L;
   /**
-   * <code>int64 num_entries = 3;</code>
+   * <code>int64 num_entries = 4;</code>
    * @return The numEntries.
    */
   @java.lang.Override
@@ -94,10 +120,10 @@ private static final long serialVersionUID = 0L;
     return numEntries_;
   }
 
-  public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 4;
+  public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 5;
   private long startToCompleteMax_ = 0L;
   /**
-   * <code>int64 start_to_complete_max = 4;</code>
+   * <code>int64 start_to_complete_max = 5;</code>
    * @return The startToCompleteMax.
    */
   @java.lang.Override
@@ -105,10 +131,10 @@ private static final long serialVersionUID = 0L;
     return startToCompleteMax_;
   }
 
-  public static final int START_TO_COMPLETE_TOTAL_FIELD_NUMBER = 5;
+  public static final int START_TO_COMPLETE_TOTAL_FIELD_NUMBER = 6;
   private long startToCompleteTotal_ = 0L;
   /**
-   * <code>int64 start_to_complete_total = 5;</code>
+   * <code>int64 start_to_complete_total = 6;</code>
    * @return The startToCompleteTotal.
    */
   @java.lang.Override
@@ -116,10 +142,10 @@ private static final long serialVersionUID = 0L;
     return startToCompleteTotal_;
   }
 
-  public static final int TOTAL_COMPLETED_FIELD_NUMBER = 6;
+  public static final int TOTAL_COMPLETED_FIELD_NUMBER = 7;
   private long totalCompleted_ = 0L;
   /**
-   * <code>int64 total_completed = 6;</code>
+   * <code>int64 total_completed = 7;</code>
    * @return The totalCompleted.
    */
   @java.lang.Override
@@ -127,10 +153,10 @@ private static final long serialVersionUID = 0L;
     return totalCompleted_;
   }
 
-  public static final int TOTAL_ERRORED_FIELD_NUMBER = 7;
+  public static final int TOTAL_ERRORED_FIELD_NUMBER = 8;
   private long totalErrored_ = 0L;
   /**
-   * <code>int64 total_errored = 7;</code>
+   * <code>int64 total_errored = 8;</code>
    * @return The totalErrored.
    */
   @java.lang.Override
@@ -138,10 +164,10 @@ private static final long serialVersionUID = 0L;
     return totalErrored_;
   }
 
-  public static final int TOTAL_STARTED_FIELD_NUMBER = 8;
+  public static final int TOTAL_STARTED_FIELD_NUMBER = 9;
   private long totalStarted_ = 0L;
   /**
-   * <code>int64 total_started = 8;</code>
+   * <code>int64 total_started = 9;</code>
    * @return The totalStarted.
    */
   @java.lang.Override
@@ -169,23 +195,26 @@ private static final long serialVersionUID = 0L;
     if (type_ != io.littlehorse.sdk.common.proto.MetricsWindowLength.MINUTES_5.getNumber()) {
       output.writeEnum(2, type_);
     }
+    if (wfSpecId_ != null) {
+      output.writeMessage(3, getWfSpecId());
+    }
     if (numEntries_ != 0L) {
-      output.writeInt64(3, numEntries_);
+      output.writeInt64(4, numEntries_);
     }
     if (startToCompleteMax_ != 0L) {
-      output.writeInt64(4, startToCompleteMax_);
+      output.writeInt64(5, startToCompleteMax_);
     }
     if (startToCompleteTotal_ != 0L) {
-      output.writeInt64(5, startToCompleteTotal_);
+      output.writeInt64(6, startToCompleteTotal_);
     }
     if (totalCompleted_ != 0L) {
-      output.writeInt64(6, totalCompleted_);
+      output.writeInt64(7, totalCompleted_);
     }
     if (totalErrored_ != 0L) {
-      output.writeInt64(7, totalErrored_);
+      output.writeInt64(8, totalErrored_);
     }
     if (totalStarted_ != 0L) {
-      output.writeInt64(8, totalStarted_);
+      output.writeInt64(9, totalStarted_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -204,29 +233,33 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, type_);
     }
+    if (wfSpecId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getWfSpecId());
+    }
     if (numEntries_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(3, numEntries_);
+        .computeInt64Size(4, numEntries_);
     }
     if (startToCompleteMax_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(4, startToCompleteMax_);
+        .computeInt64Size(5, startToCompleteMax_);
     }
     if (startToCompleteTotal_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, startToCompleteTotal_);
+        .computeInt64Size(6, startToCompleteTotal_);
     }
     if (totalCompleted_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(6, totalCompleted_);
+        .computeInt64Size(7, totalCompleted_);
     }
     if (totalErrored_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(7, totalErrored_);
+        .computeInt64Size(8, totalErrored_);
     }
     if (totalStarted_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(8, totalStarted_);
+        .computeInt64Size(9, totalStarted_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -249,6 +282,11 @@ private static final long serialVersionUID = 0L;
           .equals(other.getWindowStart())) return false;
     }
     if (type_ != other.type_) return false;
+    if (hasWfSpecId() != other.hasWfSpecId()) return false;
+    if (hasWfSpecId()) {
+      if (!getWfSpecId()
+          .equals(other.getWfSpecId())) return false;
+    }
     if (getNumEntries()
         != other.getNumEntries()) return false;
     if (getStartToCompleteMax()
@@ -278,6 +316,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
+    if (hasWfSpecId()) {
+      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecId().hashCode();
+    }
     hash = (37 * hash) + NUM_ENTRIES_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getNumEntries());
@@ -433,6 +475,11 @@ private static final long serialVersionUID = 0L;
         windowStartBuilder_ = null;
       }
       type_ = 0;
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
+      }
       numEntries_ = 0L;
       startToCompleteMax_ = 0L;
       startToCompleteTotal_ = 0L;
@@ -481,21 +528,26 @@ private static final long serialVersionUID = 0L;
         result.type_ = type_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.numEntries_ = numEntries_;
+        result.wfSpecId_ = wfSpecIdBuilder_ == null
+            ? wfSpecId_
+            : wfSpecIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.startToCompleteMax_ = startToCompleteMax_;
+        result.numEntries_ = numEntries_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.startToCompleteTotal_ = startToCompleteTotal_;
+        result.startToCompleteMax_ = startToCompleteMax_;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.totalCompleted_ = totalCompleted_;
+        result.startToCompleteTotal_ = startToCompleteTotal_;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.totalErrored_ = totalErrored_;
+        result.totalCompleted_ = totalCompleted_;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.totalErrored_ = totalErrored_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
         result.totalStarted_ = totalStarted_;
       }
     }
@@ -549,6 +601,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.type_ != 0) {
         setTypeValue(other.getTypeValue());
+      }
+      if (other.hasWfSpecId()) {
+        mergeWfSpecId(other.getWfSpecId());
       }
       if (other.getNumEntries() != 0L) {
         setNumEntries(other.getNumEntries());
@@ -606,36 +661,43 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 24: {
-              numEntries_ = input.readInt64();
+            case 26: {
+              input.readMessage(
+                  getWfSpecIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
             case 32: {
-              startToCompleteMax_ = input.readInt64();
+              numEntries_ = input.readInt64();
               bitField0_ |= 0x00000008;
               break;
             } // case 32
             case 40: {
-              startToCompleteTotal_ = input.readInt64();
+              startToCompleteMax_ = input.readInt64();
               bitField0_ |= 0x00000010;
               break;
             } // case 40
             case 48: {
-              totalCompleted_ = input.readInt64();
+              startToCompleteTotal_ = input.readInt64();
               bitField0_ |= 0x00000020;
               break;
             } // case 48
             case 56: {
-              totalErrored_ = input.readInt64();
+              totalCompleted_ = input.readInt64();
               bitField0_ |= 0x00000040;
               break;
             } // case 56
             case 64: {
-              totalStarted_ = input.readInt64();
+              totalErrored_ = input.readInt64();
               bitField0_ |= 0x00000080;
               break;
             } // case 64
+            case 72: {
+              totalStarted_ = input.readInt64();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 72
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -825,9 +887,128 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return Whether the wfSpecId field is set.
+     */
+    public boolean hasWfSpecId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return The wfSpecId.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+      if (wfSpecIdBuilder_ == null) {
+        return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      } else {
+        return wfSpecIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        wfSpecId_ = value;
+      } else {
+        wfSpecIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecId_ = builderForValue.build();
+      } else {
+        wfSpecIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          wfSpecId_ != null &&
+          wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getWfSpecIdBuilder().mergeFrom(value);
+        } else {
+          wfSpecId_ = value;
+        }
+      } else {
+        wfSpecIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder clearWfSpecId() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getWfSpecIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+      if (wfSpecIdBuilder_ != null) {
+        return wfSpecIdBuilder_.getMessageOrBuilder();
+      } else {
+        return wfSpecId_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        getWfSpecIdFieldBuilder() {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                getWfSpecId(),
+                getParentForChildren(),
+                isClean());
+        wfSpecId_ = null;
+      }
+      return wfSpecIdBuilder_;
+    }
+
     private long numEntries_ ;
     /**
-     * <code>int64 num_entries = 3;</code>
+     * <code>int64 num_entries = 4;</code>
      * @return The numEntries.
      */
     @java.lang.Override
@@ -835,23 +1016,23 @@ private static final long serialVersionUID = 0L;
       return numEntries_;
     }
     /**
-     * <code>int64 num_entries = 3;</code>
+     * <code>int64 num_entries = 4;</code>
      * @param value The numEntries to set.
      * @return This builder for chaining.
      */
     public Builder setNumEntries(long value) {
 
       numEntries_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 num_entries = 3;</code>
+     * <code>int64 num_entries = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearNumEntries() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       numEntries_ = 0L;
       onChanged();
       return this;
@@ -859,7 +1040,7 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteMax_ ;
     /**
-     * <code>int64 start_to_complete_max = 4;</code>
+     * <code>int64 start_to_complete_max = 5;</code>
      * @return The startToCompleteMax.
      */
     @java.lang.Override
@@ -867,23 +1048,23 @@ private static final long serialVersionUID = 0L;
       return startToCompleteMax_;
     }
     /**
-     * <code>int64 start_to_complete_max = 4;</code>
+     * <code>int64 start_to_complete_max = 5;</code>
      * @param value The startToCompleteMax to set.
      * @return This builder for chaining.
      */
     public Builder setStartToCompleteMax(long value) {
 
       startToCompleteMax_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 start_to_complete_max = 4;</code>
+     * <code>int64 start_to_complete_max = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteMax() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       startToCompleteMax_ = 0L;
       onChanged();
       return this;
@@ -891,7 +1072,7 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteTotal_ ;
     /**
-     * <code>int64 start_to_complete_total = 5;</code>
+     * <code>int64 start_to_complete_total = 6;</code>
      * @return The startToCompleteTotal.
      */
     @java.lang.Override
@@ -899,23 +1080,23 @@ private static final long serialVersionUID = 0L;
       return startToCompleteTotal_;
     }
     /**
-     * <code>int64 start_to_complete_total = 5;</code>
+     * <code>int64 start_to_complete_total = 6;</code>
      * @param value The startToCompleteTotal to set.
      * @return This builder for chaining.
      */
     public Builder setStartToCompleteTotal(long value) {
 
       startToCompleteTotal_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 start_to_complete_total = 5;</code>
+     * <code>int64 start_to_complete_total = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteTotal() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       startToCompleteTotal_ = 0L;
       onChanged();
       return this;
@@ -923,7 +1104,7 @@ private static final long serialVersionUID = 0L;
 
     private long totalCompleted_ ;
     /**
-     * <code>int64 total_completed = 6;</code>
+     * <code>int64 total_completed = 7;</code>
      * @return The totalCompleted.
      */
     @java.lang.Override
@@ -931,23 +1112,23 @@ private static final long serialVersionUID = 0L;
       return totalCompleted_;
     }
     /**
-     * <code>int64 total_completed = 6;</code>
+     * <code>int64 total_completed = 7;</code>
      * @param value The totalCompleted to set.
      * @return This builder for chaining.
      */
     public Builder setTotalCompleted(long value) {
 
       totalCompleted_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 total_completed = 6;</code>
+     * <code>int64 total_completed = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearTotalCompleted() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       totalCompleted_ = 0L;
       onChanged();
       return this;
@@ -955,7 +1136,7 @@ private static final long serialVersionUID = 0L;
 
     private long totalErrored_ ;
     /**
-     * <code>int64 total_errored = 7;</code>
+     * <code>int64 total_errored = 8;</code>
      * @return The totalErrored.
      */
     @java.lang.Override
@@ -963,23 +1144,23 @@ private static final long serialVersionUID = 0L;
       return totalErrored_;
     }
     /**
-     * <code>int64 total_errored = 7;</code>
+     * <code>int64 total_errored = 8;</code>
      * @param value The totalErrored to set.
      * @return This builder for chaining.
      */
     public Builder setTotalErrored(long value) {
 
       totalErrored_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 total_errored = 7;</code>
+     * <code>int64 total_errored = 8;</code>
      * @return This builder for chaining.
      */
     public Builder clearTotalErrored() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000080);
       totalErrored_ = 0L;
       onChanged();
       return this;
@@ -987,7 +1168,7 @@ private static final long serialVersionUID = 0L;
 
     private long totalStarted_ ;
     /**
-     * <code>int64 total_started = 8;</code>
+     * <code>int64 total_started = 9;</code>
      * @return The totalStarted.
      */
     @java.lang.Override
@@ -995,23 +1176,23 @@ private static final long serialVersionUID = 0L;
       return totalStarted_;
     }
     /**
-     * <code>int64 total_started = 8;</code>
+     * <code>int64 total_started = 9;</code>
      * @param value The totalStarted to set.
      * @return This builder for chaining.
      */
     public Builder setTotalStarted(long value) {
 
       totalStarted_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 total_started = 8;</code>
+     * <code>int64 total_started = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearTotalStarted() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       totalStarted_ = 0L;
       onChanged();
       return this;

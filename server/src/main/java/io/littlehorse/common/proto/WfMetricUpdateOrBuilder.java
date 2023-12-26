@@ -34,37 +34,52 @@ public interface WfMetricUpdateOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
-   * <code>int64 num_entries = 3;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <code>int64 num_entries = 4;</code>
    * @return The numEntries.
    */
   long getNumEntries();
 
   /**
-   * <code>int64 start_to_complete_max = 4;</code>
+   * <code>int64 start_to_complete_max = 5;</code>
    * @return The startToCompleteMax.
    */
   long getStartToCompleteMax();
 
   /**
-   * <code>int64 start_to_complete_total = 5;</code>
+   * <code>int64 start_to_complete_total = 6;</code>
    * @return The startToCompleteTotal.
    */
   long getStartToCompleteTotal();
 
   /**
-   * <code>int64 total_completed = 6;</code>
+   * <code>int64 total_completed = 7;</code>
    * @return The totalCompleted.
    */
   long getTotalCompleted();
 
   /**
-   * <code>int64 total_errored = 7;</code>
+   * <code>int64 total_errored = 8;</code>
    * @return The totalErrored.
    */
   long getTotalErrored();
 
   /**
-   * <code>int64 total_started = 8;</code>
+   * <code>int64 total_started = 9;</code>
    * @return The totalStarted.
    */
   long getTotalStarted();

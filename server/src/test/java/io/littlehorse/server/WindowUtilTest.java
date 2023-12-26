@@ -2,13 +2,12 @@ package io.littlehorse.server;
 
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
 public class WindowUtilTest {
@@ -21,5 +20,4 @@ public class WindowUtilTest {
         Date secondWindowStart = LHUtil.getWindowStart(secondStatusChange, MetricsWindowLength.DAYS_1);
         Assertions.assertThat(firstWindowStart).isEqualTo(secondWindowStart);
     }
-
 }

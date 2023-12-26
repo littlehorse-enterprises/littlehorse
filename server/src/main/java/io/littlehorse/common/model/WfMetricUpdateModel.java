@@ -1,6 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.StoreableType;
@@ -9,14 +10,24 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.Date;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+@EqualsAndHashCode(
+        of = {"windowStart", "windowType", "wfSpecId"},
+        callSuper = false)
 public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
 
+    @Getter
     private Date windowStart;
-    private MetricsWindowLength type;
+
+    @Getter
+    private MetricsWindowLength windowType;
+
+    @Getter
     private WfSpecIdModel wfSpecId;
+
     public long numEntries;
     public long startToCompleteMax;
     public long startToCompleteTotal;
@@ -24,15 +35,20 @@ public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
     public long totalErrored;
     public long totalStarted;
 
-    public WfMetricUpdateModel() {
+    public WfMetricUpdateModel() {}
 
+    public WfMetricUpdateModel(Date windowStart, MetricsWindowLength type, WfSpecIdModel wfSpecId) {
+        this.windowStart = windowStart;
+        this.windowType = type;
+        this.wfSpecId = wfSpecId;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         WfMetricUpdate p = (WfMetricUpdate) proto;
         this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
-        this.type = p.getType();
+        this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        this.windowType = p.getType();
         this.numEntries = p.getNumEntries();
         this.startToCompleteMax = p.getStartToCompleteMax();
         this.startToCompleteTotal = p.getStartToCompleteTotal();
@@ -45,13 +61,14 @@ public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
     public WfMetricUpdate.Builder toProto() {
         WfMetricUpdate.Builder out = WfMetricUpdate.newBuilder();
         out.setWindowStart(LHUtil.fromDate(windowStart));
-        out.setType(type);
+        out.setType(windowType);
         out.setNumEntries(numEntries);
         out.setStartToCompleteMax(startToCompleteMax);
         out.setStartToCompleteTotal(startToCompleteTotal);
         out.setTotalCompleted(totalCompleted);
         out.setTotalErrored(totalErrored);
         out.setTotalStarted(totalStarted);
+        out.setWfSpecId(wfSpecId.toProto());
         return out;
     }
 

@@ -17,6 +17,10 @@ public enum StoreableType
    */
   SCHEDULED_TASK(1),
   /**
+   * <code>WF_METRIC_UPDATE = 2;</code>
+   */
+  WF_METRIC_UPDATE(2),
+  /**
    * <code>TASK_METRIC_UPDATE = 3;</code>
    */
   TASK_METRIC_UPDATE(3),
@@ -47,6 +51,10 @@ public enum StoreableType
    * <code>SCHEDULED_TASK = 1;</code>
    */
   public static final int SCHEDULED_TASK_VALUE = 1;
+  /**
+   * <code>WF_METRIC_UPDATE = 2;</code>
+   */
+  public static final int WF_METRIC_UPDATE_VALUE = 2;
   /**
    * <code>TASK_METRIC_UPDATE = 3;</code>
    */
@@ -95,6 +103,7 @@ public enum StoreableType
     switch (value) {
       case 0: return STORED_GETABLE;
       case 1: return SCHEDULED_TASK;
+      case 2: return WF_METRIC_UPDATE;
       case 3: return TASK_METRIC_UPDATE;
       case 4: return LH_TIMER;
       case 5: return TAG;

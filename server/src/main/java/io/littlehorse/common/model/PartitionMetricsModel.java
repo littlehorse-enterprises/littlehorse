@@ -12,8 +12,12 @@ import io.littlehorse.common.proto.MetricsByTenant;
 import io.littlehorse.common.proto.PartitionMetrics;
 import io.littlehorse.common.proto.StatusChanges;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -116,9 +120,43 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         Function<Map.Entry<WfMetricId, StatusChangesModel>, AggregateWfMetricsModel> transformMetricEntryToCommand =
                 metricEntry -> new AggregateWfMetricsModel(
                         metricEntry.getKey().wfSpecId(),
-                        metricEntry.getValue().statusChanges,
+                        calculateMetrics(metricEntry.getKey(), metricEntry.getValue()),
                         metricEntry.getKey().tenantId());
         return wfMetrics.entrySet().stream().map(transformMetricEntryToCommand).toList();
+    }
+
+    private Collection<WfMetricUpdateModel> calculateMetrics(WfMetricId metricId, StatusChangesModel changes) {
+        Map<WfMetricUpdateModel, List<StatusChangedModel>> windowMap = new HashMap<>();
+        for (StatusChangedModel statusChange : changes.statusChanges) {
+            for (MetricsWindowLength validWindowLength : MetricsWindowLength.values()) {
+                if (validWindowLength.equals(MetricsWindowLength.UNRECOGNIZED)) {
+                    continue;
+                }
+                WfMetricUpdateModel metricUpdate = new WfMetricUpdateModel(
+                        LHUtil.getWindowStart(statusChange.getTime(), validWindowLength),
+                        validWindowLength,
+                        metricId.wfSpecId());
+                List<StatusChangedModel> changesByWindow = windowMap.getOrDefault(metricUpdate, new ArrayList<>());
+                changesByWindow.add(statusChange);
+                windowMap.putIfAbsent(metricUpdate, changesByWindow);
+            }
+        }
+        windowMap.forEach((wfMetricUpdateModel, statusChangedModels) -> {
+            for (StatusChangedModel statusChangedModel : statusChangedModels) {
+                incrementMetric(wfMetricUpdateModel, statusChangedModel);
+            }
+        });
+        return windowMap.keySet();
+    }
+
+    private void incrementMetric(WfMetricUpdateModel metric, StatusChangedModel statusChanged) {
+        if (statusChanged.getLhStatusChanged().isCompleted()) {
+            metric.totalCompleted += 1;
+        } else if (statusChanged.getLhStatusChanged().isStarted()) {
+            metric.totalStarted += 1;
+        } else if (statusChanged.getLhStatusChanged().isErrored()) {
+            metric.totalErrored += 1;
+        }
     }
 
     private record WfMetricId(WfSpecIdModel wfSpecId, String tenantId) {
