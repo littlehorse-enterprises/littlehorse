@@ -8,6 +8,8 @@ import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
+import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -189,25 +191,33 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void forwardMetricsUpdates(long timestamp) {
         DefaultModelStore coreDefaultStore =
                 ModelStore.defaultStore(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        PartitionMetricsModel pedro =
+        PartitionMetricsModel metricsOnCurrentPartition =
                 coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
 
-        if (pedro != null) {
-            for (AggregateWfMetricsModel aggregateWfMetrics : pedro.buildWfRepartitionCommands()) {
-                RepartitionCommand repartitionCommand =
-                        new RepartitionCommand(aggregateWfMetrics, new Date(), aggregateWfMetrics.getPartitionKey());
-                CommandProcessorOutput cpo = new CommandProcessorOutput();
-                cpo.partitionKey = aggregateWfMetrics.getPartitionKey();
-                cpo.topic = this.config.getRepartitionTopicName();
-                cpo.payload = repartitionCommand;
-                Record<String, CommandProcessorOutput> out = new Record<>(
-                        cpo.partitionKey,
-                        cpo,
-                        System.currentTimeMillis(),
-                        HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));
-                this.ctx.forward(out);
+        if (metricsOnCurrentPartition != null) {
+            for (AggregateWfMetricsModel aggregateWfMetrics : metricsOnCurrentPartition.buildWfRepartitionCommands()) {
+                forwardMetricSubcommand(aggregateWfMetrics);
             }
-            coreDefaultStore.delete(pedro);
+            for (AggregateTaskMetricsModel aggregateTaskMetrics :
+                    metricsOnCurrentPartition.buildTaskMetricRepartitionCommand()) {
+                forwardMetricSubcommand(aggregateTaskMetrics);
+            }
+            coreDefaultStore.delete(metricsOnCurrentPartition);
         }
+    }
+
+    private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
+        RepartitionCommand repartitionCommand =
+                new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = repartitionSubCommand.getPartitionKey();
+        cpo.topic = this.config.getRepartitionTopicName();
+        cpo.payload = repartitionCommand;
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                cpo.partitionKey,
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));
+        this.ctx.forward(out);
     }
 }

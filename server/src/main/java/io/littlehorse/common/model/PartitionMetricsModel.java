@@ -8,7 +8,9 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdateModel;
 import io.littlehorse.common.proto.MetricsByTenant;
 import io.littlehorse.common.proto.PartitionMetrics;
 import io.littlehorse.common.proto.StatusChanges;
@@ -126,6 +128,36 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
                         calculateMetrics(metricEntry.getKey(), metricEntry.getValue()),
                         metricEntry.getKey().tenantId());
         return wfMetrics.entrySet().stream().map(transformMetricEntryToCommand).toList();
+    }
+
+    public List<AggregateTaskMetricsModel> buildTaskMetricRepartitionCommand() {
+        return taskMetrics.entrySet().stream()
+                .map(taskMetric -> {
+                    return new AggregateTaskMetricsModel(
+                            taskMetric.getKey().taskDefId(),
+                            taskMetric.getKey().tenantId(),
+                            calculateMetrics(taskMetric.getKey(), taskMetric.getValue()));
+                })
+                .toList();
+    }
+
+    private Collection<TaskMetricUpdateModel> calculateMetrics(TaskMetricId taskMetricId, StatusChangesModel changes) {
+        Map<TaskMetricUpdateModel, List<StatusChangedModel>> windowMap = new HashMap<>();
+        for (StatusChangedModel statusChange : changes.statusChanges) {
+            for (MetricsWindowLength validWindowLength : MetricsWindowLength.values()) {
+                if (validWindowLength.equals(MetricsWindowLength.UNRECOGNIZED)) {
+                    continue;
+                }
+                TaskMetricUpdateModel metricUpdate = new TaskMetricUpdateModel(
+                        LHUtil.getWindowStart(statusChange.getTime(), validWindowLength),
+                        validWindowLength,
+                        taskMetricId.taskDefId());
+                List<StatusChangedModel> changesByWindow = windowMap.getOrDefault(metricUpdate, new ArrayList<>());
+                changesByWindow.add(statusChange);
+                windowMap.putIfAbsent(metricUpdate, changesByWindow);
+            }
+        }
+        return windowMap.keySet();
     }
 
     private Collection<WfMetricUpdateModel> calculateMetrics(WfMetricId metricId, StatusChangesModel changes) {
