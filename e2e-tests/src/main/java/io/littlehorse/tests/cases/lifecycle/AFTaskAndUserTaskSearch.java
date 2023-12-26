@@ -84,8 +84,8 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         }
         failWorker = new LHTaskWorker(new AFSearchWorker(), FAIL_TASK, workerConfig);
         slowWorker = new LHTaskWorker(new AFSearchWorker(), SLOW_TASK, workerConfig);
-        failWorker.registerTaskDef(true);
-        slowWorker.registerTaskDef(true);
+        failWorker.registerTaskDef();
+        slowWorker.registerTaskDef();
 
         Thread.sleep(200);
         slowWorker.start();

@@ -10,14 +10,12 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const TOTAL_RETRIES = 5
 
-func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
+func (tw *LHTaskWorker) registerTaskDef() error {
 	ptd := &model.PutTaskDefRequest{
 		Name:      tw.taskDefId.Name,
 		InputVars: make([]*model.VariableDef, 0),
@@ -32,11 +30,7 @@ func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 
 	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
 
-	if ignoreAlreadyExistsError && status.Code(err) == codes.AlreadyExists {
-		return nil
-	} else {
-		return err
-	}
+	return err
 }
 
 func (tw *LHTaskWorker) start() error {

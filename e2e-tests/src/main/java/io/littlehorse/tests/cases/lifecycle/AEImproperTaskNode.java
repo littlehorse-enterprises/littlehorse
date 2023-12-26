@@ -54,7 +54,7 @@ public class AEImproperTaskNode extends Test {
 
     public void test() throws InterruptedException, IOException {
         worker = new LHTaskWorker(new AETaskNodeValidationWorker(), TASK_DEF_NAME, workerConfig);
-        worker.registerTaskDef(true);
+        worker.registerTaskDef();
 
         // First, verify that we get an error when trying to create a WfRun that
         // has a definitive variable mismatch.
