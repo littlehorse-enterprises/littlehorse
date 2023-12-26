@@ -10,17 +10,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
  * 2. Pass that variable into the execution of the "greet" task.
  */
 public class BasicExample {
-
-    private static final Logger log = LoggerFactory.getLogger(BasicExample.class);
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
@@ -65,33 +60,11 @@ public class BasicExample {
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
-        // Register task if it does not exist
-        if (worker.doesTaskDefExist()) {
-            log.debug(
-                "Task {} already exists, skipping creation",
-                worker.getTaskDefName()
-            );
-        } else {
-            log.debug(
-                "Task {} does not exist, registering it",
-                worker.getTaskDefName()
-            );
-            worker.registerTaskDef();
-        }
+        // Register task
+        worker.registerTaskDef();
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(config.getBlockingStub())) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(config.getBlockingStub());
-        }
+        // Register a workflow
+        workflow.registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
