@@ -8,42 +8,77 @@ public interface TaskDefMetricsQueryRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The enum numeric value on the wire for windowType.
    */
   int getWindowTypeValue();
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The windowType.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType();
 
   /**
+   * <pre>
+   * The name of the specific TaskDef for which we are calculating metrics.
+   * </pre>
+   *
    * <code>optional string task_def_name = 3;</code>
    * @return Whether the taskDefName field is set.
    */
   boolean hasTaskDefName();
   /**
+   * <pre>
+   * The name of the specific TaskDef for which we are calculating metrics.
+   * </pre>
+   *
    * <code>optional string task_def_name = 3;</code>
    * @return The taskDefName.
    */
   java.lang.String getTaskDefName();
   /**
+   * <pre>
+   * The name of the specific TaskDef for which we are calculating metrics.
+   * </pre>
+   *
    * <code>optional string task_def_name = 3;</code>
    * @return The bytes for taskDefName.
    */

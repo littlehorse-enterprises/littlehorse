@@ -4,43 +4,83 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * This enum is all of the types of technical failure that can occur in a WfRun.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.LHErrorType}
  */
 public enum LHErrorType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * A child ThreadRun failed with a technical ERROR.
+   * </pre>
+   *
    * <code>CHILD_FAILURE = 0;</code>
    */
   CHILD_FAILURE(0),
   /**
+   * <pre>
+   * Failed substituting input variables into a NodeRun.
+   * </pre>
+   *
    * <code>VAR_SUB_ERROR = 1;</code>
    */
   VAR_SUB_ERROR(1),
   /**
+   * <pre>
+   * Failed mutating variables after a NodeRun successfully completed.
+   * </pre>
+   *
    * <code>VAR_MUTATION_ERROR = 2;</code>
    */
   VAR_MUTATION_ERROR(2),
   /**
+   * <pre>
+   * A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)
+   * </pre>
+   *
    * <code>USER_TASK_CANCELLED = 3;</code>
    */
   USER_TASK_CANCELLED(3),
   /**
+   * <pre>
+   * A NodeRun failed due to a timeout.
+   * </pre>
+   *
    * <code>TIMEOUT = 4;</code>
    */
   TIMEOUT(4),
   /**
+   * <pre>
+   * A TaskRun failed due to an unexpected error.
+   * </pre>
+   *
    * <code>TASK_FAILURE = 5;</code>
    */
   TASK_FAILURE(5),
   /**
+   * <pre>
+   * Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR
+   * </pre>
+   *
    * <code>VAR_ERROR = 6;</code>
    */
   VAR_ERROR(6),
   /**
+   * <pre>
+   * Wrapper for TASK_FALIURE and TIMEOUT
+   * </pre>
+   *
    * <code>TASK_ERROR = 7;</code>
    */
   TASK_ERROR(7),
   /**
+   * <pre>
+   * An unexpected LittleHorse Internal error occurred. This is not expected to happen.
+   * </pre>
+   *
    * <code>INTERNAL_ERROR = 8;</code>
    */
   INTERNAL_ERROR(8),
@@ -48,38 +88,74 @@ public enum LHErrorType
   ;
 
   /**
+   * <pre>
+   * A child ThreadRun failed with a technical ERROR.
+   * </pre>
+   *
    * <code>CHILD_FAILURE = 0;</code>
    */
   public static final int CHILD_FAILURE_VALUE = 0;
   /**
+   * <pre>
+   * Failed substituting input variables into a NodeRun.
+   * </pre>
+   *
    * <code>VAR_SUB_ERROR = 1;</code>
    */
   public static final int VAR_SUB_ERROR_VALUE = 1;
   /**
+   * <pre>
+   * Failed mutating variables after a NodeRun successfully completed.
+   * </pre>
+   *
    * <code>VAR_MUTATION_ERROR = 2;</code>
    */
   public static final int VAR_MUTATION_ERROR_VALUE = 2;
   /**
+   * <pre>
+   * A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)
+   * </pre>
+   *
    * <code>USER_TASK_CANCELLED = 3;</code>
    */
   public static final int USER_TASK_CANCELLED_VALUE = 3;
   /**
+   * <pre>
+   * A NodeRun failed due to a timeout.
+   * </pre>
+   *
    * <code>TIMEOUT = 4;</code>
    */
   public static final int TIMEOUT_VALUE = 4;
   /**
+   * <pre>
+   * A TaskRun failed due to an unexpected error.
+   * </pre>
+   *
    * <code>TASK_FAILURE = 5;</code>
    */
   public static final int TASK_FAILURE_VALUE = 5;
   /**
+   * <pre>
+   * Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR
+   * </pre>
+   *
    * <code>VAR_ERROR = 6;</code>
    */
   public static final int VAR_ERROR_VALUE = 6;
   /**
+   * <pre>
+   * Wrapper for TASK_FALIURE and TIMEOUT
+   * </pre>
+   *
    * <code>TASK_ERROR = 7;</code>
    */
   public static final int TASK_ERROR_VALUE = 7;
   /**
+   * <pre>
+   * An unexpected LittleHorse Internal error occurred. This is not expected to happen.
+   * </pre>
+   *
    * <code>INTERNAL_ERROR = 8;</code>
    */
   public static final int INTERNAL_ERROR_VALUE = 8;

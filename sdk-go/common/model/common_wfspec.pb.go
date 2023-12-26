@@ -20,18 +20,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Enumerates the available operations to mutate a variable in a WfRun.
 type VariableMutationType int32
 
 const (
-	VariableMutationType_ASSIGN            VariableMutationType = 0
-	VariableMutationType_ADD               VariableMutationType = 1
-	VariableMutationType_EXTEND            VariableMutationType = 2
-	VariableMutationType_SUBTRACT          VariableMutationType = 3
-	VariableMutationType_MULTIPLY          VariableMutationType = 4
-	VariableMutationType_DIVIDE            VariableMutationType = 5
+	// Set the variable specified by the LHS to the value of the RHS.
+	VariableMutationType_ASSIGN VariableMutationType = 0
+	// Add the RHS to the LHS.
+	VariableMutationType_ADD VariableMutationType = 1
+	// Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+	VariableMutationType_EXTEND VariableMutationType = 2
+	// Subtract the RHS from the LHS (both must be INT or DOUBLE)
+	VariableMutationType_SUBTRACT VariableMutationType = 3
+	// Multiply the LHS by the RHS (both must be INT or DOUBLE)
+	VariableMutationType_MULTIPLY VariableMutationType = 4
+	// Divide the LHS by the RHS (both must be INT or DOUBLE)
+	VariableMutationType_DIVIDE VariableMutationType = 5
+	// Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
 	VariableMutationType_REMOVE_IF_PRESENT VariableMutationType = 6
-	VariableMutationType_REMOVE_INDEX      VariableMutationType = 7
-	VariableMutationType_REMOVE_KEY        VariableMutationType = 8
+	// Remove item at index RHS from LHS (LHS must be JSON_ARR)
+	VariableMutationType_REMOVE_INDEX VariableMutationType = 7
+	// Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
+	VariableMutationType_REMOVE_KEY VariableMutationType = 8
 )
 
 // Enum value maps for VariableMutationType.
@@ -197,12 +207,24 @@ func (UTActionTrigger_UTHook) EnumDescriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{3, 0}
 }
 
+// A VariableAssignment is used within a WfSpec to determine how a value should be
+// assigned in the context of a specific WfRun. For example, in a TASK node, you
+// use a VariableAssignment for each input parameter to determine how the value
+// is set.
+//
+// Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+// have to worry about this in daily LittleHorse usage.
 type VariableAssignment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// If you provide a `variable_name` and the specified variable is JSON_OBJ or
+	// JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+	// resolve to the specified field.
 	JsonPath *string `protobuf:"bytes,1,opt,name=json_path,json=jsonPath,proto3,oneof" json:"json_path,omitempty"`
+	// The oneof determines where the value is resolved to.
+	//
 	// Types that are assignable to Source:
 	//	*VariableAssignment_VariableName
 	//	*VariableAssignment_LiteralValue
@@ -282,14 +304,17 @@ type isVariableAssignment_Source interface {
 }
 
 type VariableAssignment_VariableName struct {
+	// Assign the value from a variable.
 	VariableName string `protobuf:"bytes,2,opt,name=variable_name,json=variableName,proto3,oneof"`
 }
 
 type VariableAssignment_LiteralValue struct {
+	// Assign a literal value
 	LiteralValue *VariableValue `protobuf:"bytes,3,opt,name=literal_value,json=literalValue,proto3,oneof"`
 }
 
 type VariableAssignment_FormatString_ struct {
+	// Assign a format string
 	FormatString *VariableAssignment_FormatString `protobuf:"bytes,4,opt,name=format_string,json=formatString,proto3,oneof"`
 }
 
@@ -671,13 +696,17 @@ func (x *TaskNode) GetVariables() []*VariableAssignment {
 	return nil
 }
 
+// A FormatString formats a template String with values from the WfRun.
 type VariableAssignment_FormatString struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Format *VariableAssignment   `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
-	Args   []*VariableAssignment `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
+	// A VariableAssignment which must resolve to a String that has format args.
+	// A valid string is "This is a format string with three args: {0}, {1}, {2}"
+	Format *VariableAssignment `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
+	// VariableAssignments which fill out the args.
+	Args []*VariableAssignment `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
 }
 
 func (x *VariableAssignment_FormatString) Reset() {
