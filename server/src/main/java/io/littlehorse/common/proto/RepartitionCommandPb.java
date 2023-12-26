@@ -169,7 +169,7 @@ private static final long serialVersionUID = 0L;
    * deprecate??
    * </pre>
    *
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   @java.lang.Override
@@ -181,29 +181,29 @@ private static final long serialVersionUID = 0L;
    * deprecate??
    * </pre>
    *
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate() {
+  public io.littlehorse.common.proto.TaskMetricUpdate getTaskMetricUpdate() {
     if (repartitionCommandCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
+       return (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_;
     }
-    return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+    return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
   }
   /**
    * <pre>
    * deprecate??
    * </pre>
    *
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
+  public io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getTaskMetricUpdateOrBuilder() {
     if (repartitionCommandCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
+       return (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_;
     }
-    return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+    return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
   }
 
   public static final int CREATE_REMOTE_TAG_FIELD_NUMBER = 5;
@@ -320,7 +320,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
     }
     if (repartitionCommandCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
+      output.writeMessage(3, (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_);
     }
     if (repartitionCommandCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
@@ -349,7 +349,7 @@ private static final long serialVersionUID = 0L;
     }
     if (repartitionCommandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
+        .computeMessageSize(3, (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_);
     }
     if (repartitionCommandCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
@@ -1041,13 +1041,13 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> taskMetricUpdateBuilder_;
+        io.littlehorse.common.proto.TaskMetricUpdate, io.littlehorse.common.proto.TaskMetricUpdate.Builder, io.littlehorse.common.proto.TaskMetricUpdateOrBuilder> taskMetricUpdateBuilder_;
     /**
      * <pre>
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      * @return Whether the taskMetricUpdate field is set.
      */
     @java.lang.Override
@@ -1059,21 +1059,21 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      * @return The taskMetricUpdate.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate() {
+    public io.littlehorse.common.proto.TaskMetricUpdate getTaskMetricUpdate() {
       if (taskMetricUpdateBuilder_ == null) {
         if (repartitionCommandCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
+          return (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_;
         }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
       } else {
         if (repartitionCommandCase_ == 3) {
           return taskMetricUpdateBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
       }
     }
     /**
@@ -1081,9 +1081,9 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
-    public Builder setTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
+    public Builder setTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdate value) {
       if (taskMetricUpdateBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1101,10 +1101,10 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
     public Builder setTaskMetricUpdate(
-        io.littlehorse.common.proto.TaskMetricUpdatePb.Builder builderForValue) {
+        io.littlehorse.common.proto.TaskMetricUpdate.Builder builderForValue) {
       if (taskMetricUpdateBuilder_ == null) {
         repartitionCommand_ = builderForValue.build();
         onChanged();
@@ -1119,13 +1119,13 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
-    public Builder mergeTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
+    public Builder mergeTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdate value) {
       if (taskMetricUpdateBuilder_ == null) {
         if (repartitionCommandCase_ == 3 &&
-            repartitionCommand_ != io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance()) {
-          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdatePb.newBuilder((io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_)
+            repartitionCommand_ != io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance()) {
+          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdate.newBuilder((io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_)
               .mergeFrom(value).buildPartial();
         } else {
           repartitionCommand_ = value;
@@ -1146,7 +1146,7 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
     public Builder clearTaskMetricUpdate() {
       if (taskMetricUpdateBuilder_ == null) {
@@ -1169,9 +1169,9 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
-    public io.littlehorse.common.proto.TaskMetricUpdatePb.Builder getTaskMetricUpdateBuilder() {
+    public io.littlehorse.common.proto.TaskMetricUpdate.Builder getTaskMetricUpdateBuilder() {
       return getTaskMetricUpdateFieldBuilder().getBuilder();
     }
     /**
@@ -1179,17 +1179,17 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
+    public io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getTaskMetricUpdateOrBuilder() {
       if ((repartitionCommandCase_ == 3) && (taskMetricUpdateBuilder_ != null)) {
         return taskMetricUpdateBuilder_.getMessageOrBuilder();
       } else {
         if (repartitionCommandCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
+          return (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_;
         }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
       }
     }
     /**
@@ -1197,18 +1197,18 @@ private static final long serialVersionUID = 0L;
      * deprecate??
      * </pre>
      *
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> 
+        io.littlehorse.common.proto.TaskMetricUpdate, io.littlehorse.common.proto.TaskMetricUpdate.Builder, io.littlehorse.common.proto.TaskMetricUpdateOrBuilder> 
         getTaskMetricUpdateFieldBuilder() {
       if (taskMetricUpdateBuilder_ == null) {
         if (!(repartitionCommandCase_ == 3)) {
-          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
+          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
         }
         taskMetricUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder>(
-                (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_,
+            io.littlehorse.common.proto.TaskMetricUpdate, io.littlehorse.common.proto.TaskMetricUpdate.Builder, io.littlehorse.common.proto.TaskMetricUpdateOrBuilder>(
+                (io.littlehorse.common.proto.TaskMetricUpdate) repartitionCommand_,
                 getParentForChildren(),
                 isClean());
         repartitionCommand_ = null;

@@ -36,4 +36,20 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     public Class<TaskStatusChanged> getProtoBaseClass() {
         return TaskStatusChanged.class;
     }
+
+    public boolean isCompleted() {
+        return this.newStatus.equals(TaskStatus.TASK_SUCCESS);
+    }
+
+    public boolean isStarted() {
+        return this.previousStatus == null;
+    }
+
+    public boolean isErrored() {
+        return this.newStatus.equals(TaskStatus.TASK_FAILED);
+    }
+
+    public boolean isScheduled() {
+        return this.newStatus.equals(TaskStatus.TASK_SCHEDULED);
+    }
 }
