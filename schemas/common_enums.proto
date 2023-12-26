@@ -6,6 +6,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// Status used for WfRun, ThreadRun, and NodeRun
 enum LHStatus {
   STARTING = 0;
   RUNNING = 1;
@@ -16,20 +17,36 @@ enum LHStatus {
   EXCEPTION = 6;
 }
 
+// Status of a Metadata Object, such as WfSpec or TaskDef
 enum MetadataStatus {
+  // ACTIVE means the object can be used.
   ACTIVE = 0;
+  // An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+  // existing WfRun's will be allowed to run to completion.
   ARCHIVED = 1;
+  // A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+  // self-destruct once all of its child WfRun's are terminated.
   TERMINATING = 2;
 }
 
+// Status of a TaskRun.
 enum TaskStatus {
+  // Scheduled in the Task Queue but not yet picked up by a Task Worker.
   TASK_SCHEDULED = 0;
+  // Picked up by a Task Worker, but not yet reported or timed out.
   TASK_RUNNING = 1;
+  // Successfully completed.
   TASK_SUCCESS = 2;
+  // Task Worker reported a technical failure while attempting to execute the TaskRun
   TASK_FAILED = 3;
+  // Task Worker did not report a result in time.
   TASK_TIMEOUT = 4;
+  // Task Worker reported that it was unable to serialize the output of the TaskRun.
   TASK_OUTPUT_SERIALIZING_ERROR = 5;
+  // Task Worker was unable to deserialize the input variables into appropriate language-specific
+  // objects to pass into the Task Function
   TASK_INPUT_VAR_SUB_ERROR = 6;
+  // Task Function business logic determined that there was a business exception.
   TASK_EXCEPTION = 8;
 }
 
@@ -40,25 +57,52 @@ enum MetricsWindowLength {
   DAYS_1 = 2;
 }
 
+// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
+// VariableValue.
 enum VariableType {
+  // An object represented as a json string.
   JSON_OBJ = 0;
+  // A list represented as a json array string.
   JSON_ARR = 1;
+  // A 64-bit floating point number.
   DOUBLE = 2;
+  // A boolean
   BOOL = 3;
+  // A string
   STR = 4;
+  // A 64-bit integer
   INT = 5;
+  // A byte array
   BYTES = 6;
 }
 
+// This enum is all of the types of technical failure that can occur in a WfRun.
 enum LHErrorType {
+  // A child ThreadRun failed with a technical ERROR.
   CHILD_FAILURE = 0;
+
+  // Failed substituting input variables into a NodeRun.
   VAR_SUB_ERROR = 1;
+
+  // Failed mutating variables after a NodeRun successfully completed.
   VAR_MUTATION_ERROR = 2;
+
+  // A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)
   USER_TASK_CANCELLED = 3;
+
+  // A NodeRun failed due to a timeout.
   TIMEOUT = 4;
+
+  // A TaskRun failed due to an unexpected error.
   TASK_FAILURE = 5;
+
+  // Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR
   VAR_ERROR = 6;
+
+  // Wrapper for TASK_FALIURE and TIMEOUT
   TASK_ERROR = 7;
+
+  // An unexpected LittleHorse Internal error occurred. This is not expected to happen.
   INTERNAL_ERROR = 8;
 }
 
