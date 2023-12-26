@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -46,7 +47,7 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             SpawnedThread child = thread.spawnThread(this::child, "child", null);
             thread.sleepSeconds(1);
-            thread.waitForThreads(child).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(child)).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 
