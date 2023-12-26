@@ -105,7 +105,6 @@ message StatusChanged {
         LHStatusChanged lh_status = 2;
         TaskStatusChanged task_status = 3;
     }
-    string principal_id = 4;
 }
 
 message LHStatusChanged {
