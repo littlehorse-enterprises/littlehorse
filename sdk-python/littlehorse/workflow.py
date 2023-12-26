@@ -7,7 +7,6 @@ from typing import Any, Callable, List, Optional, Union
 import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
-from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import (
     VariableType,
@@ -1480,65 +1479,34 @@ def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
     stub.PutWfSpec(request)
 
 
-def create_task_def(
-    task: Callable[..., Any],
-    name: str,
-    config: LHConfig,
-    swallow_already_exists: bool = True,
-) -> None:
+def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> None:
     """Creates a new TaskDef at the LH Server.
 
     Args:
         task (Callable[..., Any]): The task.
         name (str): Name of the task.
-        config (LHConfig): The config.
-        swallow_already_exists (bool, optional): If already exists and this is True,
-        it does not raise an exception, else it raise an exception with code
-        StatusCode.ALREADY_EXISTS. Defaults to True.
+        config (LHConfig): The configuration to get connected to the LH Server.
     """
     stub = config.stub()
-    try:
-        task_signature = signature(task)
-        input_vars = [
-            VariableDef(name=param.name, type=to_variable_type(param.annotation))
-            for param in task_signature.parameters.values()
-            if param.annotation is not WorkerContext
-        ]
-        request = PutTaskDefRequest(name=name, input_vars=input_vars)
-        stub.PutTaskDef(request)
-        logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
-    except RpcError as e:
-        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
-            logging.info(f"TaskDef {name} already exits, skipping")
-            return
-        raise e
+    task_signature = signature(task)
+    input_vars = [
+        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        for param in task_signature.parameters.values()
+        if param.annotation is not WorkerContext
+    ]
+    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    stub.PutTaskDef(request)
+    logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
 
 
-def create_external_event_def(
-    name: str,
-    config: LHConfig,
-    retention_hours: int = -1,
-    swallow_already_exists: bool = True,
-) -> None:
+def create_external_event_def(name: str, config: LHConfig) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
     Args:
         name (str): Name of the external event.
-        config (LHConfig): _description_
-        retention_hours (int, optional): _description_. Defaults to -1.
-        swallow_already_exists (bool, optional): If already exists and this is True,
-        it does not raise an exception, else it raise an exception with code
-        StatusCode.ALREADY_EXISTS. Defaults to True.
+        config (LHConfig): The configuration to get connected to the LH Server.
     """
     stub = config.stub()
-    try:
-        request = PutExternalEventDefRequest(
-            name=name,
-        )
-        stub.PutExternalEventDef(request)
-        logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
-    except RpcError as e:
-        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
-            logging.info(f"ExternalEventDef {name} already exits, skipping")
-            return
-        raise e
+    request = PutExternalEventDefRequest(name=name)
+    stub.PutExternalEventDef(request)
+    logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
