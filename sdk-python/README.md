@@ -1,8 +1,5 @@
 # LittleHorse Python SDK
 
-<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
-<a href="https://github.com/littlehorse-enterprises/littlehorse"><img alt="github" src="https://img.shields.io/badge/-LittleHorse-gray?logo=github&logoColor=white"></a>
-
 For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
 
 For examples go to the [examples](./examples/) folder.

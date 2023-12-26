@@ -1183,6 +1183,72 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
+    def test_compile_wf_with_no_updates_type(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_update_type("NO_UPDATES")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                allowed_updates="NO_UPDATES",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
+    def test_compile_wf_with_minor_revision_updates_type(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_update_type("MINOR_REVISION_UPDATES")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                allowed_updates="MINOR_REVISION_UPDATES",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
 
 class TestUserTasks(unittest.TestCase):
     def test_assign_to_user_id(self):

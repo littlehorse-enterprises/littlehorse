@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from './auth/[...nextauth]'
 import type { Client } from 'nice-grpc/src/client/Client'
-import type { LHPublicApiDefinition } from '../../littlehorse-public-api/service'
+import type { LittleHorseDefinition } from '../../littlehorse-public-api/service'
 import LHClient from './LHClient'
 import { Status } from 'nice-grpc-common'
 import { constants } from 'http2'
@@ -19,7 +19,7 @@ export const makeGrpcCall = async (grpcMethodToCall: string,
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {
-        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session?.accessToken)
+        const client: Client<LittleHorseDefinition> = LHClient.getInstance(session?.accessToken)
 
         try {
             return await client[grpcMethodToCall](grpcRequestBody)
@@ -39,7 +39,7 @@ export const handleGrpcCallWithNext = async (grpcMethodToCall: string,
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {
-        const client: Client<LHPublicApiDefinition> = LHClient.getInstance(session?.accessToken)
+        const client: Client<LittleHorseDefinition> = LHClient.getInstance(session?.accessToken)
 
         try {
             const response: any = await client[grpcMethodToCall](grpcRequestBody)

@@ -2,7 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -73,7 +73,7 @@ public class SpawnThreadForEachExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

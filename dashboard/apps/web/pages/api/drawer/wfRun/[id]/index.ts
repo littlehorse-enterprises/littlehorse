@@ -10,7 +10,7 @@ export default async function handler(
         await handleGrpcCallWithNext('listNodeRuns', req, res, ListNodeRunsRequest.fromJSON({
             wfRunId: {
                 id: req.query.id
-            } 
+            }
         }))
     }
 }

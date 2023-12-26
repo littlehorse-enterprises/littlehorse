@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
@@ -19,7 +19,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
     private Set<String> allHosts;
     private LHConfig config;
 
-    public ABSimpleDeleteDeadTaskWorker(LHPublicApiBlockingStub client, LHConfig config) {
+    public ABSimpleDeleteDeadTaskWorker(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
         this.config = config;
         taskDefName = "dead-workers-test-" + UUID.randomUUID().toString();

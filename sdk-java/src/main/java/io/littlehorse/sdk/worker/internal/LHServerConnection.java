@@ -3,7 +3,7 @@ package io.littlehorse.sdk.worker.internal;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
@@ -19,7 +19,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
 
     private boolean stillRunning;
     private StreamObserver<PollTaskRequest> pollClient;
-    private LHPublicApiStub stub;
+    private LittleHorseStub stub;
 
     public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) throws IOException {
         stillRunning = true;

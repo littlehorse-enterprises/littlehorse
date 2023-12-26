@@ -22,7 +22,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.TestRequestExecutionContext;
@@ -63,8 +63,8 @@ public class RequestAuthorizerTest {
 
     private WfService service = requestContext.service();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
-            ServerServiceDefinition.builder(LHPublicApiGrpc.getServiceDescriptor()),
-            LHPublicApiGrpc.getServiceDescriptor().getMethods());
+            ServerServiceDefinition.builder(LittleHorseGrpc.getServiceDescriptor()),
+            LittleHorseGrpc.getServiceDescriptor().getMethods());
     private AuthorizationContext resolvedAuthContext;
     private PrincipalModel inMemoryAnonymousPrincipal;
 
@@ -180,8 +180,8 @@ public class RequestAuthorizerTest {
     public void supportContextPropagation() throws InterruptedException {
         final ExecutorService executorService = Executors.newFixedThreadPool(100);
         final ServerServiceDefinition serviceDefinition = buildContextPropagationVerifierServiceDefinition(
-                ServerServiceDefinition.builder(LHPublicApiGrpc.getServiceDescriptor()),
-                LHPublicApiGrpc.getServiceDescriptor().getMethods());
+                ServerServiceDefinition.builder(LittleHorseGrpc.getServiceDescriptor()),
+                LittleHorseGrpc.getServiceDescriptor().getMethods());
         final ServerServiceDefinition intercept = ServerInterceptors.intercept(serviceDefinition, requestAuthorizer);
         @SuppressWarnings("unchecked")
         final ServerMethodDefinition<Object, Object> def =

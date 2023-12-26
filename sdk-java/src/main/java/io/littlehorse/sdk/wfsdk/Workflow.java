@@ -6,8 +6,9 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -127,6 +128,19 @@ public abstract class Workflow {
     }
 
     /**
+     * Defines the type of update to perform when saving the WfSpec:
+     * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
+     * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
+     * AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
+     * @param allowedUpdateType
+     * @return this Worflow
+     */
+    public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
+        this.spec.setAllowedUpdates(allowedUpdateType);
+        return this;
+    }
+
+    /**
      * Compiles this Workflow into a `WfSpec`.
      *
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
@@ -169,7 +183,7 @@ public abstract class Workflow {
      * @param client is an LHClient.
      * @return true if the workflow spec is registered or false otherwise
      */
-    public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
+    public boolean doesWfSpecExist(LittleHorseBlockingStub client) {
         try {
             client.getLatestWfSpec(
                     GetLatestWfSpecRequest.newBuilder().setName(name).build());
@@ -190,7 +204,7 @@ public abstract class Workflow {
      * @param majorVersion the workflow Major Version
      * @return true if the workflow spec is registered for this Major Version or false otherwise
      */
-    public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer majorVersion) {
+    public boolean doesWfSpecExist(LittleHorseBlockingStub client, Integer majorVersion) {
         // TODO: LH-282, support revision versioning here.
         if (majorVersion == null) return doesWfSpecExist(client);
 
@@ -215,7 +229,7 @@ public abstract class Workflow {
      *
      * @param client is an LHClient.
      */
-    public void registerWfSpec(LHPublicApiBlockingStub client) {
+    public void registerWfSpec(LittleHorseBlockingStub client) {
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -165,7 +165,7 @@ public class LHServerConnectionManagerTest {
 
     @SneakyThrows
     private void mockConfig() {
-        final LHPublicApiGrpc.LHPublicApiStub asyncStub = mock();
+        final LittleHorseGrpc.LittleHorseStub asyncStub = mock();
 
         when(mockConfig.getAsyncStub()).thenReturn(asyncStub);
         when(mockConfig.getWorkerThreads()).thenReturn(1);

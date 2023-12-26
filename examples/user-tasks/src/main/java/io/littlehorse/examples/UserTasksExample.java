@@ -2,7 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
@@ -16,12 +16,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class UserTasksExample {
-
-    private static final Logger log = LoggerFactory.getLogger(UserTasksExample.class);
 
     private static final String WF_NAME = "it-request";
     public static final String EMAIL_TASK_NAME = "send-email";
@@ -150,7 +146,7 @@ public class UserTasksExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -158,45 +154,20 @@ public class UserTasksExample {
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
-        // Register task if it does not exist
-        if (worker.doesTaskDefExist()) {
-            log.warn(
-                "Task {} already exists, skipping creation",
-                worker.getTaskDefName()
-            );
-        } else {
-            log.debug(
-                "Task {} does not exist, registering it",
-                worker.getTaskDefName()
-            );
-            worker.registerTaskDef();
-        }
-
         // Create the User Task Def
         UserTaskSchema requestForm = new UserTaskSchema(
             new ItemRequestForm(),
             IT_REQUEST_FORM
         );
         client.putUserTaskDef(requestForm.compile());
+
         UserTaskSchema approvalForm = new UserTaskSchema(
             new ApprovalForm(),
             APPROVAL_FORM
         );
         client.putUserTaskDef(approvalForm.compile());
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.warn(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        workflow.registerWfSpec(client);
 
         // Run the worker
         worker.start();
