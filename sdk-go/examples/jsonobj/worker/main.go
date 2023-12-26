@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Create the TaskDef
-	tw.RegisterTaskDef(true)
+	tw.RegisterTaskDef()
 
 	defer func() {
 		log.Default().Print("Shutting down task worker")
