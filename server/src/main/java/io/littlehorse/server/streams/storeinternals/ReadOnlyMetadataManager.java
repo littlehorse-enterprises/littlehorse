@@ -104,6 +104,7 @@ public class ReadOnlyMetadataManager {
      * Note that this method acts over the TENANT scope.
      */
     public <U extends Message, T extends MetadataGetable<U>> T getLastFromPrefix(String prefix, Class<T> clazz) {
+        @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) tenantStore.getLastFromPrefix(prefix, StoredGetable.class);
         if (storeResult == null) return null;

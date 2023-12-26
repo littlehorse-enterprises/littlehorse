@@ -450,7 +450,7 @@ public class BackendInternalComms implements Closeable {
 
         while (iter.hasNext() && response.getResultsCount() < search.getLimit()) {
             int partition = iter.next();
-            scanLocalPartition(search, partition, response);
+            search.scanPartition(executionContext(), partition, response);
         }
 
         // Next: Scan the remote partitions

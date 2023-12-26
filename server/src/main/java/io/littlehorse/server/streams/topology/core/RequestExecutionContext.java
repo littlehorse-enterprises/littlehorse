@@ -18,8 +18,6 @@ import java.util.List;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-import com.google.protobuf.Message;
-
 public class RequestExecutionContext implements ExecutionContext {
 
     private final AuthorizationContext authorization;

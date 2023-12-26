@@ -32,7 +32,7 @@ import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @Setter
-public class InternalScanRequestModel extends LHSerializable<InternalScanRequest> {
+public class InternalScanRequestModel<T extends LHSerializable<?>> extends LHSerializable<InternalScanRequest> {
 
     private ScanResultTypePb resultType;
     private int limit;
@@ -43,8 +43,8 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     private String partitionKey;
 
     private ScanBoundaryCase type;
-    private TagScanModel<T> tagScan;
-    private BoundedObjectIdScanModel<T> boundedObjectIdScan;
+    private TagScanModel tagScan;
+    private BoundedObjectIdScanModel boundedObjectIdScan;
 
     private List<ScanFilterModel> filters = new ArrayList<>();
 
