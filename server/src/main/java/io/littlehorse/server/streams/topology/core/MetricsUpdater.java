@@ -25,8 +25,8 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                     new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
             currentAggregateCommand()
                     .addMetric(
-                            wfRunEvent.getWfSPecId(),
-                            new TenantIdModel(wfRunEvent.getTenantId()),
+                            wfRunEvent.getWfSpecId(),
+                            wfRunEvent.getTenantId(),
                             statusChanged,
                             wfRunEvent.getCreationDate());
         } else {

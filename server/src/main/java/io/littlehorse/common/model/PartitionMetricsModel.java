@@ -132,12 +132,10 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
 
     public List<AggregateTaskMetricsModel> buildTaskMetricRepartitionCommand() {
         return taskMetrics.entrySet().stream()
-                .map(taskMetric -> {
-                    return new AggregateTaskMetricsModel(
-                            taskMetric.getKey().taskDefId(),
-                            taskMetric.getKey().tenantId(),
-                            calculateMetrics(taskMetric.getKey(), taskMetric.getValue()));
-                })
+                .map(taskMetric -> new AggregateTaskMetricsModel(
+                        taskMetric.getKey().taskDefId(),
+                        taskMetric.getKey().tenantId(),
+                        calculateMetrics(taskMetric.getKey(), taskMetric.getValue())))
                 .toList();
     }
 
@@ -157,6 +155,11 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
                 windowMap.putIfAbsent(metricUpdate, changesByWindow);
             }
         }
+        windowMap.forEach((taskMetric, statusChanges) -> {
+            for (StatusChangedModel statusChange : statusChanges) {
+                incrementMetric(taskMetric, statusChange);
+            }
+        });
         return windowMap.keySet();
     }
 
@@ -191,6 +194,18 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
             metric.totalStarted += 1;
         } else if (statusChanged.getLhStatusChanged().isErrored()) {
             metric.totalErrored += 1;
+        }
+    }
+
+    private void incrementMetric(TaskMetricUpdateModel metric, StatusChangedModel statusChanged) {
+        if (statusChanged.getTaskStatusChanged().isCompleted()) {
+            metric.totalCompleted += 1;
+        } else if (statusChanged.getTaskStatusChanged().isStarted()) {
+            metric.totalStarted += 1;
+        } else if (statusChanged.getTaskStatusChanged().isErrored()) {
+            metric.totalErrored += 1;
+        } else if (statusChanged.getTaskStatusChanged().isScheduled()) {
+            metric.totalScheduled += 1;
         }
     }
 
