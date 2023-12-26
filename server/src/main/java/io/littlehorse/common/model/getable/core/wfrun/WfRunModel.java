@@ -27,7 +27,6 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -549,7 +548,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         GetableUpdates.GetableStatusUpdate statusChanged =
-                GetableUpdates.create(wfSpecId, new TenantIdModel(processorContext.authorization().tenantId()), this.status, status);
+                GetableUpdates.create(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
 

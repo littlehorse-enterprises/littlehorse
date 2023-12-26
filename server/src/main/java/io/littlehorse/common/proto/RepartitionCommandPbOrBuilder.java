@@ -40,19 +40,31 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   boolean hasTaskMetricUpdate();
   /**
-   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
-  io.littlehorse.common.proto.TaskMetricUpdate getTaskMetricUpdate();
+  io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate();
   /**
-   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
+   * <pre>
+   * deprecate??
+   * </pre>
+   *
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    */
-  io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getTaskMetricUpdateOrBuilder();
+  io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
 
   /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>

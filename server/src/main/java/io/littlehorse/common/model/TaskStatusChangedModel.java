@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TaskStatusChanged;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -36,21 +35,5 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     @Override
     public Class<TaskStatusChanged> getProtoBaseClass() {
         return TaskStatusChanged.class;
-    }
-
-    public boolean isCompleted() {
-        return this.newStatus.equals(TaskStatus.TASK_SUCCESS);
-    }
-
-    public boolean isStarted() {
-        return this.previousStatus == null;
-    }
-
-    public boolean isErrored() {
-        return this.newStatus.equals(TaskStatus.TASK_FAILED);
-    }
-
-    public boolean isScheduled() {
-        return this.newStatus.equals(TaskStatus.TASK_SCHEDULED);
     }
 }
