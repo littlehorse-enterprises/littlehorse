@@ -204,8 +204,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                         cpo.partitionKey,
                         cpo,
                         System.currentTimeMillis(),
-                        HeadersUtil.metadataHeadersFor(
-                                aggregateWfMetrics.getTenantId(), LHConstants.ANONYMOUS_PRINCIPAL));
+                        HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));
                 this.ctx.forward(out);
             }
             coreDefaultStore.delete(pedro);

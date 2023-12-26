@@ -89,9 +89,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         firstUpdate.totalStarted = 3L;
         commandProcessor.init(mockProcessorContext);
         RepartitionCommand firstMetricUpdate = new RepartitionCommand(
-                new AggregateWfMetricsModel(wfSpecId, List.of(firstUpdate), tenantId.toString()),
-                new Date(),
-                commandId);
+                new AggregateWfMetricsModel(wfSpecId, List.of(firstUpdate), tenantId), new Date(), commandId);
         Headers metadata = HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
         commandProcessor.process(new Record<>(commandId, firstMetricUpdate, 0L, metadata));
 
@@ -100,9 +98,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         secondUpdate.totalErrored = 2L;
         secondUpdate.totalStarted = 3L;
         RepartitionCommand secondMetricUpdate = new RepartitionCommand(
-                new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId.toString()),
-                new Date(),
-                commandId);
+                new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId), new Date(), commandId);
         commandProcessor.process(new Record<>(commandId, secondMetricUpdate, 0L, metadata));
 
         StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetric =
@@ -125,9 +121,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         firstUpdate.totalStarted = 3L;
         commandProcessor.init(mockProcessorContext);
         RepartitionCommand firstMetricUpdate = new RepartitionCommand(
-                new AggregateWfMetricsModel(wfSpecId, List.of(firstUpdate), tenantId.toString()),
-                new Date(),
-                commandId);
+                new AggregateWfMetricsModel(wfSpecId, List.of(firstUpdate), tenantId), new Date(), commandId);
         Headers metadata = HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
         commandProcessor.process(new Record<>(commandId, firstMetricUpdate, 0L, metadata));
 
@@ -137,9 +131,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         secondUpdate.totalErrored = 2L;
         secondUpdate.totalStarted = 3L;
         RepartitionCommand secondMetricUpdate = new RepartitionCommand(
-                new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId.toString()),
-                new Date(),
-                commandId);
+                new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId), new Date(), commandId);
         commandProcessor.process(new Record<>(commandId, secondMetricUpdate, 0L, metadata));
 
         StoredGetable<WfSpecMetrics, WfSpecMetricsModel> firstStoredMetric = defaultStore.get(

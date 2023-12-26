@@ -64,9 +64,10 @@ message MetadataCommand {
     }
 }
 
+// Repartition subcommand
 message AggregateWfMetrics {
     WfSpecId wf_spec_id = 1;
-    string tenant_id = 2;
+    TenantId tenant_id = 2;
     repeated WfMetricUpdate metric_updates = 3;
 }
 
@@ -87,7 +88,7 @@ message PartitionMetrics {
 }
 
 message MetricsByTenant {
-    string tenant_id = 1;
+    TenantId tenant_id = 1;
     // workflow runs status changes
     map<string, StatusChanges> lh_status_changes = 2;
     // task run status changes

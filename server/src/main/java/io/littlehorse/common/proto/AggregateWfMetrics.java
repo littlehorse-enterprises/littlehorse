@@ -4,6 +4,10 @@
 package io.littlehorse.common.proto;
 
 /**
+ * <pre>
+ * Repartition subcommand
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.AggregateWfMetrics}
  */
 public final class AggregateWfMetrics extends
@@ -16,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private AggregateWfMetrics() {
-    tenantId_ = "";
     metricUpdates_ = java.util.Collections.emptyList();
   }
 
@@ -67,42 +70,29 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TENANT_ID_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
+  private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
-   * <code>string tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * @return Whether the tenantId field is set.
+   */
+  @java.lang.Override
+  public boolean hasTenantId() {
+    return tenantId_ != null;
+  }
+  /**
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
   @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
-   * <code>string tenant_id = 2;</code>
-   * @return The bytes for tenantId.
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
 
   public static final int METRIC_UPDATES_FIELD_NUMBER = 3;
@@ -163,8 +153,8 @@ private static final long serialVersionUID = 0L;
     if (wfSpecId_ != null) {
       output.writeMessage(1, getWfSpecId());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, tenantId_);
+    if (tenantId_ != null) {
+      output.writeMessage(2, getTenantId());
     }
     for (int i = 0; i < metricUpdates_.size(); i++) {
       output.writeMessage(3, metricUpdates_.get(i));
@@ -182,8 +172,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getWfSpecId());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, tenantId_);
+    if (tenantId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getTenantId());
     }
     for (int i = 0; i < metricUpdates_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -209,8 +200,11 @@ private static final long serialVersionUID = 0L;
       if (!getWfSpecId()
           .equals(other.getWfSpecId())) return false;
     }
-    if (!getTenantId()
-        .equals(other.getTenantId())) return false;
+    if (hasTenantId() != other.hasTenantId()) return false;
+    if (hasTenantId()) {
+      if (!getTenantId()
+          .equals(other.getTenantId())) return false;
+    }
     if (!getMetricUpdatesList()
         .equals(other.getMetricUpdatesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -228,8 +222,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecId().hashCode();
     }
-    hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTenantId().hashCode();
+    if (hasTenantId()) {
+      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTenantId().hashCode();
+    }
     if (getMetricUpdatesCount() > 0) {
       hash = (37 * hash) + METRIC_UPDATES_FIELD_NUMBER;
       hash = (53 * hash) + getMetricUpdatesList().hashCode();
@@ -332,6 +328,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Repartition subcommand
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.AggregateWfMetrics}
    */
   public static final class Builder extends
@@ -370,7 +370,11 @@ private static final long serialVersionUID = 0L;
         wfSpecIdBuilder_.dispose();
         wfSpecIdBuilder_ = null;
       }
-      tenantId_ = "";
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
       if (metricUpdatesBuilder_ == null) {
         metricUpdates_ = java.util.Collections.emptyList();
       } else {
@@ -430,7 +434,9 @@ private static final long serialVersionUID = 0L;
             : wfSpecIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.tenantId_ = tenantId_;
+        result.tenantId_ = tenantIdBuilder_ == null
+            ? tenantId_
+            : tenantIdBuilder_.build();
       }
     }
 
@@ -481,10 +487,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
       }
-      if (!other.getTenantId().isEmpty()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000002;
-        onChanged();
+      if (other.hasTenantId()) {
+        mergeTenantId(other.getTenantId());
       }
       if (metricUpdatesBuilder_ == null) {
         if (!other.metricUpdates_.isEmpty()) {
@@ -546,7 +550,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              tenantId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getTenantIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
             } // case 18
@@ -699,76 +705,123 @@ private static final long serialVersionUID = 0L;
       return wfSpecIdBuilder_;
     }
 
-    private java.lang.Object tenantId_ = "";
+    private io.littlehorse.sdk.common.proto.TenantId tenantId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
-     * <code>string tenant_id = 2;</code>
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
+     * @return Whether the tenantId field is set.
+     */
+    public boolean hasTenantId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
      * @return The tenantId.
      */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+      if (tenantIdBuilder_ == null) {
+        return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
       } else {
-        return (java.lang.String) ref;
+        return tenantIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>string tenant_id = 2;</code>
-     * @return The bytes for tenantId.
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
+    public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        tenantId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        tenantIdBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
     }
     /**
-     * <code>string tenant_id = 2;</code>
-     * @param value The tenantId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder setTenantId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
+        io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
+      if (tenantIdBuilder_ == null) {
+        tenantId_ = builderForValue.build();
+      } else {
+        tenantIdBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string tenant_id = 2;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
+     */
+    public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          tenantId_ != null &&
+          tenantId_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
+          getTenantIdBuilder().mergeFrom(value);
+        } else {
+          tenantId_ = value;
+        }
+      } else {
+        tenantIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
       bitField0_ = (bitField0_ & ~0x00000002);
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string tenant_id = 2;</code>
-     * @param value The bytes for tenantId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
-    public Builder setTenantIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      tenantId_ = value;
+    public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
-      return this;
+      return getTenantIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+      if (tenantIdBuilder_ != null) {
+        return tenantIdBuilder_.getMessageOrBuilder();
+      } else {
+        return tenantId_ == null ?
+            io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.TenantId tenant_id = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
+        getTenantIdFieldBuilder() {
+      if (tenantIdBuilder_ == null) {
+        tenantIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
+                getTenantId(),
+                getParentForChildren(),
+                isClean());
+        tenantId_ = null;
+      }
+      return tenantIdBuilder_;
     }
 
     private java.util.List<io.littlehorse.common.proto.WfMetricUpdate> metricUpdates_ =

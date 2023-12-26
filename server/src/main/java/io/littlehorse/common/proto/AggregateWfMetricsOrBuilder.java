@@ -23,16 +23,19 @@ public interface AggregateWfMetricsOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <code>string tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * @return Whether the tenantId field is set.
+   */
+  boolean hasTenantId();
+  /**
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
-  java.lang.String getTenantId();
+  io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
-   * <code>string tenant_id = 2;</code>
-   * @return The bytes for tenantId.
+   * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>

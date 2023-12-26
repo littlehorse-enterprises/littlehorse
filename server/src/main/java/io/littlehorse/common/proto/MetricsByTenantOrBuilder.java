@@ -8,16 +8,19 @@ public interface MetricsByTenantOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string tenant_id = 1;</code>
+   * <code>.littlehorse.TenantId tenant_id = 1;</code>
+   * @return Whether the tenantId field is set.
+   */
+  boolean hasTenantId();
+  /**
+   * <code>.littlehorse.TenantId tenant_id = 1;</code>
    * @return The tenantId.
    */
-  java.lang.String getTenantId();
+  io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
-   * <code>string tenant_id = 1;</code>
-   * @return The bytes for tenantId.
+   * <code>.littlehorse.TenantId tenant_id = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
    * <pre>

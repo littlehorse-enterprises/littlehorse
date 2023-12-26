@@ -3,6 +3,7 @@ package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.WfMetricUpdateModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
@@ -26,7 +27,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> implements RepartitionSubCommand {
 
     private WfSpecIdModel wfSpecId;
-    private String tenantId;
+    private TenantIdModel tenantId;
     private final Collection<WfMetricUpdateModel> metricUpdates;
 
     public AggregateWfMetricsModel() {
@@ -34,7 +35,7 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     }
 
     public AggregateWfMetricsModel(
-            WfSpecIdModel wfSpecId, Collection<WfMetricUpdateModel> metricUpdates, String tenantId) {
+            WfSpecIdModel wfSpecId, Collection<WfMetricUpdateModel> metricUpdates, TenantIdModel tenantId) {
         this.wfSpecId = wfSpecId;
         this.metricUpdates = metricUpdates;
         this.tenantId = tenantId;
@@ -44,7 +45,7 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         AggregateWfMetrics p = (AggregateWfMetrics) proto;
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
-        this.tenantId = p.getTenantId();
+        this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         metricUpdates.clear();
         for (WfMetricUpdate metricUpdate : p.getMetricUpdatesList()) {
             metricUpdates.add(LHSerializable.fromProto(metricUpdate, WfMetricUpdateModel.class, context));
@@ -55,7 +56,7 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     public AggregateWfMetrics.Builder toProto() {
         AggregateWfMetrics.Builder out = AggregateWfMetrics.newBuilder();
         out.setWfSpecId(wfSpecId.toProto());
-        out.setTenantId(tenantId);
+        out.setTenantId(tenantId.toProto());
         List<WfMetricUpdate> metricUpdatesProto = metricUpdates.stream()
                 .map(WfMetricUpdateModel::toProto)
                 .map(WfMetricUpdate.Builder::build)

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.MetricsByTenant;
@@ -36,7 +37,8 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PartitionMetrics p = (PartitionMetrics) proto;
         for (MetricsByTenant metricsByTenant : p.getMetricsByTenantList()) {
-            String tenantId = metricsByTenant.getTenantId();
+            TenantIdModel tenantId =
+                    LHSerializable.fromProto(metricsByTenant.getTenantId(), TenantIdModel.class, context);
             for (Map.Entry<String, StatusChanges> wfMetricEntry :
                     metricsByTenant.getLhStatusChangesMap().entrySet()) {
                 WfSpecIdModel wfSpecId =
@@ -59,13 +61,13 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     @Override
     public PartitionMetrics.Builder toProto() {
         PartitionMetrics.Builder out = PartitionMetrics.newBuilder();
-        Map<String, MetricsByTenant.Builder> metricsByTenant = new HashMap<>();
+        Map<TenantIdModel, MetricsByTenant.Builder> metricsByTenant = new HashMap<>();
         for (Map.Entry<WfMetricId, StatusChangesModel> wfMetric : wfMetrics.entrySet()) {
             WfMetricId metricId = wfMetric.getKey();
             StatusChangesModel changes = wfMetric.getValue();
             MetricsByTenant.Builder metricsByTenantProto =
                     metricsByTenant.getOrDefault(metricId.tenantId(), MetricsByTenant.newBuilder());
-            metricsByTenantProto.setTenantId(metricId.tenantId());
+            metricsByTenantProto.setTenantId(metricId.tenantId().toProto());
             metricsByTenantProto.putLhStatusChanges(
                     metricId.wfSpecId().toString(), changes.toProto().build());
             metricsByTenant.putIfAbsent(metricId.tenantId(), metricsByTenantProto);
@@ -75,7 +77,7 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
             StatusChangesModel changes = metrics.getValue();
             MetricsByTenant.Builder metricsByTenantProto =
                     metricsByTenant.getOrDefault(taskMetric.tenantId(), MetricsByTenant.newBuilder());
-            metricsByTenantProto.setTenantId(taskMetric.tenantId());
+            metricsByTenantProto.setTenantId(taskMetric.tenantId().toProto());
             metricsByTenantProto.putTaskStatusChanges(
                     taskMetric.taskDefId().toString(), changes.toProto().build());
             metricsByTenant.putIfAbsent(taskMetric.tenantId(), metricsByTenantProto);
@@ -87,14 +89,15 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         return out;
     }
 
-    public void addMetric(WfSpecIdModel wfSpecId, String tenantId, LHStatusChangedModel lhStatus, Date time) {
+    public void addMetric(WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatusChangedModel lhStatus, Date time) {
         WfMetricId metricId = new WfMetricId(wfSpecId, tenantId);
         StatusChangesModel statusChanges = wfMetrics.getOrDefault(metricId, new StatusChangesModel());
         statusChanges.statusChanges.add(new StatusChangedModel(time, lhStatus));
         wfMetrics.putIfAbsent(metricId, statusChanges);
     }
 
-    public void addMetric(TaskDefIdModel taskDefId, String tenantId, TaskStatusChangedModel taskStatus, Date time) {
+    public void addMetric(
+            TaskDefIdModel taskDefId, TenantIdModel tenantId, TaskStatusChangedModel taskStatus, Date time) {
         TaskMetricId metricId = new TaskMetricId(taskDefId, tenantId);
         StatusChangesModel statusChanges = taskMetrics.getOrDefault(metricId, new StatusChangesModel());
         statusChanges.statusChanges.add(new StatusChangedModel(time, taskStatus));
@@ -159,7 +162,7 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         }
     }
 
-    private record WfMetricId(WfSpecIdModel wfSpecId, String tenantId) {
+    private record WfMetricId(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -173,7 +176,7 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         }
     }
 
-    private record TaskMetricId(TaskDefIdModel taskDefId, String tenantId) {
+    private record TaskMetricId(TaskDefIdModel taskDefId, TenantIdModel tenantId) {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
