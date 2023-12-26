@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import lombok.Getter;
 import lombok.Setter;
@@ -344,8 +345,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeCondition = cond.getSpec();
         ifBody.body(this);
 
+        EdgeCondition lastConditionFromIfBlock = lastNodeCondition;
         String lastNodeFromIfBlockName = lastNodeName;
-        Node.Builder lastNodeFromIfBlock = spec.getNodesOrThrow(lastNodeName).toBuilder();
         List<VariableMutation> variablesFromIfBlock = collectVariableMutations();
 
         // Now go back to tree root and do the else.
@@ -364,7 +365,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         // The bottom node from the ifBlock tree is also
         // going to be the bottom node from the elseBlock.
+        Node.Builder lastNodeFromIfBlock = spec.getNodesOrThrow(lastNodeFromIfBlockName).toBuilder();
         Edge.Builder ifBlockEdge = Edge.newBuilder().setSinkNodeName(lastNodeName);
+
+        // If the treeRootNodeName is equal to the lastNodeFromIfBlockName it means that
+        // no node was created within the if block, thus the edge of the starting NOP should be created
+        // with the appropriate conditional
+        if (Objects.equals(treeRootNodeName, lastNodeFromIfBlockName)) {
+            ifBlockEdge.setCondition(lastConditionFromIfBlock);
+        }
         variablesFromIfBlock.forEach(ifBlockEdge::addVariableMutations);
         lastNodeFromIfBlock.addOutgoingEdges(ifBlockEdge.build());
 
