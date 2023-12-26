@@ -12,29 +12,59 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A VariableAssignment is used within a WfSpec to determine how a value should be
+// assigned in the context of a specific WfRun. For example, in a TASK node, you
+// use a VariableAssignment for each input parameter to determine how the value
+// is set.
+//
+// Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+// have to worry about this in daily LittleHorse usage.
 message VariableAssignment {
+  // A FormatString formats a template String with values from the WfRun.
   message FormatString {
+    // A VariableAssignment which must resolve to a String that has format args.
+    // A valid string is "This is a format string with three args: {0}, {1}, {2}"
     VariableAssignment format = 1;
+
+    // VariableAssignments which fill out the args.
     repeated VariableAssignment args = 2;
   }
 
+  // If you provide a `variable_name` and the specified variable is JSON_OBJ or
+  // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+  // resolve to the specified field.
   optional string json_path = 1;
+
+  // The oneof determines where the value is resolved to.
   oneof source {
+    // Assign the value from a variable.
     string variable_name = 2;
+    // Assign a literal value
     VariableValue literal_value = 3;
+    // Assign a format string
     FormatString format_string = 4;
   }
 }
 
+// Enumerates the available operations to mutate a variable in a WfRun.
 enum VariableMutationType {
+  // Set the variable specified by the LHS to the value of the RHS.
   ASSIGN = 0;
+  // Add the RHS to the LHS.
   ADD = 1;
+  // Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
   EXTEND = 2;
+  // Subtract the RHS from the LHS (both must be INT or DOUBLE)
   SUBTRACT = 3;
+  // Multiply the LHS by the RHS (both must be INT or DOUBLE)
   MULTIPLY = 4;
+  // Divide the LHS by the RHS (both must be INT or DOUBLE)
   DIVIDE = 5;
+  // Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
   REMOVE_IF_PRESENT = 6;
+  // Remove item at index RHS from LHS (LHS must be JSON_ARR)
   REMOVE_INDEX = 7;
+  // Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
   REMOVE_KEY = 8;
 }
 
