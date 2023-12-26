@@ -22,7 +22,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<
                 ListWfMetricsRequest, ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel, ListWfMetricsReply> {
