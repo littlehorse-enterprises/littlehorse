@@ -486,7 +486,6 @@ public class BackendInternalComms implements Closeable {
         if (isClusterScoped(search.getObjectType())) {
             store = ModelStore.defaultStore(rawStore, executionContext());
         } else {
-            System.out.println("Tenant store!");
             store = ModelStore.tenantStoreFor(rawStore, executionContext().authorization().tenantId(), executionContext());
         }
         if (search.getBookmark().getCompletedPartitionsCount() > 0) {
@@ -540,9 +539,6 @@ public class BackendInternalComms implements Closeable {
             startKey = bookmark.getLastKey();
         }
 
-        System.out.println(startKey);
-        System.out.println(endKey);
-
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
 
@@ -552,7 +548,7 @@ public class BackendInternalComms implements Closeable {
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
                 if (--limit < 0) {
-                    bookmarkKey = next.getKey();
+                    bookmarkKey = next.getValue().getStoreKey();
                     break;
                 }
                 results.add(iterKeyValueToInternalScanResult(next, ScanResultTypePb.OBJECT_ID, objectType));
@@ -566,10 +562,6 @@ public class BackendInternalComms implements Closeable {
                         .build();
 
         return Pair.of(results, bookmarkOut);
-    }
-
-    private String addTenantPrefixRemoveMeSoon(String keyToAdd) {
-        return executionContext().authorization().tenantId() + "/" + keyToAdd;
     }
 
     private boolean isClusterScoped(GetableClassEnum type) {
