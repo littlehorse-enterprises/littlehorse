@@ -360,11 +360,9 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 	// Need to add an edge from that node to this node
 	lastNode := t.spec.Nodes[*t.lastNodeName]
 
-	variableMutations := t.collectVariableMutations()
-
 	edge := model.Edge{
 		SinkNodeName:      nodeName,
-		VariableMutations: variableMutations,
+		VariableMutations: t.collectVariableMutations(),
 	}
 
 	if t.lastNodeCondition != nil {
