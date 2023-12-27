@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 from collections import deque
 from inspect import signature
