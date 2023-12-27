@@ -14,7 +14,8 @@ describe('metrics wfSpec API', () => {
             lastWindowStart: '2023-11-12T12:12:12Z',
             numWindows: 24,
             wfSpecName: 'A_WFSPEC',
-            wfSpecVersion: 0,
+            majorVersion: 1,
+            revision: 1,
             windowLength: 'HOURS_2'
         })
 
@@ -23,8 +24,8 @@ describe('metrics wfSpec API', () => {
         expect(grpcCallHandler.handleGrpcCallWithNext).toHaveBeenCalledWith('listWfSpecMetrics', req, res, {
             wfSpecId: {
                 name: 'A_WFSPEC',
-                majorVersion: 0,
-                revision: 0
+                majorVersion: 1,
+                revision: 1
             },
             lastWindowStart: '2023-11-12T12:12:12Z',
             windowLength: MetricsWindowLength.HOURS_2,
