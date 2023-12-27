@@ -43,21 +43,21 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 		// GoLang has this weird thing with scope of variables in switch...
 		var tmp int64
 		tmp, err = strconv.ParseInt(input, 10, 64)
-		if err != nil {
+		if err == nil {
 			out.Value = &model.VariableValue_Int{Int: tmp}
 		}
 
 	case model.VariableType_BOOL:
 		var tmp bool
 		tmp, err = strconv.ParseBool(input)
-		if err != nil {
+		if err == nil {
 			out.Value = &model.VariableValue_Bool{Bool: tmp}
 		}
 
 	case model.VariableType_DOUBLE:
 		var tmp float64
 		tmp, err = strconv.ParseFloat(input, 64)
-		if err != nil {
+		if err == nil {
 			out.Value = &model.VariableValue_Double{Double: tmp}
 		}
 
