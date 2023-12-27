@@ -92,7 +92,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         // will start the failWorker later so we can catch the STARTING tasks
 
         client.putWfSpec(new WorkflowImpl(WF_SPEC_NAME, this::wf).compileWorkflow());
-        Thread.sleep(150);
+        Thread.sleep(300);
 
         String failWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", true));
         String succeedWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", false));
