@@ -498,7 +498,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Post an ExternalEvent. This RPC is highly useful for 
+        """Post an ExternalEvent. This RPC is highly useful for
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

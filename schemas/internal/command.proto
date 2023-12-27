@@ -111,6 +111,7 @@ message StatusChanged {
         LHStatusChanged lh_status = 2;
         TaskStatusChanged task_status = 3;
     }
+    int64 first_event_to_last_delay = 9;
 }
 
 message LHStatusChanged {

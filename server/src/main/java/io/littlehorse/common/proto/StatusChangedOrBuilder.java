@@ -52,5 +52,11 @@ public interface StatusChangedOrBuilder extends
    */
   io.littlehorse.common.proto.TaskStatusChangedOrBuilder getTaskStatusOrBuilder();
 
+  /**
+   * <code>int64 first_event_to_last_delay = 9;</code>
+   * @return The firstEventToLastDelay.
+   */
+  long getFirstEventToLastDelay();
+
   io.littlehorse.common.proto.StatusChanged.StatusCase getStatusCase();
 }

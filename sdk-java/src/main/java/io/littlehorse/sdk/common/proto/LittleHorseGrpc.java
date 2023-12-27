@@ -2031,7 +2031,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for 
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     default void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
@@ -2664,7 +2664,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for 
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
@@ -3293,7 +3293,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for 
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
@@ -3904,7 +3904,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for 
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> putExternalEvent(

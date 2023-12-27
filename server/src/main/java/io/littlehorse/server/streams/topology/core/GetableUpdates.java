@@ -33,6 +33,15 @@ public class GetableUpdates {
         return new WfRunStatusUpdate(wfSpecId, tenantId, previousStatus, newStatus);
     }
 
+    public static GetableStatusUpdate createEndEvent(
+            WfSpecIdModel wfSpecId,
+            TenantIdModel tenantId,
+            LHStatus previousStatus,
+            LHStatus newStatus,
+            Date wfRunStartDate) {
+        return new WfRunStatusUpdate(wfSpecId, tenantId, previousStatus, newStatus, wfRunStartDate);
+    }
+
     public static TaskRunStatusUpdate create(
             TaskDefIdModel taskDefId, TenantIdModel tenantId, TaskStatus previousStatus, TaskStatus newStatus) {
         return new TaskRunStatusUpdate(taskDefId, tenantId, previousStatus, newStatus);
@@ -43,10 +52,19 @@ public class GetableUpdates {
 
         private final Date creationDate;
         private final TenantIdModel tenantId;
+        private final long firstEventLatency;
 
         public GetableStatusUpdate(TenantIdModel tenantId) {
             this.creationDate = new Date();
             this.tenantId = tenantId;
+            this.firstEventLatency = 0;
+        }
+
+        public GetableStatusUpdate(TenantIdModel tenantId, Date firstEventDate) {
+            this.creationDate = new Date();
+            this.tenantId = tenantId;
+            this.firstEventLatency = System.currentTimeMillis() - firstEventDate.getTime();
+            ;
         }
     }
 
@@ -59,6 +77,18 @@ public class GetableUpdates {
         public WfRunStatusUpdate(
                 WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
             super(tenantId);
+            this.previousStatus = previousStatus;
+            this.wfSpecId = wfSpecId;
+            this.newStatus = Objects.requireNonNull(newStatus);
+        }
+
+        public WfRunStatusUpdate(
+                WfSpecIdModel wfSpecId,
+                TenantIdModel tenantId,
+                LHStatus previousStatus,
+                LHStatus newStatus,
+                Date wfRunStartDate) {
+            super(tenantId, wfRunStartDate);
             this.previousStatus = previousStatus;
             this.wfSpecId = wfSpecId;
             this.newStatus = Objects.requireNonNull(newStatus);

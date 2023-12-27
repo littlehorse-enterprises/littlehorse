@@ -168,6 +168,17 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskStatusChanged.getDefaultInstance();
   }
 
+  public static final int FIRST_EVENT_TO_LAST_DELAY_FIELD_NUMBER = 9;
+  private long firstEventToLastDelay_ = 0L;
+  /**
+   * <code>int64 first_event_to_last_delay = 9;</code>
+   * @return The firstEventToLastDelay.
+   */
+  @java.lang.Override
+  public long getFirstEventToLastDelay() {
+    return firstEventToLastDelay_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -191,6 +202,9 @@ private static final long serialVersionUID = 0L;
     if (statusCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.common.proto.TaskStatusChanged) status_);
     }
+    if (firstEventToLastDelay_ != 0L) {
+      output.writeInt64(9, firstEventToLastDelay_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -212,6 +226,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.common.proto.TaskStatusChanged) status_);
     }
+    if (firstEventToLastDelay_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(9, firstEventToLastDelay_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -232,6 +250,8 @@ private static final long serialVersionUID = 0L;
       if (!getTime()
           .equals(other.getTime())) return false;
     }
+    if (getFirstEventToLastDelay()
+        != other.getFirstEventToLastDelay()) return false;
     if (!getStatusCase().equals(other.getStatusCase())) return false;
     switch (statusCase_) {
       case 2:
@@ -260,6 +280,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
     }
+    hash = (37 * hash) + FIRST_EVENT_TO_LAST_DELAY_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getFirstEventToLastDelay());
     switch (statusCase_) {
       case 2:
         hash = (37 * hash) + LH_STATUS_FIELD_NUMBER;
@@ -414,6 +437,7 @@ private static final long serialVersionUID = 0L;
       if (taskStatusBuilder_ != null) {
         taskStatusBuilder_.clear();
       }
+      firstEventToLastDelay_ = 0L;
       statusCase_ = 0;
       status_ = null;
       return this;
@@ -454,6 +478,9 @@ private static final long serialVersionUID = 0L;
         result.time_ = timeBuilder_ == null
             ? time_
             : timeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.firstEventToLastDelay_ = firstEventToLastDelay_;
       }
     }
 
@@ -517,6 +544,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasTime()) {
         mergeTime(other.getTime());
       }
+      if (other.getFirstEventToLastDelay() != 0L) {
+        setFirstEventToLastDelay(other.getFirstEventToLastDelay());
+      }
       switch (other.getStatusCase()) {
         case LH_STATUS: {
           mergeLhStatus(other.getLhStatus());
@@ -577,6 +607,11 @@ private static final long serialVersionUID = 0L;
               statusCase_ = 3;
               break;
             } // case 26
+            case 72: {
+              firstEventToLastDelay_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 72
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1010,6 +1045,38 @@ private static final long serialVersionUID = 0L;
       statusCase_ = 3;
       onChanged();
       return taskStatusBuilder_;
+    }
+
+    private long firstEventToLastDelay_ ;
+    /**
+     * <code>int64 first_event_to_last_delay = 9;</code>
+     * @return The firstEventToLastDelay.
+     */
+    @java.lang.Override
+    public long getFirstEventToLastDelay() {
+      return firstEventToLastDelay_;
+    }
+    /**
+     * <code>int64 first_event_to_last_delay = 9;</code>
+     * @param value The firstEventToLastDelay to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFirstEventToLastDelay(long value) {
+
+      firstEventToLastDelay_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 first_event_to_last_delay = 9;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFirstEventToLastDelay() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      firstEventToLastDelay_ = 0L;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
