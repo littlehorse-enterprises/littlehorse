@@ -360,13 +360,9 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 	// Need to add an edge from that node to this node
 	lastNode := t.spec.Nodes[*t.lastNodeName]
 
-	mutations := make([]*model.VariableMutation, len(t.variableMutations))
-	copy(mutations, t.variableMutations)
-	t.variableMutations = nil
-
 	edge := model.Edge{
 		SinkNodeName:      nodeName,
-		VariableMutations: mutations,
+		VariableMutations: t.collectVariableMutations(),
 	}
 
 	if t.lastNodeCondition != nil {
@@ -636,31 +632,40 @@ func (t *WorkflowThread) doIfElse(
 	t.lastNodeCondition = cond
 	doIf(t)
 
-	lastNodeFromIfBlock := t.spec.Nodes[*t.lastNodeName]
-	variablesFromIfBlock := make([]*model.VariableMutation, len(t.variableMutations))
-	copy(variablesFromIfBlock, t.variableMutations)
-	t.variableMutations = nil
+	lastConditionFromIfBlock := t.lastNodeCondition
+	lastNodeFromIfBlockName := t.lastNodeName
+	variablesFromIfBlock := t.collectVariableMutations()
 
 	// Go back to the tree root
 	t.lastNodeName = treeRootNodeName
 	t.lastNodeCondition = &WorkflowCondition{spec: cond.getReverse()}
 	doElse(t)
 
-	if t.lastNodeCondition != nil {
-		panic(
-			"Impossible (bug): After doing else body, last condition should be nil",
-		)
-	}
-
 	t.addNopNode()
 
-	lastNodeFromIfBlock.OutgoingEdges = append(
-		lastNodeFromIfBlock.OutgoingEdges,
-		&model.Edge{
-			SinkNodeName:      *t.lastNodeName,
-			VariableMutations: variablesFromIfBlock,
-		},
+	ifBlockEdge := model.Edge{
+		SinkNodeName:      *t.lastNodeName,
+		VariableMutations: variablesFromIfBlock,
+	}
+
+	// If the treeRootNodeName is equal to the lastNodeFromIfBlockName it means that
+	// no node was created within the if block, thus the edge of the starting NOP should be created
+	// with the appropriate conditional
+	if lastNodeFromIfBlockName == treeRootNodeName {
+		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
+	}
+
+	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
+		t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges,
+		&ifBlockEdge,
 	)
+}
+
+func (t *WorkflowThread) collectVariableMutations() []*model.VariableMutation {
+	variablesFromIfBlock := make([]*model.VariableMutation, len(t.variableMutations))
+	copy(variablesFromIfBlock, t.variableMutations)
+	t.variableMutations = nil
+	return variablesFromIfBlock
 }
 
 func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
