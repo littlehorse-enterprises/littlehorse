@@ -351,12 +351,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeCondition = cond.getReverse(); // flip to else {}
         elseBody.body(this); // do the body
 
-        // Now need to join the last node to the joiner node.
-        if (lastNodeCondition != null) {
-            throw new RuntimeException("Not possible to have lastNodeCondition after internal call to "
-                    + "elseBody.body(this); please contact maintainers. This is a bug.");
-        }
-
         // Close off the tree
         addNopNode();
 
