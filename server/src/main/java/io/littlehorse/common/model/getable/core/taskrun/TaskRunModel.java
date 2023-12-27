@@ -272,7 +272,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             transitionTo(TaskStatus.TASK_SCHEDULED);
             scheduleAttempt();
         } else {
-            transitionTo(status);
+            transitionTo(ce.getStatus());
             taskRunSource.getSubSource().onFailed(attempt);
         }
     }
