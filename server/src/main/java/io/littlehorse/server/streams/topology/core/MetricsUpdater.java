@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.PartitionMetricsModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.TaskStatusChangedModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.util.Optional;
@@ -25,10 +25,19 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                     new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
             currentAggregateCommand()
                     .addMetric(
-                            wfRunEvent.getWfSPecId(),
-                            new TenantIdModel(wfRunEvent.getTenantId()),
+                            wfRunEvent.getWfSpecId(),
+                            wfRunEvent.getTenantId(),
                             statusChanged,
                             wfRunEvent.getCreationDate());
+        } else if (statusUpdate instanceof GetableUpdates.TaskRunStatusUpdate taskUpdate) {
+            TaskStatusChangedModel taskStatusChanged =
+                    new TaskStatusChangedModel(taskUpdate.getPreviousStatus(), taskUpdate.getNewStatus());
+            currentAggregateCommand()
+                    .addMetric(
+                            taskUpdate.getTaskDefId(),
+                            taskUpdate.getTenantId(),
+                            taskStatusChanged,
+                            taskUpdate.getCreationDate());
         } else {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));

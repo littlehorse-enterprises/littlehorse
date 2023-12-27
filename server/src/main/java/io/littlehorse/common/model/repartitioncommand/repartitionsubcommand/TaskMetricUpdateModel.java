@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.common.proto.TaskMetricUpdatePb;
+import io.littlehorse.common.proto.TaskMetricUpdate;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
@@ -21,11 +21,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Getter
-public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements RepartitionSubCommand {
+public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implements RepartitionSubCommand {
 
     private TaskDefIdModel taskDefId;
     public Date windowStart;
-    public MetricsWindowLength type;
+    public MetricsWindowLength windowType;
     public long numEntries;
     public long scheduleToStartMax;
     public long scheduleToStartTotal;
@@ -41,22 +41,22 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         return StoreableType.TASK_METRIC_UPDATE;
     }
 
-    public TaskMetricUpdate() {}
+    public TaskMetricUpdateModel() {}
 
-    public TaskMetricUpdate(Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
+    public TaskMetricUpdateModel(Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
         this.windowStart = windowStart;
-        this.type = type;
+        this.windowType = type;
         this.taskDefId = taskDefId;
     }
 
-    public Class<TaskMetricUpdatePb> getProtoBaseClass() {
-        return TaskMetricUpdatePb.class;
+    public Class<TaskMetricUpdate> getProtoBaseClass() {
+        return TaskMetricUpdate.class;
     }
 
-    public TaskMetricUpdatePb.Builder toProto() {
-        TaskMetricUpdatePb.Builder out = TaskMetricUpdatePb.newBuilder()
+    public TaskMetricUpdate.Builder toProto() {
+        TaskMetricUpdate.Builder out = TaskMetricUpdate.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
-                .setType(type)
+                .setType(windowType)
                 .setTaskDefId(taskDefId.toProto())
                 .setTotalCompleted(totalCompleted)
                 .setTotalErrored(totalErrored)
@@ -73,9 +73,9 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
-        TaskMetricUpdatePb p = (TaskMetricUpdatePb) proto;
+        TaskMetricUpdate p = (TaskMetricUpdate) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
-        type = p.getType();
+        windowType = p.getType();
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
@@ -88,11 +88,11 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         totalScheduled = p.getTotalScheduled();
     }
 
-    public void merge(TaskMetricUpdate o) {
+    public void merge(TaskMetricUpdateModel o) {
         if (!o.windowStart.equals(windowStart)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
-        if (!o.type.equals(type)) {
+        if (!o.windowType.equals(windowType)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
 
@@ -125,13 +125,13 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         out.totalErrored = totalErrored;
         out.windowStart = windowStart;
         out.totalScheduled = totalScheduled;
-        out.type = type;
+        out.type = windowType;
 
         return out;
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsIdModel(windowStart, type, new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC))
+        return new TaskDefMetricsIdModel(windowStart, windowType, new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC))
                 .getStoreableKey();
     }
 
@@ -156,7 +156,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
 
     @Override
     public String getStoreKey() {
-        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefId.toString());
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), windowType.toString(), taskDefId.toString());
     }
 
     public static String getStoreKey(MetricsWindowLength type, Date windowStart, String taskDefName) {
@@ -167,60 +167,3 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         return windowStart;
     }
 }
-/*
- *
- * partition 1:
- * // executes 2 tasks "greett"
- *
- * partition 2:
- * // executes 1 task "greet"
- * // executes 1 task "foo"
- *
- *
- * Partition 1 sends:
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: greet
- * numTasks: 2
- * }
- *
- * Partition 2 sends:
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: greet
- * numTasks: 1
- * }
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: foo
- * numTasks: 1
- * }
- *
- *
- *
- * repartition processor:
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: "ALL_TASKS"
- * numTasks: 4
- * }
- *
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: greet
- * numTasks: 3
- * }
- * {
- * "windowStart": 5:00pm
- * "windowLength": MINUTES_5
- * taskDefName: foo
- * numTasks: 1
- * }
- *
- *
- */

@@ -44,10 +44,11 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 				seenThreads[threadName] = function
 
 				thr := WorkflowThread{
-					Name:     threadName,
-					isActive: true,
-					wf:       l,
-					spec:     model.ThreadSpec{},
+					Name:              threadName,
+					isActive:          true,
+					wf:                l,
+					spec:              model.ThreadSpec{},
+					variableMutations: make([]*model.VariableMutation, 0),
 				}
 				thr.spec.InterruptDefs = make([]*model.InterruptDef, 0)
 				thr.spec.VariableDefs = make([]*model.ThreadVarDef, 0)
@@ -358,9 +359,16 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 
 	// Need to add an edge from that node to this node
 	lastNode := t.spec.Nodes[*t.lastNodeName]
+
+	mutations := make([]*model.VariableMutation, len(t.variableMutations))
+	copy(mutations, t.variableMutations)
+	t.variableMutations = nil
+
 	edge := model.Edge{
-		SinkNodeName: nodeName,
+		SinkNodeName:      nodeName,
+		VariableMutations: mutations,
 	}
+
 	if t.lastNodeCondition != nil {
 		edge.Condition = t.lastNodeCondition.spec
 		t.lastNodeCondition = nil
@@ -368,9 +376,8 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
 
 	node := &model.Node{
-		OutgoingEdges:     make([]*model.Edge, 0),
-		VariableMutations: make([]*model.VariableMutation, 0),
-		FailureHandlers:   make([]*model.FailureHandlerDef, 0),
+		OutgoingEdges:   make([]*model.Edge, 0),
+		FailureHandlers: make([]*model.FailureHandlerDef, 0),
 	}
 
 	t.spec.Nodes[nodeName] = node
@@ -511,8 +518,7 @@ func (t *WorkflowThread) mutate(
 		}
 	}
 
-	node := t.spec.Nodes[*t.lastNodeName]
-	node.VariableMutations = append(node.VariableMutations, mutation)
+	t.variableMutations = append(t.variableMutations, mutation)
 }
 
 func (t *WorkflowThread) addVariable(
@@ -571,8 +577,7 @@ func (t *WorkflowThread) condition(
 	}
 
 	return &WorkflowCondition{
-		spec:          cond,
-		createdAtNode: *t.lastNodeName,
+		spec: cond,
 	}
 }
 
@@ -631,11 +636,14 @@ func (t *WorkflowThread) doIfElse(
 	t.lastNodeCondition = cond
 	doIf(t)
 
-	t.addNopNode()
-	joinerNodeName := t.lastNodeName
+	lastNodeFromIfBlock := t.spec.Nodes[*t.lastNodeName]
+	variablesFromIfBlock := make([]*model.VariableMutation, len(t.variableMutations))
+	copy(variablesFromIfBlock, t.variableMutations)
+	t.variableMutations = nil
 
 	// Go back to the tree root
 	t.lastNodeName = treeRootNodeName
+	t.lastNodeCondition = &WorkflowCondition{spec: cond.getReverse()}
 	doElse(t)
 
 	if t.lastNodeCondition != nil {
@@ -644,17 +652,15 @@ func (t *WorkflowThread) doIfElse(
 		)
 	}
 
-	lastNodeFromElseBlock := t.spec.Nodes[*t.lastNodeName]
+	t.addNopNode()
 
-	// Make the last node from the else block point to the joiner node
-	lastNodeFromElseBlock.OutgoingEdges = append(
-		lastNodeFromElseBlock.OutgoingEdges,
+	lastNodeFromIfBlock.OutgoingEdges = append(
+		lastNodeFromIfBlock.OutgoingEdges,
 		&model.Edge{
-			SinkNodeName: *joinerNodeName,
+			SinkNodeName:      *t.lastNodeName,
+			VariableMutations: variablesFromIfBlock,
 		},
 	)
-
-	t.lastNodeName = joinerNodeName
 }
 
 func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {

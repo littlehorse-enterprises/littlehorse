@@ -131,7 +131,9 @@ export function ExternalEventInformation({ isWFRun,run,data,wfRunId,errorData,se
                             (LITERAL VALUE OR VARIABLE)
                         </p>
                     </div>
-                    {data?.lhNode?.variableMutations?.map(
+                    {data?.lhNode?.outgoingEdges.reduce((accumulator, currentValue) => {
+                        return accumulator.concat(currentValue.variableMutations)
+                    }, [])?.map(
                         (
                             { lhsName, operation, literalValue },
                             index: number
