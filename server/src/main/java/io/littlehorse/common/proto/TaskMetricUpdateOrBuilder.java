@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface TaskMetricUpdatePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.TaskMetricUpdatePb)
+public interface TaskMetricUpdateOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.TaskMetricUpdate)
     com.google.protobuf.MessageOrBuilder {
 
   /**

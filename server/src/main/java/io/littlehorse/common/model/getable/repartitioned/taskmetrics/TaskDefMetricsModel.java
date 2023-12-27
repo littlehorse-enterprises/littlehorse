@@ -33,6 +33,14 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
     public long totalStarted;
     public long totalScheduled;
 
+    public TaskDefMetricsModel() {}
+
+    public TaskDefMetricsModel(Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
+        this.windowStart = windowStart;
+        this.type = type;
+        this.taskDefId = taskDefId;
+    }
+
     public Class<TaskDefMetrics> getProtoBaseClass() {
         return TaskDefMetrics.class;
     }
@@ -89,6 +97,6 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
-        return new TaskDefMetricsIdModel(time, windowType, new TaskDefIdModel(taskDefName)).getStoreableKey();
+        return new TaskDefMetricsIdModel(time, windowType, new TaskDefIdModel(taskDefName)).toString();
     }
 }

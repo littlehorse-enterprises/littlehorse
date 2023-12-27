@@ -71,6 +71,12 @@ message AggregateWfMetrics {
     repeated WfMetricUpdate metric_updates = 3;
 }
 
+message AggregateTaskMetrics {
+    TaskDefId task_def_id = 1;
+    TenantId tenant_id = 2;
+    repeated TaskMetricUpdate metric_updates = 3;
+}
+
 message WfMetricUpdate {
     google.protobuf.Timestamp window_start = 1;
     MetricsWindowLength type = 2;
@@ -123,14 +129,14 @@ message RepartitionCommandPb {
     optional string command_id = 2;
 
     oneof repartition_command {
-        TaskMetricUpdatePb task_metric_update = 3; // deprecate??
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
         AggregateWfMetrics aggregate_wf_metrics = 7;
+        AggregateTaskMetrics aggregate_task_metrics = 8;
     }
 }
 
-message TaskMetricUpdatePb {
+message TaskMetricUpdate {
     TaskDefId task_def_id = 1;
     google.protobuf.Timestamp window_start = 2;
     MetricsWindowLength type = 3;
