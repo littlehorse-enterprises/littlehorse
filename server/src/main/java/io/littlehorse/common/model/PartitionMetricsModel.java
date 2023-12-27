@@ -91,12 +91,17 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         return out;
     }
 
-    public void addMetric(WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatusChangedModel lhStatus, Date time) {
+    public void addMetric(
+            WfSpecIdModel wfSpecId,
+            TenantIdModel tenantId,
+            LHStatusChangedModel lhStatus,
+            Date time,
+            long firstEventToLastDelay) {
         WfMetricId clusterLevelId = new WfMetricId(new WfSpecIdModel(LHConstants.CLUSTER_LEVEL_METRIC, 0, 0), tenantId);
         StatusChangesModel clusterLevelChanges = wfMetrics.getOrDefault(clusterLevelId, new StatusChangesModel());
         WfMetricId metricId = new WfMetricId(wfSpecId, tenantId);
         StatusChangesModel statusChanges = wfMetrics.getOrDefault(metricId, new StatusChangesModel());
-        StatusChangedModel statusChanged = new StatusChangedModel(time, lhStatus);
+        StatusChangedModel statusChanged = new StatusChangedModel(time, lhStatus, firstEventToLastDelay);
         statusChanges.statusChanges.add(statusChanged);
         clusterLevelChanges.statusChanges.add(statusChanged);
         wfMetrics.putIfAbsent(metricId, statusChanges);
@@ -104,12 +109,16 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     }
 
     public void addMetric(
-            TaskDefIdModel taskDefId, TenantIdModel tenantId, TaskStatusChangedModel taskStatus, Date time) {
+            TaskDefIdModel taskDefId,
+            TenantIdModel tenantId,
+            TaskStatusChangedModel taskStatus,
+            Date time,
+            long firstEventToLastDelay) {
         TaskMetricId clusterId = new TaskMetricId(new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC), tenantId);
         TaskMetricId metricId = new TaskMetricId(taskDefId, tenantId);
         StatusChangesModel statusChanges = taskMetrics.getOrDefault(metricId, new StatusChangesModel());
         StatusChangesModel globalChanges = taskMetrics.getOrDefault(clusterId, new StatusChangesModel());
-        StatusChangedModel statusChanged = new StatusChangedModel(time, taskStatus);
+        StatusChangedModel statusChanged = new StatusChangedModel(time, taskStatus, firstEventToLastDelay);
         statusChanges.statusChanges.add(statusChanged);
         globalChanges.statusChanges.add(statusChanged);
         taskMetrics.putIfAbsent(metricId, statusChanges);
@@ -205,6 +214,9 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         } else if (statusChanged.getLhStatusChanged().isErrored()) {
             metric.totalErrored += 1;
         }
+        metric.startToCompleteTotal += statusChanged.getFirstEventToLastDelay();
+        metric.numEntries += 1;
+        metric.startToCompleteMax = Math.max(statusChanged.getFirstEventToLastDelay(), metric.startToCompleteMax);
     }
 
     private void incrementMetric(TaskMetricUpdateModel metric, StatusChangedModel statusChanged) {
@@ -217,6 +229,9 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         } else if (statusChanged.getTaskStatusChanged().isScheduled()) {
             metric.totalScheduled += 1;
         }
+        metric.startToCompleteTotal += statusChanged.getFirstEventToLastDelay();
+        metric.numEntries += 1;
+        metric.startToCompleteMax = Math.max(statusChanged.getFirstEventToLastDelay(), metric.startToCompleteMax);
     }
 
     private record WfMetricId(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
