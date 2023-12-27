@@ -538,7 +538,7 @@ public class BackendInternalComms implements Closeable {
         String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
         String startKey;
         if (bookmark == null) {
-            startKey = objectIdScan.getStartObjectId();
+            startKey = StoredGetable.getRocksDBKey(objectIdScan.getStartObjectId(), objectType);
         } else {
             startKey = bookmark.getLastKey();
         }
