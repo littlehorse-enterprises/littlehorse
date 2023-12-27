@@ -26,6 +26,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.*;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
@@ -451,6 +452,12 @@ public class BackendInternalComms implements Closeable {
      * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
      */
     public InternalScanResponse doScan(InternalScan search) {
+        if (search.getStoreName().equals(ServerTopology.GLOBAL_METADATA_STORE)) {
+            // This will be cleaned up in a two-part refactor of the stores. The first part is
+            // in #556.
+            return doGlobalStoreScan(search);
+        }
+
         if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
             return objectIdPrefixScan(search);
         } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
@@ -460,6 +467,126 @@ public class BackendInternalComms implements Closeable {
         } else {
             throw new RuntimeException("Impossible: Unrecognized search type");
         }
+    }
+
+    // TODO: Remove this in part-2 of the #556 refactor
+    private InternalScanResponse doGlobalStoreScan(InternalScan search) {
+        // Note that there is only one partition in the global store, because, well, it's global
+        int partition = 0;
+
+        // This is also gross.
+        if (!search.getStoreName().equals(ServerTopology.GLOBAL_METADATA_STORE)) {
+            throw new IllegalStateException("Tried to do a global store scan on non-global store search");
+        }
+
+        ReadOnlyModelStore store;
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(0, false, ServerTopology.GLOBAL_METADATA_STORE);
+        if (isClusterScoped(search.getObjectType())) {
+            store = ModelStore.defaultStore(rawStore, executionContext());
+        } else {
+            store = ModelStore.tenantStoreFor(
+                    rawStore, executionContext().authorization().tenantId(), executionContext());
+        }
+
+        PartitionBookmarkPb partBookmark = null;
+        if (search.getBookmark() != null) {
+            if (search.getBookmark().getCompletedPartitionsCount() > 0) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Search request provided corrupted bookmark.");
+            }
+            partBookmark = search.getBookmark().getInProgressPartitionsOrDefault(partition, null);
+        }
+
+        Pair<List<ByteString>, PartitionBookmarkPb> result;
+        if (search.getTagScan() != null) {
+            result = onePartitionPaginatedTagScan(
+                    search.tagScan,
+                    partBookmark,
+                    search.getLimit(),
+                    search.getObjectType(),
+                    partition,
+                    store,
+                    search.getFilters());
+        } else {
+            result = objectIdPrefixScanGlobalStore(
+                    search.boundedObjectIdScan,
+                    partBookmark,
+                    search.getLimit(),
+                    search.getObjectType(),
+                    partition,
+                    store,
+                    search.getFilters());
+        }
+
+        InternalScanResponse.Builder out = InternalScanResponse.newBuilder().addAllResults(result.getLeft());
+        if (result.getRight() != null) {
+            out.setUpdatedBookmark(BookmarkPb.newBuilder().putInProgressPartitions(partition, result.getRight()));
+        }
+        return out.build();
+    }
+
+    // This will be removed during the refactor, as it is totally gross.
+    private Pair<List<ByteString>, PartitionBookmarkPb> objectIdPrefixScanGlobalStore(
+            BoundedObjectIdScanPb objectIdScan,
+            PartitionBookmarkPb bookmark,
+            int limit,
+            GetableClassEnum objectType,
+            int partition,
+            ReadOnlyModelStore store,
+            List<ScanFilterModel> filters) {
+
+        String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
+        String startKey;
+        if (bookmark == null) {
+            startKey = StoredGetable.getRocksDBKey(objectIdScan.getStartObjectId(), objectType);
+        } else {
+            startKey = bookmark.getLastKey();
+        }
+
+        String bookmarkKey = null;
+        List<ByteString> results = new ArrayList<>();
+
+        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
+
+            while (iter.hasNext()) {
+                LHIterKeyValue<? extends Storeable<?>> next = iter.next();
+                if (--limit < 0) {
+                    bookmarkKey = next.getValue().getStoreKey();
+                    break;
+                }
+                results.add(iterKeyValueToInternalScanResult(next, ScanResultTypePb.OBJECT_ID, objectType));
+            }
+        }
+        PartitionBookmarkPb bookmarkOut = bookmarkKey == null
+                ? null
+                : PartitionBookmarkPb.newBuilder()
+                        .setParttion(partition)
+                        .setLastKey(bookmarkKey)
+                        .build();
+
+        return Pair.of(results, bookmarkOut);
+    }
+
+    private boolean isClusterScoped(GetableClassEnum type) {
+        switch (type) {
+            case PRINCIPAL:
+            case TENANT:
+                return true;
+            case TASK_DEF:
+            case WF_RUN:
+            case WF_SPEC:
+            case NODE_RUN:
+            case EXTERNAL_EVENT:
+            case EXTERNAL_EVENT_DEF:
+            case USER_TASK_DEF:
+            case USER_TASK_RUN:
+            case TASK_DEF_METRICS:
+            case WF_SPEC_METRICS:
+            case VARIABLE:
+            case TASK_RUN:
+            case TASK_WORKER_GROUP:
+            case UNRECOGNIZED:
+        }
+        return false;
     }
 
     private InternalScanResponse specificPartitionTagScan(InternalScan search) {
@@ -683,6 +810,10 @@ public class BackendInternalComms implements Closeable {
     }
 
     private HostInfo getHostForKey(String storeName, String partitionKey) {
+        if (storeName.equals(ServerTopology.GLOBAL_METADATA_STORE)) {
+            // Every processor has the global store, so we can always do the scan locally.
+            return thisHost;
+        }
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
                 storeName, partitionKey, Serdes.String().serializer());
         return meta.activeHost();

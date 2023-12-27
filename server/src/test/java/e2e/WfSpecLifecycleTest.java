@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-public class WorkflowIdempotencyTest {
+public class WfSpecLifecycleTest {
 
     private LittleHorseBlockingStub client;
 
