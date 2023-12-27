@@ -107,6 +107,7 @@ public class TestContext {
         List<DiscoveredWorkflowDefinition> discoveredWorkflowDefinitions = workflowDefinitionDiscover.scan();
         injectWorkflowDefinitions(testInstance, discoveredWorkflowDefinitions);
         injectLhClient(testInstance);
+        injectLhConfig(testInstance);
     }
 
     private void injectWorkflowDefinitions(
@@ -122,6 +123,12 @@ public class TestContext {
     private void injectLhClient(Object testInstance) {
         new FieldDependencyInjector(
                         () -> lhClient, testInstance, field -> field.getType().isAssignableFrom(lhClient.getClass()))
+                .inject();
+    }
+
+    private void injectLhConfig(Object testInstance) {
+        new FieldDependencyInjector(
+                () -> LHConfig, testInstance, field -> field.getType().isAssignableFrom(LHConfig.getClass()))
                 .inject();
     }
 
