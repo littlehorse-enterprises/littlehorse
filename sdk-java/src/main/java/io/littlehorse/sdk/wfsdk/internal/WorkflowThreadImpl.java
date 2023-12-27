@@ -47,8 +47,11 @@ import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -66,11 +69,13 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private EdgeCondition lastNodeCondition;
     private boolean isActive;
     private ThreadRetentionPolicy retentionPolicy;
+    private Queue<VariableMutation> variableMutations;
 
     public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;
+        this.variableMutations = new LinkedList<>();
 
         // For now, the creation of the entrypoint node is manual.
         Node entrypointNode =
@@ -291,13 +296,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
     }
 
-    public void addMutationToCurrentNode(VariableMutation mutation) {
-        checkIfIsActive();
-        Node.Builder builder = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        builder.addVariableMutations(mutation);
-        spec.putNodes(lastNodeName, builder.build());
-    }
-
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
         WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal);
@@ -344,10 +342,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeCondition = cond.getSpec();
         ifBody.body(this);
 
-        // Close off the tree. The bottom node from the ifBlock tree is also
-        // going to be the bottom node from the elseBlock.
-        addNopNode();
-        String joinerNodeName = lastNodeName;
+        EdgeCondition lastConditionFromIfBlock = lastNodeCondition;
+        String lastNodeFromIfBlockName = lastNodeName;
+        List<VariableMutation> variablesFromIfBlock = collectVariableMutations();
 
         // Now go back to tree root and do the else.
         lastNodeName = treeRootNodeName; // back to tree root
@@ -360,17 +357,32 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     + "elseBody.body(this); please contact maintainers. This is a bug.");
         }
 
-        Node.Builder lastNodeFromElseBlock = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        lastNodeFromElseBlock.addOutgoingEdges(Edge.newBuilder()
-                .setSinkNodeName(joinerNodeName)
-                // No condition necessary since we need to just go straight to
-                // the joiner node
-                .build());
+        // Close off the tree
+        addNopNode();
 
-        spec.putNodes(lastNodeName, lastNodeFromElseBlock.build());
+        // The bottom node from the ifBlock tree is also
+        // going to be the bottom node from the elseBlock.
+        Node.Builder lastNodeFromIfBlock = spec.getNodesOrThrow(lastNodeFromIfBlockName).toBuilder();
+        Edge.Builder ifBlockEdge = Edge.newBuilder().setSinkNodeName(lastNodeName);
 
-        // Now we want to resume from the joiner node
-        lastNodeName = joinerNodeName;
+        // If the treeRootNodeName is equal to the lastNodeFromIfBlockName it means that
+        // no node was created within the if block, thus the edge of the starting NOP should be created
+        // with the appropriate conditional
+        if (Objects.equals(treeRootNodeName, lastNodeFromIfBlockName)) {
+            ifBlockEdge.setCondition(lastConditionFromIfBlock);
+        }
+        variablesFromIfBlock.forEach(ifBlockEdge::addVariableMutations);
+        lastNodeFromIfBlock.addOutgoingEdges(ifBlockEdge.build());
+
+        spec.putNodes(lastNodeFromIfBlockName, lastNodeFromIfBlock.build());
+    }
+
+    private List<VariableMutation> collectVariableMutations() {
+        List<VariableMutation> variablesFromIfBlock = new ArrayList<>(variableMutations.size());
+        while (!variableMutations.isEmpty()) {
+            variablesFromIfBlock.add(variableMutations.poll());
+        }
+        return variablesFromIfBlock;
     }
 
     public void doWhile(WorkflowCondition condition, ThreadFunc whileBody) {
@@ -559,7 +571,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             mutation.setLiteralValue(rhsVal);
         }
 
-        this.addMutationToCurrentNode(mutation.build());
+        this.variableMutations.add(mutation.build());
     }
 
     @Override
@@ -699,6 +711,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         Node.Builder feederNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         Edge.Builder edge = Edge.newBuilder().setSinkNodeName(nextNodeName);
+
+        edge.addAllVariableMutations(collectVariableMutations());
+
         if (lastNodeCondition != null) {
             edge.setCondition(lastNodeCondition);
             lastNodeCondition = null;

@@ -122,40 +122,7 @@ export function WfSpecDrawerComponent(props: DrawerComponentProps) {
                     }
                 },
                 externalEvent: () => {
-                    const processedData = selectedNode?.variableMutations.map(
-                        (element: {
-                            lhsName: string;
-                            operation: string;
-                            nodeOutput: any;
-                        }) => {
-                            let literalValue =
-                                selectedNode.externalEvent.externalEventDefName
-
-                            if (Object.prototype.hasOwnProperty.call(element.nodeOutput, 'jsonpath')) {console.error('Missing fix of property: jsonpath')}
-
-                            if (Object.prototype.hasOwnProperty.call(element.nodeOutput,'jsonPath')) {
-                                console.error(
-                                    'Property fixed: jsonPath; NEED TO SUBSTITUTE ON CODE'
-                                )
-                            }
-
-                            //TODO: verify that the jsonPath property is right spelled
-                            const jsonPath = element.nodeOutput?.jsonpath?.replace('$', '')
-
-                            if (jsonPath) {literalValue = literalValue + jsonPath}
-
-                            // FIXME: why is the concat not working?
-                            //literalValue.concat(jsonPath)
-
-                            return {
-                                mutatedVariable: element.lhsName,
-                                mutatedType: element.operation,
-                                literalValue,
-                            }
-                        }
-                    )
-
-                    setSelectedNodeData(processedData)
+                    setSelectedNodeData({})
                 },
                 nop_def: () => {
                     setSelectedNodeData(selectedNode?.outgoingEdges)
