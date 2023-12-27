@@ -645,7 +645,7 @@ func (t *WorkflowThread) doIfElse(
 
 	t.addNopNode()
 
-	edgeFromIfBlockToClosingNode := model.Edge{
+	ifBlockEdge := model.Edge{
 		SinkNodeName:      *t.lastNodeName,
 		VariableMutations: variablesFromIfBlock,
 	}
@@ -654,12 +654,12 @@ func (t *WorkflowThread) doIfElse(
 	// no node was created within the if block, thus the edge of the starting NOP should be created
 	// with the appropriate conditional
 	if lastNodeFromIfBlockName == treeRootNodeName {
-		edgeFromIfBlockToClosingNode.Condition = lastConditionFromIfBlock.spec
+		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
 	}
 
 	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
 		t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges,
-		&edgeFromIfBlockToClosingNode,
+		&ifBlockEdge,
 	)
 }
 
