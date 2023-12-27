@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private Edge() {
     sinkNodeName_ = "";
+    variableMutations_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -105,6 +106,47 @@ private static final long serialVersionUID = 0L;
     return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
   }
 
+  public static final int VARIABLE_MUTATIONS_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> variableMutations_;
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getVariableMutationsList() {
+    return variableMutations_;
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
+      getVariableMutationsOrBuilderList() {
+    return variableMutations_;
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  @java.lang.Override
+  public int getVariableMutationsCount() {
+    return variableMutations_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index) {
+    return variableMutations_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
+      int index) {
+    return variableMutations_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -125,6 +167,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(2, getCondition());
     }
+    for (int i = 0; i < variableMutations_.size(); i++) {
+      output.writeMessage(3, variableMutations_.get(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -140,6 +185,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCondition());
+    }
+    for (int i = 0; i < variableMutations_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, variableMutations_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -163,6 +212,8 @@ private static final long serialVersionUID = 0L;
       if (!getCondition()
           .equals(other.getCondition())) return false;
     }
+    if (!getVariableMutationsList()
+        .equals(other.getVariableMutationsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -179,6 +230,10 @@ private static final long serialVersionUID = 0L;
     if (hasCondition()) {
       hash = (37 * hash) + CONDITION_FIELD_NUMBER;
       hash = (53 * hash) + getCondition().hashCode();
+    }
+    if (getVariableMutationsCount() > 0) {
+      hash = (37 * hash) + VARIABLE_MUTATIONS_FIELD_NUMBER;
+      hash = (53 * hash) + getVariableMutationsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -311,6 +366,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getConditionFieldBuilder();
+        getVariableMutationsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -323,6 +379,13 @@ private static final long serialVersionUID = 0L;
         conditionBuilder_.dispose();
         conditionBuilder_ = null;
       }
+      if (variableMutationsBuilder_ == null) {
+        variableMutations_ = java.util.Collections.emptyList();
+      } else {
+        variableMutations_ = null;
+        variableMutationsBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
 
@@ -349,9 +412,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.Edge buildPartial() {
       io.littlehorse.sdk.common.proto.Edge result = new io.littlehorse.sdk.common.proto.Edge(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.Edge result) {
+      if (variableMutationsBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          variableMutations_ = java.util.Collections.unmodifiableList(variableMutations_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.variableMutations_ = variableMutations_;
+      } else {
+        result.variableMutations_ = variableMutationsBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.Edge result) {
@@ -421,6 +497,32 @@ private static final long serialVersionUID = 0L;
       if (other.hasCondition()) {
         mergeCondition(other.getCondition());
       }
+      if (variableMutationsBuilder_ == null) {
+        if (!other.variableMutations_.isEmpty()) {
+          if (variableMutations_.isEmpty()) {
+            variableMutations_ = other.variableMutations_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureVariableMutationsIsMutable();
+            variableMutations_.addAll(other.variableMutations_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.variableMutations_.isEmpty()) {
+          if (variableMutationsBuilder_.isEmpty()) {
+            variableMutationsBuilder_.dispose();
+            variableMutationsBuilder_ = null;
+            variableMutations_ = other.variableMutations_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            variableMutationsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getVariableMutationsFieldBuilder() : null;
+          } else {
+            variableMutationsBuilder_.addAllMessages(other.variableMutations_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -459,6 +561,19 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              io.littlehorse.sdk.common.proto.VariableMutation m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.VariableMutation.parser(),
+                      extensionRegistry);
+              if (variableMutationsBuilder_ == null) {
+                ensureVariableMutationsIsMutable();
+                variableMutations_.add(m);
+              } else {
+                variableMutationsBuilder_.addMessage(m);
+              }
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -665,6 +780,246 @@ private static final long serialVersionUID = 0L;
         condition_ = null;
       }
       return conditionBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> variableMutations_ =
+      java.util.Collections.emptyList();
+    private void ensureVariableMutationsIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        variableMutations_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMutation>(variableMutations_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> variableMutationsBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getVariableMutationsList() {
+      if (variableMutationsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(variableMutations_);
+      } else {
+        return variableMutationsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public int getVariableMutationsCount() {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.size();
+      } else {
+        return variableMutationsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index) {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.get(index);
+      } else {
+        return variableMutationsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder setVariableMutations(
+        int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.set(index, value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder setVariableMutations(
+        int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder addVariableMutations(io.littlehorse.sdk.common.proto.VariableMutation value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder addVariableMutations(
+        int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(index, value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder addVariableMutations(
+        io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder addVariableMutations(
+        int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder addAllVariableMutations(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMutation> values) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, variableMutations_);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder clearVariableMutations() {
+      if (variableMutationsBuilder_ == null) {
+        variableMutations_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public Builder removeVariableMutations(int index) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.remove(index);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder getVariableMutationsBuilder(
+        int index) {
+      return getVariableMutationsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
+        int index) {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.get(index);  } else {
+        return variableMutationsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
+         getVariableMutationsOrBuilderList() {
+      if (variableMutationsBuilder_ != null) {
+        return variableMutationsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(variableMutations_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder() {
+      return getVariableMutationsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder(
+        int index) {
+      return getVariableMutationsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation.Builder> 
+         getVariableMutationsBuilderList() {
+      return getVariableMutationsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
+        getVariableMutationsFieldBuilder() {
+      if (variableMutationsBuilder_ == null) {
+        variableMutationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder>(
+                variableMutations_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        variableMutations_ = null;
+      }
+      return variableMutationsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
