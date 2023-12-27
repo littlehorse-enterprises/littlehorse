@@ -10,7 +10,7 @@ import io.littlehorse.test.LHTest;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-public class UserTaskIdempotencyTest {
+public class UserTaskDefLifecycleTest {
 
     private LittleHorseBlockingStub client;
 

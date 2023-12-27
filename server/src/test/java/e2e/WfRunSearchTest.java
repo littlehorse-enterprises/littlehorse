@@ -26,7 +26,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 @LHTest(externalEventNames = "external-event")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SearchWorkflowTest {
+public class WfRunSearchTest {
 
     @LHWorkflow("complex-workflow")
     private Workflow complexWorkflow;
