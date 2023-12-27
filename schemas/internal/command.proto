@@ -129,10 +129,10 @@ message RepartitionCommandPb {
     optional string command_id = 2;
 
     oneof repartition_command {
-        TaskMetricUpdate task_metric_update = 3;
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
         AggregateWfMetrics aggregate_wf_metrics = 7;
+        AggregateTaskMetrics aggregate_task_metrics = 8;
     }
 }
 

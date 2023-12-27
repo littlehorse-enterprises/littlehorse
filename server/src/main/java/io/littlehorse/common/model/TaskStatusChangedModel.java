@@ -13,6 +13,15 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     private TaskStatus previousStatus;
     private TaskStatus newStatus;
 
+    public TaskStatusChangedModel() {
+        // Used for des/serialization
+    }
+
+    public TaskStatusChangedModel(TaskStatus previousStatus, TaskStatus newStatus) {
+        this.previousStatus = previousStatus;
+        this.newStatus = newStatus;
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         TaskStatusChanged p = (TaskStatusChanged) proto;

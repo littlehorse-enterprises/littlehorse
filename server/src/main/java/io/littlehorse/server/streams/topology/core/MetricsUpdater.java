@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.PartitionMetricsModel;
+import io.littlehorse.common.model.TaskStatusChangedModel;
 import io.littlehorse.server.streams.store.DefaultModelStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.util.Optional;
@@ -28,6 +29,15 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                             wfRunEvent.getTenantId(),
                             statusChanged,
                             wfRunEvent.getCreationDate());
+        } else if (statusUpdate instanceof GetableUpdates.TaskRunStatusUpdate taskUpdate) {
+            TaskStatusChangedModel taskStatusChanged =
+                    new TaskStatusChangedModel(taskUpdate.getPreviousStatus(), taskUpdate.getNewStatus());
+            currentAggregateCommand()
+                    .addMetric(
+                            taskUpdate.getTaskDefId(),
+                            taskUpdate.getTenantId(),
+                            taskStatusChanged,
+                            taskUpdate.getCreationDate());
         } else {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));
