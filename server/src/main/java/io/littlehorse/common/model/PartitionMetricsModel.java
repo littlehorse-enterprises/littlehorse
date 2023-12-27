@@ -229,6 +229,9 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         } else if (statusChanged.getTaskStatusChanged().isScheduled()) {
             metric.totalScheduled += 1;
         }
+        metric.startToCompleteTotal += statusChanged.getFirstEventToLastDelay();
+        metric.numEntries += 1;
+        metric.startToCompleteMax = Math.max(statusChanged.getFirstEventToLastDelay(), metric.startToCompleteMax);
     }
 
     private record WfMetricId(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {

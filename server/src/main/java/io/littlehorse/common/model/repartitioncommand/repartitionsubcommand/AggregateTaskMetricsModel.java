@@ -14,6 +14,8 @@ import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -87,6 +89,10 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
         taskDefMetric.totalErrored += metricUpdate.totalErrored;
         taskDefMetric.totalStarted += metricUpdate.totalStarted;
         taskDefMetric.totalScheduled += metricUpdate.totalScheduled;
+        taskDefMetric.startToCompleteMax = Math.max(metricUpdate.startToCompleteMax, taskDefMetric.startToCompleteMax);
+        BigDecimal calculatedAvg = BigDecimal.valueOf(metricUpdate.startToCompleteTotal)
+                .divide(BigDecimal.valueOf(Math.max(taskDefMetric.totalCompleted, 1L)), 4, RoundingMode.HALF_UP);
+        taskDefMetric.startToCompleteAvg = calculatedAvg.longValue();
     }
 
     @Override
