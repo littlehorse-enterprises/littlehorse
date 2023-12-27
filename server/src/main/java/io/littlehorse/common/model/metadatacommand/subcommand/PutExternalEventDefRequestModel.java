@@ -7,7 +7,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
@@ -57,10 +56,6 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
 
-        ExternalEventDefModel oldVersion = metadataManager.get(new ExternalEventDefIdModel(name));
-        if (oldVersion != null) {
-            throw new LHApiException(Status.ALREADY_EXISTS, "ExternalEventDef already exists and is immutable.");
-        }
         ExternalEventDefModel spec = new ExternalEventDefModel();
         spec.name = name;
 

@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -35,7 +36,9 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
                     "child",
                     null);
 
-            NodeOutput toHandle = thread.waitForThreads(childThread).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            NodeOutput toHandle = thread.waitForThreads(SpawnedThreads.of(childThread))
+                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+
             thread.handleError(toHandle, handler -> {
                 handler.execute("aw-echo", "hi from handler");
             });

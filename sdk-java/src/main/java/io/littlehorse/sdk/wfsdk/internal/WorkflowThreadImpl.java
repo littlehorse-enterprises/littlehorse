@@ -36,11 +36,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
-import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -575,22 +572,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         this.variableMutations.add(mutation.build());
-    }
-
-    @Override
-    @Deprecated(forRemoval = true)
-    public WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
-        checkIfIsActive();
-        WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
-
-        for (int i = 0; i < threadsToWaitFor.length; i++) {
-            SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
-            waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
-        }
-        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
-        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
-
-        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
     @Override

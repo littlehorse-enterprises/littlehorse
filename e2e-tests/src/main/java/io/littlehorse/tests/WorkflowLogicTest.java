@@ -126,7 +126,7 @@ public abstract class WorkflowLogicTest extends Test {
             try {
                 for (LHTaskWorker worker : getWorkersFromExecutable(executable, workerConfig)) {
                     workers.add(worker);
-                    worker.registerTaskDef(true);
+                    worker.registerTaskDef();
                     Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
 
                     worker.start();

@@ -8,16 +8,34 @@ public interface VariableAssignmentOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return Whether the jsonPath field is set.
    */
   boolean hasJsonPath();
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return The jsonPath.
    */
   java.lang.String getJsonPath();
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return The bytes for jsonPath.
    */
@@ -25,16 +43,28 @@ public interface VariableAssignmentOrBuilder extends
       getJsonPathBytes();
 
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return Whether the variableName field is set.
    */
   boolean hasVariableName();
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return The variableName.
    */
   java.lang.String getVariableName();
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return The bytes for variableName.
    */
@@ -42,31 +72,55 @@ public interface VariableAssignmentOrBuilder extends
       getVariableNameBytes();
 
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return Whether the literalValue field is set.
    */
   boolean hasLiteralValue();
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return The literalValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getLiteralValue();
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder();
 
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return Whether the formatString field is set.
    */
   boolean hasFormatString();
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return The formatString.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getFormatString();
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder();

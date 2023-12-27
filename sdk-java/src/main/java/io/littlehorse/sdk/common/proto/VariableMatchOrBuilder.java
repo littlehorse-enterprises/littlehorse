@@ -8,11 +8,19 @@ public interface VariableMatchOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the variable to inspect.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The varName.
    */
   java.lang.String getVarName();
   /**
+   * <pre>
+   * The name of the variable to inspect.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The bytes for varName.
    */
@@ -20,16 +28,28 @@ public interface VariableMatchOrBuilder extends
       getVarNameBytes();
 
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
   io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();

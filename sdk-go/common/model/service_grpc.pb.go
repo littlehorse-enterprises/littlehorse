@@ -81,60 +81,149 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LittleHorseClient interface {
+	// Creates a TaskDef.
 	PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*TaskDef, error)
+	// Gets a TaskDef.
 	GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error)
+	// Creates an ExternalEventDef.
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
+	// Gets an ExternalEventDef.
 	GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error)
+	// Creates a WfSpec.
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// Gets a WfSpec.
 	GetWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*WfSpec, error)
+	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
 	GetLatestWfSpec(ctx context.Context, in *GetLatestWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+	// same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+	// completion.
+	//
+	// As of 0.7.0, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
+	// Gets a specific UserTaskDef.
+	//
+	// This RPC is highly useful for applications built around
+	// User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+	// might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+	// The frontend would inspect the UserTaskDef and display a form field on the browser page
+	// for each field in the UserTaskDef.
 	GetUserTaskDef(ctx context.Context, in *UserTaskDefId, opts ...grpc.CallOption) (*UserTaskDef, error)
+	// Returns the most recent UserTaskDef with a specific name.
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
+	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
+	// used by applications.
 	GetWfRun(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*WfRun, error)
+	// Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+	// currently assigned, history of assignments and reassignments, and any context for that
+	// UserTaskRun which is specific to the WfRun.
 	GetUserTaskRun(ctx context.Context, in *UserTaskRunId, opts ...grpc.CallOption) (*UserTaskRun, error)
+	// Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+	// action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+	// applications that are using User Tasks to build an internal task-list and wish to
+	// administer the tasks.
 	AssignUserTaskRun(ctx context.Context, in *AssignUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+	// the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+	// completed, and unblocks the associated ThreadRun in the WfRun.
+	//
+	// This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
 	CompleteUserTaskRun(ctx context.Context, in *CompleteUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
 	CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
+	// Gets a specific NodeRun.
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
+	// Lists all NodeRun's for a specific WfRun.
 	ListNodeRuns(ctx context.Context, in *ListNodeRunsRequest, opts ...grpc.CallOption) (*NodeRunList, error)
+	// Gets a specific TaskRun.
 	GetTaskRun(ctx context.Context, in *TaskRunId, opts ...grpc.CallOption) (*TaskRun, error)
+	// Lists all TaskRun's for a specific WfRun.
 	ListTaskRuns(ctx context.Context, in *ListTaskRunsRequest, opts ...grpc.CallOption) (*TaskRunList, error)
+	// Get the value of a specific Variable. When using a WfRun to model an entity, this
+	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
+	// column for a specific row in a SQL table.
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
+	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
+	// Post an ExternalEvent. This RPC is highly useful for
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Get a specific ExternalEvent.
 	GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsRequest, opts ...grpc.CallOption) (*ExternalEventList, error)
+	// Search for WfRun's. This RPC is highly useful for applications that store data
+	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
+	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+	// your workflows or Task Workers.
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunRequest, opts ...grpc.CallOption) (*NodeRunIdList, error)
+	// Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
 	SearchTaskRun(ctx context.Context, in *SearchTaskRunRequest, opts ...grpc.CallOption) (*TaskRunIdList, error)
+	// Search for UserTaskRun's. This RPC is highly useful for applications that connect
+	// human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+	// person or group of people.
 	SearchUserTaskRun(ctx context.Context, in *SearchUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunIdList, error)
+	// Search for Variable's. This RPC is highly useful for applications that store data
+	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchVariable(ctx context.Context, in *SearchVariableRequest, opts ...grpc.CallOption) (*VariableIdList, error)
+	// Search for ExternalEvent's.
 	SearchExternalEvent(ctx context.Context, in *SearchExternalEventRequest, opts ...grpc.CallOption) (*ExternalEventIdList, error)
+	// Search for TaskDef's.
 	SearchTaskDef(ctx context.Context, in *SearchTaskDefRequest, opts ...grpc.CallOption) (*TaskDefIdList, error)
+	// Search for UserTaskDef's.
 	SearchUserTaskDef(ctx context.Context, in *SearchUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDefIdList, error)
+	// Search for WfSpec's.
 	SearchWfSpec(ctx context.Context, in *SearchWfSpecRequest, opts ...grpc.CallOption) (*WfSpecIdList, error)
+	// Search for ExteranlEventDef's.
 	SearchExternalEventDef(ctx context.Context, in *SearchExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDefIdList, error)
+	// Used by the Task Worker to:
+	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+	// 2. Receive the assignemnt of LH Server's to poll from.
+	// Generally, you won't use this request manually.
 	RegisterTaskWorker(ctx context.Context, in *RegisterTaskWorkerRequest, opts ...grpc.CallOption) (*RegisterTaskWorkerResponse, error)
+	// Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+	// use this RPC manually.
 	PollTask(ctx context.Context, opts ...grpc.CallOption) (LittleHorse_PollTaskClient, error)
+	// Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+	// this rpc manually.
 	ReportTask(ctx context.Context, in *ReportTaskRun, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a TaskDef.
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a UserTaskDef.
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
+	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
+	// Returns a list of TaskDef Metrics Windows.
 	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
+	// Returns a list of WfSpec Metrics Windows.
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
+	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
+	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
+	// Returns the Principal of the caller.
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
+	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersionResponse, error)
 }
 
@@ -667,60 +756,149 @@ func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Em
 // All implementations must embed UnimplementedLittleHorseServer
 // for forward compatibility
 type LittleHorseServer interface {
+	// Creates a TaskDef.
 	PutTaskDef(context.Context, *PutTaskDefRequest) (*TaskDef, error)
+	// Gets a TaskDef.
 	GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error)
+	// Creates an ExternalEventDef.
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
+	// Gets an ExternalEventDef.
 	GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error)
+	// Creates a WfSpec.
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
+	// Gets a WfSpec.
 	GetWfSpec(context.Context, *WfSpecId) (*WfSpec, error)
+	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
 	GetLatestWfSpec(context.Context, *GetLatestWfSpecRequest) (*WfSpec, error)
+	// EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+	// same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+	// completion.
+	//
+	// As of 0.7.0, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
+	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
+	// Gets a specific UserTaskDef.
+	//
+	// This RPC is highly useful for applications built around
+	// User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+	// might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+	// The frontend would inspect the UserTaskDef and display a form field on the browser page
+	// for each field in the UserTaskDef.
 	GetUserTaskDef(context.Context, *UserTaskDefId) (*UserTaskDef, error)
+	// Returns the most recent UserTaskDef with a specific name.
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
+	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
+	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
+	// used by applications.
 	GetWfRun(context.Context, *WfRunId) (*WfRun, error)
+	// Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+	// currently assigned, history of assignments and reassignments, and any context for that
+	// UserTaskRun which is specific to the WfRun.
 	GetUserTaskRun(context.Context, *UserTaskRunId) (*UserTaskRun, error)
+	// Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+	// action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+	// applications that are using User Tasks to build an internal task-list and wish to
+	// administer the tasks.
 	AssignUserTaskRun(context.Context, *AssignUserTaskRunRequest) (*emptypb.Empty, error)
+	// Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+	// the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+	// completed, and unblocks the associated ThreadRun in the WfRun.
+	//
+	// This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
 	CompleteUserTaskRun(context.Context, *CompleteUserTaskRunRequest) (*emptypb.Empty, error)
+	// Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
 	CancelUserTaskRun(context.Context, *CancelUserTaskRunRequest) (*emptypb.Empty, error)
+	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
+	// Gets a specific NodeRun.
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)
+	// Lists all NodeRun's for a specific WfRun.
 	ListNodeRuns(context.Context, *ListNodeRunsRequest) (*NodeRunList, error)
+	// Gets a specific TaskRun.
 	GetTaskRun(context.Context, *TaskRunId) (*TaskRun, error)
+	// Lists all TaskRun's for a specific WfRun.
 	ListTaskRuns(context.Context, *ListTaskRunsRequest) (*TaskRunList, error)
+	// Get the value of a specific Variable. When using a WfRun to model an entity, this
+	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
+	// column for a specific row in a SQL table.
 	GetVariable(context.Context, *VariableId) (*Variable, error)
+	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
+	// Post an ExternalEvent. This RPC is highly useful for
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
+	// Get a specific ExternalEvent.
 	GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error)
+	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error)
+	// Search for WfRun's. This RPC is highly useful for applications that store data
+	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
+	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+	// your workflows or Task Workers.
 	SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error)
+	// Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
 	SearchTaskRun(context.Context, *SearchTaskRunRequest) (*TaskRunIdList, error)
+	// Search for UserTaskRun's. This RPC is highly useful for applications that connect
+	// human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+	// person or group of people.
 	SearchUserTaskRun(context.Context, *SearchUserTaskRunRequest) (*UserTaskRunIdList, error)
+	// Search for Variable's. This RPC is highly useful for applications that store data
+	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchVariable(context.Context, *SearchVariableRequest) (*VariableIdList, error)
+	// Search for ExternalEvent's.
 	SearchExternalEvent(context.Context, *SearchExternalEventRequest) (*ExternalEventIdList, error)
+	// Search for TaskDef's.
 	SearchTaskDef(context.Context, *SearchTaskDefRequest) (*TaskDefIdList, error)
+	// Search for UserTaskDef's.
 	SearchUserTaskDef(context.Context, *SearchUserTaskDefRequest) (*UserTaskDefIdList, error)
+	// Search for WfSpec's.
 	SearchWfSpec(context.Context, *SearchWfSpecRequest) (*WfSpecIdList, error)
+	// Search for ExteranlEventDef's.
 	SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error)
+	// Used by the Task Worker to:
+	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+	// 2. Receive the assignemnt of LH Server's to poll from.
+	// Generally, you won't use this request manually.
 	RegisterTaskWorker(context.Context, *RegisterTaskWorkerRequest) (*RegisterTaskWorkerResponse, error)
+	// Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+	// use this RPC manually.
 	PollTask(LittleHorse_PollTaskServer) error
+	// Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+	// this rpc manually.
 	ReportTask(context.Context, *ReportTaskRun) (*emptypb.Empty, error)
+	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
+	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error)
+	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
+	// Deletes a TaskDef.
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
+	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
+	// Deletes a UserTaskDef.
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
+	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
+	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
+	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
+	// Returns a list of TaskDef Metrics Windows.
 	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
+	// Returns a list of WfSpec Metrics Windows.
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
+	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
+	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
+	// Returns the Principal of the caller.
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
+	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersionResponse, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }

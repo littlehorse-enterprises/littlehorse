@@ -64,16 +64,69 @@ message MetadataCommand {
     }
 }
 
+// Repartition subcommand
+message AggregateWfMetrics {
+    WfSpecId wf_spec_id = 1;
+    TenantId tenant_id = 2;
+    repeated WfMetricUpdate metric_updates = 3;
+}
+
+message WfMetricUpdate {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLength type = 2;
+    WfSpecId wf_spec_id = 3;
+    int64 num_entries = 4;
+    int64 start_to_complete_max = 5;
+    int64 start_to_complete_total = 6;
+    int64 total_completed = 7;
+    int64 total_errored = 8;
+    int64 total_started = 9;
+}
+
+message PartitionMetrics {
+    repeated MetricsByTenant metrics_by_tenant = 1;
+}
+
+message MetricsByTenant {
+    TenantId tenant_id = 1;
+    // workflow runs status changes
+    map<string, StatusChanges> lh_status_changes = 2;
+    // task run status changes
+    map<string, StatusChanges> task_status_changes = 3;
+}
+
+message StatusChanges {
+    repeated StatusChanged changes = 1;
+}
+
+message StatusChanged {
+    google.protobuf.Timestamp time = 1;
+    oneof status {
+        LHStatusChanged lh_status = 2;
+        TaskStatusChanged task_status = 3;
+    }
+}
+
+message LHStatusChanged {
+    optional LHStatus previous_status = 1;
+    LHStatus new_status = 2;
+}
+
+message TaskStatusChanged {
+    optional TaskStatus previous_status = 1;
+    TaskStatus new_status = 2;
+}
+
 // This is the repartition command
 message RepartitionCommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
 
     oneof repartition_command {
-        TaskMetricUpdatePb task_metric_update = 3;
-        WfMetricUpdatePb wf_metric_update = 4;
+        TaskMetricUpdatePb task_metric_update = 3; // deprecate??
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
+        AggregateWfMetrics aggregate_wf_metrics = 7;
     }
 }
 
@@ -92,19 +145,6 @@ message TaskMetricUpdatePb {
     int64 total_started = 11;
     int64 total_scheduled = 12;
 
-}
-
-message WfMetricUpdatePb {
-    WfSpecId wf_spec_id = 1;
-    google.protobuf.Timestamp window_start = 2;
-    MetricsWindowLength type = 3;
-
-    int64 num_entries = 4;
-    int64 start_to_complete_max = 5;
-    int64 start_to_complete_total = 6;
-    int64 total_completed = 7;
-    int64 total_errored = 8;
-    int64 total_started = 9;
 }
 
 message CreateRemoteTagPb {
@@ -159,4 +199,16 @@ message LHTimerPb {
     bytes payload = 4;
     optional string tenant_id = 5; // default if not set
     optional string principal_id = 6; // anonymous if not set
+}
+
+message TaskWorkerMetadata {
+  string client_id = 1;
+  google.protobuf.Timestamp latest_heartbeat = 2;
+  repeated LHHostInfo hosts = 3;
+}
+
+message TaskWorkerGroup {
+  TaskWorkerGroupId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  map<string, TaskWorkerMetadata> task_workers = 3;
 }

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.MigrateWfSpecRequest}
  */
 public final class MigrateWfSpecRequest extends
@@ -269,6 +273,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.MigrateWfSpecRequest}
    */
   public static final class Builder extends

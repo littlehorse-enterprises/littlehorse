@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Response from the server for PollTaskRequest.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PollTaskResponse}
  */
 public final class PollTaskResponse extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int RESULT_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ScheduledTask result_;
   /**
+   * <pre>
+   * If possible, a ScheduledTask is returned.
+   * </pre>
+   *
    * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return Whether the result field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * If possible, a ScheduledTask is returned.
+   * </pre>
+   *
    * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return The result.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return result_ == null ? io.littlehorse.sdk.common.proto.ScheduledTask.getDefaultInstance() : result_;
   }
   /**
+   * <pre>
+   * If possible, a ScheduledTask is returned.
+   * </pre>
+   *
    * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    */
   @java.lang.Override
@@ -228,6 +244,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Response from the server for PollTaskRequest.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PollTaskResponse}
    */
   public static final class Builder extends
@@ -416,6 +436,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ScheduledTask, io.littlehorse.sdk.common.proto.ScheduledTask.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder> resultBuilder_;
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      * @return Whether the result field is set.
      */
@@ -423,6 +447,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      * @return The result.
      */
@@ -434,6 +462,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder setResult(io.littlehorse.sdk.common.proto.ScheduledTask value) {
@@ -450,6 +482,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder setResult(
@@ -464,6 +500,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder mergeResult(io.littlehorse.sdk.common.proto.ScheduledTask value) {
@@ -483,6 +523,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder clearResult() {
@@ -496,6 +540,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledTask.Builder getResultBuilder() {
@@ -504,6 +552,10 @@ private static final long serialVersionUID = 0L;
       return getResultFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder getResultOrBuilder() {
@@ -515,6 +567,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If possible, a ScheduledTask is returned.
+     * </pre>
+     *
      * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
