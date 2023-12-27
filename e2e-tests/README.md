@@ -6,25 +6,25 @@
 Run all e2e tests:
 
 ```
-./gradlew e2e-test:run
+./gradlew :e2e-test:run
 ```
 
 Run specific e2e tests:
 
 ```
-./gradlew e2e-test:run --args="AASequential ABIntInputVars"
+./gradlew :e2e-test:run --args="AASequential ABIntInputVars"
 ```
 
 Run e2e tests with multiple threads:
 
 ```
-./gradlew e2e-test:run --args="-t 4"
+./gradlew :e2e-test:run --args="-t 4"
 ```
 
 Help:
 
 ```
-./gradlew e2e-test:run --args="-h"
+./gradlew :e2e-test:run --args="-h"
 ```
 
 ### Configurations

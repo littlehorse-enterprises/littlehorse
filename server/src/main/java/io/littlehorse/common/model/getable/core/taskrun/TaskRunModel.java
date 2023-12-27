@@ -14,6 +14,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -23,11 +24,13 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +49,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private TaskRunSourceModel taskRunSource;
     private Date scheduledAt;
     private int timeoutSeconds;
+
+    @Getter(AccessLevel.NONE)
     private TaskStatus status;
+
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
@@ -151,10 +157,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.taskRunSource = source;
         this.taskDefId = node.getTaskDefId();
         this.maxAttempts = node.getRetries() + 1;
-        this.status = TaskStatus.TASK_SCHEDULED;
         this.timeoutSeconds = node.getTimeoutSeconds();
         this.executionContext = processorContext;
         this.processorContext = processorContext;
+        transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
     @Override
@@ -206,7 +212,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     public void processStart(TaskClaimEvent se) {
-        this.status = TaskStatus.TASK_RUNNING;
+        transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
         ReportTaskRunModel taskResult = new ReportTaskRunModel();
@@ -261,13 +267,25 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.
             taskRunSource.getSubSource().onCompleted(attempt);
-            status = TaskStatus.TASK_SUCCESS;
+            transitionTo(TaskStatus.TASK_SUCCESS);
         } else if (shouldRetry()) {
-            status = TaskStatus.TASK_SCHEDULED;
+            transitionTo(TaskStatus.TASK_SCHEDULED);
             scheduleAttempt();
         } else {
-            status = ce.getStatus();
+            transitionTo(ce.getStatus());
             taskRunSource.getSubSource().onFailed(attempt);
         }
+    }
+
+    private void transitionTo(TaskStatus newStatus) {
+        TaskStatus previousStatus = status;
+        this.status = newStatus;
+        processorContext
+                .getableUpdates()
+                .dispatch(GetableUpdates.create(
+                        taskDefId,
+                        new TenantIdModel(processorContext.authorization().tenantId()),
+                        previousStatus,
+                        newStatus));
     }
 }

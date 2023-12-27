@@ -1,4 +1,6 @@
+from __future__ import annotations
 from enum import Enum
+from collections import deque
 from inspect import signature
 import inspect
 import logging
@@ -443,7 +445,6 @@ class WorkflowNode:
         self.sub_node = sub_node
         self.node_case = node_case
         self.outgoing_edges: list[Edge] = []
-        self.variable_mutations: list[VariableMutation] = []
         self.failure_handlers: list[FailureHandlerDef] = []
 
     def __str__(self) -> str:
@@ -466,7 +467,6 @@ class WorkflowNode:
         def new_node(**kwargs: Any) -> Node:
             return Node(
                 outgoing_edges=self.outgoing_edges,
-                variable_mutations=self.variable_mutations,
                 failure_handlers=self.failure_handlers,
                 **kwargs,
             )
@@ -611,6 +611,8 @@ class WorkflowThread:
         self._wf_run_variables: list[WfRunVariable] = []
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
+        self._variable_mutations: deque[VariableMutation] = deque()
+        self._last_node_condition: EdgeCondition | None = None
 
         if workflow is None:
             raise ValueError("Workflow must be not None")
@@ -1152,7 +1154,7 @@ class WorkflowThread:
             literal_value=literal_value,
         )
 
-        last_node.variable_mutations.append(mutation)
+        self._variable_mutations.append(mutation)
 
     def format(self, format: str, *args: Any) -> LHFormatString:
         """Generates a LHFormatString object that can be understood
@@ -1235,7 +1237,14 @@ class WorkflowThread:
 
         if len(self._nodes) > 0:
             last_node = self._last_node()
-            last_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
+            last_node.outgoing_edges.append(
+                Edge(
+                    sink_node_name=next_node_name,
+                    variable_mutations=self._collect_variable_mutations(),
+                    condition=self._last_node_condition,
+                )
+            )
+            self._last_node_condition = None
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
 
@@ -1327,18 +1336,14 @@ class WorkflowThread:
 
         # execute if branch
         start_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
         if_body(self)
-        end_node_name = self.add_node("nop", NopNode())
 
-        # manipulate if branch
-        if_condition_node = self._find_next_node(start_node_name)
+        last_condition_from_if_block = self._last_node_condition
+        last_node_from_if_block = self._last_node()
+        variables_from_if_block = self._collect_variable_mutations()
+
         start_node = self._find_node(start_node_name)
-        if_edge = start_node._find_outgoing_edge(if_condition_node.name)
-        if_edge.MergeFrom(
-            Edge(
-                condition=condition.compile(),
-            )
-        )
 
         # execute else branch
         if else_body is not None:
@@ -1347,26 +1352,29 @@ class WorkflowThread:
             # change positions
             self._nodes.remove(start_node)
             self._nodes.append(start_node)
+            self._last_node_condition = condition.negate().compile()
             else_body(self)
 
-            # find else edge
-            else_condition_node = self._find_next_node(start_node_name)
-            else_edge = start_node._find_outgoing_edge(else_condition_node.name)
-            else_edge.MergeFrom(
+            # adds edge final NOP node
+            end_node_name = self.add_node("nop", NopNode())
+
+            last_node_from_if_block.outgoing_edges.append(
                 Edge(
-                    condition=condition.negate().compile(),
+                    sink_node_name=end_node_name,
+                    variable_mutations=variables_from_if_block,
+                    condition=last_condition_from_if_block
+                    if last_node_from_if_block.name == start_node.name
+                    else None,
                 )
             )
 
-            # add edge for last node
-            last_else_node = self._last_node()
-            last_else_node.outgoing_edges.append(Edge(sink_node_name=end_node_name))
-
-            # change positions again
-            end_node = self._find_node(end_node_name)
-            self._nodes.remove(end_node)
-            self._nodes.append(end_node)
         else:
+            end_node_name = self.add_node("nop", NopNode())
+
+            last_node_from_if_block._find_outgoing_edge(end_node_name).MergeFrom(
+                Edge(variable_mutations=variables_from_if_block)
+            )
+
             # add else
             start_node.outgoing_edges.append(
                 Edge(
@@ -1374,6 +1382,12 @@ class WorkflowThread:
                     condition=condition.negate().compile(),
                 )
             )
+
+    def _collect_variable_mutations(self) -> list[VariableMutation]:
+        variables_from_if_block = []
+        while len(self._variable_mutations) > 0:
+            variables_from_if_block.append(self._variable_mutations.popleft())
+        return variables_from_if_block
 
 
 ThreadInitializer = Callable[[WorkflowThread], None]

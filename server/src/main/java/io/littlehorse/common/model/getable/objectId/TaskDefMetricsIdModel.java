@@ -75,4 +75,9 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     public GetableClassEnum getType() {
         return GetableClassEnum.TASK_DEF_METRICS;
     }
+
+    public static TaskDefMetricsIdModel getObjectId(
+            Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
+        return new TaskDefMetricsIdModel(windowStart, type, taskDefId);
+    }
 }

@@ -43,7 +43,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TAG;
             case "ScheduledTaskModel":
                 return StoreableType.SCHEDULED_TASK;
-            case "TaskMetricUpdate":
+            case "TaskMetricUpdateModel":
                 return StoreableType.TASK_METRIC_UPDATE;
             case "PartitionMetricsModel":
                 return StoreableType.PARTITION_METRICS;

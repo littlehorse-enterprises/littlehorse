@@ -571,23 +571,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-        try {
-            mutateVariables(output);
-        } catch (LHVarSubError exn) {
-            fail(
-                    new FailureModel("Failed mutating variables: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
-                    eventTime);
-            return;
-        }
 
         if (status == LHStatus.RUNNING) {
             // If we got here, then we're good.
-            advanceFrom(getCurrentNode());
+            advanceFrom(getCurrentNode(), output);
         }
         getWfRun().advance(eventTime);
     }
 
     public void advanceFrom(NodeModel curNode) {
+        advanceFrom(curNode, null);
+    }
+
+    public void advanceFrom(NodeModel curNode, VariableValueModel output) {
         if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
             return;
         }
@@ -596,6 +592,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             try {
                 if (evaluateEdge(e)) {
                     nextNode = e.getSinkNode();
+                    if (output != null) {
+                        mutateVariables(output, e.getVariableMutations());
+                    }
                     break;
                 }
             } catch (LHVarSubError exn) {
@@ -710,15 +709,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
-    private void mutateVariables(VariableValueModel nodeOutput) throws LHVarSubError {
-        NodeModel node = getCurrentNode();
-
+    private void mutateVariables(VariableValueModel nodeOutput, List<VariableMutationModel> variableMutations)
+            throws LHVarSubError {
         // Need to do this atomically in a transaction, so that if one of the
         // mutations fail then none of them occur.
         // That's why we write to an in-memory Map. If all mutations succeed,
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValueModel> varCache = new HashMap<>();
-        for (VariableMutationModel mut : node.variableMutations) {
+        for (VariableMutationModel mut : variableMutations) {
             try {
                 mut.execute(this, varCache, nodeOutput);
             } catch (LHVarSubError exn) {
