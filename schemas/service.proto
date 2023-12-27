@@ -25,13 +25,13 @@ option csharp_namespace = "LittleHorse.Common.Proto";
 service LittleHorse {
   // Creates a TaskDef.
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
-  
+
   // Gets a TaskDef.
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
 
   // Creates an ExternalEventDef.
   rpc PutExternalEventDef(PutExternalEventDefRequest) returns (ExternalEventDef) {}
-  
+
   // Gets an ExternalEventDef.
   rpc GetExternalEventDef(ExternalEventDefId) returns (ExternalEventDef) {}
 
@@ -43,7 +43,7 @@ service LittleHorse {
 
   // Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
   rpc GetLatestWfSpec(GetLatestWfSpecRequest) returns (WfSpec) {}
-  
+
   // EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
   // same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
   // you must update WfRun's that are in the RUNNING state rather than allowing them to run to
@@ -54,7 +54,7 @@ service LittleHorse {
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
-  
+
   // Gets a specific UserTaskDef.
   //
   // This RPC is highly useful for applications built around
@@ -63,7 +63,7 @@ service LittleHorse {
   // The frontend would inspect the UserTaskDef and display a form field on the browser page
   // for each field in the UserTaskDef.
   rpc GetUserTaskDef(UserTaskDefId) returns (UserTaskDef) {}
-  
+
   // Returns the most recent UserTaskDef with a specific name.
   rpc GetLatestUserTaskDef(GetLatestUserTaskDefRequest) returns (UserTaskDef) {}
 
@@ -91,10 +91,10 @@ service LittleHorse {
   //
   // This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
   rpc CompleteUserTaskRun(CompleteUserTaskRunRequest) returns (google.protobuf.Empty) {}
-  
+
   // Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
   rpc CancelUserTaskRun(CancelUserTaskRunRequest) returns (google.protobuf.Empty) {}
-  
+
   // Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
@@ -119,7 +119,7 @@ service LittleHorse {
   // List all Variables from a WfRun.
   rpc ListVariables(ListVariablesRequest) returns (VariableList) {}
 
-  // Post an ExternalEvent. This RPC is highly useful for 
+  // Post an ExternalEvent. This RPC is highly useful for
   rpc PutExternalEvent(PutExternalEventRequest) returns (ExternalEvent) {}
 
   // Get a specific ExternalEvent.
@@ -202,7 +202,7 @@ service LittleHorse {
 
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
-  
+
   // EXPERIMENTAL: Creates an Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
 
@@ -396,20 +396,20 @@ message VariableMatch {
 message SearchWfRunRequest {
     // Bookmark for cursor-based pagination; pass if applicable.
     optional bytes bookmark = 1;
-    
+
     // Maximum results to return in one request.
     optional int32 limit = 2;
 
     // The WfSpec whose WfRun's we are searching for. This is required.
     string wf_spec_name = 3;
-    
+
     // Specifies to return only WfRun's from this WfSpec Major Version.
     optional int32 wf_spec_major_version = 4;
 
     // Specifies to return only WfRun's from this WfSpec Revision. Can only be set if
     // wf_spec_major_version is also set.
     optional int32 wf_spec_revision = 5;
-    
+
     // Specifies to return only WfRun's matching this status.
     optional LHStatus status = 6;
 
@@ -577,7 +577,7 @@ message SearchVariableRequest {
 
   // Specifies the value that the variable must be. Exact match is required.
   VariableValue value = 3;
-  
+
   // Specifies major version of the WfSpec for the associated WfRun.
   optional int32 wf_spec_major_version = 4;
   // Specifies the revision of the WfSpec for the associated WfRun.
@@ -825,7 +825,7 @@ message RegisterTaskWorkerResponse {
 message LHHostInfo {
   // The host on the server
   string host = 1;
-  
+
   // The port for the specified listener.
   int32 port = 2;
 }
@@ -860,7 +860,7 @@ message ScheduledTask {
   // Input variables for this TaskRun.
   repeated VarNameAndVal variables = 4;
   google.protobuf.Timestamp created_at = 5;
-  
+
   // Source of the TaskRun. Currently, there are two options:
   // 1. A TASK node
   // 2. A reminder task scheduled by a trigger on a User Task.
@@ -877,10 +877,10 @@ message PollTaskResponse {
 message ReportTaskRun {
   // ID of the TaskRun
   TaskRunId task_run_id = 1;
-  
+
   // When the TaskRun was executed
   google.protobuf.Timestamp time = 2;
-  
+
   // Status of the TaskRun
   TaskStatus status = 3;
 
@@ -909,7 +909,7 @@ message ReportTaskRun {
 message StopWfRunRequest {
   // Is the WfRunId
   WfRunId wf_run_id = 1;
-  
+
   // The number of the ThreadRun to halt. Note that halting the entrypoint ThreadRun (which
   // always has number `0`) causes the whole WfRun to halt. If you do not manually set
   // the thread_run_number field, it defaults to zero, so stopping the entire WfRun is the
@@ -934,10 +934,10 @@ message TaskDefMetricsQueryRequest {
   // Return the window *containing* this timestamp. The window start is not guaranteed to
   // align perfectly with the request.
   google.protobuf.Timestamp window_start = 1;
-  
+
   // The window size
   MetricsWindowLength window_type = 2;
-  
+
   // The name of the specific TaskDef for which we are calculating metrics.
   optional string task_def_name = 3;
 }
@@ -946,7 +946,7 @@ message TaskDefMetricsQueryRequest {
 message ListTaskMetricsRequest {
   // TaskDef id for whichwe retrieve metrics.
   TaskDefId task_def_id = 1;
-  
+
   // This parameter is a timestamp that is used to determine the *last* window returned. The
   // server will then return `num_windows` worth of data from before this timestamp.
   google.protobuf.Timestamp last_window_start = 2;
@@ -970,7 +970,7 @@ message WfSpecMetricsQueryRequest {
   // Return the window *containing* this timestamp. The window start is not guaranteed to
   // align perfectly with the request.
   google.protobuf.Timestamp window_start = 2;
-  
+
   // The window size
   MetricsWindowLength window_length = 3;
 }
@@ -1092,10 +1092,10 @@ message GetLatestWfSpecRequest {
 message ServerVersionResponse {
   // Server Major Version
   int32 major_version = 1;
-  
+
   // Server Minor Version
   int32 minor_version = 2;
-  
+
   // Server Patch Version
   int32 patch_version = 3;
 

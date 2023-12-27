@@ -9,6 +9,8 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,11 +47,13 @@ public class RunWfExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        Path configPath = Path.of(
+        File configPath = Path.of(
             System.getProperty("user.home"),
             ".config/littlehorse.config"
-        );
-        props.load(new FileInputStream(configPath.toFile()));
+        ).toFile();
+        if(configPath.exists()){
+            props.load(new FileInputStream(configPath));
+        }
         return props;
     }
 
@@ -78,33 +82,11 @@ public class RunWfExample {
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
-        // Register task if it does not exist
-        if (worker.doesTaskDefExist()) {
-            log.debug(
-                "Task {} already exists, skipping creation",
-                worker.getTaskDefName()
-            );
-        } else {
-            log.debug(
-                "Task {} does not exist, registering it",
-                worker.getTaskDefName()
-            );
-            worker.registerTaskDef();
-        }
+        // Register task
+        worker.registerTaskDef();
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        // Register a workflow
+        workflow.registerWfSpec(client);
 
         // In another thread
         Timer timer = new Timer(true);

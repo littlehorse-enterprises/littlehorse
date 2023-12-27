@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
@@ -65,7 +66,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
             thread.sleepSeconds(1);
             thread.execute("av-obiwan");
-            thread.waitForThreads(childThread);
+            thread.waitForThreads(SpawnedThreads.of(childThread));
         });
     }
 

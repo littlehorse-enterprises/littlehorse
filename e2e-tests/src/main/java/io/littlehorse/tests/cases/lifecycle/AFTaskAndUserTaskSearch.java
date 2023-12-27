@@ -84,15 +84,15 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         }
         failWorker = new LHTaskWorker(new AFSearchWorker(), FAIL_TASK, workerConfig);
         slowWorker = new LHTaskWorker(new AFSearchWorker(), SLOW_TASK, workerConfig);
-        failWorker.registerTaskDef(true);
-        slowWorker.registerTaskDef(true);
+        failWorker.registerTaskDef();
+        slowWorker.registerTaskDef();
 
         Thread.sleep(200);
         slowWorker.start();
         // will start the failWorker later so we can catch the STARTING tasks
 
         client.putWfSpec(new WorkflowImpl(WF_SPEC_NAME, this::wf).compileWorkflow());
-        Thread.sleep(150);
+        Thread.sleep(300);
 
         String failWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", true));
         String succeedWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", false));

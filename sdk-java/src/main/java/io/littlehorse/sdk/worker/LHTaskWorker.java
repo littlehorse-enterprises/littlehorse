@@ -121,31 +121,9 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        registerTaskDef(false);
-    }
-
-    /**
-     * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
-     * recommended for production (in production you should manually use the PutTaskDef).
-     *
-     * @param swallowAlreadyExists if true, then ignore grpc ALREADY_EXISTS error when registering
-     *                             the TaskDef.
-     */
-    public void registerTaskDef(boolean swallowAlreadyExists) {
         TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
-        log.info("Creating TaskDef: {}", taskDefName);
-
-        try {
-            TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
-            log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
-
-        } catch (StatusRuntimeException exn) {
-            if (swallowAlreadyExists && exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
-                log.info("TaskDef {} already exists!", taskDefName);
-            } else {
-                throw exn;
-            }
-        }
+        TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
+        log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
