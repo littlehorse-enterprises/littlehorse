@@ -488,10 +488,14 @@ public class BackendInternalComms implements Closeable {
             store = ModelStore.tenantStoreFor(
                     rawStore, executionContext().authorization().tenantId(), executionContext());
         }
-        if (search.getBookmark().getCompletedPartitionsCount() > 0) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Search request provided corrupted bookmark.");
+
+        PartitionBookmarkPb partBookmark = null;
+        if (search.getBookmark() != null) {
+            if (search.getBookmark().getCompletedPartitionsCount() > 0) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Search request provided corrupted bookmark.");
+            }
+            partBookmark = search.getBookmark().getInProgressPartitionsOrDefault(partition, null);
         }
-        PartitionBookmarkPb partBookmark = search.getBookmark().getInProgressPartitionsOrDefault(partition, null);
 
         Pair<List<ByteString>, PartitionBookmarkPb> result;
         if (search.getTagScan() != null) {
