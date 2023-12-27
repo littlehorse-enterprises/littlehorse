@@ -574,45 +574,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (status == LHStatus.RUNNING) {
             // If we got here, then we're good.
-            advanceFrom(output, getCurrentNode());
+            advanceFrom(getCurrentNode(), output);
         }
         getWfRun().advance(eventTime);
     }
 
     public void advanceFrom(NodeModel curNode) {
-        if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
-            return;
-        }
-        NodeModel nextNode = null;
-        for (EdgeModel e : curNode.outgoingEdges) {
-            try {
-                if (evaluateEdge(e)) {
-                    nextNode = e.getSinkNode();
-                    break;
-                }
-            } catch (LHVarSubError exn) {
-                log.error("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
-                fail(
-                        new FailureModel(
-                                "Failed evaluating outgoing edge: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
-                        new Date());
-                return;
-            }
-        }
-        if (nextNode == null) {
-            // TODO: Later versions should validate wfSpec's so that this is not
-            // possible
-            fail(
-                    new FailureModel(
-                            "WfSpec was invalid. There were no activated outgoing edges" + " from a non-exit node.",
-                            LHConstants.INTERNAL_ERROR),
-                    new Date());
-        } else {
-            activateNode(nextNode);
-        }
+        advanceFrom(curNode, null);
     }
 
-    public void advanceFrom(VariableValueModel output, NodeModel curNode) {
+    public void advanceFrom(NodeModel curNode, VariableValueModel output) {
         if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
             return;
         }
@@ -621,7 +592,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             try {
                 if (evaluateEdge(e)) {
                     nextNode = e.getSinkNode();
-                    mutateVariables(output, e.getVariableMutations());
+                    if (output != null) {
+                        mutateVariables(output, e.getVariableMutations());
+                    }
                     break;
                 }
             } catch (LHVarSubError exn) {
