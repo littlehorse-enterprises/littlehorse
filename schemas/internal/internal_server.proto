@@ -11,7 +11,7 @@ import "interactive_query.proto";
 service LHInternals {
     rpc GetObject(GetObjectRequest) returns (GetObjectResponse) {}
 
-    rpc InternalScan(InternalScanPb) returns (InternalScanResponse) {}
+    rpc InternalScan(InternalScanRequest) returns (InternalScanResponse) {}
 
     rpc WaitForCommand(WaitForCommandRequest) returns (WaitForCommandResponse) {}
 

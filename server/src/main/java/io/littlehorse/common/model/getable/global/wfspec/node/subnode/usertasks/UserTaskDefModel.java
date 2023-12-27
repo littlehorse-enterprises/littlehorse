@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
-public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
+public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
 
     public String name;
     public Date createdAt;

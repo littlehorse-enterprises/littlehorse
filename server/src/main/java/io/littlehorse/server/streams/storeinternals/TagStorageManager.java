@@ -6,10 +6,10 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -22,13 +22,13 @@ import org.apache.kafka.streams.processor.api.Record;
 
 public class TagStorageManager {
 
-    private final ModelStore lhStore;
+    private final TenantScopedStore lhStore;
     private final ProcessorContext<String, CommandProcessorOutput> context;
     private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
 
     public TagStorageManager(
-            ModelStore lhStore,
+            TenantScopedStore lhStore,
             ProcessorContext<String, CommandProcessorOutput> context,
             LHServerConfig lhConfig,
             ExecutionContext executionContext) {

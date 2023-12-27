@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.getable.MetadataId;
+import io.littlehorse.common.model.getable.ClusterMetadataId;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.Principal;
@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
-public class PrincipalIdModel extends MetadataId<PrincipalId, Principal, PrincipalModel> {
+public class PrincipalIdModel extends ClusterMetadataId<PrincipalId, Principal, PrincipalModel> {
     private String id;
 
     public PrincipalIdModel() {}

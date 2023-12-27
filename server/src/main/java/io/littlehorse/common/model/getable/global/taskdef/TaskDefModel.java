@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.taskdef;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class TaskDefModel extends GlobalGetable<TaskDef> {
+public class TaskDefModel extends MetadataGetable<TaskDef> {
 
     @Setter
     private TaskDefIdModel id;

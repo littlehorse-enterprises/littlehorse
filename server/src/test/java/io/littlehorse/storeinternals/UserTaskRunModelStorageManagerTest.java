@@ -12,9 +12,9 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
@@ -47,7 +47,7 @@ public class UserTaskRunModelStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private ModelStore localStoreWrapper;
+    private TenantScopedStore localStoreWrapper;
 
     private String tenantId = "myTenant";
 
@@ -80,7 +80,7 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, tenantId, executionContext);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

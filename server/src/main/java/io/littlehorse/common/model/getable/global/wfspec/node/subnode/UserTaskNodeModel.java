@@ -107,7 +107,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     public void validate() throws LHApiException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
-            utd = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(userTaskDefName));
+            utd = metadataManager.getLastFromPrefix(
+                    UserTaskDefIdModel.getPrefix(userTaskDefName), UserTaskDefModel.class);
         } else {
             utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
         }

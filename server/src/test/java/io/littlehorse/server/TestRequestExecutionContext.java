@@ -29,9 +29,10 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
             MockProcessorContext<String, Bytes> processorContext,
             KeyValueStore<String, Bytes> globalMetadataNativeStore,
             KeyValueStore<String, Bytes> coreNativeStore,
+            KeyValueStore<String, Bytes> coreRepartitionStore,
             MetadataCache metadataCache,
             LHServerConfig lhConfig) {
-        super(clientId, tenantId, globalMetadataNativeStore, coreNativeStore, metadataCache, lhConfig);
+        super(clientId, tenantId, globalMetadataNativeStore, coreNativeStore, coreRepartitionStore, metadataCache, lhConfig);
         this.clientId = clientId;
         this.tenantId = tenantId;
         this.globalMetadataNativeStore = globalMetadataNativeStore;
@@ -47,7 +48,8 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         String tenantId = "test-tenant";
         KeyValueStore<String, Bytes> globalMetadataNativeStore =
                 TestUtil.testStore(ServerTopology.GLOBAL_METADATA_STORE);
-        KeyValueStore<String, Bytes> coreNativeStore = TestUtil.testStore(ServerTopology.CORE_STORE);
+                KeyValueStore<String, Bytes> coreNativeStore = TestUtil.testStore(ServerTopology.CORE_STORE);
+                KeyValueStore<String, Bytes> coreRepartitionStore = TestUtil.testStore(ServerTopology.CORE_REPARTITION_STORE);
         globalMetadataNativeStore.init(mockProcessorContext.getStateStoreContext(), globalMetadataNativeStore);
         coreNativeStore.init(mockProcessorContext.getStateStoreContext(), coreNativeStore);
         MetadataCache metadataCache = new MetadataCache();
@@ -58,6 +60,7 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 mockProcessorContext,
                 globalMetadataNativeStore,
                 coreNativeStore,
+                coreRepartitionStore,
                 metadataCache,
                 lhConfig);
     }

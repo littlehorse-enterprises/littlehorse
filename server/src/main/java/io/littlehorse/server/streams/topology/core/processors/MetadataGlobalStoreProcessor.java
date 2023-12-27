@@ -2,14 +2,12 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-@Slf4j
 public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Void, Void> {
 
     private KeyValueStore<String, Bytes> store;

@@ -6,8 +6,9 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
@@ -34,8 +35,9 @@ public class MetadataCommandExecution implements ExecutionContext {
         this.processorContext = processorContext;
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
-                ModelStore.defaultStore(nativeMetadataStore, this),
-                ModelStore.tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
+                ClusterScopedStore.newInstance(nativeMetadataStore, this),
+                TenantScopedStore.newInstance(
+                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(

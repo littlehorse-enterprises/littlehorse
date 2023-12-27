@@ -1,7 +1,6 @@
 package io.littlehorse.common;
 
 import com.google.protobuf.Message;
-// import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.StoreableType;
 
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {

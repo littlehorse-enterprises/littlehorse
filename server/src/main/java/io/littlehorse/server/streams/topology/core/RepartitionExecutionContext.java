@@ -3,14 +3,15 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class RepartitionExecutionContext implements ExecutionContext {
 
@@ -20,17 +21,23 @@ public class RepartitionExecutionContext implements ExecutionContext {
     private final ReadOnlyMetadataManager metadataManager;
 
     public RepartitionExecutionContext(
-            Headers metadataHeaders,
+            Headers recordHeaders,
             LHServerConfig lhConfig,
             ProcessorContext<Void, Void> repartitionContext,
             MetadataCache metadataCache) {
+
         this.repartitionContext = repartitionContext;
-        KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
+
+        ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
+        String tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        ReadOnlyClusterScopedStore clusterMetadataStore =
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+        ReadOnlyTenantScopedStore tenantMetadataStore =
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+
         this.lhConfig = lhConfig;
         this.metadataCache = metadataCache;
-        this.metadataManager = new ReadOnlyMetadataManager(
-                ModelStore.defaultStore(nativeGlobalStore, this),
-                ModelStore.tenantStoreFor(nativeGlobalStore, HeadersUtil.tenantIdFromMetadata(metadataHeaders), this));
     }
 
     @Override
@@ -53,7 +60,7 @@ public class RepartitionExecutionContext implements ExecutionContext {
         return lhConfig;
     }
 
-    private KeyValueStore<String, Bytes> nativeGlobalStore() {
+    private ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore() {
         return repartitionContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
 }

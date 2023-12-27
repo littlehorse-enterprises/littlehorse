@@ -7,8 +7,8 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +17,13 @@ import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+// TODO: This needs some help, since it has stuff related to writing.
 public class ReadOnlyGetableManager {
 
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
-    private final ReadOnlyModelStore store;
+    private final ReadOnlyTenantScopedStore store;
 
-    public ReadOnlyGetableManager(ReadOnlyModelStore store) {
+    public ReadOnlyGetableManager(ReadOnlyTenantScopedStore store) {
         this.store = store;
     }
 

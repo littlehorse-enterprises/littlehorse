@@ -12,18 +12,16 @@ import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.WfMetricUpdate;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Getter
-@Slf4j
 public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> implements RepartitionSubCommand {
 
     private WfSpecIdModel wfSpecId;
@@ -76,11 +74,18 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     }
 
     @Override
-    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
+    public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         for (WfMetricUpdateModel metricUpdate : metricUpdates) {
-            StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetrics =
-                    repartitionedStore.get(WfSpecMetricsIdModel.getObjectId(
-                            metricUpdate.getWindowStart(), metricUpdate.getWindowType(), metricUpdate.getWfSpecId()));
+
+            // TODO: We should NOT do this. The RepartitionContext should do this for us. We also shouldn't
+            // be passing in a TenantScopedStore; rather, we should pass in the context.
+            StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetrics = repartitionedStore.get(
+                    WfSpecMetricsIdModel.getObjectId(
+                                    metricUpdate.getWindowStart(),
+                                    metricUpdate.getWindowType(),
+                                    metricUpdate.getWfSpecId())
+                            .getStoreableKey(),
+                    StoredGetable.class);
             WfSpecMetricsModel metricToUpdate;
             if (storedMetrics == null) {
                 metricToUpdate = new WfSpecMetricsModel(

@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.Tenant;
@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class TenantModel extends GlobalGetable<Tenant> {
+public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     private String id;
     private Date createdAt;

@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.ScanFilter.CriteriaCase;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.VariableMatchModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 

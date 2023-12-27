@@ -191,7 +191,6 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -854,7 +853,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     requestContext.authorization().principalId());
         } else {
             commandMetadata =
-                    HeadersUtil.metadataHeadersFor(ModelStore.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
+                    HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
         }
         internalComms
                 .getProducer()
