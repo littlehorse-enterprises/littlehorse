@@ -67,10 +67,13 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         for (TaskMetricUpdateModel metricUpdate : taskMetrics) {
-            StoredGetable<TaskDefMetrics, TaskDefMetricsModel> storedMetrics =
-                    repartitionedStore.get(TaskDefMetricsIdModel.getObjectId(
-                            metricUpdate.getWindowStart(), metricUpdate.getWindowType(), metricUpdate.getTaskDefId()).getStoreableKey(),
-                            StoredGetable.class);
+            StoredGetable<TaskDefMetrics, TaskDefMetricsModel> storedMetrics = repartitionedStore.get(
+                    TaskDefMetricsIdModel.getObjectId(
+                                    metricUpdate.getWindowStart(),
+                                    metricUpdate.getWindowType(),
+                                    metricUpdate.getTaskDefId())
+                            .getStoreableKey(),
+                    StoredGetable.class);
             TaskDefMetricsModel metricToUpdate;
             if (storedMetrics == null) {
                 metricToUpdate = new TaskDefMetricsModel(
