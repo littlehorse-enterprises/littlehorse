@@ -8,46 +8,97 @@ public interface PutExternalEventRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the WfRun that this Event is sent to.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
+   * <pre>
+   * The ID of the WfRun that this Event is sent to.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
+   * <pre>
+   * The ID of the WfRun that this Event is sent to.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that this event implements.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return Whether the externalEventDefId field is set.
    */
   boolean hasExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that this event implements.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return The externalEventDefId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that this event implements.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Note that an ExternalEventDefId is a three-part ID:
+   * 1. WfRunId
+   * 2. ExternalEventDef Name
+   * 3. A guid
+   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
+   * in order to make it idempotent. It is a best practice to do so.
+   * </pre>
+   *
    * <code>optional string guid = 3;</code>
    * @return Whether the guid field is set.
    */
   boolean hasGuid();
   /**
+   * <pre>
+   * Note that an ExternalEventDefId is a three-part ID:
+   * 1. WfRunId
+   * 2. ExternalEventDef Name
+   * 3. A guid
+   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
+   * in order to make it idempotent. It is a best practice to do so.
+   * </pre>
+   *
    * <code>optional string guid = 3;</code>
    * @return The guid.
    */
   java.lang.String getGuid();
   /**
+   * <pre>
+   * Note that an ExternalEventDefId is a three-part ID:
+   * 1. WfRunId
+   * 2. ExternalEventDef Name
+   * 3. A guid
+   * The guid from part 3) can be optionally provided to the PutExternalEventRequest
+   * in order to make it idempotent. It is a best practice to do so.
+   * </pre>
+   *
    * <code>optional string guid = 3;</code>
    * @return The bytes for guid.
    */
@@ -55,37 +106,67 @@ public interface PutExternalEventRequestOrBuilder extends
       getGuidBytes();
 
   /**
+   * <pre>
+   * The content of this event.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
+   * <pre>
+   * The content of this event.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    * @return The content.
    */
   io.littlehorse.sdk.common.proto.VariableValue getContent();
   /**
+   * <pre>
+   * The content of this event.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
 
   /**
+   * <pre>
+   * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
+   * </pre>
+   *
    * <code>optional int32 thread_run_number = 6;</code>
    * @return Whether the threadRunNumber field is set.
    */
   boolean hasThreadRunNumber();
   /**
+   * <pre>
+   * Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
+   * </pre>
+   *
    * <code>optional int32 thread_run_number = 6;</code>
    * @return The threadRunNumber.
    */
   int getThreadRunNumber();
 
   /**
+   * <pre>
+   * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
+   * In order for this to be set, you must also set thread_run_number.
+   * </pre>
+   *
    * <code>optional int32 node_run_position = 7;</code>
    * @return Whether the nodeRunPosition field is set.
    */
   boolean hasNodeRunPosition();
   /**
+   * <pre>
+   * Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun.
+   * In order for this to be set, you must also set thread_run_number.
+   * </pre>
+   *
    * <code>optional int32 node_run_position = 7;</code>
    * @return The nodeRunPosition.
    */

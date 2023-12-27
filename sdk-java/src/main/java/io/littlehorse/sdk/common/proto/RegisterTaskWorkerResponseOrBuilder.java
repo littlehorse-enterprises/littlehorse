@@ -8,35 +8,63 @@ public interface RegisterTaskWorkerResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The list of LH Server hosts that the Task Worker should start polling.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> 
       getYourHostsList();
   /**
+   * <pre>
+   * The list of LH Server hosts that the Task Worker should start polling.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index);
   /**
+   * <pre>
+   * The list of LH Server hosts that the Task Worker should start polling.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   int getYourHostsCount();
   /**
+   * <pre>
+   * The list of LH Server hosts that the Task Worker should start polling.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
       getYourHostsOrBuilderList();
   /**
+   * <pre>
+   * The list of LH Server hosts that the Task Worker should start polling.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * Whether the LH Cluster is healthy.
+   * </pre>
+   *
    * <code>optional bool is_cluster_healthy = 2;</code>
    * @return Whether the isClusterHealthy field is set.
    */
   boolean hasIsClusterHealthy();
   /**
+   * <pre>
+   * Whether the LH Cluster is healthy.
+   * </pre>
+   *
    * <code>optional bool is_cluster_healthy = 2;</code>
    * @return The isClusterHealthy.
    */

@@ -24,8 +24,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	askForNameWorker.RegisterTaskDef(true)
-	greetWorker.RegisterTaskDef(true)
+	askForNameWorker.RegisterTaskDef()
+	greetWorker.RegisterTaskDef()
 
 	defer func() {
 		log.Default().Print("Shutting down task workers")

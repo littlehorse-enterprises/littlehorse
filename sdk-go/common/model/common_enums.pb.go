@@ -20,6 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Status used for WfRun, ThreadRun, and NodeRun
 type LHStatus int32
 
 const (
@@ -81,11 +82,17 @@ func (LHStatus) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{0}
 }
 
+// Status of a Metadata Object, such as WfSpec or TaskDef
 type MetadataStatus int32
 
 const (
-	MetadataStatus_ACTIVE      MetadataStatus = 0
-	MetadataStatus_ARCHIVED    MetadataStatus = 1
+	// ACTIVE means the object can be used.
+	MetadataStatus_ACTIVE MetadataStatus = 0
+	// An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+	// existing WfRun's will be allowed to run to completion.
+	MetadataStatus_ARCHIVED MetadataStatus = 1
+	// A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+	// self-destruct once all of its child WfRun's are terminated.
 	MetadataStatus_TERMINATING MetadataStatus = 2
 )
 
@@ -130,17 +137,27 @@ func (MetadataStatus) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{1}
 }
 
+// Status of a TaskRun.
 type TaskStatus int32
 
 const (
-	TaskStatus_TASK_SCHEDULED                TaskStatus = 0
-	TaskStatus_TASK_RUNNING                  TaskStatus = 1
-	TaskStatus_TASK_SUCCESS                  TaskStatus = 2
-	TaskStatus_TASK_FAILED                   TaskStatus = 3
-	TaskStatus_TASK_TIMEOUT                  TaskStatus = 4
+	// Scheduled in the Task Queue but not yet picked up by a Task Worker.
+	TaskStatus_TASK_SCHEDULED TaskStatus = 0
+	// Picked up by a Task Worker, but not yet reported or timed out.
+	TaskStatus_TASK_RUNNING TaskStatus = 1
+	// Successfully completed.
+	TaskStatus_TASK_SUCCESS TaskStatus = 2
+	// Task Worker reported a technical failure while attempting to execute the TaskRun
+	TaskStatus_TASK_FAILED TaskStatus = 3
+	// Task Worker did not report a result in time.
+	TaskStatus_TASK_TIMEOUT TaskStatus = 4
+	// Task Worker reported that it was unable to serialize the output of the TaskRun.
 	TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR TaskStatus = 5
-	TaskStatus_TASK_INPUT_VAR_SUB_ERROR      TaskStatus = 6
-	TaskStatus_TASK_EXCEPTION                TaskStatus = 8
+	// Task Worker was unable to deserialize the input variables into appropriate language-specific
+	// objects to pass into the Task Function
+	TaskStatus_TASK_INPUT_VAR_SUB_ERROR TaskStatus = 6
+	// Task Function business logic determined that there was a business exception.
+	TaskStatus_TASK_EXCEPTION TaskStatus = 8
 )
 
 // Enum value maps for TaskStatus.
@@ -244,16 +261,25 @@ func (MetricsWindowLength) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{3}
 }
 
+// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
+// VariableValue.
 type VariableType int32
 
 const (
+	// An object represented as a json string.
 	VariableType_JSON_OBJ VariableType = 0
+	// A list represented as a json array string.
 	VariableType_JSON_ARR VariableType = 1
-	VariableType_DOUBLE   VariableType = 2
-	VariableType_BOOL     VariableType = 3
-	VariableType_STR      VariableType = 4
-	VariableType_INT      VariableType = 5
-	VariableType_BYTES    VariableType = 6
+	// A 64-bit floating point number.
+	VariableType_DOUBLE VariableType = 2
+	// A boolean
+	VariableType_BOOL VariableType = 3
+	// A string
+	VariableType_STR VariableType = 4
+	// A 64-bit integer
+	VariableType_INT VariableType = 5
+	// A byte array
+	VariableType_BYTES VariableType = 6
 )
 
 // Enum value maps for VariableType.
@@ -305,18 +331,28 @@ func (VariableType) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{4}
 }
 
+// This enum is all of the types of technical failure that can occur in a WfRun.
 type LHErrorType int32
 
 const (
-	LHErrorType_CHILD_FAILURE       LHErrorType = 0
-	LHErrorType_VAR_SUB_ERROR       LHErrorType = 1
-	LHErrorType_VAR_MUTATION_ERROR  LHErrorType = 2
+	// A child ThreadRun failed with a technical ERROR.
+	LHErrorType_CHILD_FAILURE LHErrorType = 0
+	// Failed substituting input variables into a NodeRun.
+	LHErrorType_VAR_SUB_ERROR LHErrorType = 1
+	// Failed mutating variables after a NodeRun successfully completed.
+	LHErrorType_VAR_MUTATION_ERROR LHErrorType = 2
+	// A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)
 	LHErrorType_USER_TASK_CANCELLED LHErrorType = 3
-	LHErrorType_TIMEOUT             LHErrorType = 4
-	LHErrorType_TASK_FAILURE        LHErrorType = 5
-	LHErrorType_VAR_ERROR           LHErrorType = 6
-	LHErrorType_TASK_ERROR          LHErrorType = 7
-	LHErrorType_INTERNAL_ERROR      LHErrorType = 8
+	// A NodeRun failed due to a timeout.
+	LHErrorType_TIMEOUT LHErrorType = 4
+	// A TaskRun failed due to an unexpected error.
+	LHErrorType_TASK_FAILURE LHErrorType = 5
+	// Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR
+	LHErrorType_VAR_ERROR LHErrorType = 6
+	// Wrapper for TASK_FALIURE and TIMEOUT
+	LHErrorType_TASK_ERROR LHErrorType = 7
+	// An unexpected LittleHorse Internal error occurred. This is not expected to happen.
+	LHErrorType_INTERNAL_ERROR LHErrorType = 8
 )
 
 // Enum value maps for LHErrorType.

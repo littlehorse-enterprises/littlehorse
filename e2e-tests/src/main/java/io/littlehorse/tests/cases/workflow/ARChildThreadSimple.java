@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -42,7 +43,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
                     null);
 
             thread.execute("ar-obiwan");
-            thread.waitForThreads(child);
+            thread.waitForThreads(SpawnedThreads.of(child));
 
             thread.execute("ar-echo", sharedVar);
         });

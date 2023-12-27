@@ -68,5 +68,5 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 
 func init() {
 	// Do not add this command until we re-implement metrics:
-	// rootCmd.AddCommand(wfSpecMetrics)
+	rootCmd.AddCommand(wfSpecMetrics)
 }

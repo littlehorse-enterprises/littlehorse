@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
@@ -59,7 +60,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
             SpawnedThread child1 = thread.spawnThread(this::thread1, "child-1", Map.of("input1", Map.of()));
             SpawnedThread child2 = thread.spawnThread(this::thread2, "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(child1, child2).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(child1, child2)).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 

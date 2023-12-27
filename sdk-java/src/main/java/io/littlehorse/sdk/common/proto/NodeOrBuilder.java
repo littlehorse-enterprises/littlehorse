@@ -32,30 +32,6 @@ public interface NodeOrBuilder extends
       int index);
 
   /**
-   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> 
-      getVariableMutationsList();
-  /**
-   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index);
-  /**
-   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
-   */
-  int getVariableMutationsCount();
-  /**
-   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
-      getVariableMutationsOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
-      int index);
-
-  /**
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> 

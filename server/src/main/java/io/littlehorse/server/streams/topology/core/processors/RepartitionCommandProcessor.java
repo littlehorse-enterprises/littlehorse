@@ -2,8 +2,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdateModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -57,12 +56,11 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         final ModelStore defaultStore = ModelStore.defaultStore(nativeStore, null);
         Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
         cleanOldTaskMetrics(defaultStore, thirtyDaysAgo);
-        cleanOldWfMetrics(defaultStore, thirtyDaysAgo);
     }
 
     private void cleanOldTaskMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<TaskMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
+        try (LHKeyValueIterator<TaskMetricUpdateModel> iter =
+                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdateModel.class)) {
             while (iter.hasNext()) {
                 log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
 
@@ -73,23 +71,6 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
                  * metric.windowStart,
                  * metric.taskDefName);
                  * store.delete(taskDefMetricKey, TaskDefMetricsModel.class);*/
-            }
-        }
-    }
-
-    private void cleanOldWfMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<WfMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
-            while (iter.hasNext()) {
-                log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
-
-                /* * LHIterKeyValue<WfMetricUpdate> next = iter.next();
-                 * WfMetricUpdate metric = next.getValue();
-                 * store.delete(metric.getStoreKey());
-                 * String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
-                 * metric.type, metric.windowStart, metric.wfSpecName, metric.wfSpecVersion);
-                 * store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);*/
-
             }
         }
     }

@@ -40,36 +40,6 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   * @return Whether the taskMetricUpdate field is set.
-   */
-  boolean hasTaskMetricUpdate();
-  /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   * @return The taskMetricUpdate.
-   */
-  io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate();
-  /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   */
-  io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
-
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return Whether the wfMetricUpdate field is set.
-   */
-  boolean hasWfMetricUpdate();
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return The wfMetricUpdate.
-   */
-  io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate();
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   */
-  io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
-
-  /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
    * @return Whether the createRemoteTag field is set.
    */
@@ -98,6 +68,36 @@ public interface RepartitionCommandPbOrBuilder extends
    * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
    */
   io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder();
+
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return Whether the aggregateWfMetrics field is set.
+   */
+  boolean hasAggregateWfMetrics();
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return The aggregateWfMetrics.
+   */
+  io.littlehorse.common.proto.AggregateWfMetrics getAggregateWfMetrics();
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   */
+  io.littlehorse.common.proto.AggregateWfMetricsOrBuilder getAggregateWfMetricsOrBuilder();
+
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   * @return Whether the aggregateTaskMetrics field is set.
+   */
+  boolean hasAggregateTaskMetrics();
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   * @return The aggregateTaskMetrics.
+   */
+  io.littlehorse.common.proto.AggregateTaskMetrics getAggregateTaskMetrics();
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   */
+  io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder getAggregateTaskMetricsOrBuilder();
 
   io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

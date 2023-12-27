@@ -6,15 +6,25 @@ import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
+/** Enumerates the available operations to mutate a variable in a WfRun. */
 export enum VariableMutationType {
+  /** ASSIGN - Set the variable specified by the LHS to the value of the RHS. */
   ASSIGN = "ASSIGN",
+  /** ADD - Add the RHS to the LHS. */
   ADD = "ADD",
+  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR) */
   EXTEND = "EXTEND",
+  /** SUBTRACT - Subtract the RHS from the LHS (both must be INT or DOUBLE) */
   SUBTRACT = "SUBTRACT",
+  /** MULTIPLY - Multiply the LHS by the RHS (both must be INT or DOUBLE) */
   MULTIPLY = "MULTIPLY",
+  /** DIVIDE - Divide the LHS by the RHS (both must be INT or DOUBLE) */
   DIVIDE = "DIVIDE",
+  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR) */
   REMOVE_IF_PRESENT = "REMOVE_IF_PRESENT",
+  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR) */
   REMOVE_INDEX = "REMOVE_INDEX",
+  /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -200,15 +210,46 @@ export function comparatorToNumber(object: Comparator): number {
   }
 }
 
+/**
+ * A VariableAssignment is used within a WfSpec to determine how a value should be
+ * assigned in the context of a specific WfRun. For example, in a TASK node, you
+ * use a VariableAssignment for each input parameter to determine how the value
+ * is set.
+ *
+ * Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+ * have to worry about this in daily LittleHorse usage.
+ */
 export interface VariableAssignment {
-  jsonPath?: string | undefined;
-  variableName?: string | undefined;
-  literalValue?: VariableValue | undefined;
+  /**
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   */
+  jsonPath?:
+    | string
+    | undefined;
+  /** Assign the value from a variable. */
+  variableName?:
+    | string
+    | undefined;
+  /** Assign a literal value */
+  literalValue?:
+    | VariableValue
+    | undefined;
+  /** Assign a format string */
   formatString?: VariableAssignment_FormatString | undefined;
 }
 
+/** A FormatString formats a template String with values from the WfRun. */
 export interface VariableAssignment_FormatString {
-  format: VariableAssignment | undefined;
+  /**
+   * A VariableAssignment which must resolve to a String that has format args.
+   * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+   */
+  format:
+    | VariableAssignment
+    | undefined;
+  /** VariableAssignments which fill out the args. */
   args: VariableAssignment[];
 }
 

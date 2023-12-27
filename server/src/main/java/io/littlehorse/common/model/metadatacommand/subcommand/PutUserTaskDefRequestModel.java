@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.UserTaskUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
@@ -77,7 +78,10 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         spec.createdAt = new Date();
 
         UserTaskDefModel oldVersion = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
+
         if (oldVersion != null) {
+            if (UserTaskUtil.equals(spec, oldVersion))
+                return oldVersion.toProto().build();
             spec.version = oldVersion.version + 1;
         } else {
             spec.version = 0;

@@ -8,89 +8,153 @@ public interface TaskDefMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * TaskDef that the metrics apply to.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * TaskDef that the metrics apply to.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * TaskDef that the metrics apply to.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * When the window started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * When the window started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * When the window started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * Length of the window.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * Length of the window.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
+   * <pre>
+   * Longest time that a TaskRun was in the TASK_SCHEDULED state
+   * </pre>
+   *
    * <code>int64 schedule_to_start_max = 4;</code>
    * @return The scheduleToStartMax.
    */
   long getScheduleToStartMax();
 
   /**
+   * <pre>
+   * Average time that a TaskRun was in the TASK_SCHEDULED state
+   * </pre>
+   *
    * <code>int64 schedule_to_start_avg = 5;</code>
    * @return The scheduleToStartAvg.
    */
   long getScheduleToStartAvg();
 
   /**
+   * <pre>
+   * Longest time between a TaskRun being started and completed
+   * </pre>
+   *
    * <code>int64 start_to_complete_max = 6;</code>
    * @return The startToCompleteMax.
    */
   long getStartToCompleteMax();
 
   /**
+   * <pre>
+   * Average time between a TaskRun being started and completed
+   * </pre>
+   *
    * <code>int64 start_to_complete_avg = 7;</code>
    * @return The startToCompleteAvg.
    */
   long getStartToCompleteAvg();
 
   /**
+   * <pre>
+   * Total number of TaskRun's that reached the TASK_SUCCESS state
+   * </pre>
+   *
    * <code>int64 total_completed = 8;</code>
    * @return The totalCompleted.
    */
   long getTotalCompleted();
 
   /**
+   * <pre>
+   * Total number of TaskRun's that reached the TASK_ERROR state
+   * </pre>
+   *
    * <code>int64 total_errored = 9;</code>
    * @return The totalErrored.
    */
   long getTotalErrored();
 
   /**
+   * <pre>
+   * Total number of TaskRun's that transitioned to the TASK_RUNNING state
+   * </pre>
+   *
    * <code>int64 total_started = 10;</code>
    * @return The totalStarted.
    */
   long getTotalStarted();
 
   /**
+   * <pre>
+   * Total number of TaskRun's that were scheduled
+   * </pre>
+   *
    * <code>int64 total_scheduled = 11;</code>
    * @return The totalScheduled.
    */

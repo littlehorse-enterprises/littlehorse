@@ -88,6 +88,13 @@ repos:
 
       # Tests
 
+      - id: java-build
+        name: Tests Build
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew build
+
       - id: server-tests
         name: Running Server Tests
         language: system

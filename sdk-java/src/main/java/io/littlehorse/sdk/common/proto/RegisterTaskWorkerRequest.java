@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Message used by Task Worker to register itself to the server and ask for assignments of
+ * servers to poll.
+ *
+ * Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.RegisterTaskWorkerRequest}
  */
 public final class RegisterTaskWorkerRequest extends
@@ -44,6 +51,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object clientId_ = "";
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 1;</code>
    * @return The clientId.
    */
@@ -61,6 +72,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 1;</code>
    * @return The bytes for clientId.
    */
@@ -82,6 +97,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -90,6 +109,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
@@ -98,6 +121,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   @java.lang.Override
@@ -109,6 +136,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object listenerName_ = "";
   /**
+   * <pre>
+   * The listener that the worker is polling on. Used by the server to determine which
+   * advertised hosts to return.
+   * </pre>
+   *
    * <code>string listener_name = 3;</code>
    * @return The listenerName.
    */
@@ -126,6 +158,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The listener that the worker is polling on. Used by the server to determine which
+   * advertised hosts to return.
+   * </pre>
+   *
    * <code>string listener_name = 3;</code>
    * @return The bytes for listenerName.
    */
@@ -327,6 +364,13 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Message used by Task Worker to register itself to the server and ask for assignments of
+   * servers to poll.
+   *
+   * Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.RegisterTaskWorkerRequest}
    */
   public static final class Builder extends
@@ -532,6 +576,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object clientId_ = "";
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 1;</code>
      * @return The clientId.
      */
@@ -548,6 +596,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 1;</code>
      * @return The bytes for clientId.
      */
@@ -565,6 +617,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 1;</code>
      * @param value The clientId to set.
      * @return This builder for chaining.
@@ -578,6 +634,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 1;</code>
      * @return This builder for chaining.
      */
@@ -588,6 +648,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the ID of the Task Worker.
+     * </pre>
+     *
      * <code>string client_id = 1;</code>
      * @param value The bytes for clientId to set.
      * @return This builder for chaining.
@@ -606,6 +670,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -613,6 +681,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return The taskDefId.
      */
@@ -624,6 +696,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -640,6 +716,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(
@@ -654,6 +734,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -673,6 +757,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder clearTaskDefId() {
@@ -686,6 +774,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -694,6 +786,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -705,6 +801,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The TaskDef the worker wants to poll for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -723,6 +823,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object listenerName_ = "";
     /**
+     * <pre>
+     * The listener that the worker is polling on. Used by the server to determine which
+     * advertised hosts to return.
+     * </pre>
+     *
      * <code>string listener_name = 3;</code>
      * @return The listenerName.
      */
@@ -739,6 +844,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The listener that the worker is polling on. Used by the server to determine which
+     * advertised hosts to return.
+     * </pre>
+     *
      * <code>string listener_name = 3;</code>
      * @return The bytes for listenerName.
      */
@@ -756,6 +866,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The listener that the worker is polling on. Used by the server to determine which
+     * advertised hosts to return.
+     * </pre>
+     *
      * <code>string listener_name = 3;</code>
      * @param value The listenerName to set.
      * @return This builder for chaining.
@@ -769,6 +884,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The listener that the worker is polling on. Used by the server to determine which
+     * advertised hosts to return.
+     * </pre>
+     *
      * <code>string listener_name = 3;</code>
      * @return This builder for chaining.
      */
@@ -779,6 +899,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The listener that the worker is polling on. Used by the server to determine which
+     * advertised hosts to return.
+     * </pre>
+     *
      * <code>string listener_name = 3;</code>
      * @param value The bytes for listenerName to set.
      * @return This builder for chaining.

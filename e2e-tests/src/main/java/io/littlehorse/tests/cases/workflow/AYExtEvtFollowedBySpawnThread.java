@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -34,7 +35,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
                     "first-thread",
                     null);
             thread.execute("ay-task");
-            thread.waitForThreads(child);
+            thread.waitForThreads(SpawnedThreads.of(child));
         });
     }
 

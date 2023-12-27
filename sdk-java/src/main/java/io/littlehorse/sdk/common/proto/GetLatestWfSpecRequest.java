@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Get the latest WfSpec with a given name and optionally majorVersion
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.GetLatestWfSpecRequest}
  */
 public final class GetLatestWfSpecRequest extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the WfSpec to get. This is required.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -61,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the WfSpec to get. This is required.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -82,6 +94,13 @@ private static final long serialVersionUID = 0L;
   public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
   private int majorVersion_ = 0;
   /**
+   * <pre>
+   * Optionally get only WfSpec's that have the same major version. This can be useful
+   * if you want to guarantee that there have been no breaking changes to the API of the
+   * WfSpec, for example, to ensure that there have been no changes to searchable variables
+   * or required input variables.
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return Whether the majorVersion field is set.
    */
@@ -90,6 +109,13 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optionally get only WfSpec's that have the same major version. This can be useful
+   * if you want to guarantee that there have been no breaking changes to the API of the
+   * WfSpec, for example, to ensure that there have been no changes to searchable variables
+   * or required input variables.
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return The majorVersion.
    */
@@ -271,6 +297,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Get the latest WfSpec with a given name and optionally majorVersion
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.GetLatestWfSpecRequest}
    */
   public static final class Builder extends
@@ -457,6 +487,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the WfSpec to get. This is required.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -473,6 +507,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the WfSpec to get. This is required.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -490,6 +528,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the WfSpec to get. This is required.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -503,6 +545,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the WfSpec to get. This is required.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -513,6 +559,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the WfSpec to get. This is required.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -529,6 +579,13 @@ private static final long serialVersionUID = 0L;
 
     private int majorVersion_ ;
     /**
+     * <pre>
+     * Optionally get only WfSpec's that have the same major version. This can be useful
+     * if you want to guarantee that there have been no breaking changes to the API of the
+     * WfSpec, for example, to ensure that there have been no changes to searchable variables
+     * or required input variables.
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return Whether the majorVersion field is set.
      */
@@ -537,6 +594,13 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Optionally get only WfSpec's that have the same major version. This can be useful
+     * if you want to guarantee that there have been no breaking changes to the API of the
+     * WfSpec, for example, to ensure that there have been no changes to searchable variables
+     * or required input variables.
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return The majorVersion.
      */
@@ -545,6 +609,13 @@ private static final long serialVersionUID = 0L;
       return majorVersion_;
     }
     /**
+     * <pre>
+     * Optionally get only WfSpec's that have the same major version. This can be useful
+     * if you want to guarantee that there have been no breaking changes to the API of the
+     * WfSpec, for example, to ensure that there have been no changes to searchable variables
+     * or required input variables.
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @param value The majorVersion to set.
      * @return This builder for chaining.
@@ -557,6 +628,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optionally get only WfSpec's that have the same major version. This can be useful
+     * if you want to guarantee that there have been no breaking changes to the API of the
+     * WfSpec, for example, to ensure that there have been no changes to searchable variables
+     * or required input variables.
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
