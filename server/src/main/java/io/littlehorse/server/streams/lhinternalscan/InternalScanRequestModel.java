@@ -1,17 +1,22 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
-import com.google.protobuf.ByteString;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.kafka.common.utils.Utils;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.CoreGetable;
-import io.littlehorse.common.model.getable.CoreObjectId;
-import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanRequest;
-import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.InternalScanRequest.ScanBoundaryCase;
+import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.ScanFilter;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.server.streams.ServerTopology;
@@ -22,14 +27,8 @@ import io.littlehorse.server.streams.lhinternalscan.util.TagScanModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @Setter
@@ -54,7 +53,7 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
 
     public InternalScanRequestModel() {}
 
-    public InternalScanRequestModel(ScanBoundary<?, T> boundary, RequestExecutionContext ctx) {
+    public InternalScanRequestModel(ScanBoundary<?> boundary, RequestExecutionContext ctx) {
         this.setScanBoundary(boundary);
     }
 
@@ -95,7 +94,6 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initFrom(Message proto, ExecutionContext context) {
         InternalScanRequest p = (InternalScanRequest) proto;
         resultType = p.getResultType();
@@ -125,10 +123,42 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     }
 
     public void scanPartition(RequestExecutionContext ctx, int partition, InternalScanResponse.Builder response) {
+        if (query.getBookmark().getCompletedPartitionsList().contains(partition)) {
+            throw new IllegalStateException("Scanning the same partition twice!");
+        }
+        ReadOnlyTenantScopedStore partitionStore = getStore(partition, query.getStoreName());
 
+        PartitionBookmarkPb bkmk = query.getBookmark().getInProgressPartitionsOrDefault(partition, null);
+        String startKey = bkmk == null ? query.getScanBoundary().getStartKey() : bkmk.getLastKey();
+        String endKey = query.getScanBoundary().getEndKey();
+
+        Class<? extends Storeable<?>> cls = query.getScanBoundary().getIterType();
+
+        try (LHKeyValueIterator<?> iter = partitionStore.range(startKey, endKey, cls)) {
+            while (iter.hasNext() && response.getResultsCount() < query.getLimit()) {
+                LHIterKeyValue<?> next = iter.next();
+                if (query.matches(next, executionContext())) {
+                    response.addResults(query.convertToResult(next, executionContext()));
+                }
+            }
+
+            if (iter.hasNext()) {
+                String nextKey = iter.next().getKey();
+                response.getUpdatedBookmarkBuilder()
+                        .putInProgressPartitions(
+                                partition,
+                                PartitionBookmarkPb.newBuilder()
+                                        .setParttion(partition)
+                                        .setLastKey(nextKey)
+                                        .build());
+            } else {
+                response.getUpdatedBookmarkBuilder().removeInProgressPartitions(partition);
+                response.getUpdatedBookmarkBuilder().addCompletedPartitions(partition);
+            }
+        }
     }
 
-    public ScanBoundary getScanBoundary() {
+    public ScanBoundary<?> getScanBoundary() {
         switch (type) {
             case TAG_SCAN:
                 return tagScan;
@@ -139,8 +169,7 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
         throw new IllegalStateException("Scan boundary wasn't set");
     }
 
-    @SuppressWarnings("unchecked")
-    public void setScanBoundary(ScanBoundary boundary) {
+    public void setScanBoundary(ScanBoundary<?> boundary) {
         if (boundary instanceof TagScanModel) {
             type = ScanBoundaryCase.TAG_SCAN;
             this.tagScan = (TagScanModel) boundary;
@@ -156,21 +185,6 @@ public class InternalScanRequestModel extends LHSerializable<InternalScanRequest
     public boolean matches(LHIterKeyValue<?> record, RequestExecutionContext ctx) {
         // TODO: re-enable this
         return true;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <U extends Message, V extends CoreGetable<U>> ByteString convertToResult(
-            LHIterKeyValue<?> record, RequestExecutionContext ctx) {
-        byte[] out;
-        // First, get the described object id
-        var recordId = getScanBoundary().iterToObjectId(record);
-        if (resultType == ScanResultTypePb.OBJECT_ID) {
-            out = recordId.toBytes();
-        } else {
-            out = ctx.lookupGetable((ObjectIdModel<?, U, V>) recordId).toBytes();
-        }
-
-        return ByteString.copyFrom(out);
     }
 
     /**

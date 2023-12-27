@@ -4,9 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.server.streams.store.LHIterKeyValue;
 
-public abstract class ScanBoundary<T extends Message, U extends ObjectIdModel<?, ?, ?>> extends LHSerializable<T> {
+public abstract class ScanBoundary<T extends Message> extends LHSerializable<T> {
 
     /**
      * Returns the start key that should be passed into the Tenant Model Store for
@@ -29,6 +28,4 @@ public abstract class ScanBoundary<T extends Message, U extends ObjectIdModel<?,
      * @return the type of thing we scan over.
      */
     public abstract Class<? extends Storeable<?>> getIterType();
-
-    public abstract U iterToObjectId(LHIterKeyValue<?> iter);
 }

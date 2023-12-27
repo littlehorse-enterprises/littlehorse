@@ -485,39 +485,8 @@ public class BackendInternalComms implements Closeable {
      */
     private void scanLocalPartition(
             InternalScanRequestModel query, int partition, InternalScanResponse.Builder response) {
-        if (query.getBookmark().getCompletedPartitionsList().contains(partition)) {
-            throw new IllegalStateException("Scanning the same partition twice!");
-        }
-        ReadOnlyTenantScopedStore partitionStore = getStore(partition, query.getStoreName());
-
-        PartitionBookmarkPb bkmk = query.getBookmark().getInProgressPartitionsOrDefault(partition, null);
-        String startKey = bkmk == null ? query.getScanBoundary().getStartKey() : bkmk.getLastKey();
-        String endKey = query.getScanBoundary().getEndKey();
-
-        Class<? extends Storeable<?>> cls = query.getScanBoundary().getIterType();
-
-        try (LHKeyValueIterator<?> iter = partitionStore.range(startKey, endKey, cls)) {
-            while (iter.hasNext() && response.getResultsCount() < query.getLimit()) {
-                LHIterKeyValue<?> next = iter.next();
-                if (query.matches(next, executionContext())) {
-                    response.addResults(query.convertToResult(next, executionContext()));
-                }
-            }
-
-            if (iter.hasNext()) {
-                String nextKey = iter.next().getKey();
-                response.getUpdatedBookmarkBuilder()
-                        .putInProgressPartitions(
-                                partition,
-                                PartitionBookmarkPb.newBuilder()
-                                        .setParttion(partition)
-                                        .setLastKey(nextKey)
-                                        .build());
-            } else {
-                response.getUpdatedBookmarkBuilder().removeInProgressPartitions(partition);
-                response.getUpdatedBookmarkBuilder().addCompletedPartitions(partition);
-            }
-        }
+        
+        query.scanPartition(executionContext(), partition, response);
     }
 
     private void scanRemoteHost(
