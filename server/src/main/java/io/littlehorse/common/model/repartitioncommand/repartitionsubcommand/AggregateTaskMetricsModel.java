@@ -42,6 +42,9 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
         this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         this.taskMetrics.clear();
+        for (TaskMetricUpdate tmu : p.getMetricUpdatesList()) {
+            taskMetrics.add(LHSerializable.fromProto(tmu, TaskMetricUpdateModel.class, context));
+        }
     }
 
     @Override
