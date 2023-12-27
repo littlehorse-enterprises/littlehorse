@@ -278,20 +278,22 @@ class LHConnection:
             args.append(context)
 
         try:
-            output = to_variable_value(await self._task._callable(*args))
-            status = TaskStatus.TASK_SUCCESS
+            raw_output = await self._task._callable(*args)
+            try:
+                output = to_variable_value(raw_output)
+                status = TaskStatus.TASK_SUCCESS
+            except TypeError:
+                output = None
+                stacktrace = traceback.format_exc()
+                logging.error(stacktrace)
+                context.log(stacktrace)
+                status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except LHTaskException:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
             context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
-        except TypeError:
-            output = None
-            stacktrace = traceback.format_exc()
-            logging.error(stacktrace)
-            context.log(stacktrace)
-            status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
