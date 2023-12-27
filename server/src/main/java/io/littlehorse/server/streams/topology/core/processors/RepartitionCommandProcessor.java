@@ -13,9 +13,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
