@@ -411,6 +411,212 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_do_if_else_only_with_mutations(self):
+        class MyClass:
+            def if_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
+
+            def else_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
+
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
+                thread.do_if(
+                    thread.condition(4, Comparator.LESS_THAN, 5),
+                    self.if_condition,
+                    self.else_condition,
+                )
+
+            def to_thread(self):
+                return WorkflowThread(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
+                            ),
+                        ],
+                    ),
+                    "2-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                    ),
+                    "3-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_do_if_only_with_mutations(self):
+        class MyClass:
+            def if_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
+
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
+                thread.do_if(
+                    thread.condition(4, Comparator.GREATER_THAN, 5), self.if_condition
+                )
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-3", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    3,
+                )
+
+            def to_thread(self):
+                return WorkflowThread(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="1-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                    "2-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="3-exit-EXIT",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-3",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=3),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    "3-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
     def test_do_if(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:

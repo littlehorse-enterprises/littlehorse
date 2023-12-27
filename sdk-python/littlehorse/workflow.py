@@ -612,6 +612,7 @@ class WorkflowThread:
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
+        self._last_node_condition: EdgeCondition | None = None
 
         if workflow is None:
             raise ValueError("Workflow must be not None")
@@ -1240,8 +1241,10 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=next_node_name,
                     variable_mutations=self._collect_variable_mutations(),
+                    condition=self._last_node_condition,
                 )
             )
+            self._last_node_condition = None
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
 
@@ -1333,20 +1336,14 @@ class WorkflowThread:
 
         # execute if branch
         start_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
         if_body(self)
 
-        variables_from_if_block = self._collect_variable_mutations()
+        last_condition_from_if_block = self._last_node_condition
         last_node_from_if_block = self._last_node()
+        variables_from_if_block = self._collect_variable_mutations()
 
-        # manipulate if branch
-        if_condition_node = self._find_next_node(start_node_name)
         start_node = self._find_node(start_node_name)
-        if_edge = start_node._find_outgoing_edge(if_condition_node.name)
-        if_edge.MergeFrom(
-            Edge(
-                condition=condition.compile(),
-            )
-        )
 
         # execute else branch
         if else_body is not None:
@@ -1355,28 +1352,25 @@ class WorkflowThread:
             # change positions
             self._nodes.remove(start_node)
             self._nodes.append(start_node)
+            self._last_node_condition = condition.negate().compile()
             else_body(self)
 
             # adds edge final NOP node
             end_node_name = self.add_node("nop", NopNode())
+
             last_node_from_if_block.outgoing_edges.append(
                 Edge(
                     sink_node_name=end_node_name,
                     variable_mutations=variables_from_if_block,
-                )
-            )
-
-            # find else edge
-            else_condition_node = self._find_next_node(start_node_name)
-            else_edge = start_node._find_outgoing_edge(else_condition_node.name)
-            else_edge.MergeFrom(
-                Edge(
-                    condition=condition.negate().compile(),
+                    condition=last_condition_from_if_block
+                    if last_node_from_if_block.name == start_node.name
+                    else None,
                 )
             )
 
         else:
             end_node_name = self.add_node("nop", NopNode())
+
             last_node_from_if_block._find_outgoing_edge(end_node_name).MergeFrom(
                 Edge(variable_mutations=variables_from_if_block)
             )
