@@ -92,14 +92,20 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     }
 
     public void addMetric(WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatusChangedModel lhStatus, Date time) {
+        WfMetricId clusterLevelId = new WfMetricId(new WfSpecIdModel(LHConstants.CLUSTER_LEVEL_METRIC, 0, 0), tenantId);
+        StatusChangesModel clusterLevelChanges = wfMetrics.getOrDefault(clusterLevelId, new StatusChangesModel());
         WfMetricId metricId = new WfMetricId(wfSpecId, tenantId);
         StatusChangesModel statusChanges = wfMetrics.getOrDefault(metricId, new StatusChangesModel());
-        statusChanges.statusChanges.add(new StatusChangedModel(time, lhStatus));
+        StatusChangedModel statusChanged = new StatusChangedModel(time, lhStatus);
+        statusChanges.statusChanges.add(statusChanged);
+        clusterLevelChanges.statusChanges.add(statusChanged);
         wfMetrics.putIfAbsent(metricId, statusChanges);
+        wfMetrics.putIfAbsent(clusterLevelId, statusChanges);
     }
 
     public void addMetric(
             TaskDefIdModel taskDefId, TenantIdModel tenantId, TaskStatusChangedModel taskStatus, Date time) {
+
         TaskMetricId metricId = new TaskMetricId(taskDefId, tenantId);
         StatusChangesModel statusChanges = taskMetrics.getOrDefault(metricId, new StatusChangesModel());
         statusChanges.statusChanges.add(new StatusChangedModel(time, taskStatus));
