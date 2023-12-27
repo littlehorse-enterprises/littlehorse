@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -39,7 +40,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
                     null);
 
             thread.execute("as-obiwan");
-            thread.waitForThreads(child);
+            thread.waitForThreads(SpawnedThreads.of(child));
             thread.execute("as-obiwan");
         });
     }

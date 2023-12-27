@@ -8,70 +8,122 @@ public interface SearchVariableRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
   com.google.protobuf.ByteString getBookmark();
 
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
   boolean hasLimit();
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
   int getLimit();
 
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    * @return The value.
    */
   io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
+   * <pre>
+   * Specifies the value that the variable must be. Exact match is required.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 
   /**
+   * <pre>
+   * Specifies major version of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 4;</code>
    * @return Whether the wfSpecMajorVersion field is set.
    */
   boolean hasWfSpecMajorVersion();
   /**
+   * <pre>
+   * Specifies major version of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 4;</code>
    * @return The wfSpecMajorVersion.
    */
   int getWfSpecMajorVersion();
 
   /**
+   * <pre>
+   * Specifies the revision of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 5;</code>
    * @return Whether the wfSpecRevision field is set.
    */
   boolean hasWfSpecRevision();
   /**
+   * <pre>
+   * Specifies the revision of the WfSpec for the associated WfRun.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 5;</code>
    * @return The wfSpecRevision.
    */
   int getWfSpecRevision();
 
   /**
+   * <pre>
+   * Specifies the name of the variable to search for. This is required.
+   * </pre>
+   *
    * <code>string var_name = 6;</code>
    * @return The varName.
    */
   java.lang.String getVarName();
   /**
+   * <pre>
+   * Specifies the name of the variable to search for. This is required.
+   * </pre>
+   *
    * <code>string var_name = 6;</code>
    * @return The bytes for varName.
    */
@@ -79,11 +131,19 @@ public interface SearchVariableRequestOrBuilder extends
       getVarNameBytes();
 
   /**
+   * <pre>
+   * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+   * </pre>
+   *
    * <code>string wf_spec_name = 7;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
+   * <pre>
+   * Specifies the name of the WfSpec for the associated WfRun's. This is required.
+   * </pre>
+   *
    * <code>string wf_spec_name = 7;</code>
    * @return The bytes for wfSpecName.
    */

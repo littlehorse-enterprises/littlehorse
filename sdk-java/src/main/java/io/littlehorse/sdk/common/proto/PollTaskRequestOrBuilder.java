@@ -8,26 +8,46 @@ public interface PollTaskRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * Is the TaskDefId that the Task Worker wants to execute.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 2;</code>
    * @return The clientId.
    */
   java.lang.String getClientId();
   /**
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
    * <code>string client_id = 2;</code>
    * @return The bytes for clientId.
    */
@@ -35,16 +55,31 @@ public interface PollTaskRequestOrBuilder extends
       getClientIdBytes();
 
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return Whether the taskWorkerVersion field is set.
    */
   boolean hasTaskWorkerVersion();
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return The taskWorkerVersion.
    */
   java.lang.String getTaskWorkerVersion();
   /**
+   * <pre>
+   * Optionally specifies the version of the Task Worker, so that it can be recorded
+   * for debugging purposes on the TaskRun itself.
+   * </pre>
+   *
    * <code>optional string task_worker_version = 3;</code>
    * @return The bytes for taskWorkerVersion.
    */

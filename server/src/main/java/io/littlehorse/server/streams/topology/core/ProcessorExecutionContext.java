@@ -48,6 +48,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
+    private GetableUpdates getableUpdates;
+    private MetricsUpdater metricsAggregator;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -135,6 +137,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
+        if (metricsAggregator != null) {
+            metricsAggregator.maybePersistState();
+        }
     }
 
     public CommandModel currentCommand() {
@@ -157,6 +162,15 @@ public class ProcessorExecutionContext implements ExecutionContext {
     @Override
     public LHServerConfig serverConfig() {
         return config;
+    }
+
+    public GetableUpdates getableUpdates() {
+        if (getableUpdates == null) {
+            getableUpdates = new GetableUpdates();
+            metricsAggregator = new MetricsUpdater(ModelStore.defaultStore(nativeCoreStore(), this));
+            getableUpdates.subscribe(metricsAggregator);
+        }
+        return getableUpdates;
     }
 
     private AuthorizationContext authContextFor() {

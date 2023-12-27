@@ -40,8 +40,8 @@ func NewTaskWorker(
 	return tw, nil
 }
 
-func (tw *LHTaskWorker) RegisterTaskDef(ignoreAlreadyExistsError bool) error {
-	return tw.registerTaskDef(ignoreAlreadyExistsError)
+func (tw *LHTaskWorker) RegisterTaskDef() error {
+	return tw.registerTaskDef()
 }
 
 func (tw *LHTaskWorker) Start() error {

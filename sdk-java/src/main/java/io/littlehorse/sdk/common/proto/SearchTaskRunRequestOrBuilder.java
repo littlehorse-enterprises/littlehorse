@@ -8,33 +8,57 @@ public interface SearchTaskRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
   com.google.protobuf.ByteString getBookmark();
 
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
   boolean hasLimit();
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
   int getLimit();
 
   /**
+   * <pre>
+   * Specifies the TaskDef of TaskRun's to return. This is required.
+   * </pre>
+   *
    * <code>string task_def_name = 3;</code>
    * @return The taskDefName.
    */
   java.lang.String getTaskDefName();
   /**
+   * <pre>
+   * Specifies the TaskDef of TaskRun's to return. This is required.
+   * </pre>
+   *
    * <code>string task_def_name = 3;</code>
    * @return The bytes for taskDefName.
    */
@@ -42,47 +66,83 @@ public interface SearchTaskRunRequestOrBuilder extends
       getTaskDefNameBytes();
 
   /**
+   * <pre>
+   * Specifies to only return TaskRun's matching this status.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskStatus status = 4;</code>
    * @return Whether the status field is set.
    */
   boolean hasStatus();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's matching this status.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskStatus status = 4;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's matching this status.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskStatus status = 4;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.TaskStatus getStatus();
 
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
    * @return Whether the earliestStart field is set.
    */
   boolean hasEarliestStart();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
    * @return The earliestStart.
    */
   com.google.protobuf.Timestamp getEarliestStart();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
    * @return Whether the latestStart field is set.
    */
   boolean hasLatestStart();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
    * @return The latestStart.
    */
   com.google.protobuf.Timestamp getLatestStart();
   /**
+   * <pre>
+   * Specifies to only return TaskRun's that were scheduled before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();

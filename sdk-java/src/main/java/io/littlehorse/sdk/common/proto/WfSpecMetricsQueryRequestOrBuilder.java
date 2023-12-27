@@ -8,41 +8,76 @@ public interface WfSpecMetricsQueryRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   int getWindowLengthValue();
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */

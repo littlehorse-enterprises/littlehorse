@@ -32,6 +32,14 @@ public enum StoreableType
    * <code>TAG = 5;</code>
    */
   TAG(5),
+  /**
+   * <code>PARTITION_METRICS = 6;</code>
+   */
+  PARTITION_METRICS(6),
+  /**
+   * <code>METRIC_WINDOW = 7;</code>
+   */
+  METRIC_WINDOW(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -59,6 +67,14 @@ public enum StoreableType
    * <code>TAG = 5;</code>
    */
   public static final int TAG_VALUE = 5;
+  /**
+   * <code>PARTITION_METRICS = 6;</code>
+   */
+  public static final int PARTITION_METRICS_VALUE = 6;
+  /**
+   * <code>METRIC_WINDOW = 7;</code>
+   */
+  public static final int METRIC_WINDOW_VALUE = 7;
 
 
   public final int getNumber() {
@@ -91,6 +107,8 @@ public enum StoreableType
       case 3: return TASK_METRIC_UPDATE;
       case 4: return LH_TIMER;
       case 5: return TAG;
+      case 6: return PARTITION_METRICS;
+      case 7: return METRIC_WINDOW;
       default: return null;
     }
   }

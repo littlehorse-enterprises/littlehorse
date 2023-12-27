@@ -42,6 +42,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,6 +67,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
 
     public LHStatus status;
+
     public Date startTime;
     public Date endTime;
     private List<ThreadRunModel> threadRuns = new ArrayList<>();
@@ -543,9 +545,12 @@ public class WfRunModel extends CoreGetable<WfRun> {
         advance(time);
     }
 
-    private void setStatus(LHStatus status) {
+    public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        GetableUpdates.GetableStatusUpdate statusChanged =
+                GetableUpdates.create(wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         this.status = status;
+        processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -594,14 +599,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
             // design.
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
-                setStatus(LHStatus.COMPLETED);
+                transitionTo(LHStatus.COMPLETED);
                 log.info("Completed WfRun {} at {} ", id, new Date());
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
-                setStatus(LHStatus.ERROR);
+                transitionTo(LHStatus.ERROR);
             } else if (newStatus == LHStatus.EXCEPTION) {
                 endTime = time;
-                setStatus(LHStatus.EXCEPTION);
+                transitionTo(LHStatus.EXCEPTION);
             }
         }
 
