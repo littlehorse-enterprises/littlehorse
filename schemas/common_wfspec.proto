@@ -68,13 +68,30 @@ enum VariableMutationType {
   REMOVE_KEY = 8;
 }
 
+// A VariableMutation defines a modification made to one of a ThreadRun's variables.
+// The LHS determines the variable that is modified; the operation determines how
+// it is modified, and the RHS is the input to the operation.
+//
+// Day-to-day users of LittleHorse generally don't interact with this structure unless
+// they are writing their own WfSpec SDK.
 message VariableMutation {
+  // Specifies to use the output of a NodeRun as the RHS.
   message NodeOutputSource {
+    // Use this specific field from a JSON output
     optional string jsonpath = 10;
   }
+
+  // The name of the variable to mutate
   string lhs_name = 1;
+
+  // For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+  // a specific sub-field of the variable.
   optional string lhs_json_path = 2;
+
+  // Defines the operation that we are executing.
   VariableMutationType operation = 3;
+
+  // 
   oneof rhs_value {
     VariableAssignment source_variable = 4;
     VariableValue literal_value = 5;
