@@ -46,7 +46,6 @@ import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyTenantStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
@@ -486,7 +485,8 @@ public class BackendInternalComms implements Closeable {
         if (isClusterScoped(search.getObjectType())) {
             store = ModelStore.defaultStore(rawStore, executionContext());
         } else {
-            store = ModelStore.tenantStoreFor(rawStore, executionContext().authorization().tenantId(), executionContext());
+            store = ModelStore.tenantStoreFor(
+                    rawStore, executionContext().authorization().tenantId(), executionContext());
         }
         if (search.getBookmark().getCompletedPartitionsCount() > 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Search request provided corrupted bookmark.");
@@ -542,8 +542,7 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
 
-        try (LHKeyValueIterator<?> iter =
-                store.range(startKey, endKey, StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();

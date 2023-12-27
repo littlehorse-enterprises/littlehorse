@@ -16,11 +16,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.processor.StateRestoreListener;
 import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreType;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -56,8 +55,7 @@ public class HealthService implements Closeable, StateRestoreListener {
 
         this.server.get("/dumpstore", ctx -> {
             ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
-                StoreQueryParameters.fromNameAndType("global-metadata-store", QueryableStoreTypes.keyValueStore())
-            );
+                    StoreQueryParameters.fromNameAndType("global-metadata-store", QueryableStoreTypes.keyValueStore()));
             try (KeyValueIterator<String, Bytes> iter = store.all()) {
                 while (iter.hasNext()) {
                     System.out.println(iter.next().key);
