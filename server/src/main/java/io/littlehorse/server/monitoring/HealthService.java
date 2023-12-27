@@ -14,14 +14,9 @@ import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.processor.StateRestoreListener;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class HealthService implements Closeable, StateRestoreListener {
@@ -52,16 +47,6 @@ public class HealthService implements Closeable, StateRestoreListener {
         this.server.get(config.getLivenessPath(), this::getLiveness);
         this.server.get(config.getStatusPath(), this::getStatus);
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
-
-        this.server.get("/dumpstore", ctx -> {
-            ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
-                    StoreQueryParameters.fromNameAndType("global-metadata-store", QueryableStoreTypes.keyValueStore()));
-            try (KeyValueIterator<String, Bytes> iter = store.all()) {
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().key);
-                }
-            }
-        });
 
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);
