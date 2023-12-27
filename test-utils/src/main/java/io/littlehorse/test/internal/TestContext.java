@@ -33,7 +33,7 @@ import org.awaitility.Awaitility;
 
 public class TestContext {
 
-    private final LHConfig config;
+    private final LHConfig LHConfig;
     private final LittleHorseBlockingStub lhClient;
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
@@ -45,7 +45,7 @@ public class TestContext {
     private final Lock wfSpecStoreLock;
 
     public TestContext(TestBootstrapper bootstrapper) {
-        this.config = bootstrapper.getWorkerConfig();
+        this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
         this.wfSpecStoreLock = new ReentrantLock();
     }
@@ -55,7 +55,7 @@ public class TestContext {
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), config));
+            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
     }
@@ -128,7 +128,7 @@ public class TestContext {
 
     private void injectLhConfig(Object testInstance) {
         new FieldDependencyInjector(
-                        () -> config, testInstance, field -> field.getType().isAssignableFrom(config.getClass()))
+                        () -> LHConfig, testInstance, field -> field.getType().isAssignableFrom(LHConfig.getClass()))
                 .inject();
     }
 
@@ -194,7 +194,7 @@ public class TestContext {
         return lhClient;
     }
 
-    public LHConfig getConfig() {
-        return config;
+    public LHConfig getLHConfig() {
+        return LHConfig;
     }
 }
