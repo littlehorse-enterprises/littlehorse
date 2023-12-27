@@ -105,11 +105,15 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
 
     public void addMetric(
             TaskDefIdModel taskDefId, TenantIdModel tenantId, TaskStatusChangedModel taskStatus, Date time) {
-
+        TaskMetricId clusterId = new TaskMetricId(new TaskDefIdModel(LHConstants.CLUSTER_LEVEL_METRIC), tenantId);
         TaskMetricId metricId = new TaskMetricId(taskDefId, tenantId);
         StatusChangesModel statusChanges = taskMetrics.getOrDefault(metricId, new StatusChangesModel());
-        statusChanges.statusChanges.add(new StatusChangedModel(time, taskStatus));
+        StatusChangesModel globalChanges = taskMetrics.getOrDefault(clusterId, new StatusChangesModel());
+        StatusChangedModel statusChanged = new StatusChangedModel(time, taskStatus);
+        statusChanges.statusChanges.add(statusChanged);
+        globalChanges.statusChanges.add(statusChanged);
         taskMetrics.putIfAbsent(metricId, statusChanges);
+        taskMetrics.putIfAbsent(clusterId, globalChanges);
     }
 
     @Override
