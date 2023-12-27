@@ -4,7 +4,6 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -19,10 +18,12 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.Awaitility;
 
 /**
  * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task
@@ -128,9 +129,23 @@ public class LHTaskWorker implements Closeable {
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            this.taskDef = grpcClient.getTaskDef(
-                    TaskDefId.newBuilder().setName(taskDefName).build());
+            // Await the TaskDef
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(2))
+                    .ignoreExceptionsMatching((exn) -> {
+                        return exn instanceof StatusRuntimeException
+                                && ((StatusRuntimeException) exn)
+                                        .getStatus()
+                                        .getCode()
+                                        .equals(Code.NOT_FOUND);
+                    })
+                    .until(() -> {
+                        this.taskDef = grpcClient.getTaskDef(
+                                TaskDefId.newBuilder().setName(taskDefName).build());
+                        return true;
+                    });
         }
+
         LHTaskSignature signature = new LHTaskSignature(taskDef.getId().getName(), executable);
         taskMethod = signature.getTaskMethod();
 
@@ -176,9 +191,6 @@ public class LHTaskWorker implements Closeable {
      * @throws IOException if unexpected error occurs opening connections.
      */
     public void start() throws IOException {
-        if (!doesTaskDefExist()) {
-            throw new LHMisconfigurationException("Couldn't find TaskDef: " + taskDefName);
-        }
         createManager();
         manager.start();
     }
