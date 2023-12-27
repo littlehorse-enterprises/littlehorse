@@ -3,15 +3,13 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.UUID;
-
-import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.util.TaskDefUtil;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -21,6 +19,7 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -56,11 +55,13 @@ public class TaskDefIdempotencyTest {
         for (int i = 0; i < 5; i++) {
             String taskDefName = UUID.randomUUID().toString();
             String wfSpecName = UUID.randomUUID().toString();
-            PutTaskDefRequest ptd = PutTaskDefRequest.newBuilder().setName(taskDefName).build();
+            PutTaskDefRequest ptd =
+                    PutTaskDefRequest.newBuilder().setName(taskDefName).build();
             PutWfSpecRequest putWfSpec = Workflow.newWorkflow(wfSpecName, wf -> {
-                    wf.execute(taskDefName);
-            }).compileWorkflow();
-    
+                        wf.execute(taskDefName);
+                    })
+                    .compileWorkflow();
+
             // Calling these two in immediate succession should guarantee that it works.
             client.putTaskDef(ptd);
             client.putWfSpec(putWfSpec);
@@ -68,11 +69,17 @@ public class TaskDefIdempotencyTest {
             // Note: LH Server doesn't guarantee that the results are immediately available to `get()`.
 
             // But we can delete them immediately
-            client.deleteWfSpec(DeleteWfSpecRequest.newBuilder().setId(WfSpecId.newBuilder().setName(wfSpecName)).build());
-            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder().setId(TaskDefId.newBuilder().setName(taskDefName)).build());
+            client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
+                    .setId(WfSpecId.newBuilder().setName(wfSpecName))
+                    .build());
+            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                    .setId(TaskDefId.newBuilder().setName(taskDefName))
+                    .build());
 
             // Now make sure we can't create the WfSpec
-            assertThatThrownBy(() -> client.putWfSpec(putWfSpec)).matches((exn) -> ((StatusRuntimeException) exn).getStatus().getCode().equals(Code.INVALID_ARGUMENT));
+            assertThatThrownBy(() -> client.putWfSpec(putWfSpec))
+                    .matches((exn) ->
+                            ((StatusRuntimeException) exn).getStatus().getCode().equals(Code.INVALID_ARGUMENT));
         }
     }
 }
