@@ -96,7 +96,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
                 authContext,
                 processorContext,
                 globalTaskQueueManager,
-                coreStore);
+                ClusterScopedStore.newInstance(nativeCoreStore(), this));
         return currentTaskManager;
     }
 

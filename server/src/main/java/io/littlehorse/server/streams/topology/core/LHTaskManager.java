@@ -5,7 +5,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class LHTaskManager {
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final TaskQueueManager taskQueueManager;
-    private final TenantScopedStore coreStore;
+    private final ClusterScopedStore clusterStore;
 
     public LHTaskManager(
             String timerTopicName,
@@ -39,13 +39,13 @@ public class LHTaskManager {
             AuthorizationContext authContext,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager taskQueueManager,
-            TenantScopedStore coreStore) {
+            ClusterScopedStore clusterStore) {
         this.timerTopicName = timerTopicName;
         this.commandTopicName = commandTopicName;
         this.authContext = authContext;
         this.processorContext = processorContext;
         this.taskQueueManager = taskQueueManager;
-        this.coreStore = coreStore;
+        this.clusterStore = clusterStore;
     }
 
     /**
@@ -66,7 +66,7 @@ public class LHTaskManager {
     }
 
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = this.coreStore.get(taskRunId.toString(), ScheduledTaskModel.class);
+        ScheduledTaskModel scheduledTask = this.clusterStore.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
@@ -86,10 +86,10 @@ public class LHTaskManager {
             String scheduledTaskId = entry.getKey();
             ScheduledTaskModel scheduledTask = entry.getValue();
             if (scheduledTask != null) {
-                this.coreStore.put(scheduledTask);
+                this.clusterStore.put(scheduledTask);
                 taskQueueManager.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
             } else {
-                this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
+                this.clusterStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
         }
     }

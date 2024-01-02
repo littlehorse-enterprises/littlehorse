@@ -164,14 +164,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     public void onPartitionClaimed() {
-        TenantScopedStore coreDefaultStore =
-                TenantScopedStore.newInstance(this.nativeStore, LHConstants.DEFAULT_TENANT, new BackgroundContext());
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.nativeStore, new BackgroundContext());
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
 
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
+        try (LHKeyValueIterator<ScheduledTaskModel> iter = clusterStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
