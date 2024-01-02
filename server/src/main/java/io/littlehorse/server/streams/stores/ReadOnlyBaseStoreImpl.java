@@ -6,7 +6,6 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Optional;
 import lombok.Getter;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -31,16 +30,18 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
     ReadOnlyBaseStoreImpl(
-            ReadOnlyKeyValueStore<String, Bytes> nativeStore,
-            Optional<String> tenantId,
-            ExecutionContext executionContext) {
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
 
         if (nativeStore == null) {
             throw new NullPointerException();
         }
-        this.tenantId = tenantId.isPresent() ? tenantId.get() : null;
+        this.tenantId = tenantId;
         this.nativeStore = nativeStore;
         this.executionContext = executionContext;
+    }
+
+    ReadOnlyBaseStoreImpl(ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
+        this(nativeStore, null, executionContext);
     }
 
     @Override
