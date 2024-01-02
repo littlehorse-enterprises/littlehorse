@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
@@ -548,8 +549,18 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        GetableUpdates.GetableStatusUpdate statusChanged = GetableUpdates.create(
-                wfSpecId, new TenantIdModel(processorContext.authorization().tenantId()), this.status, status);
+        GetableUpdates.GetableStatusUpdate statusChanged;
+        if (Objects.equals(status, LHStatus.COMPLETED)) {
+            statusChanged = GetableUpdates.create(
+                    wfSpecId, new TenantIdModel(processorContext.authorization().tenantId()), this.status, status);
+        } else {
+            statusChanged = GetableUpdates.createEndEvent(
+                    wfSpecId,
+                    new TenantIdModel(processorContext.authorization().tenantId()),
+                    this.status,
+                    status,
+                    startTime);
+        }
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
 

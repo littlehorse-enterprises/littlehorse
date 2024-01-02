@@ -17,25 +17,29 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     private Date time;
     private LHStatusChangedModel lhStatusChanged;
     private TaskStatusChangedModel taskStatusChanged;
+    private long firstEventToLastDelay;
 
     public StatusChangedModel() {
         // used by LHSerializable
     }
 
-    public StatusChangedModel(Date time, LHStatusChangedModel lhStatusChanged) {
+    public StatusChangedModel(Date time, LHStatusChangedModel lhStatusChanged, long firstEventToLastDelay) {
         this.time = time;
         this.lhStatusChanged = lhStatusChanged;
+        this.firstEventToLastDelay = firstEventToLastDelay;
     }
 
-    public StatusChangedModel(Date time, TaskStatusChangedModel taskStatusChanged) {
+    public StatusChangedModel(Date time, TaskStatusChangedModel taskStatusChanged, long firstEventToLastDelay) {
         this.time = time;
         this.taskStatusChanged = taskStatusChanged;
+        this.firstEventToLastDelay = firstEventToLastDelay;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         StatusChanged p = (StatusChanged) proto;
         time = LHUtil.fromProtoTs(p.getTime());
+        firstEventToLastDelay = p.getFirstEventToLastDelay();
         if (p.getStatusCase().equals(StatusChanged.StatusCase.LH_STATUS)) {
             lhStatusChanged = LHSerializable.fromProto(p.getLhStatus(), LHStatusChangedModel.class, context);
         } else if (p.getStatusCase().equals(StatusChanged.StatusCase.TASK_STATUS)) {
@@ -49,6 +53,7 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     public StatusChanged.Builder toProto() {
         StatusChanged.Builder out = StatusChanged.newBuilder();
         out.setTime(LHUtil.fromDate(time));
+        out.setFirstEventToLastDelay(firstEventToLastDelay);
         if (lhStatusChanged != null) {
             out.setLhStatus(lhStatusChanged.toProto());
         } else if (taskStatusChanged != null) {

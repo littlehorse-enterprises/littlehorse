@@ -7,6 +7,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.util.TaskDefUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -18,14 +19,20 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
+import io.littlehorse.test.exception.LHTestExceptionUtil;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest
 public class TaskDefLifecycleTest {
 
     private LittleHorseBlockingStub client;
+    private LHConfig config;
 
     @Test
     void shouldBeIdempotent() {
@@ -82,9 +89,47 @@ public class TaskDefLifecycleTest {
                             ((StatusRuntimeException) exn).getStatus().getCode().equals(Code.INVALID_ARGUMENT));
         }
     }
+
+    @Test
+    void workerShouldWaitForTaskDef() throws IOException {
+        String taskDefName = "only-to-use-with-wait-for-taskdef";
+        PutTaskDefRequest req =
+                PutTaskDefRequest.newBuilder().setName(taskDefName).build();
+
+        // Trying to detect a race condition, so we run this test multiple times
+        for (int i = 0; i < 5; i++) {
+            LHTaskWorker worker = new LHTaskWorker(new TaskWorker(), taskDefName, config);
+
+            client.putTaskDef(req);
+            // Starting immediately afterwards can throw some errors.
+            worker.start();
+
+            worker.close();
+            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                    .setId(TaskDefId.newBuilder().setName(taskDefName))
+                    .build());
+
+            // Wait for cleanup, so now we can run it again.
+            Awaitility.await().atMost(Duration.ofSeconds(3)).until(() -> {
+                Exception caught = null;
+                try {
+                    client.getTaskDef(
+                            TaskDefId.newBuilder().setName(taskDefName).build());
+                } catch (Exception exn) {
+                    caught = exn;
+                }
+                return caught != null && LHTestExceptionUtil.isNotFoundException(caught);
+            });
+        }
+    }
 }
 
 class TaskWorker {
+    @LHTaskMethod("only-to-use-with-wait-for-taskdef")
+    public String foo() {
+        return "asdf";
+    }
+
     @LHTaskMethod("greet")
     public String greeting(String name) {
         return "hello there, " + name;

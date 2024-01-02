@@ -33,7 +33,7 @@ import org.awaitility.Awaitility;
 
 public class TestContext {
 
-    private final LHConfig LHConfig;
+    private final LHConfig config;
     private final LittleHorseBlockingStub lhClient;
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
@@ -45,7 +45,7 @@ public class TestContext {
     private final Lock wfSpecStoreLock;
 
     public TestContext(TestBootstrapper bootstrapper) {
-        this.LHConfig = bootstrapper.getWorkerConfig();
+        this.config = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
         this.wfSpecStoreLock = new ReentrantLock();
     }
@@ -55,7 +55,7 @@ public class TestContext {
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
+            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), config));
         }
         return workers;
     }
@@ -107,6 +107,7 @@ public class TestContext {
         List<DiscoveredWorkflowDefinition> discoveredWorkflowDefinitions = workflowDefinitionDiscover.scan();
         injectWorkflowDefinitions(testInstance, discoveredWorkflowDefinitions);
         injectLhClient(testInstance);
+        injectLhConfig(testInstance);
     }
 
     private void injectWorkflowDefinitions(
@@ -122,6 +123,12 @@ public class TestContext {
     private void injectLhClient(Object testInstance) {
         new FieldDependencyInjector(
                         () -> lhClient, testInstance, field -> field.getType().isAssignableFrom(lhClient.getClass()))
+                .inject();
+    }
+
+    private void injectLhConfig(Object testInstance) {
+        new FieldDependencyInjector(
+                        () -> config, testInstance, field -> field.getType().isAssignableFrom(config.getClass()))
                 .inject();
     }
 
@@ -185,5 +192,9 @@ public class TestContext {
 
     public LittleHorseBlockingStub getLhClient() {
         return lhClient;
+    }
+
+    public LHConfig getConfig() {
+        return config;
     }
 }

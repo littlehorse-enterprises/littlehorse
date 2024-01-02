@@ -9,8 +9,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const grpcRequestBody = {
             wfSpecId: {
                 name: httpRequestBody.wfSpecName,
-                majorVersion: httpRequestBody.wfSpecVersion,
-                revision: 0 // TODO: OSS - bring this from the UI
+                majorVersion: httpRequestBody.majorVersion,
+                revision: httpRequestBody.revision
             },
             lastWindowStart: httpRequestBody.lastWindowStart,
             windowLength: httpRequestBody.windowLength,

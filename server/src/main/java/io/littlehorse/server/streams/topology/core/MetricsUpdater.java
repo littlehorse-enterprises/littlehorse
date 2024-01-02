@@ -28,7 +28,8 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                             wfRunEvent.getWfSpecId(),
                             wfRunEvent.getTenantId(),
                             statusChanged,
-                            wfRunEvent.getCreationDate());
+                            wfRunEvent.getCreationDate(),
+                            wfRunEvent.getFirstEventLatency());
         } else if (statusUpdate instanceof GetableUpdates.TaskRunStatusUpdate taskUpdate) {
             TaskStatusChangedModel taskStatusChanged =
                     new TaskStatusChangedModel(taskUpdate.getPreviousStatus(), taskUpdate.getNewStatus());
@@ -37,7 +38,8 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                             taskUpdate.getTaskDefId(),
                             taskUpdate.getTenantId(),
                             taskStatusChanged,
-                            taskUpdate.getCreationDate());
+                            taskUpdate.getCreationDate(),
+                            taskUpdate.getFirstEventLatency());
         } else {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));

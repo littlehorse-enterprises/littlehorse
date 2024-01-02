@@ -86,6 +86,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         firstUpdate.totalCompleted = 1L;
         firstUpdate.totalErrored = 2L;
         firstUpdate.totalStarted = 3L;
+        firstUpdate.startToCompleteTotal = 7;
         commandProcessor.init(mockProcessorContext);
         RepartitionCommand firstMetricUpdate = new RepartitionCommand(
                 new AggregateWfMetricsModel(wfSpecId, List.of(firstUpdate), tenantId), new Date(), commandId);
@@ -96,6 +97,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         secondUpdate.totalCompleted = 1L;
         secondUpdate.totalErrored = 2L;
         secondUpdate.totalStarted = 3L;
+        secondUpdate.startToCompleteTotal = 30;
         RepartitionCommand secondMetricUpdate = new RepartitionCommand(
                 new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId), new Date(), commandId);
         commandProcessor.process(new Record<>(commandId, secondMetricUpdate, 0L, metadata));
@@ -109,6 +111,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
         assertThat(wfSpecMetrics.totalCompleted).isEqualTo(2);
         assertThat(wfSpecMetrics.totalErrored).isEqualTo(4);
         assertThat(wfSpecMetrics.totalStarted).isEqualTo(6);
+        assertThat(wfSpecMetrics.startToCompleteAvg).isEqualTo(15);
     }
 
     @Test

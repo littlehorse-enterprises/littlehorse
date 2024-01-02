@@ -157,6 +157,7 @@ public class UserTasksExample {
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
+        worker.registerTaskDef();
 
         // Create the User Task Def
         UserTaskSchema requestForm = new UserTaskSchema(

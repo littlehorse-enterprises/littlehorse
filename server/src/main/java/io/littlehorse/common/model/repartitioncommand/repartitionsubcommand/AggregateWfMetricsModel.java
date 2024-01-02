@@ -15,6 +15,8 @@ import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -102,5 +104,9 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
         wfSpecMetric.totalCompleted += metricUpdate.totalCompleted;
         wfSpecMetric.totalErrored += metricUpdate.totalErrored;
         wfSpecMetric.totalStarted += metricUpdate.totalStarted;
+        wfSpecMetric.startToCompleteMax = Math.max(metricUpdate.startToCompleteMax, wfSpecMetric.startToCompleteMax);
+        BigDecimal calculatedAvg = BigDecimal.valueOf(metricUpdate.startToCompleteTotal)
+                .divide(BigDecimal.valueOf(Math.max(wfSpecMetric.totalCompleted, 1L)), 4, RoundingMode.HALF_UP);
+        wfSpecMetric.startToCompleteAvg = calculatedAvg.longValue();
     }
 }
