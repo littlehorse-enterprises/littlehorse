@@ -496,10 +496,11 @@ public class BackendInternalComms implements Closeable {
                     search.getLimit(),
                     search.getObjectType(),
                     partition,
-                    search.getFilters());
+                    search.getFilters(),
+                    search.getStoreName());
         } else {
             result = objectIdPrefixScanGlobalStore(
-                    search.boundedObjectIdScan, partBookmark, search.getLimit(), search.getObjectType(), partition);
+                    search.boundedObjectIdScan, partBookmark, search.getLimit(), search.getObjectType());
         }
 
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder().addAllResults(result.getLeft());
@@ -511,11 +512,7 @@ public class BackendInternalComms implements Closeable {
 
     // This will be removed during the refactor, as it is totally gross.
     private Pair<List<ByteString>, PartitionBookmarkPb> objectIdPrefixScanGlobalStore(
-            BoundedObjectIdScanPb objectIdScan,
-            PartitionBookmarkPb bookmark,
-            int limit,
-            GetableClassEnum objectType,
-            int partition) {
+            BoundedObjectIdScanPb objectIdScan, PartitionBookmarkPb bookmark, int limit, GetableClassEnum objectType) {
 
         String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
         String startKey;
@@ -528,7 +525,8 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
 
-        try (LHKeyValueIterator<?> iter = createObjectIdIterator(startKey, endKey, objectType)) {
+        try (LHKeyValueIterator<?> iter =
+                createObjectIdIterator(startKey, endKey, objectType, ServerTopology.GLOBAL_METADATA_STORE, 0)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -542,7 +540,7 @@ public class BackendInternalComms implements Closeable {
         PartitionBookmarkPb bookmarkOut = bookmarkKey == null
                 ? null
                 : PartitionBookmarkPb.newBuilder()
-                        .setParttion(partition)
+                        .setParttion(0)
                         .setLastKey(bookmarkKey)
                         .build();
 
@@ -853,7 +851,7 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                    req.tagScan, partBookmark, curLimit, req.objectType, partition, req.filters);
+                    req.tagScan, partBookmark, curLimit, req.objectType, partition, req.filters, req.getStoreName());
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
@@ -894,7 +892,8 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            List<ScanFilterModel> filters) {
+            List<ScanFilterModel> filters,
+            String storeName) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
@@ -911,7 +910,7 @@ public class BackendInternalComms implements Closeable {
             return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
         };
 
-        try (LHKeyValueIterator<Tag> iter = createTagIterator(startKey, endKey, objectType)) {
+        try (LHKeyValueIterator<Tag> iter = createTagIterator(startKey, endKey, objectType, storeName, partition)) {
             boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
@@ -946,8 +945,9 @@ public class BackendInternalComms implements Closeable {
         return Pair.of(idsOut, bookmarkOut);
     }
 
-    private LHKeyValueIterator<Tag> createTagIterator(String startKey, String endKey, GetableClassEnum objectType) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(0, false, ServerTopology.GLOBAL_METADATA_STORE);
+    private LHKeyValueIterator<Tag> createTagIterator(
+            String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
@@ -960,8 +960,9 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private LHKeyValueIterator<?> createObjectIdIterator(String startKey, String endKey, GetableClassEnum objectType) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(0, false, ServerTopology.GLOBAL_METADATA_STORE);
+    private LHKeyValueIterator<?> createObjectIdIterator(
+            String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
