@@ -143,22 +143,6 @@ public class LHServerConfig extends ConfigBase {
         return clusterId + "-core-repartition";
     }
 
-    public String getObservabilityEventTopicName() {
-        return getObservabilityEventTopicName(getLHClusterId());
-    }
-
-    public static String getObservabilityEventTopicName(String clusterId) {
-        return clusterId + "-observability";
-    }
-
-    public String getGlobalMetadataCLTopicName() {
-        return getGlobalMetadataCLTopicName(getLHClusterId());
-    }
-
-    public static String getGlobalMetadataCLTopicName(String clusterId) {
-        return clusterId + "-global-metadata-cl";
-    }
-
     public String getTimerTopic() {
         return getTimerTopic(getLHClusterId());
     }
@@ -218,9 +202,6 @@ public class LHServerConfig extends ConfigBase {
 
         NewTopic repartition = new NewTopic(getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
 
-        NewTopic observability =
-                new NewTopic(getObservabilityEventTopicName(clusterId), clusterPartitions, replicationFactor);
-
         NewTopic timer = new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
 
         NewTopic coreStoreChangelog = new NewTopic(
@@ -245,7 +226,6 @@ public class LHServerConfig extends ConfigBase {
                 coreCommand,
                 metadataCommand,
                 repartition,
-                observability,
                 timer,
                 coreStoreChangelog,
                 repartitionStoreChangelog,
