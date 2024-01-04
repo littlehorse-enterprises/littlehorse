@@ -525,8 +525,8 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
 
-        try (LHKeyValueIterator<?> iter =
-                createObjectIdIterator(startKey, endKey, objectType, ServerTopology.GLOBAL_METADATA_STORE, 0)) {
+        try (LHKeyValueIterator<?> iter = createObjectIdIteratorGlobalStore(
+                startKey, endKey, objectType, ServerTopology.GLOBAL_METADATA_STORE, 0)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -823,7 +823,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {
-        log.debug("Local Tag prefix scan");
+        log.trace("Local Tag prefix scan");
         if (req.partitionKey != null) {
             throw new IllegalArgumentException("called localAllPartitionTagScan with partitionKey");
         }
@@ -897,8 +897,21 @@ public class BackendInternalComms implements Closeable {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
-        String startKey = determineScanStartKey(tagPrefixScan, bookmark);
-        String endKey = determineScanKey(tagPrefixScan) + "~";
+        String startKey;
+
+        if (bookmark != null) {
+            startKey = bookmark.getLastKey();
+        } else {
+            startKey = tagPrefixScan.getKeyPrefix();
+            if (tagPrefixScan.hasEarliestCreateTime()) {
+                startKey += "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime()));
+            }
+        }
+        String endKey = tagPrefixScan.getKeyPrefix();
+        if (tagPrefixScan.hasLatestCreateTime()) {
+            endKey += "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime()));
+        }
+        endKey += "~";
 
         BiPredicate<Tag, List<ScanFilterModel>> passesFilter = (tag, scanFilterModels) -> {
             if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
@@ -960,7 +973,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private LHKeyValueIterator<?> createObjectIdIterator(
+    private LHKeyValueIterator<?> createObjectIdIteratorGlobalStore(
             String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
@@ -972,29 +985,6 @@ public class BackendInternalComms implements Closeable {
             ReadOnlyTenantScopedStore tenantStore =
                     ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
             return tenantStore.range(startKey, endKey, StoredGetable.class);
-        }
-    }
-
-    /*
-    Determines the starting key for a scan request.
-    falls back to using the last key from the specified partition bookmark.
-     */
-    private String determineScanStartKey(TagScanPb tagPrefixScan, PartitionBookmarkPb bookmark) {
-        if (bookmark == null) {
-            return determineScanKey(tagPrefixScan);
-        } else {
-            return bookmark.getLastKey();
-        }
-    }
-
-    private String determineScanKey(TagScanPb tagPrefixScan) {
-        if (tagPrefixScan.hasEarliestCreateTime()) {
-            String prefixTimeScanTemplate = "%s/%s/";
-            return prefixTimeScanTemplate.formatted(
-                    tagPrefixScan.getKeyPrefix(),
-                    LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime())));
-        } else {
-            return tagPrefixScan.getKeyPrefix() + "/";
         }
     }
 
