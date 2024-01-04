@@ -36,7 +36,7 @@ class GetLatestUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class PutWfSpecRequest(_message.Message):
-    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy", "allowed_updates"]
+    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy", "parent_wf_spec", "allowed_updates"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -48,13 +48,15 @@ class PutWfSpecRequest(_message.Message):
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_SPEC_FIELD_NUMBER: _ClassVar[int]
     ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
     thread_specs: _containers.MessageMap[str, _wf_spec_pb2.ThreadSpec]
     entrypoint_thread_name: str
     retention_policy: _wf_spec_pb2.WorkflowRetentionPolicy
+    parent_wf_spec: _wf_spec_pb2.WfSpec.ParentWfSpecReference
     allowed_updates: AllowedUpdateType
-    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars"]
@@ -135,7 +137,7 @@ class DeleteExternalEventDefRequest(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class RunWfRequest(_message.Message):
-    __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id"]
+    __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id"]
     class VariablesEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -148,12 +150,14 @@ class RunWfRequest(_message.Message):
     REVISION_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     ID_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
     major_version: int
     revision: int
     variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
     id: str
-    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class VariableMatch(_message.Message):
     __slots__ = ["var_name", "value"]

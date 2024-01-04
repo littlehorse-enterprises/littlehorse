@@ -39,6 +39,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WfRunId.class, io.littlehorse.sdk.common.proto.WfRunId.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
@@ -78,6 +79,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   * @return Whether the parentWfRunId field is set.
+   */
+  @java.lang.Override
+  public boolean hasParentWfRunId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   * @return The parentWfRunId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId() {
+    return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
+  }
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
+    return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -95,6 +122,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getParentWfRunId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -106,6 +136,10 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getParentWfRunId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -124,6 +158,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
+    if (hasParentWfRunId() != other.hasParentWfRunId()) return false;
+    if (hasParentWfRunId()) {
+      if (!getParentWfRunId()
+          .equals(other.getParentWfRunId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -137,6 +176,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
+    if (hasParentWfRunId()) {
+      hash = (37 * hash) + PARENT_WF_RUN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getParentWfRunId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -256,19 +299,30 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.WfRunId.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getParentWfRunIdFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
       id_ = "";
+      parentWfRunId_ = null;
+      if (parentWfRunIdBuilder_ != null) {
+        parentWfRunIdBuilder_.dispose();
+        parentWfRunIdBuilder_ = null;
+      }
       return this;
     }
 
@@ -305,6 +359,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.parentWfRunId_ = parentWfRunIdBuilder_ == null
+            ? parentWfRunId_
+            : parentWfRunIdBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -356,6 +418,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (other.hasParentWfRunId()) {
+        mergeParentWfRunId(other.getParentWfRunId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -387,6 +452,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  getParentWfRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -474,6 +546,125 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> parentWfRunIdBuilder_;
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     * @return Whether the parentWfRunId field is set.
+     */
+    public boolean hasParentWfRunId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     * @return The parentWfRunId.
+     */
+    public io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId() {
+      if (parentWfRunIdBuilder_ == null) {
+        return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
+      } else {
+        return parentWfRunIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public Builder setParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (parentWfRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        parentWfRunId_ = value;
+      } else {
+        parentWfRunIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public Builder setParentWfRunId(
+        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
+      if (parentWfRunIdBuilder_ == null) {
+        parentWfRunId_ = builderForValue.build();
+      } else {
+        parentWfRunIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public Builder mergeParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (parentWfRunIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          parentWfRunId_ != null &&
+          parentWfRunId_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
+          getParentWfRunIdBuilder().mergeFrom(value);
+        } else {
+          parentWfRunId_ = value;
+        }
+      } else {
+        parentWfRunIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public Builder clearParentWfRunId() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      parentWfRunId_ = null;
+      if (parentWfRunIdBuilder_ != null) {
+        parentWfRunIdBuilder_.dispose();
+        parentWfRunIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunId.Builder getParentWfRunIdBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getParentWfRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
+      if (parentWfRunIdBuilder_ != null) {
+        return parentWfRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        return parentWfRunId_ == null ?
+            io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
+        getParentWfRunIdFieldBuilder() {
+      if (parentWfRunIdBuilder_ == null) {
+        parentWfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
+                getParentWfRunId(),
+                getParentForChildren(),
+                isClean());
+        parentWfRunId_ = null;
+      }
+      return parentWfRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

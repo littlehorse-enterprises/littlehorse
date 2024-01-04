@@ -166,4 +166,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    */
   com.google.protobuf.ByteString
       getIdBytes();
+
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * @return Whether the parentWfRunId field is set.
+   */
+  boolean hasParentWfRunId();
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * @return The parentWfRunId.
+   */
+  io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
+  /**
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 }

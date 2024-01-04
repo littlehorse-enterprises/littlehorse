@@ -50,7 +50,13 @@ import {
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
 import { WfRun } from "./wf_run";
-import { ThreadSpec, WfSpec, WfSpecVersionMigration, WorkflowRetentionPolicy } from "./wf_spec";
+import {
+  ThreadSpec,
+  WfSpec,
+  WfSpec_ParentWfSpecReference,
+  WfSpecVersionMigration,
+  WorkflowRetentionPolicy,
+} from "./wf_spec";
 
 export const protobufPackage = "littlehorse";
 
@@ -143,6 +149,13 @@ export interface PutWfSpecRequest {
    */
   retentionPolicy?:
     | WorkflowRetentionPolicy
+    | undefined;
+  /**
+   * Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be
+   * Child WfRun's of the specified WfSpec.
+   */
+  parentWfSpec?:
+    | WfSpec_ParentWfSpecReference
     | undefined;
   /**
    * Configures the behavior of this individual request. Can be used to prevent
@@ -299,6 +312,7 @@ export interface RunWfRequest {
    * a later time.
    */
   id?: string | undefined;
+  parentWfRunId?: WfRunId | undefined;
 }
 
 export interface RunWfRequest_VariablesEntry {
@@ -1286,6 +1300,7 @@ function createBasePutWfSpecRequest(): PutWfSpecRequest {
     threadSpecs: {},
     entrypointThreadName: "",
     retentionPolicy: undefined,
+    parentWfSpec: undefined,
     allowedUpdates: AllowedUpdateType.ALL_UPDATES,
   };
 }
@@ -1303,6 +1318,9 @@ export const PutWfSpecRequest = {
     }
     if (message.retentionPolicy !== undefined) {
       WorkflowRetentionPolicy.encode(message.retentionPolicy, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.parentWfSpec !== undefined) {
+      WfSpec_ParentWfSpecReference.encode(message.parentWfSpec, writer.uint32(74).fork()).ldelim();
     }
     if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
       writer.uint32(80).int32(allowedUpdateTypeToNumber(message.allowedUpdates));
@@ -1348,6 +1366,13 @@ export const PutWfSpecRequest = {
 
           message.retentionPolicy = WorkflowRetentionPolicy.decode(reader, reader.uint32());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.parentWfSpec = WfSpec_ParentWfSpecReference.decode(reader, reader.uint32());
+          continue;
         case 10:
           if (tag !== 80) {
             break;
@@ -1377,6 +1402,7 @@ export const PutWfSpecRequest = {
       retentionPolicy: isSet(object.retentionPolicy)
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
+      parentWfSpec: isSet(object.parentWfSpec) ? WfSpec_ParentWfSpecReference.fromJSON(object.parentWfSpec) : undefined,
       allowedUpdates: isSet(object.allowedUpdates)
         ? allowedUpdateTypeFromJSON(object.allowedUpdates)
         : AllowedUpdateType.ALL_UPDATES,
@@ -1403,6 +1429,9 @@ export const PutWfSpecRequest = {
     if (message.retentionPolicy !== undefined) {
       obj.retentionPolicy = WorkflowRetentionPolicy.toJSON(message.retentionPolicy);
     }
+    if (message.parentWfSpec !== undefined) {
+      obj.parentWfSpec = WfSpec_ParentWfSpecReference.toJSON(message.parentWfSpec);
+    }
     if (message.allowedUpdates !== AllowedUpdateType.ALL_UPDATES) {
       obj.allowedUpdates = allowedUpdateTypeToJSON(message.allowedUpdates);
     }
@@ -1427,6 +1456,9 @@ export const PutWfSpecRequest = {
     message.entrypointThreadName = object.entrypointThreadName ?? "";
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? WorkflowRetentionPolicy.fromPartial(object.retentionPolicy)
+      : undefined;
+    message.parentWfSpec = (object.parentWfSpec !== undefined && object.parentWfSpec !== null)
+      ? WfSpec_ParentWfSpecReference.fromPartial(object.parentWfSpec)
       : undefined;
     message.allowedUpdates = object.allowedUpdates ?? AllowedUpdateType.ALL_UPDATES;
     return message;
@@ -2252,7 +2284,14 @@ export const DeleteExternalEventDefRequest = {
 };
 
 function createBaseRunWfRequest(): RunWfRequest {
-  return { wfSpecName: "", majorVersion: undefined, revision: undefined, variables: {}, id: undefined };
+  return {
+    wfSpecName: "",
+    majorVersion: undefined,
+    revision: undefined,
+    variables: {},
+    id: undefined,
+    parentWfRunId: undefined,
+  };
 }
 
 export const RunWfRequest = {
@@ -2271,6 +2310,9 @@ export const RunWfRequest = {
     });
     if (message.id !== undefined) {
       writer.uint32(42).string(message.id);
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -2320,6 +2362,13 @@ export const RunWfRequest = {
 
           message.id = reader.string();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2341,6 +2390,7 @@ export const RunWfRequest = {
         }, {})
         : {},
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
     };
   },
 
@@ -2367,6 +2417,9 @@ export const RunWfRequest = {
     if (message.id !== undefined) {
       obj.id = message.id;
     }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
+    }
     return obj;
   },
 
@@ -2388,6 +2441,9 @@ export const RunWfRequest = {
       {},
     );
     message.id = object.id ?? undefined;
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
     return message;
   },
 };

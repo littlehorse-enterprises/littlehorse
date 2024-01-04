@@ -47,6 +47,7 @@ message ExternalEventId {
 
 message WfRunId {
   string id = 1;
+  optional WfRunId parent_wf_run_id = 2;
 }
 
 message NodeRunId {

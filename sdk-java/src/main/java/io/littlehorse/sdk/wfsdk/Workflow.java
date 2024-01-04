@@ -37,6 +37,7 @@ public abstract class Workflow {
     protected int defaultTaskRetries;
     protected WorkflowRetentionPolicy wfRetentionPolicy;
     protected ThreadRetentionPolicy defaultThreadRetentionPolicy;
+    protected String parentWfSpecName;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -49,6 +50,14 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
+    }
+
+    /**
+     * Makes this a child workflow.
+     * @param parentWfSpecName is the name of the parent wfSpec.
+     */
+    public void setParent(String parentWfSpecName) {
+        this.parentWfSpecName = parentWfSpecName;
     }
 
     /**

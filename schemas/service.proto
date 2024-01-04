@@ -235,7 +235,10 @@ message PutWfSpecRequest {
   // Optional policy to determine how long a WfRun is retained in the data store after
   // it is completed or terminated.
   optional WorkflowRetentionPolicy retention_policy = 8;
-  reserved 9;
+
+  // Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be
+  // Child WfRun's of the specified WfSpec.
+  optional WfSpec.ParentWfSpecReference parent_wf_spec = 9;
 
   // Configures the behavior of this individual request. Can be used to prevent
   // breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow
@@ -380,6 +383,7 @@ message RunWfRequest {
   // as it also makes your request idempotent and allows you to easily find the WfRun at
   // a later time.
   optional string id = 5;
+  optional WfRunId parent_wf_run_id = 6;
 }
 
 // Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's

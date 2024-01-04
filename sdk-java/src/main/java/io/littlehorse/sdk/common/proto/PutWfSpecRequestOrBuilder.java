@@ -133,6 +133,36 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
 
   /**
    * <pre>
+   * Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be
+   * Child WfRun's of the specified WfSpec.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return Whether the parentWfSpec field is set.
+   */
+  boolean hasParentWfSpec();
+  /**
+   * <pre>
+   * Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be
+   * Child WfRun's of the specified WfSpec.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   * @return The parentWfSpec.
+   */
+  io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference getParentWfSpec();
+  /**
+   * <pre>
+   * Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be
+   * Child WfRun's of the specified WfSpec.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder();
+
+  /**
+   * <pre>
    * Configures the behavior of this individual request. Can be used to prevent
    * breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow
    * all changes to the WfSpec.

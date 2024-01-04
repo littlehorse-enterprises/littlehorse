@@ -11,7 +11,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpec(_message.Message):
-    __slots__ = ["id", "created_at", "frozen_variables", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration"]
+    __slots__ = ["id", "created_at", "frozen_variables", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "parent_wf_spec"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -19,6 +19,11 @@ class WfSpec(_message.Message):
         key: str
         value: ThreadSpec
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ThreadSpec, _Mapping]] = ...) -> None: ...
+    class ParentWfSpecReference(_message.Message):
+        __slots__ = ["wf_spec_name"]
+        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+        wf_spec_name: str
+        def __init__(self, wf_spec_name: _Optional[str] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     FROZEN_VARIABLES_FIELD_NUMBER: _ClassVar[int]
@@ -27,6 +32,7 @@ class WfSpec(_message.Message):
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     MIGRATION_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_SPEC_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WfSpecId
     created_at: _timestamp_pb2.Timestamp
     frozen_variables: _containers.RepeatedCompositeFieldContainer[ThreadVarDef]
@@ -35,7 +41,8 @@ class WfSpec(_message.Message):
     entrypoint_thread_name: str
     retention_policy: WorkflowRetentionPolicy
     migration: WfSpecVersionMigration
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., frozen_variables: _Optional[_Iterable[_Union[ThreadVarDef, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.MetadataStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ...) -> None: ...
+    parent_wf_spec: WfSpec.ParentWfSpecReference
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., frozen_variables: _Optional[_Iterable[_Union[ThreadVarDef, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.MetadataStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ..., migration: _Optional[_Union[WfSpecVersionMigration, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[WfSpec.ParentWfSpecReference, _Mapping]] = ...) -> None: ...
 
 class WorkflowRetentionPolicy(_message.Message):
     __slots__ = ["seconds_after_wf_termination"]
