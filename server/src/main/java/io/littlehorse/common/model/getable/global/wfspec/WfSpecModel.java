@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -47,7 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class WfSpecModel extends GlobalGetable<WfSpec> {
+public class WfSpecModel extends MetadataGetable<WfSpec> {
 
     private WfSpecIdModel id = new WfSpecIdModel();
 

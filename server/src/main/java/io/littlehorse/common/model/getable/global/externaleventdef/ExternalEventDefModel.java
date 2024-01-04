@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.externaleventdef;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import lombok.Getter;
 
 @Getter
-public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
+public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
     public String name;
     public Date createdAt;

@@ -16,9 +16,8 @@ import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.store.TenantModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -70,8 +69,8 @@ public class AggregateWfMetricsRepartitionCommandTest {
     private final MockProcessorContext<Void, Void> mockProcessorContext = new MockProcessorContext<>();
 
     private RepartitionCommandProcessor commandProcessor;
-    private TenantModelStore defaultStore =
-            ModelStore.tenantStoreFor(nativeInMemoryStore, LHConstants.DEFAULT_TENANT, executionContext);
+    private TenantScopedStore defaultStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, LHConstants.DEFAULT_TENANT, executionContext);
 
     @BeforeEach
     public void setup() {
@@ -103,8 +102,10 @@ public class AggregateWfMetricsRepartitionCommandTest {
                 new AggregateWfMetricsModel(wfSpecId, List.of(secondUpdate), tenantId), new Date(), commandId);
         commandProcessor.process(new Record<>(commandId, secondMetricUpdate, 0L, metadata));
 
-        StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetric =
-                defaultStore.get(WfSpecMetricsIdModel.getObjectId(windowStart, MetricsWindowLength.HOURS_2, wfSpecId));
+        StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetric = defaultStore.get(
+                WfSpecMetricsIdModel.getObjectId(windowStart, MetricsWindowLength.HOURS_2, wfSpecId)
+                        .getStoreableKey(),
+                StoredGetable.class);
         assertThat(storedMetric).isNotNull();
         WfSpecMetricsModel wfSpecMetrics = storedMetric.getStoredObject();
         assertThat(wfSpecMetrics.totalCompleted).isEqualTo(2);
@@ -138,7 +139,9 @@ public class AggregateWfMetricsRepartitionCommandTest {
         commandProcessor.process(new Record<>(commandId, secondMetricUpdate, 0L, metadata));
 
         StoredGetable<WfSpecMetrics, WfSpecMetricsModel> firstStoredMetric = defaultStore.get(
-                WfSpecMetricsIdModel.getObjectId(firstWindowStart, MetricsWindowLength.HOURS_2, wfSpecId));
+                WfSpecMetricsIdModel.getObjectId(firstWindowStart, MetricsWindowLength.HOURS_2, wfSpecId)
+                        .getStoreableKey(),
+                StoredGetable.class);
         assertThat(firstStoredMetric).isNotNull();
         WfSpecMetricsModel firstMetric = firstStoredMetric.getStoredObject();
         assertThat(firstMetric.totalCompleted).isEqualTo(1);
@@ -146,7 +149,9 @@ public class AggregateWfMetricsRepartitionCommandTest {
         assertThat(firstMetric.totalStarted).isEqualTo(3);
 
         StoredGetable<WfSpecMetrics, WfSpecMetricsModel> secondStoredMetric = defaultStore.get(
-                WfSpecMetricsIdModel.getObjectId(secondWindowStart, MetricsWindowLength.HOURS_2, wfSpecId));
+                WfSpecMetricsIdModel.getObjectId(secondWindowStart, MetricsWindowLength.HOURS_2, wfSpecId)
+                        .getStoreableKey(),
+                StoredGetable.class);
         assertThat(secondStoredMetric).isNotNull();
         WfSpecMetricsModel secondMetric = secondStoredMetric.getStoredObject();
         assertThat(secondMetric.totalCompleted).isEqualTo(1);

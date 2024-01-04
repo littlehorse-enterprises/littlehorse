@@ -44,10 +44,10 @@ import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -67,7 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -330,11 +330,11 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
+    private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
-        return ModelStore.instanceFor(rawStore, authContext.tenantId(), requestContext);
+        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
@@ -371,7 +371,7 @@ public class BackendInternalComms implements Closeable {
     private <U extends Message, T extends AbstractGetable<U>> T getObjectLocal(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
 
-        ReadOnlyModelStore store =
+        ReadOnlyTenantScopedStore store =
                 getStore(partition, false, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
@@ -394,7 +394,7 @@ public class BackendInternalComms implements Closeable {
                     ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
             String storeName = id.getStore().getStoreName();
-            ReadOnlyModelStore store = getStore(request.getPartition(), false, storeName);
+            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), false, storeName);
 
             @SuppressWarnings("unchecked")
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
@@ -480,15 +480,6 @@ public class BackendInternalComms implements Closeable {
             throw new IllegalStateException("Tried to do a global store scan on non-global store search");
         }
 
-        ReadOnlyModelStore store;
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(0, false, ServerTopology.GLOBAL_METADATA_STORE);
-        if (isClusterScoped(search.getObjectType())) {
-            store = ModelStore.defaultStore(rawStore, executionContext());
-        } else {
-            store = ModelStore.tenantStoreFor(
-                    rawStore, executionContext().authorization().tenantId(), executionContext());
-        }
-
         PartitionBookmarkPb partBookmark = null;
         if (search.getBookmark() != null) {
             if (search.getBookmark().getCompletedPartitionsCount() > 0) {
@@ -505,17 +496,11 @@ public class BackendInternalComms implements Closeable {
                     search.getLimit(),
                     search.getObjectType(),
                     partition,
-                    store,
-                    search.getFilters());
+                    search.getFilters(),
+                    search.getStoreName());
         } else {
             result = objectIdPrefixScanGlobalStore(
-                    search.boundedObjectIdScan,
-                    partBookmark,
-                    search.getLimit(),
-                    search.getObjectType(),
-                    partition,
-                    store,
-                    search.getFilters());
+                    search.boundedObjectIdScan, partBookmark, search.getLimit(), search.getObjectType());
         }
 
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder().addAllResults(result.getLeft());
@@ -527,13 +512,7 @@ public class BackendInternalComms implements Closeable {
 
     // This will be removed during the refactor, as it is totally gross.
     private Pair<List<ByteString>, PartitionBookmarkPb> objectIdPrefixScanGlobalStore(
-            BoundedObjectIdScanPb objectIdScan,
-            PartitionBookmarkPb bookmark,
-            int limit,
-            GetableClassEnum objectType,
-            int partition,
-            ReadOnlyModelStore store,
-            List<ScanFilterModel> filters) {
+            BoundedObjectIdScanPb objectIdScan, PartitionBookmarkPb bookmark, int limit, GetableClassEnum objectType) {
 
         String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
         String startKey;
@@ -546,7 +525,8 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
 
-        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter = createObjectIdIteratorGlobalStore(
+                startKey, endKey, objectType, ServerTopology.GLOBAL_METADATA_STORE, 0)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -560,7 +540,7 @@ public class BackendInternalComms implements Closeable {
         PartitionBookmarkPb bookmarkOut = bookmarkKey == null
                 ? null
                 : PartitionBookmarkPb.newBuilder()
-                        .setParttion(partition)
+                        .setParttion(0)
                         .setLastKey(bookmarkKey)
                         .build();
 
@@ -598,7 +578,7 @@ public class BackendInternalComms implements Closeable {
 
         if (activeHost.equals(thisHost)) {
 
-            ReadOnlyModelStore store = getStore(meta.partition(), false, search.getStoreName());
+            ReadOnlyTenantScopedStore store = getStore(meta.partition(), false, search.getStoreName());
             String prefix = search.getTagScan().getKeyPrefix() + "/";
 
             try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
@@ -649,7 +629,7 @@ public class BackendInternalComms implements Closeable {
                 req.storeName, req.partitionKey, Serdes.String().serializer());
         int partition = meta.partition();
 
-        ReadOnlyModelStore store = getStore(partition, false, req.storeName);
+        ReadOnlyTenantScopedStore store = getStore(partition, false, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
@@ -843,7 +823,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {
-        log.debug("Local Tag prefix scan");
+        log.trace("Local Tag prefix scan");
         if (req.partitionKey != null) {
             throw new IllegalArgumentException("called localAllPartitionTagScan with partitionKey");
         }
@@ -860,7 +840,6 @@ public class BackendInternalComms implements Closeable {
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalActiveCommandProcessorPartitions()) {
-            ReadOnlyModelStore partStore = getStore(partition, false, req.storeName);
             if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
                 // This partition has already been accounted for
                 continue;
@@ -872,7 +851,7 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore, req.filters);
+                    req.tagScan, partBookmark, curLimit, req.objectType, partition, req.filters, req.getStoreName());
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
@@ -913,30 +892,28 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            ReadOnlyModelStore store,
-            List<ScanFilterModel> filters) {
+            List<ScanFilterModel> filters,
+            String storeName) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
         String startKey;
-        String endKey;
 
-        if (bookmark == null) {
-            startKey = tagPrefixScan.getKeyPrefix() + "/";
-            if (tagPrefixScan.hasEarliestCreateTime()) {
-                startKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime())) + "/";
-            }
-        } else {
+        if (bookmark != null) {
             startKey = bookmark.getLastKey();
+        } else {
+            startKey = tagPrefixScan.getKeyPrefix();
+            if (tagPrefixScan.hasEarliestCreateTime()) {
+                startKey += "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime()));
+            }
         }
-
-        endKey = tagPrefixScan.getKeyPrefix() + "/";
+        String endKey = tagPrefixScan.getKeyPrefix();
         if (tagPrefixScan.hasLatestCreateTime()) {
-            endKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime())) + "/";
+            endKey += "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime()));
         }
         endKey += "~";
 
-        Predicate<Tag> passesFilter = tag -> {
+        BiPredicate<Tag, List<ScanFilterModel>> passesFilter = (tag, scanFilterModels) -> {
             if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
                 throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
             }
@@ -946,12 +923,12 @@ public class BackendInternalComms implements Closeable {
             return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
         };
 
-        try (LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)) {
+        try (LHKeyValueIterator<Tag> iter = createTagIterator(startKey, endKey, objectType, storeName, partition)) {
             boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
-                if (!passesFilter.test(tag)) {
+                if (!passesFilter.test(tag, filters)) {
                     continue;
                 }
                 if (--limit < 0) {
@@ -979,6 +956,36 @@ public class BackendInternalComms implements Closeable {
             }
         }
         return Pair.of(idsOut, bookmarkOut);
+    }
+
+    private LHKeyValueIterator<Tag> createTagIterator(
+            String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
+        if (isClusterScoped(objectType)) {
+            ReadOnlyClusterScopedStore clusterStore =
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+            return clusterStore.range(startKey, endKey, Tag.class);
+        } else {
+            String currentTenantId = executionContext().authorization().tenantId();
+            ReadOnlyTenantScopedStore tenantStore =
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+            return tenantStore.range(startKey, endKey, Tag.class);
+        }
+    }
+
+    private LHKeyValueIterator<?> createObjectIdIteratorGlobalStore(
+            String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
+        if (isClusterScoped(objectType)) {
+            ReadOnlyClusterScopedStore clusterStore =
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+            return clusterStore.range(startKey, endKey, StoredGetable.class);
+        } else {
+            String currentTenantId = executionContext().authorization().tenantId();
+            ReadOnlyTenantScopedStore tenantStore =
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+            return tenantStore.range(startKey, endKey, StoredGetable.class);
+        }
     }
 
     private Set<Integer> getLocalActiveCommandProcessorPartitions() {

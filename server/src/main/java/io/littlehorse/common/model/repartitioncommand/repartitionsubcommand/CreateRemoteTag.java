@@ -6,8 +6,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.CreateRemoteTagPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -22,7 +22,7 @@ public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implement
     }
 
     @Override
-    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
+    public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         repartitionedStore.put(tag);
     }
 

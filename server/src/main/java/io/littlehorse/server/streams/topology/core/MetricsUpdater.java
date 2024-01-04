@@ -4,17 +4,17 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.TaskStatusChangedModel;
-import io.littlehorse.server.streams.store.DefaultModelStore;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.util.Optional;
 
 public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
     // decide when to persist partition metrics
     private boolean dirtyState = false;
-    private final DefaultModelStore modelStore;
+    private final ClusterScopedStore modelStore;
     private PartitionMetricsModel aggregateModel;
 
-    public MetricsUpdater(DefaultModelStore modelStore) {
+    public MetricsUpdater(ClusterScopedStore modelStore) {
         this.modelStore = modelStore;
     }
 

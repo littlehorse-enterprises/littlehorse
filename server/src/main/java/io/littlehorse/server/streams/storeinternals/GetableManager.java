@@ -10,8 +10,8 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
@@ -23,11 +23,11 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class GetableManager extends ReadOnlyGetableManager {
 
     private final CommandModel command;
-    private final ModelStore store;
+    private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
 
     public GetableManager(
-            final ModelStore store,
+            final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,

@@ -11,8 +11,8 @@ import io.littlehorse.common.proto.AggregateTaskMetrics;
 import io.littlehorse.common.proto.TaskMetricUpdate;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,11 +67,15 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
     }
 
     @Override
-    public void process(ModelStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
+    public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         for (TaskMetricUpdateModel metricUpdate : taskMetrics) {
-            StoredGetable<TaskDefMetrics, TaskDefMetricsModel> storedMetrics =
-                    repartitionedStore.get(TaskDefMetricsIdModel.getObjectId(
-                            metricUpdate.getWindowStart(), metricUpdate.getWindowType(), metricUpdate.getTaskDefId()));
+            StoredGetable<TaskDefMetrics, TaskDefMetricsModel> storedMetrics = repartitionedStore.get(
+                    TaskDefMetricsIdModel.getObjectId(
+                                    metricUpdate.getWindowStart(),
+                                    metricUpdate.getWindowType(),
+                                    metricUpdate.getTaskDefId())
+                            .getStoreableKey(),
+                    StoredGetable.class);
             TaskDefMetricsModel metricToUpdate;
             if (storedMetrics == null) {
                 metricToUpdate = new TaskDefMetricsModel(

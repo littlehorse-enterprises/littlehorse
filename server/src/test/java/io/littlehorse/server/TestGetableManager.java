@@ -2,21 +2,21 @@ package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TestGetableManager extends GetableManager {
-    private final ModelStore coreStore;
+    private final TenantScopedStore coreStore;
     private final ProcessorContext<String, CommandProcessorOutput> ctx;
     private final LHServerConfig config;
     private final CommandModel currentCommand;
     private final ExecutionContext executionContext;
 
     public TestGetableManager(
-            ModelStore coreStore,
+            TenantScopedStore coreStore,
             ProcessorContext<String, CommandProcessorOutput> ctx,
             LHServerConfig config,
             CommandModel currentCommand,

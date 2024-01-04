@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.io.littlehorse.common.model.metadatacommand.subcommand;
+package io.littlehorse.common.model.metadatacommand;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.proto.DeletePrincipalRequest;
@@ -18,8 +17,8 @@ import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -69,7 +68,8 @@ public class PrincipalAdministrationTest {
     private final String tenantId = "test-tenant-id";
     private final String principalId = "test-principal-id";
 
-    private final ModelStore defaultStore = ModelStore.defaultStore(nativeMetadataStore, executionContext);
+    private final ClusterScopedStore defaultStore =
+            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext);
 
     @BeforeEach
     public void setup() {
@@ -171,7 +171,8 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
         metadataProcessor.process(
                 new Record<>(principalId, deleteCommand.toProto().build(), 0L, metadata));
-        assertThat(defaultStore.get(new PrincipalIdModel(principalId))).isNull();
+        assertThat(defaultStore.get(new PrincipalIdModel(principalId).getStoreableKey(), StoredGetable.class))
+                .isNull();
     }
 
     private PutPrincipalRequest principalRequestToProcess() {
@@ -191,7 +192,8 @@ public class PrincipalAdministrationTest {
     }
 
     private PrincipalModel storedPrincipal() {
-        StoredGetable<Principal, PrincipalModel> storedPrincipal = defaultStore.get(new PrincipalIdModel(principalId));
+        StoredGetable<Principal, PrincipalModel> storedPrincipal =
+                defaultStore.get(new PrincipalIdModel(principalId).getStoreableKey(), StoredGetable.class);
         assertThat(storedPrincipal).isNotNull();
         return storedPrincipal.getStoredObject();
     }

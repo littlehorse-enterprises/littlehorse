@@ -77,8 +77,8 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         spec.fields = fields;
         spec.createdAt = new Date();
 
-        UserTaskDefModel oldVersion = metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
-
+        UserTaskDefModel oldVersion =
+                metadataManager.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), UserTaskDefModel.class);
         if (oldVersion != null) {
             if (UserTaskUtil.equals(spec, oldVersion))
                 return oldVersion.toProto().build();

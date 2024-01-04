@@ -5,7 +5,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class LHTaskManager {
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final TaskQueueManager taskQueueManager;
-    private final ModelStore coreStore;
+    private final TenantScopedStore coreStore;
 
     public LHTaskManager(
             String timerTopicName,
@@ -39,7 +39,7 @@ public class LHTaskManager {
             AuthorizationContext authContext,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager taskQueueManager,
-            ModelStore coreStore) {
+            TenantScopedStore coreStore) {
         this.timerTopicName = timerTopicName;
         this.commandTopicName = commandTopicName;
         this.authContext = authContext;
