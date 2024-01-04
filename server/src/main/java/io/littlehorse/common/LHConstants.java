@@ -55,5 +55,8 @@ public class LHConstants {
     public static final String TENANT_ID_HEADER_NAME = "tenantId";
 
     public static final String PRINCIPAL_ID_HEADER_NAME = "principalId";
+
+    // Store key for metric cache
+    public static final String PARTITION_METRICS_KEY = "partitionMetrics";
 }
 // NOTE: Use m6a.4xlarge

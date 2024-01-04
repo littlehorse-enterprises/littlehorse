@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search for TaskDef's based on certain criteria.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchTaskDefRequest}
  */
 public final class SearchTaskDefRequest extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
@@ -52,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
@@ -63,6 +75,10 @@ private static final long serialVersionUID = 0L;
   public static final int LIMIT_FIELD_NUMBER = 2;
   private int limit_ = 0;
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
@@ -71,6 +87,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
@@ -83,6 +103,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object prefix_ = "";
   /**
+   * <pre>
+   * Optionally specify to only return TaskDef's with a specific prefix.
+   * </pre>
+   *
    * <code>optional string prefix = 3;</code>
    * @return Whether the prefix field is set.
    */
@@ -91,6 +115,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Optionally specify to only return TaskDef's with a specific prefix.
+   * </pre>
+   *
    * <code>optional string prefix = 3;</code>
    * @return The prefix.
    */
@@ -108,6 +136,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Optionally specify to only return TaskDef's with a specific prefix.
+   * </pre>
+   *
    * <code>optional string prefix = 3;</code>
    * @return The bytes for prefix.
    */
@@ -320,6 +352,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search for TaskDef's based on certain criteria.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchTaskDefRequest}
    */
   public static final class Builder extends
@@ -520,6 +556,10 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return Whether the bookmark field is set.
      */
@@ -528,6 +568,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return The bookmark.
      */
@@ -536,6 +580,10 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -548,6 +596,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return This builder for chaining.
      */
@@ -560,6 +612,10 @@ private static final long serialVersionUID = 0L;
 
     private int limit_ ;
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return Whether the limit field is set.
      */
@@ -568,6 +624,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return The limit.
      */
@@ -576,6 +636,10 @@ private static final long serialVersionUID = 0L;
       return limit_;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @param value The limit to set.
      * @return This builder for chaining.
@@ -588,6 +652,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return This builder for chaining.
      */
@@ -600,6 +668,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object prefix_ = "";
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @return Whether the prefix field is set.
      */
@@ -607,6 +679,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @return The prefix.
      */
@@ -623,6 +699,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @return The bytes for prefix.
      */
@@ -640,6 +720,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @param value The prefix to set.
      * @return This builder for chaining.
@@ -653,6 +737,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @return This builder for chaining.
      */
@@ -663,6 +751,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optionally specify to only return TaskDef's with a specific prefix.
+     * </pre>
+     *
      * <code>optional string prefix = 3;</code>
      * @param value The bytes for prefix to set.
      * @return This builder for chaining.

@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
+ * match a certain filter.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableMatch}
  */
 public final class VariableMatch extends
@@ -43,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object varName_ = "";
   /**
+   * <pre>
+   * The name of the variable to inspect.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The varName.
    */
@@ -60,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the variable to inspect.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The bytes for varName.
    */
@@ -81,6 +94,10 @@ private static final long serialVersionUID = 0L;
   public static final int VALUE_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
@@ -89,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return value_ != null;
   }
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
@@ -97,6 +118,10 @@ private static final long serialVersionUID = 0L;
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
+   * <pre>
+   * The value that the Variable must have in order to satisfy this VariableMatch
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    */
   @java.lang.Override
@@ -277,6 +302,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
+   * match a certain filter.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableMatch}
    */
   public static final class Builder extends
@@ -468,6 +498,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object varName_ = "";
     /**
+     * <pre>
+     * The name of the variable to inspect.
+     * </pre>
+     *
      * <code>string var_name = 1;</code>
      * @return The varName.
      */
@@ -484,6 +518,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable to inspect.
+     * </pre>
+     *
      * <code>string var_name = 1;</code>
      * @return The bytes for varName.
      */
@@ -501,6 +539,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable to inspect.
+     * </pre>
+     *
      * <code>string var_name = 1;</code>
      * @param value The varName to set.
      * @return This builder for chaining.
@@ -514,6 +556,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable to inspect.
+     * </pre>
+     *
      * <code>string var_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -524,6 +570,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable to inspect.
+     * </pre>
+     *
      * <code>string var_name = 1;</code>
      * @param value The bytes for varName to set.
      * @return This builder for chaining.
@@ -542,6 +592,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      * @return Whether the value field is set.
      */
@@ -549,6 +603,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      * @return The value.
      */
@@ -560,6 +618,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -576,6 +638,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(
@@ -590,6 +656,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -609,6 +679,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder clearValue() {
@@ -622,6 +696,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
@@ -630,6 +708,10 @@ private static final long serialVersionUID = 0L;
       return getValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
@@ -641,6 +723,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The value that the Variable must have in order to satisfy this VariableMatch
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

@@ -18,7 +18,7 @@ describe('taskRun API', () => {
 
         (grpcCallHandler.makeGrpcCall as jest.Mock).mockImplementation((method: string, req: NextApiRequest, res: NextApiResponse, grpcRequestBody: SearchTaskRunRequest) => {
             if (grpcRequestBody.status === TaskStatus.TASK_SCHEDULED) {
-                expect(grpcRequestBody).toEqual( { 
+                expect(grpcRequestBody).toEqual( {
                     status: 'TASK_SCHEDULED',
                     taskDefName: 'A_TASKDEF',
                     'limit': 99

@@ -22,13 +22,14 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -62,21 +64,21 @@ public class GetableManagerTest {
 
     private String tenantId = "myTenant";
 
-    private ModelStore localStoreWrapper;
+    private TenantScopedStore localStoreWrapper;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
-    @Mock
-    private ExecutionContext executionContext;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ProcessorExecutionContext executionContext;
 
     private AuthorizationContext testContext =
             new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, tenantId, executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
@@ -89,13 +91,15 @@ public class GetableManagerTest {
         getableManager.commit();
 
         final var keys = getAllKeys(store);
-        assertThat(localStoreWrapper.get(getable.getObjectId())).isNotNull();
+        assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
+                .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
     }
 
     @Test
     void deleteGetableAndTags() {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
+        wfRunModel.status = LHStatus.RUNNING;
         getableManager.put(wfRunModel);
         getableManager.commit();
 

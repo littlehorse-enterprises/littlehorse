@@ -2,14 +2,13 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
-import io.littlehorse.server.streams.store.TenantModelStore;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
@@ -36,8 +35,9 @@ public class MetadataCommandExecution implements ExecutionContext {
         this.processorContext = processorContext;
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
-                ModelStore.defaultStore(nativeMetadataStore, this),
-                tenantStoreFor(nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata)));
+                ClusterScopedStore.newInstance(nativeMetadataStore, this),
+                TenantScopedStore.newInstance(
+                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(
@@ -71,13 +71,6 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
         return processorContext.getStateStore(ServerTopology.METADATA_STORE);
-    }
-
-    private TenantModelStore tenantStoreFor(KeyValueStore<String, Bytes> nativeMetadataStore, String tenantId) {
-        if (tenantId.equals(LHConstants.DEFAULT_TENANT)) {
-            return null;
-        }
-        return ModelStore.tenantStoreFor(nativeMetadataStore, tenantId, this);
     }
 
     private AuthorizationContext authContextFor(String tenantId, String principalId) {

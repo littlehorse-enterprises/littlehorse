@@ -1,11 +1,12 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
 
-    public AWChildThreadExceptionHandler(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public AWChildThreadExceptionHandler(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -35,7 +36,9 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
                     "child",
                     null);
 
-            NodeOutput toHandle = thread.waitForThreads(childThread).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            NodeOutput toHandle = thread.waitForThreads(SpawnedThreads.of(childThread))
+                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+
             thread.handleError(toHandle, handler -> {
                 handler.execute("aw-echo", "hi from handler");
             });
@@ -47,7 +50,7 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
         return Arrays.asList(new AWSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
 

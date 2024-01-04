@@ -59,9 +59,7 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * FOR NOW: no validation of variables on parent. In the future we will pass
-     * wf_spec_major_version, but we should probably examine the rules for
-     * evolution in the future.
+     * Name of the Parent WfSpec
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -70,9 +68,7 @@ private static final long serialVersionUID = 0L;
     java.lang.String getWfSpecName();
     /**
      * <pre>
-     * FOR NOW: no validation of variables on parent. In the future we will pass
-     * wf_spec_major_version, but we should probably examine the rules for
-     * evolution in the future.
+     * Name of the Parent WfSpec
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -82,6 +78,15 @@ private static final long serialVersionUID = 0L;
         getWfSpecNameBytes();
   }
   /**
+   * <pre>
+   * Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+   * WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+   * that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+   * WfSpec.
+   *
+   * Currently, only reference by names is supported.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfSpec.ParentWfSpecReference}
    */
   public static final class ParentWfSpecReference extends
@@ -122,9 +127,7 @@ private static final long serialVersionUID = 0L;
     private volatile java.lang.Object wfSpecName_ = "";
     /**
      * <pre>
-     * FOR NOW: no validation of variables on parent. In the future we will pass
-     * wf_spec_major_version, but we should probably examine the rules for
-     * evolution in the future.
+     * Name of the Parent WfSpec
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -145,9 +148,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * FOR NOW: no validation of variables on parent. In the future we will pass
-     * wf_spec_major_version, but we should probably examine the rules for
-     * evolution in the future.
+     * Name of the Parent WfSpec
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -325,6 +326,15 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+     * WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+     * that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+     * WfSpec.
+     *
+     * Currently, only reference by names is supported.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.WfSpec.ParentWfSpecReference}
      */
     public static final class Builder extends
@@ -497,9 +507,7 @@ private static final long serialVersionUID = 0L;
       private java.lang.Object wfSpecName_ = "";
       /**
        * <pre>
-       * FOR NOW: no validation of variables on parent. In the future we will pass
-       * wf_spec_major_version, but we should probably examine the rules for
-       * evolution in the future.
+       * Name of the Parent WfSpec
        * </pre>
        *
        * <code>string wf_spec_name = 1;</code>
@@ -519,9 +527,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * FOR NOW: no validation of variables on parent. In the future we will pass
-       * wf_spec_major_version, but we should probably examine the rules for
-       * evolution in the future.
+       * Name of the Parent WfSpec
        * </pre>
        *
        * <code>string wf_spec_name = 1;</code>
@@ -542,9 +548,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * FOR NOW: no validation of variables on parent. In the future we will pass
-       * wf_spec_major_version, but we should probably examine the rules for
-       * evolution in the future.
+       * Name of the Parent WfSpec
        * </pre>
        *
        * <code>string wf_spec_name = 1;</code>
@@ -561,9 +565,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * FOR NOW: no validation of variables on parent. In the future we will pass
-       * wf_spec_major_version, but we should probably examine the rules for
-       * evolution in the future.
+       * Name of the Parent WfSpec
        * </pre>
        *
        * <code>string wf_spec_name = 1;</code>
@@ -577,9 +579,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * FOR NOW: no validation of variables on parent. In the future we will pass
-       * wf_spec_major_version, but we should probably examine the rules for
-       * evolution in the future.
+       * Name of the Parent WfSpec
        * </pre>
        *
        * <code>string wf_spec_name = 1;</code>
@@ -952,6 +952,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   public static final int PARENT_WF_SPEC_FIELD_NUMBER = 9;
   private io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference parentWfSpec_;
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    * @return Whether the parentWfSpec field is set.
    */
@@ -960,6 +965,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    * @return The parentWfSpec.
    */
@@ -968,6 +978,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return parentWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.getDefaultInstance() : parentWfSpec_;
   }
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    */
   @java.lang.Override
@@ -2644,6 +2659,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder, io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder> parentWfSpecBuilder_;
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      * @return Whether the parentWfSpec field is set.
      */
@@ -2651,6 +2671,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      * @return The parentWfSpec.
      */
@@ -2662,6 +2687,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public Builder setParentWfSpec(io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference value) {
@@ -2678,6 +2708,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public Builder setParentWfSpec(
@@ -2692,6 +2727,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public Builder mergeParentWfSpec(io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference value) {
@@ -2711,6 +2751,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public Builder clearParentWfSpec() {
@@ -2724,6 +2769,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference.Builder getParentWfSpecBuilder() {
@@ -2732,6 +2782,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getParentWfSpecFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder() {
@@ -2743,6 +2798,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+     * child of a WfRun belonging to the referenced WfSpec.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

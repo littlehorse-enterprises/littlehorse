@@ -8,8 +8,8 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -64,9 +64,12 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
-    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A, executionContext);
-    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B, executionContext);
-    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT, executionContext);
+    private TenantScopedStore tenantAStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_A, executionContext);
+    private TenantScopedStore tenantBStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_B, executionContext);
+    private TenantScopedStore defaultStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, DEFAULT_TENANT, executionContext);
 
     @BeforeEach
     public void setup() {
@@ -95,9 +98,9 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     void ensureTenantIsolation(
             String tagStoreKey,
-            ModelStore storeUnderTest,
-            ModelStore firstIsolatedStore,
-            ModelStore secondIsolatedStore) {
+            TenantScopedStore storeUnderTest,
+            TenantScopedStore firstIsolatedStore,
+            TenantScopedStore secondIsolatedStore) {
         assertThat(storeUnderTest.get(tagStoreKey, Tag.class)).isNotNull();
         assertThat(firstIsolatedStore.get(tagStoreKey, Tag.class)).isNull();
         assertThat(secondIsolatedStore.get(tagStoreKey, Tag.class)).isNull();

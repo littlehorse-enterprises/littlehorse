@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.util;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>> {
+public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, MetadataGetable<?>> {
 
     private static final Pattern CACHEABLE_KEY_PATTERN =
             Pattern.compile(StoreableType.STORED_GETABLE_VALUE + "\\/(?<getableType>\\d+)\\/(?<key>.+)");
@@ -63,7 +63,7 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
         }
     }
 
-    private <U extends Message, V extends GlobalGetable<U>> void evictOrUpdate(
+    private <U extends Message, V extends MetadataGetable<U>> void evictOrUpdate(
             Bytes value, MetadataId<?, U, V> cacheKey) throws LHSerdeError {
         String keyType = cacheKey.getObjectClass().getSimpleName();
         if (value == null) {

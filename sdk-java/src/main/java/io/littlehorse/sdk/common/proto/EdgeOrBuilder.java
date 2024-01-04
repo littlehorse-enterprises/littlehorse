@@ -33,4 +33,28 @@ public interface EdgeOrBuilder extends
    * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
    */
   io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> 
+      getVariableMutationsList();
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index);
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  int getVariableMutationsCount();
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
+      getVariableMutationsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
+      int index);
 }

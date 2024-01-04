@@ -1,13 +1,14 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class ARChildThreadSimple extends WorkflowLogicTest {
 
-    public ARChildThreadSimple(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public ARChildThreadSimple(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -42,7 +43,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
                     null);
 
             thread.execute("ar-obiwan");
-            thread.waitForThreads(child);
+            thread.waitForThreads(SpawnedThreads.of(child));
 
             thread.execute("ar-echo", sharedVar);
         });
@@ -52,7 +53,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
         return Arrays.asList(new ARSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("shared-var", 5));
         Thread.sleep(500);

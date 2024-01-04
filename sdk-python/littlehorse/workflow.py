@@ -1,4 +1,6 @@
+from __future__ import annotations
 from enum import Enum
+from collections import deque
 from inspect import signature
 import inspect
 import logging
@@ -7,7 +9,6 @@ from typing import Any, Callable, List, Optional, Union
 import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
-from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import (
     VariableType,
@@ -27,10 +28,10 @@ from littlehorse.model.object_id_pb2 import (
     TaskDefId,
 )
 from littlehorse.model.service_pb2 import (
-    GetLatestWfSpecRequest,
     PutExternalEventDefRequest,
     PutTaskDefRequest,
     PutWfSpecRequest,
+    AllowedUpdateType,
 )
 from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
@@ -444,7 +445,6 @@ class WorkflowNode:
         self.sub_node = sub_node
         self.node_case = node_case
         self.outgoing_edges: list[Edge] = []
-        self.variable_mutations: list[VariableMutation] = []
         self.failure_handlers: list[FailureHandlerDef] = []
 
     def __str__(self) -> str:
@@ -467,7 +467,6 @@ class WorkflowNode:
         def new_node(**kwargs: Any) -> Node:
             return Node(
                 outgoing_edges=self.outgoing_edges,
-                variable_mutations=self.variable_mutations,
                 failure_handlers=self.failure_handlers,
                 **kwargs,
             )
@@ -612,6 +611,8 @@ class WorkflowThread:
         self._wf_run_variables: list[WfRunVariable] = []
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
+        self._variable_mutations: deque[VariableMutation] = deque()
+        self._last_node_condition: EdgeCondition | None = None
 
         if workflow is None:
             raise ValueError("Workflow must be not None")
@@ -1153,7 +1154,7 @@ class WorkflowThread:
             literal_value=literal_value,
         )
 
-        last_node.variable_mutations.append(mutation)
+        self._variable_mutations.append(mutation)
 
     def format(self, format: str, *args: Any) -> LHFormatString:
         """Generates a LHFormatString object that can be understood
@@ -1236,7 +1237,14 @@ class WorkflowThread:
 
         if len(self._nodes) > 0:
             last_node = self._last_node()
-            last_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
+            last_node.outgoing_edges.append(
+                Edge(
+                    sink_node_name=next_node_name,
+                    variable_mutations=self._collect_variable_mutations(),
+                    condition=self._last_node_condition,
+                )
+            )
+            self._last_node_condition = None
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
 
@@ -1328,18 +1336,14 @@ class WorkflowThread:
 
         # execute if branch
         start_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
         if_body(self)
-        end_node_name = self.add_node("nop", NopNode())
 
-        # manipulate if branch
-        if_condition_node = self._find_next_node(start_node_name)
+        last_condition_from_if_block = self._last_node_condition
+        last_node_from_if_block = self._last_node()
+        variables_from_if_block = self._collect_variable_mutations()
+
         start_node = self._find_node(start_node_name)
-        if_edge = start_node._find_outgoing_edge(if_condition_node.name)
-        if_edge.MergeFrom(
-            Edge(
-                condition=condition.compile(),
-            )
-        )
 
         # execute else branch
         if else_body is not None:
@@ -1348,26 +1352,29 @@ class WorkflowThread:
             # change positions
             self._nodes.remove(start_node)
             self._nodes.append(start_node)
+            self._last_node_condition = condition.negate().compile()
             else_body(self)
 
-            # find else edge
-            else_condition_node = self._find_next_node(start_node_name)
-            else_edge = start_node._find_outgoing_edge(else_condition_node.name)
-            else_edge.MergeFrom(
+            # adds edge final NOP node
+            end_node_name = self.add_node("nop", NopNode())
+
+            last_node_from_if_block.outgoing_edges.append(
                 Edge(
-                    condition=condition.negate().compile(),
+                    sink_node_name=end_node_name,
+                    variable_mutations=variables_from_if_block,
+                    condition=last_condition_from_if_block
+                    if last_node_from_if_block.name == start_node.name
+                    else None,
                 )
             )
 
-            # add edge for last node
-            last_else_node = self._last_node()
-            last_else_node.outgoing_edges.append(Edge(sink_node_name=end_node_name))
-
-            # change positions again
-            end_node = self._find_node(end_node_name)
-            self._nodes.remove(end_node)
-            self._nodes.append(end_node)
         else:
+            end_node_name = self.add_node("nop", NopNode())
+
+            last_node_from_if_block._find_outgoing_edge(end_node_name).MergeFrom(
+                Edge(variable_mutations=variables_from_if_block)
+            )
+
             # add else
             start_node.outgoing_edges.append(
                 Edge(
@@ -1376,17 +1383,27 @@ class WorkflowThread:
                 )
             )
 
+    def _collect_variable_mutations(self) -> list[VariableMutation]:
+        variables_from_if_block = []
+        while len(self._variable_mutations) > 0:
+            variables_from_if_block.append(self._variable_mutations.popleft())
+        return variables_from_if_block
+
 
 ThreadInitializer = Callable[[WorkflowThread], None]
 
 
 class Workflow:
-    def __init__(self, name: str, entrypoint: ThreadInitializer) -> None:
+    def __init__(
+        self,
+        name: str,
+        entrypoint: ThreadInitializer,
+    ) -> None:
         """Workflow.
 
         Args:
             name (str): Name of WfSpec.
-            entrypoint (ThreadInitializer):Is the entrypoint thread function.
+            entrypoint (ThreadInitializer): Is the entrypoint thread function.
         """
         if name is None:
             raise ValueError("Name cannot be None")
@@ -1395,6 +1412,7 @@ class Workflow:
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
+        self._allowed_updates: Optional[AllowedUpdateType] = None
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1428,6 +1446,15 @@ class Workflow:
     def __str__(self) -> str:
         return to_json(self.compile())
 
+    def with_update_type(self, update_type: AllowedUpdateType) -> None:
+        """
+        Defines the type of update to perform when saving the WfSpec:
+            AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version (either major or revision).
+            AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision if the change is a major version it fails.
+            AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+        """
+        self._allowed_updates = update_type
+
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
 
@@ -1449,96 +1476,51 @@ class Workflow:
             name=self.name,
             entrypoint_thread_name=ENTRYPOINT,
             thread_specs=thread_specs,
+            allowed_updates=self._allowed_updates,
         )
 
 
-def create_workflow_spec(
-    workflow: Workflow, config: LHConfig, skip_if_already_exists: bool = True
-) -> None:
+def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
     """Creates a given workflow spec at the LH Server.
 
     Args:
         workflow (Workflow): The workflow.
         config (LHConfig): The configuration to get connected to the LH Server.
-        skip_if_already_exists (bool, optional): If the workflow exits and
-        this is True, then it does not create a new version,
-        else it creates a new version. Defaults to True.
     """
     stub = config.stub()
-
-    if skip_if_already_exists:
-        try:
-            stub.GetLatestWfSpec(GetLatestWfSpecRequest(name=workflow.name))
-            logging.info(f"Workflow {workflow.name} already exits, skipping")
-            return
-        except RpcError as e:
-            if e.code() != StatusCode.NOT_FOUND:
-                raise e
-
     request = workflow.compile()
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request)
 
 
-def create_task_def(
-    task: Callable[..., Any],
-    name: str,
-    config: LHConfig,
-    swallow_already_exists: bool = True,
-) -> None:
+def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> None:
     """Creates a new TaskDef at the LH Server.
 
     Args:
         task (Callable[..., Any]): The task.
         name (str): Name of the task.
-        config (LHConfig): The config.
-        swallow_already_exists (bool, optional): If already exists and this is True,
-        it does not raise an exception, else it raise an exception with code
-        StatusCode.ALREADY_EXISTS. Defaults to True.
+        config (LHConfig): The configuration to get connected to the LH Server.
     """
     stub = config.stub()
-    try:
-        task_signature = signature(task)
-        input_vars = [
-            VariableDef(name=param.name, type=to_variable_type(param.annotation))
-            for param in task_signature.parameters.values()
-            if param.annotation is not WorkerContext
-        ]
-        request = PutTaskDefRequest(name=name, input_vars=input_vars)
-        stub.PutTaskDef(request)
-        logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
-    except RpcError as e:
-        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
-            logging.info(f"TaskDef {name} already exits, skipping")
-            return
-        raise e
+    task_signature = signature(task)
+    input_vars = [
+        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        for param in task_signature.parameters.values()
+        if param.annotation is not WorkerContext
+    ]
+    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    stub.PutTaskDef(request)
+    logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
 
 
-def create_external_event_def(
-    name: str,
-    config: LHConfig,
-    retention_hours: int = -1,
-    swallow_already_exists: bool = True,
-) -> None:
+def create_external_event_def(name: str, config: LHConfig) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
     Args:
         name (str): Name of the external event.
-        config (LHConfig): _description_
-        retention_hours (int, optional): _description_. Defaults to -1.
-        swallow_already_exists (bool, optional): If already exists and this is True,
-        it does not raise an exception, else it raise an exception with code
-        StatusCode.ALREADY_EXISTS. Defaults to True.
+        config (LHConfig): The configuration to get connected to the LH Server.
     """
     stub = config.stub()
-    try:
-        request = PutExternalEventDefRequest(
-            name=name,
-        )
-        stub.PutExternalEventDef(request)
-        logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
-    except RpcError as e:
-        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
-            logging.info(f"ExternalEventDef {name} already exits, skipping")
-            return
-        raise e
+    request = PutExternalEventDefRequest(name=name)
+    stub.PutExternalEventDef(request)
+    logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")

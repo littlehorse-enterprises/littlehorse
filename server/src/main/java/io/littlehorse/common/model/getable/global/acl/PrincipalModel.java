@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.acl;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.proto.Principal;
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class PrincipalModel extends GlobalGetable<Principal> {
+public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     private String id;
     private Map<String, ServerACLsModel> perTenantAcls = new HashMap<>();

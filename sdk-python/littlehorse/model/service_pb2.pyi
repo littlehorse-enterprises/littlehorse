@@ -20,14 +20,14 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class LHHealthResult(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class AllowedUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    LH_HEALTH_RUNNING: _ClassVar[LHHealthResult]
-    LH_HEALTH_REBALANCING: _ClassVar[LHHealthResult]
-    LH_HEALTH_ERROR: _ClassVar[LHHealthResult]
-LH_HEALTH_RUNNING: LHHealthResult
-LH_HEALTH_REBALANCING: LHHealthResult
-LH_HEALTH_ERROR: LHHealthResult
+    ALL_UPDATES: _ClassVar[AllowedUpdateType]
+    MINOR_REVISION_UPDATES: _ClassVar[AllowedUpdateType]
+    NO_UPDATES: _ClassVar[AllowedUpdateType]
+ALL_UPDATES: AllowedUpdateType
+MINOR_REVISION_UPDATES: AllowedUpdateType
+NO_UPDATES: AllowedUpdateType
 
 class GetLatestUserTaskDefRequest(_message.Message):
     __slots__ = ["name"]
@@ -36,7 +36,7 @@ class GetLatestUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class PutWfSpecRequest(_message.Message):
-    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy", "parent_wf_spec"]
+    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy", "parent_wf_spec", "allowed_updates"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -49,12 +49,14 @@ class PutWfSpecRequest(_message.Message):
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     PARENT_WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
     thread_specs: _containers.MessageMap[str, _wf_spec_pb2.ThreadSpec]
     entrypoint_thread_name: str
     retention_policy: _wf_spec_pb2.WorkflowRetentionPolicy
     parent_wf_spec: _wf_spec_pb2.WfSpec.ParentWfSpecReference
-    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ...) -> None: ...
+    allowed_updates: AllowedUpdateType
+    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars"]
@@ -493,33 +495,6 @@ class LHHostInfo(_message.Message):
     host: str
     port: int
     def __init__(self, host: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
-
-class TaskWorkerMetadata(_message.Message):
-    __slots__ = ["client_id", "latest_heartbeat", "hosts"]
-    CLIENT_ID_FIELD_NUMBER: _ClassVar[int]
-    LATEST_HEARTBEAT_FIELD_NUMBER: _ClassVar[int]
-    HOSTS_FIELD_NUMBER: _ClassVar[int]
-    client_id: str
-    latest_heartbeat: _timestamp_pb2.Timestamp
-    hosts: _containers.RepeatedCompositeFieldContainer[LHHostInfo]
-    def __init__(self, client_id: _Optional[str] = ..., latest_heartbeat: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., hosts: _Optional[_Iterable[_Union[LHHostInfo, _Mapping]]] = ...) -> None: ...
-
-class TaskWorkerGroup(_message.Message):
-    __slots__ = ["id", "created_at", "task_workers"]
-    class TaskWorkersEntry(_message.Message):
-        __slots__ = ["key", "value"]
-        KEY_FIELD_NUMBER: _ClassVar[int]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        key: str
-        value: TaskWorkerMetadata
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[TaskWorkerMetadata, _Mapping]] = ...) -> None: ...
-    ID_FIELD_NUMBER: _ClassVar[int]
-    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    TASK_WORKERS_FIELD_NUMBER: _ClassVar[int]
-    id: _object_id_pb2.TaskWorkerGroupId
-    created_at: _timestamp_pb2.Timestamp
-    task_workers: _containers.MessageMap[str, TaskWorkerMetadata]
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskWorkerGroupId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_workers: _Optional[_Mapping[str, TaskWorkerMetadata]] = ...) -> None: ...
 
 class PollTaskRequest(_message.Message):
     __slots__ = ["task_def_id", "client_id", "task_worker_version"]

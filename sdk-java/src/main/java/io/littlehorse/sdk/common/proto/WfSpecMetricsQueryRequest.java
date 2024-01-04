@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Query to retrieve a specific WfSpec Metrics Window.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfSpecMetricsQueryRequest}
  */
 public final class WfSpecMetricsQueryRequest extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * WfSpecId of metrics to get.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +84,11 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp windowStart_;
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
@@ -76,6 +97,11 @@ private static final long serialVersionUID = 0L;
     return windowStart_ != null;
   }
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
@@ -84,6 +110,11 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
+   * <pre>
+   * Return the window *containing* this timestamp. The window start is not guaranteed to
+   * align perfectly with the request.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   @java.lang.Override
@@ -94,6 +125,10 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_LENGTH_FIELD_NUMBER = 3;
   private int windowLength_ = 0;
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
@@ -101,6 +136,10 @@ private static final long serialVersionUID = 0L;
     return windowLength_;
   }
   /**
+   * <pre>
+   * The window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
@@ -298,6 +337,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Query to retrieve a specific WfSpec Metrics Window.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfSpecMetricsQueryRequest}
    */
   public static final class Builder extends
@@ -509,6 +552,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -516,6 +563,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return The wfSpecId.
      */
@@ -527,6 +578,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -543,6 +598,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(
@@ -557,6 +616,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -576,6 +639,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder clearWfSpecId() {
@@ -589,6 +656,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -597,6 +668,10 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -608,6 +683,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfSpecId of metrics to get.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -628,6 +707,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return Whether the windowStart field is set.
      */
@@ -635,6 +719,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return The windowStart.
      */
@@ -646,6 +735,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
@@ -662,6 +756,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(
@@ -676,6 +775,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
@@ -695,6 +799,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder clearWindowStart() {
@@ -708,6 +817,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
@@ -716,6 +830,11 @@ private static final long serialVersionUID = 0L;
       return getWindowStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -727,6 +846,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Return the window *containing* this timestamp. The window start is not guaranteed to
+     * align perfectly with the request.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -745,6 +869,10 @@ private static final long serialVersionUID = 0L;
 
     private int windowLength_ = 0;
     /**
+     * <pre>
+     * The window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The enum numeric value on the wire for windowLength.
      */
@@ -752,6 +880,10 @@ private static final long serialVersionUID = 0L;
       return windowLength_;
     }
     /**
+     * <pre>
+     * The window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The enum numeric value on the wire for windowLength to set.
      * @return This builder for chaining.
@@ -763,6 +895,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The windowLength.
      */
@@ -772,6 +908,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The windowLength to set.
      * @return This builder for chaining.
@@ -786,6 +926,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return This builder for chaining.
      */

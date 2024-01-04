@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Create the TaskDef
-	tw.RegisterTaskDef(true)
+	tw.RegisterTaskDef()
 
 	log.Default().Print("Starting Task Worker")
 	tw.Start()

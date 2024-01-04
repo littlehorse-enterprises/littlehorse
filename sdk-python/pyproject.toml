@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "littlehorse-client"
-version = "0.7.0-alpha.3"
+version = "0.7.0"
 description = "LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications"
 authors = [ "LittleHorse Engineering <engineering@littlehorse.io>",]
 readme = "README.md"
@@ -33,7 +33,7 @@ warn_return_any = false
 disallow_subclassing_any = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9 <3.12"
 protobuf = "^4.23.4"
 grpcio = "^1.57"
 jproperties = "^2.1"

@@ -1,16 +1,16 @@
 package io.littlehorse.examples;
 
-import io.grpc.StatusRuntimeException;
-import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -52,11 +52,13 @@ public class ExternalEventExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        Path configPath = Path.of(
+        File configPath = Path.of(
             System.getProperty("user.home"),
             ".config/littlehorse.config"
-        );
-        props.load(new FileInputStream(configPath.toFile()));
+        ).toFile();
+        if(configPath.exists()){
+            props.load(new FileInputStream(configPath));
+        }
         return props;
     }
 
@@ -85,7 +87,7 @@ public class ExternalEventExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -95,18 +97,7 @@ public class ExternalEventExample {
 
         // Register tasks if they don't exist
         for (LHTaskWorker worker : workers) {
-            if (worker.doesTaskDefExist()) {
-                log.debug(
-                    "Task {} already exists, skipping creation",
-                    worker.getTaskDefName()
-                );
-            } else {
-                log.debug(
-                    "Task {} does not exist, registering it",
-                    worker.getTaskDefName()
-                );
-                worker.registerTaskDef();
-            }
+            worker.registerTaskDef();
         }
 
         // Register external event if it does not exist
@@ -114,35 +105,16 @@ public class ExternalEventExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            try {
                 client.putExternalEventDef(
                     PutExternalEventDefRequest
                         .newBuilder()
                         .setName(externalEventName)
                         .build()
                 );
-            } catch(StatusRuntimeException exn) {
-                if (exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
-                    log.debug("External event already exists!");
-                } else {
-                    throw exn;
-                }
-            }
         }
 
         // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        workflow.registerWfSpec(client);
 
         // Run the workers
         for (LHTaskWorker worker : workers) {

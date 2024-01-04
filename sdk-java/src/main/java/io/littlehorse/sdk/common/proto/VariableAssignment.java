@@ -4,6 +4,16 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A VariableAssignment is used within a WfSpec to determine how a value should be
+ * assigned in the context of a specific WfRun. For example, in a TASK node, you
+ * use a VariableAssignment for each input parameter to determine how the value
+ * is set.
+ *
+ * Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+ * have to worry about this in daily LittleHorse usage.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableAssignment}
  */
 public final class VariableAssignment extends
@@ -44,45 +54,84 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return Whether the format field is set.
      */
     boolean hasFormat();
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return The format.
      */
     io.littlehorse.sdk.common.proto.VariableAssignment getFormat();
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getFormatOrBuilder();
 
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> 
         getArgsList();
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignment getArgs(int index);
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     int getArgsCount();
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getArgsOrBuilderList();
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getArgsOrBuilder(
         int index);
   }
   /**
+   * <pre>
+   * A FormatString formats a template String with values from the WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableAssignment.FormatString}
    */
   public static final class FormatString extends
@@ -121,6 +170,11 @@ private static final long serialVersionUID = 0L;
     public static final int FORMAT_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableAssignment format_;
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return Whether the format field is set.
      */
@@ -129,6 +183,11 @@ private static final long serialVersionUID = 0L;
       return format_ != null;
     }
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return The format.
      */
@@ -137,6 +196,11 @@ private static final long serialVersionUID = 0L;
       return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : format_;
     }
     /**
+     * <pre>
+     * A VariableAssignment which must resolve to a String that has format args.
+     * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment format = 1;</code>
      */
     @java.lang.Override
@@ -148,6 +212,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> args_;
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
@@ -155,6 +223,10 @@ private static final long serialVersionUID = 0L;
       return args_;
     }
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
@@ -163,6 +235,10 @@ private static final long serialVersionUID = 0L;
       return args_;
     }
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
@@ -170,6 +246,10 @@ private static final long serialVersionUID = 0L;
       return args_.size();
     }
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
@@ -177,6 +257,10 @@ private static final long serialVersionUID = 0L;
       return args_.get(index);
     }
     /**
+     * <pre>
+     * VariableAssignments which fill out the args.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
@@ -361,6 +445,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * A FormatString formats a template String with values from the WfRun.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.VariableAssignment.FormatString}
      */
     public static final class Builder extends
@@ -599,6 +687,11 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> formatBuilder_;
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        * @return Whether the format field is set.
        */
@@ -606,6 +699,11 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        * @return The format.
        */
@@ -617,6 +715,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder setFormat(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -633,6 +736,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder setFormat(
@@ -647,6 +755,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder mergeFormat(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -666,6 +779,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder clearFormat() {
@@ -679,6 +797,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getFormatBuilder() {
@@ -687,6 +810,11 @@ private static final long serialVersionUID = 0L;
         return getFormatFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getFormatOrBuilder() {
@@ -698,6 +826,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A VariableAssignment which must resolve to a String that has format args.
+       * A valid string is "This is a format string with three args: {0}, {1}, {2}"
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -727,6 +860,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> argsBuilder_;
 
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getArgsList() {
@@ -737,6 +874,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public int getArgsCount() {
@@ -747,6 +888,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment getArgs(int index) {
@@ -757,6 +902,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder setArgs(
@@ -774,6 +923,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder setArgs(
@@ -788,6 +941,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -804,6 +961,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
@@ -821,6 +982,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
@@ -835,6 +1000,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
@@ -849,6 +1018,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addAllArgs(
@@ -864,6 +1037,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder clearArgs() {
@@ -877,6 +1054,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder removeArgs(int index) {
@@ -890,6 +1071,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getArgsBuilder(
@@ -897,6 +1082,10 @@ private static final long serialVersionUID = 0L;
         return getArgsFieldBuilder().getBuilder(index);
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getArgsOrBuilder(
@@ -907,6 +1096,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
@@ -918,6 +1111,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addArgsBuilder() {
@@ -925,6 +1122,10 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addArgsBuilder(
@@ -933,6 +1134,10 @@ private static final long serialVersionUID = 0L;
             index, io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
       }
       /**
+       * <pre>
+       * VariableAssignments which fill out the args.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment.Builder> 
@@ -1066,6 +1271,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object jsonPath_ = "";
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return Whether the jsonPath field is set.
    */
@@ -1074,6 +1285,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return The jsonPath.
    */
@@ -1091,6 +1308,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+   * resolve to the specified field.
+   * </pre>
+   *
    * <code>optional string json_path = 1;</code>
    * @return The bytes for jsonPath.
    */
@@ -1111,6 +1334,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int VARIABLE_NAME_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return Whether the variableName field is set.
    */
@@ -1118,6 +1345,10 @@ private static final long serialVersionUID = 0L;
     return sourceCase_ == 2;
   }
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return The variableName.
    */
@@ -1139,6 +1370,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Assign the value from a variable.
+   * </pre>
+   *
    * <code>string variable_name = 2;</code>
    * @return The bytes for variableName.
    */
@@ -1163,6 +1398,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int LITERAL_VALUE_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return Whether the literalValue field is set.
    */
@@ -1171,6 +1410,10 @@ private static final long serialVersionUID = 0L;
     return sourceCase_ == 3;
   }
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return The literalValue.
    */
@@ -1182,6 +1425,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Assign a literal value
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 3;</code>
    */
   @java.lang.Override
@@ -1194,6 +1441,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int FORMAT_STRING_FIELD_NUMBER = 4;
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return Whether the formatString field is set.
    */
@@ -1202,6 +1453,10 @@ private static final long serialVersionUID = 0L;
     return sourceCase_ == 4;
   }
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return The formatString.
    */
@@ -1213,6 +1468,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Assign a format string
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    */
   @java.lang.Override
@@ -1438,6 +1697,16 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A VariableAssignment is used within a WfSpec to determine how a value should be
+   * assigned in the context of a specific WfRun. For example, in a TASK node, you
+   * use a VariableAssignment for each input parameter to determine how the value
+   * is set.
+   *
+   * Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+   * have to worry about this in daily LittleHorse usage.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableAssignment}
    */
   public static final class Builder extends
@@ -1688,6 +1957,12 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object jsonPath_ = "";
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @return Whether the jsonPath field is set.
      */
@@ -1695,6 +1970,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @return The jsonPath.
      */
@@ -1711,6 +1992,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @return The bytes for jsonPath.
      */
@@ -1728,6 +2015,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @param value The jsonPath to set.
      * @return This builder for chaining.
@@ -1741,6 +2034,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @return This builder for chaining.
      */
@@ -1751,6 +2050,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
+     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+     * resolve to the specified field.
+     * </pre>
+     *
      * <code>optional string json_path = 1;</code>
      * @param value The bytes for jsonPath to set.
      * @return This builder for chaining.
@@ -1766,6 +2071,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @return Whether the variableName field is set.
      */
@@ -1774,6 +2083,10 @@ private static final long serialVersionUID = 0L;
       return sourceCase_ == 2;
     }
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @return The variableName.
      */
@@ -1796,6 +2109,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @return The bytes for variableName.
      */
@@ -1819,6 +2136,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @param value The variableName to set.
      * @return This builder for chaining.
@@ -1832,6 +2153,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @return This builder for chaining.
      */
@@ -1844,6 +2169,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign the value from a variable.
+     * </pre>
+     *
      * <code>string variable_name = 2;</code>
      * @param value The bytes for variableName to set.
      * @return This builder for chaining.
@@ -1861,6 +2190,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> literalValueBuilder_;
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      * @return Whether the literalValue field is set.
      */
@@ -1869,6 +2202,10 @@ private static final long serialVersionUID = 0L;
       return sourceCase_ == 3;
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      * @return The literalValue.
      */
@@ -1887,6 +2224,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     public Builder setLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1903,6 +2244,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     public Builder setLiteralValue(
@@ -1917,6 +2262,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     public Builder mergeLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1940,6 +2289,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     public Builder clearLiteralValue() {
@@ -1959,12 +2312,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getLiteralValueBuilder() {
       return getLiteralValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     @java.lang.Override
@@ -1979,6 +2340,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign a literal value
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2003,6 +2368,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment.FormatString, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder> formatStringBuilder_;
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      * @return Whether the formatString field is set.
      */
@@ -2011,6 +2380,10 @@ private static final long serialVersionUID = 0L;
       return sourceCase_ == 4;
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      * @return The formatString.
      */
@@ -2029,6 +2402,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder setFormatString(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString value) {
@@ -2045,6 +2422,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder setFormatString(
@@ -2059,6 +2440,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder mergeFormatString(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString value) {
@@ -2082,6 +2467,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder clearFormatString() {
@@ -2101,12 +2490,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder getFormatStringBuilder() {
       return getFormatStringFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     @java.lang.Override
@@ -2121,6 +2518,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Assign a format string
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

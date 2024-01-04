@@ -1,8 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class BDVariableDefaultValues extends WorkflowLogicTest {
 
-    public BDVariableDefaultValues(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public BDVariableDefaultValues(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -35,7 +35,7 @@ public class BDVariableDefaultValues extends WorkflowLogicTest {
         return Arrays.asList(new BDSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String withVals = runWf(client, Arg.of("my-var", 321));
         String withDefault = runWf(client);

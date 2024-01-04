@@ -6,6 +6,7 @@ import { getMainDrawerData, nodeTypes } from '../../../../../../components/Drawe
 import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { WfSpecDrawerComponent } from '../../../../../../components/Drawer/WfSpecDrawerComponent'
 import { WfSpecGraph } from './WfSpecGraph'
+import { getVersionFromFormattedString } from '../common/VersionExtractor'
 
 interface WfSpecVisualizerProps {
     id: string
@@ -85,14 +86,6 @@ export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
     useEffect(() => {
         getWfSpec()
     }, [])
-
-    const getVersionFromFormattedString = (formattedVersion: string) => {
-        const versionValues = formattedVersion.split('.')
-        return {
-            majorVersion: versionValues[0],
-            revision: versionValues[1]
-        }
-    }
 
     return (
 

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import ElkConstructor from 'elkjs/lib/elk.bundled.js'
 import type { Client } from 'nice-grpc/src/client/Client'
-import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import type { LittleHorseDefinition } from '../../../littlehorse-public-api/service'
 import type { ReactFlowGraph } from '../../../app/wfspec/[id]/[version]/components/visualizer/mappers/GraphLayouter'
 import GraphLayouter from '../../../app/wfspec/[id]/[version]/components/visualizer/mappers/GraphLayouter'
 import EdgeLabelExtractor from '../../../app/wfspec/[id]/[version]/components/visualizer/extractors/EdgeLabelExtractor'
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'POST') {
         let session: SessionWithJWTExpireTime | null
-        let client: Client<LHPublicApiDefinition>
+        let client: Client<LittleHorseDefinition>
 
         if (__AUTHENTICATION_ENABLED__) {
             session = await getServerSession(req, res, authOptions)

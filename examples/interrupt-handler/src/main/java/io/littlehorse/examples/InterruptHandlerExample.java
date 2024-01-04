@@ -1,20 +1,17 @@
 package io.littlehorse.examples;
 
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.proto.ExternalEventDef;
-import io.littlehorse.sdk.common.proto.ExternalEventDefId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -51,11 +48,13 @@ public class InterruptHandlerExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        Path configPath = Path.of(
+        File configPath = Path.of(
             System.getProperty("user.home"),
             ".config/littlehorse.config"
-        );
-        props.load(new FileInputStream(configPath.toFile()));
+        ).toFile();
+        if(configPath.exists()){
+            props.load(new FileInputStream(configPath));
+        }
         return props;
     }
 
@@ -84,7 +83,7 @@ public class InterruptHandlerExample {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
-        LHPublicApiBlockingStub client = config.getBlockingStub();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -92,69 +91,33 @@ public class InterruptHandlerExample {
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
-        // Register tasks if they don't exist
+        // Register tasks
         for (LHTaskWorker worker : workers) {
-            if (worker.doesTaskDefExist()) {
-                log.debug(
-                    "Task {} already exists, skipping creation",
-                    worker.getTaskDefName()
-                );
-            } else {
-                log.debug(
-                    "Task {} does not exist, registering it",
-                    worker.getTaskDefName()
-                );
-                worker.registerTaskDef();
-            }
+            worker.registerTaskDef();
         }
 
-        // Register external event if it does not exist
+        // Register external
         // An interrupt event is an external event
         Set<String> externalEventNames = workflow.getRequiredExternalEventDefNames();
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            Optional<ExternalEventDef> eventDef = getExternalExternalEventDef(client, externalEventName);
-            if(eventDef.isEmpty()){
                 client.putExternalEventDef(
                     PutExternalEventDefRequest
                             .newBuilder()
                             .setName(externalEventName)
                             .build()
                 );
-            }
-
         }
 
-        // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
-            log.debug(
-                "Workflow {} already exists, skipping creation",
-                workflow.getName()
-            );
-        } else {
-            log.debug(
-                "Workflow {} does not exist, registering it",
-                workflow.getName()
-            );
-            workflow.registerWfSpec(client);
-        }
+        // Register a workflow
+        workflow.registerWfSpec(client);
+
 
         // Run the workers
         for (LHTaskWorker worker : workers) {
             log.debug("Starting {}", worker.getTaskDefName());
             worker.start();
-        }
-    }
-
-    private static Optional<ExternalEventDef> getExternalExternalEventDef(LHPublicApiBlockingStub client, String externalEventName) {
-        try{
-            return Optional.of(client.getExternalEventDef(ExternalEventDefId.newBuilder().setName(externalEventName).build()));
-        }catch (StatusRuntimeException exception){
-            if(exception.getStatus().getCode().equals(Status.NOT_FOUND.getCode())){
-                return Optional.empty();
-            }
-            throw exception;
         }
     }
 }

@@ -118,7 +118,8 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
                 lastWindowStart,
                 numWindows: windowsNotOverpassing300,
                 wfSpecName: 'CLUSTER_LEVEL_METRIC',
-                wfSpecVersion: 0,
+                majorVersion: 0,
+                revision: 0,
                 windowLength: type
             }),
         })

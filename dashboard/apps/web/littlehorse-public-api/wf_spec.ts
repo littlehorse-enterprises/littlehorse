@@ -40,7 +40,13 @@ export interface WfSpec {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
-  migration?: WfSpecVersionMigration | undefined;
+  migration?:
+    | WfSpecVersionMigration
+    | undefined;
+  /**
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   */
   parentWfSpec?: WfSpec_ParentWfSpecReference | undefined;
 }
 
@@ -49,12 +55,16 @@ export interface WfSpec_ThreadSpecsEntry {
   value: ThreadSpec | undefined;
 }
 
+/**
+ * Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+ * WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+ * that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+ * WfSpec.
+ *
+ * Currently, only reference by names is supported.
+ */
 export interface WfSpec_ParentWfSpecReference {
-  /**
-   * FOR NOW: no validation of variables on parent. In the future we will pass
-   * wf_spec_major_version, but we should probably examine the rules for
-   * evolution in the future.
-   */
+  /** Name of the Parent WfSpec */
   wfSpecName: string;
 }
 
@@ -214,7 +224,6 @@ export interface FailureDef {
 
 export interface Node {
   outgoingEdges: Edge[];
-  variableMutations: VariableMutation[];
   failureHandlers: FailureHandlerDef[];
   entrypoint?: EntrypointNode | undefined;
   exit?: ExitNode | undefined;
@@ -262,6 +271,7 @@ export interface EdgeCondition {
 export interface Edge {
   sinkNodeName: string;
   condition?: EdgeCondition | undefined;
+  variableMutations: VariableMutation[];
 }
 
 export interface NopNode {
@@ -2190,7 +2200,6 @@ export const FailureDef = {
 function createBaseNode(): Node {
   return {
     outgoingEdges: [],
-    variableMutations: [],
     failureHandlers: [],
     entrypoint: undefined,
     exit: undefined,
@@ -2209,9 +2218,6 @@ export const Node = {
   encode(message: Node, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.outgoingEdges) {
       Edge.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    for (const v of message.variableMutations) {
-      VariableMutation.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.failureHandlers) {
       FailureHandlerDef.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -2262,13 +2268,6 @@ export const Node = {
           }
 
           message.outgoingEdges.push(Edge.decode(reader, reader.uint32()));
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.variableMutations.push(VariableMutation.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 34) {
@@ -2361,9 +2360,6 @@ export const Node = {
       outgoingEdges: globalThis.Array.isArray(object?.outgoingEdges)
         ? object.outgoingEdges.map((e: any) => Edge.fromJSON(e))
         : [],
-      variableMutations: globalThis.Array.isArray(object?.variableMutations)
-        ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
-        : [],
       failureHandlers: globalThis.Array.isArray(object?.failureHandlers)
         ? object.failureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
         : [],
@@ -2386,9 +2382,6 @@ export const Node = {
     const obj: any = {};
     if (message.outgoingEdges?.length) {
       obj.outgoingEdges = message.outgoingEdges.map((e) => Edge.toJSON(e));
-    }
-    if (message.variableMutations?.length) {
-      obj.variableMutations = message.variableMutations.map((e) => VariableMutation.toJSON(e));
     }
     if (message.failureHandlers?.length) {
       obj.failureHandlers = message.failureHandlers.map((e) => FailureHandlerDef.toJSON(e));
@@ -2432,7 +2425,6 @@ export const Node = {
   fromPartial<I extends Exact<DeepPartial<Node>, I>>(object: I): Node {
     const message = createBaseNode();
     message.outgoingEdges = object.outgoingEdges?.map((e) => Edge.fromPartial(e)) || [];
-    message.variableMutations = object.variableMutations?.map((e) => VariableMutation.fromPartial(e)) || [];
     message.failureHandlers = object.failureHandlers?.map((e) => FailureHandlerDef.fromPartial(e)) || [];
     message.entrypoint = (object.entrypoint !== undefined && object.entrypoint !== null)
       ? EntrypointNode.fromPartial(object.entrypoint)
@@ -2705,7 +2697,7 @@ export const EdgeCondition = {
 };
 
 function createBaseEdge(): Edge {
-  return { sinkNodeName: "", condition: undefined };
+  return { sinkNodeName: "", condition: undefined, variableMutations: [] };
 }
 
 export const Edge = {
@@ -2715,6 +2707,9 @@ export const Edge = {
     }
     if (message.condition !== undefined) {
       EdgeCondition.encode(message.condition, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.variableMutations) {
+      VariableMutation.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2740,6 +2735,13 @@ export const Edge = {
 
           message.condition = EdgeCondition.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.variableMutations.push(VariableMutation.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2753,6 +2755,9 @@ export const Edge = {
     return {
       sinkNodeName: isSet(object.sinkNodeName) ? globalThis.String(object.sinkNodeName) : "",
       condition: isSet(object.condition) ? EdgeCondition.fromJSON(object.condition) : undefined,
+      variableMutations: globalThis.Array.isArray(object?.variableMutations)
+        ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
+        : [],
     };
   },
 
@@ -2763,6 +2768,9 @@ export const Edge = {
     }
     if (message.condition !== undefined) {
       obj.condition = EdgeCondition.toJSON(message.condition);
+    }
+    if (message.variableMutations?.length) {
+      obj.variableMutations = message.variableMutations.map((e) => VariableMutation.toJSON(e));
     }
     return obj;
   },
@@ -2776,6 +2784,7 @@ export const Edge = {
     message.condition = (object.condition !== undefined && object.condition !== null)
       ? EdgeCondition.fromPartial(object.condition)
       : undefined;
+    message.variableMutations = object.variableMutations?.map((e) => VariableMutation.fromPartial(e)) || [];
     return message;
   },
 };

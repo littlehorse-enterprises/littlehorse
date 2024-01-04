@@ -157,16 +157,31 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
   io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();
 
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    * @return Whether the parentWfSpec field is set.
    */
   boolean hasParentWfSpec();
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    * @return The parentWfSpec.
    */
   io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference getParentWfSpec();
   /**
+   * <pre>
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpec.ParentWfSpecReference parent_wf_spec = 9;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReferenceOrBuilder getParentWfSpecOrBuilder();

@@ -43,21 +43,21 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 		// GoLang has this weird thing with scope of variables in switch...
 		var tmp int64
 		tmp, err = strconv.ParseInt(input, 10, 64)
-		if err != nil {
+		if err == nil {
 			out.Value = &model.VariableValue_Int{Int: tmp}
 		}
 
 	case model.VariableType_BOOL:
 		var tmp bool
 		tmp, err = strconv.ParseBool(input)
-		if err != nil {
+		if err == nil {
 			out.Value = &model.VariableValue_Bool{Bool: tmp}
 		}
 
 	case model.VariableType_DOUBLE:
 		var tmp float64
 		tmp, err = strconv.ParseFloat(input, 64)
-		if (err != nil) {
+		if err == nil {
 			out.Value = &model.VariableValue_Double{Double: tmp}
 		}
 
@@ -74,28 +74,71 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 	return out, nil
 }
 
-func GetVarType(thing interface{}) model.VariableType {
+func VarValToVarType(varVal *model.VariableValue) *model.VariableType {
+	if varVal.GetValue() == nil {
+		return nil
+	}
+	switch varVal.GetValue().(type) {
+	case *model.VariableValue_Bool:
+		result := model.VariableType_BOOL
+		return &result
+	case *model.VariableValue_Bytes:
+		result := model.VariableType_BYTES
+		return &result
+	case *model.VariableValue_Double:
+		result := model.VariableType_DOUBLE
+		return &result
+	case *model.VariableValue_Int:
+		result := model.VariableType_INT
+		return &result
+	case *model.VariableValue_JsonArr:
+		result := model.VariableType_JSON_ARR
+		return &result
+	case *model.VariableValue_JsonObj:
+		result := model.VariableType_JSON_OBJ
+		return &result
+	case *model.VariableValue_Str:
+	}
+	result := model.VariableType_STR
+	return &result
+}
+
+func GetVarType(thing interface{}) *model.VariableType {
+	if thing == nil {
+		return nil
+	}
 	switch e := thing.(type) {
 	case model.VariableType:
-		return e
-	case int, int32, int64:
-		return model.VariableType_INT
-	case float32, float64:
-		return model.VariableType_DOUBLE
-	case string:
-		return model.VariableType_STR
-	case bool:
-		return model.VariableType_BOOL
-	case []byte:
-		return model.VariableType_BYTES
+		return &e
+	case model.VariableValue:
+		return VarValToVarType(&e)
+	case *model.VariableValue:
+		return VarValToVarType(e)
+	case int, int32, int64, *int, *int32, *int64:
+		result := model.VariableType_INT
+		return &result
+	case float32, float64, *float32, *float64:
+		result := model.VariableType_DOUBLE
+		return &result
+	case string, *string:
+		result := model.VariableType_STR
+		return &result
+	case bool, *bool:
+		result := model.VariableType_BOOL
+		return &result
+	case []byte, *[]byte:
+		result := model.VariableType_BYTES
+		return &result
 	default:
 		// This is risky, for now we assume that all objects can be serialized
 		// to JSON.
 		isAList := reflect.TypeOf(e).Kind() == reflect.Slice
 		if isAList {
-			return model.VariableType_JSON_ARR
+			result := model.VariableType_JSON_ARR
+			return &result
 		} else {
-			return model.VariableType_JSON_OBJ
+			result := model.VariableType_JSON_OBJ
+			return &result
 		}
 	}
 }

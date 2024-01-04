@@ -5,6 +5,7 @@ import moment, { utc } from 'moment'
 import { Button, Loader } from 'ui'
 import { WorkflowsChart } from '../../../../../../components/Charts/WorkflowsChart'
 import { LatencyChart } from '../../../../../../components/Charts/LatencyChart'
+import { getVersionFromFormattedString } from '../common/VersionExtractor'
 
 export interface TaskDefMetric {
     windowStart: Date
@@ -114,13 +115,15 @@ export function WorkflowExecutionMetrics({ id, version, windows= 16, lastWindowS
     }
 
     const getData = async () => {
+        const { majorVersion, revision } = getVersionFromFormattedString(version ? version.toString() : '0.0')
         const res = await fetch('/api/metrics/wfSpec',{
             method:'POST',
             body: JSON.stringify({
                 lastWindowStart,
                 numWindows: windowsNotOverpassing300,
                 wfSpecName: id,
-                wfSpecVersion: version || 0,
+                majorVersion,
+                revision,
                 windowLength: type
             }),
         })

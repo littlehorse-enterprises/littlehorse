@@ -264,12 +264,40 @@ class TestThreadBuilder(unittest.TestCase):
     def test_do_if_else(self):
         class MyClass:
             def if_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
                 thread.execute("task-a")
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-3", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    3,
+                )
                 thread.execute("task-b")
 
             def else_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
                 thread.execute("task-c")
                 thread.execute("task-d")
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-4", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    4,
+                )
 
             def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_if(
@@ -307,9 +335,16 @@ class TestThreadBuilder(unittest.TestCase):
                                         literal_value=VariableValue(int=10)
                                     ),
                                 ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
                             ),
                             Edge(
-                                sink_node_name="5-task-c-TASK",
+                                sink_node_name="4-task-c-TASK",
                                 condition=EdgeCondition(
                                     comparator=Comparator.LESS_THAN_EQ,
                                     left=VariableAssignment(
@@ -319,30 +354,265 @@ class TestThreadBuilder(unittest.TestCase):
                                         literal_value=VariableValue(int=10)
                                     ),
                                 ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
                             ),
                         ],
                     ),
                     "2-task-a-TASK": Node(
                         task=TaskNode(task_def_id=TaskDefId(name="task-a")),
-                        outgoing_edges=[Edge(sink_node_name="3-task-b-TASK")],
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="3-task-b-TASK",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-3",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=3),
+                                    )
+                                ],
+                            )
+                        ],
                     ),
                     "3-task-b-TASK": Node(
                         task=TaskNode(task_def_id=TaskDefId(name="task-b")),
-                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
+                        outgoing_edges=[Edge(sink_node_name="6-nop-NOP")],
                     ),
-                    "4-nop-NOP": Node(
+                    "4-task-c-TASK": Node(
+                        task=TaskNode(task_def_id=TaskDefId(name="task-c")),
+                        outgoing_edges=[Edge(sink_node_name="5-task-d-TASK")],
+                    ),
+                    "5-task-d-TASK": Node(
+                        task=TaskNode(task_def_id=TaskDefId(name="task-d")),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="6-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-4",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=4),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    "6-nop-NOP": Node(
                         nop=NopNode(),
                         outgoing_edges=[Edge(sink_node_name="7-exit-EXIT")],
                     ),
-                    "5-task-c-TASK": Node(
-                        task=TaskNode(task_def_id=TaskDefId(name="task-c")),
-                        outgoing_edges=[Edge(sink_node_name="6-task-d-TASK")],
-                    ),
-                    "6-task-d-TASK": Node(
-                        task=TaskNode(task_def_id=TaskDefId(name="task-d")),
-                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
-                    ),
                     "7-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_do_if_else_only_with_mutations(self):
+        class MyClass:
+            def if_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
+
+            def else_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
+
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
+                thread.do_if(
+                    thread.condition(4, Comparator.LESS_THAN, 5),
+                    self.if_condition,
+                    self.else_condition,
+                )
+
+            def to_thread(self):
+                return WorkflowThread(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
+                            ),
+                        ],
+                    ),
+                    "2-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                    ),
+                    "3-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_do_if_only_with_mutations(self):
+        class MyClass:
+            def if_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
+
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
+                thread.do_if(
+                    thread.condition(4, Comparator.GREATER_THAN, 5), self.if_condition
+                )
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-3", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    3,
+                )
+
+            def to_thread(self):
+                return WorkflowThread(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="1-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="2-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                    "2-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="3-exit-EXIT",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-3",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=3),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    "3-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
         )
@@ -350,7 +620,21 @@ class TestThreadBuilder(unittest.TestCase):
     def test_do_if(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
                 thread.execute("my-task")
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
 
             def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_if(
@@ -386,6 +670,13 @@ class TestThreadBuilder(unittest.TestCase):
                                         literal_value=VariableValue(int=5)
                                     ),
                                 ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
                             ),
                             Edge(
                                 sink_node_name="3-nop-NOP",
@@ -403,7 +694,18 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "2-my-task-TASK": Node(
                         task=TaskNode(task_def_id=TaskDefId(name="my-task")),
-                        outgoing_edges=[Edge(sink_node_name="3-nop-NOP")],
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="3-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            )
+                        ],
                     ),
                     "3-nop-NOP": Node(
                         nop=NopNode(),
@@ -417,7 +719,21 @@ class TestThreadBuilder(unittest.TestCase):
     def test_do_while(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-1", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    1,
+                )
                 thread.execute("my-task")
+                thread.mutate(
+                    WfRunVariable(
+                        variable_name="variable-2", variable_type=VariableType.INT
+                    ),
+                    VariableMutationType.ASSIGN,
+                    2,
+                )
 
             def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_while(
@@ -453,6 +769,13 @@ class TestThreadBuilder(unittest.TestCase):
                                         literal_value=VariableValue(int=5)
                                     ),
                                 ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-1",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=1),
+                                    )
+                                ],
                             ),
                             Edge(
                                 sink_node_name="3-nop-NOP",
@@ -470,7 +793,18 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     "2-my-task-TASK": Node(
                         task=TaskNode(task_def_id=TaskDefId(name="my-task")),
-                        outgoing_edges=[Edge(sink_node_name="3-nop-NOP")],
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="3-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="variable-2",
+                                        operation=VariableMutationType.ASSIGN,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
+                            )
+                        ],
                     ),
                     "3-nop-NOP": Node(
                         nop=NopNode(),
@@ -698,12 +1032,16 @@ class TestThreadBuilder(unittest.TestCase):
                 nodes={
                     "0-entrypoint-ENTRYPOINT": Node(
                         entrypoint=EntrypointNode(),
-                        outgoing_edges=[Edge(sink_node_name="1-result-TASK")],
-                        variable_mutations=[
-                            VariableMutation(
-                                lhs_name="value",
-                                operation=VariableMutationType.MULTIPLY,
-                                literal_value=VariableValue(int=2),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="1-result-TASK",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="value",
+                                        operation=VariableMutationType.MULTIPLY,
+                                        literal_value=VariableValue(int=2),
+                                    )
+                                ],
                             )
                         ],
                     ),
@@ -1183,6 +1521,72 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
+    def test_compile_wf_with_no_updates_type(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_update_type("NO_UPDATES")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                allowed_updates="NO_UPDATES",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
+    def test_compile_wf_with_minor_revision_updates_type(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_update_type("MINOR_REVISION_UPDATES")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                allowed_updates="MINOR_REVISION_UPDATES",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(
+                                    name="input-name", type=VariableType.STR
+                                )
+                            ),
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
 
 class TestUserTasks(unittest.TestCase):
     def test_assign_to_user_id(self):
@@ -1238,7 +1642,7 @@ class TestUserTasks(unittest.TestCase):
         thread = wf.thread_specs[wf.entrypoint_thread_name]
 
         node = thread.nodes["1-my-user-task-USER_TASK"]
-        mutations = node.variable_mutations
+        mutations = node.outgoing_edges[0].variable_mutations
         self.assertEqual(1, len(mutations))
 
         mutation = mutations[0]

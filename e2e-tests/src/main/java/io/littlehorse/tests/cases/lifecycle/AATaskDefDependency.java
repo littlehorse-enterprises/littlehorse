@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -26,7 +26,7 @@ public class AATaskDefDependency extends Test {
     private String taskDefName;
     private String wfSpecName;
 
-    public AATaskDefDependency(LHPublicApiBlockingStub client, LHConfig config) {
+    public AATaskDefDependency(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
         taskDefName = "task-def-" + UUID.randomUUID().toString();
         wfSpecName = "wf-spec-" + UUID.randomUUID().toString();

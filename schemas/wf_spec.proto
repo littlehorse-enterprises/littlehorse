@@ -26,12 +26,22 @@ message WfSpec {
   optional WorkflowRetentionPolicy retention_policy = 7;
   optional WfSpecVersionMigration migration = 8;
 
+  // Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+  // WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+  // that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+  // WfSpec.
+  //
+  // Currently, only reference by names is supported.
   message ParentWfSpecReference {
+    // Name of the Parent WfSpec
     string wf_spec_name = 1;
     // FOR NOW: no validation of variables on parent. In the future we will pass
     // wf_spec_major_version, but we should probably examine the rules for
     // evolution in the future.
   }
+
+  // Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+  // child of a WfRun belonging to the referenced WfSpec.
   optional ParentWfSpecReference parent_wf_spec = 9;
 }
 
@@ -142,7 +152,6 @@ message FailureDef {
 
 message Node {
   repeated Edge outgoing_edges = 1;
-  repeated VariableMutation variable_mutations = 2;
   repeated FailureHandlerDef failure_handlers = 4;
 
   oneof node {
@@ -189,6 +198,7 @@ message EdgeCondition {
 message Edge {
   string sink_node_name = 1;
   optional EdgeCondition condition = 2;
+  repeated VariableMutation variable_mutations = 3;
 }
 
 message NopNode {
