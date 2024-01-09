@@ -11,4 +11,5 @@ module.exports = {
     sassOptions: {
         outputStyle: 'expanded',
     },
+    output: 'standalone',
 }
