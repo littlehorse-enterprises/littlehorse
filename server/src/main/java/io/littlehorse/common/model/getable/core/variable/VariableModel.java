@@ -24,6 +24,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -196,11 +197,23 @@ public class VariableModel extends CoreGetable<Variable> {
                         })
                         .toList();
             }
+            case JSON_ARR -> {
+                return jsonArrTagValues(threadVarDef);
+            }
             default -> {
                 log.warn("Tags unimplemented for variable type: {}", value.getType());
                 return List.of();
             }
         }
+    }
+
+    private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
+        if (threadVarDef.getJsonIndexes() != null) {
+            log.warn("Unimplemented: JSON_ARR indexes with json path");
+            return List.of();
+        }
+
+        throw new NotImplementedException();
     }
 
     private static void flattenJsonObj(String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {

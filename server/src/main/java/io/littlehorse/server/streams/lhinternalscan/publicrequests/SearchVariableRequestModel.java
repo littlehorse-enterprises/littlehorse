@@ -123,6 +123,7 @@ public class SearchVariableRequestModel
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
+        // ONLY do this check if the Variable is a PRIMITIVE type.
         if (varDef.getVarDef().getType() != value.getType()) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
