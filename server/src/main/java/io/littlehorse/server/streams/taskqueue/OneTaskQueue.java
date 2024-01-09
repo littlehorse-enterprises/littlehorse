@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<ScheduledTaskModel> pendingTasks;
+    private LinkedBlockingQueue<ScheduledTaskModel> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
@@ -25,7 +26,7 @@ public class OneTaskQueue {
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent) {
         this.taskDefName = taskDefName;
-        this.pendingTasks = new LinkedList<>();
+        this.pendingTasks = new LinkedBlockingQueue<>();
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
         this.parent = parent;
