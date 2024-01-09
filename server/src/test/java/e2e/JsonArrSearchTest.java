@@ -27,18 +27,9 @@ import org.junit.jupiter.api.Test;
 public class JsonArrSearchTest {
 
     private WorkflowVerifier verifier;
-    private LittleHorseBlockingStub client;
 
     @LHWorkflow("json-arr-idx")
     private Workflow jsonArrTest;
-
-    @Test
-    void manualRun() {
-        client.runWf(RunWfRequest.newBuilder()
-                .setWfSpecName("json-arr-idx")
-                .putVariables("json-var", LHLibUtil.objToVarVal(List.of("asdf", "fdsa")))
-                .build());
-    }
 
     @Test
     void shouldFindVariable() {

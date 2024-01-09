@@ -209,7 +209,6 @@ public class VariableModel extends CoreGetable<Variable> {
 
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
         if (threadVarDef.getJsonIndexes() != null) {
-            log.warn("Unimplemented: JSON_ARR indexes with json path");
             return List.of();
         }
 
