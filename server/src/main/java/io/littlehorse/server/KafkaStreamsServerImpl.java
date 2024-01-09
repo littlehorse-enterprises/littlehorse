@@ -815,7 +815,12 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-        processCommand(new CommandModel(claimEvent), client.getResponseObserver(), PollTaskResponse.class, false);
+        processCommand(
+                new CommandModel(claimEvent),
+                client.getResponseObserver(),
+                PollTaskResponse.class,
+                false,
+                client.getRequestContext());
     }
 
     public LHProducer getProducer() {
@@ -830,18 +835,33 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         internalComms.sendErrorToClientForCommand(commandId, caught);
     }
 
+    /*
+    Infer request context
+     */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command,
             StreamObserver<RC> responseObserver,
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
+        RequestExecutionContext requestContext = requestContext();
+        processCommand(command, responseObserver, responseCls, shouldCompleteStream, requestContext);
+    }
+
+    /*
+    Explicit request context
+     */
+    private <AC extends Message, RC extends Message> void processCommand(
+            AbstractCommand<AC> command,
+            StreamObserver<RC> responseObserver,
+            Class<RC> responseCls,
+            boolean shouldCompleteStream,
+            RequestExecutionContext requestContext) {
         StreamObserver<WaitForCommandResponse> commandObserver =
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-        RequestExecutionContext requestContext = requestContext();
 
         // TODO: TaskQueueManager multitenancy
         // The only reason for this validation is that

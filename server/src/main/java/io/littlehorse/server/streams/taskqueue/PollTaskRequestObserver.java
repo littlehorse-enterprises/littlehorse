@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,6 +18,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String clientId;
     private TaskDefIdModel taskDefId;
     private String taskWorkerVersion;
+
+    @Getter
     private final RequestExecutionContext requestContext;
 
     public PollTaskRequestObserver(
