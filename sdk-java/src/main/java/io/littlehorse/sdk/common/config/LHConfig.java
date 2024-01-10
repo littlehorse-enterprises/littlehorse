@@ -203,9 +203,9 @@ public class LHConfig extends ConfigBase {
     public LittleHorseStub getAsyncStub(String host, int port) throws IOException {
 
         if (isOauth()) {
-            return getDefaultAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
+            return getBaseAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return getDefaultAsyncStub(host, port);
+        return getBaseAsyncStub(host, port);
     }
 
     /**
@@ -220,9 +220,9 @@ public class LHConfig extends ConfigBase {
      */
     public LittleHorseBlockingStub getBlockingStub(String host, int port) throws IOException {
         if (isOauth()) {
-            return getDefaultBlockingStub(host, port).withCallCredentials(oauthCredentialsProvider);
+            return getBaseBlockingStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return getDefaultBlockingStub(host, port);
+        return getBaseBlockingStub(host, port);
     }
 
     /**
@@ -275,7 +275,7 @@ public class LHConfig extends ConfigBase {
     /**
      * Get a blocking stub with the application defaults
      */
-    private LittleHorseBlockingStub getDefaultBlockingStub(String host, int port) throws IOException {
+    private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) throws IOException {
         String tenantId = getTenantId();
         LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
         if (tenantId != null) {
@@ -287,7 +287,7 @@ public class LHConfig extends ConfigBase {
     /**
      * Get a async stub with the application defaults
      */
-    private LittleHorseStub getDefaultAsyncStub(String host, int port) throws IOException {
+    private LittleHorseStub getBaseAsyncStub(String host, int port) throws IOException {
         String tenantId = getTenantId();
         LittleHorseStub asyncStub = LittleHorseGrpc.newStub(getChannel(host, port));
         if (tenantId != null) {
