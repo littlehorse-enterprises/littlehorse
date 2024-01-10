@@ -84,7 +84,14 @@ public class JsonVariableStorageManagerTest {
         // JSON_ARR test
         VariableDefModel jsonArrVarDef = TestUtil.variableDef("test", VariableType.JSON_ARR);
         VariableValueModel varVal = VariableValueModel.fromProto(
-                LHLibUtil.objToVarVal(List.of("asdf", "fdsa", "asdf", 1234, Map.of("foo", "bar"))), null);
+                LHLibUtil.objToVarVal(List.of(
+                        "asdf",
+                        "fdsa",
+                        "asdf",
+                        1234,
+                        Map.of("foo", "bar"),
+                        List.of("this-in-a-sublist", Map.of("sublistkey", "sublistval")))),
+                null);
 
         VariableModel jsonArrVar = TestUtil.variable("test");
         jsonArrVar.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {

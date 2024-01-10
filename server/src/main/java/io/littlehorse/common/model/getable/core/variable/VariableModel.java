@@ -214,7 +214,18 @@ public class VariableModel extends CoreGetable<Variable> {
     }
 
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
-        return flattenValue("", this.value.getJsonArrVal()).stream()
+        Set<Pair<String, Object>> flattenedPairs = new HashSet<>();
+        for (Object foo : this.value.getJsonArrVal()) {
+            if (foo instanceof Map) {
+                flattenedPairs.addAll(flattenValue("$", foo));
+            } else if (foo instanceof List) {
+                log.debug("Unimplemented: indexes nested arrays inside JSON_ARR variables.");
+            } else {
+                flattenedPairs.add(Pair.of("", foo));
+            }
+        }
+
+        return flattenedPairs.stream()
                 .map(flatKeyValue -> {
                     if (!flatKeyValue.getKey().isEmpty()) {
                         return new IndexedField(
