@@ -216,18 +216,14 @@ public class VariableModel extends CoreGetable<Variable> {
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
         return flattenValue("", this.value.getJsonArrVal()).stream()
                 .map(flatKeyValue -> {
-                    if(!flatKeyValue.getKey().isEmpty()){
+                    if (!flatKeyValue.getKey().isEmpty()) {
                         return new IndexedField(
                                 this.getName() + "_" + flatKeyValue.getKey(),
                                 flatKeyValue.getValue(),
                                 TagStorageType.LOCAL);
-                    }else {
-                        return new IndexedField(
-                                this.getName(),
-                                flatKeyValue.getValue(),
-                                TagStorageType.LOCAL);
+                    } else {
+                        return new IndexedField(this.getName(), flatKeyValue.getValue(), TagStorageType.LOCAL);
                     }
-
                 })
                 .toList();
     }

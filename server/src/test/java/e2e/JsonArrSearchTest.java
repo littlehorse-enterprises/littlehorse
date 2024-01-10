@@ -64,21 +64,21 @@ public class JsonArrSearchTest {
                 .doSearch(SearchVariableRequest.class, emptyVariableList.capture(), emptySupplier)
                 .start();
 
-        VariableIdList asdfVars = asdfVariableList.capture().get();
+        VariableIdList asdfVars = asdfVariableList.getValue().get();
         int matches = asdfVars.getResultsList().stream()
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()
                 .size();
         assertEquals(matches, 1);
 
-        VariableIdList fdsaVars = fdsaVariableList.capture().get();
+        VariableIdList fdsaVars = fdsaVariableList.getValue().get();
         matches = fdsaVars.getResultsList().stream()
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()
                 .size();
         assertEquals(matches, 1);
 
-        VariableIdList emptyVars = emptyVariableList.capture().get();
+        VariableIdList emptyVars = emptyVariableList.getValue().get();
         matches = emptyVars.getResultsList().stream()
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()

@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
@@ -124,7 +125,8 @@ public class SearchVariableRequestModel
         }
 
         // ONLY do this check if the Variable is a PRIMITIVE type.
-        if (varDef.getVarDef().getType() != value.getType()) {
+        if (LHUtil.isPrimitive(varDef.getVarDef().getType())
+                && !varDef.getVarDef().getType().equals(value.getType())) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getType());
