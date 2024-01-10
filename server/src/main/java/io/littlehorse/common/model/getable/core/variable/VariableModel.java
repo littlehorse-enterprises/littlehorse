@@ -188,7 +188,7 @@ public class VariableModel extends CoreGetable<Variable> {
             }
             case JSON_OBJ -> {
                 // Needs work
-                Set<Pair<String, Object>> flattenedMap = flattenJsonObj("$", value.getJsonObjVal());
+                Set<Pair<String, Object>> flattenedMap = flattenJsonObj(value.getJsonObjVal());
 
                 try {
                     System.out.println(new ObjectMapper().writeValueAsString(flattenedMap));
@@ -214,7 +214,7 @@ public class VariableModel extends CoreGetable<Variable> {
     }
 
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
-        return flattenValue("$", "", this.value.getJsonArrVal()).stream()
+        return flattenValue("", this.value.getJsonArrVal()).stream()
                 .map(flatKeyValue -> {
                     return new IndexedField(
                             this.getName() + "_" + flatKeyValue.getKey(),
@@ -224,14 +224,14 @@ public class VariableModel extends CoreGetable<Variable> {
                 .toList();
     }
 
-    private static Set<Pair<String, Object>> flattenJsonObj(String prefix, Map<String, Object> map) {
+    private static Set<Pair<String, Object>> flattenJsonObj(Map<String, Object> map) {
         Set<Pair<String, Object>> flattenedMap = new HashSet<>();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            flattenedMap.addAll(flattenValue(prefix, key, value));
+            flattenedMap.addAll(flattenValue("$." + key + ".", value));
         }
         return flattenedMap;
     }
@@ -239,28 +239,47 @@ public class VariableModel extends CoreGetable<Variable> {
     /**
      * Accepts an arbitrary value, which might be a primitive (STR, BOOL, NUMBER) or complex (OBJ, ARR)
      * and flattens it with the proper json prefix.
-     * @param prefix
+     * @param flatKey
      * @param value
      * @return
      */
-    private static Set<Pair<String, Object>> flattenValue(String prefix, String key, Object value) {
+    // private static Set<Pair<String, Object>> flattenValueasdf(String prefix, String key, Object value) {
+    //     Set<Pair<String, Object>> out = new HashSet<>();
+
+    //     if (value instanceof Map valueMap) {
+    //         for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
+    //             out.addAll(flattenValue(prefix + "." + key, entry.getKey(), entry.getValue()));
+    //         }
+    //     } else if (value instanceof List) {
+    //         for (Object subValue : (List<?>) value) {
+    //             System.out.println(flattenValue(prefix, key, subValue));
+    //             out.addAll(flattenValue(prefix, key, subValue));
+    //         }
+    //     } else {
+    //         out.add(Pair.of(prefix + "." + key, value));
+    //     }
+    //     return out;
+    // }
+
+    private static Set<Pair<String, Object>> flattenValue(String flatKey, Object value) {
         Set<Pair<String, Object>> out = new HashSet<>();
 
         if (value instanceof Map valueMap) {
             for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
-                out.addAll(flattenValue(prefix + "." + key, entry.getKey(), entry.getValue()));
+                out.addAll(flattenValue(flatKey + "." + entry.getKey(), entry.getValue()));
             }
         } else if (value instanceof List) {
             for (Object subValue : (List<?>) value) {
-                System.out.println(flattenValue(prefix, key, subValue));
-                out.addAll(flattenValue(prefix, key, subValue));
+                // System.out.println(flattenValue(prefix, key, subValue));
+                out.addAll(flattenValue(flatKey, subValue));
             }
         } else {
-            if (!prefix.endsWith(".")) {
-                out.add(Pair.of(prefix + "." + key, value));
+            if (!flatKey.endsWith(".")) {
+                out.add(Pair.of(flatKey + ".", value));
             } else {
-                out.add(Pair.of(prefix + key, value));
+                out.add(Pair.of(flatKey, value));
             }
+            // out.add(Pair.of(prefix, value));
         }
         return out;
     }
