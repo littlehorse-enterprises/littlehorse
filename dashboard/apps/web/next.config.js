@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const flags = require('./featureToggles.js')
+const {join} = require('path');
 
 module.exports = {
     webpack(config) {
@@ -12,4 +13,5 @@ module.exports = {
         outputStyle: 'expanded',
     },
     output: 'standalone',
+    outputFileTracingRoot: join(__dirname, '../../'),
 }
