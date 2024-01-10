@@ -35,6 +35,7 @@ import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetr
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -200,8 +201,18 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
                 List<Pair<String, String>> pairs = list.stream()
-                        .map(indexedField -> Pair.of(
-                                indexedField.getKey(), indexedField.getValue().toString()))
+                        .map(indexedField -> {
+                            if (indexedField.getValue() instanceof String) {
+                                return Pair.of(
+                                        indexedField.getKey(),
+                                        LHUtil.toLHDbSearchFormat(
+                                                indexedField.getValue().toString()));
+                            } else {
+                                return Pair.of(
+                                        indexedField.getKey(),
+                                        indexedField.getValue().toString());
+                            }
+                        })
                         .toList();
                 out.add(new Tag(this, TagStorageType.LOCAL, pairs));
             }

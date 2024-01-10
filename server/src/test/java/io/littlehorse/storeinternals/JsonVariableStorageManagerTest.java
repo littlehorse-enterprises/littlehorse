@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -134,14 +135,22 @@ public class JsonVariableStorageManagerTest {
 
     @Test
     void storeLongAttributeValueText() {
-        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_Consequat exercitation"
-                + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
-                + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
-                + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
-                + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
-                + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
-                + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
-                + " pariatur et excepteur id voluptate dolor.\r\n";
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_"
+                + LHUtil.toLHDbSearchFormat("Consequat exercitation"
+                        + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
+                        + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
+                        + " magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua"
+                        + " consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud"
+                        + " quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim"
+                        + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
+                        + " pariatur et excepteur id voluptate dolor.\r\n");
+
+        String prefixToIgnore = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_";
+        int ignoredLength = prefixToIgnore.length();
+
+        Assertions.assertThat(expectedStoreKey.length()).isEqualTo(64 + 16 + ignoredLength);
+        Assertions.assertThat(expectedStoreKey.substring(ignoredLength)).startsWith("Consequat exercitation");
+
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 

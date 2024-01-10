@@ -175,7 +175,7 @@ public class SearchVariableRequestModel
 
     private String getVariableValue(VariableValue value) throws LHApiException {
         return switch (value.getValueCase()) {
-            case STR -> value.getStr();
+            case STR -> LHUtil.toLHDbSearchFormat(value.getStr());
             case BOOL -> String.valueOf(value.getBool());
             case INT -> String.valueOf(value.getInt());
             case DOUBLE -> String.valueOf(value.getDouble());
