@@ -256,7 +256,11 @@ public class VariableModel extends CoreGetable<Variable> {
                 out.addAll(flattenValue(prefix, key, subValue));
             }
         } else {
-            out.add(Pair.of(prefix + "." + key, value));
+            if (!prefix.endsWith(".")) {
+                out.add(Pair.of(prefix + "." + key, value));
+            } else {
+                out.add(Pair.of(prefix + key, value));
+            }
         }
         return out;
     }
