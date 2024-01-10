@@ -239,7 +239,7 @@ public class VariableModel extends CoreGetable<Variable> {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            flattenedMap.addAll(flattenValue("$." + key + ".", value));
+            flattenedMap.addAll(flattenValue("$." + key, value));
         }
         return flattenedMap;
     }
@@ -274,16 +274,14 @@ public class VariableModel extends CoreGetable<Variable> {
 
         if (value instanceof Map valueMap) {
             for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
-                out.addAll(flattenValue(flatKey + "$." + entry.getKey(), entry.getValue()));
+                out.addAll(flattenValue(flatKey + "." + entry.getKey(), entry.getValue()));
             }
         } else if (value instanceof List) {
             for (Object subValue : (List<?>) value) {
-                // System.out.println(flattenValue(prefix, key, subValue));
                 out.addAll(flattenValue(flatKey, subValue));
             }
         } else {
             out.add(Pair.of(flatKey, value));
-            // out.add(Pair.of(prefix, value));
         }
         return out;
     }
