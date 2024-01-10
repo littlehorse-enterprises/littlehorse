@@ -54,6 +54,21 @@ public class LHUtil {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
+    /**
+     * To index values to enable search in LittleHorse, we use a key-value mechanism where the value that we
+     * are searching for is stored in the key, enabling us to use Prefix Scans over all keys that have
+     * that value in them. The value is just a pointer back to the original object.
+     *
+     * RocksDB runs into problems with long keys (i.e. more than 1KB) because it messes up with the block
+     * cache (I think that's what it's called)? Additionally, the comparator when doing lookups needs to read
+     * every element of the key, so having long keys means more work during read/write operations.
+     *
+     * In order to limit key length, when tagging a String value, we now truncate it to 64 characters (which
+     * will allow us to do a prefix scan on small prefixes in the future) and hash the rest with a cryptographically
+     * secure hash function (which allows us to retain the exact match search).
+     * @param stringToIndex string to index
+     * @return a LH DB-safe indexable representation.
+     */
     public static String toLHDbSearchFormat(String stringToIndex) {
         if (stringToIndex.length() <= 64) return stringToIndex;
         try {

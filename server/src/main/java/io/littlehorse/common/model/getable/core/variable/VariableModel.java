@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.getable.core.variable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -190,11 +189,6 @@ public class VariableModel extends CoreGetable<Variable> {
                 // Needs work
                 Set<Pair<String, Object>> flattenedMap = flattenJsonObj(value.getJsonObjVal());
 
-                try {
-                    System.out.println(new ObjectMapper().writeValueAsString(flattenedMap));
-                } catch (Exception pedro) {
-                }
-
                 return flattenedMap.stream()
                         .filter(flatKeyValue -> threadVarDef.isSearchableOn(flatKeyValue.getKey()))
                         .map(flatKeyValue -> {
@@ -215,13 +209,13 @@ public class VariableModel extends CoreGetable<Variable> {
 
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
         Set<Pair<String, Object>> flattenedPairs = new HashSet<>();
-        for (Object foo : this.value.getJsonArrVal()) {
-            if (foo instanceof Map) {
-                flattenedPairs.addAll(flattenValue("$", foo));
-            } else if (foo instanceof List) {
+        for (Object listItem : this.value.getJsonArrVal()) {
+            if (listItem instanceof Map) {
+                flattenedPairs.addAll(flattenValue("$", listItem));
+            } else if (listItem instanceof List) {
                 log.debug("Unimplemented: indexes nested arrays inside JSON_ARR variables.");
             } else {
-                flattenedPairs.add(Pair.of("", foo));
+                flattenedPairs.add(Pair.of("", listItem));
             }
         }
 
@@ -250,31 +244,6 @@ public class VariableModel extends CoreGetable<Variable> {
         }
         return flattenedMap;
     }
-
-    /**
-     * Accepts an arbitrary value, which might be a primitive (STR, BOOL, NUMBER) or complex (OBJ, ARR)
-     * and flattens it with the proper json prefix.
-     * @param flatKey
-     * @param value
-     * @return
-     */
-    // private static Set<Pair<String, Object>> flattenValueasdf(String prefix, String key, Object value) {
-    //     Set<Pair<String, Object>> out = new HashSet<>();
-
-    //     if (value instanceof Map valueMap) {
-    //         for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
-    //             out.addAll(flattenValue(prefix + "." + key, entry.getKey(), entry.getValue()));
-    //         }
-    //     } else if (value instanceof List) {
-    //         for (Object subValue : (List<?>) value) {
-    //             System.out.println(flattenValue(prefix, key, subValue));
-    //             out.addAll(flattenValue(prefix, key, subValue));
-    //         }
-    //     } else {
-    //         out.add(Pair.of(prefix + "." + key, value));
-    //     }
-    //     return out;
-    // }
 
     private static Set<Pair<String, Object>> flattenValue(String flatKey, Object value) {
         Set<Pair<String, Object>> out = new HashSet<>();
