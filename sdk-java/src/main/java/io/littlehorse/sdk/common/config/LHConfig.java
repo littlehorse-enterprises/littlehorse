@@ -284,6 +284,9 @@ public class LHConfig extends ConfigBase {
         return blockingStub;
     }
 
+    /**
+     * Get a async stub with the application defaults
+     */
     private LittleHorseStub getDefaultAsyncStub(String host, int port) throws IOException {
         String tenantId = getTenantId();
         LittleHorseStub asyncStub = LittleHorseGrpc.newStub(getChannel(host, port));
