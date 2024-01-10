@@ -3,8 +3,6 @@ package e2e;
 import static org.junit.Assert.assertEquals;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableType;

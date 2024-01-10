@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.getable.core.variable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -17,14 +18,14 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -186,10 +187,15 @@ public class VariableModel extends CoreGetable<Variable> {
                 return List.of(new IndexedField(this.getName(), value.getDoubleVal(), indexType));
             }
             case JSON_OBJ -> {
-                Map<String, Object> flattenedMap = new HashMap<>();
-                flattenJsonObj("$.", value.getJsonObjVal(), flattenedMap);
+                // Needs work
+                Set<Pair<String, Object>> flattenedMap = flattenJsonObj("$", value.getJsonObjVal());
 
-                return flattenedMap.entrySet().stream()
+                try {
+                    System.out.println(new ObjectMapper().writeValueAsString(flattenedMap));
+                } catch (Exception pedro) {
+                }
+
+                return flattenedMap.stream()
                         .filter(flatKeyValue -> threadVarDef.isSearchableOn(flatKeyValue.getKey()))
                         .map(flatKeyValue -> {
                             return new IndexedField(
@@ -208,25 +214,50 @@ public class VariableModel extends CoreGetable<Variable> {
     }
 
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
-        if (threadVarDef.getJsonIndexes() != null) {
-            return List.of();
-        }
-
-        throw new NotImplementedException();
+        return flattenValue("$", "", this.value.getJsonArrVal()).stream()
+                .map(flatKeyValue -> {
+                    return new IndexedField(
+                            this.getName() + "_" + flatKeyValue.getKey(),
+                            flatKeyValue.getValue(),
+                            TagStorageType.LOCAL);
+                })
+                .toList();
     }
 
-    private static void flattenJsonObj(String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {
+    private static Set<Pair<String, Object>> flattenJsonObj(String prefix, Map<String, Object> map) {
+        Set<Pair<String, Object>> flattenedMap = new HashSet<>();
+
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> nestedMap = (Map<String, Object>) value;
-                flattenJsonObj(prefix + key + ".", nestedMap, flattenedMap);
-            } else {
-                flattenedMap.put(prefix + key, value);
-            }
+            flattenedMap.addAll(flattenValue(prefix, key, value));
         }
+        return flattenedMap;
+    }
+
+    /**
+     * Accepts an arbitrary value, which might be a primitive (STR, BOOL, NUMBER) or complex (OBJ, ARR)
+     * and flattens it with the proper json prefix.
+     * @param prefix
+     * @param value
+     * @return
+     */
+    private static Set<Pair<String, Object>> flattenValue(String prefix, String key, Object value) {
+        Set<Pair<String, Object>> out = new HashSet<>();
+
+        if (value instanceof Map valueMap) {
+            for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
+                out.addAll(flattenValue(prefix + "." + key, entry.getKey(), entry.getValue()));
+            }
+        } else if (value instanceof List) {
+            for (Object subValue : (List<?>) value) {
+                System.out.println(flattenValue(prefix, key, subValue));
+                out.addAll(flattenValue(prefix, key, subValue));
+            }
+        } else {
+            out.add(Pair.of(prefix + "." + key, value));
+        }
+        return out;
     }
 }

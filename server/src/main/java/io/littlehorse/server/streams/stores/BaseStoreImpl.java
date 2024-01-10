@@ -4,7 +4,6 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 

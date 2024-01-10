@@ -83,7 +83,9 @@ public class JsonVariableStorageManagerTest {
 
         // JSON_ARR test
         VariableDefModel jsonArrVarDef = TestUtil.variableDef("test", VariableType.JSON_ARR);
-        VariableValueModel varVal = VariableValueModel.fromProto(LHLibUtil.objToVarVal(List.of("asdf", "fdsa", "asdf", 1234, Map.of("foo", "bar"))), null);
+        VariableValueModel varVal = VariableValueModel.fromProto(
+                LHLibUtil.objToVarVal(List.of("asdf", "fdsa", "asdf", 1234, Map.of("foo", "bar"))), null);
+
         VariableModel jsonArrVar = TestUtil.variable("test");
         jsonArrVar.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(jsonArrVarDef, true, false)));
@@ -146,14 +148,13 @@ public class JsonVariableStorageManagerTest {
     @Test
     void storeInnerArrayObject() {
         List<String> expectedKeys = List.of(
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_ex",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_fugiat",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_id",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_labore",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_dolor",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_consectur",
-            "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_veniam"
-        );
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_ex",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_fugiat",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_id",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_labore",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_dolor",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_consectetur",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_veniam");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }
 
@@ -173,11 +174,10 @@ public class JsonVariableStorageManagerTest {
     @Test
     void storeJsonArrIndexes() {
         List<String> expectedKeys = List.of(
-            "5/__wfSpecId_testWfSpecName/00000/00000__test_asdf",
-            "5/__wfSpecId_testWfSpecName/00000/00000__test_fdsa",
-            "5/__wfSpecId_testWfSpecName/00000/00000__test_1234",
-            "5/__wfSpecId_testWfSpecName/00000/00000__test_$.foo_bar"
-        );
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_asdf",
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_fdsa",
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_1234",
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_$.foo_bar");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }
 }
