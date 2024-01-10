@@ -216,10 +216,18 @@ public class VariableModel extends CoreGetable<Variable> {
     private List<IndexedField> jsonArrTagValues(ThreadVarDefModel threadVarDef) {
         return flattenValue("", this.value.getJsonArrVal()).stream()
                 .map(flatKeyValue -> {
-                    return new IndexedField(
-                            this.getName() + "_" + flatKeyValue.getKey(),
-                            flatKeyValue.getValue(),
-                            TagStorageType.LOCAL);
+                    if(!flatKeyValue.getKey().isEmpty()){
+                        return new IndexedField(
+                                this.getName() + "_" + flatKeyValue.getKey(),
+                                flatKeyValue.getValue(),
+                                TagStorageType.LOCAL);
+                    }else {
+                        return new IndexedField(
+                                this.getName(),
+                                flatKeyValue.getValue(),
+                                TagStorageType.LOCAL);
+                    }
+
                 })
                 .toList();
     }
@@ -266,7 +274,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
         if (value instanceof Map valueMap) {
             for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
-                out.addAll(flattenValue(flatKey + "." + entry.getKey(), entry.getValue()));
+                out.addAll(flattenValue(flatKey + "$." + entry.getKey(), entry.getValue()));
             }
         } else if (value instanceof List) {
             for (Object subValue : (List<?>) value) {
@@ -274,11 +282,7 @@ public class VariableModel extends CoreGetable<Variable> {
                 out.addAll(flattenValue(flatKey, subValue));
             }
         } else {
-            if (!flatKey.endsWith(".")) {
-                out.add(Pair.of(flatKey + ".", value));
-            } else {
-                out.add(Pair.of(flatKey, value));
-            }
+            out.add(Pair.of(flatKey, value));
             // out.add(Pair.of(prefix, value));
         }
         return out;
