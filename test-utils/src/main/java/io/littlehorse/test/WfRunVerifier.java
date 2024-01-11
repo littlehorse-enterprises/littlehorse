@@ -99,8 +99,7 @@ public class WfRunVerifier extends AbstractVerifier {
     public WfRunVerifier waitForUserTaskRunStatus(
             int threadRunNumber, int nodeRunNumber, UserTaskRunStatus status, Duration timeout) {
         Function<TestExecutionContext, UserTaskRunStatus> objectUserTaskRunStatusFunction = context -> {
-            String wfRunId = context.toString();
-            NodeRun nodeRun = lhClient.getNodeRun(nodeRunIdFrom(wfRunId, threadRunNumber, nodeRunNumber));
+            NodeRun nodeRun = lhClient.getNodeRun(nodeRunIdFrom(context.getWfRunId(), threadRunNumber, nodeRunNumber));
             if (nodeRun != null && nodeRun.hasUserTask()) {
                 UserTaskRunId userTaskRunId = nodeRun.getUserTask().getUserTaskRunId();
                 UserTaskRun userTaskRun = lhClient.getUserTaskRun(userTaskRunId);
@@ -152,16 +151,12 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier waitForTaskStatus(int threadRunNumber, int nodeRunNumber, TaskStatus taskStatus) {
         Function<TestExecutionContext, TaskStatus> objectLHStatusFunction = context -> {
-            NodeRun nodeRun = lhClient.getNodeRun(nodeRunIdFrom(context.toString(), threadRunNumber, nodeRunNumber));
+            NodeRun nodeRun = lhClient.getNodeRun(nodeRunIdFrom(context.getWfRunId(), threadRunNumber, nodeRunNumber));
             TaskRun taskRun = lhClient.getTaskRun(nodeRun.getTask().getTaskRunId());
             return taskRun.getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, taskStatus, steps.size() + 1));
         return this;
-    }
-
-    private NodeRunId nodeRunIdFrom(String wfRunId, int threadRunNumber, int nodeRunNumber) {
-        return nodeRunIdFrom(WfRunId.newBuilder().setId(wfRunId).build(), threadRunNumber, nodeRunNumber);
     }
 
     private NodeRunId nodeRunIdFrom(WfRunId wfRunId, int threadRunNumber, int nodeRunNumber) {

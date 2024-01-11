@@ -24,7 +24,6 @@ public abstract class AbstractStep implements Step {
             tryExecute(context, lhClient);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            System.out.println(context.toString());
             printWfRun(context.getWfRunId(), lhClient);
             this.handleException(throwable);
         }
