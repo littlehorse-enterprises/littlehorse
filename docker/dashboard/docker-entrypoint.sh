@@ -26,9 +26,9 @@ if [ "$1" = 'dashboard' ]; then
     fi
 
     export API_URL="${LHD_API_HOST}:${LHD_API_PORT}"
-    export AUTHENTICATION_ENABLED=${LHD_OAUTH_ENABLED:-"false"}
+    export LHD_OAUTH_ENABLED=${LHD_OAUTH_ENABLED:-"false"}
 
-    if [ "${AUTHENTICATION_ENABLED}" == "true" ]; then
+    if [ "${LHD_OAUTH_ENABLED}" == "true" ]; then
         if [ -z "${LHD_OAUTH_CLIENT_ID}" ] ||  [ -z "${LHD_OAUTH_CLIENT_SECRET}" ] || [ -z "${LHD_OAUTH_SERVER_URL}" ] || [ -z "${LHD_OAUTH_ENCRYPT_SECRET}" ] || [ -z "${LHD_OAUTH_CALLBACK_URL}" ]; then
             echo "Authentication is enabled and some configuration were not provided. Please refer to our documentation https://github.com/littlehorse-enterprises/littlehorse/blob/master/docs/DASHBOARD_CONFIGURATIONS.md"
             exit 1

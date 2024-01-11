@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt'
 import type { JWT } from 'next-auth/jwt'
 
 export async function middleware(req: NextRequest) {
-    if (process.env.AUTHENTICATION_ENABLED === 'true') {
+    if (process.env.LHD_OAUTH_ENABLED === 'true') {
 
         const token: JWT | null = await getToken({ req, secret: process.env.AUTH_SECRET })
         const { pathname } = req.nextUrl
