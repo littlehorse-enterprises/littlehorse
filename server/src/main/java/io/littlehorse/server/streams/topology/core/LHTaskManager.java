@@ -4,6 +4,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -87,7 +88,8 @@ public class LHTaskManager {
             ScheduledTaskModel scheduledTask = entry.getValue();
             if (scheduledTask != null) {
                 this.coreStore.put(scheduledTask);
-                taskQueueManager.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
+                taskQueueManager.onTaskScheduled(
+                        scheduledTask.getTaskDefId(), scheduledTask, new TenantIdModel(authContext.tenantId()));
             } else {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }

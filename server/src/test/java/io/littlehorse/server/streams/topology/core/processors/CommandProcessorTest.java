@@ -8,6 +8,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -96,7 +97,9 @@ public class CommandProcessorTest {
         processorContext.endExecution();
         defaultStore.put(scheduledTask);
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(1)).onTaskScheduled(eq(scheduledTask.getTaskDefId()), any());
+        verify(server, times(1))
+                .onTaskScheduled(
+                        eq(scheduledTask.getTaskDefId()), any(), eq(new TenantIdModel(LHConstants.DEFAULT_TENANT)));
     }
 
     /*@Test

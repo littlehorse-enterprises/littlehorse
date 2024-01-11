@@ -7,6 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
@@ -176,7 +177,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
                 log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
-                server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
+                // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
+                server.onTaskScheduled(
+                        scheduledTask.getTaskDefId(), scheduledTask, new TenantIdModel(LHConstants.DEFAULT_TENANT));
             }
         }
     }
