@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      material-icons:
+        specifier: ^1.13.12
+        version: 1.13.12
     devDependencies:
       '@next/eslint-plugin-next':
         specifier: ^12.3.4
