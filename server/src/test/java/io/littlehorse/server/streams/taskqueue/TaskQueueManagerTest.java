@@ -44,8 +44,7 @@ public class TaskQueueManagerTest {
     private ScheduledTaskModel taskToSchedule;
     private final TenantIdModel tenantId = new TenantIdModel("my-tenant");
 
-    private final PollTaskRequestObserver trackableObserver =
-            new PollTaskRequestObserver(mock(), queueManager, requestContext);
+    private PollTaskRequestObserver trackableObserver;
 
     private PollTaskRequest pollTask = PollTaskRequest.newBuilder()
             .setTaskDefId(taskId.toProto().build())
@@ -57,6 +56,7 @@ public class TaskQueueManagerTest {
         when(processorContext.getableManager().get(any())).thenReturn(TestUtil.nodeRun());
         when(requestContext.authorization().tenantId()).thenReturn("my-tenant");
         taskToSchedule = new ScheduledTaskModel(taskId, List.of(), userTaskRun, processorContext);
+        trackableObserver = new PollTaskRequestObserver(mock(), queueManager, requestContext);
     }
 
     @Test

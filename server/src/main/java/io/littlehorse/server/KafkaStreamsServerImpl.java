@@ -8,7 +8,6 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -813,6 +812,11 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ctx.onCompleted();
     }
 
+    /*
+     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
+     * grpc call that asynchronously waits for the command to be processed. It
+     * infers the request context from the GRPC Context.
+     */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(
@@ -836,7 +840,18 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     /*
-    Infer request context
+     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
+     * grpc call that asynchronously waits for the command to be processed.
+     *
+     * Explicit request context. Useful for callers who do not have access to the GRPC
+     * context, for example the `returnTaskToClient()` method. That method is called
+     * from within the CommandProcessor#process() method.
+     *
+     * REFACTOR_SUGGESTION: We should create a CommandSender.java class which is responsible
+     * for sending commands to Kafka and waiting for the execution. That class should
+     * not depend on RequestExecutionContext but rather the AuthorizationContext. The
+     * `TaskClaimEvent#reportTaskToClient()` flow should not go through KafkaStreamsServerImpl
+     * anymore.
      */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command,
@@ -848,7 +863,11 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     /*
-    Explicit request context
+     * This method is called from within the `CommandProcessor#process()` method (specifically, on the
+     * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
+     * we do in the other places, because the GRPC context does not exist in this case.
+     * Note that this is not a GRPC method that @Override's a super method and takes in
+     * a protobuf + StreamObserver.
      */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command,
@@ -863,19 +882,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         command.setCommandId(LHUtil.generateGuid());
 
-        // TODO: TaskQueueManager multitenancy
-        // The only reason for this validation is that
-        // TaskQueueManager does not support multi-tenancy yet.
-        // In the future this will change
-        Headers commandMetadata;
-        if (requestContext != null) {
-            commandMetadata = HeadersUtil.metadataHeadersFor(
-                    requestContext.authorization().tenantId(),
-                    requestContext.authorization().principalId());
-        } else {
-            commandMetadata =
-                    HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
-        }
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(
+                requestContext.authorization().tenantId(),
+                requestContext.authorization().principalId());
         internalComms
                 .getProducer()
                 .send(

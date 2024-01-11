@@ -18,6 +18,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String clientId;
     private TaskDefIdModel taskDefId;
     private String taskWorkerVersion;
+    private final TenantIdModel tenantId;
 
     @Getter
     private final RequestExecutionContext requestContext;
@@ -30,6 +31,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.taskQueueManager = manager;
         this.clientId = null;
         this.requestContext = requestContext;
+        this.tenantId = new TenantIdModel(requestContext.authorization().tenantId());
     }
 
     public String getTaskWorkerVersion() {
@@ -55,8 +57,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
                 taskQueueManager.backend.getInstanceId(),
                 clientId,
                 taskDefId);
-        taskQueueManager.onRequestDisconnected(
-                this, new TenantIdModel(requestContext.authorization().tenantId()));
+        taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 
     @Override
@@ -75,13 +76,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
 
-        taskQueueManager.onPollRequest(
-                this, new TenantIdModel(requestContext.authorization().tenantId()));
+        taskQueueManager.onPollRequest(this, tenantId);
     }
 
     @Override
     public void onCompleted() {
-        taskQueueManager.onRequestDisconnected(
-                this, new TenantIdModel(requestContext.authorization().tenantId()));
+        taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 }
