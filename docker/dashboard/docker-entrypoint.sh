@@ -43,8 +43,7 @@ if [ "$1" = 'dashboard' ]; then
       export AUTH_SECRET=$(uuidgen)
     fi
 
-    pnpm run build
-    pnpm start
+    node apps/web/server.js
 fi
 
 exec "$@"
