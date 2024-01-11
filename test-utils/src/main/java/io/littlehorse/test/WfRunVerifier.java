@@ -127,8 +127,7 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier waitForThreadRunStatus(int threadRunNumber, LHStatus threadRunStatus) {
         Function<TestExecutionContext, LHStatus> objectLHStatusFunction = context -> {
-            ThreadRun threadRun =
-                    lhClient.getWfRun(context.getWfRunId()).getThreadRuns(threadRunNumber);
+            ThreadRun threadRun = lhClient.getWfRun(context.getWfRunId()).getThreadRuns(threadRunNumber);
             return threadRun.getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, threadRunStatus, steps.size() + 1));

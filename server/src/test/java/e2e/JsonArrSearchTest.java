@@ -14,7 +14,6 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
-
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;

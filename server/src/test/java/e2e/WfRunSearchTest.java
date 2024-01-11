@@ -3,15 +3,6 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.COMPLETED;
 import static io.littlehorse.sdk.common.proto.LHStatus.RUNNING;
 
-import java.util.List;
-import java.util.function.Function;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
@@ -25,6 +16,13 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
+import java.util.List;
+import java.util.function.Function;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @LHTest(externalEventNames = "external-event")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

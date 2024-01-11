@@ -3,7 +3,6 @@ package io.littlehorse.test.internal.step;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.test.CapturedResult;
 import io.littlehorse.test.internal.TestExecutionContext;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.function.Function;

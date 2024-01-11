@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.test.internal.LHTestException;
 import io.littlehorse.test.internal.TestExecutionContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

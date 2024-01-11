@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.test.internal.TestExecutionContext;
 
 public class SendExternalEventStep extends AbstractStep {

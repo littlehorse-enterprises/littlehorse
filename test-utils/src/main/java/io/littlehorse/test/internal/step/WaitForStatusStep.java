@@ -2,7 +2,6 @@ package io.littlehorse.test.internal.step;
 
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.test.internal.TestExecutionContext;
-
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -16,7 +15,8 @@ public class WaitForStatusStep<V> extends MatchStep<V> {
         this(statusFunction, expectedStatus, null, id);
     }
 
-    public WaitForStatusStep(Function<TestExecutionContext, V> statusFunction, V expectedStatus, Duration timeout, int id) {
+    public WaitForStatusStep(
+            Function<TestExecutionContext, V> statusFunction, V expectedStatus, Duration timeout, int id) {
         super(expectedStatus, timeout, id);
         this.statusFunction = statusFunction;
     }

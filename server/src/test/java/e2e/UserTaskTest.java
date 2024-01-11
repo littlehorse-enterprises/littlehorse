@@ -20,7 +20,6 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
-
 import java.time.Duration;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;

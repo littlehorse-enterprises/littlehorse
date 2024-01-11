@@ -1,10 +1,10 @@
 package io.littlehorse.test.internal.step;
 
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.function.Consumer;
 
 public class VerifyVariableStep extends AbstractStep {
