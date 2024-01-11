@@ -7,6 +7,7 @@ import io.grpc.TlsChannelCredentials;
 import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
+import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
@@ -39,6 +40,9 @@ public class LHConfig extends ConfigBase {
 
     /** The Client Id. */
     public static final String CLIENT_ID_KEY = "LHC_CLIENT_ID";
+
+    /** The Tenant Id for this client, null will be used if not set */
+    public static final String TENANT_ID_KEY = "LHC_TENANT_ID";
 
     /** Optional location of Client Cert file. */
     public static final String CLIENT_CERT_KEY = "LHC_CLIENT_CERT";
@@ -197,10 +201,11 @@ public class LHConfig extends ConfigBase {
      * @throws IOException if stub creation fails.
      */
     public LittleHorseStub getAsyncStub(String host, int port) throws IOException {
+
         if (isOauth()) {
-            return LittleHorseGrpc.newStub(getChannel(host, port)).withCallCredentials(oauthCredentialsProvider);
+            return getBaseAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return LittleHorseGrpc.newStub(getChannel(host, port));
+        return getBaseAsyncStub(host, port);
     }
 
     /**
@@ -215,10 +220,9 @@ public class LHConfig extends ConfigBase {
      */
     public LittleHorseBlockingStub getBlockingStub(String host, int port) throws IOException {
         if (isOauth()) {
-            return LittleHorseGrpc.newBlockingStub(getChannel(host, port))
-                    .withCallCredentials(oauthCredentialsProvider);
+            return getBaseBlockingStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return LittleHorseGrpc.newBlockingStub(getChannel(host, port));
+        return getBaseBlockingStub(host, port);
     }
 
     /**
@@ -268,6 +272,30 @@ public class LHConfig extends ConfigBase {
         return out;
     }
 
+    /**
+     * Get a blocking stub with the application defaults
+     */
+    private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) throws IOException {
+        String tenantId = getTenantId();
+        LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
+        if (tenantId != null) {
+            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
+        }
+        return blockingStub;
+    }
+
+    /**
+     * Get a async stub with the application defaults
+     */
+    private LittleHorseStub getBaseAsyncStub(String host, int port) throws IOException {
+        String tenantId = getTenantId();
+        LittleHorseStub asyncStub = LittleHorseGrpc.newStub(getChannel(host, port));
+        if (tenantId != null) {
+            return asyncStub.withCallCredentials(new TenantMetadataProvider(getTenantId()));
+        }
+        return asyncStub;
+    }
+
     public long getKeepaliveTimeMs() {
         return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIME_MS_KEY, "45000"));
     }
@@ -295,6 +323,10 @@ public class LHConfig extends ConfigBase {
     public String getClientId() {
         return getOrSetDefault(
                 CLIENT_ID_KEY, "client-" + UUID.randomUUID().toString().replaceAll("-", ""));
+    }
+
+    public String getTenantId() {
+        return getOrSetDefault(TENANT_ID_KEY, null);
     }
 
     public boolean isOauth() {
