@@ -8,7 +8,9 @@ import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
+@Getter
 public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantModel> {
 
     private String id;
