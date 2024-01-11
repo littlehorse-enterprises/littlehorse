@@ -19,39 +19,29 @@ pnpm install
 
 ## Feature Toggles
 At this point you can configure the feature toggles through an environment variable that will enable/disabled the feature in any environment.
-You can find the toggles in the file `apps/web/featureToggles.js`, to define a toggle please follow the next structure:
-```
-const flags = {
-    ...
-    __A_TOGGLE_ENABLED_IN_DEV_AND_PROD__: process.env.A_TOGGLE_ENABLED_IN_DEV_AND_PROD ?? 'true' //LH-4
-}
-```
-The LH-X codes indicate the jira ticket that required the toggle to be created, so we can have context about that at any point in time and analyze if it is time to remove it.
-As you can see you need to define a default value, for the toggle above, it is `'true'` in the case that the ENV variable was not set.
-
-We are using the [Webpack Define Plugin](https://webpack.js.org/plugins/define-plugin/) which transforms the toggle into an actual `boolean` value when compiling/building the app. Also as Webpack removes deadCode, with that on the client side (browser) that code won't be available.
-
-To be able to use those toggles on our Typescript files we need to define them as global variables in the file `apps/web/globals.d.ts`. This is done automatically by the script `apps/web/generate-feature-toggles-types.js` which is executed every time you run `pnpm dev` or `pnpm build` from the root folder.
+The name of the environment variable that you need to set as `true` or `false` is `LHD_OAUTH_ENABLED`.
 
 ### CHANGING A TOOGLE'S STATUS
 * You need to change the environment variable value.
-* You need to build and deploy the dashboard again.
+* You need to re-run the application.
 
 ### HOW TO USE THEM
-In the code you can use them as `boolean` values:
-
+#### Server side
+On the server side code you can do:
 ```
-if (__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
-  console.log('toggle enabled)
-} else {
-  console.log('this is dead code')
+if (process.env.LHD_OAUTH_ENABLED === 'true') {
+  // ...some code here...
 }
+```
 
-if (!__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
-  console.log('toggle disabled')
-} else {
-  console.log('this is dead code')
-}
+#### Client side
+We have created a React Hook in order to read the feature toggles on the client side components.
+```
+  const isAuthenticationEnabled = useFeatureToggle('isAuthenticationEnabled')
+
+  if (isAuthenticationEnabled) {
+     // do something here
+  }
 ```
 
 ### Testing
