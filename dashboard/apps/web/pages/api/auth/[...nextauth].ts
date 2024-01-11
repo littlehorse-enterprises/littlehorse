@@ -40,7 +40,7 @@ export const authOptions = {
     providers,
     callbacks: {
         jwt({ token, account }) {
-            if (process.env.AUTHENTICATION_ENABLED) {
+            if (process.env.AUTHENTICATION_ENABLED === 'true') {
                 if (account) {
                     token.accessToken = account.access_token
                     token.exp = account.expires_at
@@ -58,7 +58,7 @@ export const authOptions = {
             return token as TokenWithJWTInfo
         },
         session({ session, token }) {
-            if (process.env.AUTHENTICATION_ENABLED) {
+            if (process.env.AUTHENTICATION_ENABLED === 'true') {
                 session.accessToken = token.accessToken
                 session.expireTime = token.expireTime
                 session.id_token = token.id_token

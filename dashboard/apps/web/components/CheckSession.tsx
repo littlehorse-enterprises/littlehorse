@@ -18,7 +18,6 @@ export function CheckSession({ children }: CheckSessionProps) {
     const isAuthenticationEnabled = useFeatureToggle('isAuthenticationEnabled')
 
     useEffect(() => {
-        console.error('toggle on check session', isAuthenticationEnabled)
         if (isAuthenticationEnabled) {
             if (!session) {
                 setSessionIsActive(false)
