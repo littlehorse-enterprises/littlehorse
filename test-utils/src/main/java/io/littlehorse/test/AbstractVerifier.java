@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
+import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.Step;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,9 +41,10 @@ public class AbstractVerifier implements Verifier {
         // should guarantee read-your-own-writes. Any error returned by the API at this point
         // is considered a bug. Therefore, we do not need any awaitility await's() here.
         runWf(wfSpec, wfRunId, workflowArgs);
+        TestExecutionContext pedro = new TestExecutionContext(wfRunId);
 
         for (Step step : steps) {
-            step.execute(wfRunId, lhClient);
+            step.execute(pedro, lhClient);
         }
 
         return wfRunId;

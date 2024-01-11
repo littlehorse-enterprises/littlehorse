@@ -12,8 +12,9 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
-import io.littlehorse.test.WfRunTestContext;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
+
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class JsonArrSearchTest {
     @Test
     void shouldFindVariable() {
         final SearchResultCaptor<VariableIdList> asdfVariableList = SearchResultCaptor.of(VariableIdList.class);
-        final Function<WfRunTestContext, SearchVariableRequest> asdfSupplier = (ctx) -> {
+        final Function<TestExecutionContext, SearchVariableRequest> asdfSupplier = (ctx) -> {
             return SearchVariableRequest.newBuilder()
                     .setWfSpecName("json-arr-idx")
                     .setValue(LHLibUtil.objToVarVal("asdf"))
@@ -41,7 +42,7 @@ public class JsonArrSearchTest {
         };
 
         final SearchResultCaptor<VariableIdList> fdsaVariableList = SearchResultCaptor.of(VariableIdList.class);
-        final Function<WfRunTestContext, SearchVariableRequest> fdsaSupplier = (ctx) -> {
+        final Function<TestExecutionContext, SearchVariableRequest> fdsaSupplier = (ctx) -> {
             return SearchVariableRequest.newBuilder()
                     .setWfSpecName("json-arr-idx")
                     .setValue(LHLibUtil.objToVarVal("fdsa"))
@@ -50,7 +51,7 @@ public class JsonArrSearchTest {
         };
 
         final SearchResultCaptor<VariableIdList> emptyVariableList = SearchResultCaptor.of(VariableIdList.class);
-        final Function<WfRunTestContext, SearchVariableRequest> emptySupplier = (ctx) -> {
+        final Function<TestExecutionContext, SearchVariableRequest> emptySupplier = (ctx) -> {
             return SearchVariableRequest.newBuilder()
                     .setWfSpecName("json-arr-idx")
                     .setValue(LHLibUtil.objToVarVal("not-a-real-value"))
