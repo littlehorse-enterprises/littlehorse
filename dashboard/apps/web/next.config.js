@@ -1,5 +1,4 @@
 const webpack = require('webpack')
-const flags = require('./featureToggles.js')
 const { join } = require('path')
 
 module.exports = {
