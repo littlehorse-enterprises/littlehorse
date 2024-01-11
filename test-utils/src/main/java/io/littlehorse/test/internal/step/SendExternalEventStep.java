@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.test.internal.TestExecutionContext;
 
 public class SendExternalEventStep extends AbstractStep {
 
@@ -18,9 +18,9 @@ public class SendExternalEventStep extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LittleHorseGrpc.LittleHorseBlockingStub lhClient) {
+    public void tryExecute(TestExecutionContext context, LittleHorseGrpc.LittleHorseBlockingStub lhClient) {
         PutExternalEventRequest externalEventRequest = PutExternalEventRequest.newBuilder()
-                .setWfRunId(WfRunId.newBuilder().setId(context.toString()))
+                .setWfRunId(context.getWfRunId())
                 .setContent(content)
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(externalEventName))
                 .build();

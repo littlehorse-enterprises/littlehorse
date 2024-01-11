@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -25,8 +26,8 @@ public class VerifyTaskExecution extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LittleHorseBlockingStub lhClient) {
-        String wfRunId = (String) context;
+    public void tryExecute(TestExecutionContext context, LittleHorseBlockingStub lhClient) {
+        WfRunId wfRunId = context.getWfRunId();
         Callable<NodeRun> getNodeRunExecution =
                 () -> this.getNodeRun(lhClient, wfRunId, threadRunNumber, nodeRunNumber);
         NodeRun nodeRun = Awaitility.await().until(getNodeRunExecution, Objects::nonNull);
@@ -37,9 +38,9 @@ public class VerifyTaskExecution extends AbstractStep {
     }
 
     private NodeRun getNodeRun(
-            LittleHorseBlockingStub lhClient, String wfRunId, int threadRunNumber, int nodeRunNumber) {
+            LittleHorseBlockingStub lhClient, WfRunId wfRunId, int threadRunNumber, int nodeRunNumber) {
         NodeRunId nodeRunId = NodeRunId.newBuilder()
-                .setWfRunId(WfRunId.newBuilder().setId(wfRunId))
+                .setWfRunId(wfRunId)
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodeRunNumber)
                 .build();

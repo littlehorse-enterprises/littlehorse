@@ -14,8 +14,8 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
-import io.littlehorse.test.WfRunTestContext;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.List;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
@@ -38,12 +38,12 @@ public class WfRunSearchTest {
     @Test
     @Order(0)
     public void shouldFindWfRun() {
-        Function<WfRunTestContext, SearchWfRunRequest> searchByNameAndStatusRunning =
+        Function<TestExecutionContext, SearchWfRunRequest> searchByNameAndStatusRunning =
                 context -> SearchWfRunRequest.newBuilder()
                         .setWfSpecName("complex-workflow")
                         .setStatus(RUNNING)
                         .build();
-        Function<WfRunTestContext, SearchWfRunRequest> searchByNameAndStatusCompleted =
+        Function<TestExecutionContext, SearchWfRunRequest> searchByNameAndStatusCompleted =
                 context -> SearchWfRunRequest.newBuilder()
                         .setWfSpecName("complex-workflow")
                         .setStatus(COMPLETED)
@@ -65,7 +65,7 @@ public class WfRunSearchTest {
     @Test
     @Order(1)
     public void shouldFindWfSpecByName() {
-        Function<WfRunTestContext, SearchWfSpecRequest> searchWfSpecByName = context ->
+        Function<TestExecutionContext, SearchWfSpecRequest> searchWfSpecByName = context ->
                 SearchWfSpecRequest.newBuilder().setName("complex-workflow").build();
         workflowVerifier
                 .prepareRun(complexWorkflow)
@@ -83,7 +83,7 @@ public class WfRunSearchTest {
     @Test
     @Order(1)
     public void shouldFindAllWfSpec() {
-        Function<WfRunTestContext, SearchWfSpecRequest> searchWfSpecByName =
+        Function<TestExecutionContext, SearchWfSpecRequest> searchWfSpecByName =
                 context -> SearchWfSpecRequest.newBuilder().build();
         workflowVerifier
                 .prepareRun(complexWorkflow)

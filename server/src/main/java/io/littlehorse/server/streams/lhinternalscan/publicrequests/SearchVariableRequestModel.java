@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
@@ -123,7 +124,9 @@ public class SearchVariableRequestModel
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
         }
 
-        if (varDef.getVarDef().getType() != value.getType()) {
+        // ONLY do this check if the Variable is a PRIMITIVE type.
+        if (LHUtil.isPrimitive(varDef.getVarDef().getType())
+                && !varDef.getVarDef().getType().equals(value.getType())) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getType());
@@ -172,7 +175,7 @@ public class SearchVariableRequestModel
 
     private String getVariableValue(VariableValue value) throws LHApiException {
         return switch (value.getValueCase()) {
-            case STR -> value.getStr();
+            case STR -> LHUtil.toLHDbSearchFormat(value.getStr());
             case BOOL -> String.valueOf(value.getBool());
             case INT -> String.valueOf(value.getInt());
             case DOUBLE -> String.valueOf(value.getDouble());

@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.function.Consumer;
 
 public class VerifyVariableStep extends AbstractStep {
@@ -21,11 +22,11 @@ public class VerifyVariableStep extends AbstractStep {
     }
 
     @Override
-    public void tryExecute(Object context, LittleHorseBlockingStub lhClient) {
-        String wfRunId = context.toString();
+    public void tryExecute(TestExecutionContext context, LittleHorseBlockingStub lhClient) {
+        WfRunId wfRunId = context.getWfRunId();
         VariableId variableId = VariableId.newBuilder()
                 .setName(variableName)
-                .setWfRunId(WfRunId.newBuilder().setId(wfRunId))
+                .setWfRunId(wfRunId)
                 .setThreadRunNumber(threadRunNumber)
                 .build();
         VariableValue variableValue = lhClient.getVariable(variableId).getValue();

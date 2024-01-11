@@ -18,8 +18,8 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
-import io.littlehorse.test.WfRunTestContext;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
@@ -54,7 +54,7 @@ public class UserTaskTest {
     @Test
     void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
         SearchResultCaptor<WfRunIdList> instanceCaptor = SearchResultCaptor.of(WfRunIdList.class);
-        Function<WfRunTestContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
+        Function<TestExecutionContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
                 .setWfSpecName("deadline-reassignment-workflow-user-without-group")
                 .setStatus(RUNNING)
                 .build();

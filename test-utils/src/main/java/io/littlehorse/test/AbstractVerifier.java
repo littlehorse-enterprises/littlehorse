@@ -6,15 +6,17 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
+import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.Step;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
+import org.testcontainers.shaded.org.apache.commons.lang3.NotImplementedException;
 
 public class AbstractVerifier implements Verifier {
     protected final LittleHorseBlockingStub lhClient;
@@ -32,26 +34,32 @@ public class AbstractVerifier implements Verifier {
     }
 
     @Override
-    public void start() {
+    public WfRunId start(WfRunId wfRunId) {
         WfSpec wfSpec = context.registerWfSpecIfNotPresent(workflow);
-        String wfRunId = UUID.randomUUID().toString();
 
         // All we need to do is wait until the WfSpec is created. After that, LittleHorse
         // should guarantee read-your-own-writes. Any error returned by the API at this point
         // is considered a bug. Therefore, we do not need any awaitility await's() here.
         runWf(wfSpec, wfRunId, workflowArgs);
+        TestExecutionContext pedro = new TestExecutionContext(wfRunId);
 
         for (Step step : steps) {
-            step.execute(wfRunId, lhClient);
+            step.execute(pedro, lhClient);
         }
+
+        return wfRunId;
     }
 
-    private String runWf(WfSpec wfSpec, String wfId, Collection<Arg> args) throws StatusRuntimeException {
+    private WfRunId runWf(WfSpec wfSpec, WfRunId wfId, Collection<Arg> args) throws StatusRuntimeException {
         RunWfRequest.Builder req = RunWfRequest.newBuilder()
                 .setWfSpecName(wfSpec.getId().getName())
                 .setMajorVersion(wfSpec.getId().getMajorVersion())
                 .setRevision(wfSpec.getId().getRevision())
-                .setId(wfId);
+                .setId(wfId.getId());
+
+        if (wfId.hasParentWfRunId()) {
+            throw new NotImplementedException("Parent WfRunId not supported by test framework yet.");
+        }
 
         for (Arg arg : args) {
             try {
@@ -63,6 +71,6 @@ public class AbstractVerifier implements Verifier {
             }
         }
         WfRun wfRun = lhClient.runWf(req.build());
-        return wfRun.getId().getId();
+        return wfRun.getId();
     }
 }
