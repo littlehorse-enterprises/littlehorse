@@ -1,3 +1,5 @@
+'use client'
+
 import type { ClientSafeProvider } from 'next-auth/react'
 import { getProviders } from 'next-auth/react'
 import { useEffect, useState } from 'react'
