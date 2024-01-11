@@ -8,7 +8,7 @@ interface CheckSessionProps {
 }
 export function Providers({ children }: CheckSessionProps) {
     const toggles = {
-        isAuthenticationEnabled: process.env.AUTHENTICATION_ENABLED,
+        isAuthenticationEnabled: process.env.LHD_OAUTH_ENABLED,
     }
 
     return (

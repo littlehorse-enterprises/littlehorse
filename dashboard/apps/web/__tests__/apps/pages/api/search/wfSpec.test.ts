@@ -9,7 +9,7 @@ jest.mock('../../../../../pages/api/LHClient')
 
 describe('wfSpec API', () => {
     beforeEach(() => {
-        __AUTHENTICATION_ENABLED__ = false
+        process.env.LDH_OAUTH_ENABLED = 'false'
     })
 
     afterEach(() => {

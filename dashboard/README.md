@@ -67,7 +67,7 @@ To make the feature toggles available for the tests the following has been put i
     ```
 
 ## SINGLE SIGN ON FOR THE DASHBOARD
-* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `__AUTHENTICATION_ENABLED__` in the needed environments.
+* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `LHD_OATUH_ENABLED` in the needed environments.
 
 * You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
 

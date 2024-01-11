@@ -33,7 +33,8 @@ describe('Layouted Graph API', () => {
                 } as WfSpecId)
     })
 
-    it('should retrn a 401 error when no active session', async () => {
+    it('should return a 401 error when no active session and the OAUTH toggle is ON', async () => {
+        process.env.LHD_OAUTH_ENABLED = 'true'
         const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method: 'POST' })
         jest.spyOn(nextAuth, 'getServerSession').mockResolvedValue(null)
 
