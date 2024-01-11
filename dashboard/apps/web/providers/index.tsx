@@ -7,7 +7,6 @@ interface CheckSessionProps {
     children?: React.ReactNode;
 }
 export function Providers({ children }: CheckSessionProps) {
-    console.error('*****************88toggle de mierda', process.env.AUTHENTICATION_ENABLED)
     const toggles = {
         isAuthenticationEnabled: process.env.AUTHENTICATION_ENABLED,
     }
