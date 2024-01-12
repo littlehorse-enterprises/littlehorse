@@ -157,7 +157,7 @@ jobs:
           pnpm test
   publish-dashboard-docker-image:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
-    needs: build-dashboard
+    needs: [ build-dashboard, test-dashboard ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
