@@ -149,6 +149,18 @@ jobs:
         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-npm-cache-dir
+      - name: Cache Artifacts
+        id: cache-artifacts
+        uses: actions/cache@v3
+        with:
+          path: /apps/web/.next
+          key: ${{ runner.os }}-cache-artifacts
+      - name: Restore cached artifacts
+        id: cache-artifacts-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: /apps/web/.next
+          key: ${{ runner.os }}-cache-artifacts
       - name: Build
         working-directory: ./dashboard
         run: |
@@ -207,8 +219,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           mask-password: "true"
+      - name: Restore cached artifacts
+        id: cache-artifacts-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: /apps/web/.next
+          key: ${{ runner.os }}-cache-artifacts
       - name: Build, tag, and push image to Amazon ECR
-        working-directory: ./dashboard
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: lh-dashboard
