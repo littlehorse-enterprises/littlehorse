@@ -207,17 +207,8 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           mask-password: "true"
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      - name: Restore cached dependencies
-        id: cache-dependencies-restore
-        uses: actions/cache/restore@v3
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-npm-cache-dir
       - name: Build, tag, and push image to Amazon ECR
+        working-directory: ./dashboard
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: lh-dashboard
