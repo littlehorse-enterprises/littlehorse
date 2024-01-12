@@ -123,50 +123,6 @@ jobs:
           export IMAGE_TAG=branch-$(echo "${{ github.ref_name }}" | sed -e 's/\//-/g')
           docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-  build-dashboard:
-    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      - name: Cache Dependencies
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-npm-cache-dir
-      - name: Restore cached dependencies
-        id: cache-dependencies-restore
-        uses: actions/cache/restore@v3
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-npm-cache-dir
-      - name: Cache Artifacts
-        id: cache-artifacts
-        uses: actions/cache@v3
-        with:
-          path: /apps/web/.next
-          key: ${{ runner.os }}-cache-artifacts
-      - name: Restore cached artifacts
-        id: cache-artifacts-restore
-        uses: actions/cache/restore@v3
-        with:
-          path: /apps/web/.next
-          key: ${{ runner.os }}-cache-artifacts
-      - name: Build
-        working-directory: ./dashboard
-        run: |
-          npm install pnpm --global
-          pnpm install
-          pnpm build
   tests-dashboard:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
@@ -187,12 +143,6 @@ jobs:
         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-npm-cache-dir
-      - name: Restore cached dependencies
-        id: cache-dependencies-restore
-        uses: actions/cache/restore@v3
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-npm-cache-dir
       - name: Tests
         working-directory: ./dashboard
         run: |
@@ -201,7 +151,7 @@ jobs:
           pnpm test
   publish-dashboard-docker-image:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
-    needs: [ build-dashboard, tests-dashboard ]
+    needs: [ tests-dashboard ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -225,6 +175,12 @@ jobs:
         with:
           path: /apps/web/.next
           key: ${{ runner.os }}-cache-artifacts
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: |
+          npm install pnpm --global
+          pnpm install
+          pnpm build
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
