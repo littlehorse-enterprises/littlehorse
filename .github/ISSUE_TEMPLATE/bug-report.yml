@@ -39,17 +39,17 @@ body:
     attributes:
       label: Additional Context
       description: Add any other context about the problem here.
-  - type: checkboxes
+  - type: textarea
     id: components
     attributes:
       label: Components
-      description: You may select one or more.
-      options:
-        - label: Dashboard
-        - label: Server
-        - label: Python SDK
-        - label: Go SDK
-        - label: Java SDK
-        - label: C# SDK
-        - label: LH Control
-        - label: LH Tests Utils
+      description: Please put an X between the parenthesis of the components this issue is related to.
+      value: |
+        () Dashboard
+        () Server
+        () Python SDK
+        () Go SDK
+        () Java SDK
+        () C# SDK
+        () LH Control
+        () LH Tests Utils
