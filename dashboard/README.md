@@ -205,26 +205,22 @@ pnpm test --watch
 You need to create a `env.test.local` file to contain any env variable you might for your tests.
 
 
-## Docker
+## Start the Dashboard with Docker
 
-### Build Docker Image
+The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
 
-_In this folder_, rename `.env.sample` to `.env`, the values you specify in this file will be copied to `apps/web/.env`.
-
-Next, _navigate to the root of the repo, NOT this folder_, and run the following:
-
+1. Build the docker image
 ```
-docker build -f docker/dashboard/Dockerfile -t lhd .
+ docker build -f docker/dashboard/Dockerfile -t a-tag-name .
 ```
 
-Note: The Docker file will copy the `.env` file from the root folder to apps/web
+2.1 If you want to run it the Authentication Enabled:
+```
+docker run --env LHD_OAUTH_ENABLED='true' --env LHD_OAUTH_CLIENT_ID='{a-client-id}' --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' --env LHD_OAUTH_SERVER_URL='{https://keycloack-env}/realms/lh' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_OAUTH_CALLBACK_URL='localhost:8080' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
+```
 
-### Run Docker Image
-
+2.1 If you want to run it the Authentication Disabled:
 ```
-docker run -p 80:80 -d lhd
+docker run --env LHD_OAUTH_ENABLED='false' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
 ```
-Remap the port
-```
-docker run -p 3001:80 -d lhd
-```
+**Note**: For **2.1** and **2.2** please replace the placeholders between the curly braces with the corresponding values.
