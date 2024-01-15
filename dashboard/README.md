@@ -208,18 +208,23 @@ You need to create a `env.test.local` file to contain any env variable you might
 ## Start the Dashboard with Docker
 
 The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
+1. Ensure pnpm is installed, if not please execute `npm install -g pnpm `
 
-1. Build the docker image
+2. Go under the `dashboard` directory, execute: `pnpm install`
+
+3. Build the docker image
 ```
  docker build -f docker/dashboard/Dockerfile -t a-tag-name .
 ```
 
-2.1 If you want to run it the Authentication Enabled:
+Execute either of the following:
+
+4.1. If you want to run it the Authentication Enabled:
 ```
 docker run --env LHD_OAUTH_ENABLED='true' --env LHD_OAUTH_CLIENT_ID='{a-client-id}' --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' --env LHD_OAUTH_SERVER_URL='{https://keycloack-env}/realms/lh' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_OAUTH_CALLBACK_URL='localhost:8080' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
 ```
 
-2.1 If you want to run it the Authentication Disabled:
+5.1. If you want to run it the Authentication Disabled:
 ```
 docker run --env LHD_OAUTH_ENABLED='false' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
 ```
