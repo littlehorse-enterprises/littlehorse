@@ -1,10 +1,10 @@
 'use client'
 
-
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
 import { useState, useRef } from 'react'
 import { useOutsideClick } from 'ui'
+import { useFeatureToggle } from '../../../contexts/FeatureToggleContext'
 
 function Avatar({ session }) {
     return (
@@ -27,11 +27,12 @@ export function LoginDropdown() {
     // ref used to locate the ancestor Ref so the handler doesn't reopen the log out option
     const ancestorOutsideClickRef = useRef<HTMLDivElement>(null)
     const outsideClickRef = useOutsideClick(() => { setActive(false) },ancestorOutsideClickRef)
+    const isAuthenticationEnabled = useFeatureToggle('isAuthenticationEnabled')
 
     const { data: session } = useSession()
     const [ active, setActive ] = useState<boolean>(false)
 
-    if (__AUTHENTICATION_ENABLED__) {
+    if (isAuthenticationEnabled) {
         return (
             <div className="login-dropdown" ref={ancestorOutsideClickRef}>
                 <div className={`login-dropdown__btn ${active && 'active'}`} onClick={() => { setActive(prev => !prev) }}>

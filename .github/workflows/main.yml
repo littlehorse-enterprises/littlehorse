@@ -133,16 +133,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      - name: Cache Dependencies
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-cache-dir
       - name: Tests
         working-directory: ./dashboard
         run: |
           npm install pnpm --global
           pnpm install
-          pnpm build
           pnpm test
   publish-dashboard-docker-image:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
-    needs: tests-dashboard
+    needs: [ tests-dashboard ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -160,6 +169,18 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           mask-password: "true"
+      - name: Restore cached artifacts
+        id: cache-artifacts-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: /apps/web/.next
+          key: ${{ runner.os }}-cache-artifacts
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: |
+          npm install pnpm --global
+          pnpm install
+          pnpm build
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}

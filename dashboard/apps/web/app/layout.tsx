@@ -6,7 +6,7 @@ import Head from 'next/head'
 import { Providers } from '../providers'
 import { HeaderBar } from './(main)/components/HeaderBar'
 
-
+export const dynamic = 'force-dynamic'
 export const metadata = {
     title: 'Little Horse',
     description: 'Copyright © 2023 LittleHorse Enterprises LLC. ',

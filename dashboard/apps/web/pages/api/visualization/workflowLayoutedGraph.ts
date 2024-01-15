@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let session: SessionWithJWTExpireTime | null
         let client: Client<LittleHorseDefinition>
 
-        if (__AUTHENTICATION_ENABLED__) {
+        if (process.env.LHD_OAUTH_ENABLED === 'true') {
             session = await getServerSession(req, res, authOptions)
             if (!session) {
                 res.status(constants.HTTP_STATUS_UNAUTHORIZED)
