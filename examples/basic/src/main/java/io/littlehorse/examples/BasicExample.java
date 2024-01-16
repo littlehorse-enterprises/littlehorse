@@ -1,7 +1,11 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -20,16 +24,22 @@ import java.util.Properties;
 public class BasicExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-basic",
+        WorkflowImpl out = new WorkflowImpl(
+            "child",
             wf -> {
                 WfRunVariable theName = wf.addVariable(
                     "input-name",
                     VariableType.STR
-                );
+                ).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+
                 wf.execute("greet", theName);
+
+                wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
             }
         );
+        out.setParent("parent");
+
+        return out;
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -58,19 +68,24 @@ public class BasicExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        // New workflow
-        Workflow workflow = getWorkflow();
+        config.getBlockingStub().runWf(RunWfRequest.newBuilder().setWfSpecName("child").setParentWfRunId(
+            WfRunId.newBuilder().setId("5b1bd59dd2594ac492e46b2296829522").build()
+        ).build());
+
+        // // New workflow
+        // Workflow workflow = getWorkflow();
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-
-        // Register task
-        worker.registerTaskDef();
-
-        // Register a workflow
-        workflow.registerWfSpec(config.getBlockingStub());
-
-        // Run the worker
         worker.start();
+
+        // // Register task
+        // worker.registerTaskDef();
+
+        // // Register a workflow
+        // workflow.registerWfSpec(config.getBlockingStub());
+
+        // // Run the worker
+        // worker.start();
     }
 }

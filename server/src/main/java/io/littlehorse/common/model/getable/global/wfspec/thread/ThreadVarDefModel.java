@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
     private boolean required;
     private boolean searchable;
     private List<JsonIndexModel> jsonIndexes;
+    private WfRunVariableAccessLevel accessLevel;
 
     public ThreadVarDefModel() {
         this.jsonIndexes = new ArrayList<>();
@@ -49,7 +51,8 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
         ThreadVarDef.Builder out = ThreadVarDef.newBuilder()
                 .setRequired(required)
                 .setSearchable(searchable)
-                .setVarDef(varDef.toProto());
+                .setVarDef(varDef.toProto())
+                .setAccessLevel(accessLevel);
 
         for (JsonIndexModel jim : jsonIndexes) {
             out.addJsonIndexes(jim.toProto());
@@ -63,6 +66,7 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
         varDef = LHSerializable.fromProto(p.getVarDef(), VariableDefModel.class, executionContext);
         searchable = p.getSearchable();
         required = p.getRequired();
+        accessLevel = p.getAccessLevel();
         for (JsonIndex ji : p.getJsonIndexesList()) {
             jsonIndexes.add(LHSerializable.fromProto(ji, JsonIndexModel.class, executionContext));
         }

@@ -10,7 +10,7 @@ public class MyWorker {
 
     @LHTaskMethod("greet")
     public String greeting(String name) {
-        log.debug("Executing task greet");
+        System.out.println("Executing task greet: " + name);
         return "hello there, " + name;
     }
 

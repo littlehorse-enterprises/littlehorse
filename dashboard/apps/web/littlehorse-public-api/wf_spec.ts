@@ -31,6 +31,59 @@ import { ExternalEventDefId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+export enum WfRunVariableAccessLevel {
+  PUBLIC_VAR = "PUBLIC_VAR",
+  PRIVATE_VAR = "PRIVATE_VAR",
+  INHERITED_VAR = "INHERITED_VAR",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function wfRunVariableAccessLevelFromJSON(object: any): WfRunVariableAccessLevel {
+  switch (object) {
+    case 0:
+    case "PUBLIC_VAR":
+      return WfRunVariableAccessLevel.PUBLIC_VAR;
+    case 1:
+    case "PRIVATE_VAR":
+      return WfRunVariableAccessLevel.PRIVATE_VAR;
+    case 2:
+    case "INHERITED_VAR":
+      return WfRunVariableAccessLevel.INHERITED_VAR;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WfRunVariableAccessLevel.UNRECOGNIZED;
+  }
+}
+
+export function wfRunVariableAccessLevelToJSON(object: WfRunVariableAccessLevel): string {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return "PUBLIC_VAR";
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return "PRIVATE_VAR";
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return "INHERITED_VAR";
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLevel): number {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return 0;
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return 1;
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return 2;
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 export interface WfSpec {
   id: WfSpecId | undefined;
   createdAt: string | undefined;
@@ -91,6 +144,7 @@ export interface ThreadVarDef {
   required: boolean;
   searchable: boolean;
   jsonIndexes: JsonIndex[];
+  accessLevel: WfRunVariableAccessLevel;
 }
 
 export interface ThreadSpec {
@@ -857,7 +911,13 @@ export const SearchableVariableDef = {
 };
 
 function createBaseThreadVarDef(): ThreadVarDef {
-  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [] };
+  return {
+    varDef: undefined,
+    required: false,
+    searchable: false,
+    jsonIndexes: [],
+    accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
+  };
 }
 
 export const ThreadVarDef = {
@@ -873,6 +933,9 @@ export const ThreadVarDef = {
     }
     for (const v of message.jsonIndexes) {
       JsonIndex.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      writer.uint32(40).int32(wfRunVariableAccessLevelToNumber(message.accessLevel));
     }
     return writer;
   },
@@ -912,6 +975,13 @@ export const ThreadVarDef = {
 
           message.jsonIndexes.push(JsonIndex.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.accessLevel = wfRunVariableAccessLevelFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -929,6 +999,9 @@ export const ThreadVarDef = {
       jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
         ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
         : [],
+      accessLevel: isSet(object.accessLevel)
+        ? wfRunVariableAccessLevelFromJSON(object.accessLevel)
+        : WfRunVariableAccessLevel.PUBLIC_VAR,
     };
   },
 
@@ -946,6 +1019,9 @@ export const ThreadVarDef = {
     if (message.jsonIndexes?.length) {
       obj.jsonIndexes = message.jsonIndexes.map((e) => JsonIndex.toJSON(e));
     }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      obj.accessLevel = wfRunVariableAccessLevelToJSON(message.accessLevel);
+    }
     return obj;
   },
 
@@ -960,6 +1036,7 @@ export const ThreadVarDef = {
     message.required = object.required ?? false;
     message.searchable = object.searchable ?? false;
     message.jsonIndexes = object.jsonIndexes?.map((e) => JsonIndex.fromPartial(e)) || [];
+    message.accessLevel = object.accessLevel ?? WfRunVariableAccessLevel.PUBLIC_VAR;
     return message;
   },
 };

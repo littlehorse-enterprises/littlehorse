@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private ThreadVarDef() {
     jsonIndexes_ = java.util.Collections.emptyList();
+    accessLevel_ = 0;
   }
 
   @java.lang.Override
@@ -128,6 +129,24 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_.get(index);
   }
 
+  public static final int ACCESS_LEVEL_FIELD_NUMBER = 5;
+  private int accessLevel_ = 0;
+  /**
+   * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+   * @return The enum numeric value on the wire for accessLevel.
+   */
+  @java.lang.Override public int getAccessLevelValue() {
+    return accessLevel_;
+  }
+  /**
+   * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+   * @return The accessLevel.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel getAccessLevel() {
+    io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel result = io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.forNumber(accessLevel_);
+    return result == null ? io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -154,6 +173,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       output.writeMessage(4, jsonIndexes_.get(i));
     }
+    if (accessLevel_ != io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.PUBLIC_VAR.getNumber()) {
+      output.writeEnum(5, accessLevel_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -178,6 +200,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, jsonIndexes_.get(i));
+    }
+    if (accessLevel_ != io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.PUBLIC_VAR.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(5, accessLevel_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -205,6 +231,7 @@ private static final long serialVersionUID = 0L;
         != other.getSearchable()) return false;
     if (!getJsonIndexesList()
         .equals(other.getJsonIndexesList())) return false;
+    if (accessLevel_ != other.accessLevel_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -230,6 +257,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + JSON_INDEXES_FIELD_NUMBER;
       hash = (53 * hash) + getJsonIndexesList().hashCode();
     }
+    hash = (37 * hash) + ACCESS_LEVEL_FIELD_NUMBER;
+    hash = (53 * hash) + accessLevel_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -375,6 +404,7 @@ private static final long serialVersionUID = 0L;
         jsonIndexesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000008);
+      accessLevel_ = 0;
       return this;
     }
 
@@ -431,6 +461,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.searchable_ = searchable_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.accessLevel_ = accessLevel_;
       }
     }
 
@@ -513,6 +546,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.accessLevel_ != 0) {
+        setAccessLevelValue(other.getAccessLevelValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -569,6 +605,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 34
+            case 40: {
+              accessLevel_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1007,6 +1048,59 @@ private static final long serialVersionUID = 0L;
         jsonIndexes_ = null;
       }
       return jsonIndexesBuilder_;
+    }
+
+    private int accessLevel_ = 0;
+    /**
+     * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+     * @return The enum numeric value on the wire for accessLevel.
+     */
+    @java.lang.Override public int getAccessLevelValue() {
+      return accessLevel_;
+    }
+    /**
+     * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+     * @param value The enum numeric value on the wire for accessLevel to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAccessLevelValue(int value) {
+      accessLevel_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+     * @return The accessLevel.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel getAccessLevel() {
+      io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel result = io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.forNumber(accessLevel_);
+      return result == null ? io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+     * @param value The accessLevel to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAccessLevel(io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      accessLevel_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAccessLevel() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      accessLevel_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

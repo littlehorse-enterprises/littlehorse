@@ -10,6 +10,15 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class WfRunVariableAccessLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    PUBLIC_VAR: _ClassVar[WfRunVariableAccessLevel]
+    PRIVATE_VAR: _ClassVar[WfRunVariableAccessLevel]
+    INHERITED_VAR: _ClassVar[WfRunVariableAccessLevel]
+PUBLIC_VAR: WfRunVariableAccessLevel
+PRIVATE_VAR: WfRunVariableAccessLevel
+INHERITED_VAR: WfRunVariableAccessLevel
+
 class WfSpec(_message.Message):
     __slots__ = ["id", "created_at", "frozen_variables", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "parent_wf_spec"]
     class ThreadSpecsEntry(_message.Message):
@@ -65,16 +74,18 @@ class SearchableVariableDef(_message.Message):
     def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ...) -> None: ...
 
 class ThreadVarDef(_message.Message):
-    __slots__ = ["var_def", "required", "searchable", "json_indexes"]
+    __slots__ = ["var_def", "required", "searchable", "json_indexes", "access_level"]
     VAR_DEF_FIELD_NUMBER: _ClassVar[int]
     REQUIRED_FIELD_NUMBER: _ClassVar[int]
     SEARCHABLE_FIELD_NUMBER: _ClassVar[int]
     JSON_INDEXES_FIELD_NUMBER: _ClassVar[int]
+    ACCESS_LEVEL_FIELD_NUMBER: _ClassVar[int]
     var_def: _common_wfspec_pb2.VariableDef
     required: bool
     searchable: bool
     json_indexes: _containers.RepeatedCompositeFieldContainer[JsonIndex]
-    def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ..., required: bool = ..., searchable: bool = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ...) -> None: ...
+    access_level: WfRunVariableAccessLevel
+    def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ..., required: bool = ..., searchable: bool = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ..., access_level: _Optional[_Union[WfRunVariableAccessLevel, str]] = ...) -> None: ...
 
 class ThreadSpec(_message.Message):
     __slots__ = ["nodes", "variable_defs", "interrupt_defs", "retention_policy"]

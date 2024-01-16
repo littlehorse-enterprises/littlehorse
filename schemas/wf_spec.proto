@@ -65,11 +65,18 @@ message SearchableVariableDef {
   // Future: Add index information (local/remote/etc)
 }
 
+enum WfRunVariableAccessLevel {
+  PUBLIC_VAR = 0;
+  PRIVATE_VAR = 1;
+  INHERITED_VAR = 2;
+}
+
 message ThreadVarDef {
   VariableDef var_def = 1;
   bool required = 2;
   bool searchable = 3;
   repeated JsonIndex json_indexes = 4;
+  WfRunVariableAccessLevel access_level = 5;
 }
 
 message ThreadSpec {
