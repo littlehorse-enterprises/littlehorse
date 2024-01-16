@@ -14,7 +14,7 @@ body:
     id: steps
     attributes:
       label: Steps To Reproduce
-      description: Anything that makes this issue complete.
+      description: "Anything that makes this issue complete. Example:"
       value: |
         Go to ...
         Click on ....

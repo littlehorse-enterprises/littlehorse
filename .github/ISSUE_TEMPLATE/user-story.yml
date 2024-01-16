@@ -44,17 +44,18 @@ body:
     attributes:
       label: Technical Context
       description: Here we need to specify if there are any technical constraints that might guide the implementation of the user story.
-  - type: textarea
+  - type: dropdown
     id: components
     attributes:
       label: Components
       description: Please put an X between the parenthesis of the components this issue is related to.
-      value: |
-        () Dashboard
-        () Server
-        () Python SDK
-        () Go SDK
-        () Java SDK
-        () C# SDK
-        () LH Control
-        () LH Tests Utils
+      multiple: true
+      options:
+        - Dashboard
+        - Server
+        - Python SDK
+        - Go SDK
+        - Java SDK
+        - C# SDK
+        - LH Control
+        - LH Tests Utils
