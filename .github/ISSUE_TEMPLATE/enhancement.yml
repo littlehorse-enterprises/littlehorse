@@ -28,17 +28,18 @@ body:
     attributes:
       label: Out of Scope
       description: Allows to define what is within the scope of the user story and what's not.
-  - type: textarea
+  - type: dropdown
     id: components
     attributes:
       label: Components
       description: Please put an X between the parenthesis of the components this issue is related to.
-      value: |
-        () Dashboard
-        () Server
-        () Python SDK
-        () Go SDK
-        () Java SDK
-        () C# SDK
-        () LH Control
-        () LH Tests Utils
+      multiple: true
+      options:
+        - Dashboard
+        - Server
+        - Python SDK
+        - Go SDK
+        - Java SDK
+        - C# SDK
+        - LH Control
+        - LH Tests Utils
