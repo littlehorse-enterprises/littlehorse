@@ -66,6 +66,12 @@ jobs:
         with:
           distribution: "corretto"
           java-version: 17
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: |
+          npm install pnpm --global
+          pnpm install
+          pnpm build
       - name: Tests
         run: ./gradlew server:test
       - name: Configure AWS credentials

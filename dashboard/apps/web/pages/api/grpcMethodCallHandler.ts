@@ -15,7 +15,7 @@ export const makeGrpcCall = async (grpcMethodToCall: string,
     req: NextApiRequest, res: NextApiResponse, grpcRequestBody: object): Promise<any> => {
     const session = await getServerSession(req, res, authOptions)
 
-    if ( __AUTHENTICATION_ENABLED__ && !session) {
+    if ( process.env.LHD_OAUTH_ENABLED === 'true' && !session) {
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {
@@ -35,7 +35,7 @@ export const handleGrpcCallWithNext = async (grpcMethodToCall: string,
 
     const session = await getServerSession(req, res, authOptions)
 
-    if (__AUTHENTICATION_ENABLED__ && !session) {
+    if (process.env.LHD_OAUTH_ENABLED === 'true' && !session) {
         res.status(401)
             .json(unauthorizedResponseContent)
     } else {

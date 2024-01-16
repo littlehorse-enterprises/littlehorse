@@ -14,7 +14,7 @@ body:
     id: steps
     attributes:
       label: Steps To Reproduce
-      description: Anything that makes this issue complete.
+      description: "Anything that makes this issue complete. Example:"
       value: |
         Go to ...
         Click on ....
@@ -39,17 +39,18 @@ body:
     attributes:
       label: Additional Context
       description: Add any other context about the problem here.
-  - type: checkboxes
+  - type: dropdown
     id: components
     attributes:
       label: Components
-      description: You may select one or more.
+      description: Please select all the affected components.
+      multiple: true
       options:
-        - label: Dashboard
-        - label: Server
-        - label: Python SDK
-        - label: Go SDK
-        - label: Java SDK
-        - label: C# SDK
-        - label: LH Control
-        - label: LH Tests Utils
+        - Dashboard
+        - Server
+        - Python SDK
+        - Go SDK
+        - Java SDK
+        - C# SDK
+        - LH Control
+        - LH Tests Utils

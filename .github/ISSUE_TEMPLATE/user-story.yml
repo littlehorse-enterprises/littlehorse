@@ -44,17 +44,18 @@ body:
     attributes:
       label: Technical Context
       description: Here we need to specify if there are any technical constraints that might guide the implementation of the user story.
-  - type: checkboxes
+  - type: dropdown
     id: components
     attributes:
       label: Components
-      description: You may select one or more.
+      description: Please select all the affected components.
+      multiple: true
       options:
-        - label: Dashboard
-        - label: Server
-        - label: Python SDK
-        - label: Go SDK
-        - label: Java SDK
-        - label: C# SDK
-        - label: LH Control
-        - label: LH Tests Utils
+        - Dashboard
+        - Server
+        - Python SDK
+        - Go SDK
+        - Java SDK
+        - C# SDK
+        - LH Control
+        - LH Tests Utils

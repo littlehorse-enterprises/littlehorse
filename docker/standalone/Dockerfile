@@ -28,7 +28,14 @@ COPY ./docker/standalone/log4j2.properties /lh
 
 COPY ./dashboard /lh/dashboard
 WORKDIR /lh/dashboard
-RUN pnpm install --force
+ENV NODE_ENV=production
+EXPOSE 8080
+
+COPY ./dashboard/apps/web/.next/standalone ./
+COPY ./dashboard/apps/web/.next/static ./apps/web/.next/static
+COPY ./dashboard/apps/web/public ./apps/web/public
+COPY ./docker/dashboard/docker-entrypoint.sh ./
+
 WORKDIR /
 
 COPY --from=builder /lh/server/build/libs/server-*-all.jar /lh/server.jar

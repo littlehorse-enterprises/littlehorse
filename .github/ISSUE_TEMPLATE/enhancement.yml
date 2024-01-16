@@ -28,17 +28,18 @@ body:
     attributes:
       label: Out of Scope
       description: Allows to define what is within the scope of the user story and what's not.
-  - type: checkboxes
+  - type: dropdown
     id: components
     attributes:
       label: Components
-      description: You may select one or more.
+      description: Please select all the affected components.
+      multiple: true
       options:
-        - label: Dashboard
-        - label: Server
-        - label: Python SDK
-        - label: Go SDK
-        - label: Java SDK
-        - label: C# SDK
-        - label: LH Control
-        - label: LH Tests Utils
+        - Dashboard
+        - Server
+        - Python SDK
+        - Go SDK
+        - Java SDK
+        - C# SDK
+        - LH Control
+        - LH Tests Utils

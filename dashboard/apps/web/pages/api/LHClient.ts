@@ -16,7 +16,7 @@ export default class LHClient {
             throw new Error('Not able to get the API URL from your configuration.')
         }
 
-        if (__AUTHENTICATION_ENABLED__) {
+        if (process.env.LHD_OAUTH_ENABLED === 'true') {
             this.createUniqueSecureChannel(process.env.API_URL)
 
             return createClientFactory().use((call, options) =>
