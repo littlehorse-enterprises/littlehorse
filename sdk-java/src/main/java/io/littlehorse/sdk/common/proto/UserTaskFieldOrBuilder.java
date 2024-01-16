@@ -8,11 +8,21 @@ public interface UserTaskFieldOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+   * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+   * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -20,27 +30,50 @@ public interface UserTaskFieldOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.VariableType getType();
 
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
   boolean hasDescription();
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The description.
    */
   java.lang.String getDescription();
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */
@@ -48,11 +81,21 @@ public interface UserTaskFieldOrBuilder extends
       getDescriptionBytes();
 
   /**
+   * <pre>
+   * The name to be displayed by the User Task UI application. Does not affect
+   * WfRun execution.
+   * </pre>
+   *
    * <code>string display_name = 4;</code>
    * @return The displayName.
    */
   java.lang.String getDisplayName();
   /**
+   * <pre>
+   * The name to be displayed by the User Task UI application. Does not affect
+   * WfRun execution.
+   * </pre>
+   *
    * <code>string display_name = 4;</code>
    * @return The bytes for displayName.
    */
@@ -61,12 +104,7 @@ public interface UserTaskFieldOrBuilder extends
 
   /**
    * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
+   * Whether this field is required for UserTaskRun completion.
    * </pre>
    *
    * <code>bool required = 5;</code>

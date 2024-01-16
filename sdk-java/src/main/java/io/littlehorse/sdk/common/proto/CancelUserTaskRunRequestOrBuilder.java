@@ -8,16 +8,28 @@ public interface CancelUserTaskRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();

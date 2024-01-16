@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A UserTaskField is a specific field of data to be entered into a UserTaskRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskField}
  */
 public final class UserTaskField extends
@@ -47,6 +51,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+   * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -64,6 +73,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+   * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -85,6 +99,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 2;
   private int type_ = 0;
   /**
+   * <pre>
+   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -92,6 +110,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The type.
    */
@@ -104,6 +126,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object description_ = "";
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
@@ -112,6 +139,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The description.
    */
@@ -129,6 +161,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */
@@ -151,6 +188,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object displayName_ = "";
   /**
+   * <pre>
+   * The name to be displayed by the User Task UI application. Does not affect
+   * WfRun execution.
+   * </pre>
+   *
    * <code>string display_name = 4;</code>
    * @return The displayName.
    */
@@ -168,6 +210,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name to be displayed by the User Task UI application. Does not affect
+   * WfRun execution.
+   * </pre>
+   *
    * <code>string display_name = 4;</code>
    * @return The bytes for displayName.
    */
@@ -190,12 +237,7 @@ private static final long serialVersionUID = 0L;
   private boolean required_ = false;
   /**
    * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
+   * Whether this field is required for UserTaskRun completion.
    * </pre>
    *
    * <code>bool required = 5;</code>
@@ -410,6 +452,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A UserTaskField is a specific field of data to be entered into a UserTaskRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskField}
    */
   public static final class Builder extends
@@ -636,6 +682,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+     * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -652,6 +703,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+     * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -669,6 +725,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+     * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -682,6 +743,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+     * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -692,6 +758,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+     * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -708,6 +779,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -715,6 +790,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -726,6 +805,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return The type.
      */
@@ -735,6 +818,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -749,6 +836,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return This builder for chaining.
      */
@@ -761,6 +852,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object description_ = "";
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return Whether the description field is set.
      */
@@ -768,6 +864,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return The description.
      */
@@ -784,6 +885,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return The bytes for description.
      */
@@ -801,6 +907,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @param value The description to set.
      * @return This builder for chaining.
@@ -814,6 +925,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return This builder for chaining.
      */
@@ -824,6 +940,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional description which can be displayed by the User Task UI application.
+     * Does not affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @param value The bytes for description to set.
      * @return This builder for chaining.
@@ -840,6 +961,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object displayName_ = "";
     /**
+     * <pre>
+     * The name to be displayed by the User Task UI application. Does not affect
+     * WfRun execution.
+     * </pre>
+     *
      * <code>string display_name = 4;</code>
      * @return The displayName.
      */
@@ -856,6 +982,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name to be displayed by the User Task UI application. Does not affect
+     * WfRun execution.
+     * </pre>
+     *
      * <code>string display_name = 4;</code>
      * @return The bytes for displayName.
      */
@@ -873,6 +1004,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name to be displayed by the User Task UI application. Does not affect
+     * WfRun execution.
+     * </pre>
+     *
      * <code>string display_name = 4;</code>
      * @param value The displayName to set.
      * @return This builder for chaining.
@@ -886,6 +1022,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name to be displayed by the User Task UI application. Does not affect
+     * WfRun execution.
+     * </pre>
+     *
      * <code>string display_name = 4;</code>
      * @return This builder for chaining.
      */
@@ -896,6 +1037,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name to be displayed by the User Task UI application. Does not affect
+     * WfRun execution.
+     * </pre>
+     *
      * <code>string display_name = 4;</code>
      * @param value The bytes for displayName to set.
      * @return This builder for chaining.
@@ -913,12 +1059,7 @@ private static final long serialVersionUID = 0L;
     private boolean required_ ;
     /**
      * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
+     * Whether this field is required for UserTaskRun completion.
      * </pre>
      *
      * <code>bool required = 5;</code>
@@ -930,12 +1071,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
+     * Whether this field is required for UserTaskRun completion.
      * </pre>
      *
      * <code>bool required = 5;</code>
@@ -951,12 +1087,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
+     * Whether this field is required for UserTaskRun completion.
      * </pre>
      *
      * <code>bool required = 5;</code>
