@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Cancels a UserTaskRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.CancelUserTaskRunRequest}
  */
 public final class CancelUserTaskRunRequest extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ != null;
   }
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTaskRunId_;
   }
   /**
+   * <pre>
+   * The id of the UserTaskRun to cancel.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Cancels a UserTaskRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.CancelUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return Whether the userTaskRunId field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return The userTaskRunId.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder mergeUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder clearUserTaskRunId() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId.Builder getUserTaskRunIdBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getUserTaskRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The id of the UserTaskRun to cancel.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

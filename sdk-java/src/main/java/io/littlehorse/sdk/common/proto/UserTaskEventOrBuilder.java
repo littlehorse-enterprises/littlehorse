@@ -8,54 +8,89 @@ public interface UserTaskEventOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    * @return Whether the time field is set.
    */
   boolean hasTime();
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    * @return The time.
    */
   com.google.protobuf.Timestamp getTime();
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return Whether the taskExecuted field is set.
    */
   boolean hasTaskExecuted();
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return The taskExecuted.
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getTaskExecuted();
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder getTaskExecutedOrBuilder();
 
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    * @return Whether the assigned field is set.
    */
   boolean hasAssigned();
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    * @return The assigned.
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned getAssigned();
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssignedOrBuilder getAssignedOrBuilder();
 
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -64,8 +99,7 @@ public interface UserTaskEventOrBuilder extends
   boolean hasCancelled();
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -74,8 +108,7 @@ public interface UserTaskEventOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getCancelled();
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>

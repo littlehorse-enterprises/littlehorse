@@ -8,37 +8,74 @@ public interface AssignUserTaskRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
 
   /**
+   * <pre>
+   * If override_claim is set to false and the UserTaskRun is already assigned to
+   * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+   * true, then the old claim is overriden and the UserTaskRun is assigned to
+   * the new user.
+   * </pre>
+   *
    * <code>bool override_claim = 2;</code>
    * @return The overrideClaim.
    */
   boolean getOverrideClaim();
 
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The bytes for userGroup.
    */
@@ -46,16 +83,34 @@ public interface AssignUserTaskRunRequestOrBuilder extends
       getUserGroupBytes();
 
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The bytes for userId.
    */

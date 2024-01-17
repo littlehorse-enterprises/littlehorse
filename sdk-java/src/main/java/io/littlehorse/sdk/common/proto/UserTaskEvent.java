@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * This is an event stored in the audit log of a `UserTaskRun` purely for observability
+ * purposes.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskEvent}
  */
 public final class UserTaskEvent extends
@@ -43,6 +48,10 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * <pre>
+   * Empty message used to denote that the `UserTaskRun` was cancelled.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent.UTECancelled}
    */
   public static final class UTECancelled extends
@@ -224,6 +233,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Empty message used to denote that the `UserTaskRun` was cancelled.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UserTaskEvent.UTECancelled}
      */
     public static final class Builder extends
@@ -440,21 +453,37 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
     boolean hasTaskRun();
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return The taskRun.
      */
     io.littlehorse.sdk.common.proto.TaskRunId getTaskRun();
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      */
     io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunOrBuilder();
   }
   /**
+   * <pre>
+   * Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent.UTETaskExecuted}
    */
   public static final class UTETaskExecuted extends
@@ -492,6 +521,10 @@ private static final long serialVersionUID = 0L;
     public static final int TASK_RUN_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.TaskRunId taskRun_;
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
@@ -500,6 +533,10 @@ private static final long serialVersionUID = 0L;
       return taskRun_ != null;
     }
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return The taskRun.
      */
@@ -508,6 +545,10 @@ private static final long serialVersionUID = 0L;
       return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRun_;
     }
     /**
+     * <pre>
+     * The `TaskRunId` of the scheduled `TaskRun`
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId task_run = 1;</code>
      */
     @java.lang.Override
@@ -678,6 +719,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UserTaskEvent.UTETaskExecuted}
      */
     public static final class Builder extends
@@ -857,6 +902,10 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> taskRunBuilder_;
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        * @return Whether the taskRun field is set.
        */
@@ -864,6 +913,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        * @return The taskRun.
        */
@@ -875,6 +928,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder setTaskRun(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -891,6 +948,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder setTaskRun(
@@ -905,6 +966,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder mergeTaskRun(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -924,6 +989,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder clearTaskRun() {
@@ -937,6 +1006,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.TaskRunId.Builder getTaskRunBuilder() {
@@ -945,6 +1018,10 @@ private static final long serialVersionUID = 0L;
         return getTaskRunFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunOrBuilder() {
@@ -956,6 +1033,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The `TaskRunId` of the scheduled `TaskRun`
+       * </pre>
+       *
        * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -1040,16 +1121,28 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return Whether the oldUserId field is set.
      */
     boolean hasOldUserId();
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return The oldUserId.
      */
     java.lang.String getOldUserId();
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return The bytes for oldUserId.
      */
@@ -1057,16 +1150,28 @@ private static final long serialVersionUID = 0L;
         getOldUserIdBytes();
 
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return Whether the oldUserGroup field is set.
      */
     boolean hasOldUserGroup();
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return The oldUserGroup.
      */
     java.lang.String getOldUserGroup();
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return The bytes for oldUserGroup.
      */
@@ -1074,16 +1179,28 @@ private static final long serialVersionUID = 0L;
         getOldUserGroupBytes();
 
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return Whether the newUserId field is set.
      */
     boolean hasNewUserId();
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return The newUserId.
      */
     java.lang.String getNewUserId();
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return The bytes for newUserId.
      */
@@ -1091,16 +1208,28 @@ private static final long serialVersionUID = 0L;
         getNewUserIdBytes();
 
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return Whether the newUserGroup field is set.
      */
     boolean hasNewUserGroup();
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return The newUserGroup.
      */
     java.lang.String getNewUserGroup();
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return The bytes for newUserGroup.
      */
@@ -1108,6 +1237,10 @@ private static final long serialVersionUID = 0L;
         getNewUserGroupBytes();
   }
   /**
+   * <pre>
+   * Message denoting that the UserTaskRun was assigned.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent.UTEAssigned}
    */
   public static final class UTEAssigned extends
@@ -1151,6 +1284,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object oldUserId_ = "";
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return Whether the oldUserId field is set.
      */
@@ -1159,6 +1296,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return The oldUserId.
      */
@@ -1176,6 +1317,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user_id before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_id = 1;</code>
      * @return The bytes for oldUserId.
      */
@@ -1198,6 +1343,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object oldUserGroup_ = "";
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return Whether the oldUserGroup field is set.
      */
@@ -1206,6 +1355,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return The oldUserGroup.
      */
@@ -1223,6 +1376,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user_group before the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string old_user_group = 2;</code>
      * @return The bytes for oldUserGroup.
      */
@@ -1245,6 +1402,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object newUserId_ = "";
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return Whether the newUserId field is set.
      */
@@ -1253,6 +1414,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return The newUserId.
      */
@@ -1270,6 +1435,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user_id after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_id = 3;</code>
      * @return The bytes for newUserId.
      */
@@ -1292,6 +1461,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object newUserGroup_ = "";
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return Whether the newUserGroup field is set.
      */
@@ -1300,6 +1473,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return The newUserGroup.
      */
@@ -1317,6 +1494,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user_group after the ownership change, if set.
+     * </pre>
+     *
      * <code>optional string new_user_group = 4;</code>
      * @return The bytes for newUserGroup.
      */
@@ -1542,6 +1723,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Message denoting that the UserTaskRun was assigned.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UserTaskEvent.UTEAssigned}
      */
     public static final class Builder extends
@@ -1761,6 +1946,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object oldUserId_ = "";
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @return Whether the oldUserId field is set.
        */
@@ -1768,6 +1957,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @return The oldUserId.
        */
@@ -1784,6 +1977,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @return The bytes for oldUserId.
        */
@@ -1801,6 +1998,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @param value The oldUserId to set.
        * @return This builder for chaining.
@@ -1814,6 +2015,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -1824,6 +2029,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_id before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_id = 1;</code>
        * @param value The bytes for oldUserId to set.
        * @return This builder for chaining.
@@ -1840,6 +2049,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object oldUserGroup_ = "";
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @return Whether the oldUserGroup field is set.
        */
@@ -1847,6 +2060,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @return The oldUserGroup.
        */
@@ -1863,6 +2080,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @return The bytes for oldUserGroup.
        */
@@ -1880,6 +2101,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @param value The oldUserGroup to set.
        * @return This builder for chaining.
@@ -1893,6 +2118,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @return This builder for chaining.
        */
@@ -1903,6 +2132,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_group before the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string old_user_group = 2;</code>
        * @param value The bytes for oldUserGroup to set.
        * @return This builder for chaining.
@@ -1919,6 +2152,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object newUserId_ = "";
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @return Whether the newUserId field is set.
        */
@@ -1926,6 +2163,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @return The newUserId.
        */
@@ -1942,6 +2183,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @return The bytes for newUserId.
        */
@@ -1959,6 +2204,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @param value The newUserId to set.
        * @return This builder for chaining.
@@ -1972,6 +2221,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @return This builder for chaining.
        */
@@ -1982,6 +2235,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_id after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_id = 3;</code>
        * @param value The bytes for newUserId to set.
        * @return This builder for chaining.
@@ -1998,6 +2255,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object newUserGroup_ = "";
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @return Whether the newUserGroup field is set.
        */
@@ -2005,6 +2266,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @return The newUserGroup.
        */
@@ -2021,6 +2286,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @return The bytes for newUserGroup.
        */
@@ -2038,6 +2307,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @param value The newUserGroup to set.
        * @return This builder for chaining.
@@ -2051,6 +2324,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @return This builder for chaining.
        */
@@ -2061,6 +2338,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The user_group after the ownership change, if set.
+       * </pre>
+       *
        * <code>optional string new_user_group = 4;</code>
        * @param value The bytes for newUserGroup to set.
        * @return This builder for chaining.
@@ -2185,6 +2466,10 @@ private static final long serialVersionUID = 0L;
   public static final int TIME_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp time_;
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    * @return Whether the time field is set.
    */
@@ -2193,6 +2478,10 @@ private static final long serialVersionUID = 0L;
     return time_ != null;
   }
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    * @return The time.
    */
@@ -2201,6 +2490,10 @@ private static final long serialVersionUID = 0L;
     return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
   }
   /**
+   * <pre>
+   * the time the event occurred.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp time = 1;</code>
    */
   @java.lang.Override
@@ -2210,6 +2503,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_EXECUTED_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return Whether the taskExecuted field is set.
    */
@@ -2218,6 +2515,10 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 2;
   }
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return The taskExecuted.
    */
@@ -2229,6 +2530,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Denotes that a TaskRun was scheduled via a trigger.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    */
   @java.lang.Override
@@ -2241,6 +2546,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int ASSIGNED_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    * @return Whether the assigned field is set.
    */
@@ -2249,6 +2558,10 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 3;
   }
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    * @return The assigned.
    */
@@ -2260,6 +2573,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Denotes that the UserTaskRun was assigned.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    */
   @java.lang.Override
@@ -2273,8 +2590,7 @@ private static final long serialVersionUID = 0L;
   public static final int CANCELLED_FIELD_NUMBER = 4;
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -2286,8 +2602,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -2302,8 +2617,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
+   * Denotes that the UserTaskRun was cancelled.
    * </pre>
    *
    * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -2533,6 +2847,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * This is an event stored in the audit log of a `UserTaskRun` purely for observability
+   * purposes.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent}
    */
   public static final class Builder extends
@@ -2794,6 +3113,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> timeBuilder_;
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      * @return Whether the time field is set.
      */
@@ -2801,6 +3124,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      * @return The time.
      */
@@ -2812,6 +3139,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder setTime(com.google.protobuf.Timestamp value) {
@@ -2828,6 +3159,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder setTime(
@@ -2842,6 +3177,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder mergeTime(com.google.protobuf.Timestamp value) {
@@ -2861,6 +3200,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder clearTime() {
@@ -2874,6 +3217,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
@@ -2882,6 +3229,10 @@ private static final long serialVersionUID = 0L;
       return getTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
@@ -2893,6 +3244,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * the time the event occurred.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2912,6 +3267,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder> taskExecutedBuilder_;
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      * @return Whether the taskExecuted field is set.
      */
@@ -2920,6 +3279,10 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 2;
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      * @return The taskExecuted.
      */
@@ -2938,6 +3301,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder setTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted value) {
@@ -2954,6 +3321,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder setTaskExecuted(
@@ -2968,6 +3339,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder mergeTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted value) {
@@ -2991,6 +3366,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder clearTaskExecuted() {
@@ -3010,12 +3389,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder getTaskExecutedBuilder() {
       return getTaskExecutedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     @java.lang.Override
@@ -3030,6 +3417,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes that a TaskRun was scheduled via a trigger.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3054,6 +3445,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssignedOrBuilder> assignedBuilder_;
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      * @return Whether the assigned field is set.
      */
@@ -3062,6 +3457,10 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 3;
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      * @return The assigned.
      */
@@ -3080,6 +3479,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     public Builder setAssigned(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned value) {
@@ -3096,6 +3499,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     public Builder setAssigned(
@@ -3110,6 +3517,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     public Builder mergeAssigned(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned value) {
@@ -3133,6 +3544,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     public Builder clearAssigned() {
@@ -3152,12 +3567,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned.Builder getAssignedBuilder() {
       return getAssignedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     @java.lang.Override
@@ -3172,6 +3595,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes that the UserTaskRun was assigned.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3197,8 +3624,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder> cancelledBuilder_;
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3210,8 +3636,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3233,8 +3658,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3254,8 +3678,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3273,8 +3696,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3301,8 +3723,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3325,8 +3746,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3336,8 +3756,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
@@ -3355,8 +3774,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * TODO: Add "save user task" and "complete user task" to the
-     * audit log
+     * Denotes that the UserTaskRun was cancelled.
      * </pre>
      *
      * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>

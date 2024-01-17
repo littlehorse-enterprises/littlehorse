@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * UserTaskDef is the metadata blueprint for UserTaskRuns.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskDef}
  */
 public final class UserTaskDef extends
@@ -46,6 +50,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the `UserTaskDef`
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -63,6 +71,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the `UserTaskDef`
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -84,6 +96,10 @@ private static final long serialVersionUID = 0L;
   public static final int VERSION_FIELD_NUMBER = 2;
   private int version_ = 0;
   /**
+   * <pre>
+   * The version of the `UserTaskDef`. Only simple versioning is supported.
+   * </pre>
+   *
    * <code>int32 version = 2;</code>
    * @return The version.
    */
@@ -96,6 +112,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object description_ = "";
   /**
+   * <pre>
+   * Metadata field that does not impact WfRun execution. Useful for providing
+   * context on the UserTaskRun, for example when displaying it on a general-purpose
+   * task manager application.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
@@ -104,6 +126,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Metadata field that does not impact WfRun execution. Useful for providing
+   * context on the UserTaskRun, for example when displaying it on a general-purpose
+   * task manager application.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The description.
    */
@@ -121,6 +149,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Metadata field that does not impact WfRun execution. Useful for providing
+   * context on the UserTaskRun, for example when displaying it on a general-purpose
+   * task manager application.
+   * </pre>
+   *
    * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */
@@ -143,6 +177,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_;
   /**
+   * <pre>
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
@@ -150,6 +190,12 @@ private static final long serialVersionUID = 0L;
     return fields_;
   }
   /**
+   * <pre>
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
@@ -158,6 +204,12 @@ private static final long serialVersionUID = 0L;
     return fields_;
   }
   /**
+   * <pre>
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
@@ -165,6 +217,12 @@ private static final long serialVersionUID = 0L;
     return fields_.size();
   }
   /**
+   * <pre>
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
@@ -172,6 +230,12 @@ private static final long serialVersionUID = 0L;
     return fields_.get(index);
   }
   /**
+   * <pre>
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
@@ -183,6 +247,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 5;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The time the UserTaskRun was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
    * @return Whether the createdAt field is set.
    */
@@ -191,6 +259,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The time the UserTaskRun was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
    * @return The createdAt.
    */
@@ -199,6 +271,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The time the UserTaskRun was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
    */
   @java.lang.Override
@@ -418,6 +494,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * UserTaskDef is the metadata blueprint for UserTaskRuns.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskDef}
    */
   public static final class Builder extends
@@ -697,6 +777,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the `UserTaskDef`
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -713,6 +797,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the `UserTaskDef`
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -730,6 +818,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the `UserTaskDef`
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -743,6 +835,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the `UserTaskDef`
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -753,6 +849,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the `UserTaskDef`
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -769,6 +869,10 @@ private static final long serialVersionUID = 0L;
 
     private int version_ ;
     /**
+     * <pre>
+     * The version of the `UserTaskDef`. Only simple versioning is supported.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @return The version.
      */
@@ -777,6 +881,10 @@ private static final long serialVersionUID = 0L;
       return version_;
     }
     /**
+     * <pre>
+     * The version of the `UserTaskDef`. Only simple versioning is supported.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @param value The version to set.
      * @return This builder for chaining.
@@ -789,6 +897,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The version of the `UserTaskDef`. Only simple versioning is supported.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @return This builder for chaining.
      */
@@ -801,6 +913,12 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object description_ = "";
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return Whether the description field is set.
      */
@@ -808,6 +926,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return The description.
      */
@@ -824,6 +948,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return The bytes for description.
      */
@@ -841,6 +971,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @param value The description to set.
      * @return This builder for chaining.
@@ -854,6 +990,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @return This builder for chaining.
      */
@@ -864,6 +1006,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metadata field that does not impact WfRun execution. Useful for providing
+     * context on the UserTaskRun, for example when displaying it on a general-purpose
+     * task manager application.
+     * </pre>
+     *
      * <code>optional string description = 3;</code>
      * @param value The bytes for description to set.
      * @return This builder for chaining.
@@ -891,6 +1039,12 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> fieldsBuilder_;
 
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
@@ -901,6 +1055,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public int getFieldsCount() {
@@ -911,6 +1071,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
@@ -921,6 +1087,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder setFields(
@@ -938,6 +1110,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder setFields(
@@ -952,6 +1130,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
@@ -968,6 +1152,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
@@ -985,6 +1175,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
@@ -999,6 +1195,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
@@ -1013,6 +1215,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addAllFields(
@@ -1028,6 +1236,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder clearFields() {
@@ -1041,6 +1255,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder removeFields(int index) {
@@ -1054,6 +1274,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
@@ -1061,6 +1287,12 @@ private static final long serialVersionUID = 0L;
       return getFieldsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
@@ -1071,6 +1303,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
@@ -1082,6 +1320,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
@@ -1089,6 +1333,12 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
@@ -1097,6 +1347,12 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
+     * <pre>
+     * These are the fields comprise the User Task. A User Task Manager application, or
+     * any application used to complete a UserTaskRun, should inspect these fields and
+     * display form entries for each one.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
@@ -1122,6 +1378,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      * @return Whether the createdAt field is set.
      */
@@ -1129,6 +1389,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      * @return The createdAt.
      */
@@ -1140,6 +1404,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -1156,6 +1424,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public Builder setCreatedAt(
@@ -1170,6 +1442,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -1189,6 +1465,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public Builder clearCreatedAt() {
@@ -1202,6 +1482,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -1210,6 +1494,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -1221,6 +1509,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the UserTaskRun was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
