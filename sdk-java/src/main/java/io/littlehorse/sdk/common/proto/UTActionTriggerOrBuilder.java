@@ -96,7 +96,7 @@ public interface UTActionTriggerOrBuilder extends
 
   /**
    * <pre>
-   * The hook on which this 
+   * The hook on which this UserTaskAction is scheduled.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -105,7 +105,7 @@ public interface UTActionTriggerOrBuilder extends
   int getHookValue();
   /**
    * <pre>
-   * The hook on which this 
+   * The hook on which this UserTaskAction is scheduled.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>

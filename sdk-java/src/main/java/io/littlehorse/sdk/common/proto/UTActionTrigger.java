@@ -2912,7 +2912,7 @@ private static final long serialVersionUID = 0L;
   private int hook_ = 0;
   /**
    * <pre>
-   * The hook on which this 
+   * The hook on which this UserTaskAction is scheduled.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -2923,7 +2923,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The hook on which this 
+   * The hook on which this UserTaskAction is scheduled.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -4071,7 +4071,7 @@ private static final long serialVersionUID = 0L;
     private int hook_ = 0;
     /**
      * <pre>
-     * The hook on which this 
+     * The hook on which this UserTaskAction is scheduled.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -4082,7 +4082,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The hook on which this 
+     * The hook on which this UserTaskAction is scheduled.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -4097,7 +4097,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The hook on which this 
+     * The hook on which this UserTaskAction is scheduled.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -4110,7 +4110,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The hook on which this 
+     * The hook on which this UserTaskAction is scheduled.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
@@ -4128,7 +4128,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The hook on which this 
+     * The hook on which this UserTaskAction is scheduled.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>

@@ -356,7 +356,7 @@ export interface UTActionTrigger {
   delaySeconds:
     | VariableAssignment
     | undefined;
-  /** The hook on which this */
+  /** The hook on which this UserTaskAction is scheduled. */
   hook: UTActionTrigger_UTHook;
 }
 

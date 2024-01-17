@@ -576,7 +576,7 @@ type UTActionTrigger struct {
 	// The Action is triggered some time after the Hook matures. The delay is controlled
 	// by this field.
 	DelaySeconds *VariableAssignment `protobuf:"bytes,5,opt,name=delay_seconds,json=delaySeconds,proto3" json:"delay_seconds,omitempty"`
-	// The hook on which this
+	// The hook on which this UserTaskAction is scheduled.
 	Hook UTActionTrigger_UTHook `protobuf:"varint,6,opt,name=hook,proto3,enum=littlehorse.UTActionTrigger_UTHook" json:"hook,omitempty"`
 }
 

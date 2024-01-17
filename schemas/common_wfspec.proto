@@ -214,7 +214,7 @@ message UTActionTrigger {
     ON_TASK_ASSIGNED = 1;
   }
 
-  // The hook on which this 
+  // The hook on which this UserTaskAction is scheduled.
   UTHook hook = 6;
 }
 
