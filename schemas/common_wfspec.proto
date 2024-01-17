@@ -91,28 +91,66 @@ message VariableMutation {
   // Defines the operation that we are executing.
   VariableMutationType operation = 3;
 
-  // 
+  // The RHS of the mutation; i.e. what is operated _with_.
   oneof rhs_value {
+    // Set the source_variable as the RHS to use another variable from the workflow to
+    // as the RHS/
     VariableAssignment source_variable = 4;
+
+    // Use a literal value as the RHS.
     VariableValue literal_value = 5;
+
+    // Use the output of the current node as the RHS.
     NodeOutputSource node_output = 6;
   }
 }
 
+// Declares a Variable.
 message VariableDef {
+  // The Type of the variable.
   VariableType type = 1;
+
+  // The name of the variable.
   string name = 2;
+
+  // Optional default value if the variable isn't set; for example, in a ThreadRun
+  // if you start a ThreadRun or WfRun without passing a variable in, then this is
+  // used.
   optional VariableValue default_value = 3;
 }
 
+// Operator for comparing two values to create a boolean expression.
 enum Comparator {
+  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   LESS_THAN = 0;
+
+  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   GREATER_THAN = 1;
+
+  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   LESS_THAN_EQ = 2;
+
+  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   GREATER_THAN_EQ = 3;
+
+  // This is valid for any variable type, and is similar to .equals() in Java.
+  //
+  // One note: if the RHS is a different type from the LHS, then LittleHorse will
+  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
+  // ThreadRun fails with a VAR_SUB_ERROR.
   EQUALS = 4;
+
+  // This is the inverse of `EQUALS`
   NOT_EQUALS = 5;
+
+  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+  //
+  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+  // is equal to the LHS.
   IN = 6;
+
+  // The inverse of IN.
   NOT_IN = 7;
 }
 
