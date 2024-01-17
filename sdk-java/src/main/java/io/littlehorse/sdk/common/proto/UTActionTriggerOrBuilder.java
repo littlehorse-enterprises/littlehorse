@@ -66,7 +66,8 @@ public interface UTActionTriggerOrBuilder extends
 
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -75,7 +76,8 @@ public interface UTActionTriggerOrBuilder extends
   boolean hasDelaySeconds();
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -84,7 +86,8 @@ public interface UTActionTriggerOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignment getDelaySeconds();
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -92,11 +95,19 @@ public interface UTActionTriggerOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDelaySecondsOrBuilder();
 
   /**
+   * <pre>
+   * The hook on which this 
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The enum numeric value on the wire for hook.
    */
   int getHookValue();
   /**
+   * <pre>
+   * The hook on which this 
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The hook.
    */

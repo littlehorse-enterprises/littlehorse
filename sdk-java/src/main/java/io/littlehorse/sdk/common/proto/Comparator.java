@@ -4,39 +4,83 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Operator for comparing two values to create a boolean expression.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.Comparator}
  */
 public enum Comparator
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Equivalent to `&lt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>LESS_THAN = 0;</code>
    */
   LESS_THAN(0),
   /**
+   * <pre>
+   * Equivalent to `&gt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>GREATER_THAN = 1;</code>
    */
   GREATER_THAN(1),
   /**
+   * <pre>
+   * Equivalent to `&lt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>LESS_THAN_EQ = 2;</code>
    */
   LESS_THAN_EQ(2),
   /**
+   * <pre>
+   * Equivalent to `&gt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>GREATER_THAN_EQ = 3;</code>
    */
   GREATER_THAN_EQ(3),
   /**
+   * <pre>
+   * This is valid for any variable type, and is similar to .equals() in Java.
+   *
+   * One note: if the RHS is a different type from the LHS, then LittleHorse will
+   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
+   * ThreadRun fails with a VAR_SUB_ERROR.
+   * </pre>
+   *
    * <code>EQUALS = 4;</code>
    */
   EQUALS(4),
   /**
+   * <pre>
+   * This is the inverse of `EQUALS`
+   * </pre>
+   *
    * <code>NOT_EQUALS = 5;</code>
    */
   NOT_EQUALS(5),
   /**
+   * <pre>
+   * Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   *
+   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * is equal to the LHS.
+   * </pre>
+   *
    * <code>IN = 6;</code>
    */
   IN(6),
   /**
+   * <pre>
+   * The inverse of IN.
+   * </pre>
+   *
    * <code>NOT_IN = 7;</code>
    */
   NOT_IN(7),
@@ -44,34 +88,74 @@ public enum Comparator
   ;
 
   /**
+   * <pre>
+   * Equivalent to `&lt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>LESS_THAN = 0;</code>
    */
   public static final int LESS_THAN_VALUE = 0;
   /**
+   * <pre>
+   * Equivalent to `&gt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>GREATER_THAN = 1;</code>
    */
   public static final int GREATER_THAN_VALUE = 1;
   /**
+   * <pre>
+   * Equivalent to `&lt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>LESS_THAN_EQ = 2;</code>
    */
   public static final int LESS_THAN_EQ_VALUE = 2;
   /**
+   * <pre>
+   * Equivalent to `&gt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
    * <code>GREATER_THAN_EQ = 3;</code>
    */
   public static final int GREATER_THAN_EQ_VALUE = 3;
   /**
+   * <pre>
+   * This is valid for any variable type, and is similar to .equals() in Java.
+   *
+   * One note: if the RHS is a different type from the LHS, then LittleHorse will
+   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
+   * ThreadRun fails with a VAR_SUB_ERROR.
+   * </pre>
+   *
    * <code>EQUALS = 4;</code>
    */
   public static final int EQUALS_VALUE = 4;
   /**
+   * <pre>
+   * This is the inverse of `EQUALS`
+   * </pre>
+   *
    * <code>NOT_EQUALS = 5;</code>
    */
   public static final int NOT_EQUALS_VALUE = 5;
   /**
+   * <pre>
+   * Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   *
+   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * is equal to the LHS.
+   * </pre>
+   *
    * <code>IN = 6;</code>
    */
   public static final int IN_VALUE = 6;
   /**
+   * <pre>
+   * The inverse of IN.
+   * </pre>
+   *
    * <code>NOT_IN = 7;</code>
    */
   public static final int NOT_IN_VALUE = 7;

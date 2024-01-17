@@ -164,19 +164,31 @@ enum Comparator {
 // - Upon creation of the UserTaskRun
 // - Upon rescheduling the UserTaskRun
 message UTActionTrigger {
+  // A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
   message UTACancel {
   }
 
+  // A UserTaskAction that causes a TaskRun to be scheduled when it fires.
   message UTATask {
+    // The specification of the Task to schedule.
     TaskNode task = 1;
+
+    // EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
     repeated VariableMutation mutations = 2;
   }
 
+  // A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
   message UTAReassign {
+    // A variable assignment that resolves to a STR representing the new user_id. If
+    // not set, the user_id of the UserTaskRun will be un-set.
     optional VariableAssignment user_id = 1;
+
+    // A variable assignment that resolves to a STR representing the new user_group. If
+    // not set, the user_group of the UserTaskRun will be un-set.
     optional VariableAssignment user_group = 2;
   }
 
+  // The action that is scheduled by the hook 
   oneof action {
     UTATask task = 1;
     UTACancel cancel = 2;
@@ -184,18 +196,42 @@ message UTActionTrigger {
     // later on, might enable scheduling entire ThreadRuns
   }
 
+  // The Action is triggered some time after the Hook matures. The delay is controlled
+  // by this field.
+  VariableAssignment delay_seconds = 5;
+
+  // Enumerates the different lifecycle hooks that can cause the timer to start running.
   enum UTHook {
+    // The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+    // hook only causes the action to be scheduled once.
     ON_ARRIVAL = 0;
+
+    // The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+    // changes. This hook causes the Action to be scheduled one or more times. The first
+    // time is scheduled when the UserTaskRun is created, since we treat the change from
+    // "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+    // a change in ownership.
     ON_TASK_ASSIGNED = 1;
   }
-  //Action's delay
-  VariableAssignment delay_seconds = 5;
+
+  // The hook on which this 
   UTHook hook = 6;
 }
 
+// Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 message TaskNode {
+  // The type of TaskRun to schedule.
   TaskDefId task_def_id = 1;
+
+  // How long until LittleHorse determines that the Task Worker had a technical ERROR if
+  // the worker does not yet reply to the Server.
   int32 timeout_seconds = 2;
+
+  // EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+  // Please note that this API may change before version 1.0.0, as we are going to
+  // add significant functionality including backoff policies.
   int32 retries = 3;
+
+  // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;
 }

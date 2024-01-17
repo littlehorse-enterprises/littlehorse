@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Declares a Variable.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableDef}
  */
 public final class VariableDef extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 1;
   private int type_ = 0;
   /**
+   * <pre>
+   * The Type of the variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 1;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -51,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * The Type of the variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 1;</code>
    * @return The type.
    */
@@ -63,6 +75,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 2;</code>
    * @return The name.
    */
@@ -80,6 +96,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 2;</code>
    * @return The bytes for name.
    */
@@ -101,6 +121,12 @@ private static final long serialVersionUID = 0L;
   public static final int DEFAULT_VALUE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return Whether the defaultValue field is set.
    */
@@ -109,6 +135,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return The defaultValue.
    */
@@ -117,6 +149,12 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   @java.lang.Override
@@ -307,6 +345,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Declares a Variable.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableDef}
    */
   public static final class Builder extends
@@ -519,6 +561,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * The Type of the variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -526,6 +572,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * The Type of the variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 1;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -537,6 +587,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Type of the variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 1;</code>
      * @return The type.
      */
@@ -546,6 +600,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The Type of the variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 1;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -560,6 +618,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Type of the variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 1;</code>
      * @return This builder for chaining.
      */
@@ -572,6 +634,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 2;</code>
      * @return The name.
      */
@@ -588,6 +654,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 2;</code>
      * @return The bytes for name.
      */
@@ -605,6 +675,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 2;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -618,6 +692,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 2;</code>
      * @return This builder for chaining.
      */
@@ -628,6 +706,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 2;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -646,6 +728,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> defaultValueBuilder_;
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return Whether the defaultValue field is set.
      */
@@ -653,6 +741,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      * @return The defaultValue.
      */
@@ -664,6 +758,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -680,6 +780,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder setDefaultValue(
@@ -694,6 +800,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -713,6 +825,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder clearDefaultValue() {
@@ -726,6 +844,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getDefaultValueBuilder() {
@@ -734,6 +858,12 @@ private static final long serialVersionUID = 0L;
       return getDefaultValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
@@ -745,6 +875,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Optional default value if the variable isn't set; for example, in a ThreadRun
+     * if you start a ThreadRun or WfRun without passing a variable in, then this is
+     * used.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
