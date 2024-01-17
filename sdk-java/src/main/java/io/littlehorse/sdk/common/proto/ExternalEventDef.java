@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * ExternalEventDef
+ * The ExternalEventDef defines the blueprint for an ExternalEvent.
  * </pre>
  *
  * Protobuf type {@code littlehorse.ExternalEventDef}
@@ -47,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the ExternalEventDef.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -64,6 +68,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ExternalEventDef.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -85,6 +93,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * When the ExternalEventDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -93,6 +105,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * When the ExternalEventDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -101,6 +117,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * When the ExternalEventDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -111,6 +131,11 @@ private static final long serialVersionUID = 0L;
   public static final int RETENTION_POLICY_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy retentionPolicy_;
   /**
+   * <pre>
+   * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+   * ExternalEvent **only before** it is matched with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
    * @return Whether the retentionPolicy field is set.
    */
@@ -119,6 +144,11 @@ private static final long serialVersionUID = 0L;
     return retentionPolicy_ != null;
   }
   /**
+   * <pre>
+   * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+   * ExternalEvent **only before** it is matched with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
    * @return The retentionPolicy.
    */
@@ -127,6 +157,11 @@ private static final long serialVersionUID = 0L;
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
   /**
+   * <pre>
+   * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+   * ExternalEvent **only before** it is matched with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
    */
   @java.lang.Override
@@ -324,7 +359,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * ExternalEventDef
+   * The ExternalEventDef defines the blueprint for an ExternalEvent.
    * </pre>
    *
    * Protobuf type {@code littlehorse.ExternalEventDef}
@@ -538,6 +573,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the ExternalEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -554,6 +593,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ExternalEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -571,6 +614,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ExternalEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -584,6 +631,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ExternalEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -594,6 +645,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ExternalEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -612,6 +667,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -619,6 +678,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -630,6 +693,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -646,6 +713,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -660,6 +731,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -679,6 +754,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -692,6 +771,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -700,6 +783,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -711,6 +798,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the ExternalEventDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -731,6 +822,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      * @return Whether the retentionPolicy field is set.
      */
@@ -738,6 +834,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      * @return The retentionPolicy.
      */
@@ -749,6 +850,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy value) {
@@ -765,6 +871,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public Builder setRetentionPolicy(
@@ -779,6 +890,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy value) {
@@ -798,6 +914,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public Builder clearRetentionPolicy() {
@@ -811,6 +932,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.Builder getRetentionPolicyBuilder() {
@@ -819,6 +945,11 @@ private static final long serialVersionUID = 0L;
       return getRetentionPolicyFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
@@ -830,6 +961,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+     * ExternalEvent **only before** it is matched with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

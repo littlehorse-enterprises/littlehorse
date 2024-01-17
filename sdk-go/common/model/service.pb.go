@@ -441,7 +441,13 @@ type PutExternalEventDefRequest struct {
 	// The name of the resulting ExternalEventDef.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Policy to determine how long an ExternalEvent is retained after creation if it
-	// is not yet claimed by a WfRun.
+	// is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+	// ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+	// If not set, then ExternalEvent's are not deleted if they are not matched with
+	// a WfRun.
+	//
+	// A future version of LittleHorse will allow changing the retention_policy, which
+	// will trigger a cleanup of old `ExternalEvent`s.
 	RetentionPolicy *ExternalEventRetentionPolicy `protobuf:"bytes,2,opt,name=retention_policy,json=retentionPolicy,proto3" json:"retention_policy,omitempty"`
 }
 

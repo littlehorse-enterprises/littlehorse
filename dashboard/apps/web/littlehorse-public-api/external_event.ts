@@ -7,22 +7,77 @@ import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
+/**
+ * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+ * Generally, an ExternalEvent is used to represent a document getting signed, an incident
+ * being resolved, an order being fulfilled, etc.
+ *
+ * ExternalEvent's are created via the 'rpc PutExternalEvent'
+ *
+ * For more context on ExternalEvents, check our documentation here:
+ * https://littlehorse.dev/docs/concepts/external-events
+ */
 export interface ExternalEvent {
-  id: ExternalEventId | undefined;
-  createdAt: string | undefined;
-  content: VariableValue | undefined;
-  threadRunNumber?: number | undefined;
-  nodeRunPosition?: number | undefined;
+  /**
+   * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+   * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+   * rpc call.
+   */
+  id:
+    | ExternalEventId
+    | undefined;
+  /** The time the ExternalEvent was registered with LittleHorse. */
+  createdAt:
+    | string
+    | undefined;
+  /** The payload of this ExternalEvent. */
+  content:
+    | VariableValue
+    | undefined;
+  /**
+   * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+   * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+   */
+  threadRunNumber?:
+    | number
+    | undefined;
+  /**
+   * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+   * Node; note that in the case of an Interrupt the node_run_position will never
+   * be set), this is set to the number of the relevant NodeRun.
+   */
+  nodeRunPosition?:
+    | number
+    | undefined;
+  /** Whether the ExternalEvent has been claimed by a WfRun. */
   claimed: boolean;
 }
 
-/** ExternalEventDef */
+/** The ExternalEventDef defines the blueprint for an ExternalEvent. */
 export interface ExternalEventDef {
+  /** The name of the ExternalEventDef. */
   name: string;
-  createdAt: string | undefined;
+  /** When the ExternalEventDef was created. */
+  createdAt:
+    | string
+    | undefined;
+  /**
+   * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+   * ExternalEvent **only before** it is matched with a WfRun.
+   */
   retentionPolicy: ExternalEventRetentionPolicy | undefined;
 }
 
+/**
+ * Policy to determine how long an ExternalEvent is retained after creation if it
+ * is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+ * ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+ * If not set, then ExternalEvent's are not deleted if they are not matched with
+ * a WfRun.
+ *
+ * A future version of LittleHorse will allow changing the retention_policy, which
+ * will trigger a cleanup of old `ExternalEvent`s.
+ */
 export interface ExternalEventRetentionPolicy {
   /**
    * Delete such an ExternalEvent X seconds after it has been registered if it
