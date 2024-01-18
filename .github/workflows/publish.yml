@@ -108,9 +108,7 @@ jobs:
           push: false
           tags: latest
           labels: latest
-          platforms:
-            - linux/amd64
-            - linux/arm64
+          platforms: "linux/amd64,linux/arm64"
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Push Standalone Image to Amazon ECR
@@ -120,7 +118,7 @@ jobs:
           ECR_REPOSITORY: lh-standalone
           IMAGE_TAG: latest
         run: |
-          docker buildx build -f docker/standalone/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -f docker/standalone/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
