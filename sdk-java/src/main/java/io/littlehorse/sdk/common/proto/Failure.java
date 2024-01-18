@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Denotes a failure that happened during execution of a NodeRun or the outgoing
+ * edges.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.Failure}
  */
 public final class Failure extends
@@ -45,6 +50,14 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object failureName_ = "";
   /**
+   * <pre>
+   * The name of the failure. LittleHorse has certain built-in failures, all named in
+   * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+   *
+   * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+   * as an `LHStatus.EXCEPTION`.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The failureName.
    */
@@ -62,6 +75,14 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the failure. LittleHorse has certain built-in failures, all named in
+   * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+   *
+   * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+   * as an `LHStatus.EXCEPTION`.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The bytes for failureName.
    */
@@ -84,6 +105,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object message_ = "";
   /**
+   * <pre>
+   * The human-readable message associated with this Failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
@@ -101,6 +126,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The human-readable message associated with this Failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -122,6 +151,14 @@ private static final long serialVersionUID = 0L;
   public static final int CONTENT_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue content_;
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
@@ -130,6 +167,14 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
@@ -138,6 +183,14 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    */
   @java.lang.Override
@@ -148,6 +201,10 @@ private static final long serialVersionUID = 0L;
   public static final int WAS_PROPERLY_HANDLED_FIELD_NUMBER = 4;
   private boolean wasProperlyHandled_ = false;
   /**
+   * <pre>
+   * A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+   * </pre>
+   *
    * <code>bool was_properly_handled = 4;</code>
    * @return The wasProperlyHandled.
    */
@@ -351,6 +408,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Denotes a failure that happened during execution of a NodeRun or the outgoing
+   * edges.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.Failure}
    */
   public static final class Builder extends
@@ -577,6 +639,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object failureName_ = "";
     /**
+     * <pre>
+     * The name of the failure. LittleHorse has certain built-in failures, all named in
+     * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+     *
+     * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+     * as an `LHStatus.EXCEPTION`.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return The failureName.
      */
@@ -593,6 +663,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the failure. LittleHorse has certain built-in failures, all named in
+     * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+     *
+     * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+     * as an `LHStatus.EXCEPTION`.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return The bytes for failureName.
      */
@@ -610,6 +688,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the failure. LittleHorse has certain built-in failures, all named in
+     * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+     *
+     * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+     * as an `LHStatus.EXCEPTION`.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @param value The failureName to set.
      * @return This builder for chaining.
@@ -623,6 +709,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the failure. LittleHorse has certain built-in failures, all named in
+     * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+     *
+     * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+     * as an `LHStatus.EXCEPTION`.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -633,6 +727,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the failure. LittleHorse has certain built-in failures, all named in
+     * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+     *
+     * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+     * as an `LHStatus.EXCEPTION`.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @param value The bytes for failureName to set.
      * @return This builder for chaining.
@@ -649,6 +751,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object message_ = "";
     /**
+     * <pre>
+     * The human-readable message associated with this Failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The message.
      */
@@ -665,6 +771,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The human-readable message associated with this Failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The bytes for message.
      */
@@ -682,6 +792,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The human-readable message associated with this Failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The message to set.
      * @return This builder for chaining.
@@ -695,6 +809,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The human-readable message associated with this Failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return This builder for chaining.
      */
@@ -705,6 +823,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The human-readable message associated with this Failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.
@@ -723,6 +845,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      * @return Whether the content field is set.
      */
@@ -730,6 +860,14 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      * @return The content.
      */
@@ -741,6 +879,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -757,6 +903,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(
@@ -771,6 +925,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -790,6 +952,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder clearContent() {
@@ -803,6 +973,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
@@ -811,6 +989,14 @@ private static final long serialVersionUID = 0L;
       return getContentFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
@@ -822,6 +1008,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A user-defined Failure can have a value; for example, in Java an Exception is an
+     * Object with arbitrary properties and behaviors.
+     *
+     * Future versions of LH will allow FailureHandler threads to accept that value as
+     * an input variable.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -840,6 +1034,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean wasProperlyHandled_ ;
     /**
+     * <pre>
+     * A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+     * </pre>
+     *
      * <code>bool was_properly_handled = 4;</code>
      * @return The wasProperlyHandled.
      */
@@ -848,6 +1046,10 @@ private static final long serialVersionUID = 0L;
       return wasProperlyHandled_;
     }
     /**
+     * <pre>
+     * A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+     * </pre>
+     *
      * <code>bool was_properly_handled = 4;</code>
      * @param value The wasProperlyHandled to set.
      * @return This builder for chaining.
@@ -860,6 +1062,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+     * </pre>
+     *
      * <code>bool was_properly_handled = 4;</code>
      * @return This builder for chaining.
      */

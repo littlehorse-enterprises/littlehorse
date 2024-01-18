@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.EntrypointRun}
  */
 public final class EntrypointRun extends
@@ -185,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.EntrypointRun}
    */
   public static final class Builder extends

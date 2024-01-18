@@ -8,42 +8,74 @@ public interface WfSpecMetricsIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The timestamp at which this metrics window starts.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * The timestamp at which this metrics window starts.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * The timestamp at which this metrics window starts.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * The length of this window.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The enum numeric value on the wire for windowType.
    */
   int getWindowTypeValue();
   /**
+   * <pre>
+   * The length of this window.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The windowType.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType();
 
   /**
+   * <pre>
+   * The WfSpecId that this metrics window reports on.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * The WfSpecId that this metrics window reports on.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * The WfSpecId that this metrics window reports on.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();

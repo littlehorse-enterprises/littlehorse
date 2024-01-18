@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.NodeRunId}
  */
 public final class NodeRunId extends
@@ -41,6 +45,11 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -49,6 +58,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -57,6 +71,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -67,6 +86,10 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
   private int threadRunNumber_ = 0;
   /**
+   * <pre>
+   * ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
    */
@@ -78,6 +101,10 @@ private static final long serialVersionUID = 0L;
   public static final int POSITION_FIELD_NUMBER = 3;
   private int position_ = 0;
   /**
+   * <pre>
+   * Position of this NodeRun within its ThreadRun.
+   * </pre>
+   *
    * <code>int32 position = 3;</code>
    * @return The position.
    */
@@ -271,6 +298,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.NodeRunId}
    */
   public static final class Builder extends
@@ -474,6 +505,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -481,6 +517,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -492,6 +533,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -508,6 +554,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -522,6 +573,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -541,6 +597,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -554,6 +615,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -562,6 +628,11 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -573,6 +644,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -591,6 +667,10 @@ private static final long serialVersionUID = 0L;
 
     private int threadRunNumber_ ;
     /**
+     * <pre>
+     * ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @return The threadRunNumber.
      */
@@ -599,6 +679,10 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
+     * <pre>
+     * ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
@@ -611,6 +695,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @return This builder for chaining.
      */
@@ -623,6 +711,10 @@ private static final long serialVersionUID = 0L;
 
     private int position_ ;
     /**
+     * <pre>
+     * Position of this NodeRun within its ThreadRun.
+     * </pre>
+     *
      * <code>int32 position = 3;</code>
      * @return The position.
      */
@@ -631,6 +723,10 @@ private static final long serialVersionUID = 0L;
       return position_;
     }
     /**
+     * <pre>
+     * Position of this NodeRun within its ThreadRun.
+     * </pre>
+     *
      * <code>int32 position = 3;</code>
      * @param value The position to set.
      * @return This builder for chaining.
@@ -643,6 +739,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Position of this NodeRun within its ThreadRun.
+     * </pre>
+     *
      * <code>int32 position = 3;</code>
      * @return This builder for chaining.
      */

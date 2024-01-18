@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * VariableValue is a structure containing a value in LittleHorse. It can be
+ * used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+ * from a TaskRun, as the value of a WfRun's Variable, etc.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableValue}
  */
 public final class VariableValue extends
@@ -92,6 +98,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int JSON_OBJ_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return Whether the jsonObj field is set.
    */
@@ -99,6 +109,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 2;
   }
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return The jsonObj.
    */
@@ -120,6 +134,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return The bytes for jsonObj.
    */
@@ -144,6 +162,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int JSON_ARR_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return Whether the jsonArr field is set.
    */
@@ -151,6 +173,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 3;
   }
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return The jsonArr.
    */
@@ -172,6 +198,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return The bytes for jsonArr.
    */
@@ -196,6 +226,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int DOUBLE_FIELD_NUMBER = 4;
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>double double = 4;</code>
    * @return Whether the double field is set.
    */
@@ -204,6 +238,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 4;
   }
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>double double = 4;</code>
    * @return The double.
    */
@@ -217,6 +255,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int BOOL_FIELD_NUMBER = 5;
   /**
+   * <pre>
+   * A boolean.
+   * </pre>
+   *
    * <code>bool bool = 5;</code>
    * @return Whether the bool field is set.
    */
@@ -225,6 +267,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 5;
   }
   /**
+   * <pre>
+   * A boolean.
+   * </pre>
+   *
    * <code>bool bool = 5;</code>
    * @return The bool.
    */
@@ -238,6 +284,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int STR_FIELD_NUMBER = 6;
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return Whether the str field is set.
    */
@@ -245,6 +295,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 6;
   }
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return The str.
    */
@@ -266,6 +320,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return The bytes for str.
    */
@@ -290,6 +348,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int INT_FIELD_NUMBER = 7;
   /**
+   * <pre>
+   * A 64-bit integer.
+   * </pre>
+   *
    * <code>int64 int = 7;</code>
    * @return Whether the int field is set.
    */
@@ -298,6 +360,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 7;
   }
   /**
+   * <pre>
+   * A 64-bit integer.
+   * </pre>
+   *
    * <code>int64 int = 7;</code>
    * @return The int.
    */
@@ -311,6 +377,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int BYTES_FIELD_NUMBER = 8;
   /**
+   * <pre>
+   * An arbitrary String of bytes.
+   * </pre>
+   *
    * <code>bytes bytes = 8;</code>
    * @return Whether the bytes field is set.
    */
@@ -319,6 +389,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 8;
   }
   /**
+   * <pre>
+   * An arbitrary String of bytes.
+   * </pre>
+   *
    * <code>bytes bytes = 8;</code>
    * @return The bytes.
    */
@@ -600,6 +674,12 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * VariableValue is a structure containing a value in LittleHorse. It can be
+   * used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+   * from a TaskRun, as the value of a WfRun's Variable, etc.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableValue}
    */
   public static final class Builder extends
@@ -856,6 +936,10 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @return Whether the jsonObj field is set.
      */
@@ -864,6 +948,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 2;
     }
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @return The jsonObj.
      */
@@ -886,6 +974,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @return The bytes for jsonObj.
      */
@@ -909,6 +1001,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @param value The jsonObj to set.
      * @return This builder for chaining.
@@ -922,6 +1018,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @return This builder for chaining.
      */
@@ -934,6 +1034,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A String representing a serialized json object.
+     * </pre>
+     *
      * <code>string json_obj = 2;</code>
      * @param value The bytes for jsonObj to set.
      * @return This builder for chaining.
@@ -949,6 +1053,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @return Whether the jsonArr field is set.
      */
@@ -957,6 +1065,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 3;
     }
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @return The jsonArr.
      */
@@ -979,6 +1091,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @return The bytes for jsonArr.
      */
@@ -1002,6 +1118,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @param value The jsonArr to set.
      * @return This builder for chaining.
@@ -1015,6 +1135,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @return This builder for chaining.
      */
@@ -1027,6 +1151,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A String representing a serialized json list.
+     * </pre>
+     *
      * <code>string json_arr = 3;</code>
      * @param value The bytes for jsonArr to set.
      * @return This builder for chaining.
@@ -1042,6 +1170,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * A 64-bit floating point number.
+     * </pre>
+     *
      * <code>double double = 4;</code>
      * @return Whether the double field is set.
      */
@@ -1049,6 +1181,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 4;
     }
     /**
+     * <pre>
+     * A 64-bit floating point number.
+     * </pre>
+     *
      * <code>double double = 4;</code>
      * @return The double.
      */
@@ -1059,6 +1195,10 @@ private static final long serialVersionUID = 0L;
       return 0D;
     }
     /**
+     * <pre>
+     * A 64-bit floating point number.
+     * </pre>
+     *
      * <code>double double = 4;</code>
      * @param value The double to set.
      * @return This builder for chaining.
@@ -1071,6 +1211,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A 64-bit floating point number.
+     * </pre>
+     *
      * <code>double double = 4;</code>
      * @return This builder for chaining.
      */
@@ -1084,6 +1228,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * A boolean.
+     * </pre>
+     *
      * <code>bool bool = 5;</code>
      * @return Whether the bool field is set.
      */
@@ -1091,6 +1239,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 5;
     }
     /**
+     * <pre>
+     * A boolean.
+     * </pre>
+     *
      * <code>bool bool = 5;</code>
      * @return The bool.
      */
@@ -1101,6 +1253,10 @@ private static final long serialVersionUID = 0L;
       return false;
     }
     /**
+     * <pre>
+     * A boolean.
+     * </pre>
+     *
      * <code>bool bool = 5;</code>
      * @param value The bool to set.
      * @return This builder for chaining.
@@ -1113,6 +1269,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A boolean.
+     * </pre>
+     *
      * <code>bool bool = 5;</code>
      * @return This builder for chaining.
      */
@@ -1126,6 +1286,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @return Whether the str field is set.
      */
@@ -1134,6 +1298,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 6;
     }
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @return The str.
      */
@@ -1156,6 +1324,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @return The bytes for str.
      */
@@ -1179,6 +1351,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @param value The str to set.
      * @return This builder for chaining.
@@ -1192,6 +1368,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @return This builder for chaining.
      */
@@ -1204,6 +1384,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A string.
+     * </pre>
+     *
      * <code>string str = 6;</code>
      * @param value The bytes for str to set.
      * @return This builder for chaining.
@@ -1219,6 +1403,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * A 64-bit integer.
+     * </pre>
+     *
      * <code>int64 int = 7;</code>
      * @return Whether the int field is set.
      */
@@ -1226,6 +1414,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 7;
     }
     /**
+     * <pre>
+     * A 64-bit integer.
+     * </pre>
+     *
      * <code>int64 int = 7;</code>
      * @return The int.
      */
@@ -1236,6 +1428,10 @@ private static final long serialVersionUID = 0L;
       return 0L;
     }
     /**
+     * <pre>
+     * A 64-bit integer.
+     * </pre>
+     *
      * <code>int64 int = 7;</code>
      * @param value The int to set.
      * @return This builder for chaining.
@@ -1248,6 +1444,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A 64-bit integer.
+     * </pre>
+     *
      * <code>int64 int = 7;</code>
      * @return This builder for chaining.
      */
@@ -1261,6 +1461,10 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * An arbitrary String of bytes.
+     * </pre>
+     *
      * <code>bytes bytes = 8;</code>
      * @return Whether the bytes field is set.
      */
@@ -1268,6 +1472,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 8;
     }
     /**
+     * <pre>
+     * An arbitrary String of bytes.
+     * </pre>
+     *
      * <code>bytes bytes = 8;</code>
      * @return The bytes.
      */
@@ -1278,6 +1486,10 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.ByteString.EMPTY;
     }
     /**
+     * <pre>
+     * An arbitrary String of bytes.
+     * </pre>
+     *
      * <code>bytes bytes = 8;</code>
      * @param value The bytes to set.
      * @return This builder for chaining.
@@ -1290,6 +1502,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * An arbitrary String of bytes.
+     * </pre>
+     *
      * <code>bytes bytes = 8;</code>
      * @return This builder for chaining.
      */

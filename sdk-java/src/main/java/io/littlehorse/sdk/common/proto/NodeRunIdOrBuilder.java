@@ -8,27 +8,50 @@ public interface NodeRunIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
+   * <pre>
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
    */
   int getThreadRunNumber();
 
   /**
+   * <pre>
+   * Position of this NodeRun within its ThreadRun.
+   * </pre>
+   *
    * <code>int32 position = 3;</code>
    * @return The position.
    */

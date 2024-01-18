@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The ID of a WfSpec.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfSpecId}
  */
 public final class WfSpecId extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * Name of the WfSpec.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -60,6 +68,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Name of the WfSpec.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -81,6 +93,17 @@ private static final long serialVersionUID = 0L;
   public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
   private int majorVersion_ = 0;
   /**
+   * <pre>
+   * Major Version of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   * </pre>
+   *
    * <code>int32 major_version = 2;</code>
    * @return The majorVersion.
    */
@@ -92,6 +115,17 @@ private static final long serialVersionUID = 0L;
   public static final int REVISION_FIELD_NUMBER = 3;
   private int revision_ = 0;
   /**
+   * <pre>
+   * Revision of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   * </pre>
+   *
    * <code>int32 revision = 3;</code>
    * @return The revision.
    */
@@ -279,6 +313,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The ID of a WfSpec.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfSpecId}
    */
   public static final class Builder extends
@@ -474,6 +512,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * Name of the WfSpec.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -490,6 +532,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Name of the WfSpec.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -507,6 +553,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Name of the WfSpec.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -520,6 +570,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Name of the WfSpec.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -530,6 +584,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Name of the WfSpec.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -546,6 +604,17 @@ private static final long serialVersionUID = 0L;
 
     private int majorVersion_ ;
     /**
+     * <pre>
+     * Major Version of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 major_version = 2;</code>
      * @return The majorVersion.
      */
@@ -554,6 +623,17 @@ private static final long serialVersionUID = 0L;
       return majorVersion_;
     }
     /**
+     * <pre>
+     * Major Version of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 major_version = 2;</code>
      * @param value The majorVersion to set.
      * @return This builder for chaining.
@@ -566,6 +646,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Major Version of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
@@ -578,6 +669,17 @@ private static final long serialVersionUID = 0L;
 
     private int revision_ ;
     /**
+     * <pre>
+     * Revision of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 revision = 3;</code>
      * @return The revision.
      */
@@ -586,6 +688,17 @@ private static final long serialVersionUID = 0L;
       return revision_;
     }
     /**
+     * <pre>
+     * Revision of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 revision = 3;</code>
      * @param value The revision to set.
      * @return This builder for chaining.
@@ -598,6 +711,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Revision of a WfSpec.
+     *
+     * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+     * and no breaking changes to the public Variables API results in a new WfSpec
+     * being created with the same MajorVersion and a new revision. Creating a
+     * WfSpec with a breaking change to the public Variables API results in a
+     * new WfSpec being created with the same name, an incremented major_version,
+     * and revision = 0.
+     * </pre>
+     *
      * <code>int32 revision = 3;</code>
      * @return This builder for chaining.
      */

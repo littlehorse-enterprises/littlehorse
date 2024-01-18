@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a WfRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfRunId}
  */
 public final class WfRunId extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * The ID for this WfRun instance.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -61,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The ID for this WfRun instance.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -82,6 +94,10 @@ private static final long serialVersionUID = 0L;
   public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
   /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
    * @return Whether the parentWfRunId field is set.
    */
@@ -90,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
    * @return The parentWfRunId.
    */
@@ -98,6 +118,10 @@ private static final long serialVersionUID = 0L;
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
   /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
    */
   @java.lang.Override
@@ -278,6 +302,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a WfRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfRunId}
    */
   public static final class Builder extends
@@ -478,6 +506,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * The ID for this WfRun instance.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -494,6 +526,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID for this WfRun instance.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -511,6 +547,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID for this WfRun instance.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -524,6 +564,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID for this WfRun instance.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -534,6 +578,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID for this WfRun instance.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -552,6 +600,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> parentWfRunIdBuilder_;
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      * @return Whether the parentWfRunId field is set.
      */
@@ -559,6 +611,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      * @return The parentWfRunId.
      */
@@ -570,6 +626,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public Builder setParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -586,6 +646,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public Builder setParentWfRunId(
@@ -600,6 +664,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public Builder mergeParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -619,6 +687,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public Builder clearParentWfRunId() {
@@ -632,6 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getParentWfRunIdBuilder() {
@@ -640,6 +716,10 @@ private static final long serialVersionUID = 0L;
       return getParentWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
@@ -651,6 +731,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a UserTaskDef
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskDefId}
  */
 public final class UserTaskDefId extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of a UserTaskDef
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -60,6 +68,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of a UserTaskDef
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -81,6 +93,10 @@ private static final long serialVersionUID = 0L;
   public static final int VERSION_FIELD_NUMBER = 2;
   private int version_ = 0;
   /**
+   * <pre>
+   * Note that UserTaskDef's use simple versioning.
+   * </pre>
+   *
    * <code>int32 version = 2;</code>
    * @return The version.
    */
@@ -257,6 +273,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a UserTaskDef
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskDefId}
    */
   public static final class Builder extends
@@ -440,6 +460,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of a UserTaskDef
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -456,6 +480,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of a UserTaskDef
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -473,6 +501,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of a UserTaskDef
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -486,6 +518,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of a UserTaskDef
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -496,6 +532,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of a UserTaskDef
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -512,6 +552,10 @@ private static final long serialVersionUID = 0L;
 
     private int version_ ;
     /**
+     * <pre>
+     * Note that UserTaskDef's use simple versioning.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @return The version.
      */
@@ -520,6 +564,10 @@ private static final long serialVersionUID = 0L;
       return version_;
     }
     /**
+     * <pre>
+     * Note that UserTaskDef's use simple versioning.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @param value The version to set.
      * @return This builder for chaining.
@@ -532,6 +580,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Note that UserTaskDef's use simple versioning.
+     * </pre>
+     *
      * <code>int32 version = 2;</code>
      * @return This builder for chaining.
      */

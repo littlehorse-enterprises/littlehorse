@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Variable is an instance of a variable assigned to a WfRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.Variable}
  */
 public final class Variable extends
@@ -41,6 +45,11 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.VariableId id_;
   /**
+   * <pre>
+   * ID of this Variable. Note that the VariableId contains the relevant
+   * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+   * </pre>
+   *
    * <code>.littlehorse.VariableId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -49,6 +58,11 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * ID of this Variable. Note that the VariableId contains the relevant
+   * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+   * </pre>
+   *
    * <code>.littlehorse.VariableId id = 1;</code>
    * @return The id.
    */
@@ -57,6 +71,11 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * ID of this Variable. Note that the VariableId contains the relevant
+   * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+   * </pre>
+   *
    * <code>.littlehorse.VariableId id = 1;</code>
    */
   @java.lang.Override
@@ -67,6 +86,10 @@ private static final long serialVersionUID = 0L;
   public static final int VALUE_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
+   * <pre>
+   * The value of this Variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
@@ -75,6 +98,10 @@ private static final long serialVersionUID = 0L;
     return value_ != null;
   }
   /**
+   * <pre>
+   * The value of this Variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
@@ -83,6 +110,10 @@ private static final long serialVersionUID = 0L;
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
+   * <pre>
+   * The value of this Variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    */
   @java.lang.Override
@@ -93,6 +124,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * When the Variable was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return Whether the createdAt field is set.
    */
@@ -101,6 +136,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * When the Variable was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return The createdAt.
    */
@@ -109,6 +148,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * When the Variable was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   @java.lang.Override
@@ -119,6 +162,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * The ID of the WfSpec that this Variable belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -127,6 +174,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that this Variable belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return The wfSpecId.
    */
@@ -135,6 +186,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that this Variable belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    */
   @java.lang.Override
@@ -353,6 +408,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Variable is an instance of a variable assigned to a WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.Variable}
    */
   public static final class Builder extends
@@ -592,6 +651,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.VariableId.Builder, io.littlehorse.sdk.common.proto.VariableIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -599,6 +663,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      * @return The id.
      */
@@ -610,6 +679,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.VariableId value) {
@@ -626,6 +700,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public Builder setId(
@@ -640,6 +719,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.VariableId value) {
@@ -659,6 +743,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public Builder clearId() {
@@ -672,6 +761,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableId.Builder getIdBuilder() {
@@ -680,6 +774,11 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableIdOrBuilder getIdOrBuilder() {
@@ -691,6 +790,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of this Variable. Note that the VariableId contains the relevant
+     * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+     * </pre>
+     *
      * <code>.littlehorse.VariableId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -711,6 +815,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      * @return Whether the value field is set.
      */
@@ -718,6 +826,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      * @return The value.
      */
@@ -729,6 +841,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -745,6 +861,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder setValue(
@@ -759,6 +879,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -778,6 +902,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public Builder clearValue() {
@@ -791,6 +919,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
@@ -799,6 +931,10 @@ private static final long serialVersionUID = 0L;
       return getValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
@@ -810,6 +946,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The value of this Variable.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue value = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -830,6 +970,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return Whether the createdAt field is set.
      */
@@ -837,6 +981,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return The createdAt.
      */
@@ -848,6 +996,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -864,6 +1016,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(
@@ -878,6 +1034,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -897,6 +1057,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder clearCreatedAt() {
@@ -910,6 +1074,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -918,6 +1086,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -929,6 +1101,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the Variable was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -949,6 +1125,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -956,6 +1136,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      * @return The wfSpecId.
      */
@@ -967,6 +1151,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -983,6 +1171,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder setWfSpecId(
@@ -997,6 +1189,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1016,6 +1212,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public Builder clearWfSpecId() {
@@ -1029,6 +1229,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -1037,6 +1241,10 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -1048,6 +1256,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this Variable belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
