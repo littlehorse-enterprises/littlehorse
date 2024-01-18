@@ -41,12 +41,11 @@ class VarNameAndVal(_message.Message):
     def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class TaskAttempt(_message.Message):
-    __slots__ = ["log_output", "schedule_time", "start_time", "end_time", "task_worker_id", "task_worker_version", "status", "output", "error", "exception"]
+    __slots__ = ["log_output", "schedule_time", "start_time", "end_time", "task_worker_version", "status", "output", "error", "exception"]
     LOG_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     SCHEDULE_TIME_FIELD_NUMBER: _ClassVar[int]
     START_TIME_FIELD_NUMBER: _ClassVar[int]
     END_TIME_FIELD_NUMBER: _ClassVar[int]
-    TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_WORKER_VERSION_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_FIELD_NUMBER: _ClassVar[int]
@@ -56,13 +55,12 @@ class TaskAttempt(_message.Message):
     schedule_time: _timestamp_pb2.Timestamp
     start_time: _timestamp_pb2.Timestamp
     end_time: _timestamp_pb2.Timestamp
-    task_worker_id: str
     task_worker_version: str
     status: _common_enums_pb2.TaskStatus
     output: _variable_pb2.VariableValue
     error: LHTaskError
     exception: LHTaskException
-    def __init__(self, log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., schedule_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_worker_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[LHTaskException, _Mapping]] = ...) -> None: ...
+    def __init__(self, log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., schedule_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_worker_version: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[LHTaskException, _Mapping]] = ...) -> None: ...
 
 class TaskRunSource(_message.Message):
     __slots__ = ["task_node", "user_task_trigger", "wf_spec_id"]
@@ -89,9 +87,11 @@ class LHTaskError(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.LHErrorType, str]] = ..., message: _Optional[str] = ...) -> None: ...
 
 class LHTaskException(_message.Message):
-    __slots__ = ["name", "message"]
+    __slots__ = ["name", "message", "content"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
     name: str
     message: str
-    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ...) -> None: ...
+    content: _variable_pb2.VariableValue
+    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...

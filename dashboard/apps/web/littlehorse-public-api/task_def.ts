@@ -6,9 +6,15 @@ import { TaskDefId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/** A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers. */
 export interface TaskDef {
-  id: TaskDefId | undefined;
+  /** The ID of this TaskDef. */
+  id:
+    | TaskDefId
+    | undefined;
+  /** The input variables required to execute this TaskDef. */
   inputVars: VariableDef[];
+  /** The time at which this TaskDef was created. */
   createdAt: string | undefined;
 }
 

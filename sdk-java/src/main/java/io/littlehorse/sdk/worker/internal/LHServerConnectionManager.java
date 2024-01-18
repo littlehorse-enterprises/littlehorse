@@ -319,8 +319,8 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     private LHTaskError exnToTaskError(Throwable throwable, TaskStatus taskStatus) {
         return LHTaskError.newBuilder()
-                .setType(LHErrorType.TASK_FAILURE)
                 .setType(getFailureCodeFor(taskStatus))
+                .setMessage(throwable.getMessage())
                 .build();
     }
 

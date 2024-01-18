@@ -118,6 +118,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int CONTENT_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.VariableValue content_;
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   * @return Whether the content field is set.
+   */
+  @java.lang.Override
+  public boolean hasContent() {
+    return content_ != null;
+  }
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   * @return The content.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValue getContent() {
+    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
+  }
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
+    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -138,6 +164,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
     }
+    if (content_ != null) {
+      output.writeMessage(3, getContent());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -152,6 +181,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+    }
+    if (content_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getContent());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -172,6 +205,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getName())) return false;
     if (!getMessage()
         .equals(other.getMessage())) return false;
+    if (hasContent() != other.hasContent()) return false;
+    if (hasContent()) {
+      if (!getContent()
+          .equals(other.getContent())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -187,6 +225,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
     hash = (53 * hash) + getMessage().hashCode();
+    if (hasContent()) {
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -320,6 +362,11 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       name_ = "";
       message_ = "";
+      content_ = null;
+      if (contentBuilder_ != null) {
+        contentBuilder_.dispose();
+        contentBuilder_ = null;
+      }
       return this;
     }
 
@@ -358,6 +405,11 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.message_ = message_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.content_ = contentBuilder_ == null
+            ? content_
+            : contentBuilder_.build();
       }
     }
 
@@ -415,6 +467,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.hasContent()) {
+        mergeContent(other.getContent());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -451,6 +506,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  getContentFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -610,6 +672,125 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableValue content_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     * @return Whether the content field is set.
+     */
+    public boolean hasContent() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     * @return The content.
+     */
+    public io.littlehorse.sdk.common.proto.VariableValue getContent() {
+      if (contentBuilder_ == null) {
+        return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
+      } else {
+        return contentBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (contentBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        content_ = value;
+      } else {
+        contentBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public Builder setContent(
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
+      if (contentBuilder_ == null) {
+        content_ = builderForValue.build();
+      } else {
+        contentBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (contentBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          content_ != null &&
+          content_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          getContentBuilder().mergeFrom(value);
+        } else {
+          content_ = value;
+        }
+      } else {
+        contentBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public Builder clearContent() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      content_ = null;
+      if (contentBuilder_ != null) {
+        contentBuilder_.dispose();
+        contentBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getContentFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
+      if (contentBuilder_ != null) {
+        return contentBuilder_.getMessageOrBuilder();
+      } else {
+        return content_ == null ?
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValue content = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
+        getContentFieldBuilder() {
+      if (contentBuilder_ == null) {
+        contentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                getContent(),
+                getParentForChildren(),
+                isClean());
+        content_ = null;
+      }
+      return contentBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

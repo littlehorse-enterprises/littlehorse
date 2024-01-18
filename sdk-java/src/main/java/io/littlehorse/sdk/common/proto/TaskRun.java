@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A TaskRun resents a single instance of a TaskDef being executed.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskRun}
  */
 public final class TaskRun extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId id_;
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -52,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    * @return The id.
    */
@@ -60,6 +72,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    */
   @java.lang.Override
@@ -70,6 +86,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -78,6 +98,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
@@ -86,6 +110,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   @java.lang.Override
@@ -97,6 +125,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.TaskAttempt> attempts_;
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   @java.lang.Override
@@ -104,6 +137,11 @@ private static final long serialVersionUID = 0L;
     return attempts_;
   }
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   @java.lang.Override
@@ -112,6 +150,11 @@ private static final long serialVersionUID = 0L;
     return attempts_;
   }
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   @java.lang.Override
@@ -119,6 +162,11 @@ private static final long serialVersionUID = 0L;
     return attempts_.size();
   }
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   @java.lang.Override
@@ -126,6 +174,11 @@ private static final long serialVersionUID = 0L;
     return attempts_.get(index);
   }
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   @java.lang.Override
@@ -137,6 +190,10 @@ private static final long serialVersionUID = 0L;
   public static final int MAX_ATTEMPTS_FIELD_NUMBER = 4;
   private int maxAttempts_ = 0;
   /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun.
+   * </pre>
+   *
    * <code>int32 max_attempts = 4;</code>
    * @return The maxAttempts.
    */
@@ -149,6 +206,13 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> inputVariables_;
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   @java.lang.Override
@@ -156,6 +220,13 @@ private static final long serialVersionUID = 0L;
     return inputVariables_;
   }
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   @java.lang.Override
@@ -164,6 +235,13 @@ private static final long serialVersionUID = 0L;
     return inputVariables_;
   }
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   @java.lang.Override
@@ -171,6 +249,13 @@ private static final long serialVersionUID = 0L;
     return inputVariables_.size();
   }
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   @java.lang.Override
@@ -178,6 +263,13 @@ private static final long serialVersionUID = 0L;
     return inputVariables_.get(index);
   }
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   @java.lang.Override
@@ -189,6 +281,12 @@ private static final long serialVersionUID = 0L;
   public static final int SOURCE_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.TaskRunSource source_;
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return Whether the source field is set.
    */
@@ -197,6 +295,12 @@ private static final long serialVersionUID = 0L;
     return source_ != null;
   }
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return The source.
    */
@@ -205,6 +309,12 @@ private static final long serialVersionUID = 0L;
     return source_ == null ? io.littlehorse.sdk.common.proto.TaskRunSource.getDefaultInstance() : source_;
   }
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    */
   @java.lang.Override
@@ -215,6 +325,10 @@ private static final long serialVersionUID = 0L;
   public static final int SCHEDULED_AT_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp scheduledAt_;
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    * @return Whether the scheduledAt field is set.
    */
@@ -223,6 +337,10 @@ private static final long serialVersionUID = 0L;
     return scheduledAt_ != null;
   }
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    * @return The scheduledAt.
    */
@@ -231,6 +349,10 @@ private static final long serialVersionUID = 0L;
     return scheduledAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
   }
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    */
   @java.lang.Override
@@ -241,6 +363,10 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 8;
   private int status_ = 0;
   /**
+   * <pre>
+   * The status of the TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskStatus status = 8;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -248,6 +374,10 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
+   * <pre>
+   * The status of the TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskStatus status = 8;</code>
    * @return The status.
    */
@@ -259,6 +389,10 @@ private static final long serialVersionUID = 0L;
   public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 9;
   private int timeoutSeconds_ = 0;
   /**
+   * <pre>
+   * The timeout before LH considers a TaskAttempt to be timed out.
+   * </pre>
+   *
    * <code>int32 timeout_seconds = 9;</code>
    * @return The timeoutSeconds.
    */
@@ -536,6 +670,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A TaskRun resents a single instance of a TaskDef being executed.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskRun}
    */
   public static final class Builder extends
@@ -925,6 +1063,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -932,6 +1074,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      * @return The id.
      */
@@ -943,6 +1089,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -959,6 +1109,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public Builder setId(
@@ -973,6 +1127,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -992,6 +1150,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public Builder clearId() {
@@ -1005,6 +1167,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunId.Builder getIdBuilder() {
@@ -1013,6 +1179,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getIdOrBuilder() {
@@ -1024,6 +1194,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1044,6 +1218,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -1051,6 +1229,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      * @return The taskDefId.
      */
@@ -1062,6 +1244,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -1078,6 +1264,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder setTaskDefId(
@@ -1092,6 +1282,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -1111,6 +1305,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public Builder clearTaskDefId() {
@@ -1124,6 +1322,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -1132,6 +1334,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -1143,6 +1349,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskDef being executed.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1172,6 +1382,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TaskAttempt, io.littlehorse.sdk.common.proto.TaskAttempt.Builder, io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder> attemptsBuilder_;
 
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskAttempt> getAttemptsList() {
@@ -1182,6 +1397,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public int getAttemptsCount() {
@@ -1192,6 +1412,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskAttempt getAttempts(int index) {
@@ -1202,6 +1427,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder setAttempts(
@@ -1219,6 +1449,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder setAttempts(
@@ -1233,6 +1468,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder addAttempts(io.littlehorse.sdk.common.proto.TaskAttempt value) {
@@ -1249,6 +1489,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder addAttempts(
@@ -1266,6 +1511,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder addAttempts(
@@ -1280,6 +1530,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder addAttempts(
@@ -1294,6 +1549,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder addAllAttempts(
@@ -1309,6 +1569,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder clearAttempts() {
@@ -1322,6 +1587,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public Builder removeAttempts(int index) {
@@ -1335,6 +1605,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskAttempt.Builder getAttemptsBuilder(
@@ -1342,6 +1617,11 @@ private static final long serialVersionUID = 0L;
       return getAttemptsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder getAttemptsOrBuilder(
@@ -1352,6 +1632,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder> 
@@ -1363,6 +1648,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskAttempt.Builder addAttemptsBuilder() {
@@ -1370,6 +1660,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.TaskAttempt.getDefaultInstance());
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskAttempt.Builder addAttemptsBuilder(
@@ -1378,6 +1673,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.TaskAttempt.getDefaultInstance());
     }
     /**
+     * <pre>
+     * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+     * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskAttempt.Builder> 
@@ -1401,6 +1701,10 @@ private static final long serialVersionUID = 0L;
 
     private int maxAttempts_ ;
     /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun.
+     * </pre>
+     *
      * <code>int32 max_attempts = 4;</code>
      * @return The maxAttempts.
      */
@@ -1409,6 +1713,10 @@ private static final long serialVersionUID = 0L;
       return maxAttempts_;
     }
     /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun.
+     * </pre>
+     *
      * <code>int32 max_attempts = 4;</code>
      * @param value The maxAttempts to set.
      * @return This builder for chaining.
@@ -1421,6 +1729,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun.
+     * </pre>
+     *
      * <code>int32 max_attempts = 4;</code>
      * @return This builder for chaining.
      */
@@ -1444,6 +1756,13 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VarNameAndVal, io.littlehorse.sdk.common.proto.VarNameAndVal.Builder, io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> inputVariablesBuilder_;
 
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> getInputVariablesList() {
@@ -1454,6 +1773,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public int getInputVariablesCount() {
@@ -1464,6 +1790,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal getInputVariables(int index) {
@@ -1474,6 +1807,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder setInputVariables(
@@ -1491,6 +1831,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder setInputVariables(
@@ -1505,6 +1852,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder addInputVariables(io.littlehorse.sdk.common.proto.VarNameAndVal value) {
@@ -1521,6 +1875,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder addInputVariables(
@@ -1538,6 +1899,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder addInputVariables(
@@ -1552,6 +1920,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder addInputVariables(
@@ -1566,6 +1941,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder addAllInputVariables(
@@ -1581,6 +1963,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder clearInputVariables() {
@@ -1594,6 +1983,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public Builder removeInputVariables(int index) {
@@ -1607,6 +2003,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder getInputVariablesBuilder(
@@ -1614,6 +2017,13 @@ private static final long serialVersionUID = 0L;
       return getInputVariablesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder getInputVariablesOrBuilder(
@@ -1624,6 +2034,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> 
@@ -1635,6 +2052,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder addInputVariablesBuilder() {
@@ -1642,6 +2066,13 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VarNameAndVal.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VarNameAndVal.Builder addInputVariablesBuilder(
@@ -1650,6 +2081,13 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VarNameAndVal.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The input variables to pass into this TaskRun. Note that this is a list and not
+     * a map, because ordering matters. Depending on the language implementation, not
+     * every LittleHorse Task Worker SDK has the ability to determine the names of the
+     * variables from the method signature, so we provide both names and ordering.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal.Builder> 
@@ -1675,6 +2113,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunSource, io.littlehorse.sdk.common.proto.TaskRunSource.Builder, io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder> sourceBuilder_;
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      * @return Whether the source field is set.
      */
@@ -1682,6 +2126,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      * @return The source.
      */
@@ -1693,6 +2143,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder setSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
@@ -1709,6 +2165,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder setSource(
@@ -1723,6 +2185,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder mergeSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
@@ -1742,6 +2210,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder clearSource() {
@@ -1755,6 +2229,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSource.Builder getSourceBuilder() {
@@ -1763,6 +2243,12 @@ private static final long serialVersionUID = 0L;
       return getSourceFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder getSourceOrBuilder() {
@@ -1774,6 +2260,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+     * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+     * as a task used to send reminders).
+     * </pre>
+     *
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1794,6 +2286,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduledAtBuilder_;
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      * @return Whether the scheduledAt field is set.
      */
@@ -1801,6 +2297,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      * @return The scheduledAt.
      */
@@ -1812,6 +2312,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder setScheduledAt(com.google.protobuf.Timestamp value) {
@@ -1828,6 +2332,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder setScheduledAt(
@@ -1842,6 +2350,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder mergeScheduledAt(com.google.protobuf.Timestamp value) {
@@ -1861,6 +2373,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder clearScheduledAt() {
@@ -1874,6 +2390,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getScheduledAtBuilder() {
@@ -1882,6 +2402,10 @@ private static final long serialVersionUID = 0L;
       return getScheduledAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder() {
@@ -1893,6 +2417,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When the TaskRun was scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1911,6 +2439,10 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
+     * <pre>
+     * The status of the TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskStatus status = 8;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1918,6 +2450,10 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
+     * <pre>
+     * The status of the TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskStatus status = 8;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1929,6 +2465,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of the TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskStatus status = 8;</code>
      * @return The status.
      */
@@ -1938,6 +2478,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The status of the TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskStatus status = 8;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1952,6 +2496,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of the TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskStatus status = 8;</code>
      * @return This builder for chaining.
      */
@@ -1964,6 +2512,10 @@ private static final long serialVersionUID = 0L;
 
     private int timeoutSeconds_ ;
     /**
+     * <pre>
+     * The timeout before LH considers a TaskAttempt to be timed out.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 9;</code>
      * @return The timeoutSeconds.
      */
@@ -1972,6 +2524,10 @@ private static final long serialVersionUID = 0L;
       return timeoutSeconds_;
     }
     /**
+     * <pre>
+     * The timeout before LH considers a TaskAttempt to be timed out.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 9;</code>
      * @param value The timeoutSeconds to set.
      * @return This builder for chaining.
@@ -1984,6 +2540,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The timeout before LH considers a TaskAttempt to be timed out.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 9;</code>
      * @return This builder for chaining.
      */
