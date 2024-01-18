@@ -91,6 +91,8 @@ export interface TaskAttempt {
   endTime?:
     | string
     | undefined;
+  /** EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun. */
+  taskWorkerId: string;
   /** The version of the Task Worker that executed the TaskAttempt. */
   taskWorkerVersion?:
     | string
@@ -109,25 +111,46 @@ export interface TaskAttempt {
   exception?: LHTaskException | undefined;
 }
 
+/** The source of a TaskRun; i.e. why it was scheduled. */
 export interface TaskRunSource {
-  taskNode?: TaskNodeReference | undefined;
-  userTaskTrigger?: UserTaskTriggerReference | undefined;
+  /** Reference to a NodeRun of type TASK which scheduled this TaskRun. */
+  taskNode?:
+    | TaskNodeReference
+    | undefined;
+  /** Reference to the specific UserTaskRun trigger action which scheduled this TaskRun */
+  userTaskTrigger?:
+    | UserTaskTriggerReference
+    | undefined;
+  /**
+   * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+   * that the WorkerContext can know this information.
+   */
   wfSpecId?: WfSpecId | undefined;
 }
 
+/** Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled. */
 export interface TaskNodeReference {
+  /** The ID of the NodeRun which caused this TASK to be scheduled. */
   nodeRunId: NodeRunId | undefined;
 }
 
+/** Message denoting a TaskRun failed for technical reasons. */
 export interface LHTaskError {
+  /** The technical error code. */
   type: LHErrorType;
+  /** Human readable message for debugging. */
   message: string;
 }
 
+/**
+ * Message denoting a TaskRun's execution signaled that something went wrong in the
+ * business process, throwing a littlehorse 'EXCEPTION'.
+ */
 export interface LHTaskException {
+  /** The user-defined Failure name, for example, "credit-card-declined" */
   name: string;
+  /** Human readadble description of the failure. */
   message: string;
-  content: VariableValue | undefined;
 }
 
 function createBaseTaskRun(): TaskRun {
@@ -409,6 +432,7 @@ function createBaseTaskAttempt(): TaskAttempt {
     scheduleTime: undefined,
     startTime: undefined,
     endTime: undefined,
+    taskWorkerId: "",
     taskWorkerVersion: undefined,
     status: TaskStatus.TASK_SCHEDULED,
     output: undefined,
@@ -430,6 +454,9 @@ export const TaskAttempt = {
     }
     if (message.endTime !== undefined) {
       Timestamp.encode(toTimestamp(message.endTime), writer.uint32(42).fork()).ldelim();
+    }
+    if (message.taskWorkerId !== "") {
+      writer.uint32(58).string(message.taskWorkerId);
     }
     if (message.taskWorkerVersion !== undefined) {
       writer.uint32(66).string(message.taskWorkerVersion);
@@ -484,6 +511,13 @@ export const TaskAttempt = {
 
           message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.taskWorkerId = reader.string();
+          continue;
         case 8:
           if (tag !== 66) {
             break;
@@ -534,6 +568,7 @@ export const TaskAttempt = {
       scheduleTime: isSet(object.scheduleTime) ? globalThis.String(object.scheduleTime) : undefined,
       startTime: isSet(object.startTime) ? globalThis.String(object.startTime) : undefined,
       endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      taskWorkerId: isSet(object.taskWorkerId) ? globalThis.String(object.taskWorkerId) : "",
       taskWorkerVersion: isSet(object.taskWorkerVersion) ? globalThis.String(object.taskWorkerVersion) : undefined,
       status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
       output: isSet(object.output) ? VariableValue.fromJSON(object.output) : undefined,
@@ -555,6 +590,9 @@ export const TaskAttempt = {
     }
     if (message.endTime !== undefined) {
       obj.endTime = message.endTime;
+    }
+    if (message.taskWorkerId !== "") {
+      obj.taskWorkerId = message.taskWorkerId;
     }
     if (message.taskWorkerVersion !== undefined) {
       obj.taskWorkerVersion = message.taskWorkerVersion;
@@ -585,6 +623,7 @@ export const TaskAttempt = {
     message.scheduleTime = object.scheduleTime ?? undefined;
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
+    message.taskWorkerId = object.taskWorkerId ?? "";
     message.taskWorkerVersion = object.taskWorkerVersion ?? undefined;
     message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
     message.output = (object.output !== undefined && object.output !== null)
@@ -831,7 +870,7 @@ export const LHTaskError = {
 };
 
 function createBaseLHTaskException(): LHTaskException {
-  return { name: "", message: "", content: undefined };
+  return { name: "", message: "" };
 }
 
 export const LHTaskException = {
@@ -841,9 +880,6 @@ export const LHTaskException = {
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
-    }
-    if (message.content !== undefined) {
-      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -869,13 +905,6 @@ export const LHTaskException = {
 
           message.message = reader.string();
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.content = VariableValue.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -889,7 +918,6 @@ export const LHTaskException = {
     return {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       message: isSet(object.message) ? globalThis.String(object.message) : "",
-      content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
     };
   },
 
@@ -901,9 +929,6 @@ export const LHTaskException = {
     if (message.message !== "") {
       obj.message = message.message;
     }
-    if (message.content !== undefined) {
-      obj.content = VariableValue.toJSON(message.content);
-    }
     return obj;
   },
 
@@ -914,9 +939,6 @@ export const LHTaskException = {
     const message = createBaseLHTaskException();
     message.name = object.name ?? "";
     message.message = object.message ?? "";
-    message.content = (object.content !== undefined && object.content !== null)
-      ? VariableValue.fromPartial(object.content)
-      : undefined;
     return message;
   },
 };

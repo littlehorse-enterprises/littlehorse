@@ -20,6 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskAttempt() {
+    taskWorkerId_ = "";
     taskWorkerVersion_ = "";
     status_ = 0;
   }
@@ -245,6 +246,53 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
+  }
+
+  public static final int TASK_WORKER_ID_FIELD_NUMBER = 7;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object taskWorkerId_ = "";
+  /**
+   * <pre>
+   * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+   * </pre>
+   *
+   * <code>string task_worker_id = 7;</code>
+   * @return The taskWorkerId.
+   */
+  @java.lang.Override
+  public java.lang.String getTaskWorkerId() {
+    java.lang.Object ref = taskWorkerId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      taskWorkerId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+   * </pre>
+   *
+   * <code>string task_worker_id = 7;</code>
+   * @return The bytes for taskWorkerId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTaskWorkerIdBytes() {
+    java.lang.Object ref = taskWorkerId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      taskWorkerId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int TASK_WORKER_VERSION_FIELD_NUMBER = 8;
@@ -490,6 +538,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(5, getEndTime());
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskWorkerId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, taskWorkerId_);
+    }
     if (((bitField0_ & 0x00000010) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 8, taskWorkerVersion_);
     }
@@ -530,6 +581,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getEndTime());
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskWorkerId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, taskWorkerId_);
     }
     if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, taskWorkerVersion_);
@@ -581,6 +635,8 @@ private static final long serialVersionUID = 0L;
       if (!getEndTime()
           .equals(other.getEndTime())) return false;
     }
+    if (!getTaskWorkerId()
+        .equals(other.getTaskWorkerId())) return false;
     if (hasTaskWorkerVersion() != other.hasTaskWorkerVersion()) return false;
     if (hasTaskWorkerVersion()) {
       if (!getTaskWorkerVersion()
@@ -631,6 +687,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + END_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getEndTime().hashCode();
     }
+    hash = (37 * hash) + TASK_WORKER_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getTaskWorkerId().hashCode();
     if (hasTaskWorkerVersion()) {
       hash = (37 * hash) + TASK_WORKER_VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getTaskWorkerVersion().hashCode();
@@ -817,6 +875,7 @@ private static final long serialVersionUID = 0L;
         endTimeBuilder_.dispose();
         endTimeBuilder_ = null;
       }
+      taskWorkerId_ = "";
       taskWorkerVersion_ = "";
       status_ = 0;
       if (outputBuilder_ != null) {
@@ -890,10 +949,13 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.taskWorkerId_ = taskWorkerId_;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.taskWorkerVersion_ = taskWorkerVersion_;
         to_bitField0_ |= 0x00000010;
       }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.status_ = status_;
       }
       result.bitField0_ |= to_bitField0_;
@@ -972,9 +1034,14 @@ private static final long serialVersionUID = 0L;
       if (other.hasEndTime()) {
         mergeEndTime(other.getEndTime());
       }
+      if (!other.getTaskWorkerId().isEmpty()) {
+        taskWorkerId_ = other.taskWorkerId_;
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
       if (other.hasTaskWorkerVersion()) {
         taskWorkerVersion_ = other.taskWorkerVersion_;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (other.status_ != 0) {
@@ -1058,14 +1125,19 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 42
+            case 58: {
+              taskWorkerId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 58
             case 66: {
               taskWorkerVersion_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 66
             case 72: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 72
             case 82: {
@@ -1752,6 +1824,98 @@ private static final long serialVersionUID = 0L;
       return endTimeBuilder_;
     }
 
+    private java.lang.Object taskWorkerId_ = "";
+    /**
+     * <pre>
+     * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+     * </pre>
+     *
+     * <code>string task_worker_id = 7;</code>
+     * @return The taskWorkerId.
+     */
+    public java.lang.String getTaskWorkerId() {
+      java.lang.Object ref = taskWorkerId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        taskWorkerId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+     * </pre>
+     *
+     * <code>string task_worker_id = 7;</code>
+     * @return The bytes for taskWorkerId.
+     */
+    public com.google.protobuf.ByteString
+        getTaskWorkerIdBytes() {
+      java.lang.Object ref = taskWorkerId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        taskWorkerId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+     * </pre>
+     *
+     * <code>string task_worker_id = 7;</code>
+     * @param value The taskWorkerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTaskWorkerId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      taskWorkerId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+     * </pre>
+     *
+     * <code>string task_worker_id = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTaskWorkerId() {
+      taskWorkerId_ = getDefaultInstance().getTaskWorkerId();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+     * </pre>
+     *
+     * <code>string task_worker_id = 7;</code>
+     * @param value The bytes for taskWorkerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTaskWorkerIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      taskWorkerId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object taskWorkerVersion_ = "";
     /**
      * <pre>
@@ -1762,7 +1926,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the taskWorkerVersion field is set.
      */
     public boolean hasTaskWorkerVersion() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -1818,7 +1982,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1832,7 +1996,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearTaskWorkerVersion() {
       taskWorkerVersion_ = getDefaultInstance().getTaskWorkerVersion();
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
@@ -1850,7 +2014,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1878,7 +2042,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1908,7 +2072,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -1922,7 +2086,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       status_ = 0;
       onChanged();
       return this;

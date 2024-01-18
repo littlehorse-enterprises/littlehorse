@@ -72,34 +72,33 @@ public final class TaskRunOuterClass {
       "\'\n\006status\030\010 \001(\0162\027.littlehorse.TaskStatus" +
       "\022\027\n\017timeout_seconds\030\t \001(\005\"L\n\rVarNameAndV" +
       "al\022\020\n\010var_name\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.li" +
-      "ttlehorse.VariableValue\"\236\004\n\013TaskAttempt\022" +
+      "ttlehorse.VariableValue\"\260\004\n\013TaskAttempt\022" +
       "3\n\nlog_output\030\002 \001(\0132\032.littlehorse.Variab" +
       "leValueH\001\210\001\001\0226\n\rschedule_time\030\003 \001(\0132\032.go" +
       "ogle.protobuf.TimestampH\002\210\001\001\0223\n\nstart_ti" +
       "me\030\004 \001(\0132\032.google.protobuf.TimestampH\003\210\001" +
       "\001\0221\n\010end_time\030\005 \001(\0132\032.google.protobuf.Ti" +
-      "mestampH\004\210\001\001\022 \n\023task_worker_version\030\010 \001(" +
-      "\tH\005\210\001\001\022\'\n\006status\030\t \001(\0162\027.littlehorse.Tas" +
-      "kStatus\022,\n\006output\030\001 \001(\0132\032.littlehorse.Va" +
-      "riableValueH\000\022)\n\005error\030\n \001(\0132\030.littlehor" +
-      "se.LHTaskErrorH\000\0221\n\texception\030\013 \001(\0132\034.li" +
-      "ttlehorse.LHTaskExceptionH\000B\010\n\006resultB\r\n" +
-      "\013_log_outputB\020\n\016_schedule_timeB\r\n\013_start" +
-      "_timeB\013\n\t_end_timeB\026\n\024_task_worker_versi" +
-      "onJ\004\010\007\020\010\"\332\001\n\rTaskRunSource\0223\n\ttask_node\030" +
-      "\001 \001(\0132\036.littlehorse.TaskNodeReferenceH\000\022" +
-      "B\n\021user_task_trigger\030\002 \001(\0132%.littlehorse" +
-      ".UserTaskTriggerReferenceH\000\022.\n\nwf_spec_i" +
-      "d\030\003 \001(\0132\025.littlehorse.WfSpecIdH\001\210\001\001B\021\n\017t" +
-      "ask_run_sourceB\r\n\013_wf_spec_id\"@\n\021TaskNod" +
-      "eReference\022+\n\013node_run_id\030\001 \001(\0132\026.little" +
-      "horse.NodeRunId\"F\n\013LHTaskError\022&\n\004type\030\001" +
-      " \001(\0162\030.littlehorse.LHErrorType\022\017\n\007messag" +
-      "e\030\002 \001(\t\"]\n\017LHTaskException\022\014\n\004name\030\001 \001(\t" +
-      "\022\017\n\007message\030\002 \001(\t\022+\n\007content\030\003 \001(\0132\032.lit" +
-      "tlehorse.VariableValueBG\n\037io.littlehorse" +
-      ".sdk.common.protoP\001Z\007.;model\252\002\030LittleHor" +
-      "se.Common.Protob\006proto3"
+      "mestampH\004\210\001\001\022\026\n\016task_worker_id\030\007 \001(\t\022 \n\023" +
+      "task_worker_version\030\010 \001(\tH\005\210\001\001\022\'\n\006status" +
+      "\030\t \001(\0162\027.littlehorse.TaskStatus\022,\n\006outpu" +
+      "t\030\001 \001(\0132\032.littlehorse.VariableValueH\000\022)\n" +
+      "\005error\030\n \001(\0132\030.littlehorse.LHTaskErrorH\000" +
+      "\0221\n\texception\030\013 \001(\0132\034.littlehorse.LHTask" +
+      "ExceptionH\000B\010\n\006resultB\r\n\013_log_outputB\020\n\016" +
+      "_schedule_timeB\r\n\013_start_timeB\013\n\t_end_ti" +
+      "meB\026\n\024_task_worker_version\"\332\001\n\rTaskRunSo" +
+      "urce\0223\n\ttask_node\030\001 \001(\0132\036.littlehorse.Ta" +
+      "skNodeReferenceH\000\022B\n\021user_task_trigger\030\002" +
+      " \001(\0132%.littlehorse.UserTaskTriggerRefere" +
+      "nceH\000\022.\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse." +
+      "WfSpecIdH\001\210\001\001B\021\n\017task_run_sourceB\r\n\013_wf_" +
+      "spec_id\"@\n\021TaskNodeReference\022+\n\013node_run" +
+      "_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"F\n\013LHT" +
+      "askError\022&\n\004type\030\001 \001(\0162\030.littlehorse.LHE" +
+      "rrorType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTaskExcep" +
+      "tion\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tBG\n\037i" +
+      "o.littlehorse.sdk.common.protoP\001Z\007.;mode" +
+      "l\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -127,7 +126,7 @@ public final class TaskRunOuterClass {
     internal_static_littlehorse_TaskAttempt_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskAttempt_descriptor,
-        new java.lang.String[] { "LogOutput", "ScheduleTime", "StartTime", "EndTime", "TaskWorkerVersion", "Status", "Output", "Error", "Exception", "Result", "LogOutput", "ScheduleTime", "StartTime", "EndTime", "TaskWorkerVersion", });
+        new java.lang.String[] { "LogOutput", "ScheduleTime", "StartTime", "EndTime", "TaskWorkerId", "TaskWorkerVersion", "Status", "Output", "Error", "Exception", "Result", "LogOutput", "ScheduleTime", "StartTime", "EndTime", "TaskWorkerVersion", });
     internal_static_littlehorse_TaskRunSource_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_TaskRunSource_fieldAccessorTable = new
@@ -151,7 +150,7 @@ public final class TaskRunOuterClass {
     internal_static_littlehorse_LHTaskException_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTaskException_descriptor,
-        new java.lang.String[] { "Name", "Message", "Content", });
+        new java.lang.String[] { "Name", "Message", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

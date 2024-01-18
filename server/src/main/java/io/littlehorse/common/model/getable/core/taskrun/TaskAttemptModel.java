@@ -23,6 +23,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private Date scheduleTime;
     private Date startTime;
     private Date endTime;
+    private String taskWorkerId;
     private String taskWorkerVersion;
     private TaskStatus status;
     private LHTaskExceptionModel exception;
@@ -58,6 +59,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         if (p.hasTaskWorkerVersion()) {
             taskWorkerVersion = p.getTaskWorkerVersion();
         }
+        taskWorkerId = p.getTaskWorkerId();
         status = p.getStatus();
         if (p.hasError()) error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class, context);
         if (p.hasException())
@@ -67,6 +69,9 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     public TaskAttempt.Builder toProto() {
         TaskAttempt.Builder out = TaskAttempt.newBuilder();
 
+        if (taskWorkerId != null) {
+            out.setTaskWorkerId(taskWorkerId);
+        }
         if (taskWorkerVersion != null) {
             out.setTaskWorkerVersion(taskWorkerVersion);
         }

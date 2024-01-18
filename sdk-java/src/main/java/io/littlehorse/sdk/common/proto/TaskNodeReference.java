@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskNodeReference}
  */
 public final class TaskNodeReference extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
   /**
+   * <pre>
+   * The ID of the NodeRun which caused this TASK to be scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return Whether the nodeRunId field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the NodeRun which caused this TASK to be scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return The nodeRunId.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
   /**
+   * <pre>
+   * The ID of the NodeRun which caused this TASK to be scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskNodeReference}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return Whether the nodeRunId field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return The nodeRunId.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder setNodeRunId(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder clearNodeRunId() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.NodeRunId.Builder getNodeRunIdBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getNodeRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the NodeRun which caused this TASK to be scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

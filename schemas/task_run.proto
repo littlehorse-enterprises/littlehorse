@@ -74,9 +74,8 @@ message TaskAttempt {
   // timed out)
   optional google.protobuf.Timestamp end_time = 5;
 
-  // Reserved for `optional string task_worker_id = 7;`. This will require a configuration
-  // to be added to the clients. Alternatively, we may store the principal ID here.
-  reserved 7;
+  // EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+  string task_worker_id = 7;
 
   // The version of the Task Worker that executed the TaskAttempt.
   optional string task_worker_version = 8;
@@ -99,26 +98,43 @@ message TaskAttempt {
   }
 }
 
+// The source of a TaskRun; i.e. why it was scheduled.
 message TaskRunSource {
+  // The source of the TaskRun.
   oneof task_run_source {
+    // Reference to a NodeRun of type TASK which scheduled this TaskRun.
     TaskNodeReference task_node = 1;
+
+    // Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
     UserTaskTriggerReference user_task_trigger = 2;
   }
+
+  // The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+  // that the WorkerContext can know this information.
   optional WfSpecId wf_spec_id = 3;
 }
 
+// Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
 message TaskNodeReference {
+  // The ID of the NodeRun which caused this TASK to be scheduled.
   NodeRunId node_run_id = 1;
 }
 
+// Message denoting a TaskRun failed for technical reasons.
 message LHTaskError {
+  // The technical error code.
   LHErrorType type = 1;
+
+  // Human readable message for debugging.
   string message = 2;
 }
 
+// Message denoting a TaskRun's execution signaled that something went wrong in the
+// business process, throwing a littlehorse 'EXCEPTION'.
 message LHTaskException {
+  // The user-defined Failure name, for example, "credit-card-declined"
   string name = 1;
-  string message = 2;
 
-  VariableValue content = 3;
+  // Human readadble description of the failure.
+  string message = 2;
 }

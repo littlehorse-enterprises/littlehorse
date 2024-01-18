@@ -123,6 +123,26 @@ public interface TaskAttemptOrBuilder extends
 
   /**
    * <pre>
+   * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+   * </pre>
+   *
+   * <code>string task_worker_id = 7;</code>
+   * @return The taskWorkerId.
+   */
+  java.lang.String getTaskWorkerId();
+  /**
+   * <pre>
+   * EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+   * </pre>
+   *
+   * <code>string task_worker_id = 7;</code>
+   * @return The bytes for taskWorkerId.
+   */
+  com.google.protobuf.ByteString
+      getTaskWorkerIdBytes();
+
+  /**
+   * <pre>
    * The version of the Task Worker that executed the TaskAttempt.
    * </pre>
    *

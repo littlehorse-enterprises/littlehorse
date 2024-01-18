@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Message denoting a TaskRun failed for technical reasons.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.LHTaskError}
  */
 public final class LHTaskError extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 1;
   private int type_ = 0;
   /**
+   * <pre>
+   * The technical error code.
+   * </pre>
+   *
    * <code>.littlehorse.LHErrorType type = 1;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * The technical error code.
+   * </pre>
+   *
    * <code>.littlehorse.LHErrorType type = 1;</code>
    * @return The type.
    */
@@ -62,6 +74,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object message_ = "";
   /**
+   * <pre>
+   * Human readable message for debugging.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
@@ -79,6 +95,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Human readable message for debugging.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -264,6 +284,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Message denoting a TaskRun failed for technical reasons.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.LHTaskError}
    */
   public static final class Builder extends
@@ -447,6 +471,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * The technical error code.
+     * </pre>
+     *
      * <code>.littlehorse.LHErrorType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -454,6 +482,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * The technical error code.
+     * </pre>
+     *
      * <code>.littlehorse.LHErrorType type = 1;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -465,6 +497,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The technical error code.
+     * </pre>
+     *
      * <code>.littlehorse.LHErrorType type = 1;</code>
      * @return The type.
      */
@@ -474,6 +510,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.LHErrorType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The technical error code.
+     * </pre>
+     *
      * <code>.littlehorse.LHErrorType type = 1;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -488,6 +528,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The technical error code.
+     * </pre>
+     *
      * <code>.littlehorse.LHErrorType type = 1;</code>
      * @return This builder for chaining.
      */
@@ -500,6 +544,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object message_ = "";
     /**
+     * <pre>
+     * Human readable message for debugging.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The message.
      */
@@ -516,6 +564,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human readable message for debugging.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The bytes for message.
      */
@@ -533,6 +585,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human readable message for debugging.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The message to set.
      * @return This builder for chaining.
@@ -546,6 +602,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human readable message for debugging.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return This builder for chaining.
      */
@@ -556,6 +616,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human readable message for debugging.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.
