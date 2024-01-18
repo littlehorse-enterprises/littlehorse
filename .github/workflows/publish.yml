@@ -107,7 +107,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           ECR_REGISTRY_ALIAS: littlehorse
           ECR_REPOSITORY: lh-standalone
-          IMAGE_TAG: ${{ github.ref_name }}
+          IMAGE_TAG: latest
         run: |
           docker build -f docker/standalone/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
