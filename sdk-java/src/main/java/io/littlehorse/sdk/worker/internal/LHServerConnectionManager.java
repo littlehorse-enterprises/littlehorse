@@ -1,6 +1,5 @@
 package io.littlehorse.sdk.worker.internal;
 
-import com.google.common.base.Throwables;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -313,7 +312,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     private io.littlehorse.sdk.common.proto.LHTaskException exnToTaskException(LHTaskException exn) {
         return io.littlehorse.sdk.common.proto.LHTaskException.newBuilder()
                 .setName(exn.getName())
-                .setMessage(Throwables.getStackTraceAsString(exn))
+                .setMessage(exn.getMessage())
                 .build();
     }
 
