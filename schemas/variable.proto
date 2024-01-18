@@ -10,22 +10,50 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// VariableValue is a structure containing a value in LittleHorse. It can be
+// used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+// from a TaskRun, as the value of a WfRun's Variable, etc.
 message VariableValue {
   reserved 1;
+
+  // The value held in this VariableValue. If this is unset, treat it as
+  // a NULL.
   oneof value {
+    // A String representing a serialized json object.
     string json_obj = 2;
+
+    // A String representing a serialized json list.
     string json_arr = 3;
+
+    // A 64-bit floating point number.
     double double = 4;
+
+    // A boolean.
     bool bool = 5;
+
+    // A string.
     string str = 6;
+
+    // A 64-bit integer.
     int64 int = 7;
+
+    // An arbitrary String of bytes.
     bytes bytes = 8;
   }
 }
 
+// A Variable is an instance of a variable assigned to a WfRun.
 message Variable {
+  // ID of this Variable. Note that the VariableId contains the relevant
+  // WfRunId inside it, the threadRunNumber, and the name of the Variabe.
   VariableId id = 1;
+
+  // The value of this Variable.
   VariableValue value = 2;
+
+  // When the Variable was created.
   google.protobuf.Timestamp created_at = 3;
+
+  // The ID of the WfSpec that this Variable belongs to.
   WfSpecId wf_spec_id = 4;
 }
