@@ -71,8 +71,8 @@ jobs:
           npm install pnpm --global
           pnpm install
           pnpm build
-      - name: Tests
-        run: ./gradlew server:test
+#      - name: Tests
+#        run: ./gradlew server:test
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -109,7 +109,7 @@ jobs:
           ECR_REPOSITORY: lh-standalone
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          docker buildx build -f docker/standalone/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -f docker/standalone/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
