@@ -71,10 +71,6 @@ jobs:
           npm install pnpm --global
           pnpm install
           pnpm build
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: wrapper
       - name: Build server
         run: ./gradlew server:shadowJar -x test
 #      - name: Tests server
