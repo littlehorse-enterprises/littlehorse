@@ -71,10 +71,8 @@ jobs:
           npm install pnpm --global
           pnpm install
           pnpm build
-      - name: Build server
-        run: ./gradlew server:shadowJar -x test
-#      - name: Tests server
-#        run: ./gradlew server:test
+      - name: Build & Test Server
+        run: ./gradlew server:test server:shadowJar
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -100,31 +98,20 @@ jobs:
 #          ECR_REPOSITORY: lh-server
 #          IMAGE_TAG: ${{ github.ref_name }}
 #        run: |
-#          docker buildx build -f docker/server/Dockerfile --platform linux/amd64,linux/arm64 -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
+#          docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
 #          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
 #          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-      - name: Build and push docker
+      - name: Push Standalone Image to Amazon ECR
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: "${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-proof-of-concept:latest,${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-proof-of-concept:pepe"
+          tags: "${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-standalone:latest,${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-standalone:${{ github.ref_name }}"
           platforms: "linux/amd64,linux/arm64"
           cache-from: type=gha
           cache-to: type=gha,mode=max
           file: ./docker/standalone/Dockerfile
           context: ./
-#      - name: Push Standalone Image to Amazon ECR
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-#          ECR_REGISTRY_ALIAS: littlehorse
-#          ECR_REPOSITORY: lh-standalone
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build -f docker/standalone/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
-#          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-#          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
-#          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
 #      - name: Push lhctl CLI Image to Amazon ECR
 #        env:
 #          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
