@@ -113,6 +113,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           file: ./docker/standalone/Dockerfile
+          context: ./
 #      - name: Push Standalone Image to Amazon ECR
 #        env:
 #          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
