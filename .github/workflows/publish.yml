@@ -105,9 +105,8 @@ jobs:
       - name: Build and push docker
         uses: docker/build-push-action@v5
         with:
-          push: false
-          tags: latest
-          labels: latest
+          push: true
+          tags: "${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-proof-of-concept:latest"
           platforms: "linux/amd64,linux/arm64"
           cache-from: type=gha
           cache-to: type=gha,mode=max
