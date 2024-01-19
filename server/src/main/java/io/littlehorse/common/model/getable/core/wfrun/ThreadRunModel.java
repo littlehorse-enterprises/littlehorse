@@ -900,11 +900,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
             // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
             WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();
-            WfRunModel parentWfRun = processorContext
-                    .getableManager()
-                    .get(parentWfRunId);
-            ThreadVarDefModel parentVarDef = parentWfRun.getWfSpec().getAllVariables().get(varName);
-            if(!(parentVarDef.getAccessLevel() == WfRunVariableAccessLevel.PRIVATE_VAR)) {
+            WfRunModel parentWfRun = processorContext.getableManager().get(parentWfRunId);
+            ThreadVarDefModel parentVarDef =
+                    parentWfRun.getWfSpec().getAllVariables().get(varName);
+            if (!(parentVarDef.getAccessLevel() == WfRunVariableAccessLevel.PRIVATE_VAR)) {
                 return parentWfRun.getThreadRun(0).getVariable(varName);
             }
         }

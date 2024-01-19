@@ -58,7 +58,7 @@ public class AbstractVerifier implements Verifier {
                 .setId(wfId.getId());
 
         if (wfId.hasParentWfRunId()) {
-            throw new NotImplementedException("Parent WfRunId not supported by test framework yet.");
+            req.setParentWfRunId(wfId.getParentWfRunId());
         }
 
         for (Arg arg : args) {

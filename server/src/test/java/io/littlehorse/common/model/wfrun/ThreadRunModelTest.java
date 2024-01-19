@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
-
 import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -24,11 +23,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runners.Parameterized;
 
 public class ThreadRunModelTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
@@ -36,7 +32,6 @@ public class ThreadRunModelTest {
     private final Command dummyCommand = buildCommand();
     private final TestProcessorExecutionContext testProcessorContext =
             TestProcessorExecutionContext.create(dummyCommand, metadata, mockProcessor);
-
 
     private final WfRunModel wfRun = new WfRunModel(testProcessorContext);
 
@@ -66,7 +61,6 @@ public class ThreadRunModelTest {
                 TestUtil.threadVarDef("my-inherent-var", VariableType.INT, WfRunVariableAccessLevel.INHERITED_VAR);
         private ThreadVarDefModel parentVar;
 
-
         @BeforeEach
         public void setup() {
             // Parent WfRun setup
@@ -76,7 +70,6 @@ public class ThreadRunModelTest {
             parentWfRun.setId(new WfRunIdModel("parent-wf-id"));
             parentWfRun.getThreadRuns().add(parentThreadRun);
             testProcessorContext.getableManager().put(parentWfRun);
-
 
             // Child WfRun setup
             childWfSpec.getThreadSpecs().values().stream()
@@ -92,10 +85,12 @@ public class ThreadRunModelTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = WfRunVariableAccessLevel.class, mode = EnumSource.Mode.INCLUDE, names = {"PUBLIC_VAR", "PRIVATE_VAR"})
+        @EnumSource(
+                value = WfRunVariableAccessLevel.class,
+                mode = EnumSource.Mode.INCLUDE,
+                names = {"PUBLIC_VAR", "PRIVATE_VAR"})
         public void shouldResolvePublicVariableFromParent(WfRunVariableAccessLevel parentVariableAccessLevel) {
-            parentVar =
-                    TestUtil.threadVarDef("my-inherent-var", VariableType.INT, parentVariableAccessLevel);
+            parentVar = TestUtil.threadVarDef("my-inherent-var", VariableType.INT, parentVariableAccessLevel);
             parentWfSpec.getThreadSpecs().values().stream()
                     .findFirst()
                     .get()
@@ -106,17 +101,17 @@ public class ThreadRunModelTest {
                     "my-inherent-var", new VariableValueModel(2), parentWfRun.getId(), 0, parentWfSpec);
             testProcessorContext.getableManager().put(parentVariable);
             VariableModel result = childThreadRun.getVariable("my-inherent-var");
-            if(parentVariableAccessLevel == WfRunVariableAccessLevel.PUBLIC_VAR) {
+            if (parentVariableAccessLevel == WfRunVariableAccessLevel.PUBLIC_VAR) {
                 Assertions.assertThat(result)
                         .isNotNull()
                         .extracting(VariableModel::getValue)
                         .extracting(VariableValueModel::getIntVal)
                         .isEqualTo(2L);
             }
-            if(parentVariableAccessLevel == WfRunVariableAccessLevel.PRIVATE_VAR || parentVariableAccessLevel == WfRunVariableAccessLevel.INHERITED_VAR) {
+            if (parentVariableAccessLevel == WfRunVariableAccessLevel.PRIVATE_VAR
+                    || parentVariableAccessLevel == WfRunVariableAccessLevel.INHERITED_VAR) {
                 Assertions.assertThat(result).isNull();
             }
-
         }
     }
 
