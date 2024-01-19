@@ -19,6 +19,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -165,6 +166,11 @@ public class TestUtil {
         threadSpecModel.setName("test-name");
         threadSpecModel.setNodes(Map.of("node-1", node()));
         return threadSpecModel;
+    }
+
+    public static ThreadVarDefModel threadVarDef(
+            String variableName, VariableType type, WfRunVariableAccessLevel accessLevel) {
+        return new ThreadVarDefModel(variableDef(variableName, type), false, false, accessLevel);
     }
 
     public static NodeModel node() {

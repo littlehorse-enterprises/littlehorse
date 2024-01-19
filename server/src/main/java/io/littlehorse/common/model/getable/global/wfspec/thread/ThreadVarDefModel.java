@@ -26,19 +26,26 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
     }
 
     // For unit testing
-    public ThreadVarDefModel(VariableDefModel varDef, boolean searchable, boolean required) {
+    public ThreadVarDefModel(
+            VariableDefModel varDef, boolean searchable, boolean required, WfRunVariableAccessLevel accessLevel) {
         this();
         this.varDef = varDef;
         this.searchable = searchable;
         this.required = required;
+        this.accessLevel = accessLevel;
     }
 
     // For unit testing
-    public ThreadVarDefModel(VariableDefModel varDef, List<JsonIndexModel> jsonIndexes, boolean required) {
+    public ThreadVarDefModel(
+            VariableDefModel varDef,
+            List<JsonIndexModel> jsonIndexes,
+            boolean required,
+            WfRunVariableAccessLevel accessLevel) {
         this.varDef = varDef;
         this.required = required;
         this.searchable = true;
         this.jsonIndexes = jsonIndexes;
+        this.accessLevel = accessLevel;
     }
 
     @Override

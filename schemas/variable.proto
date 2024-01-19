@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "wf_spec.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -28,4 +29,5 @@ message Variable {
   VariableValue value = 2;
   google.protobuf.Timestamp created_at = 3;
   WfSpecId wf_spec_id = 4;
+  ThreadVarDef thread_var_def = 5;
 }
