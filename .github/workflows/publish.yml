@@ -105,7 +105,7 @@ jobs:
       - name: Push Standalone Image to Amazon ECR
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: false
           tags: "${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-standalone:latest,${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-standalone:${{ github.ref_name }}"
           platforms: "linux/amd64,linux/arm64"
           cache-from: type=gha
