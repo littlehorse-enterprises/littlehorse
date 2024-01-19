@@ -21,7 +21,6 @@ COPY ./docker/standalone/dashboard-entrypoint.sh /lh
 COPY ./docker/standalone/docker-entrypoint.sh /lh
 COPY ./docker/standalone/log4j2.properties /lh
 
-COPY ./dashboard /lh/dashboard
 WORKDIR /lh/dashboard
 ENV NODE_ENV=production
 EXPOSE 8080
@@ -29,10 +28,12 @@ EXPOSE 8080
 COPY ./dashboard/apps/web/.next/standalone ./
 COPY ./dashboard/apps/web/.next/static ./apps/web/.next/static
 COPY ./dashboard/apps/web/public ./apps/web/public
-COPY ./docker/dashboard/docker-entrypoint.sh ./
 
 WORKDIR /
 
 COPY ./server/build/libs/server-*-all.jar /lh/server.jar
+
+ENV LHD_API_HOST=localhost
+ENV LHD_API_PORT=2023
 
 ENTRYPOINT ["/lh/docker-entrypoint.sh"]
