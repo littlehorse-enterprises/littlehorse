@@ -71,7 +71,9 @@ jobs:
           npm install pnpm --global
           pnpm install
           pnpm build
-#      - name: Tests
+      - name: Build server
+        run: ./gradlew server:shadowJar -x test
+#      - name: Tests server
 #        run: ./gradlew server:test
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

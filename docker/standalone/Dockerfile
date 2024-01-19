@@ -1,8 +1,3 @@
-FROM gradle:8 as builder
-WORKDIR /lh
-COPY . /lh
-RUN gradle server:shadowJar -x test
-
 FROM ubuntu:22.04
 
 LABEL maintainer="engineering@littlehorse.io"
@@ -38,6 +33,6 @@ COPY ./docker/standalone/log4j2.properties /lh
 
 WORKDIR /
 
-COPY --from=builder /lh/server/build/libs/server-*-all.jar /lh/server.jar
+COPY ./server/build/libs/server-*-all.jar /lh/server.jar
 
 ENTRYPOINT ["/lh/docker-entrypoint.sh"]
