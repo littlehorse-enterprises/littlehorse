@@ -132,7 +132,7 @@ Run the server:
 
 Open Keycloak:
 
-http://localhost:8443
+https://localhost:8443
 
 - User: `admin`
 - Password: `admin`
