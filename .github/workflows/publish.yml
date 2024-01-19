@@ -107,7 +107,7 @@ jobs:
         with:
           push: true
           tags: "${{ steps.login-ecr-public.outputs.registry }}/littlehorse/lh-proof-of-concept:latest"
-#          platforms: "linux/amd64,linux/arm64"
+          platforms: "linux/amd64,linux/arm64"
           cache-from: type=gha
           cache-to: type=gha,mode=max
           file: ./docker/standalone/Dockerfile
