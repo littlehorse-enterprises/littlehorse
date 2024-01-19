@@ -7,7 +7,7 @@ This tools are intended to be use for development purposes.
 The LH Server depends on Kafka as a backend database. To start Kafka using docker compose, you can run:
 
 ```
-./local-dev/setup.sh
+./local-dev/setup.sh --kafka
 ```
 
 Next, you can start the LH server itself. The server can be started in a single command:
@@ -30,18 +30,12 @@ Result:
 }
 ```
 
-## Setup and Cleanup Kafka
-
-Run:
-
-```
-./local-dev/setup.sh
-```
+## Hard Cleanup
 
 You can clean up (i.e. stop Kafka and delete the data from the state directory) as follows:
 
 ```
-./local-dev/setup.sh clean
+./local-dev/setup.sh --clean
 ```
 
 ## Cleanup Data
@@ -119,7 +113,7 @@ Run server with docker and specific config:
 Run keycloak and creates clients:
 
 ```
-./local-dev/setup.sh keycloak
+./local-dev/setup.sh --keycloak --kafka
 ```
 
 Clients:
@@ -130,30 +124,6 @@ Clients:
 | worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
 | lhctl     | N/A                              | For lhctl cli to issue access tokens (Authorization Code Flow) |
 
-Creates certificates:
-
-```
-./local-dev/issue-certificates.sh
-```
-
-Update config:
-
-```
-LHS_LISTENERS=OAUTH:2023
-LHS_LISTENERS_PROTOCOL_MAP=OAUTH:TLS
-LHS_LISTENERS_AUTHENTICATION_MAP=OAUTH:OAUTH
-
-LHS_LISTENER_OAUTH_CERT=local-dev/certs/server/server.crt
-LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
-
-LHS_OAUTH_CLIENT_ID=server
-LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
-LHS_OAUTH_INTROSPECT_URL=http://localhost:8888/realms/lh/protocol/openid-connect/token/introspect
-```
-
-> Check file [oauth.config](configs/oauth.config)
-
-
 Run the server:
 
 ```
@@ -162,7 +132,7 @@ Run the server:
 
 Open Keycloak:
 
-http://localhost:8888
+http://localhost:8443
 
 - User: `admin`
 - Password: `admin`

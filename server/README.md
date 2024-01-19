@@ -24,7 +24,7 @@ Then:
 Start a local kafka cluster:
 
 ```
-../local-dev/setup.sh
+../local-dev/setup.sh --kafka
 ```
 
 Next, you can start the LH server itself. The server can be started in a single command:

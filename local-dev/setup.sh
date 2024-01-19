@@ -38,12 +38,20 @@ services:
   keycloak:
     ports:
       - "8888:8888"
+      - "8443:8443"
     container_name: lh-server-auth
-    image: quay.io/keycloak/keycloak:21.1.1
-    command: ["start-dev", "--http-port=8888"]
+    image: quay.io/keycloak/keycloak:23.0
+    command:
+      - start-dev
+      - --http-port=8888
+      - --https-port=8443
+      - --https-certificate-file=/certs/keycloak/keycloak.crt
+      - --https-certificate-key-file=/certs/keycloak/keycloak.key
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - $WORK_DIR/certs/keycloak:/certs/keycloak
 EOF
 )
 
@@ -54,6 +62,12 @@ else
 fi
 
 setup_keycloak() {
+    if ! command -v http &> /dev/null; then
+        echo "http command could not be found, install https://httpie.io/"
+        exit 1
+    fi
+
+    echo "Setting Up Keycloak"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-auth-local-dev \
@@ -139,10 +153,12 @@ EOF
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
-    echo "Keycloak url: http://localhost:${KEYCLOAK_PORT}"
+    echo "Keycloak: http://localhost:${KEYCLOAK_PORT}"
+    echo "Keycloak TLS: https://localhost:8443"
 }
 
 setup_kafka() {
+    echo "Setting Up Kafka"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-kafka-local-dev \
@@ -171,14 +187,42 @@ EOF
     ./gradlew -q clean
 }
 
-case $command in
---clean)
+kafka=false
+keycloak=false
+clean=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --clean)
+      clean=true
+      shift
+      ;;
+    --kafka)
+      kafka=true
+      shift
+      ;;
+    --keycloak)
+      keycloak=true
+      shift
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+if [ ${clean} = true ]; then
     clean
-    ;;
-keycloak)
+    exit 0
+fi
+
+"$WORK_DIR/issue-certificates.sh"
+
+if [ ${keycloak} = true ]; then
     setup_keycloak
-    ;;
-*)
+fi
+
+if [ ${kafka} = true ]; then
     setup_kafka
-    ;;
-esac
+fi
