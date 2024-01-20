@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Represents a Failure Handler that is pending to be run.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PendingFailureHandler}
  */
 public final class PendingFailureHandler extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int FAILED_THREAD_RUN_FIELD_NUMBER = 1;
   private int failedThreadRun_ = 0;
   /**
+   * <pre>
+   * The ThreadRun that failed.
+   * </pre>
+   *
    * <code>int32 failed_thread_run = 1;</code>
    * @return The failedThreadRun.
    */
@@ -54,6 +62,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object handlerSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec to run to handle the failure.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
@@ -71,6 +83,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec to run to handle the failure.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The bytes for handlerSpecName.
    */
@@ -257,6 +273,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Represents a Failure Handler that is pending to be run.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PendingFailureHandler}
    */
   public static final class Builder extends
@@ -440,6 +460,10 @@ private static final long serialVersionUID = 0L;
 
     private int failedThreadRun_ ;
     /**
+     * <pre>
+     * The ThreadRun that failed.
+     * </pre>
+     *
      * <code>int32 failed_thread_run = 1;</code>
      * @return The failedThreadRun.
      */
@@ -448,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return failedThreadRun_;
     }
     /**
+     * <pre>
+     * The ThreadRun that failed.
+     * </pre>
+     *
      * <code>int32 failed_thread_run = 1;</code>
      * @param value The failedThreadRun to set.
      * @return This builder for chaining.
@@ -460,6 +488,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ThreadRun that failed.
+     * </pre>
+     *
      * <code>int32 failed_thread_run = 1;</code>
      * @return This builder for chaining.
      */
@@ -472,6 +504,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object handlerSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec to run to handle the failure.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The handlerSpecName.
      */
@@ -488,6 +524,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run to handle the failure.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The bytes for handlerSpecName.
      */
@@ -505,6 +545,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run to handle the failure.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The handlerSpecName to set.
      * @return This builder for chaining.
@@ -518,6 +562,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run to handle the failure.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return This builder for chaining.
      */
@@ -528,6 +576,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run to handle the failure.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The bytes for handlerSpecName to set.
      * @return This builder for chaining.

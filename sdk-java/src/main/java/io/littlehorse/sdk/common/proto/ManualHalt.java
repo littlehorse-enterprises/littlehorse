@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ManualHalt}
  */
 public final class ManualHalt extends
@@ -212,6 +216,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ManualHalt}
    */
   public static final class Builder extends
