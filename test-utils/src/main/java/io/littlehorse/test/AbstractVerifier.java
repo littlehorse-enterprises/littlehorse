@@ -16,7 +16,6 @@ import io.littlehorse.test.internal.step.Step;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.testcontainers.shaded.org.apache.commons.lang3.NotImplementedException;
 
 public class AbstractVerifier implements Verifier {
     protected final LittleHorseBlockingStub lhClient;
