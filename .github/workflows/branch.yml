@@ -1,0 +1,52 @@
+name: branch
+run-name: Publishing images for branch ${{ github.ref_name }}
+on:
+  push:
+   branches-ignore:
+     - "master"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  lh-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+
+      - name: Tests and Build
+        run: ./gradlew server:test server:shadowJar
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-server
+          dockerfile: docker/server/Dockerfile
+          registry: ecr
+          prefix: branch-
+
+  lh-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: |
+          npm install pnpm --global
+          pnpm install
+          pnpm build
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-dashboard
+          dockerfile: docker/dashboard/Dockerfile
+          registry: ecr
+          prefix: branch-
