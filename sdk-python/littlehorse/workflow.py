@@ -53,6 +53,7 @@ from littlehorse.model.wf_spec_pb2 import (
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
+    WfSpec,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -1413,6 +1414,7 @@ class Workflow:
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
         self._allowed_updates: Optional[AllowedUpdateType] = None
+        self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1455,6 +1457,12 @@ class Workflow:
         """
         self._allowed_updates = update_type
 
+    def with_parent(self, parent_wf: str) -> None:
+        """
+        Defines the parent WfSpec associated to this Workflow
+        """
+        self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
+
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
 
@@ -1477,6 +1485,7 @@ class Workflow:
             entrypoint_thread_name=ENTRYPOINT,
             thread_specs=thread_specs,
             allowed_updates=self._allowed_updates,
+            parent_wf_spec=self._parent_wf,
         )
 
 

@@ -1197,6 +1197,37 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
+    def test_compile_with_parent(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_parent("my-parent-wf")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+                parent_wf_spec={"wf_spec_name": "my-parent-wf"},
+            ),
+        )
+
     def test_handle_any_failure(self):
         def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
