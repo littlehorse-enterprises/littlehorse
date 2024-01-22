@@ -52,15 +52,32 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
+   * <pre>
+   * Enumerates the different lifecycle hooks that can cause the timer to start running.
+   * </pre>
+   *
    * Protobuf enum {@code littlehorse.UTActionTrigger.UTHook}
    */
   public enum UTHook
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
+     * <pre>
+     * The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+     * hook only causes the action to be scheduled once.
+     * </pre>
+     *
      * <code>ON_ARRIVAL = 0;</code>
      */
     ON_ARRIVAL(0),
     /**
+     * <pre>
+     * The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+     * changes. This hook causes the Action to be scheduled one or more times. The first
+     * time is scheduled when the UserTaskRun is created, since we treat the change from
+     * "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+     * a change in ownership.
+     * </pre>
+     *
      * <code>ON_TASK_ASSIGNED = 1;</code>
      */
     ON_TASK_ASSIGNED(1),
@@ -68,10 +85,23 @@ private static final long serialVersionUID = 0L;
     ;
 
     /**
+     * <pre>
+     * The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+     * hook only causes the action to be scheduled once.
+     * </pre>
+     *
      * <code>ON_ARRIVAL = 0;</code>
      */
     public static final int ON_ARRIVAL_VALUE = 0;
     /**
+     * <pre>
+     * The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+     * changes. This hook causes the Action to be scheduled one or more times. The first
+     * time is scheduled when the UserTaskRun is created, since we treat the change from
+     * "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+     * a change in ownership.
+     * </pre>
+     *
      * <code>ON_TASK_ASSIGNED = 1;</code>
      */
     public static final int ON_TASK_ASSIGNED_VALUE = 1;
@@ -164,6 +194,10 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * <pre>
+   * A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UTActionTrigger.UTACancel}
    */
   public static final class UTACancel extends
@@ -345,6 +379,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UTActionTrigger.UTACancel}
      */
     public static final class Builder extends
@@ -561,45 +599,81 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      * @return Whether the task field is set.
      */
     boolean hasTask();
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      * @return The task.
      */
     io.littlehorse.sdk.common.proto.TaskNode getTask();
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      */
     io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder();
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> 
         getMutationsList();
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     io.littlehorse.sdk.common.proto.VariableMutation getMutations(int index);
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     int getMutationsCount();
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
         getMutationsOrBuilderList();
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getMutationsOrBuilder(
         int index);
   }
   /**
+   * <pre>
+   * A UserTaskAction that causes a TaskRun to be scheduled when it fires.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UTActionTrigger.UTATask}
    */
   public static final class UTATask extends
@@ -638,6 +712,10 @@ private static final long serialVersionUID = 0L;
     public static final int TASK_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.TaskNode task_;
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      * @return Whether the task field is set.
      */
@@ -646,6 +724,10 @@ private static final long serialVersionUID = 0L;
       return task_ != null;
     }
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      * @return The task.
      */
@@ -654,6 +736,10 @@ private static final long serialVersionUID = 0L;
       return task_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : task_;
     }
     /**
+     * <pre>
+     * The specification of the Task to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 1;</code>
      */
     @java.lang.Override
@@ -665,6 +751,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> mutations_;
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
@@ -672,6 +762,10 @@ private static final long serialVersionUID = 0L;
       return mutations_;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
@@ -680,6 +774,10 @@ private static final long serialVersionUID = 0L;
       return mutations_;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
@@ -687,6 +785,10 @@ private static final long serialVersionUID = 0L;
       return mutations_.size();
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
@@ -694,6 +796,10 @@ private static final long serialVersionUID = 0L;
       return mutations_.get(index);
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
@@ -878,6 +984,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * A UserTaskAction that causes a TaskRun to be scheduled when it fires.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UTActionTrigger.UTATask}
      */
     public static final class Builder extends
@@ -1116,6 +1226,10 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskBuilder_;
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        * @return Whether the task field is set.
        */
@@ -1123,6 +1237,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        * @return The task.
        */
@@ -1134,6 +1252,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder setTask(io.littlehorse.sdk.common.proto.TaskNode value) {
@@ -1150,6 +1272,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder setTask(
@@ -1164,6 +1290,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNode value) {
@@ -1183,6 +1313,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder clearTask() {
@@ -1196,6 +1330,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.TaskNode.Builder getTaskBuilder() {
@@ -1204,6 +1342,10 @@ private static final long serialVersionUID = 0L;
         return getTaskFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder() {
@@ -1215,6 +1357,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The specification of the Task to schedule.
+       * </pre>
+       *
        * <code>.littlehorse.TaskNode task = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -1244,6 +1390,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> mutationsBuilder_;
 
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getMutationsList() {
@@ -1254,6 +1404,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public int getMutationsCount() {
@@ -1264,6 +1418,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableMutation getMutations(int index) {
@@ -1274,6 +1432,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder setMutations(
@@ -1291,6 +1453,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder setMutations(
@@ -1305,6 +1471,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(io.littlehorse.sdk.common.proto.VariableMutation value) {
@@ -1321,6 +1491,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
@@ -1338,6 +1512,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
@@ -1352,6 +1530,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
@@ -1366,6 +1548,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addAllMutations(
@@ -1381,6 +1567,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder clearMutations() {
@@ -1394,6 +1584,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder removeMutations(int index) {
@@ -1407,6 +1601,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableMutation.Builder getMutationsBuilder(
@@ -1414,6 +1612,10 @@ private static final long serialVersionUID = 0L;
         return getMutationsFieldBuilder().getBuilder(index);
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getMutationsOrBuilder(
@@ -1424,6 +1626,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
@@ -1435,6 +1641,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableMutation.Builder addMutationsBuilder() {
@@ -1442,6 +1652,10 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableMutation.Builder addMutationsBuilder(
@@ -1450,6 +1664,10 @@ private static final long serialVersionUID = 0L;
             index, io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
       }
       /**
+       * <pre>
+       * EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
+       * </pre>
+       *
        * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation.Builder> 
@@ -1539,36 +1757,70 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
     boolean hasUserId();
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
     io.littlehorse.sdk.common.proto.VariableAssignment getUserId();
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder();
 
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     boolean hasUserGroup();
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
     io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
   }
   /**
+   * <pre>
+   * A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UTActionTrigger.UTAReassign}
    */
   public static final class UTAReassign extends
@@ -1607,6 +1859,11 @@ private static final long serialVersionUID = 0L;
     public static final int USER_ID_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableAssignment userId_;
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
@@ -1615,6 +1872,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
@@ -1623,6 +1885,11 @@ private static final long serialVersionUID = 0L;
       return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
     }
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_id. If
+     * not set, the user_id of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
      */
     @java.lang.Override
@@ -1633,6 +1900,11 @@ private static final long serialVersionUID = 0L;
     public static final int USER_GROUP_FIELD_NUMBER = 2;
     private io.littlehorse.sdk.common.proto.VariableAssignment userGroup_;
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
@@ -1641,6 +1913,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
@@ -1649,6 +1926,11 @@ private static final long serialVersionUID = 0L;
       return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userGroup_;
     }
     /**
+     * <pre>
+     * A variable assignment that resolves to a STR representing the new user_group. If
+     * not set, the user_group of the UserTaskRun will be un-set.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      */
     @java.lang.Override
@@ -1835,6 +2117,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UTActionTrigger.UTAReassign}
      */
     public static final class Builder extends
@@ -2045,6 +2331,11 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userIdBuilder_;
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        * @return Whether the userId field is set.
        */
@@ -2052,6 +2343,11 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        * @return The userId.
        */
@@ -2063,6 +2359,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2079,6 +2380,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder setUserId(
@@ -2093,6 +2399,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2112,6 +2423,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder clearUserId() {
@@ -2125,6 +2441,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserIdBuilder() {
@@ -2133,6 +2454,11 @@ private static final long serialVersionUID = 0L;
         return getUserIdFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
@@ -2144,6 +2470,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_id. If
+       * not set, the user_id of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_id = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -2164,6 +2495,11 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userGroupBuilder_;
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        * @return Whether the userGroup field is set.
        */
@@ -2171,6 +2507,11 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        * @return The userGroup.
        */
@@ -2182,6 +2523,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2198,6 +2544,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder setUserGroup(
@@ -2212,6 +2563,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2231,6 +2587,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder clearUserGroup() {
@@ -2244,6 +2605,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserGroupBuilder() {
@@ -2252,6 +2618,11 @@ private static final long serialVersionUID = 0L;
         return getUserGroupFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
@@ -2263,6 +2634,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * A variable assignment that resolves to a STR representing the new user_group. If
+       * not set, the user_group of the UserTaskRun will be un-set.
+       * </pre>
+       *
        * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -2495,7 +2871,8 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.VariableAssignment delaySeconds_;
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -2507,7 +2884,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -2519,7 +2897,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   *Action's delay
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -2532,6 +2911,10 @@ private static final long serialVersionUID = 0L;
   public static final int HOOK_FIELD_NUMBER = 6;
   private int hook_ = 0;
   /**
+   * <pre>
+   * The hook on which this UserTaskAction is scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The enum numeric value on the wire for hook.
    */
@@ -2539,6 +2922,10 @@ private static final long serialVersionUID = 0L;
     return hook_;
   }
   /**
+   * <pre>
+   * The hook on which this UserTaskAction is scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The hook.
    */
@@ -3522,7 +3909,8 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> delaySecondsBuilder_;
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3533,7 +3921,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3548,7 +3937,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3568,7 +3958,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3586,7 +3977,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3609,7 +4001,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3626,7 +4019,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3638,7 +4032,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3653,7 +4048,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     *Action's delay
+     * The Action is triggered some time after the Hook matures. The delay is controlled
+     * by this field.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
@@ -3674,6 +4070,10 @@ private static final long serialVersionUID = 0L;
 
     private int hook_ = 0;
     /**
+     * <pre>
+     * The hook on which this UserTaskAction is scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return The enum numeric value on the wire for hook.
      */
@@ -3681,6 +4081,10 @@ private static final long serialVersionUID = 0L;
       return hook_;
     }
     /**
+     * <pre>
+     * The hook on which this UserTaskAction is scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @param value The enum numeric value on the wire for hook to set.
      * @return This builder for chaining.
@@ -3692,6 +4096,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The hook on which this UserTaskAction is scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return The hook.
      */
@@ -3701,6 +4109,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The hook on which this UserTaskAction is scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @param value The hook to set.
      * @return This builder for chaining.
@@ -3715,6 +4127,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The hook on which this UserTaskAction is scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return This builder for chaining.
      */

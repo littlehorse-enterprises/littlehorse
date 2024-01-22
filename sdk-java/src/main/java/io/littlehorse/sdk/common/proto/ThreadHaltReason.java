@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadHaltReason}
  */
 public final class ThreadHaltReason extends
@@ -90,6 +94,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int PARENT_HALTED_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Parent threadRun halted.
+   * </pre>
+   *
    * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
    * @return Whether the parentHalted field is set.
    */
@@ -98,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 1;
   }
   /**
+   * <pre>
+   * Parent threadRun halted.
+   * </pre>
+   *
    * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
    * @return The parentHalted.
    */
@@ -109,6 +121,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ParentHalted.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Parent threadRun halted.
+   * </pre>
+   *
    * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
    */
   @java.lang.Override
@@ -121,6 +137,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int INTERRUPTED_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Handling an Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.Interrupted interrupted = 2;</code>
    * @return Whether the interrupted field is set.
    */
@@ -129,6 +149,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 2;
   }
   /**
+   * <pre>
+   * Handling an Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.Interrupted interrupted = 2;</code>
    * @return The interrupted.
    */
@@ -140,6 +164,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Interrupted.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Handling an Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.Interrupted interrupted = 2;</code>
    */
   @java.lang.Override
@@ -152,6 +180,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int PENDING_INTERRUPT_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * Waiting to handle Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
    * @return Whether the pendingInterrupt field is set.
    */
@@ -160,6 +192,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 3;
   }
   /**
+   * <pre>
+   * Waiting to handle Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
    * @return The pendingInterrupt.
    */
@@ -171,6 +207,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PendingInterruptHaltReason.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Waiting to handle Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
    */
   @java.lang.Override
@@ -183,6 +223,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int PENDING_FAILURE_FIELD_NUMBER = 4;
   /**
+   * <pre>
+   * Waiting to handle a failure.
+   * </pre>
+   *
    * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
    * @return Whether the pendingFailure field is set.
    */
@@ -191,6 +235,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 4;
   }
   /**
+   * <pre>
+   * Waiting to handle a failure.
+   * </pre>
+   *
    * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
    * @return The pendingFailure.
    */
@@ -202,6 +250,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Waiting to handle a failure.
+   * </pre>
+   *
    * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
    */
   @java.lang.Override
@@ -214,6 +266,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int HANDLING_FAILURE_FIELD_NUMBER = 5;
   /**
+   * <pre>
+   * Handling a failure.
+   * </pre>
+   *
    * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
    * @return Whether the handlingFailure field is set.
    */
@@ -222,6 +278,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 5;
   }
   /**
+   * <pre>
+   * Handling a failure.
+   * </pre>
+   *
    * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
    * @return The handlingFailure.
    */
@@ -233,6 +293,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.HandlingFailureHaltReason.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Handling a failure.
+   * </pre>
+   *
    * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
    */
   @java.lang.Override
@@ -245,6 +309,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int MANUAL_HALT_FIELD_NUMBER = 6;
   /**
+   * <pre>
+   * Manually stopped the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
    * @return Whether the manualHalt field is set.
    */
@@ -253,6 +321,10 @@ private static final long serialVersionUID = 0L;
     return reasonCase_ == 6;
   }
   /**
+   * <pre>
+   * Manually stopped the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
    * @return The manualHalt.
    */
@@ -264,6 +336,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ManualHalt.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Manually stopped the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
    */
   @java.lang.Override
@@ -520,6 +596,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadHaltReason}
    */
   public static final class Builder extends
@@ -814,6 +894,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ParentHalted, io.littlehorse.sdk.common.proto.ParentHalted.Builder, io.littlehorse.sdk.common.proto.ParentHaltedOrBuilder> parentHaltedBuilder_;
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      * @return Whether the parentHalted field is set.
      */
@@ -822,6 +906,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 1;
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      * @return The parentHalted.
      */
@@ -840,6 +928,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     public Builder setParentHalted(io.littlehorse.sdk.common.proto.ParentHalted value) {
@@ -856,6 +948,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     public Builder setParentHalted(
@@ -870,6 +966,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     public Builder mergeParentHalted(io.littlehorse.sdk.common.proto.ParentHalted value) {
@@ -893,6 +993,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     public Builder clearParentHalted() {
@@ -912,12 +1016,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ParentHalted.Builder getParentHaltedBuilder() {
       return getParentHaltedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     @java.lang.Override
@@ -932,6 +1044,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Parent threadRun halted.
+     * </pre>
+     *
      * <code>.littlehorse.ParentHalted parent_halted = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -956,6 +1072,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.Interrupted, io.littlehorse.sdk.common.proto.Interrupted.Builder, io.littlehorse.sdk.common.proto.InterruptedOrBuilder> interruptedBuilder_;
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      * @return Whether the interrupted field is set.
      */
@@ -964,6 +1084,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 2;
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      * @return The interrupted.
      */
@@ -982,6 +1106,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     public Builder setInterrupted(io.littlehorse.sdk.common.proto.Interrupted value) {
@@ -998,6 +1126,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     public Builder setInterrupted(
@@ -1012,6 +1144,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     public Builder mergeInterrupted(io.littlehorse.sdk.common.proto.Interrupted value) {
@@ -1035,6 +1171,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     public Builder clearInterrupted() {
@@ -1054,12 +1194,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.Interrupted.Builder getInterruptedBuilder() {
       return getInterruptedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     @java.lang.Override
@@ -1074,6 +1222,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Handling an Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.Interrupted interrupted = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1098,6 +1250,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.PendingInterruptHaltReason, io.littlehorse.sdk.common.proto.PendingInterruptHaltReason.Builder, io.littlehorse.sdk.common.proto.PendingInterruptHaltReasonOrBuilder> pendingInterruptBuilder_;
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      * @return Whether the pendingInterrupt field is set.
      */
@@ -1106,6 +1262,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 3;
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      * @return The pendingInterrupt.
      */
@@ -1124,6 +1284,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     public Builder setPendingInterrupt(io.littlehorse.sdk.common.proto.PendingInterruptHaltReason value) {
@@ -1140,6 +1304,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     public Builder setPendingInterrupt(
@@ -1154,6 +1322,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     public Builder mergePendingInterrupt(io.littlehorse.sdk.common.proto.PendingInterruptHaltReason value) {
@@ -1177,6 +1349,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     public Builder clearPendingInterrupt() {
@@ -1196,12 +1372,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterruptHaltReason.Builder getPendingInterruptBuilder() {
       return getPendingInterruptFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     @java.lang.Override
@@ -1216,6 +1400,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Waiting to handle Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.PendingInterruptHaltReason pending_interrupt = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1240,6 +1428,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason, io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReasonOrBuilder> pendingFailureBuilder_;
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      * @return Whether the pendingFailure field is set.
      */
@@ -1248,6 +1440,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 4;
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      * @return The pendingFailure.
      */
@@ -1266,6 +1462,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     public Builder setPendingFailure(io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason value) {
@@ -1282,6 +1482,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     public Builder setPendingFailure(
@@ -1296,6 +1500,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     public Builder mergePendingFailure(io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason value) {
@@ -1319,6 +1527,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     public Builder clearPendingFailure() {
@@ -1338,12 +1550,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason.Builder getPendingFailureBuilder() {
       return getPendingFailureFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     @java.lang.Override
@@ -1358,6 +1578,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Waiting to handle a failure.
+     * </pre>
+     *
      * <code>.littlehorse.PendingFailureHandlerHaltReason pending_failure = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1382,6 +1606,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.HandlingFailureHaltReason, io.littlehorse.sdk.common.proto.HandlingFailureHaltReason.Builder, io.littlehorse.sdk.common.proto.HandlingFailureHaltReasonOrBuilder> handlingFailureBuilder_;
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      * @return Whether the handlingFailure field is set.
      */
@@ -1390,6 +1618,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 5;
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      * @return The handlingFailure.
      */
@@ -1408,6 +1640,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     public Builder setHandlingFailure(io.littlehorse.sdk.common.proto.HandlingFailureHaltReason value) {
@@ -1424,6 +1660,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     public Builder setHandlingFailure(
@@ -1438,6 +1678,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     public Builder mergeHandlingFailure(io.littlehorse.sdk.common.proto.HandlingFailureHaltReason value) {
@@ -1461,6 +1705,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     public Builder clearHandlingFailure() {
@@ -1480,12 +1728,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.HandlingFailureHaltReason.Builder getHandlingFailureBuilder() {
       return getHandlingFailureFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     @java.lang.Override
@@ -1500,6 +1756,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Handling a failure.
+     * </pre>
+     *
      * <code>.littlehorse.HandlingFailureHaltReason handling_failure = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1524,6 +1784,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ManualHalt, io.littlehorse.sdk.common.proto.ManualHalt.Builder, io.littlehorse.sdk.common.proto.ManualHaltOrBuilder> manualHaltBuilder_;
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      * @return Whether the manualHalt field is set.
      */
@@ -1532,6 +1796,10 @@ private static final long serialVersionUID = 0L;
       return reasonCase_ == 6;
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      * @return The manualHalt.
      */
@@ -1550,6 +1818,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     public Builder setManualHalt(io.littlehorse.sdk.common.proto.ManualHalt value) {
@@ -1566,6 +1838,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     public Builder setManualHalt(
@@ -1580,6 +1856,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     public Builder mergeManualHalt(io.littlehorse.sdk.common.proto.ManualHalt value) {
@@ -1603,6 +1883,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     public Builder clearManualHalt() {
@@ -1622,12 +1906,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.ManualHalt.Builder getManualHaltBuilder() {
       return getManualHaltFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     @java.lang.Override
@@ -1642,6 +1934,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Manually stopped the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ManualHalt manual_halt = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

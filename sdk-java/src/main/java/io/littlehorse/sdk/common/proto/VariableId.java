@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Id for a Variable.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableId}
  */
 public final class VariableId extends
@@ -42,6 +46,11 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
+   * <pre>
+   * WfRunId for the variable. Note that every Variable is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -50,6 +59,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
+   * <pre>
+   * WfRunId for the variable. Note that every Variable is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -58,6 +72,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
+   * <pre>
+   * WfRunId for the variable. Note that every Variable is associated with
+   * a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +87,11 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
   private int threadRunNumber_ = 0;
   /**
+   * <pre>
+   * Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+   * to. This is that ThreadRun's number.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
    */
@@ -80,6 +104,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The name.
    */
@@ -97,6 +125,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The bytes for name.
    */
@@ -299,6 +331,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Id for a Variable.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableId}
    */
   public static final class Builder extends
@@ -504,6 +540,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -511,6 +552,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -522,6 +568,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -538,6 +589,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -552,6 +608,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -571,6 +632,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -584,6 +650,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -592,6 +663,11 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -603,6 +679,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for the variable. Note that every Variable is associated with
+     * a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -621,6 +702,11 @@ private static final long serialVersionUID = 0L;
 
     private int threadRunNumber_ ;
     /**
+     * <pre>
+     * Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+     * to. This is that ThreadRun's number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @return The threadRunNumber.
      */
@@ -629,6 +715,11 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
+     * <pre>
+     * Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+     * to. This is that ThreadRun's number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
@@ -641,6 +732,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+     * to. This is that ThreadRun's number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 2;</code>
      * @return This builder for chaining.
      */
@@ -653,6 +749,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return The name.
      */
@@ -669,6 +769,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return The bytes for name.
      */
@@ -686,6 +790,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -699,6 +807,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return This builder for chaining.
      */
@@ -709,6 +821,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.

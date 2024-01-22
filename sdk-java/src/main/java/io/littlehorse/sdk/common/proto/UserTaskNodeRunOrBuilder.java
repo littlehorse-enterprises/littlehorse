@@ -8,16 +8,31 @@ public interface UserTaskNodeRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this USER_TASK node, then the user_task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
+   * <pre>
+   * The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this USER_TASK node, then the user_task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
+   * <pre>
+   * The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this USER_TASK node, then the user_task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();

@@ -8,11 +8,19 @@ public interface ExternalEventDefIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * ExternalEventDef's are uniquedly identified by their name.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * ExternalEventDef's are uniquedly identified by their name.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */

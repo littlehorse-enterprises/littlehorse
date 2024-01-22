@@ -4,6 +4,17 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Policy to determine how long an ExternalEvent is retained after creation if it
+ * is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+ * ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+ * If not set, then ExternalEvent's are not deleted if they are not matched with
+ * a WfRun.
+ *
+ * A future version of LittleHorse will allow changing the retention_policy, which
+ * will trigger a cleanup of old `ExternalEvent`s.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExternalEventRetentionPolicy}
  */
 public final class ExternalEventRetentionPolicy extends
@@ -283,6 +294,17 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Policy to determine how long an ExternalEvent is retained after creation if it
+   * is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+   * ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+   * If not set, then ExternalEvent's are not deleted if they are not matched with
+   * a WfRun.
+   *
+   * A future version of LittleHorse will allow changing the retention_policy, which
+   * will trigger a cleanup of old `ExternalEvent`s.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExternalEventRetentionPolicy}
    */
   public static final class Builder extends

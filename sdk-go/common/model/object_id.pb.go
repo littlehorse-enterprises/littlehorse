@@ -21,14 +21,32 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// The ID of a WfSpec.
 type WfSpecId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name         string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	MajorVersion int32  `protobuf:"varint,2,opt,name=major_version,json=majorVersion,proto3" json:"major_version,omitempty"`
-	Revision     int32  `protobuf:"varint,3,opt,name=revision,proto3" json:"revision,omitempty"`
+	// Name of the WfSpec.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Major Version of a WfSpec.
+	//
+	// Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+	// and no breaking changes to the public Variables API results in a new WfSpec
+	// being created with the same MajorVersion and a new revision. Creating a
+	// WfSpec with a breaking change to the public Variables API results in a
+	// new WfSpec being created with the same name, an incremented major_version,
+	// and revision = 0.
+	MajorVersion int32 `protobuf:"varint,2,opt,name=major_version,json=majorVersion,proto3" json:"major_version,omitempty"`
+	// Revision of a WfSpec.
+	//
+	// Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+	// and no breaking changes to the public Variables API results in a new WfSpec
+	// being created with the same MajorVersion and a new revision. Creating a
+	// WfSpec with a breaking change to the public Variables API results in a
+	// new WfSpec being created with the same name, an incremented major_version,
+	// and revision = 0.
+	Revision int32 `protobuf:"varint,3,opt,name=revision,proto3" json:"revision,omitempty"`
 }
 
 func (x *WfSpecId) Reset() {
@@ -84,11 +102,13 @@ func (x *WfSpecId) GetRevision() int32 {
 	return 0
 }
 
+// ID for a TaskDef.
 type TaskDefId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// TaskDef's are uniquely identified by their name.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 }
 
@@ -131,11 +151,13 @@ func (x *TaskDefId) GetName() string {
 	return ""
 }
 
+// ID for ExternalEventDef
 type ExternalEventDefId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// ExternalEventDef's are uniquedly identified by their name.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 }
 
@@ -178,13 +200,16 @@ func (x *ExternalEventDefId) GetName() string {
 	return ""
 }
 
+// ID for a UserTaskDef
 type UserTaskDefId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Version int32  `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	// The name of a UserTaskDef
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Note that UserTaskDef's use simple versioning.
+	Version int32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
 }
 
 func (x *UserTaskDefId) Reset() {
@@ -233,11 +258,13 @@ func (x *UserTaskDefId) GetVersion() int32 {
 	return 0
 }
 
+// ID for a TaskWorkerGroup.
 type TaskWorkerGroupId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// TaskWorkerGroups are uniquely identified by their TaskDefId.
 	TaskDefId *TaskDefId `protobuf:"bytes,1,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
 }
 
@@ -280,14 +307,20 @@ func (x *TaskWorkerGroupId) GetTaskDefId() *TaskDefId {
 	return nil
 }
 
+// Id for a Variable.
 type VariableId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId         *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
-	ThreadRunNumber int32    `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
-	Name            string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// WfRunId for the variable. Note that every Variable is associated with
+	// a WfRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+	// to. This is that ThreadRun's number.
+	ThreadRunNumber int32 `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
+	// The name of the variable.
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (x *VariableId) Reset() {
@@ -343,14 +376,20 @@ func (x *VariableId) GetName() string {
 	return ""
 }
 
+// ID for an ExternalEvent.
 type ExternalEventId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId            *WfRunId            `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+	// with a WfRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// The ExternalEventDef for this ExternalEvent.
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,2,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	Guid               string              `protobuf:"bytes,3,opt,name=guid,proto3" json:"guid,omitempty"`
+	// A unique guid allowing for distinguishing this ExternalEvent from other events
+	// of the same ExternalEventDef and WfRun.
+	Guid string `protobuf:"bytes,3,opt,name=guid,proto3" json:"guid,omitempty"`
 }
 
 func (x *ExternalEventId) Reset() {
@@ -406,12 +445,15 @@ func (x *ExternalEventId) GetGuid() string {
 	return ""
 }
 
+// ID for a WfRun
 type WfRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID for this WfRun instance.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
 	ParentWfRunId *WfRunId `protobuf:"bytes,2,opt,name=parent_wf_run_id,json=parentWfRunId,proto3,oneof" json:"parent_wf_run_id,omitempty"`
 }
 
@@ -461,14 +503,19 @@ func (x *WfRunId) GetParentWfRunId() *WfRunId {
 	return nil
 }
 
+// ID for a NodeRun.
 type NodeRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId         *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
-	ThreadRunNumber int32    `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
-	Position        int32    `protobuf:"varint,3,opt,name=position,proto3" json:"position,omitempty"`
+	// ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+	// a WfRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun.
+	ThreadRunNumber int32 `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
+	// Position of this NodeRun within its ThreadRun.
+	Position int32 `protobuf:"varint,3,opt,name=position,proto3" json:"position,omitempty"`
 }
 
 func (x *NodeRunId) Reset() {
@@ -524,13 +571,17 @@ func (x *NodeRunId) GetPosition() int32 {
 	return 0
 }
 
+// ID for a TaskRun.
 type TaskRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId  *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
-	TaskGuid string   `protobuf:"bytes,2,opt,name=task_guid,json=taskGuid,proto3" json:"task_guid,omitempty"`
+	// WfRunId for this TaskRun. Note that every TaskRun is associated with
+	// a WfRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// Unique identifier for this TaskRun. Unique among the WfRun.
+	TaskGuid string `protobuf:"bytes,2,opt,name=task_guid,json=taskGuid,proto3" json:"task_guid,omitempty"`
 }
 
 func (x *TaskRunId) Reset() {
@@ -579,13 +630,17 @@ func (x *TaskRunId) GetTaskGuid() string {
 	return ""
 }
 
+// ID for a UserTaskRun
 type UserTaskRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId      *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
-	UserTaskGuid string   `protobuf:"bytes,2,opt,name=user_task_guid,json=userTaskGuid,proto3" json:"user_task_guid,omitempty"`
+	// WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+	// with a WfRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// Unique identifier for this UserTaskRun.
+	UserTaskGuid string `protobuf:"bytes,2,opt,name=user_task_guid,json=userTaskGuid,proto3" json:"user_task_guid,omitempty"`
 }
 
 func (x *UserTaskRunId) Reset() {
@@ -634,14 +689,18 @@ func (x *UserTaskRunId) GetUserTaskGuid() string {
 	return ""
 }
 
+// ID for a specific window of TaskDef metrics.
 type TaskDefMetricsId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The timestamp at which this metrics window starts.
 	WindowStart *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=window_start,json=windowStart,proto3" json:"window_start,omitempty"`
-	WindowType  MetricsWindowLength    `protobuf:"varint,2,opt,name=window_type,json=windowType,proto3,enum=littlehorse.MetricsWindowLength" json:"window_type,omitempty"`
-	TaskDefId   *TaskDefId             `protobuf:"bytes,3,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
+	// The length of this window.
+	WindowType MetricsWindowLength `protobuf:"varint,2,opt,name=window_type,json=windowType,proto3,enum=littlehorse.MetricsWindowLength" json:"window_type,omitempty"`
+	// The TaskDefId that this metrics window reports on.
+	TaskDefId *TaskDefId `protobuf:"bytes,3,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
 }
 
 func (x *TaskDefMetricsId) Reset() {
@@ -697,14 +756,18 @@ func (x *TaskDefMetricsId) GetTaskDefId() *TaskDefId {
 	return nil
 }
 
+// ID for a specific window of WfSpec metrics.
 type WfSpecMetricsId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The timestamp at which this metrics window starts.
 	WindowStart *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=window_start,json=windowStart,proto3" json:"window_start,omitempty"`
-	WindowType  MetricsWindowLength    `protobuf:"varint,2,opt,name=window_type,json=windowType,proto3,enum=littlehorse.MetricsWindowLength" json:"window_type,omitempty"`
-	WfSpecId    *WfSpecId              `protobuf:"bytes,3,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// The length of this window.
+	WindowType MetricsWindowLength `protobuf:"varint,2,opt,name=window_type,json=windowType,proto3,enum=littlehorse.MetricsWindowLength" json:"window_type,omitempty"`
+	// The WfSpecId that this metrics window reports on.
+	WfSpecId *WfSpecId `protobuf:"bytes,3,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
 }
 
 func (x *WfSpecMetricsId) Reset() {
@@ -760,11 +823,14 @@ func (x *WfSpecMetricsId) GetWfSpecId() *WfSpecId {
 	return nil
 }
 
+// ID for a Principal.
 type PrincipalId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The id of this principal. In OAuth, this is the OAuth Client ID (for
+	// machine principals) or the OAuth User Id (for human principals).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
@@ -807,11 +873,13 @@ func (x *PrincipalId) GetId() string {
 	return ""
 }
 
+// ID for a Tenant.
 type TenantId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The Tenant ID.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 

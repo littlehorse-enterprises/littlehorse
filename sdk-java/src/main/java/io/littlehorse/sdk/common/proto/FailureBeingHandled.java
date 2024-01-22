@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Points to the Failure that is currently being handled in the ThreadRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.FailureBeingHandled}
  */
 public final class FailureBeingHandled extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 1;
   private int threadRunNumber_ = 0;
   /**
+   * <pre>
+   * The thread run number.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 1;</code>
    * @return The threadRunNumber.
    */
@@ -52,6 +60,10 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_POSITION_FIELD_NUMBER = 2;
   private int nodeRunPosition_ = 0;
   /**
+   * <pre>
+   * The position of the NodeRun causing the failure.
+   * </pre>
+   *
    * <code>int32 node_run_position = 2;</code>
    * @return The nodeRunPosition.
    */
@@ -63,6 +75,10 @@ private static final long serialVersionUID = 0L;
   public static final int FAILURE_NUMBER_FIELD_NUMBER = 3;
   private int failureNumber_ = 0;
   /**
+   * <pre>
+   * The number of the failure.
+   * </pre>
+   *
    * <code>int32 failure_number = 3;</code>
    * @return The failureNumber.
    */
@@ -251,6 +267,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Points to the Failure that is currently being handled in the ThreadRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.FailureBeingHandled}
    */
   public static final class Builder extends
@@ -444,6 +464,10 @@ private static final long serialVersionUID = 0L;
 
     private int threadRunNumber_ ;
     /**
+     * <pre>
+     * The thread run number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 1;</code>
      * @return The threadRunNumber.
      */
@@ -452,6 +476,10 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
+     * <pre>
+     * The thread run number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 1;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
@@ -464,6 +492,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The thread run number.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 1;</code>
      * @return This builder for chaining.
      */
@@ -476,6 +508,10 @@ private static final long serialVersionUID = 0L;
 
     private int nodeRunPosition_ ;
     /**
+     * <pre>
+     * The position of the NodeRun causing the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 2;</code>
      * @return The nodeRunPosition.
      */
@@ -484,6 +520,10 @@ private static final long serialVersionUID = 0L;
       return nodeRunPosition_;
     }
     /**
+     * <pre>
+     * The position of the NodeRun causing the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 2;</code>
      * @param value The nodeRunPosition to set.
      * @return This builder for chaining.
@@ -496,6 +536,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The position of the NodeRun causing the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 2;</code>
      * @return This builder for chaining.
      */
@@ -508,6 +552,10 @@ private static final long serialVersionUID = 0L;
 
     private int failureNumber_ ;
     /**
+     * <pre>
+     * The number of the failure.
+     * </pre>
+     *
      * <code>int32 failure_number = 3;</code>
      * @return The failureNumber.
      */
@@ -516,6 +564,10 @@ private static final long serialVersionUID = 0L;
       return failureNumber_;
     }
     /**
+     * <pre>
+     * The number of the failure.
+     * </pre>
+     *
      * <code>int32 failure_number = 3;</code>
      * @param value The failureNumber to set.
      * @return This builder for chaining.
@@ -528,6 +580,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The number of the failure.
+     * </pre>
+     *
      * <code>int32 failure_number = 3;</code>
      * @return This builder for chaining.
      */

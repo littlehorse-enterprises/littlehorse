@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for an ExternalEvent.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExternalEventId}
  */
 public final class ExternalEventId extends
@@ -42,6 +46,11 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -50,6 +59,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -58,6 +72,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +87,10 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return Whether the externalEventDefId field is set.
    */
@@ -76,6 +99,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ != null;
   }
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return The externalEventDefId.
    */
@@ -84,6 +111,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
   }
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    */
   @java.lang.Override
@@ -95,6 +126,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object guid_ = "";
   /**
+   * <pre>
+   * A unique guid allowing for distinguishing this ExternalEvent from other events
+   * of the same ExternalEventDef and WfRun.
+   * </pre>
+   *
    * <code>string guid = 3;</code>
    * @return The guid.
    */
@@ -112,6 +148,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * A unique guid allowing for distinguishing this ExternalEvent from other events
+   * of the same ExternalEventDef and WfRun.
+   * </pre>
+   *
    * <code>string guid = 3;</code>
    * @return The bytes for guid.
    */
@@ -319,6 +360,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for an ExternalEvent.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExternalEventId}
    */
   public static final class Builder extends
@@ -532,6 +577,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -539,6 +589,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -550,6 +605,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -566,6 +626,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -580,6 +645,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -599,6 +669,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -612,6 +687,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -620,6 +700,11 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -631,6 +716,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -651,6 +741,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      * @return Whether the externalEventDefId field is set.
      */
@@ -658,6 +752,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      * @return The externalEventDefId.
      */
@@ -669,6 +767,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -685,6 +787,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder setExternalEventDefId(
@@ -699,6 +805,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -718,6 +828,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public Builder clearExternalEventDefId() {
@@ -731,6 +845,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
@@ -739,6 +857,10 @@ private static final long serialVersionUID = 0L;
       return getExternalEventDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
@@ -750,6 +872,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventDef for this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -768,6 +894,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object guid_ = "";
     /**
+     * <pre>
+     * A unique guid allowing for distinguishing this ExternalEvent from other events
+     * of the same ExternalEventDef and WfRun.
+     * </pre>
+     *
      * <code>string guid = 3;</code>
      * @return The guid.
      */
@@ -784,6 +915,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A unique guid allowing for distinguishing this ExternalEvent from other events
+     * of the same ExternalEventDef and WfRun.
+     * </pre>
+     *
      * <code>string guid = 3;</code>
      * @return The bytes for guid.
      */
@@ -801,6 +937,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A unique guid allowing for distinguishing this ExternalEvent from other events
+     * of the same ExternalEventDef and WfRun.
+     * </pre>
+     *
      * <code>string guid = 3;</code>
      * @param value The guid to set.
      * @return This builder for chaining.
@@ -814,6 +955,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A unique guid allowing for distinguishing this ExternalEvent from other events
+     * of the same ExternalEventDef and WfRun.
+     * </pre>
+     *
      * <code>string guid = 3;</code>
      * @return This builder for chaining.
      */
@@ -824,6 +970,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A unique guid allowing for distinguishing this ExternalEvent from other events
+     * of the same ExternalEventDef and WfRun.
+     * </pre>
+     *
      * <code>string guid = 3;</code>
      * @param value The bytes for guid to set.
      * @return This builder for chaining.

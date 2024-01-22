@@ -6,9 +6,15 @@ import { TaskDefId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/** A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers. */
 export interface TaskDef {
-  id: TaskDefId | undefined;
+  /** The ID of this TaskDef. */
+  id:
+    | TaskDefId
+    | undefined;
+  /** The input variables required to execute this TaskDef. */
   inputVars: VariableDef[];
+  /** The time at which this TaskDef was created. */
   createdAt: string | undefined;
 }
 
@@ -117,7 +123,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

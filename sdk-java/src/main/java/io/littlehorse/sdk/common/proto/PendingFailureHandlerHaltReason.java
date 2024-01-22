@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+ * run.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PendingFailureHandlerHaltReason}
  */
 public final class PendingFailureHandlerHaltReason extends
@@ -41,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_POSITION_FIELD_NUMBER = 1;
   private int nodeRunPosition_ = 0;
   /**
+   * <pre>
+   * The position of the NodeRun which threw the failure.
+   * </pre>
+   *
    * <code>int32 node_run_position = 1;</code>
    * @return The nodeRunPosition.
    */
@@ -207,6 +216,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+   * run.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PendingFailureHandlerHaltReason}
    */
   public static final class Builder extends
@@ -376,6 +390,10 @@ private static final long serialVersionUID = 0L;
 
     private int nodeRunPosition_ ;
     /**
+     * <pre>
+     * The position of the NodeRun which threw the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 1;</code>
      * @return The nodeRunPosition.
      */
@@ -384,6 +402,10 @@ private static final long serialVersionUID = 0L;
       return nodeRunPosition_;
     }
     /**
+     * <pre>
+     * The position of the NodeRun which threw the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 1;</code>
      * @param value The nodeRunPosition to set.
      * @return This builder for chaining.
@@ -396,6 +418,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The position of the NodeRun which threw the failure.
+     * </pre>
+     *
      * <code>int32 node_run_position = 1;</code>
      * @return This builder for chaining.
      */

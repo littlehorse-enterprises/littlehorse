@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A WfRun is a running instance of a WfSpec.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfRun}
  */
 public final class WfRun extends
@@ -47,6 +51,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId id_;
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -55,6 +63,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return The id.
    */
@@ -63,6 +75,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    */
   @java.lang.Override
@@ -73,6 +89,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -81,6 +101,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
@@ -89,6 +113,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   @java.lang.Override
@@ -100,6 +128,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> oldWfSpecVersions_;
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   @java.lang.Override
@@ -107,6 +140,11 @@ private static final long serialVersionUID = 0L;
     return oldWfSpecVersions_;
   }
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   @java.lang.Override
@@ -115,6 +153,11 @@ private static final long serialVersionUID = 0L;
     return oldWfSpecVersions_;
   }
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   @java.lang.Override
@@ -122,6 +165,11 @@ private static final long serialVersionUID = 0L;
     return oldWfSpecVersions_.size();
   }
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   @java.lang.Override
@@ -129,6 +177,11 @@ private static final long serialVersionUID = 0L;
     return oldWfSpecVersions_.get(index);
   }
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   @java.lang.Override
@@ -140,6 +193,10 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 4;
   private int status_ = 0;
   /**
+   * <pre>
+   * The status of this WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 4;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -147,6 +204,10 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
+   * <pre>
+   * The status of this WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 4;</code>
    * @return The status.
    */
@@ -159,8 +220,12 @@ private static final long serialVersionUID = 0L;
   private int greatestThreadrunNumber_ = 0;
   /**
    * <pre>
+   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+   * is given by greatest_thread_run_number + 1.
+   *
    * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns.
+   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+   * from the thread_runs list once its retention period expires.
    * </pre>
    *
    * <code>int32 greatest_threadrun_number = 5;</code>
@@ -174,6 +239,10 @@ private static final long serialVersionUID = 0L;
   public static final int START_TIME_FIELD_NUMBER = 6;
   private com.google.protobuf.Timestamp startTime_;
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return Whether the startTime field is set.
    */
@@ -182,6 +251,10 @@ private static final long serialVersionUID = 0L;
     return startTime_ != null;
   }
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return The startTime.
    */
@@ -190,6 +263,10 @@ private static final long serialVersionUID = 0L;
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    */
   @java.lang.Override
@@ -200,6 +277,10 @@ private static final long serialVersionUID = 0L;
   public static final int END_TIME_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp endTime_;
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    * @return Whether the endTime field is set.
    */
@@ -208,6 +289,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    * @return The endTime.
    */
@@ -216,6 +301,10 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    */
   @java.lang.Override
@@ -227,6 +316,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.ThreadRun> threadRuns_;
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   @java.lang.Override
@@ -234,6 +328,11 @@ private static final long serialVersionUID = 0L;
     return threadRuns_;
   }
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   @java.lang.Override
@@ -242,6 +341,11 @@ private static final long serialVersionUID = 0L;
     return threadRuns_;
   }
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   @java.lang.Override
@@ -249,6 +353,11 @@ private static final long serialVersionUID = 0L;
     return threadRuns_.size();
   }
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   @java.lang.Override
@@ -256,6 +365,11 @@ private static final long serialVersionUID = 0L;
     return threadRuns_.get(index);
   }
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   @java.lang.Override
@@ -268,6 +382,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> pendingInterrupts_;
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
@@ -275,6 +394,11 @@ private static final long serialVersionUID = 0L;
     return pendingInterrupts_;
   }
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
@@ -283,6 +407,11 @@ private static final long serialVersionUID = 0L;
     return pendingInterrupts_;
   }
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
@@ -290,6 +419,11 @@ private static final long serialVersionUID = 0L;
     return pendingInterrupts_.size();
   }
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
@@ -297,6 +431,11 @@ private static final long serialVersionUID = 0L;
     return pendingInterrupts_.get(index);
   }
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
@@ -309,6 +448,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> pendingFailures_;
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
@@ -316,6 +460,11 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_;
   }
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
@@ -324,6 +473,11 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_;
   }
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
@@ -331,6 +485,11 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.size();
   }
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
@@ -338,6 +497,11 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.get(index);
   }
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
@@ -630,6 +794,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A WfRun is a running instance of a WfSpec.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfRun}
    */
   public static final class Builder extends
@@ -1133,6 +1301,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -1140,6 +1312,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      * @return The id.
      */
@@ -1151,6 +1327,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1167,6 +1347,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder setId(
@@ -1181,6 +1365,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1200,6 +1388,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public Builder clearId() {
@@ -1213,6 +1405,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getIdBuilder() {
@@ -1221,6 +1417,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder() {
@@ -1232,6 +1432,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1252,6 +1456,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -1259,6 +1467,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
@@ -1270,6 +1482,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1286,6 +1502,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(
@@ -1300,6 +1520,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1319,6 +1543,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder clearWfSpecId() {
@@ -1332,6 +1560,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -1340,6 +1572,10 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -1351,6 +1587,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that this WfRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1380,6 +1620,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> oldWfSpecVersionsBuilder_;
 
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> getOldWfSpecVersionsList() {
@@ -1390,6 +1635,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public int getOldWfSpecVersionsCount() {
@@ -1400,6 +1650,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index) {
@@ -1410,6 +1665,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder setOldWfSpecVersions(
@@ -1427,6 +1687,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder setOldWfSpecVersions(
@@ -1441,6 +1706,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder addOldWfSpecVersions(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1457,6 +1727,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder addOldWfSpecVersions(
@@ -1474,6 +1749,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder addOldWfSpecVersions(
@@ -1488,6 +1768,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder addOldWfSpecVersions(
@@ -1502,6 +1787,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder addAllOldWfSpecVersions(
@@ -1517,6 +1807,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder clearOldWfSpecVersions() {
@@ -1530,6 +1825,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public Builder removeOldWfSpecVersions(int index) {
@@ -1543,6 +1843,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getOldWfSpecVersionsBuilder(
@@ -1550,6 +1855,11 @@ private static final long serialVersionUID = 0L;
       return getOldWfSpecVersionsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
@@ -1560,6 +1870,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
@@ -1571,6 +1886,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder addOldWfSpecVersionsBuilder() {
@@ -1578,6 +1898,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance());
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder addOldWfSpecVersionsBuilder(
@@ -1586,6 +1911,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance());
     }
     /**
+     * <pre>
+     * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+     * old WfSpecId to this list for historical auditing and debugging purposes.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WfSpecId.Builder> 
@@ -1609,6 +1939,10 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
+     * <pre>
+     * The status of this WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 4;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1616,6 +1950,10 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
+     * <pre>
+     * The status of this WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 4;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1627,6 +1965,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of this WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 4;</code>
      * @return The status.
      */
@@ -1636,6 +1978,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The status of this WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 4;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1650,6 +1996,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of this WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 4;</code>
      * @return This builder for chaining.
      */
@@ -1663,8 +2013,12 @@ private static final long serialVersionUID = 0L;
     private int greatestThreadrunNumber_ ;
     /**
      * <pre>
+     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+     * is given by greatest_thread_run_number + 1.
+     *
      * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
+     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+     * from the thread_runs list once its retention period expires.
      * </pre>
      *
      * <code>int32 greatest_threadrun_number = 5;</code>
@@ -1676,8 +2030,12 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
+     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+     * is given by greatest_thread_run_number + 1.
+     *
      * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
+     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+     * from the thread_runs list once its retention period expires.
      * </pre>
      *
      * <code>int32 greatest_threadrun_number = 5;</code>
@@ -1693,8 +2051,12 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
+     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+     * is given by greatest_thread_run_number + 1.
+     *
      * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns.
+     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+     * from the thread_runs list once its retention period expires.
      * </pre>
      *
      * <code>int32 greatest_threadrun_number = 5;</code>
@@ -1711,6 +2073,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      * @return Whether the startTime field is set.
      */
@@ -1718,6 +2084,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      * @return The startTime.
      */
@@ -1729,6 +2099,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder setStartTime(com.google.protobuf.Timestamp value) {
@@ -1745,6 +2119,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder setStartTime(
@@ -1759,6 +2137,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
@@ -1778,6 +2160,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder clearStartTime() {
@@ -1791,6 +2177,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
@@ -1799,6 +2189,10 @@ private static final long serialVersionUID = 0L;
       return getStartTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
@@ -1810,6 +2204,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the WfRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1830,6 +2228,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      * @return Whether the endTime field is set.
      */
@@ -1837,6 +2239,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      * @return The endTime.
      */
@@ -1848,6 +2254,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder setEndTime(com.google.protobuf.Timestamp value) {
@@ -1864,6 +2274,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder setEndTime(
@@ -1878,6 +2292,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
@@ -1897,6 +2315,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder clearEndTime() {
@@ -1910,6 +2332,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
@@ -1918,6 +2344,10 @@ private static final long serialVersionUID = 0L;
       return getEndTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
@@ -1929,6 +2359,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the WfRun failed or completed.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1958,6 +2392,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ThreadRun, io.littlehorse.sdk.common.proto.ThreadRun.Builder, io.littlehorse.sdk.common.proto.ThreadRunOrBuilder> threadRunsBuilder_;
 
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadRun> getThreadRunsList() {
@@ -1968,6 +2407,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public int getThreadRunsCount() {
@@ -1978,6 +2422,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRun getThreadRuns(int index) {
@@ -1988,6 +2437,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder setThreadRuns(
@@ -2005,6 +2459,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder setThreadRuns(
@@ -2019,6 +2478,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder addThreadRuns(io.littlehorse.sdk.common.proto.ThreadRun value) {
@@ -2035,6 +2499,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder addThreadRuns(
@@ -2052,6 +2521,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder addThreadRuns(
@@ -2066,6 +2540,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder addThreadRuns(
@@ -2080,6 +2559,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder addAllThreadRuns(
@@ -2095,6 +2579,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder clearThreadRuns() {
@@ -2108,6 +2597,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public Builder removeThreadRuns(int index) {
@@ -2121,6 +2615,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRun.Builder getThreadRunsBuilder(
@@ -2128,6 +2627,11 @@ private static final long serialVersionUID = 0L;
       return getThreadRunsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRunOrBuilder getThreadRunsOrBuilder(
@@ -2138,6 +2642,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadRunOrBuilder> 
@@ -2149,6 +2658,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRun.Builder addThreadRunsBuilder() {
@@ -2156,6 +2670,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.ThreadRun.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRun.Builder addThreadRunsBuilder(
@@ -2164,6 +2683,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.ThreadRun.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+     * have not yet expired.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadRun.Builder> 
@@ -2198,6 +2722,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> pendingInterruptsBuilder_;
 
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> getPendingInterruptsList() {
@@ -2208,6 +2737,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public int getPendingInterruptsCount() {
@@ -2218,6 +2752,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterrupt getPendingInterrupts(int index) {
@@ -2228,6 +2767,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
@@ -2245,6 +2789,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
@@ -2259,6 +2808,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(io.littlehorse.sdk.common.proto.PendingInterrupt value) {
@@ -2275,6 +2829,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
@@ -2292,6 +2851,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
@@ -2306,6 +2870,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
@@ -2320,6 +2889,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addAllPendingInterrupts(
@@ -2335,6 +2909,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder clearPendingInterrupts() {
@@ -2348,6 +2927,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder removePendingInterrupts(int index) {
@@ -2361,6 +2945,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder getPendingInterruptsBuilder(
@@ -2368,6 +2957,11 @@ private static final long serialVersionUID = 0L;
       return getPendingInterruptsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder getPendingInterruptsOrBuilder(
@@ -2378,6 +2972,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
@@ -2389,6 +2988,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder addPendingInterruptsBuilder() {
@@ -2396,6 +3000,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.PendingInterrupt.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder addPendingInterruptsBuilder(
@@ -2404,6 +3013,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.PendingInterrupt.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+     * halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt.Builder> 
@@ -2438,6 +3052,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> pendingFailuresBuilder_;
 
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> getPendingFailuresList() {
@@ -2448,6 +3067,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public int getPendingFailuresCount() {
@@ -2458,6 +3082,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandler getPendingFailures(int index) {
@@ -2468,6 +3097,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder setPendingFailures(
@@ -2485,6 +3119,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder setPendingFailures(
@@ -2499,6 +3138,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(io.littlehorse.sdk.common.proto.PendingFailureHandler value) {
@@ -2515,6 +3159,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
@@ -2532,6 +3181,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
@@ -2546,6 +3200,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
@@ -2560,6 +3219,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addAllPendingFailures(
@@ -2575,6 +3239,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder clearPendingFailures() {
@@ -2588,6 +3257,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder removePendingFailures(int index) {
@@ -2601,6 +3275,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder getPendingFailuresBuilder(
@@ -2608,6 +3287,11 @@ private static final long serialVersionUID = 0L;
       return getPendingFailuresFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
@@ -2618,6 +3302,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
@@ -2629,6 +3318,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder addPendingFailuresBuilder() {
@@ -2636,6 +3330,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.PendingFailureHandler.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder addPendingFailuresBuilder(
@@ -2644,6 +3343,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.PendingFailureHandler.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+     * finish halting.
+     * </pre>
+     *
      * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder> 

@@ -21,11 +21,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// VariableValue is a structure containing a value in LittleHorse. It can be
+// used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+// from a TaskRun, as the value of a WfRun's Variable, etc.
 type VariableValue struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The value held in this VariableValue. If this is unset, treat it as
+	// a NULL.
+	//
 	// Types that are assignable to Value:
 	//	*VariableValue_JsonObj
 	//	*VariableValue_JsonArr
@@ -130,30 +136,37 @@ type isVariableValue_Value interface {
 }
 
 type VariableValue_JsonObj struct {
+	// A String representing a serialized json object.
 	JsonObj string `protobuf:"bytes,2,opt,name=json_obj,json=jsonObj,proto3,oneof"`
 }
 
 type VariableValue_JsonArr struct {
+	// A String representing a serialized json list.
 	JsonArr string `protobuf:"bytes,3,opt,name=json_arr,json=jsonArr,proto3,oneof"`
 }
 
 type VariableValue_Double struct {
+	// A 64-bit floating point number.
 	Double float64 `protobuf:"fixed64,4,opt,name=double,proto3,oneof"`
 }
 
 type VariableValue_Bool struct {
+	// A boolean.
 	Bool bool `protobuf:"varint,5,opt,name=bool,proto3,oneof"`
 }
 
 type VariableValue_Str struct {
+	// A string.
 	Str string `protobuf:"bytes,6,opt,name=str,proto3,oneof"`
 }
 
 type VariableValue_Int struct {
+	// A 64-bit integer.
 	Int int64 `protobuf:"varint,7,opt,name=int,proto3,oneof"`
 }
 
 type VariableValue_Bytes struct {
+	// An arbitrary String of bytes.
 	Bytes []byte `protobuf:"bytes,8,opt,name=bytes,proto3,oneof"`
 }
 
@@ -171,15 +184,21 @@ func (*VariableValue_Int) isVariableValue_Value() {}
 
 func (*VariableValue_Bytes) isVariableValue_Value() {}
 
+// A Variable is an instance of a variable assigned to a WfRun.
 type Variable struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        *VariableId            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Value     *VariableValue         `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	// ID of this Variable. Note that the VariableId contains the relevant
+	// WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+	Id *VariableId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The value of this Variable.
+	Value *VariableValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	// When the Variable was created.
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	WfSpecId  *WfSpecId              `protobuf:"bytes,4,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// The ID of the WfSpec that this Variable belongs to.
+	WfSpecId *WfSpecId `protobuf:"bytes,4,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
 }
 
 func (x *Variable) Reset() {

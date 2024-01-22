@@ -117,14 +117,35 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
   }
 }
 
+/** Operator for comparing two values to create a boolean expression. */
 export enum Comparator {
+  /** LESS_THAN - Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
   LESS_THAN = "LESS_THAN",
+  /** GREATER_THAN - Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
   GREATER_THAN = "GREATER_THAN",
+  /** LESS_THAN_EQ - Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
   LESS_THAN_EQ = "LESS_THAN_EQ",
+  /** GREATER_THAN_EQ - Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
   GREATER_THAN_EQ = "GREATER_THAN_EQ",
+  /**
+   * EQUALS - This is valid for any variable type, and is similar to .equals() in Java.
+   *
+   * One note: if the RHS is a different type from the LHS, then LittleHorse will
+   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
+   * ThreadRun fails with a VAR_SUB_ERROR.
+   */
   EQUALS = "EQUALS",
+  /** NOT_EQUALS - This is the inverse of `EQUALS` */
   NOT_EQUALS = "NOT_EQUALS",
+  /**
+   * IN - Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   *
+   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * is equal to the LHS.
+   */
   IN = "IN",
+  /** NOT_IN - The inverse of IN. */
   NOT_IN = "NOT_IN",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -253,22 +274,58 @@ export interface VariableAssignment_FormatString {
   args: VariableAssignment[];
 }
 
+/**
+ * A VariableMutation defines a modification made to one of a ThreadRun's variables.
+ * The LHS determines the variable that is modified; the operation determines how
+ * it is modified, and the RHS is the input to the operation.
+ *
+ * Day-to-day users of LittleHorse generally don't interact with this structure unless
+ * they are writing their own WfSpec SDK.
+ */
 export interface VariableMutation {
+  /** The name of the variable to mutate */
   lhsName: string;
-  lhsJsonPath?: string | undefined;
+  /**
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   */
+  lhsJsonPath?:
+    | string
+    | undefined;
+  /** Defines the operation that we are executing. */
   operation: VariableMutationType;
-  sourceVariable?: VariableAssignment | undefined;
-  literalValue?: VariableValue | undefined;
+  /**
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   */
+  sourceVariable?:
+    | VariableAssignment
+    | undefined;
+  /** Use a literal value as the RHS. */
+  literalValue?:
+    | VariableValue
+    | undefined;
+  /** Use the output of the current node as the RHS. */
   nodeOutput?: VariableMutation_NodeOutputSource | undefined;
 }
 
+/** Specifies to use the output of a NodeRun as the RHS. */
 export interface VariableMutation_NodeOutputSource {
+  /** Use this specific field from a JSON output */
   jsonpath?: string | undefined;
 }
 
+/** Declares a Variable. */
 export interface VariableDef {
+  /** The Type of the variable. */
   type: VariableType;
+  /** The name of the variable. */
   name: string;
+  /**
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   */
   defaultValue?: VariableValue | undefined;
 }
 
@@ -292,13 +349,31 @@ export interface UTActionTrigger {
   reassign?:
     | UTActionTrigger_UTAReassign
     | undefined;
-  /** Action's delay */
-  delaySeconds: VariableAssignment | undefined;
+  /**
+   * The Action is triggered some time after the Hook matures. The delay is controlled
+   * by this field.
+   */
+  delaySeconds:
+    | VariableAssignment
+    | undefined;
+  /** The hook on which this UserTaskAction is scheduled. */
   hook: UTActionTrigger_UTHook;
 }
 
+/** Enumerates the different lifecycle hooks that can cause the timer to start running. */
 export enum UTActionTrigger_UTHook {
+  /**
+   * ON_ARRIVAL - The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+   * hook only causes the action to be scheduled once.
+   */
   ON_ARRIVAL = "ON_ARRIVAL",
+  /**
+   * ON_TASK_ASSIGNED - The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+   * changes. This hook causes the Action to be scheduled one or more times. The first
+   * time is scheduled when the UserTaskRun is created, since we treat the change from
+   * "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+   * a change in ownership.
+   */
   ON_TASK_ASSIGNED = "ON_TASK_ASSIGNED",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -342,23 +417,54 @@ export function uTActionTrigger_UTHookToNumber(object: UTActionTrigger_UTHook): 
   }
 }
 
+/** A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires. */
 export interface UTActionTrigger_UTACancel {
 }
 
+/** A UserTaskAction that causes a TaskRun to be scheduled when it fires. */
 export interface UTActionTrigger_UTATask {
-  task: TaskNode | undefined;
+  /** The specification of the Task to schedule. */
+  task:
+    | TaskNode
+    | undefined;
+  /** EXPERIMENTAL: Any variables in the ThreadRun which we should mutate. */
   mutations: VariableMutation[];
 }
 
+/** A UserTaskAction that causes a UserTaskRun to be reassigned when it fires. */
 export interface UTActionTrigger_UTAReassign {
-  userId?: VariableAssignment | undefined;
+  /**
+   * A variable assignment that resolves to a STR representing the new user_id. If
+   * not set, the user_id of the UserTaskRun will be un-set.
+   */
+  userId?:
+    | VariableAssignment
+    | undefined;
+  /**
+   * A variable assignment that resolves to a STR representing the new user_group. If
+   * not set, the user_group of the UserTaskRun will be un-set.
+   */
   userGroup?: VariableAssignment | undefined;
 }
 
+/** Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions. */
 export interface TaskNode {
-  taskDefId: TaskDefId | undefined;
+  /** The type of TaskRun to schedule. */
+  taskDefId:
+    | TaskDefId
+    | undefined;
+  /**
+   * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+   * the worker does not yet reply to the Server.
+   */
   timeoutSeconds: number;
+  /**
+   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+   * Please note that this API may change before version 1.0.0, as we are going to
+   * add significant functionality including backoff policies.
+   */
   retries: number;
+  /** Input variables into the TaskDef. */
   variables: VariableAssignment[];
 }
 
