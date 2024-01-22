@@ -41,7 +41,7 @@ var getExternalEventCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetExternalEvent(
 			requestContext(),
 			&model.ExternalEventId{
-				WfRunId:            &model.WfRunId{Id: args[0]},
+				WfRunId:            common.StrToWfRunId(args[0]),
 				ExternalEventDefId: &model.ExternalEventDefId{Name: args[1]},
 				Guid:               args[2],
 			},
@@ -79,7 +79,7 @@ Choose one of the following option groups:
 
 		if wfRunId != "" {
 			search.ExtEvtCriteria = &model.SearchExternalEventRequest_WfRunId{
-				WfRunId: &model.WfRunId{Id: wfRunId},
+				WfRunId: common.StrToWfRunId(wfRunId),
 			}
 		} else {
 			var extEvtCriteria *model.SearchExternalEventRequest_ExternalEventDefNameAndStatus
@@ -121,7 +121,7 @@ Lists all ExternalEvent's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListExternalEventsRequest{
-			WfRunId: &model.WfRunId{Id: wfRunId},
+			WfRunId: common.StrToWfRunId(wfRunId),
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListExternalEvents(

@@ -50,7 +50,7 @@ var getVariableCmd = &cobra.Command{
 			getGlobalClient(cmd).GetVariable(
 				requestContext(),
 				&model.VariableId{
-					WfRunId:         &model.WfRunId{Id: args[0]},
+					WfRunId:         common.StrToWfRunId(args[0]),
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],
 				},
@@ -144,7 +144,7 @@ Lists all Variable's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListVariablesRequest{
-			WfRunId: &model.WfRunId{Id: wfRunId},
+			WfRunId: common.StrToWfRunId(wfRunId),
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListVariables(

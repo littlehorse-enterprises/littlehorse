@@ -55,7 +55,7 @@ Lists all UserTaskRun's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListUserTaskRunRequest{
-			WfRunId: &model.WfRunId{Id: wfRunId},
+			WfRunId: common.StrToWfRunId(wfRunId),
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
@@ -91,7 +91,7 @@ The following option groups are supported:
 
 		reassign := &model.AssignUserTaskRunRequest{
 			UserTaskRunId: &model.UserTaskRunId{
-				WfRunId:      &model.WfRunId{Id: args[0]},
+				WfRunId:      common.StrToWfRunId(args[0]),
 				UserTaskGuid: args[1],
 			},
 			OverrideClaim: overrideClaim,
@@ -146,7 +146,7 @@ var getUserTaskRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
 			requestContext(),
 			&model.UserTaskRunId{
-				WfRunId:      &model.WfRunId{Id: wfRunId},
+				WfRunId:      common.StrToWfRunId(wfRunId),
 				UserTaskGuid: userTaskGuid,
 			},
 		))
@@ -227,7 +227,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHo
 	completeUserTask := &model.CompleteUserTaskRunRequest{
 		Results: make(map[string]*model.VariableValue),
 		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      &model.WfRunId{Id: wfRunId},
+			WfRunId:      common.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
@@ -281,7 +281,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHo
 func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
 	cancelUserTask := &model.CancelUserTaskRunRequest{
 		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      &model.WfRunId{Id: wfRunId},
+			WfRunId:      common.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
@@ -305,7 +305,7 @@ func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LittleHorseCli
 
 func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LittleHorseClient) (*model.UserTaskRun, error) {
 	resp, err := (*client).GetUserTaskRun(requestContext(), &model.UserTaskRunId{
-		WfRunId:      &model.WfRunId{Id: wfRunId},
+		WfRunId:      common.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})
 	if err != nil {
