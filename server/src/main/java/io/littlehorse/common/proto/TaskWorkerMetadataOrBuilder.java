@@ -8,16 +8,16 @@ public interface TaskWorkerMetadataOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string client_id = 1;</code>
-   * @return The clientId.
+   * <code>string task_worker_id = 1;</code>
+   * @return The taskWorkerId.
    */
-  java.lang.String getClientId();
+  java.lang.String getTaskWorkerId();
   /**
-   * <code>string client_id = 1;</code>
-   * @return The bytes for clientId.
+   * <code>string task_worker_id = 1;</code>
+   * @return The bytes for taskWorkerId.
    */
   com.google.protobuf.ByteString
-      getClientIdBytes();
+      getTaskWorkerIdBytes();
 
   /**
    * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>

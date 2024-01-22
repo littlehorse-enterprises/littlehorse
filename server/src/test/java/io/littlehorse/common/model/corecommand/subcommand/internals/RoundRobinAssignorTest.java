@@ -169,7 +169,7 @@ public class RoundRobinAssignorTest {
         List<TaskWorkerMetadataModel> taskWorkersMetadata = new ArrayList<>();
         for (char clientId : clientIds) {
             TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
-            taskWorker.clientId = String.valueOf(clientId);
+            taskWorker.taskWorkerId = String.valueOf(clientId);
             taskWorker.latestHeartbeat = new Date();
             taskWorkersMetadata.add(taskWorker);
         }

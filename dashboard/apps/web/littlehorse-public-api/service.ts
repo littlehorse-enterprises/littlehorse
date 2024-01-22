@@ -885,7 +885,7 @@ export interface ExternalEventList {
  */
 export interface RegisterTaskWorkerRequest {
   /** Is the ID of the Task Worker. */
-  clientId: string;
+  taskWorkerId: string;
   /** The TaskDef the worker wants to poll for. */
   taskDefId:
     | TaskDefId
@@ -5115,13 +5115,13 @@ export const ExternalEventList = {
 };
 
 function createBaseRegisterTaskWorkerRequest(): RegisterTaskWorkerRequest {
-  return { clientId: "", taskDefId: undefined, listenerName: "" };
+  return { taskWorkerId: "", taskDefId: undefined, listenerName: "" };
 }
 
 export const RegisterTaskWorkerRequest = {
   encode(message: RegisterTaskWorkerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.clientId !== "") {
-      writer.uint32(10).string(message.clientId);
+    if (message.taskWorkerId !== "") {
+      writer.uint32(10).string(message.taskWorkerId);
     }
     if (message.taskDefId !== undefined) {
       TaskDefId.encode(message.taskDefId, writer.uint32(18).fork()).ldelim();
@@ -5144,7 +5144,7 @@ export const RegisterTaskWorkerRequest = {
             break;
           }
 
-          message.clientId = reader.string();
+          message.taskWorkerId = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
@@ -5171,7 +5171,7 @@ export const RegisterTaskWorkerRequest = {
 
   fromJSON(object: any): RegisterTaskWorkerRequest {
     return {
-      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      taskWorkerId: isSet(object.taskWorkerId) ? globalThis.String(object.taskWorkerId) : "",
       taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       listenerName: isSet(object.listenerName) ? globalThis.String(object.listenerName) : "",
     };
@@ -5179,8 +5179,8 @@ export const RegisterTaskWorkerRequest = {
 
   toJSON(message: RegisterTaskWorkerRequest): unknown {
     const obj: any = {};
-    if (message.clientId !== "") {
-      obj.clientId = message.clientId;
+    if (message.taskWorkerId !== "") {
+      obj.taskWorkerId = message.taskWorkerId;
     }
     if (message.taskDefId !== undefined) {
       obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
@@ -5196,7 +5196,7 @@ export const RegisterTaskWorkerRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<RegisterTaskWorkerRequest>, I>>(object: I): RegisterTaskWorkerRequest {
     const message = createBaseRegisterTaskWorkerRequest();
-    message.clientId = object.clientId ?? "";
+    message.taskWorkerId = object.taskWorkerId ?? "";
     message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
       ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
@@ -8638,7 +8638,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

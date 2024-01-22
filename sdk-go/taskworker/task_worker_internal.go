@@ -77,7 +77,7 @@ func newServerConnection(
 	}
 
 	stream.Send(&model.PollTaskRequest{
-		ClientId:          manager.tw.config.ClientId,
+		ClientId:          manager.tw.config.TaskWorkerId,
 		TaskDefId:         manager.tw.taskDefId,
 		TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 	})
@@ -104,7 +104,7 @@ func newServerConnection(
 
 			if out.running {
 				req := model.PollTaskRequest{
-					ClientId:          manager.tw.config.ClientId,
+					ClientId:          manager.tw.config.TaskWorkerId,
 					TaskDefId:         manager.tw.taskDefId,
 					TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 				}
@@ -232,7 +232,7 @@ func (m *serverConnectionManager) start() {
 			context.Background(),
 			&model.RegisterTaskWorkerRequest{
 				TaskDefId:    m.tw.taskDefId,
-				ClientId:     m.tw.config.ClientId,
+				TaskWorkerId: m.tw.config.TaskWorkerId,
 				ListenerName: m.tw.config.ServerConnectListener,
 			},
 		)

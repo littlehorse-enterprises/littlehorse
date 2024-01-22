@@ -39,7 +39,7 @@ public class LHConfig extends ConfigBase {
     public static final String API_PROTOCOL_KEY = "LHC_API_PROTOCOL";
 
     /** The Client Id. */
-    public static final String CLIENT_ID_KEY = "LHC_CLIENT_ID";
+    public static final String TASK_WORKER_ID_KEY = "LHW_TASK_WORKER_ID";
 
     /** The Tenant Id for this client, null will be used if not set */
     public static final String TENANT_ID_KEY = "LHC_TENANT_ID";
@@ -77,7 +77,7 @@ public class LHConfig extends ConfigBase {
             LHConfig.API_HOST_KEY,
             LHConfig.API_PORT_KEY,
             LHConfig.API_PROTOCOL_KEY,
-            LHConfig.CLIENT_ID_KEY,
+            LHConfig.TASK_WORKER_ID_KEY,
             LHConfig.CLIENT_CERT_KEY,
             LHConfig.CLIENT_KEY_KEY,
             LHConfig.CA_CERT_KEY,
@@ -320,9 +320,9 @@ public class LHConfig extends ConfigBase {
         return protocol;
     }
 
-    public String getClientId() {
+    public String getTaskWorkerId() {
         return getOrSetDefault(
-                CLIENT_ID_KEY, "client-" + UUID.randomUUID().toString().replaceAll("-", ""));
+                TASK_WORKER_ID_KEY, "worker-" + UUID.randomUUID().toString().replaceAll("-", ""));
     }
 
     public String getTenantId() {
