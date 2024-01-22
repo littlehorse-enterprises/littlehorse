@@ -4,10 +4,33 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+*" # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
-
+permissions:
+      packages: write
+      contents: read
 jobs:
-  publish-sdk-java:
+  build-server:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+
+      - name: Tests and Build
+        run: ./gradlew server:test server:shadowJar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-jar
+          path: server/build/libs/server-*-all.jar
+
+  sdk-java:
+    runs-on: ubuntu-latest
+    needs:
+      - build-server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,8 +54,11 @@ jobs:
         run: |
           ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
           echo Login at https://s01.oss.sonatype.org/
-  publish-sdk-python:
+
+  sdk-python:
     runs-on: ubuntu-latest
+    needs:
+      - build-server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,79 +82,106 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages-dir: ./sdk-python/dist/
-  publish-docker-image:
+
+  lh-server:
     runs-on: ubuntu-latest
+    needs:
+      - build-server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
+
+      - name: Dowload Server Jar artifact
+        uses: actions/download-artifact@v4
         with:
-          distribution: "corretto"
-          java-version: 17
+          name: server-jar
+          path: server/build/libs/
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-server
+          dockerfile: docker/server/Dockerfile
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  lhctl:
+    runs-on: ubuntu-latest
+    needs:
+      - build-server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lhctl
+          dockerfile: docker/lhctl/Dockerfile
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  dashboard-build:
+    runs-on: ubuntu-latest
+    needs:
+      - build-server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
           npm install pnpm --global
           pnpm install
           pnpm build
-      - name: Tests
-        run: ./gradlew server:test
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: actions/upload-artifact@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-duration-seconds: 1200
-      - name: Login to Amazon ECR Public
-        id: login-ecr-public
-        uses: aws-actions/amazon-ecr-login@v1
+          name: nextjs
+          path: dashboard/apps/web/.next
+      
+  lh-dashboard:
+    runs-on: ubuntu-latest
+    needs:
+      - dashboard-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Dowload NextJS artifact
+        uses: actions/download-artifact@v4
         with:
-          mask-password: "true"
-          registry-type: public
-      - name: Push Server Image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: lh-server
-          IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-      - name: Push Standalone Image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: lh-standalone
-          IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          docker build -f docker/standalone/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-      - name: Push lhctl CLI Image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: lhctl
-          IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          docker build -f docker/lhctl/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-      - name: Push Dashboard Image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: lh-dashboard
-          IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          docker build -f docker/dashboard/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:latest
+          name: nextjs
+          path: dashboard/apps/web/.next
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-dashboard
+          dockerfile: docker/dashboard/Dockerfile
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  lh-standalone:
+    runs-on: ubuntu-latest
+    needs:
+      - dashboard-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Dowload NextJS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs
+          path: dashboard/apps/web/.next
+
+      - name: Dowload Server Jar artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: server-jar
+          path: server/build/libs/
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-standalone
+          dockerfile: docker/standalone/Dockerfile
+          github-token: ${{ secrets.GITHUB_TOKEN }}
