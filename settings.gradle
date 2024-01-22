@@ -11,6 +11,7 @@ include(
     'basic',
     'variables',
     'child-thread',
+    'child-workflow',
     'conditionals',
     'wf-versions',
     'worker-context',

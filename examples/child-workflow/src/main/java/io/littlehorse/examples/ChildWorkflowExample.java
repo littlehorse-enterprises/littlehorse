@@ -1,7 +1,9 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -12,24 +14,41 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
-/*
- * This is a simple example, which does two things:
- * 1. Declare an "input-name" variable of type String
- * 2. Pass that variable into the execution of the "greet" task.
- */
-public class BasicExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-basic",
+public class ChildWorkflowExample {
+
+    public static Workflow getChild() {
+        WorkflowImpl out = new WorkflowImpl(
+            "child",
             wf -> {
                 WfRunVariable theName = wf.addVariable(
-                    "input-name",
+                    "name",
                     VariableType.STR
-                );
+                ).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+
+                wf.execute("greet", theName);
+
+                wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
+            }
+        );
+        out.setParent("parent");
+
+        return out;
+    }
+
+    public static Workflow getParent() {
+        WorkflowImpl out = new WorkflowImpl(
+            "parent",
+            wf -> {
+                WfRunVariable theName = wf.addVariable(
+                    "name",
+                    VariableType.STR
+                ).withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+
                 wf.execute("greet", theName);
             }
         );
+        return out;
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -58,17 +77,13 @@ public class BasicExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        // New workflow
-        Workflow workflow = getWorkflow();
-
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-
-        // Register task
         worker.registerTaskDef();
 
         // Register a workflow
-        workflow.registerWfSpec(config.getBlockingStub());
+        getParent().registerWfSpec(config.getBlockingStub());
+        getChild().registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
