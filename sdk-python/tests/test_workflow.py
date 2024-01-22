@@ -74,7 +74,7 @@ class TestNodeOutput(unittest.TestCase):
 
 class TestWfRunVariable(unittest.TestCase):
     def test_value_is_not_none(self):
-        variable = WfRunVariable("my-var", VariableType.STR, "my-str")
+        variable = WfRunVariable("my-var", VariableType.STR, default_value="my-str")
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
@@ -170,8 +170,7 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
     def test_compile_private_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR)
-        variable.with_access_level("PRIVATE_VAR")
+        variable = WfRunVariable("my-var", VariableType.STR, access_level="PRIVATE_VAR")
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
             access_level="PRIVATE_VAR",
@@ -1221,8 +1220,7 @@ class TestWorkflow(unittest.TestCase):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        wf = Workflow("my-wf", my_entrypoint)
-        wf.with_parent("my-parent-wf")
+        wf = Workflow("my-wf", my_entrypoint, "my-parent-wf")
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
@@ -1543,7 +1541,9 @@ class TestWorkflow(unittest.TestCase):
 
     def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
-            thread.add_variable("input-name", VariableType.STR)
+            thread.add_variable(
+                "input-name", VariableType.STR, access_level="INHERITED_VAR"
+            )
 
         wf = Workflow("my-wf", my_entrypoint)
         self.assertEqual(
@@ -1557,7 +1557,8 @@ class TestWorkflow(unittest.TestCase):
                             ThreadVarDef(
                                 var_def=VariableDef(
                                     name="input-name", type=VariableType.STR
-                                )
+                                ),
+                                access_level="INHERITED_VAR",
                             ),
                         ],
                         nodes={
