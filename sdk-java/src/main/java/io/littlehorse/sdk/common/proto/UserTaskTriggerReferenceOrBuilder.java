@@ -8,37 +8,69 @@ public interface UserTaskTriggerReferenceOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return Whether the nodeRunId field is set.
    */
   boolean hasNodeRunId();
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return The nodeRunId.
    */
   io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId();
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
 
   /**
+   * <pre>
+   * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+   * to.
+   * </pre>
+   *
    * <code>int32 user_task_event_number = 2;</code>
    * @return The userTaskEventNumber.
    */
   int getUserTaskEventNumber();
 
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return The bytes for userId.
    */
@@ -46,16 +78,31 @@ public interface UserTaskTriggerReferenceOrBuilder extends
       getUserIdBytes();
 
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return The bytes for userGroup.
    */

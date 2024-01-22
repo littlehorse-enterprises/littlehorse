@@ -21,13 +21,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// The status that a UserTaskRun can be in.
 type UserTaskRunStatus int32
 
 const (
+	// Not assigned to a specific user yet.
 	UserTaskRunStatus_UNASSIGNED UserTaskRunStatus = 0
-	UserTaskRunStatus_ASSIGNED   UserTaskRunStatus = 1
-	UserTaskRunStatus_DONE       UserTaskRunStatus = 3
-	UserTaskRunStatus_CANCELLED  UserTaskRunStatus = 4
+	// Assigned to a specific user, but not completed or cancelled yet.
+	UserTaskRunStatus_ASSIGNED UserTaskRunStatus = 1
+	// Done.
+	UserTaskRunStatus_DONE UserTaskRunStatus = 3
+	// Cancelled.
+	UserTaskRunStatus_CANCELLED UserTaskRunStatus = 4
 )
 
 // Enum value maps for UserTaskRunStatus.
@@ -73,16 +78,26 @@ func (UserTaskRunStatus) EnumDescriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{0}
 }
 
+// UserTaskDef is the metadata blueprint for UserTaskRuns.
 type UserTaskDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name        string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Version     int32                  `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
-	Description *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	Fields      []*UserTaskField       `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
-	CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// The name of the `UserTaskDef`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The version of the `UserTaskDef`. Only simple versioning is supported.
+	Version int32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	// Metadata field that does not impact WfRun execution. Useful for providing
+	// context on the UserTaskRun, for example when displaying it on a general-purpose
+	// task manager application.
+	Description *string `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	// These are the fields comprise the User Task. A User Task Manager application, or
+	// any application used to complete a UserTaskRun, should inspect these fields and
+	// display form entries for each one.
+	Fields []*UserTaskField `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
+	// The time the UserTaskRun was created.
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (x *UserTaskDef) Reset() {
@@ -152,16 +167,25 @@ func (x *UserTaskDef) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// A UserTaskField is a specific field of data to be entered into a UserTaskRun.
 type UserTaskField struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name        string       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Type        VariableType `protobuf:"varint,2,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
-	Description *string      `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	DisplayName string       `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	Required    bool         `protobuf:"varint,5,opt,name=required,proto3" json:"required,omitempty"`
+	// The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+	// single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+	Type VariableType `protobuf:"varint,2,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
+	// Optional description which can be displayed by the User Task UI application.
+	// Does not affect WfRun execution.
+	Description *string `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	// The name to be displayed by the User Task UI application. Does not affect
+	// WfRun execution.
+	DisplayName string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// Whether this field is required for UserTaskRun completion.
+	Required bool `protobuf:"varint,5,opt,name=required,proto3" json:"required,omitempty"`
 }
 
 func (x *UserTaskField) Reset() {
@@ -231,23 +255,42 @@ func (x *UserTaskField) GetRequired() bool {
 	return false
 }
 
+// A UserTaskRun is a running instance of a UserTaskDef. It is created when a
+// ThreadRun arrives at a Node of type `USER_TASK`.
 type UserTaskRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            *UserTaskRunId            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserTaskDefId *UserTaskDefId            `protobuf:"bytes,2,opt,name=user_task_def_id,json=userTaskDefId,proto3" json:"user_task_def_id,omitempty"`
-	UserGroup     *string                   `protobuf:"bytes,3,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
-	UserId        *string                   `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
-	Results       map[string]*VariableValue `protobuf:"bytes,6,rep,name=results,proto3" json:"results,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Status        UserTaskRunStatus         `protobuf:"varint,7,opt,name=status,proto3,enum=littlehorse.UserTaskRunStatus" json:"status,omitempty"`
-	Events        []*UserTaskEvent          `protobuf:"bytes,8,rep,name=events,proto3" json:"events,omitempty"`
-	Notes         *string                   `protobuf:"bytes,9,opt,name=notes,proto3,oneof" json:"notes,omitempty"`
-	ScheduledTime *timestamppb.Timestamp    `protobuf:"bytes,10,opt,name=scheduled_time,json=scheduledTime,proto3" json:"scheduled_time,omitempty"`
-	// If we ever allow ad-hoc User Tasks, this will move to an optional
-	// field, or a `oneof user_task_source` field. However, note that such
-	// a change would be fine from the API Compatibility perspective.
+	// The ID of the UserTaskRun.
+	Id *UserTaskRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the UserTaskDef that this UserTaskRun comes from.
+	UserTaskDefId *UserTaskDefId `protobuf:"bytes,2,opt,name=user_task_def_id,json=userTaskDefId,proto3" json:"user_task_def_id,omitempty"`
+	// The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+	// to a group. At least one of user_group or user_id will be set for any given
+	// UserTaskRun.
+	UserGroup *string `protobuf:"bytes,3,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
+	// The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+	// to a user. At least one of user_group or user_id will be set for any given
+	// UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+	// UNASSIGNED status.
+	UserId *string `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	// The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+	// Each key in this map is the `name` of a corresponding `UserTaskField` on the
+	// UserTaskDef.
+	Results map[string]*VariableValue `protobuf:"bytes,6,rep,name=results,proto3" json:"results,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+	Status UserTaskRunStatus `protobuf:"varint,7,opt,name=status,proto3,enum=littlehorse.UserTaskRunStatus" json:"status,omitempty"`
+	// A list of events that have happened. Used for auditing information.
+	Events []*UserTaskEvent `protobuf:"bytes,8,rep,name=events,proto3" json:"events,omitempty"`
+	// Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+	// are set by the WfSpec based on variables inside the specific `WfRun` and are
+	// intended to be displayed on the User Task Manager application. They do not
+	// affect WfRun execution.
+	Notes *string `protobuf:"bytes,9,opt,name=notes,proto3,oneof" json:"notes,omitempty"`
+	// The time that the UserTaskRun was created/scheduled.
+	ScheduledTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=scheduled_time,json=scheduledTime,proto3" json:"scheduled_time,omitempty"`
+	// The NodeRun with which the UserTaskRun is associated.
 	NodeRunId *NodeRunId `protobuf:"bytes,11,opt,name=node_run_id,json=nodeRunId,proto3" json:"node_run_id,omitempty"`
 }
 
@@ -353,15 +396,27 @@ func (x *UserTaskRun) GetNodeRunId() *NodeRunId {
 	return nil
 }
 
+// Re-Assigns a UserTaskRun to a specific userId or userGroup.
 type AssignUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The UserTaskRun to assign to a new user_id or user_group.
 	UserTaskRunId *UserTaskRunId `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
-	OverrideClaim bool           `protobuf:"varint,2,opt,name=override_claim,json=overrideClaim,proto3" json:"override_claim,omitempty"`
-	UserGroup     *string        `protobuf:"bytes,3,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
-	UserId        *string        `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	// If override_claim is set to false and the UserTaskRun is already assigned to
+	// a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+	// true, then the old claim is overriden and the UserTaskRun is assigned to
+	// the new user.
+	OverrideClaim bool `protobuf:"varint,2,opt,name=override_claim,json=overrideClaim,proto3" json:"override_claim,omitempty"`
+	// The new user_group to which the UserTaskRun is assigned. If not set, then
+	// the user_group of the UserTaskRun is actively unset by this request. At least
+	// one of the user_group and user_id must be set.
+	UserGroup *string `protobuf:"bytes,3,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
+	// The new user_id to which the UserTaskRun is assigned. If not set, then
+	// the user_id of the UserTaskRun is actively unset by this request. At least
+	// one of the user_group and user_id must be set.
+	UserId *string `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 }
 
 func (x *AssignUserTaskRunRequest) Reset() {
@@ -424,14 +479,19 @@ func (x *AssignUserTaskRunRequest) GetUserId() string {
 	return ""
 }
 
+// Completes a UserTaskRun with provided values.
 type CompleteUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserTaskRunId *UserTaskRunId            `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
-	Results       map[string]*VariableValue `protobuf:"bytes,2,rep,name=results,proto3" json:"results,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	UserId        string                    `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// The id of UserTaskRun to complete.
+	UserTaskRunId *UserTaskRunId `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
+	// A map from UserTaskField.name to a VariableValue containing the results of the
+	// user filling out the form.
+	Results map[string]*VariableValue `protobuf:"bytes,2,rep,name=results,proto3" json:"results,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The ID of the user who executed the task.
+	UserId string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 }
 
 func (x *CompleteUserTaskRunRequest) Reset() {
@@ -487,11 +547,13 @@ func (x *CompleteUserTaskRunRequest) GetUserId() string {
 	return ""
 }
 
+// Cancels a UserTaskRun.
 type CancelUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The id of the UserTaskRun to cancel.
 	UserTaskRunId *UserTaskRunId `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
 }
 
@@ -534,15 +596,31 @@ func (x *CancelUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
 	return nil
 }
 
+// All TaskRun's have a "trigger reference" which refers to the WfRun Element that
+// caused the TaskRun to be scheduled. For example, a TaskRun on a regular TASK_NODE
+// has a TaskNodeReference.
+//
+// The UserTaskTriggerReference serves as the "Trigger Reference" for a TaskRun that
+// was scheduled by a lifecycle hook on a UserTaskRun (eg. a reminder task).
+//
+// The UserTaskTriggerReference is most useful in the WorkerContext of the Task Worker
+// SDK, which allows the Task Method to determine where the TaskRun comes from.
 type UserTaskTriggerReference struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	NodeRunId           *NodeRunId `protobuf:"bytes,1,opt,name=node_run_id,json=nodeRunId,proto3" json:"node_run_id,omitempty"`
-	UserTaskEventNumber int32      `protobuf:"varint,2,opt,name=user_task_event_number,json=userTaskEventNumber,proto3" json:"user_task_event_number,omitempty"`
-	UserId              *string    `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
-	UserGroup           *string    `protobuf:"bytes,4,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
+	// Is the NodeRun that the UserTaskRun belongs to.
+	NodeRunId *NodeRunId `protobuf:"bytes,1,opt,name=node_run_id,json=nodeRunId,proto3" json:"node_run_id,omitempty"`
+	// Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+	// to.
+	UserTaskEventNumber int32 `protobuf:"varint,2,opt,name=user_task_event_number,json=userTaskEventNumber,proto3" json:"user_task_event_number,omitempty"`
+	// Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+	// asigned to a specific user_id.
+	UserId *string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	// Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+	// asigned to a specific user_id.
+	UserGroup *string `protobuf:"bytes,4,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
 }
 
 func (x *UserTaskTriggerReference) Reset() {
@@ -605,12 +683,17 @@ func (x *UserTaskTriggerReference) GetUserGroup() string {
 	return ""
 }
 
+// This is an event stored in the audit log of a `UserTaskRun` purely for observability
+// purposes.
 type UserTaskEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// the time the event occurred.
 	Time *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=time,proto3" json:"time,omitempty"`
+	// The event that occurred.
+	//
 	// Types that are assignable to Event:
 	//	*UserTaskEvent_TaskExecuted
 	//	*UserTaskEvent_Assigned
@@ -690,14 +773,17 @@ type isUserTaskEvent_Event interface {
 }
 
 type UserTaskEvent_TaskExecuted struct {
+	// Denotes that a TaskRun was scheduled via a trigger.
 	TaskExecuted *UserTaskEvent_UTETaskExecuted `protobuf:"bytes,2,opt,name=task_executed,json=taskExecuted,proto3,oneof"`
 }
 
 type UserTaskEvent_Assigned struct {
+	// Denotes that the UserTaskRun was assigned.
 	Assigned *UserTaskEvent_UTEAssigned `protobuf:"bytes,3,opt,name=assigned,proto3,oneof"`
 }
 
 type UserTaskEvent_Cancelled struct {
+	// Denotes that the UserTaskRun was cancelled.
 	Cancelled *UserTaskEvent_UTECancelled `protobuf:"bytes,4,opt,name=cancelled,proto3,oneof"`
 }
 
@@ -707,6 +793,7 @@ func (*UserTaskEvent_Assigned) isUserTaskEvent_Event() {}
 
 func (*UserTaskEvent_Cancelled) isUserTaskEvent_Event() {}
 
+// Empty message used to denote that the `UserTaskRun` was cancelled.
 type UserTaskEvent_UTECancelled struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -745,11 +832,13 @@ func (*UserTaskEvent_UTECancelled) Descriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{7, 0}
 }
 
+// Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun.
 type UserTaskEvent_UTETaskExecuted struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The `TaskRunId` of the scheduled `TaskRun`
 	TaskRun *TaskRunId `protobuf:"bytes,1,opt,name=task_run,json=taskRun,proto3" json:"task_run,omitempty"`
 }
 
@@ -792,14 +881,19 @@ func (x *UserTaskEvent_UTETaskExecuted) GetTaskRun() *TaskRunId {
 	return nil
 }
 
+// Message denoting that the UserTaskRun was assigned.
 type UserTaskEvent_UTEAssigned struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OldUserId    *string `protobuf:"bytes,1,opt,name=old_user_id,json=oldUserId,proto3,oneof" json:"old_user_id,omitempty"`
+	// The user_id before the ownership change, if set.
+	OldUserId *string `protobuf:"bytes,1,opt,name=old_user_id,json=oldUserId,proto3,oneof" json:"old_user_id,omitempty"`
+	// The user_group before the ownership change, if set.
 	OldUserGroup *string `protobuf:"bytes,2,opt,name=old_user_group,json=oldUserGroup,proto3,oneof" json:"old_user_group,omitempty"`
-	NewUserId    *string `protobuf:"bytes,3,opt,name=new_user_id,json=newUserId,proto3,oneof" json:"new_user_id,omitempty"`
+	// The user_id after the ownership change, if set.
+	NewUserId *string `protobuf:"bytes,3,opt,name=new_user_id,json=newUserId,proto3,oneof" json:"new_user_id,omitempty"`
+	// The user_group after the ownership change, if set.
 	NewUserGroup *string `protobuf:"bytes,4,opt,name=new_user_group,json=newUserGroup,proto3,oneof" json:"new_user_group,omitempty"`
 }
 

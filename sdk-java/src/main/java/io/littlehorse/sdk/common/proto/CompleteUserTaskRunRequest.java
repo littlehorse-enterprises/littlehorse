@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Completes a UserTaskRun with provided values.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.CompleteUserTaskRunRequest}
  */
 public final class CompleteUserTaskRunRequest extends
@@ -54,6 +58,10 @@ private static final long serialVersionUID = 0L;
   public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
+   * <pre>
+   * The id of UserTaskRun to complete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
@@ -62,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ != null;
   }
   /**
+   * <pre>
+   * The id of UserTaskRun to complete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
@@ -70,6 +82,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTaskRunId_;
   }
   /**
+   * <pre>
+   * The id of UserTaskRun to complete.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -104,6 +120,11 @@ private static final long serialVersionUID = 0L;
     return internalGetResults().getMap().size();
   }
   /**
+   * <pre>
+   * A map from UserTaskField.name to a VariableValue containing the results of the
+   * user filling out the form.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
   @java.lang.Override
@@ -121,6 +142,11 @@ private static final long serialVersionUID = 0L;
     return getResultsMap();
   }
   /**
+   * <pre>
+   * A map from UserTaskField.name to a VariableValue containing the results of the
+   * user filling out the form.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
   @java.lang.Override
@@ -128,6 +154,11 @@ private static final long serialVersionUID = 0L;
     return internalGetResults().getMap();
   }
   /**
+   * <pre>
+   * A map from UserTaskField.name to a VariableValue containing the results of the
+   * user filling out the form.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
   @java.lang.Override
@@ -142,6 +173,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * A map from UserTaskField.name to a VariableValue containing the results of the
+   * user filling out the form.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
   @java.lang.Override
@@ -160,6 +196,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
+   * <pre>
+   * The ID of the user who executed the task.
+   * </pre>
+   *
    * <code>string user_id = 3;</code>
    * @return The userId.
    */
@@ -177,6 +217,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
+   * <pre>
+   * The ID of the user who executed the task.
+   * </pre>
+   *
    * <code>string user_id = 3;</code>
    * @return The bytes for userId.
    */
@@ -390,6 +434,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Completes a UserTaskRun with provided values.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.CompleteUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -622,6 +670,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return Whether the userTaskRunId field is set.
      */
@@ -629,6 +681,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return The userTaskRunId.
      */
@@ -640,6 +696,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -656,6 +716,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(
@@ -670,6 +734,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder mergeUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -689,6 +757,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder clearUserTaskRunId() {
@@ -702,6 +774,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId.Builder getUserTaskRunIdBuilder() {
@@ -710,6 +786,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getUserTaskRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder() {
@@ -721,6 +801,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The id of UserTaskRun to complete.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -764,6 +848,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetResults().getMap().size();
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     @java.lang.Override
@@ -781,6 +870,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getResultsMap();
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     @java.lang.Override
@@ -788,6 +882,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetResults().getMap();
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     @java.lang.Override
@@ -802,6 +901,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     @java.lang.Override
@@ -822,6 +926,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     public Builder removeResults(
@@ -841,6 +950,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetMutableResults().getMutableMap();
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     public Builder putResults(
@@ -854,6 +968,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A map from UserTaskField.name to a VariableValue containing the results of the
+     * user filling out the form.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
     public Builder putAllResults(
@@ -866,6 +985,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object userId_ = "";
     /**
+     * <pre>
+     * The ID of the user who executed the task.
+     * </pre>
+     *
      * <code>string user_id = 3;</code>
      * @return The userId.
      */
@@ -882,6 +1005,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the user who executed the task.
+     * </pre>
+     *
      * <code>string user_id = 3;</code>
      * @return The bytes for userId.
      */
@@ -899,6 +1026,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the user who executed the task.
+     * </pre>
+     *
      * <code>string user_id = 3;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -912,6 +1043,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the user who executed the task.
+     * </pre>
+     *
      * <code>string user_id = 3;</code>
      * @return This builder for chaining.
      */
@@ -922,6 +1057,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the user who executed the task.
+     * </pre>
+     *
      * <code>string user_id = 3;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.

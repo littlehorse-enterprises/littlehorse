@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Re-Assigns a UserTaskRun to a specific userId or userGroup.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.AssignUserTaskRunRequest}
  */
 public final class AssignUserTaskRunRequest extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
@@ -52,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ != null;
   }
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
@@ -60,6 +72,10 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTaskRunId_;
   }
   /**
+   * <pre>
+   * The UserTaskRun to assign to a new user_id or user_group.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -70,6 +86,13 @@ private static final long serialVersionUID = 0L;
   public static final int OVERRIDE_CLAIM_FIELD_NUMBER = 2;
   private boolean overrideClaim_ = false;
   /**
+   * <pre>
+   * If override_claim is set to false and the UserTaskRun is already assigned to
+   * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+   * true, then the old claim is overriden and the UserTaskRun is assigned to
+   * the new user.
+   * </pre>
+   *
    * <code>bool override_claim = 2;</code>
    * @return The overrideClaim.
    */
@@ -82,6 +105,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userGroup_ = "";
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return Whether the userGroup field is set.
    */
@@ -90,6 +119,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The userGroup.
    */
@@ -107,6 +142,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The bytes for userGroup.
    */
@@ -129,6 +170,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return Whether the userId field is set.
    */
@@ -137,6 +184,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The userId.
    */
@@ -154,6 +207,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The bytes for userId.
    */
@@ -377,6 +436,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Re-Assigns a UserTaskRun to a specific userId or userGroup.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.AssignUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -600,6 +663,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return Whether the userTaskRunId field is set.
      */
@@ -607,6 +674,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return The userTaskRunId.
      */
@@ -618,6 +689,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -634,6 +709,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(
@@ -648,6 +727,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder mergeUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -667,6 +750,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder clearUserTaskRunId() {
@@ -680,6 +767,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId.Builder getUserTaskRunIdBuilder() {
@@ -688,6 +779,10 @@ private static final long serialVersionUID = 0L;
       return getUserTaskRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder() {
@@ -699,6 +794,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The UserTaskRun to assign to a new user_id or user_group.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -717,6 +816,13 @@ private static final long serialVersionUID = 0L;
 
     private boolean overrideClaim_ ;
     /**
+     * <pre>
+     * If override_claim is set to false and the UserTaskRun is already assigned to
+     * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+     * true, then the old claim is overriden and the UserTaskRun is assigned to
+     * the new user.
+     * </pre>
+     *
      * <code>bool override_claim = 2;</code>
      * @return The overrideClaim.
      */
@@ -725,6 +831,13 @@ private static final long serialVersionUID = 0L;
       return overrideClaim_;
     }
     /**
+     * <pre>
+     * If override_claim is set to false and the UserTaskRun is already assigned to
+     * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+     * true, then the old claim is overriden and the UserTaskRun is assigned to
+     * the new user.
+     * </pre>
+     *
      * <code>bool override_claim = 2;</code>
      * @param value The overrideClaim to set.
      * @return This builder for chaining.
@@ -737,6 +850,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If override_claim is set to false and the UserTaskRun is already assigned to
+     * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+     * true, then the old claim is overriden and the UserTaskRun is assigned to
+     * the new user.
+     * </pre>
+     *
      * <code>bool override_claim = 2;</code>
      * @return This builder for chaining.
      */
@@ -749,6 +869,12 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userGroup_ = "";
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return Whether the userGroup field is set.
      */
@@ -756,6 +882,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return The userGroup.
      */
@@ -772,6 +904,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return The bytes for userGroup.
      */
@@ -789,6 +927,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @param value The userGroup to set.
      * @return This builder for chaining.
@@ -802,6 +946,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return This builder for chaining.
      */
@@ -812,6 +962,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The new user_group to which the UserTaskRun is assigned. If not set, then
+     * the user_group of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @param value The bytes for userGroup to set.
      * @return This builder for chaining.
@@ -828,6 +984,12 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userId_ = "";
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return Whether the userId field is set.
      */
@@ -835,6 +997,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return The userId.
      */
@@ -851,6 +1019,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return The bytes for userId.
      */
@@ -868,6 +1042,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -881,6 +1061,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return This builder for chaining.
      */
@@ -891,6 +1077,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The new user_id to which the UserTaskRun is assigned. If not set, then
+     * the user_id of the UserTaskRun is actively unset by this request. At least
+     * one of the user_group and user_id must be set.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.

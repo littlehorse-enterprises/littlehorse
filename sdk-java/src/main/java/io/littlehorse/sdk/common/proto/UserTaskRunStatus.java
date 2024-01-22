@@ -4,23 +4,43 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The status that a UserTaskRun can be in.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.UserTaskRunStatus}
  */
 public enum UserTaskRunStatus
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Not assigned to a specific user yet.
+   * </pre>
+   *
    * <code>UNASSIGNED = 0;</code>
    */
   UNASSIGNED(0),
   /**
+   * <pre>
+   * Assigned to a specific user, but not completed or cancelled yet.
+   * </pre>
+   *
    * <code>ASSIGNED = 1;</code>
    */
   ASSIGNED(1),
   /**
+   * <pre>
+   * Done.
+   * </pre>
+   *
    * <code>DONE = 3;</code>
    */
   DONE(3),
   /**
+   * <pre>
+   * Cancelled.
+   * </pre>
+   *
    * <code>CANCELLED = 4;</code>
    */
   CANCELLED(4),
@@ -28,18 +48,34 @@ public enum UserTaskRunStatus
   ;
 
   /**
+   * <pre>
+   * Not assigned to a specific user yet.
+   * </pre>
+   *
    * <code>UNASSIGNED = 0;</code>
    */
   public static final int UNASSIGNED_VALUE = 0;
   /**
+   * <pre>
+   * Assigned to a specific user, but not completed or cancelled yet.
+   * </pre>
+   *
    * <code>ASSIGNED = 1;</code>
    */
   public static final int ASSIGNED_VALUE = 1;
   /**
+   * <pre>
+   * Done.
+   * </pre>
+   *
    * <code>DONE = 3;</code>
    */
   public static final int DONE_VALUE = 3;
   /**
+   * <pre>
+   * Cancelled.
+   * </pre>
+   *
    * <code>CANCELLED = 4;</code>
    */
   public static final int CANCELLED_VALUE = 4;

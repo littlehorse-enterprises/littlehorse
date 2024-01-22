@@ -8,46 +8,88 @@ public interface UserTaskRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunId getId();
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    * @return Whether the userTaskDefId field is set.
    */
   boolean hasUserTaskDefId();
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    * @return The userTaskDefId.
    */
   io.littlehorse.sdk.common.proto.UserTaskDefId getUserTaskDefId();
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The bytes for userGroup.
    */
@@ -55,16 +97,37 @@ public interface UserTaskRunOrBuilder extends
       getUserGroupBytes();
 
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The bytes for userId.
    */
@@ -72,10 +135,22 @@ public interface UserTaskRunOrBuilder extends
       getUserIdBytes();
 
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   int getResultsCount();
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   boolean containsResults(
@@ -87,11 +162,23 @@ public interface UserTaskRunOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getResults();
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getResultsMap();
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   /* nullable */
@@ -100,57 +187,112 @@ io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
       java.lang.String key);
 
   /**
+   * <pre>
+   * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunStatus getStatus();
 
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent> 
       getEventsList();
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent getEvents(int index);
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   int getEventsCount();
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> 
       getEventsOrBuilderList();
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder getEventsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return Whether the notes field is set.
    */
   boolean hasNotes();
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return The notes.
    */
   java.lang.String getNotes();
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return The bytes for notes.
    */
@@ -158,25 +300,35 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       getNotesBytes();
 
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    * @return Whether the scheduledTime field is set.
    */
   boolean hasScheduledTime();
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    * @return The scheduledTime.
    */
   com.google.protobuf.Timestamp getScheduledTime();
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    */
   com.google.protobuf.TimestampOrBuilder getScheduledTimeOrBuilder();
 
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -185,9 +337,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   boolean hasNodeRunId();
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -196,9 +346,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId();
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
