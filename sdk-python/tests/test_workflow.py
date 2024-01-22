@@ -29,6 +29,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadSpec,
     FailureHandlerDef,
     ThreadVarDef,
+    WfRunVariableAccessLevel,
 )
 from littlehorse.workflow import to_variable_assignment, LHErrorType
 
@@ -161,9 +162,28 @@ class TestWfRunVariable(unittest.TestCase):
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
+            access_level="PUBLIC_VAR",
         )
         expected_output.json_indexes.append(
             JsonIndex(field_path="$.myPath", field_type=VariableType.STR)
+        )
+        self.assertEqual(variable.compile(), expected_output)
+
+    def test_compile_private_variable(self):
+        variable = WfRunVariable("my-var", VariableType.STR)
+        variable.with_access_level("PRIVATE_VAR")
+        expected_output = ThreadVarDef(
+            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            access_level="PRIVATE_VAR",
+        )
+        self.assertEqual(variable.compile(), expected_output)
+
+    def test_compile_inherited_variable(self):
+        variable = WfRunVariable("my-var", VariableType.STR)
+        variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
+        expected_output = ThreadVarDef(
+            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            access_level="INHERITED_VAR",
         )
         self.assertEqual(variable.compile(), expected_output)
 

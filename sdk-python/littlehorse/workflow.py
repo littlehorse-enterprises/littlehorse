@@ -54,6 +54,7 @@ from littlehorse.model.wf_spec_pb2 import (
     WaitForThreadsNode,
     FailureHandlerDef,
     WfSpec,
+    WfRunVariableAccessLevel,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -309,6 +310,9 @@ class WfRunVariable:
         self._required = False
         self._searchable = False
         self._json_indexes: List[JsonIndex] = []
+        self._access_level: Union[
+            WfRunVariableAccessLevel, str
+        ] = WfRunVariableAccessLevel.PUBLIC_VAR
 
         if default_value is not None:
             self.default_value = to_variable_value(default_value)
@@ -361,6 +365,9 @@ class WfRunVariable:
         out = WfRunVariable(self.name, self.type, self.default_value)
         out.json_path = json_path
         return out
+
+    def with_access_level(self, access_level: WfRunVariableAccessLevel):
+        self._access_level = access_level
 
     def searchable(self) -> "WfRunVariable":
         """Allows for searching for the WfRunVariable by its value.
@@ -422,6 +429,7 @@ class WfRunVariable:
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,
             required=self._required,
+            access_level=self._access_level,
         )
 
     def __str__(self) -> str:
