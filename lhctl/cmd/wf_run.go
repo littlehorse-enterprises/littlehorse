@@ -19,9 +19,7 @@ var getWfRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetWfRun(
 			requestContext(),
-			&model.WfRunId{
-				Id: args[0],
-			},
+			common.StrToWfRunId(args[0]),
 		))
 	},
 }
