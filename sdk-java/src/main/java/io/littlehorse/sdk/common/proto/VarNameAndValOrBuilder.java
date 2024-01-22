@@ -8,11 +8,19 @@ public interface VarNameAndValOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The variable name.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The varName.
    */
   java.lang.String getVarName();
   /**
+   * <pre>
+   * The variable name.
+   * </pre>
+   *
    * <code>string var_name = 1;</code>
    * @return The bytes for varName.
    */
@@ -20,16 +28,28 @@ public interface VarNameAndValOrBuilder extends
       getVarNameBytes();
 
   /**
+   * <pre>
+   * The value of the variable for this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
+   * <pre>
+   * The value of the variable for this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
   io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
+   * <pre>
+   * The value of the variable for this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();

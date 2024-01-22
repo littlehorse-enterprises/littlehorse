@@ -8,16 +8,28 @@ public interface TaskWorkerGroupIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * TaskWorkerGroups are uniquely identified by their TaskDefId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * TaskWorkerGroups are uniquely identified by their TaskDefId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * TaskWorkerGroups are uniquely identified by their TaskDefId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();

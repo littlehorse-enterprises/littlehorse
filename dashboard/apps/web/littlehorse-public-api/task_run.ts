@@ -17,53 +17,139 @@ import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
+/** A TaskRun resents a single instance of a TaskDef being executed. */
 export interface TaskRun {
-  id: TaskRunId | undefined;
-  taskDefId: TaskDefId | undefined;
+  /** The ID of the TaskRun. Note that the TaskRunId contains the WfRunId. */
+  id:
+    | TaskRunId
+    | undefined;
+  /** The ID of the TaskDef being executed. */
+  taskDefId:
+    | TaskDefId
+    | undefined;
+  /**
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   */
   attempts: TaskAttempt[];
+  /** The maximum number of attempts that may be scheduled for this TaskRun. */
   maxAttempts: number;
+  /**
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   */
   inputVariables: VarNameAndVal[];
-  source: TaskRunSource | undefined;
-  scheduledAt: string | undefined;
+  /**
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   */
+  source:
+    | TaskRunSource
+    | undefined;
+  /** When the TaskRun was scheduled. */
+  scheduledAt:
+    | string
+    | undefined;
+  /** The status of the TaskRun. */
   status: TaskStatus;
+  /** The timeout before LH considers a TaskAttempt to be timed out. */
   timeoutSeconds: number;
 }
 
+/** A key-value pair of variable name and value. */
 export interface VarNameAndVal {
+  /** The variable name. */
   varName: string;
+  /** The value of the variable for this TaskRun. */
   value: VariableValue | undefined;
 }
 
+/** A single time that a TaskRun was scheduled for execution on a Task Queue. */
 export interface TaskAttempt {
-  logOutput?: VariableValue | undefined;
-  scheduleTime?: string | undefined;
-  startTime?: string | undefined;
-  endTime?: string | undefined;
+  /**
+   * Optional information provided by the Task Worker SDK for debugging. Usually, if set
+   * it contains a stacktrace or it contains information logged via `WorkerContext#log()`.
+   */
+  logOutput?:
+    | VariableValue
+    | undefined;
+  /** The time the TaskAttempt was scheduled on the Task Queue. */
+  scheduleTime?:
+    | string
+    | undefined;
+  /** The time the TaskAttempt was pulled off the queue and sent to a TaskWorker. */
+  startTime?:
+    | string
+    | undefined;
+  /**
+   * The time the TaskAttempt was finished (either completed, reported as failed, or
+   * timed out)
+   */
+  endTime?:
+    | string
+    | undefined;
+  /** EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun. */
   taskWorkerId: string;
-  taskWorkerVersion?: string | undefined;
+  /** The version of the Task Worker that executed the TaskAttempt. */
+  taskWorkerVersion?:
+    | string
+    | undefined;
+  /** The status of this TaskAttempt. */
   status: TaskStatus;
-  output?: VariableValue | undefined;
-  error?: LHTaskError | undefined;
+  /** Denotes the Task Function executed properly and returned an output. */
+  output?:
+    | VariableValue
+    | undefined;
+  /** An unexpected technical error was encountered. May or may not be retriable. */
+  error?:
+    | LHTaskError
+    | undefined;
+  /** The Task Function encountered a business problem and threw a technical exception. */
   exception?: LHTaskException | undefined;
 }
 
+/** The source of a TaskRun; i.e. why it was scheduled. */
 export interface TaskRunSource {
-  taskNode?: TaskNodeReference | undefined;
-  userTaskTrigger?: UserTaskTriggerReference | undefined;
+  /** Reference to a NodeRun of type TASK which scheduled this TaskRun. */
+  taskNode?:
+    | TaskNodeReference
+    | undefined;
+  /** Reference to the specific UserTaskRun trigger action which scheduled this TaskRun */
+  userTaskTrigger?:
+    | UserTaskTriggerReference
+    | undefined;
+  /**
+   * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+   * that the WorkerContext can know this information.
+   */
   wfSpecId?: WfSpecId | undefined;
 }
 
+/** Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled. */
 export interface TaskNodeReference {
+  /** The ID of the NodeRun which caused this TASK to be scheduled. */
   nodeRunId: NodeRunId | undefined;
 }
 
+/** Message denoting a TaskRun failed for technical reasons. */
 export interface LHTaskError {
+  /** The technical error code. */
   type: LHErrorType;
+  /** Human readable message for debugging. */
   message: string;
 }
 
+/**
+ * Message denoting a TaskRun's execution signaled that something went wrong in the
+ * business process, throwing a littlehorse 'EXCEPTION'.
+ */
 export interface LHTaskException {
+  /** The user-defined Failure name, for example, "credit-card-declined" */
   name: string;
+  /** Human readadble description of the failure. */
   message: string;
 }
 

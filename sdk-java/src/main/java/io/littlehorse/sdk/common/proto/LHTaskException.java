@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Message denoting a TaskRun's execution signaled that something went wrong in the
+ * business process, throwing a littlehorse 'EXCEPTION'.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.LHTaskException}
  */
 public final class LHTaskException extends
@@ -44,6 +49,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The user-defined Failure name, for example, "credit-card-declined"
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -61,6 +70,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The user-defined Failure name, for example, "credit-card-declined"
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -83,6 +96,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object message_ = "";
   /**
+   * <pre>
+   * Human readadble description of the failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
@@ -100,6 +117,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Human readadble description of the failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -285,6 +306,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Message denoting a TaskRun's execution signaled that something went wrong in the
+   * business process, throwing a littlehorse 'EXCEPTION'.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.LHTaskException}
    */
   public static final class Builder extends
@@ -470,6 +496,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The user-defined Failure name, for example, "credit-card-declined"
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -486,6 +516,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user-defined Failure name, for example, "credit-card-declined"
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -503,6 +537,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The user-defined Failure name, for example, "credit-card-declined"
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -516,6 +554,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The user-defined Failure name, for example, "credit-card-declined"
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -526,6 +568,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The user-defined Failure name, for example, "credit-card-declined"
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -542,6 +588,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object message_ = "";
     /**
+     * <pre>
+     * Human readadble description of the failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The message.
      */
@@ -558,6 +608,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human readadble description of the failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The bytes for message.
      */
@@ -575,6 +629,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human readadble description of the failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The message to set.
      * @return This builder for chaining.
@@ -588,6 +646,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human readadble description of the failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return This builder for chaining.
      */
@@ -598,6 +660,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human readadble description of the failure.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.

@@ -11,24 +11,65 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+// Generally, an ExternalEvent is used to represent a document getting signed, an incident
+// being resolved, an order being fulfilled, etc.
+//
+// ExternalEvent's are created via the 'rpc PutExternalEvent'
+//
+// For more context on ExternalEvents, check our documentation here:
+// https://littlehorse.dev/docs/concepts/external-events
 message ExternalEvent {
+  // The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+  // and a unique guid which can be used for idempotency of the `PutExternalEvent`
+  // rpc call.
   ExternalEventId id = 1;
+
+  // The time the ExternalEvent was registered with LittleHorse.
   google.protobuf.Timestamp created_at = 2;
+
+  // The payload of this ExternalEvent.
   VariableValue content = 3;
+
+  // If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+  // EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
   optional int32 thread_run_number = 4;
+
+  // If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+  // Node; note that in the case of an Interrupt the node_run_position will never
+  // be set), this is set to the number of the relevant NodeRun.
   optional int32 node_run_position = 5;
+
+  // Whether the ExternalEvent has been claimed by a WfRun.
   bool claimed = 6;
 }
 
-// ExternalEventDef
+// The ExternalEventDef defines the blueprint for an ExternalEvent.
 message ExternalEventDef {
+  // The name of the ExternalEventDef.
   string name = 1;
+
+  // When the ExternalEventDef was created.
   google.protobuf.Timestamp created_at = 2;
+
+  // The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+  // ExternalEvent **only before** it is matched with a WfRun.
   ExternalEventRetentionPolicy retention_policy = 3;
 }
 
+// Policy to determine how long an ExternalEvent is retained after creation if it
+// is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+// ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+// If not set, then ExternalEvent's are not deleted if they are not matched with
+// a WfRun.
+//
+// A future version of LittleHorse will allow changing the retention_policy, which
+// will trigger a cleanup of old `ExternalEvent`s.
 message ExternalEventRetentionPolicy {
+  // The retention policy choice. If not set, then the ExternalEvent is not cleaned up
+  // until matched with a WfRun (which may mean it is never cleaned up).
   oneof ext_evt_gc_policy {
+
     // Delete such an ExternalEvent X seconds after it has been registered if it
     // has not yet been claimed by a WfRun.
     int64 seconds_after_put = 1;

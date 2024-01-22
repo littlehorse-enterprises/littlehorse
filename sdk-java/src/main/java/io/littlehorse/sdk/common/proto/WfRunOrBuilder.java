@@ -8,65 +8,122 @@ public interface WfRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.WfRunId getId();
   /**
+   * <pre>
+   * The ID of the WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * The ID of the WfSpec that this WfRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> 
       getOldWfSpecVersionsList();
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpecVersions(int index);
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   int getOldWfSpecVersionsCount();
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
       getOldWfSpecVersionsOrBuilderList();
   /**
+   * <pre>
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfSpecId old_wf_spec_versions = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getOldWfSpecVersionsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * The status of this WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 4;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * The status of this WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 4;</code>
    * @return The status.
    */
@@ -74,8 +131,12 @@ public interface WfRunOrBuilder extends
 
   /**
    * <pre>
+   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+   * is given by greatest_thread_run_number + 1.
+   *
    * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns.
+   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+   * from the thread_runs list once its retention period expires.
    * </pre>
    *
    * <code>int32 greatest_threadrun_number = 5;</code>
@@ -84,102 +145,201 @@ public interface WfRunOrBuilder extends
   int getGreatestThreadrunNumber();
 
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return Whether the startTime field is set.
    */
   boolean hasStartTime();
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return The startTime.
    */
   com.google.protobuf.Timestamp getStartTime();
   /**
+   * <pre>
+   * The time the WfRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 6;</code>
    */
   com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
 
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
+   * <pre>
+   * The time the WfRun failed or completed.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ThreadRun> 
       getThreadRunsList();
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadRun getThreadRuns(int index);
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   int getThreadRunsCount();
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadRunOrBuilder> 
       getThreadRunsOrBuilderList();
   /**
+   * <pre>
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadRun thread_runs = 8;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadRunOrBuilder getThreadRunsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> 
       getPendingInterruptsList();
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   io.littlehorse.sdk.common.proto.PendingInterrupt getPendingInterrupts(int index);
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   int getPendingInterruptsCount();
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
       getPendingInterruptsOrBuilderList();
   /**
+   * <pre>
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder getPendingInterruptsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> 
       getPendingFailuresList();
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandler getPendingFailures(int index);
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   int getPendingFailuresCount();
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
       getPendingFailuresOrBuilderList();
   /**
+   * <pre>
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   * </pre>
+   *
    * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(

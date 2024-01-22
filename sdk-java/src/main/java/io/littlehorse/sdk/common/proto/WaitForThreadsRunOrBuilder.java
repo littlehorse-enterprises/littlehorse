@@ -8,35 +8,65 @@ public interface WaitForThreadsRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread> 
       getThreadsList();
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread getThreads(int index);
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   int getThreadsCount();
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder> 
       getThreadsOrBuilderList();
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder getThreadsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * The policy to use when handling failures for Threads. Currently, only
+   * one policy exists.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
    * @return The enum numeric value on the wire for policy.
    */
   int getPolicyValue();
   /**
+   * <pre>
+   * The policy to use when handling failures for Threads. Currently, only
+   * one policy exists.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
    * @return The policy.
    */

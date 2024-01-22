@@ -8,11 +8,19 @@ public interface WfSpecIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Name of the WfSpec.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * Name of the WfSpec.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -20,12 +28,34 @@ public interface WfSpecIdOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * Major Version of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   * </pre>
+   *
    * <code>int32 major_version = 2;</code>
    * @return The majorVersion.
    */
   int getMajorVersion();
 
   /**
+   * <pre>
+   * Revision of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   * </pre>
+   *
    * <code>int32 revision = 3;</code>
    * @return The revision.
    */

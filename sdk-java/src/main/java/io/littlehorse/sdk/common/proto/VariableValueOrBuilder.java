@@ -8,16 +8,28 @@ public interface VariableValueOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return Whether the jsonObj field is set.
    */
   boolean hasJsonObj();
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return The jsonObj.
    */
   java.lang.String getJsonObj();
   /**
+   * <pre>
+   * A String representing a serialized json object.
+   * </pre>
+   *
    * <code>string json_obj = 2;</code>
    * @return The bytes for jsonObj.
    */
@@ -25,16 +37,28 @@ public interface VariableValueOrBuilder extends
       getJsonObjBytes();
 
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return Whether the jsonArr field is set.
    */
   boolean hasJsonArr();
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return The jsonArr.
    */
   java.lang.String getJsonArr();
   /**
+   * <pre>
+   * A String representing a serialized json list.
+   * </pre>
+   *
    * <code>string json_arr = 3;</code>
    * @return The bytes for jsonArr.
    */
@@ -42,38 +66,66 @@ public interface VariableValueOrBuilder extends
       getJsonArrBytes();
 
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>double double = 4;</code>
    * @return Whether the double field is set.
    */
   boolean hasDouble();
   /**
+   * <pre>
+   * A 64-bit floating point number.
+   * </pre>
+   *
    * <code>double double = 4;</code>
    * @return The double.
    */
   double getDouble();
 
   /**
+   * <pre>
+   * A boolean.
+   * </pre>
+   *
    * <code>bool bool = 5;</code>
    * @return Whether the bool field is set.
    */
   boolean hasBool();
   /**
+   * <pre>
+   * A boolean.
+   * </pre>
+   *
    * <code>bool bool = 5;</code>
    * @return The bool.
    */
   boolean getBool();
 
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return Whether the str field is set.
    */
   boolean hasStr();
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return The str.
    */
   java.lang.String getStr();
   /**
+   * <pre>
+   * A string.
+   * </pre>
+   *
    * <code>string str = 6;</code>
    * @return The bytes for str.
    */
@@ -81,22 +133,38 @@ public interface VariableValueOrBuilder extends
       getStrBytes();
 
   /**
+   * <pre>
+   * A 64-bit integer.
+   * </pre>
+   *
    * <code>int64 int = 7;</code>
    * @return Whether the int field is set.
    */
   boolean hasInt();
   /**
+   * <pre>
+   * A 64-bit integer.
+   * </pre>
+   *
    * <code>int64 int = 7;</code>
    * @return The int.
    */
   long getInt();
 
   /**
+   * <pre>
+   * An arbitrary String of bytes.
+   * </pre>
+   *
    * <code>bytes bytes = 8;</code>
    * @return Whether the bytes field is set.
    */
   boolean hasBytes();
   /**
+   * <pre>
+   * An arbitrary String of bytes.
+   * </pre>
+   *
    * <code>bytes bytes = 8;</code>
    * @return The bytes.
    */

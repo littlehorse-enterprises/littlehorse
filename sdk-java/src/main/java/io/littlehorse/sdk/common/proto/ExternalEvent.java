@@ -4,6 +4,17 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+ * Generally, an ExternalEvent is used to represent a document getting signed, an incident
+ * being resolved, an order being fulfilled, etc.
+ *
+ * ExternalEvent's are created via the 'rpc PutExternalEvent'
+ *
+ * For more context on ExternalEvents, check our documentation here:
+ * https://littlehorse.dev/docs/concepts/external-events
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExternalEvent}
  */
 public final class ExternalEvent extends
@@ -42,6 +53,12 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventId id_;
   /**
+   * <pre>
+   * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+   * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+   * rpc call.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -50,6 +67,12 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+   * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+   * rpc call.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId id = 1;</code>
    * @return The id.
    */
@@ -58,6 +81,12 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+   * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+   * rpc call.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +97,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The time the ExternalEvent was registered with LittleHorse.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -76,6 +109,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The time the ExternalEvent was registered with LittleHorse.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -84,6 +121,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The time the ExternalEvent was registered with LittleHorse.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -94,6 +135,10 @@ private static final long serialVersionUID = 0L;
   public static final int CONTENT_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue content_;
   /**
+   * <pre>
+   * The payload of this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
@@ -102,6 +147,10 @@ private static final long serialVersionUID = 0L;
     return content_ != null;
   }
   /**
+   * <pre>
+   * The payload of this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
@@ -110,6 +159,10 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
   /**
+   * <pre>
+   * The payload of this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    */
   @java.lang.Override
@@ -120,6 +173,11 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 4;
   private int threadRunNumber_ = 0;
   /**
+   * <pre>
+   * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+   * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+   * </pre>
+   *
    * <code>optional int32 thread_run_number = 4;</code>
    * @return Whether the threadRunNumber field is set.
    */
@@ -128,6 +186,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+   * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+   * </pre>
+   *
    * <code>optional int32 thread_run_number = 4;</code>
    * @return The threadRunNumber.
    */
@@ -139,6 +202,12 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_POSITION_FIELD_NUMBER = 5;
   private int nodeRunPosition_ = 0;
   /**
+   * <pre>
+   * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+   * Node; note that in the case of an Interrupt the node_run_position will never
+   * be set), this is set to the number of the relevant NodeRun.
+   * </pre>
+   *
    * <code>optional int32 node_run_position = 5;</code>
    * @return Whether the nodeRunPosition field is set.
    */
@@ -147,6 +216,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+   * Node; note that in the case of an Interrupt the node_run_position will never
+   * be set), this is set to the number of the relevant NodeRun.
+   * </pre>
+   *
    * <code>optional int32 node_run_position = 5;</code>
    * @return The nodeRunPosition.
    */
@@ -158,6 +233,10 @@ private static final long serialVersionUID = 0L;
   public static final int CLAIMED_FIELD_NUMBER = 6;
   private boolean claimed_ = false;
   /**
+   * <pre>
+   * Whether the ExternalEvent has been claimed by a WfRun.
+   * </pre>
+   *
    * <code>bool claimed = 6;</code>
    * @return The claimed.
    */
@@ -405,6 +484,17 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+   * Generally, an ExternalEvent is used to represent a document getting signed, an incident
+   * being resolved, an order being fulfilled, etc.
+   *
+   * ExternalEvent's are created via the 'rpc PutExternalEvent'
+   *
+   * For more context on ExternalEvents, check our documentation here:
+   * https://littlehorse.dev/docs/concepts/external-events
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExternalEvent}
    */
   public static final class Builder extends
@@ -664,6 +754,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -671,6 +767,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      * @return The id.
      */
@@ -682,6 +784,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -698,6 +806,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public Builder setId(
@@ -712,6 +826,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -731,6 +851,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public Builder clearId() {
@@ -744,6 +870,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getIdBuilder() {
@@ -752,6 +884,12 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getIdOrBuilder() {
@@ -763,6 +901,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+     * and a unique guid which can be used for idempotency of the `PutExternalEvent`
+     * rpc call.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -783,6 +927,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -790,6 +938,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -801,6 +953,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -817,6 +973,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -831,6 +991,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -850,6 +1014,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -863,6 +1031,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -871,6 +1043,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -882,6 +1058,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ExternalEvent was registered with LittleHorse.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -902,6 +1082,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      * @return Whether the content field is set.
      */
@@ -909,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      * @return The content.
      */
@@ -920,6 +1108,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -936,6 +1128,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(
@@ -950,6 +1146,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -969,6 +1169,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder clearContent() {
@@ -982,6 +1186,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
@@ -990,6 +1198,10 @@ private static final long serialVersionUID = 0L;
       return getContentFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
@@ -1001,6 +1213,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The payload of this ExternalEvent.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1019,6 +1235,11 @@ private static final long serialVersionUID = 0L;
 
     private int threadRunNumber_ ;
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+     * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+     * </pre>
+     *
      * <code>optional int32 thread_run_number = 4;</code>
      * @return Whether the threadRunNumber field is set.
      */
@@ -1027,6 +1248,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+     * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+     * </pre>
+     *
      * <code>optional int32 thread_run_number = 4;</code>
      * @return The threadRunNumber.
      */
@@ -1035,6 +1261,11 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+     * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+     * </pre>
+     *
      * <code>optional int32 thread_run_number = 4;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
@@ -1047,6 +1278,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+     * EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+     * </pre>
+     *
      * <code>optional int32 thread_run_number = 4;</code>
      * @return This builder for chaining.
      */
@@ -1059,6 +1295,12 @@ private static final long serialVersionUID = 0L;
 
     private int nodeRunPosition_ ;
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+     * Node; note that in the case of an Interrupt the node_run_position will never
+     * be set), this is set to the number of the relevant NodeRun.
+     * </pre>
+     *
      * <code>optional int32 node_run_position = 5;</code>
      * @return Whether the nodeRunPosition field is set.
      */
@@ -1067,6 +1309,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+     * Node; note that in the case of an Interrupt the node_run_position will never
+     * be set), this is set to the number of the relevant NodeRun.
+     * </pre>
+     *
      * <code>optional int32 node_run_position = 5;</code>
      * @return The nodeRunPosition.
      */
@@ -1075,6 +1323,12 @@ private static final long serialVersionUID = 0L;
       return nodeRunPosition_;
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+     * Node; note that in the case of an Interrupt the node_run_position will never
+     * be set), this is set to the number of the relevant NodeRun.
+     * </pre>
+     *
      * <code>optional int32 node_run_position = 5;</code>
      * @param value The nodeRunPosition to set.
      * @return This builder for chaining.
@@ -1087,6 +1341,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+     * Node; note that in the case of an Interrupt the node_run_position will never
+     * be set), this is set to the number of the relevant NodeRun.
+     * </pre>
+     *
      * <code>optional int32 node_run_position = 5;</code>
      * @return This builder for chaining.
      */
@@ -1099,6 +1359,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean claimed_ ;
     /**
+     * <pre>
+     * Whether the ExternalEvent has been claimed by a WfRun.
+     * </pre>
+     *
      * <code>bool claimed = 6;</code>
      * @return The claimed.
      */
@@ -1107,6 +1371,10 @@ private static final long serialVersionUID = 0L;
       return claimed_;
     }
     /**
+     * <pre>
+     * Whether the ExternalEvent has been claimed by a WfRun.
+     * </pre>
+     *
      * <code>bool claimed = 6;</code>
      * @param value The claimed to set.
      * @return This builder for chaining.
@@ -1119,6 +1387,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Whether the ExternalEvent has been claimed by a WfRun.
+     * </pre>
+     *
      * <code>bool claimed = 6;</code>
      * @return This builder for chaining.
      */

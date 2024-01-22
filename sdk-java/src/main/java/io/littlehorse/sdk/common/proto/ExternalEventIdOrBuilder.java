@@ -8,41 +8,78 @@ public interface ExternalEventIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
+   * <pre>
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return Whether the externalEventDefId field is set.
    */
   boolean hasExternalEventDefId();
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    * @return The externalEventDefId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
   /**
+   * <pre>
+   * The ExternalEventDef for this ExternalEvent.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
 
   /**
+   * <pre>
+   * A unique guid allowing for distinguishing this ExternalEvent from other events
+   * of the same ExternalEventDef and WfRun.
+   * </pre>
+   *
    * <code>string guid = 3;</code>
    * @return The guid.
    */
   java.lang.String getGuid();
   /**
+   * <pre>
+   * A unique guid allowing for distinguishing this ExternalEvent from other events
+   * of the same ExternalEventDef and WfRun.
+   * </pre>
+   *
    * <code>string guid = 3;</code>
    * @return The bytes for guid.
    */

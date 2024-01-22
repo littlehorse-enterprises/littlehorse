@@ -8,11 +8,19 @@ public interface StartMultipleThreadsRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_runs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_runs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The bytes for threadSpecName.
    */

@@ -8,11 +8,21 @@ public interface PrincipalIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The id of this principal. In OAuth, this is the OAuth Client ID (for
+   * machine principals) or the OAuth User Id (for human principals).
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * The id of this principal. In OAuth, this is the OAuth Client ID (for
+   * machine principals) or the OAuth User Id (for human principals).
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */

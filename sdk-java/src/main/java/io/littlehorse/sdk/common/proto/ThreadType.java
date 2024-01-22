@@ -4,23 +4,44 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The type of a ThreadRUn.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.ThreadType}
  */
 public enum ThreadType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0.
+   * </pre>
+   *
    * <code>ENTRYPOINT = 0;</code>
    */
   ENTRYPOINT(0),
   /**
+   * <pre>
+   * A ThreadRun explicitly created by another ThreadRun via a START_THREAD or START_MULTIPLE_THREADS
+   * NodeRun.
+   * </pre>
+   *
    * <code>CHILD = 1;</code>
    */
   CHILD(1),
   /**
+   * <pre>
+   * A ThreadRun that was created to handle an Interrupt.
+   * </pre>
+   *
    * <code>INTERRUPT = 2;</code>
    */
   INTERRUPT(2),
   /**
+   * <pre>
+   * A ThreadRun that was created to handle a Failure.
+   * </pre>
+   *
    * <code>FAILURE_HANDLER = 3;</code>
    */
   FAILURE_HANDLER(3),
@@ -28,18 +49,35 @@ public enum ThreadType
   ;
 
   /**
+   * <pre>
+   * The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0.
+   * </pre>
+   *
    * <code>ENTRYPOINT = 0;</code>
    */
   public static final int ENTRYPOINT_VALUE = 0;
   /**
+   * <pre>
+   * A ThreadRun explicitly created by another ThreadRun via a START_THREAD or START_MULTIPLE_THREADS
+   * NodeRun.
+   * </pre>
+   *
    * <code>CHILD = 1;</code>
    */
   public static final int CHILD_VALUE = 1;
   /**
+   * <pre>
+   * A ThreadRun that was created to handle an Interrupt.
+   * </pre>
+   *
    * <code>INTERRUPT = 2;</code>
    */
   public static final int INTERRUPT_VALUE = 2;
   /**
+   * <pre>
+   * A ThreadRun that was created to handle a Failure.
+   * </pre>
+   *
    * <code>FAILURE_HANDLER = 3;</code>
    */
   public static final int FAILURE_HANDLER_VALUE = 3;

@@ -8,22 +8,38 @@ public interface VariableDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The Type of the variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 1;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * The Type of the variable.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 1;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.VariableType getType();
 
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 2;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * The name of the variable.
+   * </pre>
+   *
    * <code>string name = 2;</code>
    * @return The bytes for name.
    */
@@ -31,16 +47,34 @@ public interface VariableDefOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return Whether the defaultValue field is set.
    */
   boolean hasDefaultValue();
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    * @return The defaultValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getDefaultValue();
   /**
+   * <pre>
+   * Optional default value if the variable isn't set; for example, in a ThreadRun
+   * if you start a ThreadRun or WfRun without passing a variable in, then this is
+   * used.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();

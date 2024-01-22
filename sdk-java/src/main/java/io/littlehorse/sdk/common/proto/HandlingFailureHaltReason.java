@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.HandlingFailureHaltReason}
  */
 public final class HandlingFailureHaltReason extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int HANDLER_THREAD_ID_FIELD_NUMBER = 1;
   private int handlerThreadId_ = 0;
   /**
+   * <pre>
+   * The ID of the Failure Handler ThreadRun.
+   * </pre>
+   *
    * <code>int32 handler_thread_id = 1;</code>
    * @return The handlerThreadId.
    */
@@ -207,6 +215,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.HandlingFailureHaltReason}
    */
   public static final class Builder extends
@@ -376,6 +388,10 @@ private static final long serialVersionUID = 0L;
 
     private int handlerThreadId_ ;
     /**
+     * <pre>
+     * The ID of the Failure Handler ThreadRun.
+     * </pre>
+     *
      * <code>int32 handler_thread_id = 1;</code>
      * @return The handlerThreadId.
      */
@@ -384,6 +400,10 @@ private static final long serialVersionUID = 0L;
       return handlerThreadId_;
     }
     /**
+     * <pre>
+     * The ID of the Failure Handler ThreadRun.
+     * </pre>
+     *
      * <code>int32 handler_thread_id = 1;</code>
      * @param value The handlerThreadId to set.
      * @return This builder for chaining.
@@ -396,6 +416,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the Failure Handler ThreadRun.
+     * </pre>
+     *
      * <code>int32 handler_thread_id = 1;</code>
      * @return This builder for chaining.
      */

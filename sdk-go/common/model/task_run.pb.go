@@ -21,20 +21,36 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// A TaskRun resents a single instance of a TaskDef being executed.
 type TaskRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             *TaskRunId             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	TaskDefId      *TaskDefId             `protobuf:"bytes,2,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
-	Attempts       []*TaskAttempt         `protobuf:"bytes,3,rep,name=attempts,proto3" json:"attempts,omitempty"`
-	MaxAttempts    int32                  `protobuf:"varint,4,opt,name=max_attempts,json=maxAttempts,proto3" json:"max_attempts,omitempty"`
-	InputVariables []*VarNameAndVal       `protobuf:"bytes,5,rep,name=input_variables,json=inputVariables,proto3" json:"input_variables,omitempty"`
-	Source         *TaskRunSource         `protobuf:"bytes,6,opt,name=source,proto3" json:"source,omitempty"`
-	ScheduledAt    *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=scheduled_at,json=scheduledAt,proto3" json:"scheduled_at,omitempty"`
-	Status         TaskStatus             `protobuf:"varint,8,opt,name=status,proto3,enum=littlehorse.TaskStatus" json:"status,omitempty"`
-	TimeoutSeconds int32                  `protobuf:"varint,9,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
+	// The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+	Id *TaskRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the TaskDef being executed.
+	TaskDefId *TaskDefId `protobuf:"bytes,2,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
+	// All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+	// the TaskRun being put on a Task Queue to be executed by the Task Workers.
+	Attempts []*TaskAttempt `protobuf:"bytes,3,rep,name=attempts,proto3" json:"attempts,omitempty"`
+	// The maximum number of attempts that may be scheduled for this TaskRun.
+	MaxAttempts int32 `protobuf:"varint,4,opt,name=max_attempts,json=maxAttempts,proto3" json:"max_attempts,omitempty"`
+	// The input variables to pass into this TaskRun. Note that this is a list and not
+	// a map, because ordering matters. Depending on the language implementation, not
+	// every LittleHorse Task Worker SDK has the ability to determine the names of the
+	// variables from the method signature, so we provide both names and ordering.
+	InputVariables []*VarNameAndVal `protobuf:"bytes,5,rep,name=input_variables,json=inputVariables,proto3" json:"input_variables,omitempty"`
+	// The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+	// can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+	// as a task used to send reminders).
+	Source *TaskRunSource `protobuf:"bytes,6,opt,name=source,proto3" json:"source,omitempty"`
+	// When the TaskRun was scheduled.
+	ScheduledAt *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=scheduled_at,json=scheduledAt,proto3" json:"scheduled_at,omitempty"`
+	// The status of the TaskRun.
+	Status TaskStatus `protobuf:"varint,8,opt,name=status,proto3,enum=littlehorse.TaskStatus" json:"status,omitempty"`
+	// The timeout before LH considers a TaskAttempt to be timed out.
+	TimeoutSeconds int32 `protobuf:"varint,9,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
 }
 
 func (x *TaskRun) Reset() {
@@ -132,13 +148,16 @@ func (x *TaskRun) GetTimeoutSeconds() int32 {
 	return 0
 }
 
+// A key-value pair of variable name and value.
 type VarNameAndVal struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VarName string         `protobuf:"bytes,1,opt,name=var_name,json=varName,proto3" json:"var_name,omitempty"`
-	Value   *VariableValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	// The variable name.
+	VarName string `protobuf:"bytes,1,opt,name=var_name,json=varName,proto3" json:"var_name,omitempty"`
+	// The value of the variable for this TaskRun.
+	Value *VariableValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *VarNameAndVal) Reset() {
@@ -187,18 +206,32 @@ func (x *VarNameAndVal) GetValue() *VariableValue {
 	return nil
 }
 
+// A single time that a TaskRun was scheduled for execution on a Task Queue.
 type TaskAttempt struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LogOutput         *VariableValue         `protobuf:"bytes,2,opt,name=log_output,json=logOutput,proto3,oneof" json:"log_output,omitempty"`
-	ScheduleTime      *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=schedule_time,json=scheduleTime,proto3,oneof" json:"schedule_time,omitempty"`
-	StartTime         *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`
-	EndTime           *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
-	TaskWorkerId      string                 `protobuf:"bytes,7,opt,name=task_worker_id,json=taskWorkerId,proto3" json:"task_worker_id,omitempty"`
-	TaskWorkerVersion *string                `protobuf:"bytes,8,opt,name=task_worker_version,json=taskWorkerVersion,proto3,oneof" json:"task_worker_version,omitempty"`
-	Status            TaskStatus             `protobuf:"varint,9,opt,name=status,proto3,enum=littlehorse.TaskStatus" json:"status,omitempty"`
+	// Optional information provided by the Task Worker SDK for debugging. Usually, if set
+	// it contains a stacktrace or it contains information logged via `WorkerContext#log()`.
+	LogOutput *VariableValue `protobuf:"bytes,2,opt,name=log_output,json=logOutput,proto3,oneof" json:"log_output,omitempty"`
+	// The time the TaskAttempt was scheduled on the Task Queue.
+	ScheduleTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=schedule_time,json=scheduleTime,proto3,oneof" json:"schedule_time,omitempty"`
+	// The time the TaskAttempt was pulled off the queue and sent to a TaskWorker.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`
+	// The time the TaskAttempt was finished (either completed, reported as failed, or
+	// timed out)
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	// EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+	TaskWorkerId string `protobuf:"bytes,7,opt,name=task_worker_id,json=taskWorkerId,proto3" json:"task_worker_id,omitempty"`
+	// The version of the Task Worker that executed the TaskAttempt.
+	TaskWorkerVersion *string `protobuf:"bytes,8,opt,name=task_worker_version,json=taskWorkerVersion,proto3,oneof" json:"task_worker_version,omitempty"`
+	// The status of this TaskAttempt.
+	Status TaskStatus `protobuf:"varint,9,opt,name=status,proto3,enum=littlehorse.TaskStatus" json:"status,omitempty"`
+	// The result of this TaskAttempt. Can either be a successful run which returns an
+	// output value, a technical ERROR which returns a LHTaskError, or the Task Function
+	// can throw a business EXCEPTION (eg. `credit-card-declined`).
+	//
 	// Types that are assignable to Result:
 	//	*TaskAttempt_Output
 	//	*TaskAttempt_Error
@@ -320,14 +353,17 @@ type isTaskAttempt_Result interface {
 }
 
 type TaskAttempt_Output struct {
+	// Denotes the Task Function executed properly and returned an output.
 	Output *VariableValue `protobuf:"bytes,1,opt,name=output,proto3,oneof"`
 }
 
 type TaskAttempt_Error struct {
+	// An unexpected technical error was encountered. May or may not be retriable.
 	Error *LHTaskError `protobuf:"bytes,10,opt,name=error,proto3,oneof"`
 }
 
 type TaskAttempt_Exception struct {
+	// The Task Function encountered a business problem and threw a technical exception.
 	Exception *LHTaskException `protobuf:"bytes,11,opt,name=exception,proto3,oneof"`
 }
 
@@ -337,16 +373,21 @@ func (*TaskAttempt_Error) isTaskAttempt_Result() {}
 
 func (*TaskAttempt_Exception) isTaskAttempt_Result() {}
 
+// The source of a TaskRun; i.e. why it was scheduled.
 type TaskRunSource struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The source of the TaskRun.
+	//
 	// Types that are assignable to TaskRunSource:
 	//	*TaskRunSource_TaskNode
 	//	*TaskRunSource_UserTaskTrigger
 	TaskRunSource isTaskRunSource_TaskRunSource `protobuf_oneof:"task_run_source"`
-	WfSpecId      *WfSpecId                     `protobuf:"bytes,3,opt,name=wf_spec_id,json=wfSpecId,proto3,oneof" json:"wf_spec_id,omitempty"`
+	// The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+	// that the WorkerContext can know this information.
+	WfSpecId *WfSpecId `protobuf:"bytes,3,opt,name=wf_spec_id,json=wfSpecId,proto3,oneof" json:"wf_spec_id,omitempty"`
 }
 
 func (x *TaskRunSource) Reset() {
@@ -414,10 +455,12 @@ type isTaskRunSource_TaskRunSource interface {
 }
 
 type TaskRunSource_TaskNode struct {
+	// Reference to a NodeRun of type TASK which scheduled this TaskRun.
 	TaskNode *TaskNodeReference `protobuf:"bytes,1,opt,name=task_node,json=taskNode,proto3,oneof"`
 }
 
 type TaskRunSource_UserTaskTrigger struct {
+	// Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
 	UserTaskTrigger *UserTaskTriggerReference `protobuf:"bytes,2,opt,name=user_task_trigger,json=userTaskTrigger,proto3,oneof"`
 }
 
@@ -425,11 +468,13 @@ func (*TaskRunSource_TaskNode) isTaskRunSource_TaskRunSource() {}
 
 func (*TaskRunSource_UserTaskTrigger) isTaskRunSource_TaskRunSource() {}
 
+// Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
 type TaskNodeReference struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the NodeRun which caused this TASK to be scheduled.
 	NodeRunId *NodeRunId `protobuf:"bytes,1,opt,name=node_run_id,json=nodeRunId,proto3" json:"node_run_id,omitempty"`
 }
 
@@ -472,13 +517,16 @@ func (x *TaskNodeReference) GetNodeRunId() *NodeRunId {
 	return nil
 }
 
+// Message denoting a TaskRun failed for technical reasons.
 type LHTaskError struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type    LHErrorType `protobuf:"varint,1,opt,name=type,proto3,enum=littlehorse.LHErrorType" json:"type,omitempty"`
-	Message string      `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// The technical error code.
+	Type LHErrorType `protobuf:"varint,1,opt,name=type,proto3,enum=littlehorse.LHErrorType" json:"type,omitempty"`
+	// Human readable message for debugging.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (x *LHTaskError) Reset() {
@@ -527,12 +575,16 @@ func (x *LHTaskError) GetMessage() string {
 	return ""
 }
 
+// Message denoting a TaskRun's execution signaled that something went wrong in the
+// business process, throwing a littlehorse 'EXCEPTION'.
 type LHTaskException struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The user-defined Failure name, for example, "credit-card-declined"
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Human readadble description of the failure.
 	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 }
 

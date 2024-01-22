@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The source of a TaskRun; i.e. why it was scheduled.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskRunSource}
  */
 public final class TaskRunSource extends
@@ -83,6 +87,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_NODE_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
    * @return Whether the taskNode field is set.
    */
@@ -91,6 +99,10 @@ private static final long serialVersionUID = 0L;
     return taskRunSourceCase_ == 1;
   }
   /**
+   * <pre>
+   * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
    * @return The taskNode.
    */
@@ -102,6 +114,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.TaskNodeReference.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
    */
   @java.lang.Override
@@ -114,6 +130,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int USER_TASK_TRIGGER_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
    * @return Whether the userTaskTrigger field is set.
    */
@@ -122,6 +142,10 @@ private static final long serialVersionUID = 0L;
     return taskRunSourceCase_ == 2;
   }
   /**
+   * <pre>
+   * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
    * @return The userTaskTrigger.
    */
@@ -133,6 +157,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskTriggerReference.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
    */
   @java.lang.Override
@@ -146,6 +174,11 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+   * that the WorkerContext can know this information.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -154,6 +187,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+   * that the WorkerContext can know this information.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return The wfSpecId.
    */
@@ -162,6 +200,11 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+   * that the WorkerContext can know this information.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
    */
   @java.lang.Override
@@ -371,6 +414,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The source of a TaskRun; i.e. why it was scheduled.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskRunSource}
    */
   public static final class Builder extends
@@ -622,6 +669,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskNodeReference, io.littlehorse.sdk.common.proto.TaskNodeReference.Builder, io.littlehorse.sdk.common.proto.TaskNodeReferenceOrBuilder> taskNodeBuilder_;
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      * @return Whether the taskNode field is set.
      */
@@ -630,6 +681,10 @@ private static final long serialVersionUID = 0L;
       return taskRunSourceCase_ == 1;
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      * @return The taskNode.
      */
@@ -648,6 +703,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     public Builder setTaskNode(io.littlehorse.sdk.common.proto.TaskNodeReference value) {
@@ -664,6 +723,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     public Builder setTaskNode(
@@ -678,6 +741,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     public Builder mergeTaskNode(io.littlehorse.sdk.common.proto.TaskNodeReference value) {
@@ -701,6 +768,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     public Builder clearTaskNode() {
@@ -720,12 +791,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskNodeReference.Builder getTaskNodeBuilder() {
       return getTaskNodeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     @java.lang.Override
@@ -740,6 +819,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to a NodeRun of type TASK which scheduled this TaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.TaskNodeReference task_node = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -764,6 +847,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskTriggerReference, io.littlehorse.sdk.common.proto.UserTaskTriggerReference.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerReferenceOrBuilder> userTaskTriggerBuilder_;
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      * @return Whether the userTaskTrigger field is set.
      */
@@ -772,6 +859,10 @@ private static final long serialVersionUID = 0L;
       return taskRunSourceCase_ == 2;
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      * @return The userTaskTrigger.
      */
@@ -790,6 +881,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     public Builder setUserTaskTrigger(io.littlehorse.sdk.common.proto.UserTaskTriggerReference value) {
@@ -806,6 +901,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     public Builder setUserTaskTrigger(
@@ -820,6 +919,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     public Builder mergeUserTaskTrigger(io.littlehorse.sdk.common.proto.UserTaskTriggerReference value) {
@@ -843,6 +946,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     public Builder clearUserTaskTrigger() {
@@ -862,12 +969,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskTriggerReference.Builder getUserTaskTriggerBuilder() {
       return getUserTaskTriggerFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     @java.lang.Override
@@ -882,6 +997,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskTriggerReference user_task_trigger = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -907,6 +1026,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -914,6 +1038,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      * @return The wfSpecId.
      */
@@ -925,6 +1054,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -941,6 +1075,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public Builder setWfSpecId(
@@ -955,6 +1094,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -974,6 +1118,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public Builder clearWfSpecId() {
@@ -987,6 +1136,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -995,6 +1149,11 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -1006,6 +1165,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+     * that the WorkerContext can know this information.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
