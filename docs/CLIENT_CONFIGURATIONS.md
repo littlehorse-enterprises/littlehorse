@@ -4,7 +4,6 @@
     - [`LHC_API_HOST`](#lhc_api_host)
     - [`LHC_API_PORT`](#lhc_api_port)
     - [`LHC_API_PROTOCOL`](#lhc_api_protocol)
-    - [`LHC_CLIENT_ID`](#lhc_client_id)
     - [`LHC_CA_CERT`](#lhc_ca_cert)
     - [`LHC_CLIENT_CERT`](#lhc_client_cert)
     - [`LHC_CLIENT_KEY`](#lhc_client_key)
@@ -18,6 +17,7 @@
   - [Worker](#worker)
     - [`LHW_SERVER_CONNECT_LISTENER`](#lhw_server_connect_listener)
     - [`LHW_NUM_WORKER_THREADS`](#lhw_num_worker_threads)
+    - [`LHW_TASK_WORKER_ID`](#lhw_task_worker_id)
     - [`LHW_TASK_WORKER_VERSION`](#lhw_task_worker_version)
 
 ## Client
@@ -48,17 +48,6 @@ The bootstrap protocol for the LH Server. Valid values: `PLAINTEXT` and `TLS`.
 
 - **Type:** string
 - **Default:** PLAINTEXT
-- **Importance:** high
-
----
-
-### `LHC_CLIENT_ID`
-
-Unique client identifier. It is used by the LittleHorse cluster to load balance the worker requests across all servers.
-It's highly recommended to set this value for production environments.
-
-- **Type:** string
-- **Default:** a random value
 - **Importance:** high
 
 ---
@@ -174,9 +163,20 @@ assigned to this worker.
 
 ---
 
+### `LHW_TASK_WORKER_ID`
+
+Unique identifier for the Task Worker. It is used by the LittleHorse cluster to load balance the worker requests across all servers.
+Additionally, it is journalled on every `TaskAttempt` run by the Task Worker, so that you can more easily debug where a request was executed from. It is recommended to set this value for production environments.
+
+- **Type:** string
+- **Default:** a random value
+- **Importance:** medium
+
+---
+
 ### `LHW_TASK_WORKER_VERSION`
 
-Optional version identifier. Intended to be informative. Useful when you're running different version of a worker.
+Optional version identifier. Intended to be informative. Useful when you're running different version of a worker. Along with the `LHW_TASK_WORKER_ID`, this is journalled on every `TaskAttempt`.
 
 - **Type:** string
 - **Default:** ""

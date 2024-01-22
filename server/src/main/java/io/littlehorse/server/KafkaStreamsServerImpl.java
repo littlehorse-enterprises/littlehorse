@@ -463,10 +463,10 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void registerTaskWorker(
             RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
-        log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getClientId());
+        log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getTaskWorkerId());
 
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
-                .setClientId(req.getClientId())
+                .setClientId(req.getTaskWorkerId())
                 .setListenerName(req.getListenerName())
                 .setTaskDefId(req.getTaskDefId())
                 .build();

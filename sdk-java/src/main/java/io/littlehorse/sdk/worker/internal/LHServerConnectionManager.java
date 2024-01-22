@@ -186,7 +186,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         bootstrapStub.registerTaskWorker(
                 RegisterTaskWorkerRequest.newBuilder()
                         .setTaskDefId(taskDef.getId())
-                        .setClientId(config.getClientId())
+                        .setTaskWorkerId(config.getTaskWorkerId())
                         .setListenerName(config.getConnectListener())
                         .build(),
                 this // the callbacks come back to this manager.
