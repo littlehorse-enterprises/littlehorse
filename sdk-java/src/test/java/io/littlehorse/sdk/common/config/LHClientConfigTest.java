@@ -19,7 +19,7 @@ public class LHClientConfigTest {
 
         String result = config.getTaskWorkerId();
 
-        assertThat(result).matches("client-[a-z0-9]{32}");
+        assertThat(result).matches("worker-[a-z0-9]{32}");
     }
 
     @Test
