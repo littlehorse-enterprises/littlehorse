@@ -2,8 +2,14 @@ name: branch
 run-name: Publishing images for branch ${{ github.ref_name }}
 on:
   push:
-   branches-ignore:
-     - "master"
+    branches-ignore:
+      - "master"
+    paths:
+      - dashboard/**
+      - docker/dashboard/**
+      - server/**
+      - docker/server/**
+      - .github/workflows/branch.yml
 permissions:
   id-token: write
   contents: read
