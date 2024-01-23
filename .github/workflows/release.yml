@@ -1,5 +1,5 @@
-name: publish
-run-name: Publish
+name: release
+run-name: Release ${{ github.ref_name }}
 on:
   push:
     tags:
@@ -14,7 +14,7 @@ jobs:
   sdk-java:
     runs-on: ubuntu-latest
     needs:
-      - build-server
+      - publish-docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
   sdk-python:
     runs-on: ubuntu-latest
     needs:
-      - build-server
+      - publish-docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
