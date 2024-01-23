@@ -119,6 +119,12 @@ export interface WfSpec_ThreadSpecsEntry {
 export interface WfSpec_ParentWfSpecReference {
   /** Name of the Parent WfSpec */
   wfSpecName: string;
+  /**
+   * FOR NOW: no validation of variables on parent. In the future we will pass
+   * wf_spec_major_version, but we should probably examine the rules for
+   * evolution in the future.
+   */
+  wfSpecMajorVersion: number;
 }
 
 export interface WorkflowRetentionPolicy {
@@ -660,13 +666,16 @@ export const WfSpec_ThreadSpecsEntry = {
 };
 
 function createBaseWfSpec_ParentWfSpecReference(): WfSpec_ParentWfSpecReference {
-  return { wfSpecName: "" };
+  return { wfSpecName: "", wfSpecMajorVersion: 0 };
 }
 
 export const WfSpec_ParentWfSpecReference = {
   encode(message: WfSpec_ParentWfSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
     }
     return writer;
   },
@@ -685,6 +694,13 @@ export const WfSpec_ParentWfSpecReference = {
 
           message.wfSpecName = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -695,13 +711,19 @@ export const WfSpec_ParentWfSpecReference = {
   },
 
   fromJSON(object: any): WfSpec_ParentWfSpecReference {
-    return { wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "" };
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : 0,
+    };
   },
 
   toJSON(message: WfSpec_ParentWfSpecReference): unknown {
     const obj: any = {};
     if (message.wfSpecName !== "") {
       obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
     }
     return obj;
   },
@@ -712,6 +734,7 @@ export const WfSpec_ParentWfSpecReference = {
   fromPartial<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(object: I): WfSpec_ParentWfSpecReference {
     const message = createBaseWfSpec_ParentWfSpecReference();
     message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? 0;
     return message;
   },
 };
@@ -3448,7 +3471,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

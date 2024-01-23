@@ -53,7 +53,7 @@ public class SharedVariablesTest {
             WfRunVariable inputNumber =
                     thread.addVariable("input-number", VariableType.INT).required();
             WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
-                    .withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+                    .withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
             thread.mutate(inputNumber, VariableMutationType.MULTIPLY, 2);
             thread.mutate(publicVariable, VariableMutationType.ASSIGN, inputNumber);
         });

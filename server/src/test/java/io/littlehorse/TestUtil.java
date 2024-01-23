@@ -156,7 +156,7 @@ public class TestUtil {
         WfSpecModel spec = new WfSpecModel(Mockito.mock());
         spec.setId(new WfSpecIdModel(name, 0, 0));
         spec.setCreatedAt(new Date());
-        spec.setEntrypointThreadName("testEntrypointThreadName");
+        spec.setEntrypointThreadName("entrypoint");
         spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
         return spec;
     }

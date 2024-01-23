@@ -3,12 +3,16 @@ package io.littlehorse.common.util;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WfSpecUtil {
     private WfSpecUtil() {}
@@ -54,4 +58,14 @@ public class WfSpecUtil {
 
         return leftVariables.containsAll(rightVariables);
     }
+
+    /*private static boolean variableAccessLevelMatch(List<ThreadVarDefModel> left, List<ThreadVarDefModel> right) {
+        Set<String> publicVariables = right.stream()
+                .filter(threadVarDefModel -> threadVarDefModel.getAccessLevel().equals(WfRunVariableAccessLevel.PUBLIC_VAR))
+                .map(ThreadVarDefModel::getVarDef)
+                .map(VariableDefModel::getName)
+                .collect(Collectors.toSet());
+        Set<String>
+
+    }*/
 }

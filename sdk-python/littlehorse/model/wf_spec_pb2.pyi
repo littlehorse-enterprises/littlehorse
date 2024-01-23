@@ -29,10 +29,12 @@ class WfSpec(_message.Message):
         value: ThreadSpec
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ThreadSpec, _Mapping]] = ...) -> None: ...
     class ParentWfSpecReference(_message.Message):
-        __slots__ = ["wf_spec_name"]
+        __slots__ = ["wf_spec_name", "wf_spec_major_version"]
         WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+        WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
         wf_spec_name: str
-        def __init__(self, wf_spec_name: _Optional[str] = ...) -> None: ...
+        wf_spec_major_version: int
+        def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     FROZEN_VARIABLES_FIELD_NUMBER: _ClassVar[int]
