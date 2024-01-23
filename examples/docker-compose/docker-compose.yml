@@ -25,7 +25,7 @@ services:
       interval: 5s
   littlehorse:
     container_name: lh-server
-    image: public.ecr.aws/littlehorse/lh-server:latest
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master
     environment:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LHS_SHOULD_CREATE_TOPICS: "true"
@@ -41,7 +41,7 @@ services:
       - "2023:2023"
   dashboard:
     container_name: lh-dashboard
-    image: public.ecr.aws/littlehorse/lh-dashboard:latest
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
     environment:
       LHD_API_HOST: littlehorse
       LHD_API_PORT: 2023
