@@ -4,6 +4,8 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+
+import java.io.Serializable;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
@@ -33,7 +35,7 @@ public interface WorkflowThread {
      *     pass that literal value in.
      * @return A NodeOutput for that TASK node.
      */
-    TaskNodeOutput execute(String taskName, Object... args);
+    TaskNodeOutput execute(String taskName, Serializable... args);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
