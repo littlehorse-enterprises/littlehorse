@@ -12,6 +12,8 @@ public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecRefer
     private String wfSpecName;
     private int wfSpecMajorVersion;
 
+    public ParentWfSpecReferenceModel() {}
+
     public ParentWfSpecReferenceModel(String wfSpecName, int wfSpecMajorVersion) {
         this.wfSpecName = wfSpecName;
         this.wfSpecMajorVersion = wfSpecMajorVersion;
