@@ -249,7 +249,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     /**
      * Returns entrypoint thread instance
      */
-    public ThreadSpecModel getEntrypointThread(){
+    public ThreadSpecModel getEntrypointThread() {
         return threadSpecs.get(entrypointThreadName);
     }
 
@@ -434,7 +434,8 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
      * or 1.1
      */
     private WfSpecModel getParentWfSpec(MetadataCommandExecution ctx) {
-        WfSpecModel parent = ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), parentWfSpec.getWfSpecMajorVersion(), 0);
+        WfSpecModel parent =
+                ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), parentWfSpec.getWfSpecMajorVersion(), 0);
         if (parent == null) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,

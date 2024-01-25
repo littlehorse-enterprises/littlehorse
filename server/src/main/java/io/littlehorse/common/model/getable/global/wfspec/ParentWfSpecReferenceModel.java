@@ -24,9 +24,8 @@ public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecRefer
 
     @Override
     public ParentWfSpecReference.Builder toProto() {
-        ParentWfSpecReference.Builder out = ParentWfSpecReference.newBuilder()
-                .setWfSpecName(wfSpecName)
-                .setWfSpecMajorVersion(wfSpecMajorVersion);
+        ParentWfSpecReference.Builder out =
+                ParentWfSpecReference.newBuilder().setWfSpecName(wfSpecName).setWfSpecMajorVersion(wfSpecMajorVersion);
         return out;
     }
 
