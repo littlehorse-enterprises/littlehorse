@@ -8,46 +8,91 @@ public interface NodeRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+   * ThreadRun's number, and the position of the NodeRun within that ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+   * ThreadRun's number, and the position of the NodeRun within that ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.NodeRunId getId();
   /**
+   * <pre>
+   * The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+   * ThreadRun's number, and the position of the NodeRun within that ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+   * as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+   * feature.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+   * as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+   * feature.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+   * as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+   * feature.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated int32 failure_handler_ids = 5;</code>
    * @return A list containing the failureHandlerIds.
    */
   java.util.List<java.lang.Integer> getFailureHandlerIdsList();
   /**
+   * <pre>
+   * A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated int32 failure_handler_ids = 5;</code>
    * @return The count of failureHandlerIds.
    */
   int getFailureHandlerIdsCount();
   /**
+   * <pre>
+   * A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated int32 failure_handler_ids = 5;</code>
    * @param index The index of the element to return.
    * @return The failureHandlerIds at the given index.
@@ -55,52 +100,92 @@ public interface NodeRunOrBuilder extends
   int getFailureHandlerIds(int index);
 
   /**
+   * <pre>
+   * The status of this NodeRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * The status of this NodeRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 6;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
   /**
+   * <pre>
+   * The time the ThreadRun arrived at this NodeRun.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    * @return Whether the arrivalTime field is set.
    */
   boolean hasArrivalTime();
   /**
+   * <pre>
+   * The time the ThreadRun arrived at this NodeRun.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    * @return The arrivalTime.
    */
   com.google.protobuf.Timestamp getArrivalTime();
   /**
+   * <pre>
+   * The time the ThreadRun arrived at this NodeRun.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getArrivalTimeOrBuilder();
 
   /**
+   * <pre>
+   * The time the NodeRun was terminated (failed or completed).
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
+   * <pre>
+   * The time the NodeRun was terminated (failed or completed).
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
+   * <pre>
+   * The time the NodeRun was terminated (failed or completed).
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
+   * <pre>
+   * The name of the ThreadSpec to which this NodeRun belongs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 9;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec to which this NodeRun belongs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 9;</code>
    * @return The bytes for threadSpecName.
    */
@@ -108,11 +193,19 @@ public interface NodeRunOrBuilder extends
       getThreadSpecNameBytes();
 
   /**
+   * <pre>
+   * The name of the Node in the ThreadSpec that this NodeRun belongs to.
+   * </pre>
+   *
    * <code>string node_name = 10;</code>
    * @return The nodeName.
    */
   java.lang.String getNodeName();
   /**
+   * <pre>
+   * The name of the Node in the ThreadSpec that this NodeRun belongs to.
+   * </pre>
+   *
    * <code>string node_name = 10;</code>
    * @return The bytes for nodeName.
    */
@@ -120,16 +213,31 @@ public interface NodeRunOrBuilder extends
       getNodeNameBytes();
 
   /**
+   * <pre>
+   * A human-readable error message intended to help developers diagnose WfSpec
+   * problems.
+   * </pre>
+   *
    * <code>optional string error_message = 11;</code>
    * @return Whether the errorMessage field is set.
    */
   boolean hasErrorMessage();
   /**
+   * <pre>
+   * A human-readable error message intended to help developers diagnose WfSpec
+   * problems.
+   * </pre>
+   *
    * <code>optional string error_message = 11;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
+   * <pre>
+   * A human-readable error message intended to help developers diagnose WfSpec
+   * problems.
+   * </pre>
+   *
    * <code>optional string error_message = 11;</code>
    * @return The bytes for errorMessage.
    */
@@ -137,160 +245,291 @@ public interface NodeRunOrBuilder extends
       getErrorMessageBytes();
 
   /**
+   * <pre>
+   * A list of Failures thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.Failure> 
       getFailuresList();
   /**
+   * <pre>
+   * A list of Failures thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   io.littlehorse.sdk.common.proto.Failure getFailures(int index);
   /**
+   * <pre>
+   * A list of Failures thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   int getFailuresCount();
   /**
+   * <pre>
+   * A list of Failures thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.FailureOrBuilder> 
       getFailuresOrBuilderList();
   /**
+   * <pre>
+   * A list of Failures thrown by this NodeRun.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Failure failures = 12;</code>
    */
   io.littlehorse.sdk.common.proto.FailureOrBuilder getFailuresOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * Denotes a TASK node, which runs a TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeRun task = 13;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
+   * <pre>
+   * Denotes a TASK node, which runs a TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeRun task = 13;</code>
    * @return The task.
    */
   io.littlehorse.sdk.common.proto.TaskNodeRun getTask();
   /**
+   * <pre>
+   * Denotes a TASK node, which runs a TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskNodeRun task = 13;</code>
    */
   io.littlehorse.sdk.common.proto.TaskNodeRunOrBuilder getTaskOrBuilder();
 
   /**
+   * <pre>
+   * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
   /**
+   * <pre>
+   * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    * @return The externalEvent.
    */
   io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent();
   /**
+   * <pre>
+   * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder();
 
   /**
+   * <pre>
+   * An ENTRYPOINT node is the first thing that runs in a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    * @return Whether the entrypoint field is set.
    */
   boolean hasEntrypoint();
   /**
+   * <pre>
+   * An ENTRYPOINT node is the first thing that runs in a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    * @return The entrypoint.
    */
   io.littlehorse.sdk.common.proto.EntrypointRun getEntrypoint();
   /**
+   * <pre>
+   * An ENTRYPOINT node is the first thing that runs in a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointRun entrypoint = 15;</code>
    */
   io.littlehorse.sdk.common.proto.EntrypointRunOrBuilder getEntrypointOrBuilder();
 
   /**
+   * <pre>
+   * An EXIT node completes a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExitRun exit = 16;</code>
    * @return Whether the exit field is set.
    */
   boolean hasExit();
   /**
+   * <pre>
+   * An EXIT node completes a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExitRun exit = 16;</code>
    * @return The exit.
    */
   io.littlehorse.sdk.common.proto.ExitRun getExit();
   /**
+   * <pre>
+   * An EXIT node completes a ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ExitRun exit = 16;</code>
    */
   io.littlehorse.sdk.common.proto.ExitRunOrBuilder getExitOrBuilder();
 
   /**
+   * <pre>
+   * A START_THREAD node starts a child ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    * @return Whether the startThread field is set.
    */
   boolean hasStartThread();
   /**
+   * <pre>
+   * A START_THREAD node starts a child ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    * @return The startThread.
    */
   io.littlehorse.sdk.common.proto.StartThreadRun getStartThread();
   /**
+   * <pre>
+   * A START_THREAD node starts a child ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadRun start_thread = 17;</code>
    */
   io.littlehorse.sdk.common.proto.StartThreadRunOrBuilder getStartThreadOrBuilder();
 
   /**
+   * <pre>
+   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    * @return Whether the waitThreads field is set.
    */
   boolean hasWaitThreads();
   /**
+   * <pre>
+   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    * @return The waitThreads.
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads();
   /**
+   * <pre>
+   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder();
 
   /**
+   * <pre>
+   * A SLEEP node makes the ThreadRun block for a certain amount of time.
+   * </pre>
+   *
    * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    * @return Whether the sleep field is set.
    */
   boolean hasSleep();
   /**
+   * <pre>
+   * A SLEEP node makes the ThreadRun block for a certain amount of time.
+   * </pre>
+   *
    * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    * @return The sleep.
    */
   io.littlehorse.sdk.common.proto.SleepNodeRun getSleep();
   /**
+   * <pre>
+   * A SLEEP node makes the ThreadRun block for a certain amount of time.
+   * </pre>
+   *
    * <code>.littlehorse.SleepNodeRun sleep = 19;</code>
    */
   io.littlehorse.sdk.common.proto.SleepNodeRunOrBuilder getSleepOrBuilder();
 
   /**
+   * <pre>
+   * A USER_TASK node waits until a human executes some work and reports the result.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    * @return Whether the userTask field is set.
    */
   boolean hasUserTask();
   /**
+   * <pre>
+   * A USER_TASK node waits until a human executes some work and reports the result.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    * @return The userTask.
    */
   io.littlehorse.sdk.common.proto.UserTaskNodeRun getUserTask();
   /**
+   * <pre>
+   * A USER_TASK node waits until a human executes some work and reports the result.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNodeRun user_task = 20;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskNodeRunOrBuilder getUserTaskOrBuilder();
 
   /**
+   * <pre>
+   * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+   * child ThreadRun for each element in the list.
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    * @return Whether the startMultipleThreads field is set.
    */
   boolean hasStartMultipleThreads();
   /**
+   * <pre>
+   * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+   * child ThreadRun for each element in the list.
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    * @return The startMultipleThreads.
    */
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRun getStartMultipleThreads();
   /**
+   * <pre>
+   * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+   * child ThreadRun for each element in the list.
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 21;</code>
    */
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder();

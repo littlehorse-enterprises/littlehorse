@@ -171,7 +171,7 @@ public class LHServerConnectionManagerTest {
         when(mockConfig.getWorkerThreads()).thenReturn(1);
         when(mockTaskDef.getId())
                 .thenReturn(TaskDefId.newBuilder().setName("test").build());
-        when(mockConfig.getClientId()).thenReturn("test-client-id");
+        when(mockConfig.getTaskWorkerId()).thenReturn("test-client-id");
         when(mockConfig.getConnectListener()).thenReturn("test-listener");
     }
 }

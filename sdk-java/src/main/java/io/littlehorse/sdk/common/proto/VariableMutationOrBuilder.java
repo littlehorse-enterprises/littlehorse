@@ -8,11 +8,19 @@ public interface VariableMutationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the variable to mutate
+   * </pre>
+   *
    * <code>string lhs_name = 1;</code>
    * @return The lhsName.
    */
   java.lang.String getLhsName();
   /**
+   * <pre>
+   * The name of the variable to mutate
+   * </pre>
+   *
    * <code>string lhs_name = 1;</code>
    * @return The bytes for lhsName.
    */
@@ -20,16 +28,31 @@ public interface VariableMutationOrBuilder extends
       getLhsNameBytes();
 
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return Whether the lhsJsonPath field is set.
    */
   boolean hasLhsJsonPath();
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return The lhsJsonPath.
    */
   java.lang.String getLhsJsonPath();
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return The bytes for lhsJsonPath.
    */
@@ -37,57 +60,104 @@ public interface VariableMutationOrBuilder extends
       getLhsJsonPathBytes();
 
   /**
+   * <pre>
+   * Defines the operation that we are executing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The enum numeric value on the wire for operation.
    */
   int getOperationValue();
   /**
+   * <pre>
+   * Defines the operation that we are executing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The operation.
    */
   io.littlehorse.sdk.common.proto.VariableMutationType getOperation();
 
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return Whether the sourceVariable field is set.
    */
   boolean hasSourceVariable();
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return The sourceVariable.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable();
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder();
 
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return Whether the literalValue field is set.
    */
   boolean hasLiteralValue();
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return The literalValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getLiteralValue();
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder();
 
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    * @return Whether the nodeOutput field is set.
    */
   boolean hasNodeOutput();
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    * @return The nodeOutput.
    */
   io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource getNodeOutput();
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSourceOrBuilder getNodeOutputOrBuilder();

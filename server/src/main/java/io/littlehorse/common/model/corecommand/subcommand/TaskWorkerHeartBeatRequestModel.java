@@ -77,7 +77,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
             taskWorker = new TaskWorkerMetadataModel();
-            taskWorker.clientId = clientId;
+            taskWorker.taskWorkerId = clientId;
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
 
@@ -118,7 +118,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
                 .filter(taskWorker -> Duration.between(taskWorker.latestHeartbeat.toInstant(), Instant.now())
                                 .toSeconds()
                         < MAX_TASK_WORKER_INACTIVITY)
-                .collect(Collectors.toMap(taskWorker -> taskWorker.clientId, Function.identity()));
+                .collect(Collectors.toMap(taskWorker -> taskWorker.taskWorkerId, Function.identity()));
     }
 
     @Override

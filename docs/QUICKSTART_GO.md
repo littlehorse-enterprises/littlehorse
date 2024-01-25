@@ -30,7 +30,7 @@ lhctl
 Start your LH Server with:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:latest
+docker run --name littlehorse -d -p 2023:2023 ghcr.io/littlehorse-enterprises/littlehorse//littlehorse/lh-standalone:master
 ```
 
 When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.

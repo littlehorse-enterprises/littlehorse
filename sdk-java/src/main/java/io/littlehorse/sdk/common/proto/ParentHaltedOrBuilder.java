@@ -8,6 +8,10 @@ public interface ParentHaltedOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the halted parent.
+   * </pre>
+   *
    * <code>int32 parent_thread_id = 1;</code>
    * @return The parentThreadId.
    */

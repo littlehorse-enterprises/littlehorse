@@ -8,11 +8,19 @@ public interface TenantIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The Tenant ID.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * The Tenant ID.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */

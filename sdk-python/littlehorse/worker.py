@@ -352,7 +352,7 @@ class LHConnection:
                 await self._ask_for_work_semaphore.acquire()
                 if self.running:
                     yield PollTaskRequest(
-                        client_id=self._config.client_id,
+                        client_id=self._config.task_worker_id,
                         task_worker_version=self._config.worker_version,
                         task_def_id=self._task.task_def.id,
                     )
@@ -486,7 +486,7 @@ class LHTaskWorker:
             )
 
             request = RegisterTaskWorkerRequest(
-                client_id=self._config.client_id,
+                task_worker_id=self._config.task_worker_id,
                 listener_name=self._config.server_listener,
                 task_def_id=self._task.task_def.id,
             )

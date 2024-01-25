@@ -209,7 +209,7 @@ message LHTimerPb {
 }
 
 message TaskWorkerMetadata {
-  string client_id = 1;
+  string task_worker_id = 1;
   google.protobuf.Timestamp latest_heartbeat = 2;
   repeated LHHostInfo hosts = 3;
 }

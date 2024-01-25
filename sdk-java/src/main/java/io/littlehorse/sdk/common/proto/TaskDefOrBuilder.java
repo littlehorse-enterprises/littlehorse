@@ -8,55 +8,99 @@ public interface TaskDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getId();
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VariableDef> 
       getInputVarsList();
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index);
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   int getInputVarsCount();
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
       getInputVarsOrBuilderList();
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();

@@ -8,6 +8,10 @@ public interface InterruptedOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the Interrupt Handler ThreadRun.
+   * </pre>
+   *
    * <code>int32 interrupt_thread_id = 1;</code>
    * @return The interruptThreadId.
    */

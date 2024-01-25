@@ -8,131 +8,261 @@ public interface TaskRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.TaskRunId getId();
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * The ID of the TaskDef being executed.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.TaskAttempt> 
       getAttemptsList();
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TaskAttempt getAttempts(int index);
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   int getAttemptsCount();
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder> 
       getAttemptsOrBuilderList();
   /**
+   * <pre>
+   * All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+   * the TaskRun being put on a Task Queue to be executed by the Task Workers.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskAttempt attempts = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder getAttemptsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun.
+   * </pre>
+   *
    * <code>int32 max_attempts = 4;</code>
    * @return The maxAttempts.
    */
   int getMaxAttempts();
 
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> 
       getInputVariablesList();
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VarNameAndVal getInputVariables(int index);
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   int getInputVariablesCount();
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder> 
       getInputVariablesOrBuilderList();
   /**
+   * <pre>
+   * The input variables to pass into this TaskRun. Note that this is a list and not
+   * a map, because ordering matters. Depending on the language implementation, not
+   * every LittleHorse Task Worker SDK has the ability to determine the names of the
+   * variables from the method signature, so we provide both names and ordering.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VarNameAndVal input_variables = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder getInputVariablesOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return Whether the source field is set.
    */
   boolean hasSource();
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    * @return The source.
    */
   io.littlehorse.sdk.common.proto.TaskRunSource getSource();
   /**
+   * <pre>
+   * The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+   * can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+   * as a task used to send reminders).
+   * </pre>
+   *
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder getSourceOrBuilder();
 
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    * @return Whether the scheduledAt field is set.
    */
   boolean hasScheduledAt();
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    * @return The scheduledAt.
    */
   com.google.protobuf.Timestamp getScheduledAt();
   /**
+   * <pre>
+   * When the TaskRun was scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder();
 
   /**
+   * <pre>
+   * The status of the TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskStatus status = 8;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * The status of the TaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.TaskStatus status = 8;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.TaskStatus getStatus();
 
   /**
+   * <pre>
+   * The timeout before LH considers a TaskAttempt to be timed out.
+   * </pre>
+   *
    * <code>int32 timeout_seconds = 9;</code>
    * @return The timeoutSeconds.
    */

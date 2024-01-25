@@ -8,11 +8,19 @@ public interface LHTaskExceptionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The user-defined Failure name, for example, "credit-card-declined"
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * The user-defined Failure name, for example, "credit-card-declined"
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -20,11 +28,19 @@ public interface LHTaskExceptionOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * Human readadble description of the failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
+   * <pre>
+   * Human readadble description of the failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */

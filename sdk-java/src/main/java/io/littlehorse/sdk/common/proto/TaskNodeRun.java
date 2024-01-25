@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for a TASK NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskNodeRun}
  */
 public final class TaskNodeRun extends
@@ -42,6 +46,11 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId taskRunId_;
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this TASK Node, then the task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
    * @return Whether the taskRunId field is set.
    */
@@ -50,6 +59,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this TASK Node, then the task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
    * @return The taskRunId.
    */
@@ -58,6 +72,11 @@ private static final long serialVersionUID = 0L;
     return taskRunId_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRunId_;
   }
   /**
+   * <pre>
+   * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this TASK Node, then the task_run_id will be unset.
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
    */
   @java.lang.Override
@@ -228,6 +247,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for a TASK NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskNodeRun}
    */
   public static final class Builder extends
@@ -416,6 +439,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> taskRunIdBuilder_;
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      * @return Whether the taskRunId field is set.
      */
@@ -423,6 +451,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      * @return The taskRunId.
      */
@@ -434,6 +467,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -450,6 +488,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder setTaskRunId(
@@ -464,6 +507,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder mergeTaskRunId(io.littlehorse.sdk.common.proto.TaskRunId value) {
@@ -483,6 +531,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public Builder clearTaskRunId() {
@@ -496,6 +549,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunId.Builder getTaskRunIdBuilder() {
@@ -504,6 +562,11 @@ private static final long serialVersionUID = 0L;
       return getTaskRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunIdOrBuilder() {
@@ -515,6 +578,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+     * at this TASK Node, then the task_run_id will be unset.
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskRunId task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

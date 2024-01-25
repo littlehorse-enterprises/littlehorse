@@ -8,26 +8,46 @@ public interface PendingInterruptOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the ExternalEvent triggering the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    * @return Whether the externalEventId field is set.
    */
   boolean hasExternalEventId();
   /**
+   * <pre>
+   * The ID of the ExternalEvent triggering the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    * @return The externalEventId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventId getExternalEventId();
   /**
+   * <pre>
+   * The ID of the ExternalEvent triggering the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventIdOrBuilder();
 
   /**
+   * <pre>
+   * The name of the ThreadSpec to run to handle the Interrupt.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
   java.lang.String getHandlerSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec to run to handle the Interrupt.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The bytes for handlerSpecName.
    */
@@ -35,6 +55,11 @@ public interface PendingInterruptOrBuilder extends
       getHandlerSpecNameBytes();
 
   /**
+   * <pre>
+   * The ID of the ThreadRun to interrupt. Must wait for this ThreadRun to be
+   * HALTED before running the Interrupt Handler.
+   * </pre>
+   *
    * <code>int32 interrupted_thread_id = 3;</code>
    * @return The interruptedThreadId.
    */

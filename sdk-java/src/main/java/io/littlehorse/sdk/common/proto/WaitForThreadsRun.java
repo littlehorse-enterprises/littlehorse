@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for a WAIT_FOR_THREADS NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WaitForThreadsRun}
  */
 public final class WaitForThreadsRun extends
@@ -45,44 +49,79 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      * @return Whether the threadEndTime field is set.
      */
     boolean hasThreadEndTime();
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      * @return The threadEndTime.
      */
     com.google.protobuf.Timestamp getThreadEndTime();
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      */
     com.google.protobuf.TimestampOrBuilder getThreadEndTimeOrBuilder();
 
     /**
+     * <pre>
+     * The current status of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The enum numeric value on the wire for threadStatus.
      */
     int getThreadStatusValue();
     /**
+     * <pre>
+     * The current status of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The threadStatus.
      */
     io.littlehorse.sdk.common.proto.LHStatus getThreadStatus();
 
     /**
+     * <pre>
+     * The number of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 3;</code>
      * @return The threadRunNumber.
      */
     int getThreadRunNumber();
 
     /**
+     * <pre>
+     * INTERNAL: flag used by scheduler internally.
+     * </pre>
+     *
      * <code>bool already_handled = 5;</code>
      * @return The alreadyHandled.
      */
     boolean getAlreadyHandled();
   }
   /**
+   * <pre>
+   * A 'WaitForThread' structure defines a thread that is being waited for.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WaitForThreadsRun.WaitForThread}
    */
   public static final class WaitForThread extends
@@ -122,6 +161,11 @@ private static final long serialVersionUID = 0L;
     public static final int THREAD_END_TIME_FIELD_NUMBER = 1;
     private com.google.protobuf.Timestamp threadEndTime_;
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      * @return Whether the threadEndTime field is set.
      */
@@ -130,6 +174,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      * @return The threadEndTime.
      */
@@ -138,6 +187,11 @@ private static final long serialVersionUID = 0L;
       return threadEndTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : threadEndTime_;
     }
     /**
+     * <pre>
+     * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+     * is still RUNNING, HALTED, or HALTING.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
      */
     @java.lang.Override
@@ -148,6 +202,10 @@ private static final long serialVersionUID = 0L;
     public static final int THREAD_STATUS_FIELD_NUMBER = 2;
     private int threadStatus_ = 0;
     /**
+     * <pre>
+     * The current status of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The enum numeric value on the wire for threadStatus.
      */
@@ -155,6 +213,10 @@ private static final long serialVersionUID = 0L;
       return threadStatus_;
     }
     /**
+     * <pre>
+     * The current status of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The threadStatus.
      */
@@ -166,6 +228,10 @@ private static final long serialVersionUID = 0L;
     public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 3;
     private int threadRunNumber_ = 0;
     /**
+     * <pre>
+     * The number of the ThreadRun being waited for.
+     * </pre>
+     *
      * <code>int32 thread_run_number = 3;</code>
      * @return The threadRunNumber.
      */
@@ -177,6 +243,10 @@ private static final long serialVersionUID = 0L;
     public static final int ALREADY_HANDLED_FIELD_NUMBER = 5;
     private boolean alreadyHandled_ = false;
     /**
+     * <pre>
+     * INTERNAL: flag used by scheduler internally.
+     * </pre>
+     *
      * <code>bool already_handled = 5;</code>
      * @return The alreadyHandled.
      */
@@ -381,6 +451,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * A 'WaitForThread' structure defines a thread that is being waited for.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.WaitForThreadsRun.WaitForThread}
      */
     public static final class Builder extends
@@ -605,6 +679,11 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> threadEndTimeBuilder_;
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        * @return Whether the threadEndTime field is set.
        */
@@ -612,6 +691,11 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        * @return The threadEndTime.
        */
@@ -623,6 +707,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public Builder setThreadEndTime(com.google.protobuf.Timestamp value) {
@@ -639,6 +728,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public Builder setThreadEndTime(
@@ -653,6 +747,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public Builder mergeThreadEndTime(com.google.protobuf.Timestamp value) {
@@ -672,6 +771,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public Builder clearThreadEndTime() {
@@ -685,6 +789,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public com.google.protobuf.Timestamp.Builder getThreadEndTimeBuilder() {
@@ -693,6 +802,11 @@ private static final long serialVersionUID = 0L;
         return getThreadEndTimeFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       public com.google.protobuf.TimestampOrBuilder getThreadEndTimeOrBuilder() {
@@ -704,6 +818,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+       * is still RUNNING, HALTED, or HALTING.
+       * </pre>
+       *
        * <code>optional .google.protobuf.Timestamp thread_end_time = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -722,6 +841,10 @@ private static final long serialVersionUID = 0L;
 
       private int threadStatus_ = 0;
       /**
+       * <pre>
+       * The current status of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return The enum numeric value on the wire for threadStatus.
        */
@@ -729,6 +852,10 @@ private static final long serialVersionUID = 0L;
         return threadStatus_;
       }
       /**
+       * <pre>
+       * The current status of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @param value The enum numeric value on the wire for threadStatus to set.
        * @return This builder for chaining.
@@ -740,6 +867,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The current status of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return The threadStatus.
        */
@@ -749,6 +880,10 @@ private static final long serialVersionUID = 0L;
         return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
       }
       /**
+       * <pre>
+       * The current status of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @param value The threadStatus to set.
        * @return This builder for chaining.
@@ -763,6 +898,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The current status of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return This builder for chaining.
        */
@@ -775,6 +914,10 @@ private static final long serialVersionUID = 0L;
 
       private int threadRunNumber_ ;
       /**
+       * <pre>
+       * The number of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>int32 thread_run_number = 3;</code>
        * @return The threadRunNumber.
        */
@@ -783,6 +926,10 @@ private static final long serialVersionUID = 0L;
         return threadRunNumber_;
       }
       /**
+       * <pre>
+       * The number of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>int32 thread_run_number = 3;</code>
        * @param value The threadRunNumber to set.
        * @return This builder for chaining.
@@ -795,6 +942,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * The number of the ThreadRun being waited for.
+       * </pre>
+       *
        * <code>int32 thread_run_number = 3;</code>
        * @return This builder for chaining.
        */
@@ -807,6 +958,10 @@ private static final long serialVersionUID = 0L;
 
       private boolean alreadyHandled_ ;
       /**
+       * <pre>
+       * INTERNAL: flag used by scheduler internally.
+       * </pre>
+       *
        * <code>bool already_handled = 5;</code>
        * @return The alreadyHandled.
        */
@@ -815,6 +970,10 @@ private static final long serialVersionUID = 0L;
         return alreadyHandled_;
       }
       /**
+       * <pre>
+       * INTERNAL: flag used by scheduler internally.
+       * </pre>
+       *
        * <code>bool already_handled = 5;</code>
        * @param value The alreadyHandled to set.
        * @return This builder for chaining.
@@ -827,6 +986,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * INTERNAL: flag used by scheduler internally.
+       * </pre>
+       *
        * <code>bool already_handled = 5;</code>
        * @return This builder for chaining.
        */
@@ -904,6 +1067,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread> threads_;
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   @java.lang.Override
@@ -911,6 +1078,10 @@ private static final long serialVersionUID = 0L;
     return threads_;
   }
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   @java.lang.Override
@@ -919,6 +1090,10 @@ private static final long serialVersionUID = 0L;
     return threads_;
   }
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   @java.lang.Override
@@ -926,6 +1101,10 @@ private static final long serialVersionUID = 0L;
     return threads_.size();
   }
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   @java.lang.Override
@@ -933,6 +1112,10 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
   /**
+   * <pre>
+   * The threads that are being waited for.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
    */
   @java.lang.Override
@@ -944,6 +1127,11 @@ private static final long serialVersionUID = 0L;
   public static final int POLICY_FIELD_NUMBER = 2;
   private int policy_ = 0;
   /**
+   * <pre>
+   * The policy to use when handling failures for Threads. Currently, only
+   * one policy exists.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
    * @return The enum numeric value on the wire for policy.
    */
@@ -951,6 +1139,11 @@ private static final long serialVersionUID = 0L;
     return policy_;
   }
   /**
+   * <pre>
+   * The policy to use when handling failures for Threads. Currently, only
+   * one policy exists.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
    * @return The policy.
    */
@@ -1129,6 +1322,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for a WAIT_FOR_THREADS NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WaitForThreadsRun}
    */
   public static final class Builder extends
@@ -1368,6 +1565,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread, io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder> threadsBuilder_;
 
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread> getThreadsList() {
@@ -1378,6 +1579,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public int getThreadsCount() {
@@ -1388,6 +1593,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread getThreads(int index) {
@@ -1398,6 +1607,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder setThreads(
@@ -1415,6 +1628,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder setThreads(
@@ -1429,6 +1646,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder addThreads(io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread value) {
@@ -1445,6 +1666,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder addThreads(
@@ -1462,6 +1687,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder addThreads(
@@ -1476,6 +1705,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder addThreads(
@@ -1490,6 +1723,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder addAllThreads(
@@ -1505,6 +1742,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder clearThreads() {
@@ -1518,6 +1759,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public Builder removeThreads(int index) {
@@ -1531,6 +1776,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.Builder getThreadsBuilder(
@@ -1538,6 +1787,10 @@ private static final long serialVersionUID = 0L;
       return getThreadsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder getThreadsOrBuilder(
@@ -1548,6 +1801,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder> 
@@ -1559,6 +1816,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.Builder addThreadsBuilder() {
@@ -1566,6 +1827,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.Builder addThreadsBuilder(
@@ -1574,6 +1839,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The threads that are being waited for.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsRun.WaitForThread threads = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread.Builder> 
@@ -1597,6 +1866,11 @@ private static final long serialVersionUID = 0L;
 
     private int policy_ = 0;
     /**
+     * <pre>
+     * The policy to use when handling failures for Threads. Currently, only
+     * one policy exists.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @return The enum numeric value on the wire for policy.
      */
@@ -1604,6 +1878,11 @@ private static final long serialVersionUID = 0L;
       return policy_;
     }
     /**
+     * <pre>
+     * The policy to use when handling failures for Threads. Currently, only
+     * one policy exists.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @param value The enum numeric value on the wire for policy to set.
      * @return This builder for chaining.
@@ -1615,6 +1894,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The policy to use when handling failures for Threads. Currently, only
+     * one policy exists.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @return The policy.
      */
@@ -1624,6 +1908,11 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The policy to use when handling failures for Threads. Currently, only
+     * one policy exists.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @param value The policy to set.
      * @return This builder for chaining.
@@ -1638,6 +1927,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The policy to use when handling failures for Threads. Currently, only
+     * one policy exists.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @return This builder for chaining.
      */

@@ -82,7 +82,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(PollTaskRequest.newBuilder()
-                .setClientId(manager.config.getClientId())
+                .setClientId(manager.config.getTaskWorkerId())
                 .setTaskDefId(manager.taskDef.getId())
                 .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
                 .build());
