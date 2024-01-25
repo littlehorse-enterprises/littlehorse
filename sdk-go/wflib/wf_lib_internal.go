@@ -411,6 +411,11 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType model.Varia
 	return w
 }
 
+func (w *WfRunVariable) withAccessLevel(accessLevel model.WfRunVariableAccessLevel) WfRunVariable {
+	w.threadVarDef.AccessLevel = accessLevel
+	return *w
+}
+
 func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
 	if w.jsonPath != nil {
 		w.thread.throwError(
