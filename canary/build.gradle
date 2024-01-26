@@ -1,18 +1,24 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.diffplug.spotless' version "6.25.0"
+    id 'com.diffplug.spotless' version '6.25.0'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.freefair.lombok' version '8.4'
 }
-
-sourceCompatibility=17
-targetCompatibility=17
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Configurations
+    implementation 'io.smallrye.config:smallrye-config:3.5.2'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.11'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1'
+
+    // Tests
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
@@ -28,7 +34,6 @@ test {
 spotless {
     java {
         target('**/*.java')
-        targetExclude('**/proto/*.java')
         palantirJavaFormat()
     }
 }
@@ -39,4 +44,14 @@ application {
 
 shadowJar {
 
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
 }
