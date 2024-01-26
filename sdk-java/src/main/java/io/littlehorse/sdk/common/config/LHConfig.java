@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -73,7 +72,7 @@ public class LHConfig extends ConfigBase {
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
     public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
 
-    private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
+    private static final Set<String> configNames = Set.of(
             LHConfig.API_HOST_KEY,
             LHConfig.API_PORT_KEY,
             LHConfig.API_PROTOCOL_KEY,
@@ -86,7 +85,7 @@ public class LHConfig extends ConfigBase {
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
             LHConfig.SERVER_CONNECT_LISTENER_KEY,
-            LHConfig.TASK_WORKER_VERSION_KEY));
+            LHConfig.TASK_WORKER_VERSION_KEY);
 
     /**
      * Returns a set of all config names.

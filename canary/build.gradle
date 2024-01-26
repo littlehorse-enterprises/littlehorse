@@ -11,6 +11,9 @@ repositories {
 }
 
 dependencies {
+    // LittleHorse
+    implementation project(':sdk-java')
+
     // Configurations
     implementation 'io.smallrye.config:smallrye-config:3.5.2'
 
