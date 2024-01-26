@@ -2,9 +2,10 @@ package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import java.io.Serializable;
 
 /** A WfRunVariable is a handle on a Variable in a WfSpec. */
-public interface WfRunVariable {
+public interface WfRunVariable extends Serializable {
     /**
      * Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new WfRunVariable handle
      * which points to Json element referred to by the json path.
