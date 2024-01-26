@@ -32,4 +32,17 @@ public class CanaryConfig implements Config {
     public String toString() {
         return configs.toString();
     }
+
+    public String getTopicName() {
+        return configs.get("lh.canary.topic.name").toString();
+    }
+
+    public int getTopicPartitions() {
+        return Integer.parseInt(
+                configs.get("lh.canary.topic.creation.partitions").toString());
+    }
+
+    public short getTopicReplicas() {
+        return Short.parseShort(configs.get("lh.canary.topic.creation.replicas").toString());
+    }
 }

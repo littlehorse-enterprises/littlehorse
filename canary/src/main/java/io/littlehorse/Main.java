@@ -4,6 +4,7 @@ import io.littlehorse.common.app.BoostrapInitializationException;
 import io.littlehorse.common.app.Bootstrap;
 import io.littlehorse.common.config.CanaryConfig;
 import io.littlehorse.common.config.ConfigLoader;
+import io.littlehorse.kafka.KafkaBootstrap;
 import io.littlehorse.metronome.WorkerBootstrap;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ public class Main {
         log.info("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
         log.info("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
-        List<Bootstrap> bootstraps = List.of(new WorkerBootstrap());
+        List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("Shutdown process started");
