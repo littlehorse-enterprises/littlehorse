@@ -17,6 +17,7 @@ class ConfigLoaderTest {
     public static final String EXPECTED_KEY = "canary.test";
     public static final String EXPECTED_FILE_VALUE = "test from file";
     public static final String EXPECTED_ENV_VALUE = "test from env";
+    public static final String EXPECTED_PROPERTIES_VALUE = "test from properties";
 
     @Test
     @ClearEnvironmentVariable(key = EXPECTED_KEY)
@@ -34,6 +35,28 @@ class ConfigLoaderTest {
         Path configPath = createTemporaryProperties();
 
         CanaryConfig canaryConfig = ConfigLoader.load(configPath);
+
+        assertThat(canaryConfig.toMap()).contains(entry(EXPECTED_KEY, EXPECTED_ENV_VALUE));
+    }
+
+    @Test
+    @ClearEnvironmentVariable(key = EXPECTED_KEY)
+    void loadFromPropertiesObject() {
+        Properties properties = new Properties();
+        properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
+
+        CanaryConfig canaryConfig = ConfigLoader.load(properties);
+
+        assertThat(canaryConfig.toMap()).contains(entry(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE));
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = EXPECTED_KEY, value = EXPECTED_ENV_VALUE)
+    void overwritePropertiesWithEnvConfigs() throws IOException {
+        Properties properties = new Properties();
+        properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
+
+        CanaryConfig canaryConfig = ConfigLoader.load(properties);
 
         assertThat(canaryConfig.toMap()).contains(entry(EXPECTED_KEY, EXPECTED_ENV_VALUE));
     }

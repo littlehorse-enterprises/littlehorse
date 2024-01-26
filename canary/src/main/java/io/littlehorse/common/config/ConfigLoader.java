@@ -3,9 +3,11 @@ package io.littlehorse.common.config;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
+import io.smallrye.config.common.utils.ConfigSourceUtil;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import org.eclipse.microprofile.config.Config;
 
@@ -32,7 +34,7 @@ public class ConfigLoader {
     /**
      * Loads properties in this order:
      * 1. MicroProfile Config configuration file META-INF/microprofile-config.properties in the classpath
-     * 2. The given external property file
+     * 2. The given external properties file
      * 3. Environment variables
      * 4. System properties
      *
@@ -45,6 +47,26 @@ public class ConfigLoader {
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(path.toUri().toURL(), 200))
+                .build();
+        return new CanaryConfig(toMap(config));
+    }
+
+    /**
+     * Loads properties in this order:
+     * 1. MicroProfile Config configuration file META-INF/microprofile-config.properties in the classpath
+     * 2. The given Properties object
+     * 3. Environment variables
+     * 4. System properties
+     *
+     * @param properties Properties object
+     * @return A CanaryConfig with all system configuration
+     */
+    public static CanaryConfig load(Properties properties) {
+        SmallRyeConfig config = new SmallRyeConfigBuilder()
+                .addDefaultInterceptors()
+                .addDefaultSources()
+                .withSources(new PropertiesConfigSource(
+                        ConfigSourceUtil.propertiesToMap(properties), "PropertiesConfigSource[source=Properties]", 200))
                 .build();
         return new CanaryConfig(toMap(config));
     }
