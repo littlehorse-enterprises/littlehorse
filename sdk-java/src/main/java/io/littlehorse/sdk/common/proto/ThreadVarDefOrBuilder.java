@@ -57,4 +57,15 @@ public interface ThreadVarDefOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
       int index);
+
+  /**
+   * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+   * @return The enum numeric value on the wire for accessLevel.
+   */
+  int getAccessLevelValue();
+  /**
+   * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
+   * @return The accessLevel.
+   */
+  io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel getAccessLevel();
 }

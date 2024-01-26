@@ -94,6 +94,10 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
+func (w *WfRunVariable) WithAccessLevel(accessLevel model.WfRunVariableAccessLevel) WfRunVariable {
+	return w.withAccessLevel(accessLevel)
+}
+
 func (w *WfRunVariable) Searchable() *WfRunVariable {
 	return w.searchableImpl()
 }

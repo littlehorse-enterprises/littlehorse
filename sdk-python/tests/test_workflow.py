@@ -29,6 +29,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadSpec,
     FailureHandlerDef,
     ThreadVarDef,
+    WfRunVariableAccessLevel,
 )
 from littlehorse.workflow import to_variable_assignment, LHErrorType
 
@@ -73,7 +74,7 @@ class TestNodeOutput(unittest.TestCase):
 
 class TestWfRunVariable(unittest.TestCase):
     def test_value_is_not_none(self):
-        variable = WfRunVariable("my-var", VariableType.STR, "my-str")
+        variable = WfRunVariable("my-var", VariableType.STR, default_value="my-str")
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
@@ -161,9 +162,27 @@ class TestWfRunVariable(unittest.TestCase):
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
+            access_level="PUBLIC_VAR",
         )
         expected_output.json_indexes.append(
             JsonIndex(field_path="$.myPath", field_type=VariableType.STR)
+        )
+        self.assertEqual(variable.compile(), expected_output)
+
+    def test_compile_private_variable(self):
+        variable = WfRunVariable("my-var", VariableType.STR, access_level="PRIVATE_VAR")
+        expected_output = ThreadVarDef(
+            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            access_level="PRIVATE_VAR",
+        )
+        self.assertEqual(variable.compile(), expected_output)
+
+    def test_compile_inherited_variable(self):
+        variable = WfRunVariable("my-var", VariableType.STR)
+        variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
+        expected_output = ThreadVarDef(
+            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            access_level="INHERITED_VAR",
         )
         self.assertEqual(variable.compile(), expected_output)
 
@@ -1197,6 +1216,36 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
+    def test_compile_with_parent(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task")
+
+        wf = Workflow("my-wf", my_entrypoint, "my-parent-wf")
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task")),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+                parent_wf_spec={"wf_spec_name": "my-parent-wf"},
+            ),
+        )
+
     def test_handle_any_failure(self):
         def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
@@ -1492,7 +1541,9 @@ class TestWorkflow(unittest.TestCase):
 
     def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
-            thread.add_variable("input-name", VariableType.STR)
+            thread.add_variable(
+                "input-name", VariableType.STR, access_level="INHERITED_VAR"
+            )
 
         wf = Workflow("my-wf", my_entrypoint)
         self.assertEqual(
@@ -1506,7 +1557,8 @@ class TestWorkflow(unittest.TestCase):
                             ThreadVarDef(
                                 var_def=VariableDef(
                                     name="input-name", type=VariableType.STR
-                                )
+                                ),
+                                access_level="INHERITED_VAR",
                             ),
                         ],
                         nodes={

@@ -39,6 +39,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -279,6 +280,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
             VariableValueModel val;
+
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                if (variables.containsKey(varName)) {
+                    // TODO: handle exception and fail the request.
+                }
+
+                // We do NOT create a variable since we want to use the one from the parent.
+                continue;
+            }
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);

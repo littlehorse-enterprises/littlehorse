@@ -2,7 +2,7 @@ import type { Edge, Node } from 'reactflow'
 import { MarkerType } from 'reactflow'
 import ElkConstructor from 'elkjs/lib/elk.bundled.js'
 import type { ExitNode, UserTaskNode, WfSpec } from '../../../../../../../littlehorse-public-api/wf_spec'
-import { FailureHandlerDef_LHFailureType, Node as LHNode } from '../../../../../../../littlehorse-public-api/wf_spec'
+import { FailureHandlerDef_LHFailureType, Node as LHNode, WfRunVariableAccessLevel } from '../../../../../../../littlehorse-public-api/wf_spec'
 import {
     LHStatus,
     MetadataStatus,
@@ -721,6 +721,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'request-id',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -731,6 +732,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'was-it-a-risky-decision',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -741,6 +743,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'is-risk-approved',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             }
                         ],
@@ -1540,6 +1543,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 },
                                 'jsonIndexes': [],
                                 required: true,
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 searchable: true
                             }
                         ],
@@ -2204,6 +2208,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'request-id',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -2214,6 +2219,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'was-it-a-risky-decision',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -2224,6 +2230,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'decision-explanation',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -2234,6 +2241,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'is-risk-approved',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             }
                         ],
@@ -2831,6 +2839,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'parent-var',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                             {
@@ -2841,6 +2850,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': '2-spawned-thread-START_THREAD',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             }
                         ],
@@ -2894,6 +2904,7 @@ describe('Layouting graph from LH Nodes', () => {
                                     'name': 'child-var',
                                     'defaultValue': undefined,
                                 },
+                                accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
                                 'jsonIndexes': [],
                             },
                         ],

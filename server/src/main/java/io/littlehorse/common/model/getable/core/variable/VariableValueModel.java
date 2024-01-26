@@ -267,6 +267,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
         } else if (getType() == VariableType.STR) {
             return new VariableValueModel(asStr().strVal + rhs.asStr().strVal);
+        } else if (getType() == VariableType.JSON_ARR) {
+            List<Object> jsonList = getJsonArrVal();
+            List<Object> newList = new ArrayList<>();
+            newList.addAll(jsonList);
+            newList.add(rhs.getVal());
+            return new VariableValueModel(newList);
         }
         throw new LHVarSubError(null, "Cannot add to var of type " + type);
     }

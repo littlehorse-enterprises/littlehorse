@@ -76,6 +76,18 @@ private static final long serialVersionUID = 0L;
      */
     com.google.protobuf.ByteString
         getWfSpecNameBytes();
+
+    /**
+     * <pre>
+     * FOR NOW: no validation of variables on parent. In the future we will pass
+     * wf_spec_major_version, but we should probably examine the rules for
+     * evolution in the future.
+     * </pre>
+     *
+     * <code>int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
+     */
+    int getWfSpecMajorVersion();
   }
   /**
    * <pre>
@@ -169,6 +181,23 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
+    private int wfSpecMajorVersion_ = 0;
+    /**
+     * <pre>
+     * FOR NOW: no validation of variables on parent. In the future we will pass
+     * wf_spec_major_version, but we should probably examine the rules for
+     * evolution in the future.
+     * </pre>
+     *
+     * <code>int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
+     */
+    @java.lang.Override
+    public int getWfSpecMajorVersion() {
+      return wfSpecMajorVersion_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -186,6 +215,9 @@ private static final long serialVersionUID = 0L;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfSpecName_);
       }
+      if (wfSpecMajorVersion_ != 0) {
+        output.writeInt32(2, wfSpecMajorVersion_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -197,6 +229,10 @@ private static final long serialVersionUID = 0L;
       size = 0;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfSpecName_);
+      }
+      if (wfSpecMajorVersion_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, wfSpecMajorVersion_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -215,6 +251,8 @@ private static final long serialVersionUID = 0L;
 
       if (!getWfSpecName()
           .equals(other.getWfSpecName())) return false;
+      if (getWfSpecMajorVersion()
+          != other.getWfSpecMajorVersion()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -228,6 +266,8 @@ private static final long serialVersionUID = 0L;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecName().hashCode();
+      hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecMajorVersion();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -369,6 +409,7 @@ private static final long serialVersionUID = 0L;
         super.clear();
         bitField0_ = 0;
         wfSpecName_ = "";
+        wfSpecMajorVersion_ = 0;
         return this;
       }
 
@@ -404,6 +445,9 @@ private static final long serialVersionUID = 0L;
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.wfSpecName_ = wfSpecName_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
         }
       }
 
@@ -456,6 +500,9 @@ private static final long serialVersionUID = 0L;
           bitField0_ |= 0x00000001;
           onChanged();
         }
+        if (other.getWfSpecMajorVersion() != 0) {
+          setWfSpecMajorVersion(other.getWfSpecMajorVersion());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -487,6 +534,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 16: {
+                wfSpecMajorVersion_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -592,6 +644,56 @@ private static final long serialVersionUID = 0L;
         checkByteStringIsUtf8(value);
         wfSpecName_ = value;
         bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int wfSpecMajorVersion_ ;
+      /**
+       * <pre>
+       * FOR NOW: no validation of variables on parent. In the future we will pass
+       * wf_spec_major_version, but we should probably examine the rules for
+       * evolution in the future.
+       * </pre>
+       *
+       * <code>int32 wf_spec_major_version = 2;</code>
+       * @return The wfSpecMajorVersion.
+       */
+      @java.lang.Override
+      public int getWfSpecMajorVersion() {
+        return wfSpecMajorVersion_;
+      }
+      /**
+       * <pre>
+       * FOR NOW: no validation of variables on parent. In the future we will pass
+       * wf_spec_major_version, but we should probably examine the rules for
+       * evolution in the future.
+       * </pre>
+       *
+       * <code>int32 wf_spec_major_version = 2;</code>
+       * @param value The wfSpecMajorVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecMajorVersion(int value) {
+
+        wfSpecMajorVersion_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * FOR NOW: no validation of variables on parent. In the future we will pass
+       * wf_spec_major_version, but we should probably examine the rules for
+       * evolution in the future.
+       * </pre>
+       *
+       * <code>int32 wf_spec_major_version = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWfSpecMajorVersion() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        wfSpecMajorVersion_ = 0;
         onChanged();
         return this;
       }
