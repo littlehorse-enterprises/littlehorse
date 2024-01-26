@@ -1,4 +1,4 @@
-package io.littlehorse.common.app;
+package io.littlehorse.canary.app;
 
 public class BoostrapInitializationException extends Exception {
     public BoostrapInitializationException() {}

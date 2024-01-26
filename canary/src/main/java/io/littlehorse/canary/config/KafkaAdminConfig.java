@@ -1,6 +1,5 @@
-package io.littlehorse.common.config;
+package io.littlehorse.canary.config;
 
-import static io.littlehorse.common.config.CanaryConfig.LH_CANARY_PREFIX;
 import static java.util.Map.entry;
 
 import java.util.Map;
@@ -9,7 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 
 public class KafkaAdminConfig implements Config {
-    public static final String LH_CANARY_KAFKA_PREFIX = LH_CANARY_PREFIX + "kafka.";
+    public static final String LH_CANARY_KAFKA_PREFIX = CanaryConfig.LH_CANARY_PREFIX + "kafka.";
     private final Map<String, Object> configs;
 
     public KafkaAdminConfig(Map<String, Object> configs) {

@@ -1,8 +1,8 @@
-package io.littlehorse.kafka;
+package io.littlehorse.canary.kafka;
 
-import io.littlehorse.common.app.BoostrapInitializationException;
-import io.littlehorse.common.app.Bootstrap;
-import io.littlehorse.common.config.CanaryConfig;
+import io.littlehorse.canary.app.BoostrapInitializationException;
+import io.littlehorse.canary.app.Bootstrap;
+import io.littlehorse.canary.config.CanaryConfig;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;

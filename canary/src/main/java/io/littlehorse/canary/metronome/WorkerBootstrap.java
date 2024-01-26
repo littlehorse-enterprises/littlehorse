@@ -1,8 +1,8 @@
-package io.littlehorse.metronome;
+package io.littlehorse.canary.metronome;
 
-import io.littlehorse.common.app.BoostrapInitializationException;
-import io.littlehorse.common.app.Bootstrap;
-import io.littlehorse.common.config.CanaryConfig;
+import io.littlehorse.canary.app.BoostrapInitializationException;
+import io.littlehorse.canary.app.Bootstrap;
+import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.Workflow;

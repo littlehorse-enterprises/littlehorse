@@ -1,4 +1,4 @@
-package io.littlehorse.common.config;
+package io.littlehorse.canary.config;
 
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;

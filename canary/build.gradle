@@ -48,7 +48,7 @@ spotless {
 }
 
 application {
-    mainClass = 'io.littlehorse.Main'
+    mainClass = 'io.littlehorse.canary.Main'
 }
 
 shadowJar {

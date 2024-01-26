@@ -1,6 +1,6 @@
-package io.littlehorse.common.app;
+package io.littlehorse.canary.app;
 
-import io.littlehorse.common.config.CanaryConfig;
+import io.littlehorse.canary.config.CanaryConfig;
 
 public interface Bootstrap {
     void initialize(CanaryConfig config) throws BoostrapInitializationException;

@@ -1,4 +1,4 @@
-package io.littlehorse.metronome;
+package io.littlehorse.canary.metronome;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;

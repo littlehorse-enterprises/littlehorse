@@ -1,4 +1,4 @@
-package io.littlehorse.common.config;
+package io.littlehorse.canary.config;
 
 import java.util.Map;
 import java.util.Map.Entry;
