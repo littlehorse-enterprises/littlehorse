@@ -45,7 +45,6 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.VariableType;
-
 import java.io.Serializable;
 
 /** A WfRunVariable is a handle on a Variable in a WfSpec. */
