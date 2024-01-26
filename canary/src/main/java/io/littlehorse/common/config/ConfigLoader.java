@@ -74,9 +74,6 @@ public class ConfigLoader {
     private static Map<String, Object> toMap(Config config) {
         Map<String, Object> configs = new TreeMap<>();
         for (String key : config.getPropertyNames()) {
-            if (!key.startsWith("canary")) {
-                continue;
-            }
             configs.put(key, config.getOptionalValue(key, String.class).orElse(""));
         }
         return configs;

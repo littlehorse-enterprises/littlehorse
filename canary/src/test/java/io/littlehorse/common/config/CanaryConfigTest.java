@@ -9,7 +9,7 @@ class CanaryConfigTest {
 
     @Test
     void toMapMustCreateCopy() {
-        Map<String, Object> input = Map.of();
+        Map<String, Object> input = Map.of("key", "value");
         CanaryConfig canaryConfig = new CanaryConfig(input);
 
         Map<String, Object> output = canaryConfig.toMap();

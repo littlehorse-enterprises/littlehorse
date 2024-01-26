@@ -11,5 +11,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
         log.info("Configurations: {}", config);
+        log.info("Kafka Admin Configurations: {}", config.toKafkaAdminConfig());
     }
 }

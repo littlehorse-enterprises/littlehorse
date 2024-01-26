@@ -14,13 +14,14 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 class ConfigLoaderTest {
 
-    public static final String EXPECTED_KEY = "canary.test";
+    public static final String EXPECTED_KEY = "lh.canary.test";
+    public static final String ENV_VARIABLE_NAME = "LH_CANARY_TEST";
     public static final String EXPECTED_FILE_VALUE = "test from file";
     public static final String EXPECTED_ENV_VALUE = "test from env";
     public static final String EXPECTED_PROPERTIES_VALUE = "test from properties";
 
     @Test
-    @ClearEnvironmentVariable(key = EXPECTED_KEY)
+    @ClearEnvironmentVariable(key = ENV_VARIABLE_NAME)
     void loadFromFile() throws IOException {
         Path configPath = createTemporaryProperties();
 
@@ -30,7 +31,7 @@ class ConfigLoaderTest {
     }
 
     @Test
-    @SetEnvironmentVariable(key = EXPECTED_KEY, value = EXPECTED_ENV_VALUE)
+    @SetEnvironmentVariable(key = ENV_VARIABLE_NAME, value = EXPECTED_ENV_VALUE)
     void overwriteFileConfigWithEnvConfigs() throws IOException {
         Path configPath = createTemporaryProperties();
 
@@ -40,7 +41,7 @@ class ConfigLoaderTest {
     }
 
     @Test
-    @ClearEnvironmentVariable(key = EXPECTED_KEY)
+    @ClearEnvironmentVariable(key = ENV_VARIABLE_NAME)
     void loadFromPropertiesObject() {
         Properties properties = new Properties();
         properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
@@ -51,7 +52,7 @@ class ConfigLoaderTest {
     }
 
     @Test
-    @SetEnvironmentVariable(key = EXPECTED_KEY, value = EXPECTED_ENV_VALUE)
+    @SetEnvironmentVariable(key = ENV_VARIABLE_NAME, value = EXPECTED_ENV_VALUE)
     void overwritePropertiesWithEnvConfigs() throws IOException {
         Properties properties = new Properties();
         properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
