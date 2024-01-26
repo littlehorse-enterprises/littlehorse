@@ -1,6 +1,7 @@
 package io.littlehorse.common.config;
 
 import io.smallrye.config.PropertiesConfigSource;
+import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,13 +19,14 @@ public class ConfigLoader {
      * 2. Environment variables
      * 3. System properties
      *
-     * @return A map with all system configuration
+     * @return A CanaryConfig with all system configuration
      */
-    public static Map<String, Object> load() {
-        return toMap(new SmallRyeConfigBuilder()
+    public static CanaryConfig load() {
+        SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
-                .build());
+                .build();
+        return new CanaryConfig(toMap(config));
     }
 
     /**
@@ -35,18 +37,16 @@ public class ConfigLoader {
      * 4. System properties
      *
      * @param path Properties location
-     * @return A map with all system configuration
+     * @return A CanaryConfig with all system configuration
      * @throws IOException If properties file was not found
      */
-    public static Map<String, Object> load(Path path) throws IOException {
-        SmallRyeConfigBuilder configBuilder =
-                new SmallRyeConfigBuilder().addDefaultInterceptors().addDefaultSources();
-
-        if (path != null) {
-            configBuilder.withSources(new PropertiesConfigSource(path.toUri().toURL(), 200));
-        }
-
-        return toMap(configBuilder.build());
+    public static CanaryConfig load(Path path) throws IOException {
+        SmallRyeConfig config = new SmallRyeConfigBuilder()
+                .addDefaultInterceptors()
+                .addDefaultSources()
+                .withSources(new PropertiesConfigSource(path.toUri().toURL(), 200))
+                .build();
+        return new CanaryConfig(toMap(config));
     }
 
     private static Map<String, Object> toMap(Config config) {
