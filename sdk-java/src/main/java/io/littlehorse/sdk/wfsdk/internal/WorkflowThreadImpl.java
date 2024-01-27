@@ -507,7 +507,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             task.setTimeoutSeconds(timeoutSeconds);
             n.setTask(task);
 
-        } else if (n.getNodeCase() != NodeCase.EXTERNAL_EVENT) {
+        } else if (n.getNodeCase() == NodeCase.EXTERNAL_EVENT) {
 
             ExternalEventNode.Builder evt = n.getExternalEventBuilder();
             evt.setTimeoutSeconds(timeoutValue);
