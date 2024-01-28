@@ -709,7 +709,7 @@ public class LHServerConfig extends ConfigBase {
                         + this.getInternalAdvertisedPort());
 
         props.put("bootstrap.servers", this.getBootstrapServers());
-        props.put("state.dir", getOrSetDefault(KAFKA_STATE_DIR_KEY, "/tmp/littlehorseState"));
+        props.put("state.dir", getStateDirectory());
         props.put("request.timeout.ms", 1000 * 60);
         props.put("producer.transaction.timeout.ms", 1000 * 60);
         props.put("producer.acks", "all");
