@@ -110,6 +110,11 @@ func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
 
+func (l *LHWorkflow) WithRetentionPolicy(policy *model.WorkflowRetentionPolicy) *LHWorkflow {
+	l.spec.RetentionPolicy = policy
+	return l
+}
+
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
@@ -123,6 +128,10 @@ func (t *WorkflowThread) AddVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType, nil)
+}
+
+func (t *WorkflowThread) WithRetentionPolicy(policy *model.ThreadRetentionPolicy) {
+	t.spec.RetentionPolicy = policy
 }
 
 func (t *WorkflowThread) AddVariableWithDefault(
