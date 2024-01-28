@@ -1,5 +1,4 @@
 FROM amazoncorretto:17
-RUN apt install -y libjemalloc-dev
 RUN mkdir /lh
 COPY ./docker/server/docker-entrypoint.sh /lh
 COPY ./docker/server/log4j2.properties /lh
