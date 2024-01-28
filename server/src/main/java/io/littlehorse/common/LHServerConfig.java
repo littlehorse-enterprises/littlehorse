@@ -280,7 +280,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(KAFKA_STATE_DIR_KEY, "/tmp/littlehorseState");
+        return getOrSetDefault(KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getInternalAdvertisedHost() {
