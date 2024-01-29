@@ -90,6 +90,7 @@ runs:
       with:
         context: ${{ inputs.context }}
         file: ${{ inputs.dockerfile }}
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

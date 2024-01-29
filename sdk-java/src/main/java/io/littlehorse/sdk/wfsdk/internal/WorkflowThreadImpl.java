@@ -45,6 +45,7 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -233,7 +234,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new LHFormatStringImpl(this, format, args);
     }
 
-    public TaskNodeOutputImpl execute(String taskName, Object... args) {
+    @Override
+    public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         TaskNode taskNode = createTaskNode(taskName, args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
@@ -505,7 +507,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             task.setTimeoutSeconds(timeoutSeconds);
             n.setTask(task);
 
-        } else if (n.getNodeCase() != NodeCase.EXTERNAL_EVENT) {
+        } else if (n.getNodeCase() == NodeCase.EXTERNAL_EVENT) {
 
             ExternalEventNode.Builder evt = n.getExternalEventBuilder();
             evt.setTimeoutSeconds(timeoutValue);

@@ -48,11 +48,15 @@ from littlehorse.model.wf_spec_pb2 import (
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
+    ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
+    WfSpec,
+    WfRunVariableAccessLevel,
+    WorkflowRetentionPolicy,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -286,13 +290,20 @@ class NodeOutput:
 
 class WfRunVariable:
     def __init__(
-        self, variable_name: str, variable_type: VariableType, default_value: Any = None
+        self,
+        variable_name: str,
+        variable_type: VariableType,
+        default_value: Any = None,
+        access_level: Optional[
+            Union[WfRunVariableAccessLevel, str]
+        ] = WfRunVariableAccessLevel.PUBLIC_VAR,
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
+            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
 
         Returns:
@@ -308,6 +319,7 @@ class WfRunVariable:
         self._required = False
         self._searchable = False
         self._json_indexes: List[JsonIndex] = []
+        self._access_level = access_level
 
         if default_value is not None:
             self.default_value = to_variable_value(default_value)
@@ -360,6 +372,13 @@ class WfRunVariable:
         out = WfRunVariable(self.name, self.type, self.default_value)
         out.json_path = json_path
         return out
+
+    def with_access_level(
+        self, access_level: WfRunVariableAccessLevel
+    ) -> "WfRunVariable":
+        """Sets the access level of a WfRunVariable."""
+        self._access_level = access_level
+        return self
 
     def searchable(self) -> "WfRunVariable":
         """Allows for searching for the WfRunVariable by its value.
@@ -421,6 +440,7 @@ class WfRunVariable:
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,
             required=self._required,
+            access_level=self._access_level,
         )
 
     def __str__(self) -> str:
@@ -613,6 +633,7 @@ class WorkflowThread:
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
         self._last_node_condition: EdgeCondition | None = None
+        self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
             raise ValueError("Workflow must be not None")
@@ -761,6 +782,14 @@ class WorkflowThread:
             raise ValueError("WfRunVariable must be VariableType.INT")
         self.add_node("sleep", SleepNode(timestamp=to_variable_assignment(timestamp)))
 
+    def with_retention_policy(self, policy: ThreadRetentionPolicy) -> None:
+        """Sets the Retention Policy for the ThreadSpec created by this WorkflowThread.
+
+        Args:
+            policy (ThreadRetentionPolicy): the retention policy to set.
+        """
+        self._retention_policy = policy
+
     def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
         """Registers an Interrupt Handler, such that when an ExternalEvent
         arrives with the specified type, this ThreadRun is interrupted.
@@ -804,7 +833,10 @@ class WorkflowThread:
             interruption.compile() for interruption in self._wf_interruptions
         ]
         return ThreadSpec(
-            variable_defs=variable_defs, nodes=nodes, interrupt_defs=interruptions
+            variable_defs=variable_defs,
+            nodes=nodes,
+            interrupt_defs=interruptions,
+            retention_policy=self._retention_policy,
         )
 
     def __str__(self) -> str:
@@ -1171,13 +1203,18 @@ class WorkflowThread:
         return LHFormatString(format, *args)
 
     def add_variable(
-        self, variable_name: str, variable_type: VariableType, default_value: Any = None
+        self,
+        variable_name: str,
+        variable_type: VariableType,
+        access_level: Optional[Union[WfRunVariableAccessLevel, str]] = None,
+        default_value: Any = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
+            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
 
         Returns:
@@ -1188,7 +1225,9 @@ class WorkflowThread:
             if var.name == variable_name:
                 raise ValueError(f"Variable {variable_name} already added")
 
-        new_var = WfRunVariable(variable_name, variable_type, default_value)
+        new_var = WfRunVariable(
+            variable_name, variable_type, default_value, access_level
+        )
         self._wf_run_variables.append(new_var)
         return new_var
 
@@ -1398,12 +1437,14 @@ class Workflow:
         self,
         name: str,
         entrypoint: ThreadInitializer,
+        parent_wf: Optional[str] = None,
     ) -> None:
         """Workflow.
 
         Args:
             name (str): Name of WfSpec.
             entrypoint (ThreadInitializer): Is the entrypoint thread function.
+            parent_wf (Optional[str]): Defines the parent WfSpec associated to this Workflow
         """
         if name is None:
             raise ValueError("Name cannot be None")
@@ -1413,6 +1454,10 @@ class Workflow:
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
         self._allowed_updates: Optional[AllowedUpdateType] = None
+        self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
+        self._retention_policy: Optional[WorkflowRetentionPolicy] = None
+        if parent_wf is not None:
+            self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1477,7 +1522,12 @@ class Workflow:
             entrypoint_thread_name=ENTRYPOINT,
             thread_specs=thread_specs,
             allowed_updates=self._allowed_updates,
+            parent_wf_spec=self._parent_wf,
+            retention_policy=self._retention_policy,
         )
+
+    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> None:
+        self._retention_policy = policy
 
 
 def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:

@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -76,7 +77,8 @@ public class JsonVariableStorageManagerTest {
                 new JsonIndexModel("$.tags", VariableType.JSON_ARR),
                 new JsonIndexModel("$.balance", VariableType.STR));
         jsonObjVariable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef, indices, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
         VariableValueModel jsonObjVal = new VariableValueModel(map);
         jsonObjVariable.setValue(jsonObjVal);
@@ -96,7 +98,8 @@ public class JsonVariableStorageManagerTest {
 
         VariableModel jsonArrVar = TestUtil.variable("test");
         jsonArrVar.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(jsonArrVarDef, true, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(jsonArrVarDef, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
         jsonArrVar.setValue(varVal);
         getableManager.put(jsonArrVar);

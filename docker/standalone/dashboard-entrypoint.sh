@@ -40,7 +40,7 @@ else
   export AUTH_SECRET=$(uuidgen)
 fi
 
-export HOSTNAME=localhost
+export HOSTNAME=0.0.0.0
 export PORT=8080
 
 node /lh/dashboard/apps/web/server.js

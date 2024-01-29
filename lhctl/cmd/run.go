@@ -56,6 +56,13 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 			runReq.Id = &wfRunId
 		}
 
+		parentWfRunId, _ := cmd.Flags().GetString("parentWfRunId")
+		if parentWfRunId != "" {
+			parentId := &model.WfRunId{}
+			parentId.Id = parentWfRunId
+			runReq.ParentWfRunId = parentId
+		}
+
 		// Now parse variables
 		if len(args) > 1 {
 			if len(args)%2 != 1 {
@@ -120,6 +127,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 func init() {
 	runCmd.Flags().String("wfRunId", "", "Set the id of the WfRun (for idempotence)")
+	runCmd.Flags().String("parentWfRunId", "", "Set the ID of the parent WfRun")
 	runCmd.Flags().Int32("majorVersion", -1, "Set specific WfSpec Major Version to run")
 	runCmd.Flags().Int32("revision", -1, "Set specific WfSpec Revision to run")
 	rootCmd.AddCommand(runCmd)

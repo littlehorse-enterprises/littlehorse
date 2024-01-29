@@ -427,3 +427,60 @@ func TestUpdateType(t *testing.T) {
 
 	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NO_UPDATES)
 }
+
+func TestJsonPath(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		myVar := t.AddVariable("my-var", model.VariableType_JSON_OBJ)
+		t.Execute("some-task", myVar.JsonPath("$.foo"))
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-task-TASK"]
+	assert.Equal(t, *(node.GetTask().Variables[0].JsonPath), "$.foo")
+}
+
+func TestVariableAccessLevel(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		inheritedVar := t.AddVariable("my-var", model.VariableType_BOOL)
+		inheritedVar.WithAccessLevel(model.WfRunVariableAccessLevel_PRIVATE_VAR)
+
+		// Test that default is PUBLIC_VAR
+		t.AddVariable("default-access", model.VariableType_INT)
+
+		t.Execute("some-task")
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	varDef := entrypoint.VariableDefs[0]
+	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PRIVATE_VAR)
+	assert.Equal(t, varDef.VarDef.Name, "my-var")
+
+	varDef = entrypoint.VariableDefs[1]
+	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PUBLIC_VAR)
+	assert.Equal(t, varDef.VarDef.Name, "default-access")
+}
+
+func TestRetentionPolicy(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+
+		t.WithRetentionPolicy(&model.ThreadRetentionPolicy{
+			ThreadGcPolicy: &model.ThreadRetentionPolicy_SecondsAfterThreadTermination{
+				SecondsAfterThreadTermination: 137,
+			},
+		})
+
+		t.Execute("some-task")
+	}, "my-workflow").WithRetentionPolicy(&model.WorkflowRetentionPolicy{
+		WfGcPolicy: &model.WorkflowRetentionPolicy_SecondsAfterWfTermination{
+			SecondsAfterWfTermination: 10,
+		},
+	})
+
+	putWf, _ := wf.Compile()
+	assert.Equal(t, int(putWf.RetentionPolicy.GetSecondsAfterWfTermination()), int(10))
+
+	thread := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	assert.Equal(t, int(thread.RetentionPolicy.GetSecondsAfterThreadTermination()), int(137))
+}

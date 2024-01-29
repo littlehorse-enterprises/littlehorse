@@ -10,6 +10,14 @@ import lombok.Getter;
 public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecReference> {
 
     private String wfSpecName;
+    private int wfSpecMajorVersion;
+
+    public ParentWfSpecReferenceModel() {}
+
+    public ParentWfSpecReferenceModel(String wfSpecName, int wfSpecMajorVersion) {
+        this.wfSpecName = wfSpecName;
+        this.wfSpecMajorVersion = wfSpecMajorVersion;
+    }
 
     @Override
     public Class<ParentWfSpecReference> getProtoBaseClass() {
@@ -18,7 +26,8 @@ public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecRefer
 
     @Override
     public ParentWfSpecReference.Builder toProto() {
-        ParentWfSpecReference.Builder out = ParentWfSpecReference.newBuilder().setWfSpecName(wfSpecName);
+        ParentWfSpecReference.Builder out =
+                ParentWfSpecReference.newBuilder().setWfSpecName(wfSpecName).setWfSpecMajorVersion(wfSpecMajorVersion);
         return out;
     }
 
@@ -26,5 +35,6 @@ public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecRefer
     public void initFrom(Message proto, ExecutionContext ctx) {
         ParentWfSpecReference p = (ParentWfSpecReference) proto;
         wfSpecName = p.getWfSpecName();
+        wfSpecMajorVersion = p.getWfSpecMajorVersion();
     }
 }
