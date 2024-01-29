@@ -615,20 +615,20 @@ The size of the Kafka Streams State Store Cache on the Timer Topology. This cach
 
 ### `LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES`
 
-The size of the shared Block Cache for reads into RocksDB. Memory used by this cache is allocated off-heap.
+The size of the shared Block Cache for reads into RocksDB. Memory used by this cache is allocated off-heap. If not set, then there is no limit and the Kafka Streams default is used (each RocksDB instance gets its own 50-MB cache).
 
 - **Type:** long
-- **Default:** 67108864 (64MB)
+- **Default:** null
 - **Importance:** low
 
 ---
 
 ### `LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES`
 
-The size of the Rocksdb Write Buffer Manager. Memory used by the Write Buffer Manager is allocated off-heap.
+The capacity of the Rocksdb Write Buffer Manager. Memory used by the Write Buffer Manager is allocated off-heap. If not set, then there is no limit for off-heap memory allocated to memtables.
 
 - **Type:** long
-- **Default:** 67108864 (64MB)
+- **Default:** null
 - **Importance:** high
 
 ## Monitoring
