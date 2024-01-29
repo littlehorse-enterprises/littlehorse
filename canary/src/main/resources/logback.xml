@@ -1,0 +1,16 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.littlehorse.canary" level="TRACE" />
+    <logger name="io.littlehorse.sdk" level="TRACE" />
+    <logger name="org.apache.kafka" level="WARN" />
+    <logger name="io.grpc" level="WARN" />
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

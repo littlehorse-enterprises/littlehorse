@@ -1,7 +1,7 @@
 package io.littlehorse.canary.kafka;
 
-import io.littlehorse.canary.app.BoostrapInitializationException;
 import io.littlehorse.canary.app.Bootstrap;
+import io.littlehorse.canary.app.InitializationException;
 import io.littlehorse.canary.config.CanaryConfig;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +16,21 @@ public class KafkaBootstrap implements Bootstrap {
     private AdminClient adminClient;
 
     @Override
-    public void initialize(CanaryConfig config) throws BoostrapInitializationException {
+    public void initialize(CanaryConfig config) {
         adminClient = KafkaAdminClient.create(config.toKafkaAdminConfig().toMap());
 
         try {
-            adminClient
-                    .createTopics(List.of(new NewTopic(
-                            config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas())))
-                    .all()
-                    .get();
+            NewTopic canaryTopic =
+                    new NewTopic(config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas());
+
+            adminClient.createTopics(List.of(canaryTopic)).all().get();
             log.info("Topics {} created", config.getTopicName());
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());
                 return;
             }
-            throw new BoostrapInitializationException(e);
+            throw new InitializationException(e);
         }
         log.info("Initialized");
     }
@@ -41,6 +40,6 @@ public class KafkaBootstrap implements Bootstrap {
         if (adminClient != null) {
             adminClient.close();
         }
-        log.info("Shutdown");
+        log.trace("Shutdown");
     }
 }

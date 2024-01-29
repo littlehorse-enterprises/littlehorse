@@ -7,5 +7,5 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "$WORK_DIR"
 
-./gradlew canary:shadowJar -x test
+./gradlew canary:build -x test -x spotlessJavaCheck
 java -jar canary/build/libs/canary-*-all.jar canary/canary.properties
