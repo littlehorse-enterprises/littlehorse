@@ -4,8 +4,15 @@ package littlehorse;
 option java_multiple_files = true;
 option java_package = "io.littlehorse.canary.proto";
 
-message Person {
-  optional string name = 1;
-  optional int32 id = 2;
-  optional string email = 3;
+import "google/protobuf/timestamp.proto";
+
+message Metric {
+  google.protobuf.Timestamp time = 1;
+  oneof metric {
+      DuplicatedTaskRun duplicated_task_run = 2;
+  }
+}
+
+message DuplicatedTaskRun {
+  string unique_task_schedule_id=1;
 }
