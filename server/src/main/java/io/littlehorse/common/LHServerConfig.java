@@ -828,13 +828,16 @@ public class LHServerConfig extends ConfigBase {
 
     private void initRocksdbSingletons() {
         RocksDB.loadLibrary();
-        long cacheSize =
-                Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
-        this.globalRocksdbBlockCache = new LRUCache(cacheSize);
+        long cacheSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, "-1"));
+        if (cacheSize != -1) {
+            this.globalRocksdbBlockCache = new LRUCache(cacheSize);
+        }
 
-        long totalWriteBufferSize =
-                Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, String.valueOf(1024L * 1024L * 256)));
-        this.globalRocksdbWriteBufferManager = new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+        long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
+        if (totalWriteBufferSize != -1) {
+            this.globalRocksdbWriteBufferManager =
+                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+        }
     }
 
     private void initKafkaAdmin() {

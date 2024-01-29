@@ -48,11 +48,13 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
-        // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
-        // to .close() it to avoid leaks so that we can provide a global one.
-        Cache oldCache = tableConfig.blockCache();
-        tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
-        oldCache.close();
+        if (serverConfig.getGlobalRocksdbBlockCache() != null) {
+            // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
+            // to .close() it to avoid leaks so that we can provide a global one.
+            Cache oldCache = tableConfig.blockCache();
+            tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
+            oldCache.close();
+        }
 
         tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
         tableConfig.setBlockSize(BLOCK_SIZE);
@@ -65,7 +67,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setWriteBufferSize(
                 isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
 
-        options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
+        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
+            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
+        }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
 
