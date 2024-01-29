@@ -1,6 +1,7 @@
 name: branch
 run-name: Publishing images for branch ${{ github.ref_name }}
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - "master"
