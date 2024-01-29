@@ -663,7 +663,7 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "5000"));
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "2000"));
         props.put("commit.interval", commitInterval);
         props.put(
                 "statestore.cache.max.bytes",
