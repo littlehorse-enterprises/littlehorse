@@ -27,6 +27,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeMo
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
@@ -44,6 +45,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
@@ -144,7 +146,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .setThreadSpecName(threadSpecName)
                 .setCurrentNodePosition(currentNodePosition)
                 .setStartTime(LHUtil.fromDate(startTime))
-                .setType(type);
+                .setType(type)
+                .setWfSpecId(wfSpecId.toProto());
 
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
@@ -871,8 +874,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable =
-                    processorContext.getableManager().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
+            VariableModel variable = getVariable(varName);
             variable.setValue(var);
             processorContext.getableManager().put(variable);
         };
@@ -880,8 +882,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public VariableModel getVariable(String varName) {
-        // For now, just do the local one
-        // Once we have threads, this will do a backtrack up the thread tree.
         VariableModel out =
                 processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
         if (out != null) {
@@ -889,6 +889,23 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
         if (getParent() != null) {
             return getParent().getVariable(varName);
+        }
+
+        // Last thing to check is whether the variable is inherited.
+        ThreadVarDefModel threadVarDef = processorContext
+                .service()
+                .getWfSpec(getWfSpecId())
+                .getAllVariables()
+                .get(varName);
+        if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+            // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
+            WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();
+            WfRunModel parentWfRun = processorContext.getableManager().get(parentWfRunId);
+            ThreadVarDefModel parentVarDef =
+                    parentWfRun.getWfSpec().getAllVariables().get(varName);
+            if (!(parentVarDef.getAccessLevel() == WfRunVariableAccessLevel.PRIVATE_VAR)) {
+                return parentWfRun.getThreadRun(0).getVariable(varName);
+            }
         }
 
         return null;

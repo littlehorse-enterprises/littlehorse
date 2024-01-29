@@ -3,9 +3,8 @@ package io.littlehorse.server;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
-import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -29,8 +28,8 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
     private final TenantScopedStore coreStore;
-    private final ReadOnlyTenantScopedStore tenantMetadataStore;
-    private final ReadOnlyClusterScopedStore clusterMetadataStore;
+    private final TenantScopedStore tenantMetadataStore;
+    private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
 
     public TestProcessorExecutionContext(
@@ -51,10 +50,10 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
 
         this.coreStore = TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);
-        this.tenantMetadataStore = ReadOnlyTenantScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.METADATA_STORE), tenantId, this);
-        this.clusterMetadataStore = ReadOnlyClusterScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.METADATA_STORE), this);
+        this.tenantMetadataStore = TenantScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this);
+        this.clusterMetadataStore = ClusterScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this);
     }
 
     public static TestProcessorExecutionContext create(
@@ -93,7 +92,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     }
 
     @Override
-    public ReadOnlyMetadataManager metadataManager() {
-        return new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+    public MetadataManager metadataManager() {
+        return new MetadataManager(clusterMetadataStore, tenantMetadataStore);
     }
 }

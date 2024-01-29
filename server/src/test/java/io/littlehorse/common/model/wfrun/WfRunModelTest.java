@@ -13,8 +13,8 @@ public class WfRunModelTest {
         WfRunModel wfRunModel = new WfRunModel();
         ThreadRunModel thread = new ThreadRunModel();
         wfRunModel.getThreadRuns().add(thread);
-        assertThat(wfRunModel.getThreadRun(0) == thread);
-        assertThat(wfRunModel.getThreadRun(-1) == null);
-        assertThat(wfRunModel.getThreadRun(1) == null);
+        assertThat(wfRunModel.getThreadRun(0)).isSameAs(thread);
+        assertThat(wfRunModel.getThreadRun(-1)).isNull();
+        assertThat(wfRunModel.getThreadRun(1)).isNull();
     }
 }

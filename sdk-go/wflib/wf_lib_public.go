@@ -94,6 +94,10 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
+func (w *WfRunVariable) WithAccessLevel(accessLevel model.WfRunVariableAccessLevel) WfRunVariable {
+	return w.withAccessLevel(accessLevel)
+}
+
 func (w *WfRunVariable) Searchable() *WfRunVariable {
 	return w.searchableImpl()
 }
@@ -104,6 +108,11 @@ func (w *WfRunVariable) SearchableOn(fieldPath string, fieldType model.VariableT
 
 func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
+}
+
+func (l *LHWorkflow) WithRetentionPolicy(policy *model.WorkflowRetentionPolicy) *LHWorkflow {
+	l.spec.RetentionPolicy = policy
+	return l
 }
 
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
@@ -119,6 +128,10 @@ func (t *WorkflowThread) AddVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType, nil)
+}
+
+func (t *WorkflowThread) WithRetentionPolicy(policy *model.ThreadRetentionPolicy) {
+	t.spec.RetentionPolicy = policy
 }
 
 func (t *WorkflowThread) AddVariableWithDefault(

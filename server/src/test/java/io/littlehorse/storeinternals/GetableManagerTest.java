@@ -25,6 +25,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -140,7 +141,8 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.BOOL);
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, true, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -171,8 +173,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -238,8 +240,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -304,8 +306,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -387,8 +389,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, indices, false),
-                    new ThreadVarDefModel(variableDef2, true, false)));
+                    new ThreadVarDefModel(variableDef1, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -509,7 +511,8 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, false, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
         ExternalEventModel externalEvent = TestUtil.externalEvent();
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();

@@ -53,7 +53,7 @@ var getNodeRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
 			requestContext(),
 			&model.NodeRunId{
-				WfRunId:         &model.WfRunId{Id: args[0]},
+				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: int32(trn),
 				Position:        int32(pos),
 			},
@@ -74,10 +74,10 @@ Lists all NodeRun's for a given WfRun Id.
 		if len(args) != 1 {
 			log.Fatal("Must provide one arg: the WfRun ID!")
 		}
-		wfRunId := args[0]
+		wfRunIdStr := args[0]
 
 		req := &model.ListNodeRunsRequest{
-			WfRunId: &model.WfRunId{Id: wfRunId},
+			WfRunId: common.StrToWfRunId(wfRunIdStr),
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
