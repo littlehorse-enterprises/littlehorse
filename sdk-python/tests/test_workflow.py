@@ -26,10 +26,12 @@ from littlehorse.model.wf_spec_pb2 import (
     JsonIndex,
     Node,
     NopNode,
+    ThreadRetentionPolicy,
     ThreadSpec,
     FailureHandlerDef,
     ThreadVarDef,
     WfRunVariableAccessLevel,
+    WorkflowRetentionPolicy,
 )
 from littlehorse.workflow import to_variable_assignment, LHErrorType
 
@@ -1245,6 +1247,20 @@ class TestWorkflow(unittest.TestCase):
                 parent_wf_spec={"wf_spec_name": "my-parent-wf"},
             ),
         )
+
+    def test_retention_policy(self):
+        def workflow_thread(wf: WorkflowThread) -> None:
+            wf.with_retention_policy(ThreadRetentionPolicy(seconds_after_thread_termination=1))
+            wf.execute("some-task")
+
+        wf = Workflow("my-wf", workflow_thread)
+        wf.with_retention_policy(WorkflowRetentionPolicy(seconds_after_wf_termination=137))
+        result = wf.compile()
+        self.assertEqual(result.retention_policy.seconds_after_wf_termination, 137)
+
+        entrypoint = result.thread_specs[result.entrypoint_thread_name]
+        policy = entrypoint.retention_policy
+        self.assertEqual(policy.seconds_after_thread_termination, 1)
 
     def test_handle_any_failure(self):
         def my_interrupt_handler(thread: WorkflowThread) -> None:
