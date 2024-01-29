@@ -463,7 +463,7 @@ func TestVariableAccessLevel(t *testing.T) {
 }
 
 func TestRetentionPolicy(t *testing.T) {
-	wf:= wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 
 		t.WithRetentionPolicy(&model.ThreadRetentionPolicy{
 			ThreadGcPolicy: &model.ThreadRetentionPolicy_SecondsAfterThreadTermination{
