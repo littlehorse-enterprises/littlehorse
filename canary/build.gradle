@@ -4,6 +4,7 @@ plugins {
     id 'com.diffplug.spotless' version '6.25.0'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'io.freefair.lombok' version '8.4'
+    id 'com.google.protobuf' version '0.9.4'
 }
 
 repositories {
@@ -32,6 +33,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
+    testImplementation 'org.mockito:mockito-core:5.10.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+    testImplementation 'net.datafaker:datafaker:2.1.0'
 }
 
 test {
@@ -66,4 +70,15 @@ java {
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-parameters'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.2'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
+        }
+    }
 }

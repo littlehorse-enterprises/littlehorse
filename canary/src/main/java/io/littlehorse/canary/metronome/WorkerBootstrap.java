@@ -43,7 +43,7 @@ public class WorkerBootstrap implements Bootstrap {
         LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
         initializeTask(lhConfig);
         initializeWorkflow(lhConfig);
-        log.info("Initialized");
+        log.trace("Initialized");
     }
 
     @Override

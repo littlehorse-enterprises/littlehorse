@@ -28,11 +28,11 @@ public class KafkaBootstrap implements Bootstrap {
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());
-                return;
+            } else {
+                throw new InitializationException(e);
             }
-            throw new InitializationException(e);
         }
-        log.info("Initialized");
+        log.trace("Initialized");
     }
 
     @Override
