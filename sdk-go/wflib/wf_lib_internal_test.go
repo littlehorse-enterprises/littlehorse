@@ -429,7 +429,7 @@ func TestUpdateType(t *testing.T) {
 }
 
 func TestJsonPath(t *testing.T) {
-	wf:= wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		myVar := t.AddVariable("my-var", model.VariableType_JSON_OBJ)
 		t.Execute("some-task", myVar.JsonPath("$.foo"))
 	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
@@ -441,7 +441,7 @@ func TestJsonPath(t *testing.T) {
 }
 
 func TestVariableAccessLevel(t *testing.T) {
-	wf:= wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		inheritedVar := t.AddVariable("my-var", model.VariableType_BOOL)
 		inheritedVar.WithAccessLevel(model.WfRunVariableAccessLevel_PRIVATE_VAR)
 
