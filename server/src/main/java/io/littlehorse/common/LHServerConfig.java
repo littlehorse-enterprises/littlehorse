@@ -675,6 +675,7 @@ public class LHServerConfig extends ConfigBase {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", this.getKafkaGroupId("timer"));
         props.put("processing.guarantee", "at_least_once");
+        props.put("consumer.isolation.level", "read_uncommitted");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
 
         // The timer topology is ALOS, so we can have a larger commit interval with less of a problem. Looking at the
