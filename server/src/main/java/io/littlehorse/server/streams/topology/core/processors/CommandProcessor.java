@@ -7,18 +7,22 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -48,6 +52,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final TaskQueueManager globalTaskQueueManager;
 
     private KeyValueStore<String, Bytes> nativeStore;
+    private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
 
     public CommandProcessor(
@@ -65,6 +70,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
+        this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
@@ -93,7 +99,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
         try {
             Message response = command.process(executionContext, config);
-            // coreDao.commit();
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
@@ -165,8 +170,21 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     public void onPartitionClaimed() {
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+        try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
+                GetableClassEnum.TENANT.getNumber() + "/",
+                GetableClassEnum.TENANT.getNumber() + "/~",
+                StoredGetable.class)) {
+            storedTenants.forEachRemaining(getable -> {
+                TenantModel storedTenant = ((StoredGetable<Tenant, TenantModel>) getable.getValue()).getStoredObject();
+                rehydrateTenant(storedTenant);
+            });
+        }
+    }
+
+    private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
-                TenantScopedStore.newInstance(this.nativeStore, LHConstants.DEFAULT_TENANT, new BackgroundContext());
+                TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
