@@ -188,7 +188,7 @@ message UTActionTrigger {
     optional VariableAssignment user_group = 2;
   }
 
-  // The action that is scheduled by the hook 
+  // The action that is scheduled by the hook
   oneof action {
     UTATask task = 1;
     UTACancel cancel = 2;

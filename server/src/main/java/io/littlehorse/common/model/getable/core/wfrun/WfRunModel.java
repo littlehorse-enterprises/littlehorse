@@ -622,7 +622,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
                 transitionTo(LHStatus.COMPLETED);
-                log.info("Completed WfRun {} at {} ", id, new Date());
+                log.debug("Completed WfRun {} at {} ", id, new Date());
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
                 transitionTo(LHStatus.ERROR);

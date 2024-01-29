@@ -1250,11 +1250,15 @@ class TestWorkflow(unittest.TestCase):
 
     def test_retention_policy(self):
         def workflow_thread(wf: WorkflowThread) -> None:
-            wf.with_retention_policy(ThreadRetentionPolicy(seconds_after_thread_termination=1))
+            wf.with_retention_policy(
+                ThreadRetentionPolicy(seconds_after_thread_termination=1)
+            )
             wf.execute("some-task")
 
         wf = Workflow("my-wf", workflow_thread)
-        wf.with_retention_policy(WorkflowRetentionPolicy(seconds_after_wf_termination=137))
+        wf.with_retention_policy(
+            WorkflowRetentionPolicy(seconds_after_wf_termination=137)
+        )
         result = wf.compile()
         self.assertEqual(result.retention_policy.seconds_after_wf_termination, 137)
 
