@@ -782,7 +782,7 @@ class WorkflowThread:
             raise ValueError("WfRunVariable must be VariableType.INT")
         self.add_node("sleep", SleepNode(timestamp=to_variable_assignment(timestamp)))
 
-    def with_retention_policy(self, policy: ThreadRetentionPolicy):
+    def with_retention_policy(self, policy: ThreadRetentionPolicy) -> None:
         """Sets the Retention Policy for the ThreadSpec created by this WorkflowThread.
 
         Args:
