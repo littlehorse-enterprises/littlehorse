@@ -461,3 +461,26 @@ func TestVariableAccessLevel(t *testing.T) {
 	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PUBLIC_VAR)
 	assert.Equal(t, varDef.VarDef.Name, "default-access")
 }
+
+func TestRetentionPolicy(t *testing.T) {
+	wf:= wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+
+		t.WithRetentionPolicy(&model.ThreadRetentionPolicy{
+			ThreadGcPolicy: &model.ThreadRetentionPolicy_SecondsAfterThreadTermination{
+				SecondsAfterThreadTermination: 137,
+			},
+		})
+
+		t.Execute("some-task")
+	}, "my-workflow").WithRetentionPolicy(&model.WorkflowRetentionPolicy{
+		WfGcPolicy: &model.WorkflowRetentionPolicy_SecondsAfterWfTermination{
+			SecondsAfterWfTermination: 10,
+		},
+	})
+
+	putWf, _ := wf.Compile()
+	assert.Equal(t, int(putWf.RetentionPolicy.GetSecondsAfterWfTermination()), int(10))
+
+	thread := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	assert.Equal(t, int(thread.RetentionPolicy.GetSecondsAfterThreadTermination()), int(137))
+}

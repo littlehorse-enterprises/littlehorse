@@ -48,6 +48,7 @@ from littlehorse.model.wf_spec_pb2 import (
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
+    ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
     UserTaskNode,
@@ -55,6 +56,7 @@ from littlehorse.model.wf_spec_pb2 import (
     FailureHandlerDef,
     WfSpec,
     WfRunVariableAccessLevel,
+    WorkflowRetentionPolicy,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -631,6 +633,7 @@ class WorkflowThread:
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
         self._last_node_condition: EdgeCondition | None = None
+        self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
             raise ValueError("Workflow must be not None")
@@ -779,6 +782,14 @@ class WorkflowThread:
             raise ValueError("WfRunVariable must be VariableType.INT")
         self.add_node("sleep", SleepNode(timestamp=to_variable_assignment(timestamp)))
 
+    def with_retention_policy(self, policy: ThreadRetentionPolicy) -> None:
+        """Sets the Retention Policy for the ThreadSpec created by this WorkflowThread.
+
+        Args:
+            policy (ThreadRetentionPolicy): the retention policy to set.
+        """
+        self._retention_policy = policy
+
     def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
         """Registers an Interrupt Handler, such that when an ExternalEvent
         arrives with the specified type, this ThreadRun is interrupted.
@@ -822,7 +833,10 @@ class WorkflowThread:
             interruption.compile() for interruption in self._wf_interruptions
         ]
         return ThreadSpec(
-            variable_defs=variable_defs, nodes=nodes, interrupt_defs=interruptions
+            variable_defs=variable_defs,
+            nodes=nodes,
+            interrupt_defs=interruptions,
+            retention_policy=self._retention_policy,
         )
 
     def __str__(self) -> str:
@@ -1441,6 +1455,7 @@ class Workflow:
         self._builders: list[WorkflowThread] = []
         self._allowed_updates: Optional[AllowedUpdateType] = None
         self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
+        self._retention_policy: Optional[WorkflowRetentionPolicy] = None
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -1508,7 +1523,11 @@ class Workflow:
             thread_specs=thread_specs,
             allowed_updates=self._allowed_updates,
             parent_wf_spec=self._parent_wf,
+            retention_policy=self._retention_policy,
         )
+
+    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> None:
+        self._retention_policy = policy
 
 
 def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
