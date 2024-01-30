@@ -139,6 +139,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
                 ("grpc.keepalive_permit_without_calls", True),
+                ("grpc.http2.max_pings_without_data", 0),
             ],
         )
 
@@ -152,6 +153,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
                 ("grpc.keepalive_permit_without_calls", True),
+                ("grpc.http2.max_pings_without_data", 0),
             ],
         )
 
@@ -168,6 +170,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
                 ("grpc.keepalive_permit_without_calls", True),
+                ("grpc.http2.max_pings_without_data", 0),
             ],
         )
 
@@ -186,6 +189,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
                 ("grpc.keepalive_permit_without_calls", True),
+                ("grpc.http2.max_pings_without_data", 0),
             ],
         )
 
@@ -209,6 +213,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
                 ("grpc.keepalive_permit_without_calls", True),
+                ("grpc.http2.max_pings_without_data", 0),
             ],
         )
 

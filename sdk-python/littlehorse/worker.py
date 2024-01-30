@@ -402,28 +402,28 @@ class LHLivenessController:
     def __init__(self, timeout_millis: int) -> None:
         self.timeout_millis = timeout_millis
         self.running = True
-        self.failure_ocurred_at: Optional[datetime] = None
+        self.failure_occurred_at: Optional[datetime] = None
         self.cluster_healthy = True
 
     def notify_call_failure(self) -> None:
-        if self.failure_ocurred_at is None:
-            self.failure_ocurred_at = datetime.now()
+        if self.failure_occurred_at is None:
+            self.failure_occurred_at = datetime.now()
 
     def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
         if reply.HasField("is_cluster_healthy"):
             self.cluster_healthy = reply.is_cluster_healthy
-        self.failure_ocurred_at = None
+        self.failure_occurred_at = None
 
     def was_failure_notified(self) -> bool:
-        return self.failure_ocurred_at is not None
+        return self.failure_occurred_at is not None
 
     def keep_worker_running(self) -> bool:
         if not self.running:
             return False
 
-        if self.failure_ocurred_at is not None:
+        if self.failure_occurred_at is not None:
             self.running = datetime.now() < (
-                self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis)
+                self.failure_occurred_at + timedelta(milliseconds=self.timeout_millis)
             )
             return self.running
         return True
