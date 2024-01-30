@@ -9,7 +9,7 @@ permissions:
       contents: read
 jobs:
   publish-docker:
-    uses: ./.github/workflows/publish-docker.yaml
+    uses: ./.github/workflows/publish-docker.yml
 
   sdk-java:
     runs-on: ubuntu-latest
