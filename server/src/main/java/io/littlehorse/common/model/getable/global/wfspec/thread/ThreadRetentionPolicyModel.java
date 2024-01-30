@@ -69,7 +69,7 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
         }
         Date threadEndTime = thread.getEndTime();
         if (threadEndTime != null && getScheduledTerminationFor(threadEndTime) != null) {
-            return new Date().after(getScheduledTerminationFor(threadEndTime));
+            return !(new Date().before(getScheduledTerminationFor(threadEndTime)));
         }
         return false;
     }

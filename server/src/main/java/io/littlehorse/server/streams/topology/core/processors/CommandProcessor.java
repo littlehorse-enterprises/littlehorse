@@ -110,7 +110,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 server.onResponseReceived(command.getCommandId(), cmdReply);
             }
         } catch (Exception exn) {
-            if (isUserError(exn)) {
+            if (LHUtil.isUserError(exn)) {
                 StatusRuntimeException sre = (StatusRuntimeException) exn;
                 log.debug(
                         "Caught exception processing {}:\nStatus: {}\nDescription: {}\nCause: {}",
@@ -137,36 +137,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         Command commandToProcess = commandRecord.value();
         return new ProcessorExecutionContext(
                 commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
-    }
-
-    private boolean isUserError(Exception exn) {
-        if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
-            StatusRuntimeException sre = (StatusRuntimeException) exn;
-
-            switch (sre.getStatus().getCode()) {
-                case NOT_FOUND,
-                        INVALID_ARGUMENT,
-                        ALREADY_EXISTS,
-                        OUT_OF_RANGE,
-                        PERMISSION_DENIED,
-                        UNAUTHENTICATED,
-                        FAILED_PRECONDITION,
-                        // RESOURCE_EXHAUSTED used for quota violations.
-                        RESOURCE_EXHAUSTED:
-                    return true;
-
-                case OK,
-                        UNKNOWN,
-                        UNIMPLEMENTED,
-                        UNAVAILABLE,
-                        INTERNAL,
-                        DEADLINE_EXCEEDED,
-                        DATA_LOSS,
-                        ABORTED,
-                        CANCELLED:
-            }
-        }
-        return false;
     }
 
     public void onPartitionClaimed() {
