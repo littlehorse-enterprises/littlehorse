@@ -19,6 +19,11 @@ public class CanaryConfig implements Config {
         return configs;
     }
 
+    @Override
+    public String toString() {
+        return configs.toString();
+    }
+
     public KafkaAdminConfig toKafkaAdminConfig() {
         return new KafkaAdminConfig(configs);
     }
@@ -27,9 +32,8 @@ public class CanaryConfig implements Config {
         return new LittleHorseConfig(configs);
     }
 
-    @Override
-    public String toString() {
-        return configs.toString();
+    public KafkaProducerConfig toKafkaProducerConfig() {
+        return new KafkaProducerConfig(configs);
     }
 
     public String getTopicName() {
