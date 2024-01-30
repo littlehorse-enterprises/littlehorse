@@ -75,7 +75,7 @@ public abstract class PublicScanRequest<
      *                           arguments.
      */
     public String getSearchAttributeString() throws LHApiException {
-        return Tag.getAttributeString(getObjectType(), getSearchAttributes());
+        return Tag.getAttributeString(getObjectType(), getSearchAttributes()) + "/";
     }
 
     /**
