@@ -21,7 +21,6 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
@@ -110,8 +109,11 @@ public class WfRunSearchTest {
 
     @Test
     void shouldFindCompletedWorkflow() {
-        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName = context ->
-                SearchWfRunRequest.newBuilder().setWfSpecName("searchable-variable-wf").setStatus(LHStatus.COMPLETED).build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setWfSpecName("searchable-variable-wf")
+                        .setStatus(LHStatus.COMPLETED)
+                        .build();
 
         SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
 
@@ -122,14 +124,19 @@ public class WfRunSearchTest {
                 .start();
 
         List<WfRunId> results = captor.getValue().get().getResultsList();
-        List<WfRunId> matchingResults = results.stream().filter(id -> id.getId().equals(wfRunId.getId())).toList();
+        List<WfRunId> matchingResults = results.stream()
+                .filter(id -> id.getId().equals(wfRunId.getId()))
+                .toList();
         Assertions.assertThat(matchingResults).hasSize(1);
     }
 
     @Test
     void shouldNotFindCompletedWorkflowsAsRunning() {
-        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName = context ->
-                SearchWfRunRequest.newBuilder().setWfSpecName("searchable-variable-wf").setStatus(LHStatus.RUNNING).build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setWfSpecName("searchable-variable-wf")
+                        .setStatus(LHStatus.RUNNING)
+                        .build();
 
         SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
 
@@ -140,7 +147,9 @@ public class WfRunSearchTest {
                 .start();
 
         List<WfRunId> results = captor.getValue().get().getResultsList();
-        List<WfRunId> matchingResults = results.stream().filter(id -> id.getId().equals(wfRunId.getId())).toList();
+        List<WfRunId> matchingResults = results.stream()
+                .filter(id -> id.getId().equals(wfRunId.getId()))
+                .toList();
         Assertions.assertThat(matchingResults).hasSize(0);
     }
 
@@ -148,10 +157,14 @@ public class WfRunSearchTest {
     void shouldFindCompletedWorkflowsWithVariableExactlyOnce() {
         String inputVarVal = LHUtil.generateGuid();
 
-        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName = context ->
-                SearchWfRunRequest.newBuilder().setWfSpecName("searchable-variable-wf").setStatus(LHStatus.COMPLETED).addVariableFilters(
-                    VariableMatch.newBuilder().setVarName("my-var").setValue(LHLibUtil.objToVarVal(inputVarVal))
-                ).build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setWfSpecName("searchable-variable-wf")
+                        .setStatus(LHStatus.COMPLETED)
+                        .addVariableFilters(VariableMatch.newBuilder()
+                                .setVarName("my-var")
+                                .setValue(LHLibUtil.objToVarVal(inputVarVal)))
+                        .build();
 
         SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
 
@@ -162,7 +175,9 @@ public class WfRunSearchTest {
                 .start();
 
         List<WfRunId> results = captor.getValue().get().getResultsList();
-        List<WfRunId> matchingResults = results.stream().filter(id -> id.getId().equals(wfRunId.getId())).toList();
+        List<WfRunId> matchingResults = results.stream()
+                .filter(id -> id.getId().equals(wfRunId.getId()))
+                .toList();
         Assertions.assertThat(matchingResults).hasSize(1);
     }
 
@@ -170,10 +185,14 @@ public class WfRunSearchTest {
     void shouldNotFindWorkflowWithWrongVariableMatch() {
         String inputVarVal = LHUtil.generateGuid();
 
-        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName = context ->
-                SearchWfRunRequest.newBuilder().setWfSpecName("searchable-variable-wf").setStatus(LHStatus.COMPLETED).addVariableFilters(
-                    VariableMatch.newBuilder().setVarName("my-var").setValue(LHLibUtil.objToVarVal("not-the-real-input"))
-                ).build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setWfSpecName("searchable-variable-wf")
+                        .setStatus(LHStatus.COMPLETED)
+                        .addVariableFilters(VariableMatch.newBuilder()
+                                .setVarName("my-var")
+                                .setValue(LHLibUtil.objToVarVal("not-the-real-input")))
+                        .build();
 
         SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
 
@@ -184,7 +203,9 @@ public class WfRunSearchTest {
                 .start();
 
         List<WfRunId> results = captor.getValue().get().getResultsList();
-        List<WfRunId> matchingResults = results.stream().filter(id -> id.getId().equals(wfRunId.getId())).toList();
+        List<WfRunId> matchingResults = results.stream()
+                .filter(id -> id.getId().equals(wfRunId.getId()))
+                .toList();
         Assertions.assertThat(matchingResults).hasSize(0);
     }
 
@@ -192,9 +213,12 @@ public class WfRunSearchTest {
     void shouldFindVariableUsingSearchVariable() {
         String inputVarVal = LHUtil.generateGuid();
 
-        Function<TestExecutionContext, SearchVariableRequest> searchWfSpecByName = context ->
-                SearchVariableRequest.newBuilder().setWfSpecName("searchable-variable-wf").setVarName("my-var").setValue(LHLibUtil.objToVarVal("not-the-real-input"))
-                .build();
+        Function<TestExecutionContext, SearchVariableRequest> searchWfSpecByName =
+                context -> SearchVariableRequest.newBuilder()
+                        .setWfSpecName("searchable-variable-wf")
+                        .setVarName("my-var")
+                        .setValue(LHLibUtil.objToVarVal("not-the-real-input"))
+                        .build();
 
         SearchResultCaptor<VariableIdList> captor = SearchResultCaptor.of(VariableIdList.class);
 
@@ -205,9 +229,11 @@ public class WfRunSearchTest {
                 .start();
 
         List<VariableId> results = captor.getValue().get().getResultsList();
-        
-        Assertions.assertThat(results.stream().filter(id -> id.getWfRunId().getId().equals(wfRunId.getId())).toList()).hasSize(0);
 
+        Assertions.assertThat(results.stream()
+                        .filter(id -> id.getWfRunId().getId().equals(wfRunId.getId()))
+                        .toList())
+                .hasSize(0);
     }
 
     @LHWorkflow("complex-workflow")
