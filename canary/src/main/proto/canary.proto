@@ -9,10 +9,15 @@ import "google/protobuf/timestamp.proto";
 message Metric {
   google.protobuf.Timestamp time = 1;
   oneof metric {
-      DuplicatedTaskRun duplicated_task_run = 2;
+    DuplicatedTaskRun duplicated_task_run = 2;
+    TaskRunLatency task_run_latency = 3;
   }
 }
 
 message DuplicatedTaskRun {
-  string unique_task_schedule_id=1;
+  string unique_task_schedule_id = 1;
+}
+
+message TaskRunLatency {
+  int64 latency = 1;
 }

@@ -20,6 +20,7 @@ public class Main {
 
         log.info("Canary configurations: {}", config);
         log.info("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
+        log.info("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
         log.info("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
         List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap());
