@@ -18,10 +18,10 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
-        log.info("Canary configurations: {}", config);
-        log.info("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
-        log.info("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
-        log.info("LittleHorse configurations: {}", config.toLittleHorseConfig());
+        log.debug("Canary configurations: {}", config);
+        log.debug("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
+        log.debug("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
+        log.debug("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
         List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap());
 
