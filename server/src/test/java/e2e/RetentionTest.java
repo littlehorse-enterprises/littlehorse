@@ -91,7 +91,7 @@ public class RetentionTest {
     }
 
     @Test
-    void childThreadShouldGcAfterOneSecond() {
+    void childThreadShouldGcImmediately() {
         verifier.prepareRun(threadRetentionWorkflow)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
