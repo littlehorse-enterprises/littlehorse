@@ -1,5 +1,6 @@
 # Ignore everything
 *
+!canary/
 !server/
 !sdk-java/
 !sdk-go/

@@ -5,8 +5,8 @@
         </encoder>
     </appender>
 
-    <logger name="io.littlehorse.canary" level="TRACE" />
-    <logger name="io.littlehorse.sdk" level="TRACE" />
+    <logger name="io.littlehorse.canary" level="INFO" />
+    <logger name="io.littlehorse.sdk" level="INFO" />
     <logger name="org.apache.kafka" level="WARN" />
     <logger name="io.grpc" level="WARN" />
 
