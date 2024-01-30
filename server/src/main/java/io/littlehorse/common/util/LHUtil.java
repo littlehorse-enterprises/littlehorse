@@ -311,4 +311,34 @@ public class LHUtil {
             return left.equals(right);
         }
     }
+
+    public static boolean isUserError(Exception exn) {
+        if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
+            StatusRuntimeException sre = (StatusRuntimeException) exn;
+
+            switch (sre.getStatus().getCode()) {
+                case NOT_FOUND,
+                        INVALID_ARGUMENT,
+                        ALREADY_EXISTS,
+                        OUT_OF_RANGE,
+                        PERMISSION_DENIED,
+                        UNAUTHENTICATED,
+                        FAILED_PRECONDITION,
+                        // RESOURCE_EXHAUSTED used for quota violations.
+                        RESOURCE_EXHAUSTED:
+                    return true;
+
+                case OK,
+                        UNKNOWN,
+                        UNIMPLEMENTED,
+                        UNAVAILABLE,
+                        INTERNAL,
+                        DEADLINE_EXCEEDED,
+                        DATA_LOSS,
+                        ABORTED,
+                        CANCELLED:
+            }
+        }
+        return false;
+    }
 }
