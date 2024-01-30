@@ -22,6 +22,7 @@ import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
+import io.littlehorse.test.internal.step.SleepStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
 import io.littlehorse.test.internal.step.VerifyTaskRunOutputsStep;
@@ -165,6 +166,11 @@ public class WfRunVerifier extends AbstractVerifier {
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodeRunNumber)
                 .build();
+    }
+
+    public WfRunVerifier thenSleep(long millis) {
+        steps.add(new SleepStep(millis, steps.size() + 1));
+        return this;
     }
 
     public <I, O> WfRunVerifier doSearch(

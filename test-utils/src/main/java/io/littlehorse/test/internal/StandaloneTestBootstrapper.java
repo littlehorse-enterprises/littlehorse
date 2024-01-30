@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal;
 
+import com.google.protobuf.Empty;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -15,8 +16,6 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.awaitility.Awaitility;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import com.google.protobuf.Empty;
 
 public class StandaloneTestBootstrapper implements TestBootstrapper {
 
@@ -70,10 +69,13 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                 .start();
 
         // wait until the server is up
-        Awaitility.await().atMost(Duration.ofSeconds(15)).ignoreException(StatusRuntimeException.class).until(() -> {
-            client.whoami(Empty.getDefaultInstance());
-            return true;
-        });
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(15))
+                .ignoreException(StatusRuntimeException.class)
+                .until(() -> {
+                    client.whoami(Empty.getDefaultInstance());
+                    return true;
+                });
     }
 
     @Override
