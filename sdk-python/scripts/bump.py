@@ -156,7 +156,7 @@ class Bump:
             # commit changes
             self.run_command("git add --all")
             self.run_command(f"git commit -m '[skip main] New release {next_version}'")
-            self.run_command(f"git tag {next_version}")
+            self.run_command(f"git tag -m 'New release {next_version}' {next_version}")
             self.run_command("git push origin master")
             self.run_command("git push --tags")
         except Exception as e:

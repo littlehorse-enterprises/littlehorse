@@ -1,15 +1,19 @@
 package io.littlehorse.test.internal;
 
+import com.google.protobuf.Empty;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.awaitility.Awaitility;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -32,9 +36,9 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     public void setup() throws Exception {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
         kafka.start();
-        startServer();
         workerConfig = new LHConfig();
         client = workerConfig.getBlockingStub();
+        startServer();
     }
 
     private void startServer() throws Exception {
@@ -65,7 +69,13 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                 .start();
 
         // wait until the server is up
-        TimeUnit.SECONDS.sleep(10);
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(15))
+                .ignoreException(StatusRuntimeException.class)
+                .until(() -> {
+                    client.whoami(Empty.getDefaultInstance());
+                    return true;
+                });
     }
 
     @Override

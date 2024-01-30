@@ -488,7 +488,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(wfRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -502,7 +502,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(nodeRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -516,7 +516,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(taskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -530,7 +530,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(userTaskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -544,7 +544,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(variable.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -558,7 +558,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(externalEvent.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -797,7 +797,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
                 .setMinorVersion(7)
-                .setMajorVersion(0)
+                .setPatchVersion(2)
                 .build());
         ctx.onCompleted();
     }
