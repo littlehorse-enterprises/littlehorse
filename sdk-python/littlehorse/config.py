@@ -296,6 +296,7 @@ class LHConfig:
             ("grpc.keepalive_time_ms", self.grpc_keepalive_time_ms),
             ("grpc.keepalive_timeout_ms", self.grpc_keepalive_timeout_ms),
             ("grpc.keepalive_permit_without_calls", True),
+            ("grpc.http2.max_pings_without_data", 0),
         ]
 
         if async_channel:
