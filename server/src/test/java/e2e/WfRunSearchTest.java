@@ -160,7 +160,6 @@ public class WfRunSearchTest {
         Function<TestExecutionContext, SearchWfRunRequest> searchWfSpecByName =
                 context -> SearchWfRunRequest.newBuilder()
                         .setWfSpecName("searchable-variable-wf")
-                        .setStatus(LHStatus.COMPLETED)
                         .addVariableFilters(VariableMatch.newBuilder()
                                 .setVarName("my-var")
                                 .setValue(LHLibUtil.objToVarVal(inputVarVal)))
