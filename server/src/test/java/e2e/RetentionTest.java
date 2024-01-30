@@ -39,7 +39,8 @@ public class RetentionTest {
             wf.spawnThread(
                     child -> {
                         child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                                .setSecondsAfterThreadTermination(1)
+                                // To avoid sleeping in test framework, delete immediately
+                                .setSecondsAfterThreadTermination(0)
                                 .build());
                         child.waitForEvent(RETENTION_CHILD_EVENT);
                     },
@@ -47,7 +48,6 @@ public class RetentionTest {
                     null);
 
             // Wait twice so we have control and can inspect the WfRun twice.
-            wf.waitForEvent(RETENTION_PARENT_EVENT);
             wf.waitForEvent(RETENTION_PARENT_EVENT);
 
             // Ensure that the threadRunNumber for this thread is 2, not 1
@@ -97,14 +97,13 @@ public class RetentionTest {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
                 })
                 .thenSendExternalEventJsonContent(RETENTION_CHILD_EVENT, Map.of())
-                .thenSleep(1000)
-                .thenSendExternalEventJsonContent(RETENTION_PARENT_EVENT, Map.of())
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(1);
                 })
                 .thenSendExternalEventJsonContent(RETENTION_PARENT_EVENT, Map.of())
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRuns(1).getNumber()).isEqualTo(2);
+                    Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
                 })
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
