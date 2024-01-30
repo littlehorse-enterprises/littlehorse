@@ -1,10 +1,8 @@
-package io.littlehorse.common.config;
+package io.littlehorse.canary.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
-import io.littlehorse.canary.config.CanaryConfig;
-import io.littlehorse.canary.config.ConfigLoader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;

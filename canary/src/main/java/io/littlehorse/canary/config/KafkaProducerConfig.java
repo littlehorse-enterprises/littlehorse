@@ -3,19 +3,18 @@ package io.littlehorse.canary.config;
 import static java.util.Map.entry;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
-public class KafkaAdminConfig implements Config {
+public class KafkaProducerConfig implements Config {
     private final Map<String, Object> configs;
 
-    public KafkaAdminConfig(Map<String, Object> configs) {
+    public KafkaProducerConfig(Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_KAFKA_PREFIX))
                 .map(entry -> entry(entry.getKey().substring(LH_CANARY_KAFKA_PREFIX.length()), entry.getValue()))
-                .filter(entry -> AdminClientConfig.configNames().contains(entry.getKey()))
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
+                .filter(entry -> ProducerConfig.configNames().contains(entry.getKey()))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override

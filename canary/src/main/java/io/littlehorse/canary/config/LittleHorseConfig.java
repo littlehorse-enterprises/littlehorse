@@ -1,6 +1,5 @@
 package io.littlehorse.canary.config;
 
-import static io.littlehorse.canary.config.CanaryConfig.LH_CANARY_PREFIX;
 import static java.util.Map.entry;
 
 import io.littlehorse.sdk.common.config.LHConfig;

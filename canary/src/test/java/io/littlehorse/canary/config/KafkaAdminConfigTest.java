@@ -1,12 +1,13 @@
-package io.littlehorse.common.config;
+package io.littlehorse.canary.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
-import io.littlehorse.canary.config.KafkaAdminConfig;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 class KafkaAdminConfigTest {
 
     public static final String PREFIX = "lh.canary.kafka.";
@@ -19,6 +20,7 @@ class KafkaAdminConfigTest {
         KafkaAdminConfig kafkaAdminConfig = new KafkaAdminConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
+        log.info("Configs: {}", output);
 
         assertThat(output).isNotSameAs(input);
     }

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 public class CanaryConfig implements Config {
 
-    public static final String LH_CANARY_PREFIX = "lh.canary.";
     private final Map<String, Object> configs;
 
     public CanaryConfig(Map<String, Object> configs) {
@@ -34,15 +33,14 @@ public class CanaryConfig implements Config {
     }
 
     public String getTopicName() {
-        return configs.get("lh.canary.topic.name").toString();
+        return configs.get(LH_CANARY_TOPIC_NAME).toString();
     }
 
     public int getTopicPartitions() {
-        return Integer.parseInt(
-                configs.get("lh.canary.topic.creation.partitions").toString());
+        return Integer.parseInt(configs.get(LH_CANARY_TOPIC_CREATION_PARTITIONS).toString());
     }
 
     public short getTopicReplicas() {
-        return Short.parseShort(configs.get("lh.canary.topic.creation.replicas").toString());
+        return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }
 }
