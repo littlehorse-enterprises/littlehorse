@@ -902,9 +902,10 @@ public class BackendInternalComms implements Closeable {
         if (bookmark != null) {
             startKey = bookmark.getLastKey();
         } else {
+            // startKey = tagPrefixScan.getKeyPrefix() + "/";
             startKey = tagPrefixScan.getKeyPrefix();
             if (tagPrefixScan.hasEarliestCreateTime()) {
-                startKey += "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime()));
+                startKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime()));
             }
         }
         String endKey = tagPrefixScan.getKeyPrefix();
