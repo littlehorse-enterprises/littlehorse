@@ -8,7 +8,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
-import io.littlehorse.common.proto.PutTenantRequest;
+import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;

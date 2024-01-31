@@ -168,11 +168,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
    * @return The putPrincipal.
    */
-  io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal();
+  io.littlehorse.sdk.common.proto.PutPrincipalRequest getPutPrincipal();
   /**
    * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
    */
-  io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder();
+  io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder();
 
   /**
    * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
@@ -183,11 +183,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
    * @return The deletePrincipal.
    */
-  io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal();
+  io.littlehorse.sdk.common.proto.DeletePrincipalRequest getDeletePrincipal();
   /**
    * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
    */
-  io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder();
+  io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder();
 
   /**
    * <pre>
@@ -206,7 +206,7 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    * @return The putTenant.
    */
-  io.littlehorse.common.proto.PutTenantRequest getPutTenant();
+  io.littlehorse.sdk.common.proto.PutTenantRequest getPutTenant();
   /**
    * <pre>
    * TODO: DeleteTenant
@@ -214,7 +214,7 @@ public interface MetadataCommandOrBuilder extends
    *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    */
-  io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
+  io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
 
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

@@ -1596,29 +1596,29 @@ public final class LittleHorseGrpc {
     return getListWfSpecMetricsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutTenantRequest,
-      io.littlehorse.common.proto.Tenant> getPutTenantMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
+      io.littlehorse.sdk.common.proto.Tenant> getPutTenantMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "PutTenant",
-      requestType = io.littlehorse.common.proto.PutTenantRequest.class,
-      responseType = io.littlehorse.common.proto.Tenant.class,
+      requestType = io.littlehorse.sdk.common.proto.PutTenantRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.Tenant.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutTenantRequest,
-      io.littlehorse.common.proto.Tenant> getPutTenantMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.Tenant> getPutTenantMethod;
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
+      io.littlehorse.sdk.common.proto.Tenant> getPutTenantMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.Tenant> getPutTenantMethod;
     if ((getPutTenantMethod = LittleHorseGrpc.getPutTenantMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getPutTenantMethod = LittleHorseGrpc.getPutTenantMethod) == null) {
           LittleHorseGrpc.getPutTenantMethod = getPutTenantMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.Tenant>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.Tenant>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutTenant"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.Tenant.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutTenant"))
               .build();
         }
@@ -1627,29 +1627,29 @@ public final class LittleHorseGrpc {
     return getPutTenantMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutPrincipalRequest,
-      io.littlehorse.common.proto.Principal> getPutPrincipalMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest,
+      io.littlehorse.sdk.common.proto.Principal> getPutPrincipalMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "PutPrincipal",
-      requestType = io.littlehorse.common.proto.PutPrincipalRequest.class,
-      responseType = io.littlehorse.common.proto.Principal.class,
+      requestType = io.littlehorse.sdk.common.proto.PutPrincipalRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.Principal.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutPrincipalRequest,
-      io.littlehorse.common.proto.Principal> getPutPrincipalMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.Principal> getPutPrincipalMethod;
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest,
+      io.littlehorse.sdk.common.proto.Principal> getPutPrincipalMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest, io.littlehorse.sdk.common.proto.Principal> getPutPrincipalMethod;
     if ((getPutPrincipalMethod = LittleHorseGrpc.getPutPrincipalMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getPutPrincipalMethod = LittleHorseGrpc.getPutPrincipalMethod) == null) {
           LittleHorseGrpc.getPutPrincipalMethod = getPutPrincipalMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.Principal>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutPrincipalRequest, io.littlehorse.sdk.common.proto.Principal>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutPrincipal"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.Principal.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.Principal.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutPrincipal"))
               .build();
         }
@@ -1659,28 +1659,28 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.common.proto.Principal> getWhoamiMethod;
+      io.littlehorse.sdk.common.proto.Principal> getWhoamiMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Whoami",
       requestType = com.google.protobuf.Empty.class,
-      responseType = io.littlehorse.common.proto.Principal.class,
+      responseType = io.littlehorse.sdk.common.proto.Principal.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.common.proto.Principal> getWhoamiMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.common.proto.Principal> getWhoamiMethod;
+      io.littlehorse.sdk.common.proto.Principal> getWhoamiMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.Principal> getWhoamiMethod;
     if ((getWhoamiMethod = LittleHorseGrpc.getWhoamiMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getWhoamiMethod = LittleHorseGrpc.getWhoamiMethod) == null) {
           LittleHorseGrpc.getWhoamiMethod = getWhoamiMethod =
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.common.proto.Principal>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.Principal>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Whoami"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.Principal.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.Principal.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("Whoami"))
               .build();
         }
@@ -2314,8 +2314,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
      */
-    default void putTenant(io.littlehorse.common.proto.PutTenantRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Tenant> responseObserver) {
+    default void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutTenantMethod(), responseObserver);
     }
 
@@ -2324,8 +2324,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
      */
-    default void putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+    default void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutPrincipalMethod(), responseObserver);
     }
 
@@ -2335,7 +2335,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     default void whoami(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWhoamiMethod(), responseObserver);
     }
 
@@ -2974,8 +2974,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
      */
-    public void putTenant(io.littlehorse.common.proto.PutTenantRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Tenant> responseObserver) {
+    public void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutTenantMethod(), getCallOptions()), request, responseObserver);
     }
@@ -2985,8 +2985,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
      */
-    public void putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+    public void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutPrincipalMethod(), getCallOptions()), request, responseObserver);
     }
@@ -2997,7 +2997,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     public void whoami(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWhoamiMethod(), getCallOptions()), request, responseObserver);
     }
@@ -3565,7 +3565,7 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
      */
-    public io.littlehorse.common.proto.Tenant putTenant(io.littlehorse.common.proto.PutTenantRequest request) {
+    public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutTenantMethod(), getCallOptions(), request);
     }
@@ -3575,7 +3575,7 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
      */
-    public io.littlehorse.common.proto.Principal putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request) {
+    public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutPrincipalMethod(), getCallOptions(), request);
     }
@@ -3585,7 +3585,7 @@ public final class LittleHorseGrpc {
      * Returns the Principal of the caller.
      * </pre>
      */
-    public io.littlehorse.common.proto.Principal whoami(com.google.protobuf.Empty request) {
+    public io.littlehorse.sdk.common.proto.Principal whoami(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWhoamiMethod(), getCallOptions(), request);
     }
@@ -4202,8 +4202,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Tenant> putTenant(
-        io.littlehorse.common.proto.PutTenantRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> putTenant(
+        io.littlehorse.sdk.common.proto.PutTenantRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutTenantMethod(), getCallOptions()), request);
     }
@@ -4213,8 +4213,8 @@ public final class LittleHorseGrpc {
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Principal> putPrincipal(
-        io.littlehorse.common.proto.PutPrincipalRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> putPrincipal(
+        io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutPrincipalMethod(), getCallOptions()), request);
     }
@@ -4224,7 +4224,7 @@ public final class LittleHorseGrpc {
      * Returns the Principal of the caller.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Principal> whoami(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> whoami(
         com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getWhoamiMethod(), getCallOptions()), request);
@@ -4516,16 +4516,16 @@ public final class LittleHorseGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse>) responseObserver);
           break;
         case METHODID_PUT_TENANT:
-          serviceImpl.putTenant((io.littlehorse.common.proto.PutTenantRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Tenant>) responseObserver);
+          serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
           break;
         case METHODID_PUT_PRINCIPAL:
-          serviceImpl.putPrincipal((io.littlehorse.common.proto.PutPrincipalRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal>) responseObserver);
+          serviceImpl.putPrincipal((io.littlehorse.sdk.common.proto.PutPrincipalRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal>) responseObserver);
           break;
         case METHODID_WHOAMI:
           serviceImpl.whoami((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal>) responseObserver);
           break;
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
@@ -4913,22 +4913,22 @@ public final class LittleHorseGrpc {
           getPutTenantMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.PutTenantRequest,
-              io.littlehorse.common.proto.Tenant>(
+              io.littlehorse.sdk.common.proto.PutTenantRequest,
+              io.littlehorse.sdk.common.proto.Tenant>(
                 service, METHODID_PUT_TENANT)))
         .addMethod(
           getPutPrincipalMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.PutPrincipalRequest,
-              io.littlehorse.common.proto.Principal>(
+              io.littlehorse.sdk.common.proto.PutPrincipalRequest,
+              io.littlehorse.sdk.common.proto.Principal>(
                 service, METHODID_PUT_PRINCIPAL)))
         .addMethod(
           getWhoamiMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.google.protobuf.Empty,
-              io.littlehorse.common.proto.Principal>(
+              io.littlehorse.sdk.common.proto.Principal>(
                 service, METHODID_WHOAMI)))
         .addMethod(
           getGetServerVersionMethod(),
