@@ -2,9 +2,9 @@ package io.littlehorse.canary.aggregator;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.canary.Bootstrap;
-import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.StreamTopologyFailure;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -19,7 +19,14 @@ import org.apache.kafka.streams.kstream.KStream;
 public class AggregatorBootstrap implements Bootstrap {
 
     private static final Consumed<String, Bytes> SERDES = Consumed.with(Serdes.String(), Serdes.Bytes());
-    private KafkaStreams kafkaStreams;
+    private final KafkaStreams kafkaStreams;
+
+    public AggregatorBootstrap(String topicName, Map<String, Object> kafkaStreamsConfigMap) {
+        kafkaStreams = new KafkaStreams(buildTopology(topicName), new StreamsConfig(kafkaStreamsConfigMap));
+        kafkaStreams.start();
+
+        log.trace("Initialized");
+    }
 
     private static Metric toMetric(Bytes value) {
         try {
@@ -32,30 +39,18 @@ public class AggregatorBootstrap implements Bootstrap {
         }
     }
 
-    private Topology buildTopology(CanaryConfig config) {
+    private Topology buildTopology(String topicName) {
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<String, Metric> metricStream =
-                builder.stream(config.getTopicName(), SERDES).mapValues(AggregatorBootstrap::toMetric);
+                builder.stream(topicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
 
         return builder.build();
     }
 
     @Override
-    public void initialize(CanaryConfig config) {
-        kafkaStreams = new KafkaStreams(
-                buildTopology(config),
-                new StreamsConfig(config.toKafkaStreamsConfig().toMap()));
-        kafkaStreams.start();
-
-        log.trace("Initialized");
-    }
-
-    @Override
     public void shutdown() {
-        if (kafkaStreams != null) {
-            kafkaStreams.close();
-        }
+        kafkaStreams.close();
         log.trace("Shutdown");
     }
 }

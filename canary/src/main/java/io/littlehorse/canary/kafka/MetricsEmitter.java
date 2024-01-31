@@ -1,9 +1,9 @@
 package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.CanaryException;
-import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.proto.Metric;
 import java.io.Closeable;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +16,16 @@ import org.apache.kafka.common.utils.Bytes;
 @Slf4j
 public class MetricsEmitter implements Closeable {
 
-    private final CanaryConfig config;
     private final Producer<String, Bytes> producer;
+    private final String topicName;
 
-    public MetricsEmitter(CanaryConfig config) {
-        this.config = config;
-        this.producer = new KafkaProducer<>(config.toKafkaProducerConfig().toMap());
+    public MetricsEmitter(String topicName, Map<String, Object> kafkaProducerConfigMap) {
+        this.producer = new KafkaProducer<>(kafkaProducerConfigMap);
+        this.topicName = topicName;
     }
 
     public Future<RecordMetadata> future(String key, Metric metric) {
-        ProducerRecord<String, Bytes> record =
-                new ProducerRecord<>(config.getTopicName(), key, Bytes.wrap(metric.toByteArray()));
+        ProducerRecord<String, Bytes> record = new ProducerRecord<>(topicName, key, Bytes.wrap(metric.toByteArray()));
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
@@ -37,9 +36,9 @@ public class MetricsEmitter implements Closeable {
         });
     }
 
-    public RecordMetadata emit(String key, Metric metric) {
+    public void emit(String key, Metric metric) {
         try {
-            return future(key, metric).get();
+            future(key, metric).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new CanaryException(e);
         }
