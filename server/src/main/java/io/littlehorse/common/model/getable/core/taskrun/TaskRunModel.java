@@ -14,7 +14,6 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -283,9 +282,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         processorContext
                 .getableUpdates()
                 .dispatch(GetableUpdates.create(
-                        taskDefId,
-                        new TenantIdModel(processorContext.authorization().tenantId()),
-                        previousStatus,
-                        newStatus));
+                        taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
     }
 }

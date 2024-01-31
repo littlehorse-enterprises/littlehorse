@@ -24,6 +24,7 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
@@ -966,7 +967,7 @@ public class BackendInternalComms implements Closeable {
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
             return clusterStore.range(startKey, endKey, Tag.class);
         } else {
-            String currentTenantId = executionContext().authorization().tenantId();
+            TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
                     ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
             return tenantStore.range(startKey, endKey, Tag.class);
@@ -981,7 +982,7 @@ public class BackendInternalComms implements Closeable {
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
             return clusterStore.range(startKey, endKey, StoredGetable.class);
         } else {
-            String currentTenantId = executionContext().authorization().tenantId();
+            TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
                     ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
             return tenantStore.range(startKey, endKey, StoredGetable.class);

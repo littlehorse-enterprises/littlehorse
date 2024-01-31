@@ -3,6 +3,8 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
@@ -73,7 +75,7 @@ public class MetadataCommandExecution implements ExecutionContext {
         return processorContext.getStateStore(ServerTopology.METADATA_STORE);
     }
 
-    private AuthorizationContext authContextFor(String tenantId, String principalId) {
+    private AuthorizationContext authContextFor(TenantIdModel tenantId, PrincipalIdModel principalId) {
         // We will need to pass list of acls and isAdmin argument in order to implement
         // fine-grained authorization
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);

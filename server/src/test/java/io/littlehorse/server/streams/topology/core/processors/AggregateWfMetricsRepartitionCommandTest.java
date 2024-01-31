@@ -69,8 +69,8 @@ public class AggregateWfMetricsRepartitionCommandTest {
     private final MockProcessorContext<Void, Void> mockProcessorContext = new MockProcessorContext<>();
 
     private RepartitionCommandProcessor commandProcessor;
-    private TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, LHConstants.DEFAULT_TENANT, executionContext);
+    private TenantScopedStore defaultStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
 
     @BeforeEach
     public void setup() {

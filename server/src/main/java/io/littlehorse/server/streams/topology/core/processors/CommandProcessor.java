@@ -8,6 +8,7 @@ import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
@@ -206,7 +207,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 cpo.partitionKey,
                 cpo,
                 System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));
+                // NOT SURE IF THIS SHOULD BE DEFAULT/ANONYMOUS.
+                // I think we should mark it as "cluster-scoped" and by the "internal system" not any external
+                // principal.
+                HeadersUtil.metadataHeadersFor(
+                        new TenantIdModel(LHConstants.DEFAULT_TENANT),
+                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }

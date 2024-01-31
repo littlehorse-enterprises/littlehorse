@@ -6,6 +6,8 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.BulkUpdateJob;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -39,7 +41,9 @@ public class BulkUpdateJobTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
     private final TestProcessorExecutionContext testProcessorContext = TestProcessorExecutionContext.create(
             command,
-            HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL),
+            HeadersUtil.metadataHeadersFor(
+                    new TenantIdModel(LHConstants.DEFAULT_TENANT),
+                    new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)),
             mockProcessor);
     private final GetableManager getableManager = testProcessorContext.getableManager();
 

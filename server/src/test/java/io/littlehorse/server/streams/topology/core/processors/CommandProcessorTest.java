@@ -67,8 +67,8 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, LHConstants.DEFAULT_TENANT, executionContext);
+    private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 

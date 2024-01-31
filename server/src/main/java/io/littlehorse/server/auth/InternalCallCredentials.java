@@ -20,8 +20,11 @@ public class InternalCallCredentials extends CallCredentials {
     public void applyRequestMetadata(RequestInfo requestInfo, Executor appExecutor, MetadataApplier metadataApplier) {
         appExecutor.execute(() -> {
             Metadata metadataToPropagate = new Metadata();
-            metadataToPropagate.put(RequestAuthorizer.TENANT_ID, currentAuthorization.tenantId());
-            metadataToPropagate.put(RequestAuthorizer.CLIENT_ID, currentAuthorization.principalId());
+            metadataToPropagate.put(
+                    RequestAuthorizer.TENANT_ID, currentAuthorization.tenantId().toString());
+            metadataToPropagate.put(
+                    RequestAuthorizer.CLIENT_ID,
+                    currentAuthorization.principalId().toString());
             try {
                 metadataApplier.apply(metadataToPropagate);
             } catch (Exception ex) {

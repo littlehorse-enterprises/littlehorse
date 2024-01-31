@@ -6,6 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -21,8 +23,8 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     public String topic;
     public String key;
     public byte[] payload;
-    private String tenantId;
-    private String principalId;
+    private TenantIdModel tenantId;
+    private PrincipalIdModel principalId;
 
     public LHTimer() {}
 
@@ -42,8 +44,21 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         topic = p.getTopic();
         key = p.getKey();
         payload = p.getPayload().toByteArray();
-        principalId = p.hasPrincipalId() ? p.getPrincipalId() : LHConstants.ANONYMOUS_PRINCIPAL;
-        tenantId = p.hasTenantId() ? p.getTenantId() : LHConstants.DEFAULT_TENANT;
+
+        if (p.hasPrincipalId()) {
+            principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
+        } else {
+            // TODO: We need to introduce some internal principal which says "this is done by the
+            // internal system" which is DIFFERENT FROM the `anonymous` principal
+            principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
+        }
+
+        if (p.hasTenantId()) {
+            tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
+        } else {
+            // TODO: not all timers will belong to a tenant. This logic should change to
+            tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
+        }
     }
 
     public LHTimerPb.Builder toProto() {
@@ -52,8 +67,8 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
                 .setKey(key)
                 .setTopic(topic)
                 .setPayload(ByteString.copyFrom(payload))
-                .setPrincipalId(principalId)
-                .setTenantId(tenantId);
+                .setPrincipalId(principalId.toProto()) // TODO: allow nulls
+                .setTenantId(tenantId.toProto()); // TODO: Allow nulls
 
         return out;
     }

@@ -35,6 +35,7 @@ public class TestContext {
 
     private final LHConfig config;
     private final LittleHorseBlockingStub lhClient;
+    private final LittleHorseBlockingStub anonymousClient;
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
 
@@ -47,6 +48,7 @@ public class TestContext {
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
+        this.anonymousClient = bootstrapper.getAnonymousClient();
         this.wfSpecStoreLock = new ReentrantLock();
     }
 
@@ -192,6 +194,10 @@ public class TestContext {
 
     public LittleHorseBlockingStub getLhClient() {
         return lhClient;
+    }
+
+    public LittleHorseBlockingStub getAnonymousClient() {
+        return anonymousClient;
     }
 
     public LHConfig getConfig() {

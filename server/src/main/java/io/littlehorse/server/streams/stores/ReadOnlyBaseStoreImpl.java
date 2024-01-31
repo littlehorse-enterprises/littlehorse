@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.stores;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -24,13 +25,15 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Getter
-    protected final String tenantId;
+    protected final TenantIdModel tenantId;
 
     protected final ExecutionContext executionContext;
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
     ReadOnlyBaseStoreImpl(
-            ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext executionContext) {
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore,
+            TenantIdModel tenantId,
+            ExecutionContext executionContext) {
 
         if (nativeStore == null) {
             throw new NullPointerException();
@@ -119,6 +122,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     }
 
     protected String maybeAddTenantPrefix(String key) {
-        return tenantId == null ? key : tenantId + "/" + key;
+        return tenantId == null ? key : tenantId.toString() + "/" + key;
     }
 }

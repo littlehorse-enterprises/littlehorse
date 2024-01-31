@@ -96,14 +96,14 @@ public class WfService {
         return metadataManager.get(id);
     }
 
-    public PrincipalModel getPrincipal(String id) {
+    public PrincipalModel getPrincipal(PrincipalIdModel id) {
         if (id == null) {
-            id = LHConstants.ANONYMOUS_PRINCIPAL;
+            id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
-        PrincipalModel storedResult = metadataManager.get(new PrincipalIdModel(id));
+        PrincipalModel storedResult = metadataManager.get(id);
 
-        if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
+        if (storedResult == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // This means that all of the following are true:
             // - The `anonymous` Principal has not yet been modified by the customer.
             // - We just implicitly create it.
@@ -121,7 +121,7 @@ public class WfService {
         acls.getAcls().add(new ServerACLModel(allResources, allActions));
 
         PrincipalModel out = new PrincipalModel();
-        out.setId(LHConstants.ANONYMOUS_PRINCIPAL);
+        out.setId(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
         out.setGlobalAcls(acls);
         return out;
     }

@@ -77,7 +77,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
 
         PrincipalModel toSave = new PrincipalModel();
-        toSave.setId(id);
+        toSave.setId(new PrincipalIdModel(id));
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
