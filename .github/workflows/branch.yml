@@ -38,7 +38,7 @@ jobs:
           name: server-jar
           path: server/build/libs/server-*-all.jar
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-server
@@ -66,7 +66,7 @@ jobs:
           name: canary-jar
           path: canary/build/libs/canary-*-all.jar
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-canary
@@ -97,7 +97,7 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-dashboard
@@ -136,7 +136,7 @@ jobs:
           name: server-jar
           path: server/build/libs/
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-standalone
