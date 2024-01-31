@@ -90,7 +90,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
         // wait until the server is up
         Awaitility.await()
-                .atMost(Duration.ofSeconds(15))
+                .atMost(Duration.ofSeconds(30))
                 .ignoreException(StatusRuntimeException.class)
                 .until(() -> {
                     client.whoami(Empty.getDefaultInstance());
