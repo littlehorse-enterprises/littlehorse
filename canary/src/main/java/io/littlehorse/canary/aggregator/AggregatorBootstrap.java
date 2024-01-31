@@ -1,7 +1,7 @@
 package io.littlehorse.canary.aggregator;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.littlehorse.canary.app.Bootstrap;
+import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.StreamTopologyFailure;

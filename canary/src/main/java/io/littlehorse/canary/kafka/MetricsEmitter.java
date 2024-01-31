@@ -1,5 +1,6 @@
 package io.littlehorse.canary.kafka;
 
+import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.proto.Metric;
 import java.io.Closeable;
@@ -40,7 +41,7 @@ public class MetricsEmitter implements Closeable {
         try {
             return future(key, metric).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new MetricsEmitterException(e);
+            throw new CanaryException(e);
         }
     }
 

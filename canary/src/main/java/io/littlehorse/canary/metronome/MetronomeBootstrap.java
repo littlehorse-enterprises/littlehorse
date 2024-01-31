@@ -1,6 +1,6 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.app.Bootstrap;
+import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 
 public class MetronomeBootstrap implements Bootstrap {

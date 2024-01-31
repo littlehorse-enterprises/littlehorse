@@ -2,7 +2,6 @@ package io.littlehorse.canary;
 
 import com.google.common.collect.Lists;
 import io.littlehorse.canary.aggregator.AggregatorBootstrap;
-import io.littlehorse.canary.app.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaBootstrap;

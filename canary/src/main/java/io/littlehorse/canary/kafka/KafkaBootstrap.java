@@ -1,7 +1,7 @@
 package io.littlehorse.canary.kafka;
 
-import io.littlehorse.canary.app.Bootstrap;
-import io.littlehorse.canary.app.InitializationException;
+import io.littlehorse.canary.Bootstrap;
+import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.config.CanaryConfig;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class KafkaBootstrap implements Bootstrap {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());
             } else {
-                throw new InitializationException(e);
+                throw new CanaryException(e);
             }
         }
         log.trace("Initialized");

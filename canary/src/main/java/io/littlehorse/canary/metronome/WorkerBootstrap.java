@@ -1,7 +1,7 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.app.Bootstrap;
-import io.littlehorse.canary.app.InitializationException;
+import io.littlehorse.canary.Bootstrap;
+import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.kafka.MetricsEmitter;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -25,7 +25,7 @@ public class WorkerBootstrap implements Bootstrap {
         try {
             workflow.registerWfSpec(lhConfig.getBlockingStub());
         } catch (IOException e) {
-            throw new InitializationException(e);
+            throw new CanaryException(e);
         }
     }
 
@@ -36,7 +36,7 @@ public class WorkerBootstrap implements Bootstrap {
             worker.registerTaskDef();
             worker.start();
         } catch (IOException e) {
-            throw new InitializationException(e);
+            throw new CanaryException(e);
         }
     }
 

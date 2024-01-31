@@ -1,4 +1,4 @@
-package io.littlehorse.canary.app;
+package io.littlehorse.canary;
 
 import io.littlehorse.canary.config.CanaryConfig;
 
