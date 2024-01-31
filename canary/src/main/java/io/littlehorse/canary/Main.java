@@ -6,9 +6,11 @@ import io.littlehorse.canary.app.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaBootstrap;
+import io.littlehorse.canary.metronome.MetronomeBootstrap;
 import io.littlehorse.canary.metronome.WorkerBootstrap;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ public class Main {
         log.debug("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
         log.debug("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
-        List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap(), new AggregatorBootstrap());
+        List<Bootstrap> bootstraps = getBootstraps(config);
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -45,5 +47,22 @@ public class Main {
         log.info("Started");
         latch.await();
         log.info("Stopped");
+    }
+
+    private static List<Bootstrap> getBootstraps(CanaryConfig config) {
+        List<Bootstrap> bootstraps = new ArrayList<>();
+
+        bootstraps.add(new KafkaBootstrap());
+
+        if (config.isMetronomeEnabled()) {
+            bootstraps.add(new WorkerBootstrap());
+            bootstraps.add(new MetronomeBootstrap());
+        }
+
+        if (config.isAggregatorEnabled()) {
+            bootstraps.add(new AggregatorBootstrap());
+        }
+
+        return bootstraps;
     }
 }

@@ -36,6 +36,10 @@ public class CanaryConfig implements Config {
         return new KafkaProducerConfig(configs);
     }
 
+    public KafkaStreamsConfig toKafkaStreamsConfig() {
+        return new KafkaStreamsConfig(configs);
+    }
+
     public String getTopicName() {
         return configs.get(LH_CANARY_TOPIC_NAME).toString();
     }
@@ -48,7 +52,11 @@ public class CanaryConfig implements Config {
         return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }
 
-    public KafkaStreamsConfig toKafkaStreamsConfig() {
-        return new KafkaStreamsConfig(configs);
+    public boolean isMetronomeEnabled() {
+        return Boolean.parseBoolean(configs.get(LH_CANARY_METRONOME_ENABLE).toString());
+    }
+
+    public boolean isAggregatorEnabled() {
+        return Boolean.parseBoolean(configs.get(LH_CANARY_AGGREGATOR_ENABLE).toString());
     }
 }
