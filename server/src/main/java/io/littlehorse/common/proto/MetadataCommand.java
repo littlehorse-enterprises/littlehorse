@@ -439,21 +439,21 @@ private static final long serialVersionUID = 0L;
    * @return The putPrincipal.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal() {
+  public io.littlehorse.sdk.common.proto.PutPrincipalRequest getPutPrincipal() {
     if (metadataCommandCase_ == 12) {
-       return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
   }
   /**
    * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
     if (metadataCommandCase_ == 12) {
-       return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
   }
 
   public static final int DELETE_PRINCIPAL_FIELD_NUMBER = 13;
@@ -470,21 +470,21 @@ private static final long serialVersionUID = 0L;
    * @return The deletePrincipal.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal() {
+  public io.littlehorse.sdk.common.proto.DeletePrincipalRequest getDeletePrincipal() {
     if (metadataCommandCase_ == 13) {
-       return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
   }
   /**
    * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
     if (metadataCommandCase_ == 13) {
-       return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
   }
 
   public static final int PUT_TENANT_FIELD_NUMBER = 14;
@@ -509,11 +509,11 @@ private static final long serialVersionUID = 0L;
    * @return The putTenant.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutTenantRequest getPutTenant() {
+  public io.littlehorse.sdk.common.proto.PutTenantRequest getPutTenant() {
     if (metadataCommandCase_ == 14) {
-       return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
   }
   /**
    * <pre>
@@ -523,11 +523,11 @@ private static final long serialVersionUID = 0L;
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
     if (metadataCommandCase_ == 14) {
-       return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+       return (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_;
     }
-    return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -575,13 +575,13 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 12) {
-      output.writeMessage(12, (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_);
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 13) {
-      output.writeMessage(13, (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_);
+      output.writeMessage(13, (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 14) {
-      output.writeMessage(14, (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_);
+      output.writeMessage(14, (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -633,15 +633,15 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(12, (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_);
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 13) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(13, (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_);
+        .computeMessageSize(13, (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 14) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(14, (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_);
+        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -2639,7 +2639,7 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder> putPrincipalBuilder_;
+        io.littlehorse.sdk.common.proto.PutPrincipalRequest, io.littlehorse.sdk.common.proto.PutPrincipalRequest.Builder, io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder> putPrincipalBuilder_;
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      * @return Whether the putPrincipal field is set.
@@ -2653,23 +2653,23 @@ private static final long serialVersionUID = 0L;
      * @return The putPrincipal.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal() {
+    public io.littlehorse.sdk.common.proto.PutPrincipalRequest getPutPrincipal() {
       if (putPrincipalBuilder_ == null) {
         if (metadataCommandCase_ == 12) {
-          return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
       } else {
         if (metadataCommandCase_ == 12) {
           return putPrincipalBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
-    public Builder setPutPrincipal(io.littlehorse.common.proto.PutPrincipalRequest value) {
+    public Builder setPutPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest value) {
       if (putPrincipalBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2686,7 +2686,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
     public Builder setPutPrincipal(
-        io.littlehorse.common.proto.PutPrincipalRequest.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutPrincipalRequest.Builder builderForValue) {
       if (putPrincipalBuilder_ == null) {
         metadataCommand_ = builderForValue.build();
         onChanged();
@@ -2699,11 +2699,11 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
-    public Builder mergePutPrincipal(io.littlehorse.common.proto.PutPrincipalRequest value) {
+    public Builder mergePutPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest value) {
       if (putPrincipalBuilder_ == null) {
         if (metadataCommandCase_ == 12 &&
-            metadataCommand_ != io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.common.proto.PutPrincipalRequest.newBuilder((io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_)
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutPrincipalRequest.newBuilder((io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_)
               .mergeFrom(value).buildPartial();
         } else {
           metadataCommand_ = value;
@@ -2741,36 +2741,36 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
-    public io.littlehorse.common.proto.PutPrincipalRequest.Builder getPutPrincipalBuilder() {
+    public io.littlehorse.sdk.common.proto.PutPrincipalRequest.Builder getPutPrincipalBuilder() {
       return getPutPrincipalFieldBuilder().getBuilder();
     }
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
       if ((metadataCommandCase_ == 12) && (putPrincipalBuilder_ != null)) {
         return putPrincipalBuilder_.getMessageOrBuilder();
       } else {
         if (metadataCommandCase_ == 12) {
-          return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutPrincipalRequest, io.littlehorse.sdk.common.proto.PutPrincipalRequest.Builder, io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder> 
         getPutPrincipalFieldBuilder() {
       if (putPrincipalBuilder_ == null) {
         if (!(metadataCommandCase_ == 12)) {
-          metadataCommand_ = io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutPrincipalRequest.getDefaultInstance();
         }
         putPrincipalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder>(
-                (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_,
+            io.littlehorse.sdk.common.proto.PutPrincipalRequest, io.littlehorse.sdk.common.proto.PutPrincipalRequest.Builder, io.littlehorse.sdk.common.proto.PutPrincipalRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutPrincipalRequest) metadataCommand_,
                 getParentForChildren(),
                 isClean());
         metadataCommand_ = null;
@@ -2781,7 +2781,7 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder> deletePrincipalBuilder_;
+        io.littlehorse.sdk.common.proto.DeletePrincipalRequest, io.littlehorse.sdk.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder> deletePrincipalBuilder_;
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      * @return Whether the deletePrincipal field is set.
@@ -2795,23 +2795,23 @@ private static final long serialVersionUID = 0L;
      * @return The deletePrincipal.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal() {
+    public io.littlehorse.sdk.common.proto.DeletePrincipalRequest getDeletePrincipal() {
       if (deletePrincipalBuilder_ == null) {
         if (metadataCommandCase_ == 13) {
-          return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
       } else {
         if (metadataCommandCase_ == 13) {
           return deletePrincipalBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
-    public Builder setDeletePrincipal(io.littlehorse.common.proto.DeletePrincipalRequest value) {
+    public Builder setDeletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest value) {
       if (deletePrincipalBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2828,7 +2828,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
     public Builder setDeletePrincipal(
-        io.littlehorse.common.proto.DeletePrincipalRequest.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeletePrincipalRequest.Builder builderForValue) {
       if (deletePrincipalBuilder_ == null) {
         metadataCommand_ = builderForValue.build();
         onChanged();
@@ -2841,11 +2841,11 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
-    public Builder mergeDeletePrincipal(io.littlehorse.common.proto.DeletePrincipalRequest value) {
+    public Builder mergeDeletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest value) {
       if (deletePrincipalBuilder_ == null) {
         if (metadataCommandCase_ == 13 &&
-            metadataCommand_ != io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.common.proto.DeletePrincipalRequest.newBuilder((io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_)
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeletePrincipalRequest.newBuilder((io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_)
               .mergeFrom(value).buildPartial();
         } else {
           metadataCommand_ = value;
@@ -2883,36 +2883,36 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
-    public io.littlehorse.common.proto.DeletePrincipalRequest.Builder getDeletePrincipalBuilder() {
+    public io.littlehorse.sdk.common.proto.DeletePrincipalRequest.Builder getDeletePrincipalBuilder() {
       return getDeletePrincipalFieldBuilder().getBuilder();
     }
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
       if ((metadataCommandCase_ == 13) && (deletePrincipalBuilder_ != null)) {
         return deletePrincipalBuilder_.getMessageOrBuilder();
       } else {
         if (metadataCommandCase_ == 13) {
-          return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeletePrincipalRequest, io.littlehorse.sdk.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder> 
         getDeletePrincipalFieldBuilder() {
       if (deletePrincipalBuilder_ == null) {
         if (!(metadataCommandCase_ == 13)) {
-          metadataCommand_ = io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance();
         }
         deletePrincipalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder>(
-                (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_,
+            io.littlehorse.sdk.common.proto.DeletePrincipalRequest, io.littlehorse.sdk.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) metadataCommand_,
                 getParentForChildren(),
                 isClean());
         metadataCommand_ = null;
@@ -2923,7 +2923,7 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder> putTenantBuilder_;
+        io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.PutTenantRequest.Builder, io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder> putTenantBuilder_;
     /**
      * <pre>
      * TODO: DeleteTenant
@@ -2945,17 +2945,17 @@ private static final long serialVersionUID = 0L;
      * @return The putTenant.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutTenantRequest getPutTenant() {
+    public io.littlehorse.sdk.common.proto.PutTenantRequest getPutTenant() {
       if (putTenantBuilder_ == null) {
         if (metadataCommandCase_ == 14) {
-          return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
       } else {
         if (metadataCommandCase_ == 14) {
           return putTenantBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
       }
     }
     /**
@@ -2965,7 +2965,7 @@ private static final long serialVersionUID = 0L;
      *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
-    public Builder setPutTenant(io.littlehorse.common.proto.PutTenantRequest value) {
+    public Builder setPutTenant(io.littlehorse.sdk.common.proto.PutTenantRequest value) {
       if (putTenantBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2986,7 +2986,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public Builder setPutTenant(
-        io.littlehorse.common.proto.PutTenantRequest.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutTenantRequest.Builder builderForValue) {
       if (putTenantBuilder_ == null) {
         metadataCommand_ = builderForValue.build();
         onChanged();
@@ -3003,11 +3003,11 @@ private static final long serialVersionUID = 0L;
      *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
-    public Builder mergePutTenant(io.littlehorse.common.proto.PutTenantRequest value) {
+    public Builder mergePutTenant(io.littlehorse.sdk.common.proto.PutTenantRequest value) {
       if (putTenantBuilder_ == null) {
         if (metadataCommandCase_ == 14 &&
-            metadataCommand_ != io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.common.proto.PutTenantRequest.newBuilder((io.littlehorse.common.proto.PutTenantRequest) metadataCommand_)
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutTenantRequest.newBuilder((io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_)
               .mergeFrom(value).buildPartial();
         } else {
           metadataCommand_ = value;
@@ -3053,7 +3053,7 @@ private static final long serialVersionUID = 0L;
      *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
-    public io.littlehorse.common.proto.PutTenantRequest.Builder getPutTenantBuilder() {
+    public io.littlehorse.sdk.common.proto.PutTenantRequest.Builder getPutTenantBuilder() {
       return getPutTenantFieldBuilder().getBuilder();
     }
     /**
@@ -3064,14 +3064,14 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
       if ((metadataCommandCase_ == 14) && (putTenantBuilder_ != null)) {
         return putTenantBuilder_.getMessageOrBuilder();
       } else {
         if (metadataCommandCase_ == 14) {
-          return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+          return (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_;
         }
-        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
       }
     }
     /**
@@ -3082,15 +3082,15 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.PutTenantRequest.Builder, io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder> 
         getPutTenantFieldBuilder() {
       if (putTenantBuilder_ == null) {
         if (!(metadataCommandCase_ == 14)) {
-          metadataCommand_ = io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
         }
         putTenantBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder>(
-                (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_,
+            io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.PutTenantRequest.Builder, io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_,
                 getParentForChildren(),
                 isClean());
         metadataCommand_ = null;

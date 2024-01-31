@@ -753,7 +753,7 @@ public final class Service {
           io.littlehorse.sdk.common.proto.UserTasks.getDescriptor(),
           io.littlehorse.sdk.common.proto.WfSpecOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.TaskDefOuterClass.getDescriptor(),
-          io.littlehorse.common.proto.Acls.getDescriptor(),
+          io.littlehorse.sdk.common.proto.Acls.getDescriptor(),
         });
     internal_static_littlehorse_GetLatestUserTaskDefRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -1176,7 +1176,7 @@ public final class Service {
     io.littlehorse.sdk.common.proto.UserTasks.getDescriptor();
     io.littlehorse.sdk.common.proto.WfSpecOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.TaskDefOuterClass.getDescriptor();
-    io.littlehorse.common.proto.Acls.getDescriptor();
+    io.littlehorse.sdk.common.proto.Acls.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

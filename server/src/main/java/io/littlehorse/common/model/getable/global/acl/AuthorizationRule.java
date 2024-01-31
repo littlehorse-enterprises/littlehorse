@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.getable.global.acl;
 
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

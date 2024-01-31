@@ -1,7 +1,7 @@
 package io.littlehorse.server;
 
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -317,7 +317,7 @@ public final class CommandOuterClass {
           io.littlehorse.sdk.common.proto.UserTasks.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
           io.littlehorse.common.proto.Storage.getDescriptor(),
-          io.littlehorse.common.proto.Acls.getDescriptor(),
+          io.littlehorse.sdk.common.proto.Acls.getDescriptor(),
           io.littlehorse.common.proto.Job.getDescriptor(),
         });
     internal_static_littlehorse_Command_descriptor =
@@ -483,7 +483,7 @@ public final class CommandOuterClass {
     io.littlehorse.sdk.common.proto.UserTasks.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.common.proto.Storage.getDescriptor();
-    io.littlehorse.common.proto.Acls.getDescriptor();
+    io.littlehorse.sdk.common.proto.Acls.getDescriptor();
     io.littlehorse.common.proto.Job.getDescriptor();
   }
 

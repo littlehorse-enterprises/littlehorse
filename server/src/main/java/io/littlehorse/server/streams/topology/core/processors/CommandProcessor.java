@@ -15,7 +15,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
