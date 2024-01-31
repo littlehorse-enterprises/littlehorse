@@ -141,7 +141,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     public void onPartitionClaimed() {
+        if (partitionIsClaimed) {
+            throw new RuntimeException("Re-claiming partition! Yikes!");
+        }
+        partitionIsClaimed = true;
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+        rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
                 GetableClassEnum.TENANT.getNumber() + "/~",
@@ -156,11 +161,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
-        if (partitionIsClaimed) {
-            throw new RuntimeException("Re-claiming partition! Yikes!");
-        }
-        partitionIsClaimed = true;
-
         try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
