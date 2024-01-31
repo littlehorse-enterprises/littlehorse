@@ -36,7 +36,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     public void setup() throws Exception {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
         kafka.start();
-        workerConfig = new LHConfig();
+        workerConfig = new LHConfig(testClientProperties());
         client = workerConfig.getBlockingStub();
         startServer();
     }
@@ -86,5 +86,12 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     @Override
     public LittleHorseBlockingStub getLhClient() {
         return client;
+    }
+
+    private Properties testClientProperties() {
+        Properties configs = new Properties();
+        String tenantId = System.getenv().getOrDefault("LHC_TENANT_ID", "test-tenant");
+        configs.put(LHConfig.TENANT_ID_KEY, tenantId);
+        return configs;
     }
 }
