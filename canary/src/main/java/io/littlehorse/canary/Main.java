@@ -1,6 +1,7 @@
 package io.littlehorse.canary;
 
 import com.google.common.collect.Lists;
+import io.littlehorse.canary.aggregator.AggregatorBootstrap;
 import io.littlehorse.canary.app.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
@@ -21,9 +22,10 @@ public class Main {
         log.debug("Canary configurations: {}", config);
         log.debug("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
         log.debug("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
+        log.debug("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
         log.debug("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
-        List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap());
+        List<Bootstrap> bootstraps = List.of(new KafkaBootstrap(), new WorkerBootstrap(), new AggregatorBootstrap());
 
         CountDownLatch latch = new CountDownLatch(1);
 

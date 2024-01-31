@@ -47,4 +47,8 @@ public class CanaryConfig implements Config {
     public short getTopicReplicas() {
         return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }
+
+    public KafkaStreamsConfig toKafkaStreamsConfig() {
+        return new KafkaStreamsConfig(configs);
+    }
 }
