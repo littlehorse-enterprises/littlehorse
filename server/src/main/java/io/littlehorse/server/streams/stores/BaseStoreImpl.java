@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
@@ -14,7 +15,7 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
 
     private final KeyValueStore<String, Bytes> nativeStore;
 
-    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, String tenantId, ExecutionContext context) {
+    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, TenantIdModel tenantId, ExecutionContext context) {
         super(nativeStore, tenantId, context);
         this.nativeStore = nativeStore;
     }

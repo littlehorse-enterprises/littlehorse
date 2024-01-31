@@ -14,10 +14,10 @@ public interface PrincipalOrBuilder extends
    * id is retrived by looking at the Subject Name of the client certificate.
    * </pre>
    *
-   * <code>string id = 1;</code>
-   * @return The id.
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getId();
+  boolean hasId();
   /**
    * <pre>
    * Principals are agnostic of the Authentication protocol that you use. In OAuth,
@@ -25,11 +25,20 @@ public interface PrincipalOrBuilder extends
    * id is retrived by looking at the Subject Name of the client certificate.
    * </pre>
    *
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getIdBytes();
+  io.littlehorse.sdk.common.proto.PrincipalId getId();
+  /**
+   * <pre>
+   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+   * the id is retrieved by looking at the claims on the request. In mTLS, the
+   * id is retrived by looking at the Subject Name of the client certificate.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder();
 
   /**
    * <code>.google.protobuf.Timestamp created_at = 2;</code>

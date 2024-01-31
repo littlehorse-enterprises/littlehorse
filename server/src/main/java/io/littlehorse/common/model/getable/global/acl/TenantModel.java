@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -23,24 +24,28 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
-    private String id;
+    private TenantIdModel id;
     private Date createdAt;
 
     public TenantModel() {}
 
     public TenantModel(final String id) {
+        this.id = new TenantIdModel(id);
+    }
+
+    public TenantModel(final TenantIdModel id) {
         this.id = id;
     }
 
     @Override
     public Tenant.Builder toProto() {
-        return Tenant.newBuilder().setId(id).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        return Tenant.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         Tenant tenant = (Tenant) proto;
-        this.id = tenant.getId();
+        this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
     }
 
@@ -62,7 +67,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     @Override
     public TenantIdModel getObjectId() {
-        return new TenantIdModel(id);
+        return id;
     }
 
     @Override

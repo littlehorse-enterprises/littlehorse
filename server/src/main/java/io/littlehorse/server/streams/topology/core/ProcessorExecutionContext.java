@@ -6,6 +6,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -64,7 +66,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.processorContext = processorContext;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
-        String tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
                 ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
@@ -175,8 +177,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     }
 
     private AuthorizationContext authContextFor() {
-        String principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
-        String tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        PrincipalIdModel principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         // TODO: get current acls for principal and isAdmin boolean. It is required for fine-grained acls verification
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
     }

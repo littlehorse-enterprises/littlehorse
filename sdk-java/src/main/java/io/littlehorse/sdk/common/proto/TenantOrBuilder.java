@@ -8,16 +8,19 @@ public interface TenantOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string id = 1;</code>
+   * <code>.littlehorse.TenantId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <code>.littlehorse.TenantId id = 1;</code>
    * @return The id.
    */
-  java.lang.String getId();
+  io.littlehorse.sdk.common.proto.TenantId getId();
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>.littlehorse.TenantId id = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getIdBytes();
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getIdOrBuilder();
 
   /**
    * <pre>

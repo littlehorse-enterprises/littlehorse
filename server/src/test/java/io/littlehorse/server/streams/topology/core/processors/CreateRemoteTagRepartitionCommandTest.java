@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -65,11 +66,11 @@ public class CreateRemoteTagRepartitionCommandTest {
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
     private TenantScopedStore tenantAStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_A, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext);
     private TenantScopedStore tenantBStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_B, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext);
     private TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, DEFAULT_TENANT, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT), executionContext);
 
     @BeforeEach
     public void setup() {

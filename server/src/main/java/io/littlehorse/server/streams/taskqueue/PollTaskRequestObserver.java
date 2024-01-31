@@ -31,7 +31,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.taskQueueManager = manager;
         this.clientId = null;
         this.requestContext = requestContext;
-        this.tenantId = new TenantIdModel(requestContext.authorization().tenantId());
+        this.tenantId = requestContext.authorization().tenantId();
     }
 
     public String getTaskWorkerVersion() {

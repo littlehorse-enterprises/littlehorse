@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Principal() {
-    id_ = "";
   }
 
   @java.lang.Override
@@ -56,8 +55,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object id_ = "";
+  private io.littlehorse.sdk.common.proto.PrincipalId id_;
   /**
    * <pre>
    * Principals are agnostic of the Authentication protocol that you use. In OAuth,
@@ -65,21 +63,12 @@ private static final long serialVersionUID = 0L;
    * id is retrived by looking at the Subject Name of the client certificate.
    * </pre>
    *
-   * <code>string id = 1;</code>
-   * @return The id.
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getId() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      id_ = s;
-      return s;
-    }
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
    * <pre>
@@ -88,22 +77,25 @@ private static final long serialVersionUID = 0L;
    * id is retrived by looking at the Subject Name of the client certificate.
    * </pre>
    *
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getIdBytes() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      id_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.PrincipalId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
+  }
+  /**
+   * <pre>
+   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+   * the id is retrieved by looking at the claims on the request. In mTLS, the
+   * id is retrived by looking at the Subject Name of the client certificate.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
   }
 
   public static final int CREATED_AT_FIELD_NUMBER = 2;
@@ -283,8 +275,8 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
@@ -307,8 +299,9 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    if (id_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getId());
     }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -343,8 +336,11 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     io.littlehorse.sdk.common.proto.Principal other = (io.littlehorse.sdk.common.proto.Principal) obj;
 
-    if (!getId()
-        .equals(other.getId())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
@@ -368,8 +364,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
@@ -539,7 +537,11 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      id_ = "";
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -585,7 +587,9 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     private void buildPartial0(io.littlehorse.sdk.common.proto.Principal result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.id_ = id_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
@@ -647,10 +651,8 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.Principal other) {
       if (other == io.littlehorse.sdk.common.proto.Principal.getDefaultInstance()) return this;
-      if (!other.getId().isEmpty()) {
-        id_ = other.id_;
-        bitField0_ |= 0x00000001;
-        onChanged();
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
@@ -688,7 +690,9 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
               done = true;
               break;
             case 10: {
-              id_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
@@ -732,7 +736,9 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     private int bitField0_;
 
-    private java.lang.Object id_ = "";
+    private io.littlehorse.sdk.common.proto.PrincipalId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> idBuilder_;
     /**
      * <pre>
      * Principals are agnostic of the Authentication protocol that you use. In OAuth,
@@ -740,19 +746,27 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * id is retrived by looking at the Subject Name of the client certificate.
      * </pre>
      *
-     * <code>string id = 1;</code>
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     * @return Whether the id field is set.
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+     * the id is retrieved by looking at the claims on the request. In mTLS, the
+     * id is retrived by looking at the Subject Name of the client certificate.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      * @return The id.
      */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        id_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.PrincipalId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
@@ -762,21 +776,20 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * id is retrived by looking at the Subject Name of the client certificate.
      * </pre>
      *
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        id_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
     }
     /**
      * <pre>
@@ -785,14 +798,15 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * id is retrived by looking at the Subject Name of the client certificate.
      * </pre>
      *
-     * <code>string id = 1;</code>
-     * @param value The id to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
     public Builder setId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      id_ = value;
+        io.littlehorse.sdk.common.proto.PrincipalId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
@@ -804,12 +818,40 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * id is retrived by looking at the Subject Name of the client certificate.
      * </pre>
      *
-     * <code>string id = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+     * the id is retrieved by looking at the claims on the request. In mTLS, the
+     * id is retrived by looking at the Subject Name of the client certificate.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
     public Builder clearId() {
-      id_ = getDefaultInstance().getId();
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
@@ -820,18 +862,51 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * id is retrived by looking at the Subject Name of the client certificate.
      * </pre>
      *
-     * <code>string id = 1;</code>
-     * @param value The bytes for id to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
-    public Builder setIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      id_ = value;
+    public io.littlehorse.sdk.common.proto.PrincipalId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+     * the id is retrieved by looking at the claims on the request. In mTLS, the
+     * id is retrived by looking at the Subject Name of the client certificate.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <pre>
+     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
+     * the id is retrieved by looking at the claims on the request. In mTLS, the
+     * id is retrived by looking at the Subject Name of the client certificate.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
     }
 
     private com.google.protobuf.Timestamp createdAt_;

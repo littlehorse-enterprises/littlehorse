@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableList;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -116,9 +118,9 @@ public class TimerProcessorTest {
     @Test
     public void supportTimerDistinctionByTenant() {
         LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now());
-        tenantATask.setTenantId("tenantA");
+        tenantATask.setTenantId(new TenantIdModel("tenantA"));
         LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now());
-        tenantBTask.setTenantId("tenantB");
+        tenantBTask.setTenantId(new TenantIdModel("tenantB"));
         processor.process(new Record<>("my-task", tenantATask, 0L));
         processor.process(new Record<>("my-task", tenantBTask, 0L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
@@ -143,8 +145,8 @@ public class TimerProcessorTest {
         when(mockCommand.getPartitionKey()).thenReturn(partitionKey);
         LHTimer timer = new LHTimer(mockCommand);
         timer.topic = "myTopic";
-        timer.setPrincipalId("principal1");
-        timer.setTenantId("tenant1");
+        timer.setPrincipalId(new PrincipalIdModel("principal1"));
+        timer.setTenantId(new TenantIdModel("tenant1"));
         return timer;
     }
 
