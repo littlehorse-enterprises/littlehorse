@@ -31,6 +31,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final TenantScopedStore tenantMetadataStore;
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
+    private final KafkaStreamsServerImpl server;
 
     public TestProcessorExecutionContext(
             Command currentCommand,
@@ -47,6 +48,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         this.globalTaskQueueManager = globalTaskQueueManager;
 
         String tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        this.server = server;
 
         this.coreStore = TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);
