@@ -5,7 +5,6 @@ import io.javalin.http.Context;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
-import io.littlehorse.server.streams.ServerTopology;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.io.File;
@@ -15,13 +14,9 @@ import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.processor.StateRestoreListener;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
 
 @Slf4j
 public class HealthService implements Closeable, StateRestoreListener {
@@ -52,17 +47,6 @@ public class HealthService implements Closeable, StateRestoreListener {
         this.server.get(config.getLivenessPath(), this::getLiveness);
         this.server.get(config.getStatusPath(), this::getStatus);
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
-
-        this.server.get("/asdf", ctx -> {
-
-            String out = "";
-            KeyValueIterator<Object, Object> iter = coreStreams.store(StoreQueryParameters.fromNameAndType(ServerTopology.GLOBAL_METADATA_STORE, QueryableStoreTypes.keyValueStore())).all();
-            while (iter.hasNext()) {
-                out+= iter.next().key;
-                out += "\n";
-            }
-            ctx.result(out);
-        });
 
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);

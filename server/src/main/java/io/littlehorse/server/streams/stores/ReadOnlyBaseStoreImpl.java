@@ -50,7 +50,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
-        System.out.println(keyToLookFor);
+        System.out.println("Getting:" + keyToLookFor);
         Bytes raw = nativeStore.get(keyToLookFor);
 
         if (raw == null) return null;

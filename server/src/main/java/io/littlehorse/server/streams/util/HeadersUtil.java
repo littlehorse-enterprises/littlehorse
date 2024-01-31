@@ -51,8 +51,9 @@ public final class HeadersUtil {
      */
     public static Headers metadataHeadersFor(TenantIdModel tenantId, PrincipalIdModel principalId) {
         Headers metadata = new RecordHeaders();
-        metadata.add(LHConstants.TENANT_ID_HEADER_NAME, tenantId.toBytes());
-        metadata.add(LHConstants.PRINCIPAL_ID_HEADER_NAME, principalId.toBytes());
+        metadata.add(LHConstants.TENANT_ID_HEADER_NAME, tenantId.toString().getBytes());
+        metadata.add(
+                LHConstants.PRINCIPAL_ID_HEADER_NAME, principalId.toString().getBytes());
         return metadata;
     }
 

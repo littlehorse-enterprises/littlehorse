@@ -101,8 +101,10 @@ public class TimerProcessorTest {
         Record<? extends String, ? extends LHTimer> forwardedRecord =
                 forwardedRecords.get(0).record();
         Headers metadata = forwardedRecord.headers();
-        Assertions.assertThat(HeadersUtil.tenantIdFromMetadata(metadata)).isEqualTo("tenant1");
-        Assertions.assertThat(HeadersUtil.principalIdFromMetadata(metadata)).isEqualTo("principal1");
+        Assertions.assertThat(HeadersUtil.tenantIdFromMetadata(metadata).getId())
+                .isEqualTo("tenant1");
+        Assertions.assertThat(HeadersUtil.principalIdFromMetadata(metadata).getId())
+                .isEqualTo("principal1");
     }
 
     @Test

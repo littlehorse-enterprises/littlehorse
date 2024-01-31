@@ -60,10 +60,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
         String clientIdStr = headers.get(CLIENT_ID);
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
-                : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr, PrincipalIdModel.class);
+                : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
         String tenantIdStr = headers.get(TENANT_ID);
-        TenantIdModel tenantId =
-                tenantIdStr == null ? null : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr, TenantIdModel.class);
+        TenantIdModel tenantId = tenantIdStr == null
+                ? null
+                : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
 
         Context context = Context.current();
         try {

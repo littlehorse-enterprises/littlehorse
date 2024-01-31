@@ -27,6 +27,7 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
     @Override
     public void put(Storeable<?> thing) {
         String key = maybeAddTenantPrefix(thing.getFullStoreKey());
+        System.out.println("Putting:" + key);
         nativeStore.put(key, new Bytes(thing.toBytes()));
     }
 

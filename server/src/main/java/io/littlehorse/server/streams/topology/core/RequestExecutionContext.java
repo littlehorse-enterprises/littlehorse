@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
