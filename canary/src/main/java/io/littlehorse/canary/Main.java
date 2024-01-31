@@ -1,12 +1,10 @@
 package io.littlehorse.canary;
 
-import com.google.common.collect.Lists;
 import io.littlehorse.canary.aggregator.AggregatorBootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaBootstrap;
 import io.littlehorse.canary.metronome.MetronomeBootstrap;
-import io.littlehorse.canary.metronome.WorkerBootstrap;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class Main {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.trace("Shutdown process started");
-            for (Bootstrap bootstrap : Lists.reverse(bootstraps)) {
+            for (Bootstrap bootstrap : bootstraps) {
                 bootstrap.shutdown();
             }
             log.trace("Shutdown process completed");
@@ -54,7 +52,6 @@ public class Main {
         bootstraps.add(new KafkaBootstrap());
 
         if (config.isMetronomeEnabled()) {
-            bootstraps.add(new WorkerBootstrap());
             bootstraps.add(new MetronomeBootstrap());
         }
 

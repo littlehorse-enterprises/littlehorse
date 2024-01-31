@@ -47,6 +47,8 @@ public class AggregatorBootstrap implements Bootstrap {
                 buildTopology(config),
                 new StreamsConfig(config.toKafkaStreamsConfig().toMap()));
         kafkaStreams.start();
+
+        log.trace("Initialized");
     }
 
     @Override
