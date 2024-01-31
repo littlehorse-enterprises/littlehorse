@@ -243,18 +243,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
-                // Core topology must be EOS
-                config.getStreamsConfig("core", true));
-        this.timerStreams = new KafkaStreams(
-                ServerTopology.initTimerTopology(config),
-                // We don't want the Timer topology to be EOS. The reason for this
-                // has to do with the fact that:
-                // a) Timer is idempotent, so it doesn't really matter
-                // b) If it's EOS, then there will be transactional records on
-                //    the core command topic. With the EOS for the core topology,
-                //    that means processing will block until the commit() of the
-                //    timer, which means latency will jump from 15ms to >100ms
-                config.getStreamsConfig("timer", false));
+                config.getCoreStreamsConfig());
+        this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
         this.healthService = new HealthService(config, coreStreams, timerStreams);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(

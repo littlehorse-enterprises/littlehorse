@@ -71,6 +71,15 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                         .build();
 
                 server.onResponseReceived(command.getCommandId(), cmdReply);
+
+                // This allows us to set a larger commit interval for the Core Topology
+                // without affecting latency of updates to the metadata global store.
+                //
+                // Messages coming through this processor are very low-throughput (updating
+                // WfSpec is much less common than running a WfRun), so calling a premature
+                // commit will not impact performance of the rest of the application very
+                // often.
+                ctx.commit();
             }
         } catch (Exception exn) {
             log.error("Caught exception processing {} command: {}", command.getType(), exn);

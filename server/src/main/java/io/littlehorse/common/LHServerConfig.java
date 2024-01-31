@@ -25,59 +25,80 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
+import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
+import org.rocksdb.Cache;
+import org.rocksdb.LRUCache;
+import org.rocksdb.RocksDB;
+import org.rocksdb.WriteBufferManager;
 
 @Slf4j
 public class LHServerConfig extends ConfigBase {
 
-    // Kafka and Kafka Streams-Specific Configuration Env Vars
-    public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
-    public static final String LHS_CLUSTER_ID_KEY = "LHS_CLUSTER_ID";
-    public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
-    public static final String RACK_ID_KEY = "LHS_RACK_ID";
+    // Singletons for RocksConfigSetter
+    @Getter
+    private Cache globalRocksdbBlockCache;
 
+    @Getter
+    private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    // Kafka Global Configs
+    public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
+    public static final String LHS_CLUSTER_ID_KEY = "LHS_CLUSTER_ID"; // determines application.id
+    public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
     public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
-    public static final String NUM_STREAM_THREADS_KEY = "LHS_STREAMS_NUM_THREADS";
+    public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
+    public static final String RACK_ID_KEY = "LHS_RACK_ID";
+
+    // Optional Performance-Related Configs for Kafka Streams
+    public static final String CORE_STREAM_THREADS_KEY = "LHS_CORE_STREAM_THREADS";
+    public static final String TIMER_STREAM_THREADS_KEY = "LHS_TIMER_STREAM_THREADS";
+    public static final String CORE_STREAMS_COMMIT_INTERVAL_KEY = "LHS_CORE_STREAMS_COMMIT_INTERVAL";
+    public static final String TIMER_STREAMS_COMMIT_INTERVAL_KEY = "LHS_TIMER_STREAMS_COMMIT_INTERVAL";
+    public static final String CORE_MEMTABLE_SIZE_BYTES_KEY = "LHS_CORE_MEMTABLE_SIZE_BYTES";
+    public static final String TIMER_MEMTABLE_SIZE_BYTES_KEY = "LHS_TIMER_MEMTABLE_SIZE_BYTES";
+    public static final String CORE_STATESTORE_CACHE_BYTES_KEY = "LHS_CORE_STATESTORE_CACHE_BYTES";
+    public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
+    public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
+    public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
-    public static final String MAX_BULK_JOB_ITER_DURATION_MS = "LHS_MAX_BULK_JOB_ITER_DURATION_MS";
-    public static final String BULK_JOB_DELAY_INTERVAL_SECONDS = "LHS_BULK_JOB_DELAY_INTERVAL_SECONDS";
-    public static final String COMMIT_INTERVAL_KEY = "LHS_STREAMS_COMMIT_INTERVAL";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
-    public static final String DEFAULT_WFRUN_RETENTION_HOURS = "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
-    public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS = "LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS";
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY = "LHS_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY = "LHS_INTERNAL_ADVERTISED_PORT";
 
+    public static final String MAX_BULK_JOB_ITER_DURATION_MS = "LHS_MAX_BULK_JOB_ITER_DURATION_MS";
+    public static final String BULK_JOB_DELAY_INTERVAL_SECONDS = "LHS_BULK_JOB_DELAY_INTERVAL_SECONDS";
+
+    // MTLS for internal interactive query port
     public static final String INTERNAL_CA_CERT_KEY = "LHS_INTERNAL_CA_CERT";
     public static final String INTERNAL_SERVER_CERT_KEY = "LHS_INTERNAL_SERVER_CERT";
     public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
 
+    // Kafka authentication/security
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
     public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
     public static final String KAFKA_KEYSTORE_PASSWORD_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD";
     public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
-
-    public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
 
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
@@ -233,13 +254,11 @@ public class LHServerConfig extends ConfigBase {
                 metadataStoreChangelog);
     }
 
-    // TODO: Determine how and where to set the topic names for TaskDef queues
-
     public String getBootstrapServers() {
         return getOrSetDefault(LHServerConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
 
-    public short getReplicationFactor() {
+    private short getReplicationFactor() {
         return Short.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.REPLICATION_FACTOR_KEY, "1")));
     }
 
@@ -256,11 +275,12 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public String getLHInstanceId() {
-        return getOrSetDefault(LHServerConfig.LHS_INSTANCE_ID_KEY, "server1");
+        return getOrSetDefault(
+                LHServerConfig.LHS_INSTANCE_ID_KEY, "unset-" + UUID.randomUUID().toString());
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(LHServerConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
+        return getOrSetDefault(KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getInternalAdvertisedHost() {
@@ -368,6 +388,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     @Nullable
+    @SuppressWarnings("null")
     private File getFile(String configName) {
         String fileLocation = getOrSetDefault(configName, null);
 
@@ -385,6 +406,7 @@ public class LHServerConfig extends ConfigBase {
         return file;
     }
 
+    @SuppressWarnings("null")
     public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
         if (listenersAuthorizationMap != null) {
             return listenersAuthorizationMap;
@@ -537,6 +559,17 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
+    public long getCoreMemtableSize() {
+        return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 64)));
+    }
+
+    // Timer Topology generally has smaller values that are written. The majority of them
+    // are LHTimer's with short (i.e. 10-second) TTL's (i.e. TaskRun Timeout timers), so
+    // we don't expect the timer memtable to overflow that quickly.
+    public long getTimerMemtableSize() {
+        return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 32)));
+    }
+
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
@@ -544,7 +577,6 @@ public class LHServerConfig extends ConfigBase {
         conf.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 Serdes.Bytes().serializer().getClass());
-        // conf.put(ProducerConfig.LINGER_MS_CONFIG, 10);
         conf.put(ProducerConfig.CLIENT_ID_CONFIG, getKafkaGroupId(component));
         conf.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -555,7 +587,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     /*
-     * EMPLOYEE_TODO: right now, this only supports mtls auth. We want to:
+     * Right now, this only supports mtls auth. We want to:
      * 1. Support other auth types, especially SCRAM-SHA-512
      * 2. Clean up the code, because currently it's just kludgey.
      *
@@ -609,92 +641,125 @@ public class LHServerConfig extends ConfigBase {
         conf.put("ssl.truststore.password", truststorePassword);
     }
 
-    private String loadSettingFromFile(String fileName) {
-        try {
-            return Files.readString(Path.of(fileName)).trim();
-        } catch (IOException e) {
-            throw new LHMisconfigurationException("Error loading file: " + fileName, e);
-        }
+    public Properties getCoreStreamsConfig() {
+        Properties props = getBaseStreamsConfig();
+        props.put("application.id", getKafkaGroupId("core"));
+        props.put("processing.guarantee", "exactly_once_v2");
+        props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
+
+        // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
+        // to commit latency (long story). The only thing that is affected by commit latency is the
+        // time at which metrics updates are processed by the repartition processor, but those
+        // are on a 10-second punctuator anyways.
+        //
+        // This allows us to increase the default config for commit interval (Streams sets it to 100),
+        // which allows us to further reduce the number of records sent to the changelog by relying on
+        // the Kafka Streams Statestore Cache. Additionally, larger transactions with more
+        // records perform better (because starting + committing a transaction is expensive, not writing
+        // records to it).
+        //
+        // 3 seconds should be long enough for a significant amount of TaskRun's to be scheduled, started, and
+        // completed. If all three `Command`s are processed within one commit, then we save 6 writes to the
+        // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
+        //
+        // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "2000"));
+        props.put("commit.interval", commitInterval);
+        props.put(
+                "statestore.cache.max.bytes",
+                Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
+        return props;
     }
 
-    public Properties getStreamsConfig(String component, boolean exactlyOnce) {
+    public Properties getTimerStreamsConfig() {
+        Properties props = getBaseStreamsConfig();
+        props.put("application.id", this.getKafkaGroupId("timer"));
+        props.put("processing.guarantee", "at_least_once");
+        props.put("consumer.isolation.level", "read_uncommitted");
+        props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
+
+        // The timer topology is ALOS, so we can have a larger commit interval with less of a problem. Looking at the
+        // workload of the timer topology, the majority is TaskRun timeouts, which is as follows:
+        //
+        // - ScheduleTimer command comes in, we write a LHTimer to the state store
+        // - 10 seconds later, we punctuate and delete the LHTimer
+        //
+        // With a large state store cache and a commit interval of 30 seconds (which is streams default), we can
+        // drastically reduce the amount of records written to the changelog. It is possible that a majority of the
+        // LHTimer's never actually get written to the changelog topic.
+        //
+        // Due to the larger commit interval for the Timer Topology, we recommend setting the
+        // LHS_TIMER_STATESTORE_CACHE_BYTES config to be big (i.e. 128MB), but it is fine to leave
+        // the LHS_CORE_STATESTORE_CACHE_BYTES config smaller (i.e. 16MB) due to the smaller commit interval.
+        int commitInterval =
+                Integer.valueOf(getOrSetDefault(LHServerConfig.TIMER_STREAMS_COMMIT_INTERVAL_KEY, "30000"));
+        props.put("commit.interval", commitInterval);
+
+        props.put(
+                "statestore.cache.max.bytes",
+                Long.valueOf(getOrSetDefault(TIMER_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 64))));
+
+        return props;
+    }
+
+    private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
         props.put(
-                StreamsConfig.APPLICATION_SERVER_CONFIG,
-                this.getInternalAdvertisedHost() + ":" + this.getInternalAdvertisedPort());
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId(component));
+                "application.server",
+                getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
+                        + this.getInternalAdvertisedPort());
 
-        // Static membership is utilized
-        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getLHInstanceId());
+        props.put("bootstrap.servers", this.getBootstrapServers());
+        props.put("state.dir", getStateDirectory());
+        props.put("request.timeout.ms", 1000 * 60);
+        props.put("producer.transaction.timeout.ms", 1000 * 60);
+        props.put("producer.acks", "all");
+        props.put("replication.factor", (int) getReplicationFactor());
+        props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
+        props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
+        props.put("probing.rebalance.interval.ms", 60 * 1000);
 
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
-        props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
-        if (exactlyOnce) {
-            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
-        }
-        props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
-
-        // Keep retrying kafka requests for 60 seconds, which should be long enough for partition
-        // leader to move over in case of broker failure.
-        // TODO (LH-149): Ensure this works when we kill a Kafka broker
-        props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000 * 60);
-
-        // TOOD (LH-149): Determine whether a broker failure causes a transaction timeout and then a
-        // subsequent state store wipeout and restoration. Additionally, LH-149 should make this
-        // value match the request timeout as well.
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), 1000 * 60);
-
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
-
-        props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, (int) getReplicationFactor());
-        props.put(
-                StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG,
-                org.apache.kafka.streams.errors.LogAndContinueExceptionHandler.class);
-        props.put(
-                StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG,
-                org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class);
-
-        // TODO (LH-150): Make this configurable
-        props.put(
-                StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "20000")));
-
-        props.put(
-                StreamsConfig.NUM_STREAM_THREADS_CONFIG,
-                Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STREAM_THREADS_KEY, "1")));
-
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
-        props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
-        props.put(StreamsConfig.MAX_WARMUP_REPLICAS_CONFIG, this.getWarmupReplicas());
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
-        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, getStreamsCommitInterval());
-        props.put(StreamsConfig.PROBING_REBALANCE_INTERVAL_MS_CONFIG, 1000 * 60);
+        // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
+        props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
+        props.put("default.production.exception.handler", DefaultProductionExceptionHandler.class);
+        props.put("default.value.serde", Serdes.StringSerde.class.getName());
+        props.put("default.key.serde", Serdes.StringSerde.class.getName());
 
         if (getRackId() != null) {
-            // This enables high-availability assignment (standby's are scheduled in different)
-            // racks than the active tasks
-            props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "availabilityzone");
-            props.put(StreamsConfig.CLIENT_TAG_PREFIX + "availabilityzone", getRackId());
+            // This enables high-availability assignment (standby's are scheduled in different
+            // racks than the active tasks)
+            props.put("rack.aware.assignment.tags", "lhrack");
+            props.put("client.tag.lhrack", getRackId());
 
             // Enable follower fetching for standby tasks and restoration.
             // Follower fetching increases latency by a few dozen milliseconds for tail reads.
             // Therefore, we only fetch from followers on the standby tasks.
-            props.put("restore.consumer." + ConsumerConfig.CLIENT_RACK_CONFIG, getRackId());
+            props.put("restore.consumer.client.rack", getRackId());
 
             // It's fine to slightly increase latency for the global consumer. Even though the
             // global consumer doesn't read much data, it still sends fetch requests quite often.
             // Those fetch requests can be somewhat costly.
-            props.put("global.consumer." + ConsumerConfig.CLIENT_RACK_CONFIG, getRackId());
+            props.put("global.consumer.client.rack", getRackId());
 
             // As of Kafka 3.6, there is nothing we can do to optimize the group coordinator traffic.
         }
 
-        props.put(StreamsConfig.ROCKSDB_CONFIG_SETTER_CLASS_CONFIG, RocksConfigSetter.class);
+        RocksConfigSetter.serverConfig = this;
+        props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
-        // 100MB record cache. This is across all stores in the Streams instance. It is a significant
-        // performance optimization that reduces the amount of data sent to the changelog topic.
-        props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 1024L * 1024L * 100);
+        // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
+        // 30 seconds of startup is enough time for LH to shut down and be re-spawned during a
+        // rolling restart.
+        //
+        // It also gives enough time for the new server to come up, meaning that
+        // in the case of a server failure while a request is being processed, the resulting
+        // `Command` should be processed on a new server within a minute. Issue #479
+        // should verify this behavior
+        props.put(
+                "consumer.session.timeout.ms",
+                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000")));
 
+        // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
 
         return props;
@@ -712,32 +777,12 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.RACK_ID_KEY, null);
     }
 
-    public int getStreamsCommitInterval() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.COMMIT_INTERVAL_KEY, "100"));
-    }
-
-    public int getDefaultWfRunRetentionHours() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168"));
-    }
-
-    public int getDefaultExternalEventRetentionHours() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168"));
-    }
-
-    public int getStandbyReplicas() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STANDBY_REPLICAS_KEY, "0"));
-    }
-
     public int getMaxBulkJobIterDurationMs() {
         return Integer.valueOf(getOrSetDefault(MAX_BULK_JOB_ITER_DURATION_MS, "20"));
     }
 
     public int getBulkJobDelayIntervalSeconds() {
         return Integer.valueOf(getOrSetDefault(BULK_JOB_DELAY_INTERVAL_SECONDS, "0"));
-    }
-
-    public int getWarmupReplicas() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_WARMUP_REPLICAS_KEY, "12"));
     }
 
     /**
@@ -767,16 +812,33 @@ public class LHServerConfig extends ConfigBase {
     public LHServerConfig() {
         super();
         initKafkaAdmin();
+        initRocksdbSingletons();
     }
 
     public LHServerConfig(String propertiesPath) {
         super(propertiesPath);
         initKafkaAdmin();
+        initRocksdbSingletons();
     }
 
     public LHServerConfig(Properties props) {
         super(props);
         initKafkaAdmin();
+        initRocksdbSingletons();
+    }
+
+    private void initRocksdbSingletons() {
+        RocksDB.loadLibrary();
+        long cacheSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, "-1"));
+        if (cacheSize != -1) {
+            this.globalRocksdbBlockCache = new LRUCache(cacheSize);
+        }
+
+        long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
+        if (totalWriteBufferSize != -1) {
+            this.globalRocksdbWriteBufferManager =
+                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+        }
     }
 
     private void initKafkaAdmin() {
@@ -839,6 +901,14 @@ public class LHServerConfig extends ConfigBase {
                     .build();
         } catch (IOException exn) {
             throw new RuntimeException(exn);
+        }
+    }
+
+    private String loadSettingFromFile(String fileName) {
+        try {
+            return Files.readString(Path.of(fileName)).trim();
+        } catch (IOException e) {
+            throw new LHMisconfigurationException("Error loading file: " + fileName, e);
         }
     }
 
