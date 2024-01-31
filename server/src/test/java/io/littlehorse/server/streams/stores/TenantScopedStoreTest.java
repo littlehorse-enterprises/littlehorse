@@ -7,6 +7,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -48,9 +49,9 @@ public class TenantScopedStoreTest {
             new MockProcessorContext<>();
 
     private final TenantScopedStore storeForTenantA =
-            TenantScopedStore.newInstance(nativeInMemoryStore, tenantA, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
     private final TenantScopedStore storeForTenantB =
-            TenantScopedStore.newInstance(nativeInMemoryStore, tenantB, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantB), executionContext);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());

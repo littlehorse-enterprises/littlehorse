@@ -7,6 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
@@ -25,17 +26,17 @@ public class RequestExecutionContext implements ExecutionContext {
     private final LHServerConfig lhConfig;
 
     public RequestExecutionContext(
-            String clientId,
-            String tenantId,
+            PrincipalIdModel clientId,
+            TenantIdModel tenantId,
             ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore,
             ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore,
             MetadataCache metadataCache,
             LHServerConfig lhConfig) {
         if (tenantId == null) {
-            tenantId = LHConstants.DEFAULT_TENANT;
+            tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
         if (clientId == null) {
-            clientId = LHConstants.ANONYMOUS_PRINCIPAL;
+            clientId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
         ReadOnlyClusterScopedStore clusterMetadataStore =
@@ -57,15 +58,15 @@ public class RequestExecutionContext implements ExecutionContext {
         return readOnlyGetableManager;
     }
 
-    private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
+    private PrincipalModel resolvePrincipal(PrincipalIdModel clientId, TenantIdModel tenantId) {
         if (clientId != null && tenantId != null) {
-            PrincipalModel storedPrincipal = metadataManager.get(new PrincipalIdModel(clientId));
+            PrincipalModel storedPrincipal = metadataManager.get(clientId);
             if (storedPrincipal == null) {
                 return service.getPrincipal(null);
             }
             return storedPrincipal;
         } else if (clientId != null) {
-            PrincipalModel storedPrincipal = metadataManager.get(new PrincipalIdModel(clientId));
+            PrincipalModel storedPrincipal = metadataManager.get(clientId);
             if (storedPrincipal == null) {
                 return service.getPrincipal(null);
             }
@@ -95,11 +96,14 @@ public class RequestExecutionContext implements ExecutionContext {
         return lhConfig;
     }
 
-    private AuthorizationContext authContextFor(String clientId, String tenantId) {
+    private AuthorizationContext authContextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
         PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
         List<ServerACLModel> currentAcls;
-        if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId)) {
-            currentAcls = resolvedPrincipal.getPerTenantAcls().get(tenantId).getAcls();
+        if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId.toString())) {
+            currentAcls = resolvedPrincipal
+                    .getPerTenantAcls()
+                    .get(tenantId.toString())
+                    .getAcls();
         } else {
             currentAcls = resolvedPrincipal.getGlobalAcls().getAcls();
         }

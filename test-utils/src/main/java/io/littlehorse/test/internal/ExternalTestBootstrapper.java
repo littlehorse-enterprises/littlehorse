@@ -36,4 +36,9 @@ public class ExternalTestBootstrapper implements TestBootstrapper {
     public LittleHorseBlockingStub getLhClient() {
         return lhClient;
     }
+
+    @Override
+    public LittleHorseBlockingStub getAnonymousClient() {
+        return lhClient;
+    }
 }

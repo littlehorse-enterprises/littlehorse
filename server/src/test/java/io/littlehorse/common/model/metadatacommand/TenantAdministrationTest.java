@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
@@ -58,11 +59,12 @@ public class TenantAdministrationTest {
     private final PutTenantRequestModel putTenantRequest =
             PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class, mock());
 
-    private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
+    private Headers metadata = HeadersUtil.metadataHeadersFor(
+            new TenantIdModel(tenantId), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
 
     private final ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(
             ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
-            TenantScopedStore.newInstance(nativeMetadataStore, "my-tenant", executionContext));
+            TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext));
 
     @BeforeEach
     public void setup() {

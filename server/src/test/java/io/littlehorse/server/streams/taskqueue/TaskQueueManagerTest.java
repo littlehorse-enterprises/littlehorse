@@ -54,7 +54,7 @@ public class TaskQueueManagerTest {
     @BeforeEach
     void setup() {
         when(processorContext.getableManager().get(any())).thenReturn(TestUtil.nodeRun());
-        when(requestContext.authorization().tenantId()).thenReturn("my-tenant");
+        when(requestContext.authorization().tenantId()).thenReturn(new TenantIdModel("my-tenant"));
         taskToSchedule = new ScheduledTaskModel(taskId, List.of(), userTaskRun, processorContext);
         trackableObserver = new PollTaskRequestObserver(mock(), queueManager, requestContext);
     }

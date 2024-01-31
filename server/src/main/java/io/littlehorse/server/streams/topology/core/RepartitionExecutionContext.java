@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
@@ -29,7 +30,7 @@ public class RepartitionExecutionContext implements ExecutionContext {
         this.repartitionContext = repartitionContext;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
-        String tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
                 ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =

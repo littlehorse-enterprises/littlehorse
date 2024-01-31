@@ -30,7 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
-    private String id;
+    private PrincipalIdModel id;
     private Map<String, ServerACLsModel> perTenantAcls = new HashMap<>();
     private ServerACLsModel globalAcls;
     private Date createdAt;
@@ -40,7 +40,8 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         Principal principal = (Principal) proto;
-        this.id = principal.getId();
+        this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
+        ;
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(principal.getCreatedAt());
 
@@ -55,7 +56,8 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
     @Override
     public Principal.Builder toProto() {
 
-        Principal.Builder out = Principal.newBuilder().setId(this.id).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        Principal.Builder out =
+                Principal.newBuilder().setId(this.id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
 
         if (globalAcls != null) {
             out.setGlobalAcls(globalAcls.toProto());
@@ -94,7 +96,7 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public ObjectIdModel<PrincipalId, Principal, PrincipalModel> getObjectId() {
-        return new PrincipalIdModel(id);
+        return id;
     }
 
     @Override

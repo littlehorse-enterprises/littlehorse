@@ -1,6 +1,17 @@
 package io.littlehorse.test;
 
+import com.google.protobuf.Empty;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
+import io.littlehorse.sdk.common.proto.PutTenantRequest;
+import io.littlehorse.sdk.common.proto.ServerACL;
+import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -28,7 +39,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                        LH_TEST_CONTEXT,
+                        s -> new TestContext(new StandaloneTestBootstrapper(new PrincipalIdModel(getPrincipalId()))),
+                        TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
@@ -39,6 +52,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
         ExtensionContext.Store store = getStore(context);
         TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+        maybeCreateTenantAndPrincipal(testContext);
         try {
             List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
             for (LHTaskWorker worker : workers) {
@@ -69,5 +83,45 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
+    }
+
+    private void maybeCreateTenantAndPrincipal(TestContext testContext) {
+        String principalId = getPrincipalId();
+        try {
+            testContext
+                    .getAnonymousClient()
+                    .putTenant(PutTenantRequest.newBuilder()
+                            .setId(testContext.getConfig().getTenantId())
+                            .build());
+            ServerACLs acls = ServerACLs.newBuilder()
+                    .addAcls(ServerACL.newBuilder()
+                            .addAllowedActions(ACLAction.ALL_ACTIONS)
+                            .addResources(ACLResource.ACL_ALL_RESOURCES)
+                            .build())
+                    .build();
+            testContext
+                    .getAnonymousClient()
+                    .putPrincipal(PutPrincipalRequest.newBuilder()
+                            .setId(principalId)
+                            .setGlobalAcls(acls)
+                            .putPerTenantAcls(testContext.getConfig().getTenantId(), acls)
+                            .build());
+            // wait until the principal is propagated into the server
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(15))
+                    .ignoreException(RuntimeException.class)
+                    .until(() -> {
+                        Principal whoami = testContext.getLhClient().whoami(Empty.getDefaultInstance());
+                        return whoami.getId().getId().equals(principalId);
+                    });
+        } catch (StatusRuntimeException ex) {
+            if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
+                throw ex;
+            }
+        }
+    }
+
+    private String getPrincipalId() {
+        return System.getenv().getOrDefault("LH_CLIENT_ID", "tyler");
     }
 }

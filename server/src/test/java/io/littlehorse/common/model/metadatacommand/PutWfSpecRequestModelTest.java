@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -64,12 +66,12 @@ public class PutWfSpecRequestModelTest {
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
     private TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, DEFAULT_TENANT_ID, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT_ID), executionContext);
     private TenantScopedStore tenantAStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_A, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext);
 
     private TenantScopedStore tenantBStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, TENANT_ID_B, executionContext);
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext);
 
     @BeforeEach
     public void setup() {
@@ -81,7 +83,8 @@ public class PutWfSpecRequestModelTest {
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT_ID})
     void supportStoringWfSpecWithTenantIsolation(final String tenantId) {
         TaskDefModel greet = TestUtil.taskDef("greet");
-        Headers recordMetadata = HeadersUtil.metadataHeadersFor(tenantId, "my-principal-id");
+        Headers recordMetadata =
+                HeadersUtil.metadataHeadersFor(new TenantIdModel(tenantId), new PrincipalIdModel("my-principal-id"));
         String specName = wfSpecToProcess.getPutWfSpec().getName();
         tenantAStore.put(new StoredGetable<>(greet));
         tenantBStore.put(new StoredGetable<>(greet));

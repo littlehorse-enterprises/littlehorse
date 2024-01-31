@@ -7,4 +7,6 @@ public interface TestBootstrapper {
     LHConfig getWorkerConfig();
 
     LittleHorseBlockingStub getLhClient();
+
+    LittleHorseBlockingStub getAnonymousClient();
 }
