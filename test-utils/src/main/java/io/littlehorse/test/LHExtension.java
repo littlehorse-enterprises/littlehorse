@@ -3,6 +3,7 @@ package io.littlehorse.test;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -39,7 +39,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                        LH_TEST_CONTEXT,
+                        s -> new TestContext(new StandaloneTestBootstrapper(new PrincipalIdModel(getPrincipalId()))),
+                        TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
@@ -84,44 +86,42 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     }
 
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
-        Optional<String> principalId = getPrincipalId();
-        if (principalId.isPresent()) {
-            try {
-                testContext
-                        .getAnonymousClient()
-                        .putTenant(PutTenantRequest.newBuilder()
-                                .setId(testContext.getConfig().getTenantId())
-                                .build());
-                ServerACLs acls = ServerACLs.newBuilder()
-                        .addAcls(ServerACL.newBuilder()
-                                .addAllowedActions(ACLAction.ALL_ACTIONS)
-                                .addResources(ACLResource.ACL_ALL_RESOURCES)
-                                .build())
-                        .build();
-                testContext
-                        .getAnonymousClient()
-                        .putPrincipal(PutPrincipalRequest.newBuilder()
-                                .setId(principalId.get())
-                                .setGlobalAcls(acls)
-                                .putPerTenantAcls(testContext.getConfig().getTenantId(), acls)
-                                .build());
-                // wait until the server is up
-                Awaitility.await()
-                        .atMost(Duration.ofSeconds(15))
-                        .ignoreException(RuntimeException.class)
-                        .until(() -> {
-                            Principal whoami = testContext.getLhClient().whoami(Empty.getDefaultInstance());
-                            return whoami.getId().getId().equals(principalId.get());
-                        });
-            } catch (StatusRuntimeException ex) {
-                if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
-                    throw ex;
-                }
+        String principalId = getPrincipalId();
+        try {
+            testContext
+                    .getAnonymousClient()
+                    .putTenant(PutTenantRequest.newBuilder()
+                            .setId(testContext.getConfig().getTenantId())
+                            .build());
+            ServerACLs acls = ServerACLs.newBuilder()
+                    .addAcls(ServerACL.newBuilder()
+                            .addAllowedActions(ACLAction.ALL_ACTIONS)
+                            .addResources(ACLResource.ACL_ALL_RESOURCES)
+                            .build())
+                    .build();
+            testContext
+                    .getAnonymousClient()
+                    .putPrincipal(PutPrincipalRequest.newBuilder()
+                            .setId(principalId)
+                            .setGlobalAcls(acls)
+                            .putPerTenantAcls(testContext.getConfig().getTenantId(), acls)
+                            .build());
+            // wait until the principal is propagated into the server
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(15))
+                    .ignoreException(RuntimeException.class)
+                    .until(() -> {
+                        Principal whoami = testContext.getLhClient().whoami(Empty.getDefaultInstance());
+                        return whoami.getId().getId().equals(principalId);
+                    });
+        } catch (StatusRuntimeException ex) {
+            if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
+                throw ex;
             }
         }
     }
 
-    private Optional<String> getPrincipalId() {
-        return Optional.ofNullable(System.getenv().getOrDefault("LH_CLIENT_ID", "my-principal"));
+    private String getPrincipalId() {
+        return System.getenv().getOrDefault("LH_CLIENT_ID", "tyler");
     }
 }
