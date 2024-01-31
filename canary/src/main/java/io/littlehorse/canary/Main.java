@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
+    public static void main(final String[] args) throws IOException, InterruptedException {
+        final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
         log.debug("Canary configurations: {}", config);
         log.debug("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
@@ -22,8 +22,8 @@ public class Main {
         log.debug("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
         log.debug("LittleHorse configurations: {}", config.toLittleHorseConfig());
 
-        int latchSize = 1 + (config.isMetronomeEnabled() ? 1 : 0) + (config.isAggregatorEnabled() ? 1 : 0);
-        CountDownLatch latch = new CountDownLatch(latchSize);
+        final int latchSize = 1 + (config.isMetronomeEnabled() ? 1 : 0) + (config.isAggregatorEnabled() ? 1 : 0);
+        final CountDownLatch latch = new CountDownLatch(latchSize);
 
         try {
             initiateKafkaTopicBootstrap(config, latch);
@@ -45,22 +45,22 @@ public class Main {
         log.info("Stopped");
     }
 
-    private static void initiateAggregatorBootstrap(CanaryConfig config, CountDownLatch latch) {
-        AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(
+    private static void initiateAggregatorBootstrap(final CanaryConfig config, final CountDownLatch latch) {
+        final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(
                 config.getTopicName(), config.toKafkaStreamsConfig().toMap());
         addShutdownHook(aggregatorBootstrap, latch);
     }
 
-    private static void initiateMetronomeBootstrap(CanaryConfig config, CountDownLatch latch) {
-        MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
+    private static void initiateMetronomeBootstrap(final CanaryConfig config, final CountDownLatch latch) {
+        final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
                 config.getTopicName(),
                 config.toKafkaProducerConfig().toMap(),
                 config.toLittleHorseConfig().toMap());
         addShutdownHook(metronomeBootstrap, latch);
     }
 
-    private static void initiateKafkaTopicBootstrap(CanaryConfig config, CountDownLatch latch) {
-        KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
+    private static void initiateKafkaTopicBootstrap(final CanaryConfig config, final CountDownLatch latch) {
+        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),
                 config.getTopicPartitions(),
                 config.getTopicReplicas(),
@@ -68,7 +68,7 @@ public class Main {
         addShutdownHook(kafkaTopicBootstrap, latch);
     }
 
-    private static void addShutdownHook(Bootstrap bootstrap, CountDownLatch latch) {
+    private static void addShutdownHook(final Bootstrap bootstrap, final CountDownLatch latch) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.trace("{} shutdown process started", bootstrap.getClass().getSimpleName());
             try {

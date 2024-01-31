@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 public class LittleHorseConfig implements Config {
     private final Map<String, Object> configs;
 
-    public LittleHorseConfig(Map<String, Object> configs) {
+    public LittleHorseConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_PREFIX))
                 .map(entry -> {
-                    String formattedKey = entry.getKey()
+                    final String formattedKey = entry.getKey()
                             .substring(LH_CANARY_PREFIX.length())
                             .toUpperCase()
                             .replace(".", "_")

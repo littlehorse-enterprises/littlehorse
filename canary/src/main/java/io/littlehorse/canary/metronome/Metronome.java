@@ -13,7 +13,7 @@ public class Metronome implements Closeable, Runnable {
     private final ScheduledExecutorService executor;
     private final MetricsEmitter emitter;
 
-    public Metronome(MetricsEmitter emitter) {
+    public Metronome(final MetricsEmitter emitter) {
         this.emitter = emitter;
         executor = Executors.newScheduledThreadPool(1);
     }

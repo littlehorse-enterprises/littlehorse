@@ -24,7 +24,7 @@ public class ConfigLoader {
      * @return A CanaryConfig with all system configuration
      */
     public static CanaryConfig load() {
-        SmallRyeConfig config = new SmallRyeConfigBuilder()
+        final SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .build();
@@ -42,8 +42,8 @@ public class ConfigLoader {
      * @return A CanaryConfig with all system configuration
      * @throws IOException If properties file was not found
      */
-    public static CanaryConfig load(Path path) throws IOException {
-        SmallRyeConfig config = new SmallRyeConfigBuilder()
+    public static CanaryConfig load(final Path path) throws IOException {
+        final SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(path.toUri().toURL(), 200))
@@ -61,8 +61,8 @@ public class ConfigLoader {
      * @param properties Properties object
      * @return A CanaryConfig with all system configuration
      */
-    public static CanaryConfig load(Properties properties) {
-        SmallRyeConfig config = new SmallRyeConfigBuilder()
+    public static CanaryConfig load(final Properties properties) {
+        final SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(
@@ -71,8 +71,8 @@ public class ConfigLoader {
         return new CanaryConfig(toMap(config));
     }
 
-    private static Map<String, Object> toMap(Config config) {
-        Map<String, Object> configs = new TreeMap<>();
+    private static Map<String, Object> toMap(final Config config) {
+        final Map<String, Object> configs = new TreeMap<>();
         for (String key : config.getPropertyNames()) {
             configs.put(key, config.getOptionalValue(key, String.class).orElse(""));
         }

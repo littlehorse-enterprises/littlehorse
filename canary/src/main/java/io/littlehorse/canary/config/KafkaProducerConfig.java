@@ -9,7 +9,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 public class KafkaProducerConfig implements Config {
     private final Map<String, Object> configs;
 
-    public KafkaProducerConfig(Map<String, Object> configs) {
+    public KafkaProducerConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_KAFKA_PREFIX))
                 .map(entry -> entry(entry.getKey().substring(LH_CANARY_KAFKA_PREFIX.length()), entry.getValue()))

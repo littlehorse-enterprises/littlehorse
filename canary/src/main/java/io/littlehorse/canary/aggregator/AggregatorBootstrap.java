@@ -21,14 +21,14 @@ public class AggregatorBootstrap implements Bootstrap {
     private static final Consumed<String, Bytes> SERDES = Consumed.with(Serdes.String(), Serdes.Bytes());
     private final KafkaStreams kafkaStreams;
 
-    public AggregatorBootstrap(String topicName, Map<String, Object> kafkaStreamsConfigMap) {
-        kafkaStreams = new KafkaStreams(buildTopology(topicName), new StreamsConfig(kafkaStreamsConfigMap));
+    public AggregatorBootstrap(final String metricsTopicName, final Map<String, Object> kafkaStreamsConfigMap) {
+        kafkaStreams = new KafkaStreams(buildTopology(metricsTopicName), new StreamsConfig(kafkaStreamsConfigMap));
         kafkaStreams.start();
 
         log.trace("Initialized");
     }
 
-    private static Metric toMetric(Bytes value) {
+    private static Metric toMetric(final Bytes value) {
         try {
             return Metric.parseFrom(value.get());
         } catch (InvalidProtocolBufferException e) {
@@ -39,11 +39,11 @@ public class AggregatorBootstrap implements Bootstrap {
         }
     }
 
-    private Topology buildTopology(String topicName) {
-        StreamsBuilder builder = new StreamsBuilder();
+    private Topology buildTopology(final String metricsTopicName) {
+        final StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String, Metric> metricStream =
-                builder.stream(topicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
+        final KStream<String, Metric> metricStream =
+                builder.stream(metricsTopicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
 
         return builder.build();
     }

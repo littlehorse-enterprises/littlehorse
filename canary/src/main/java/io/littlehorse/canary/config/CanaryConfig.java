@@ -8,7 +8,7 @@ public class CanaryConfig implements Config {
 
     private final Map<String, Object> configs;
 
-    public CanaryConfig(Map<String, Object> configs) {
+    public CanaryConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_PREFIX))
                 .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));

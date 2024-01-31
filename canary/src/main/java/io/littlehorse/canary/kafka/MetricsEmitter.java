@@ -19,13 +19,14 @@ public class MetricsEmitter implements Closeable {
     private final Producer<String, Bytes> producer;
     private final String topicName;
 
-    public MetricsEmitter(String topicName, Map<String, Object> kafkaProducerConfigMap) {
+    public MetricsEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
         this.producer = new KafkaProducer<>(kafkaProducerConfigMap);
         this.topicName = topicName;
     }
 
-    public Future<RecordMetadata> future(String key, Metric metric) {
-        ProducerRecord<String, Bytes> record = new ProducerRecord<>(topicName, key, Bytes.wrap(metric.toByteArray()));
+    public Future<RecordMetadata> future(final String key, final Metric metric) {
+        final ProducerRecord<String, Bytes> record =
+                new ProducerRecord<>(topicName, key, Bytes.wrap(metric.toByteArray()));
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
@@ -36,9 +37,9 @@ public class MetricsEmitter implements Closeable {
         });
     }
 
-    public void emit(String key, Metric metric) {
+    public RecordMetadata emit(final String key, final Metric metric) {
         try {
-            future(key, metric).get();
+            return future(key, metric).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new CanaryException(e);
         }

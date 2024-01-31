@@ -16,32 +16,32 @@ class MetronomeTask {
 
     private final MetricsEmitter emitter;
 
-    public MetronomeTask(MetricsEmitter emitter) {
+    public MetronomeTask(final MetricsEmitter emitter) {
         this.emitter = emitter;
     }
 
     @LHTaskMethod(MetronomeBootstrap.TASK_NAME)
-    public void executeTask(long startTime, WorkerContext context) {
+    public void executeTask(final long startTime, final WorkerContext context) {
         log.trace("Executing task {}", MetronomeBootstrap.TASK_NAME);
         emitTaskRunLatencyMetric(startTime, context);
         emitDuplicatedTaskRunMetric(context);
     }
 
-    private void emitTaskRunLatencyMetric(long startTime, WorkerContext context) {
-        long latency =
+    private void emitTaskRunLatencyMetric(final long startTime, final WorkerContext context) {
+        final long latency =
                 Duration.between(Instant.ofEpochMilli(startTime), Instant.now()).toMillis();
         log.debug("Latency {}ms", latency);
-        Metric metric = Metric.newBuilder()
+        final Metric metric = Metric.newBuilder()
                 .setTime(Timestamps.fromMillis(System.currentTimeMillis()))
                 .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency))
                 .build();
         emitter.future(context.getIdempotencyKey(), metric);
     }
 
-    private void emitDuplicatedTaskRunMetric(WorkerContext context) {
-        String key = String.format("%s/%s", context.getIdempotencyKey(), context.getAttemptNumber());
+    private void emitDuplicatedTaskRunMetric(final WorkerContext context) {
+        final String key = String.format("%s/%s", context.getIdempotencyKey(), context.getAttemptNumber());
         log.debug("Key {}", key);
-        Metric metric = Metric.newBuilder()
+        final Metric metric = Metric.newBuilder()
                 .setTime(Timestamps.fromMillis(System.currentTimeMillis()))
                 .setDuplicatedTaskRun(DuplicatedTaskRun.newBuilder().setUniqueTaskScheduleId(key))
                 .build();

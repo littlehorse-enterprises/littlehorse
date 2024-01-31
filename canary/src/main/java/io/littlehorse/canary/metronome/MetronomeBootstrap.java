@@ -20,14 +20,16 @@ public class MetronomeBootstrap implements Bootstrap {
     private final Metronome metronome;
 
     public MetronomeBootstrap(
-            String topicName, Map<String, Object> kafkaProducerConfigMap, Map<String, Object> littleHorseConfigMap) {
+            final String metricsTopicName,
+            final Map<String, Object> kafkaProducerConfigMap,
+            final Map<String, Object> littleHorseConfigMap) {
         // Initialize kafka producer
-        emitter = new MetricsEmitter(topicName, kafkaProducerConfigMap);
+        emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
         metronome = new Metronome(emitter);
         metronome.start();
 
         // Initialize task worker
-        LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
+        final LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
         try {
             worker = new LHTaskWorker(new MetronomeTask(emitter), TASK_NAME, lhConfig);
             worker.registerTaskDef();
@@ -37,7 +39,7 @@ public class MetronomeBootstrap implements Bootstrap {
         }
 
         // Initialize workflow
-        Workflow workflow = Workflow.newWorkflow(
+        final Workflow workflow = Workflow.newWorkflow(
                 "canary-workflow",
                 thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
         try {

@@ -16,14 +16,17 @@ public class KafkaTopicBootstrap implements Bootstrap {
     private final AdminClient adminClient;
 
     public KafkaTopicBootstrap(
-            String topicName, int topicPartitions, short topicReplicas, Map<String, Object> kafkaAdminConfigMap) {
+            final String metricsTopicName,
+            final int topicPartitions,
+            final short topicReplicas,
+            final Map<String, Object> kafkaAdminConfigMap) {
         adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
 
         try {
-            NewTopic canaryTopic = new NewTopic(topicName, topicPartitions, topicReplicas);
+            final NewTopic canaryTopic = new NewTopic(metricsTopicName, topicPartitions, topicReplicas);
 
             adminClient.createTopics(List.of(canaryTopic)).all().get();
-            log.info("Topics {} created", topicName);
+            log.info("Topics {} created", metricsTopicName);
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());

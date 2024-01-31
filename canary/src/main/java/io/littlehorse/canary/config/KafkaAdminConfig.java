@@ -10,7 +10,7 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 public class KafkaAdminConfig implements Config {
     private final Map<String, Object> configs;
 
-    public KafkaAdminConfig(Map<String, Object> configs) {
+    public KafkaAdminConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_KAFKA_PREFIX))
                 .map(entry -> entry(entry.getKey().substring(LH_CANARY_KAFKA_PREFIX.length()), entry.getValue()))
