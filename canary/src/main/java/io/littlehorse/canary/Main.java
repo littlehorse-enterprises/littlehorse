@@ -71,8 +71,13 @@ public class Main {
     private static void addShutdownHook(Bootstrap bootstrap, CountDownLatch latch) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.trace("{} shutdown process started", bootstrap.getClass().getSimpleName());
-            bootstrap.shutdown();
-            latch.countDown();
+            try {
+                bootstrap.shutdown();
+            } catch (Exception e) {
+                log.error("Error in ShutdownHook '{}'", bootstrap.getClass().getSimpleName(), e);
+            } finally {
+                latch.countDown();
+            }
         }));
     }
 }
