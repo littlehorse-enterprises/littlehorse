@@ -6,11 +6,14 @@ on:
     branches-ignore:
       - "master"
     paths:
-      - dashboard/**
-      - docker/dashboard/**
-      - server/**
-      - docker/server/**
       - .github/workflows/branch.yml
+      - docker/dashboard/**
+      - docker/server/**
+      - docker/standalone/**
+      - docker/canary/**
+      - server/**
+      - dashboard/**
+      - canary/**
 permissions:
   id-token: write
   contents: read
@@ -28,7 +31,7 @@ jobs:
           java-version: 17
 
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar
+        run: ./gradlew server:build
 
       - uses: actions/upload-artifact@v4
         with:
@@ -40,6 +43,34 @@ jobs:
         with:
           image-name: lh-server
           dockerfile: docker/server/Dockerfile
+          registry: ecr
+          prefix: branch-
+
+  lh-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+
+      - name: Tests and Build
+        run: ./gradlew canary:build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: canary-jar
+          path: canary/build/libs/canary-*-all.jar
+
+      - name: Build and publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-canary
+          dockerfile: docker/canary/Dockerfile
           registry: ecr
           prefix: branch-
 
