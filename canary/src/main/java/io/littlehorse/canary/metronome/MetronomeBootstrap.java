@@ -20,7 +20,8 @@ public class MetronomeBootstrap implements Bootstrap {
     public MetronomeBootstrap(
             final String metricsTopicName,
             final Map<String, Object> kafkaProducerConfigMap,
-            final Map<String, Object> littleHorseConfigMap) {
+            final Map<String, Object> littleHorseConfigMap,
+            final long frequency) {
 
         final LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
         final MetricsEmitter emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
@@ -29,7 +30,7 @@ public class MetronomeBootstrap implements Bootstrap {
         initializeWorker(emitter, lhConfig);
         initializeWorkflow(lhConfig);
 
-        final Metronome metronome = new Metronome(emitter);
+        final Metronome metronome = new Metronome(emitter, frequency);
         Shutdown.addShutdownHook(metronome);
 
         log.trace("Initialized");

@@ -59,4 +59,8 @@ public class CanaryConfig implements Config {
     public boolean isAggregatorEnabled() {
         return Boolean.parseBoolean(configs.get(LH_CANARY_AGGREGATOR_ENABLE).toString());
     }
+
+    public long getMetronomeFrequency() {
+        return Long.parseLong(configs.get(LH_CANARY_METRONOME_FREQUENCY_MS).toString());
+    }
 }

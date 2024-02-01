@@ -30,9 +30,9 @@ public class MetricsEmitter implements Closeable {
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
-                log.debug("Emitting message {} [key={}]", metric.getMetricCase(), key);
+                log.debug("Emitting message {} {}", metric.getMetricCase(), key);
             } else {
-                log.error("Emitting message {} [key={}]", metric.getMetricCase(), key, exception);
+                log.error("Emitting message {} {}", metric.getMetricCase(), key, exception);
             }
         });
     }

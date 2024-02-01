@@ -11,6 +11,7 @@ public interface Config {
     String LH_CANARY_TOPIC_CREATION_REPLICAS = LH_CANARY_PREFIX + "topic.creation.replicas";
     String LH_CANARY_METRONOME_ENABLE = LH_CANARY_PREFIX + "metronome.enable";
     String LH_CANARY_AGGREGATOR_ENABLE = LH_CANARY_PREFIX + "aggregator.enable";
+    String LH_CANARY_METRONOME_FREQUENCY_MS = LH_CANARY_PREFIX + "metronome.frequency.ms";
 
     Map<String, Object> toMap();
 }

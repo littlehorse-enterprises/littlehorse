@@ -35,7 +35,7 @@ class MetronomeTask {
                 .setTime(Timestamps.fromMillis(System.currentTimeMillis()))
                 .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency))
                 .build();
-        emitter.future(context.getIdempotencyKey(), metric);
+        emitter.future(context.getWfRunId().getId(), metric);
     }
 
     private void emitDuplicatedTaskRunMetric(final WorkerContext context) {

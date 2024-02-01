@@ -43,7 +43,8 @@ public class Main {
             final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
                     config.getTopicName(),
                     config.toKafkaProducerConfig().toMap(),
-                    config.toLittleHorseConfig().toMap());
+                    config.toLittleHorseConfig().toMap(),
+                    config.getMetronomeFrequency());
         }
 
         if (config.isAggregatorEnabled()) {

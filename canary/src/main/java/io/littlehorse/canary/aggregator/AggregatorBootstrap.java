@@ -47,6 +47,8 @@ public class AggregatorBootstrap implements Bootstrap {
         final KStream<String, Metric> metricStream =
                 builder.stream(metricsTopicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
 
+        metricStream.foreach((key, value) -> log.debug("Aggregating {} {}", value.getMetricCase(), key));
+
         return builder.build();
     }
 }
