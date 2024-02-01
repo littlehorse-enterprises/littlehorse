@@ -26,7 +26,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
-import java.io.IOException;
 import java.util.Map;
 
 public class AEImproperTaskNode extends Test {
@@ -52,7 +51,7 @@ public class AEImproperTaskNode extends Test {
     """;
     }
 
-    public void test() throws InterruptedException, IOException {
+    public void test() throws InterruptedException {
         worker = new LHTaskWorker(new AETaskNodeValidationWorker(), TASK_DEF_NAME, workerConfig);
         worker.registerTaskDef();
 

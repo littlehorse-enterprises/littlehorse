@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import java.io.Closeable;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,7 +20,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
     private StreamObserver<PollTaskRequest> pollClient;
     private LittleHorseStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) throws IOException {
+    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) {
         stillRunning = true;
         this.manager = manager;
         this.host = host;

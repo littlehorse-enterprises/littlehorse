@@ -22,7 +22,6 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;
 import org.awaitility.Awaitility;
@@ -91,7 +90,7 @@ public class TaskDefLifecycleTest {
     }
 
     @Test
-    void workerShouldWaitForTaskDef() throws IOException {
+    void workerShouldWaitForTaskDef() {
         String taskDefName = "only-to-use-with-wait-for-taskdef";
         PutTaskDefRequest req =
                 PutTaskDefRequest.newBuilder().setName(taskDefName).build();

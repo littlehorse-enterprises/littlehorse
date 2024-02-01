@@ -15,7 +15,6 @@ import io.littlehorse.sdk.worker.internal.ConnectionManagerLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Duration;
@@ -62,9 +61,8 @@ public class LHTaskWorker implements Closeable {
      *                    That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
      * @param config      is a valid LHConfig.
-     * @throws IOException
      */
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
@@ -72,8 +70,7 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
     }
 
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager)
-            throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager) {
         this(executable, taskDefName, config);
         this.manager = manager;
     }
@@ -87,7 +84,7 @@ public class LHTaskWorker implements Closeable {
         return taskDefName;
     }
 
-    private void createManager() throws IOException {
+    private void createManager() {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
@@ -187,10 +184,8 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * Starts polling for and executing tasks.
-     *
-     * @throws IOException if unexpected error occurs opening connections.
      */
-    public void start() throws IOException {
+    public void start() {
         createManager();
         manager.start();
     }

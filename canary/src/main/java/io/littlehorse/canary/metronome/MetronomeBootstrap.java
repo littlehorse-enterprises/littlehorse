@@ -1,14 +1,13 @@
 package io.littlehorse.canary.metronome;
 
 import io.littlehorse.canary.Bootstrap;
-import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.kafka.MetricsEmitter;
 import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-import java.io.IOException;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,37 +25,35 @@ public class MetronomeBootstrap implements Bootstrap {
             final int runs) {
 
         final LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
+        final LittleHorseBlockingStub stub = lhConfig.getBlockingStub();
+
         final MetricsEmitter emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
         Shutdown.addShutdownHook(emitter);
 
         initializeWorker(emitter, lhConfig);
-        initializeWorkflow(lhConfig);
-
-        final Metronome metronome = new Metronome(emitter, frequency, threads, runs);
-        Shutdown.addShutdownHook(metronome);
+        initializeWorkflow(stub);
+        initializeMetronome(frequency, threads, runs, emitter);
 
         log.trace("Initialized");
     }
 
-    private static void initializeWorkflow(final LHConfig lhConfig) {
+    private static void initializeMetronome(
+            final long frequency, final int threads, final int runs, final MetricsEmitter emitter) {
+        final Metronome metronome = new Metronome(emitter, frequency, threads, runs);
+        Shutdown.addShutdownHook(metronome);
+    }
+
+    private static void initializeWorkflow(final LittleHorseBlockingStub stub) {
         final Workflow workflow = Workflow.newWorkflow(
                 "canary-workflow",
                 thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
-        try {
-            workflow.registerWfSpec(lhConfig.getBlockingStub());
-        } catch (IOException e) {
-            throw new CanaryException(e);
-        }
+        workflow.registerWfSpec(stub);
     }
 
     private static void initializeWorker(final MetricsEmitter emitter, final LHConfig lhConfig) {
-        try {
-            final LHTaskWorker worker = new LHTaskWorker(new MetronomeTask(emitter), TASK_NAME, lhConfig);
-            Shutdown.addShutdownHook(worker);
-            worker.registerTaskDef();
-            worker.start();
-        } catch (IOException e) {
-            throw new CanaryException(e);
-        }
+        final LHTaskWorker worker = new LHTaskWorker(new MetronomeTask(emitter), TASK_NAME, lhConfig);
+        Shutdown.addShutdownHook(worker);
+        worker.registerTaskDef();
+        worker.start();
     }
 }

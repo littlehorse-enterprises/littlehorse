@@ -19,7 +19,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -258,8 +257,7 @@ public class BackendInternalComms implements Closeable {
         return desiredHost;
     }
 
-    public List<io.littlehorse.sdk.common.proto.LHHostInfo> getAllAdvertisedHosts(String listenerName)
-            throws LHBadRequestError {
+    public List<io.littlehorse.sdk.common.proto.LHHostInfo> getAllAdvertisedHosts(String listenerName) {
         Set<HostModel> hosts = getAllInternalHosts();
 
         List<io.littlehorse.sdk.common.proto.LHHostInfo> out = new ArrayList<>();

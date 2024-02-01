@@ -102,7 +102,7 @@ public class SagaExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ReservationBooker executable = new ReservationBooker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "book-flight", config),

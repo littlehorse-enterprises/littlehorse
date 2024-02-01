@@ -72,7 +72,7 @@ public class ChildThreadExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ChildThreadWorker executable = new ChildThreadWorker();
         List<LHTaskWorker> workers = List.of(
                 new LHTaskWorker(executable, "parent-task-1", config),

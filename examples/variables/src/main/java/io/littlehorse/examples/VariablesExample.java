@@ -87,7 +87,7 @@ public class VariablesExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorker(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "sentiment-analysis", config),

@@ -53,7 +53,7 @@ class ConfigLoaderTest {
 
     @Test
     @SetEnvironmentVariable(key = ENV_VARIABLE_NAME, value = EXPECTED_ENV_VALUE)
-    void overwritePropertiesWithEnvConfigs() throws IOException {
+    void overwritePropertiesWithEnvConfigs() {
         Properties properties = new Properties();
         properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
 

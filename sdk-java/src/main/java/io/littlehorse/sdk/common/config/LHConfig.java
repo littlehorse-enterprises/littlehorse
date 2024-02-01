@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
 import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
@@ -143,9 +144,8 @@ public class LHConfig extends ConfigBase {
      * generally the loadbalancer url.
      *
      * @return a blocking gRPC stub for the configured host/port.
-     * @throws IOException if stub creation fails.
      */
-    public LittleHorseBlockingStub getBlockingStub() throws IOException {
+    public LittleHorseBlockingStub getBlockingStub() {
         return getBlockingStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -154,9 +154,8 @@ public class LHConfig extends ConfigBase {
      * the loadbalancer url.
      *
      * @return an async gRPC stub for the configured host/port.
-     * @throws IOException if stub creation fails.
      */
-    public LittleHorseStub getAsyncStub() throws IOException {
+    public LittleHorseStub getAsyncStub() {
         return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -166,7 +165,7 @@ public class LHConfig extends ConfigBase {
      * @param taskDefName is the TaskDef's name.
      * @return the specified TaskDefPb.
      */
-    public TaskDef getTaskDef(String taskDefName) throws IOException {
+    public TaskDef getTaskDef(String taskDefName) {
         return getBlockingStub()
                 .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
     }
@@ -197,9 +196,8 @@ public class LHConfig extends ConfigBase {
      * @param host is the host that the LH Server lives on.
      * @param port is the port that the LH Server lives on.
      * @return an async gRPC stub for that host/port combo.
-     * @throws IOException if stub creation fails.
      */
-    public LittleHorseStub getAsyncStub(String host, int port) throws IOException {
+    public LittleHorseStub getAsyncStub(String host, int port) {
 
         if (isOauth()) {
             return getBaseAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
@@ -215,9 +213,8 @@ public class LHConfig extends ConfigBase {
      * @param host is the host that the LH Server lives on.
      * @param port is the port that the LH Server lives on.
      * @return a blocking gRPC stub for that host/port combo.
-     * @throws IOException if stub creation fails.
      */
-    public LittleHorseBlockingStub getBlockingStub(String host, int port) throws IOException {
+    public LittleHorseBlockingStub getBlockingStub(String host, int port) {
         if (isOauth()) {
             return getBaseBlockingStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
@@ -230,9 +227,8 @@ public class LHConfig extends ConfigBase {
      * @param host The host to connect to.
      * @param port the port to connect to.
      * @return a gRPC channel for that specified host/port combo.
-     * @throws IOException if we can't connect.
      */
-    private Channel getChannel(String host, int port) throws IOException {
+    private Channel getChannel(String host, int port) {
         String hostKey = host + ":" + port;
         if (createdChannels.containsKey(hostKey)) {
             return createdChannels.get(hostKey);
@@ -252,12 +248,20 @@ public class LHConfig extends ConfigBase {
             TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
 
             if (caCertFile != null) {
-                tlsBuilder.trustManager(new File(caCertFile));
+                try {
+                    tlsBuilder.trustManager(new File(caCertFile));
+                } catch (IOException e) {
+                    throw new LHMisconfigurationException("Error accessing to certificate", e);
+                }
             }
 
             if (clientCertFile != null && clientKeyFile != null) {
                 log.info("Using mtls!");
-                tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
+                try {
+                    tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
+                } catch (IOException e) {
+                    throw new LHMisconfigurationException("Error accessing to certificate", e);
+                }
             }
 
             builder = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build());
@@ -274,7 +278,7 @@ public class LHConfig extends ConfigBase {
     /**
      * Get a blocking stub with the application defaults
      */
-    private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) throws IOException {
+    private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) {
         String tenantId = getTenantId();
         LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
         if (tenantId != null) {
@@ -286,7 +290,7 @@ public class LHConfig extends ConfigBase {
     /**
      * Get a async stub with the application defaults
      */
-    private LittleHorseStub getBaseAsyncStub(String host, int port) throws IOException {
+    private LittleHorseStub getBaseAsyncStub(String host, int port) {
         String tenantId = getTenantId();
         LittleHorseStub asyncStub = LittleHorseGrpc.newStub(getChannel(host, port));
         if (tenantId != null) {

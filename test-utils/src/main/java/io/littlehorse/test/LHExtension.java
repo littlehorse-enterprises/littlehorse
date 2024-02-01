@@ -7,7 +7,6 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -53,19 +52,15 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                         .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                         .until(() -> testContext.getLhClient().getTaskDef(taskDefId), taskDef -> taskDef != null);
                 Awaitility.await().until(() -> {
-                    try {
-                        worker.start();
-                        return true;
-                    } catch (IOException e) {
-                        throw new IllegalStateException(e);
-                    }
+                    worker.start();
+                    return true;
                 });
             }
             testContext.registerUserTaskSchemas(testInstance);
             List<ExternalEventDef> externalEventDefinitions =
                     testContext.discoverExternalEventDefinitions(testInstance);
             externalEventDefinitions.forEach(testContext::registerExternalEventDef);
-        } catch (IOException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
