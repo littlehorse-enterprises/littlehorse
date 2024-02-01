@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 
 /**
@@ -30,4 +31,8 @@ public interface WaitForThreadsNodeOutput extends NodeOutput {
      * @see WaitForThreadsPolicy
      */
     WaitForThreadsNodeOutput withPolicy(WaitForThreadsPolicy policy);
+
+    WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, WorkflowThread handler);
+    WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType error, WorkflowThread handler);
+    WaitForThreadsNodeOutput handleAnyFailureOnChild(WorkflowThread handler);
 }
