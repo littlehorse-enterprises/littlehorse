@@ -338,7 +338,7 @@ public class LHConfig extends ConfigBase {
         String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL, null);
 
         if (clientId == null && clientSecret == null && tokenEndpointUrl == null) {
-            log.info("OAuth is disable");
+            log.warn("OAuth is disable");
             return false;
         }
 
@@ -364,7 +364,6 @@ public class LHConfig extends ConfigBase {
             oauthCredentialsProvider = new OAuthCredentialsProvider(oauthClient);
         }
 
-        log.info("OAuth initialized");
         return true;
     }
 

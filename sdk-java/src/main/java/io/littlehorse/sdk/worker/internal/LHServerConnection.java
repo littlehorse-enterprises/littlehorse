@@ -52,11 +52,11 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
         if (taskToDo.hasResult()) {
             ScheduledTask scheduledTask = taskToDo.getResult();
             String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
-            log.info("Received task schedule request for wfRun {}", wfRunId);
+            log.debug("Received task schedule request for wfRun {}", wfRunId);
 
             manager.submitTaskForExecution(scheduledTask, this.stub);
 
-            log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
+            log.debug("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             log.error("Didn't successfully claim task, likely due to server restart.");
         }

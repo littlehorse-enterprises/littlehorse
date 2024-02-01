@@ -67,5 +67,17 @@ public class Metronome implements Closeable {
     public void close() {
         mainExecutor.shutdown();
         requestsExecutor.shutdown();
+
+        try {
+            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("Error on terminating main executor {}", e.getMessage(), e);
+        }
+
+        try {
+            requestsExecutor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("Error on terminating requests executor {}", e.getMessage(), e);
+        }
     }
 }
