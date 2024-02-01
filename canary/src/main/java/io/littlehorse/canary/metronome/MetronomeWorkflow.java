@@ -13,10 +13,8 @@ public class MetronomeWorkflow {
 
     public MetronomeWorkflow(final LittleHorseBlockingStub lhClient) {
         workflow = Workflow.newWorkflow(
-                MetronomeWorkflow.CANARY_WORKFLOW,
-                thread -> thread.execute(
-                        MetronomeWorkflow.TASK_NAME,
-                        thread.addVariable(MetronomeWorkflow.VARIABLE_NAME, VariableType.INT)));
+                CANARY_WORKFLOW,
+                thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
         this.lhClient = lhClient;
     }
 
