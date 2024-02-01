@@ -47,8 +47,6 @@ public class MetricsEmitter implements Closeable {
 
     @Override
     public void close() {
-        producer.flush();
         producer.close();
-        log.trace("Closed");
     }
 }

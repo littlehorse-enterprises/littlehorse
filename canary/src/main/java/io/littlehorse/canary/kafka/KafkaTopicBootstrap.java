@@ -2,6 +2,7 @@ package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.CanaryException;
+import io.littlehorse.canary.util.Shutdown;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +14,14 @@ import org.apache.kafka.common.errors.TopicExistsException;
 @Slf4j
 public class KafkaTopicBootstrap implements Bootstrap {
 
-    private final AdminClient adminClient;
-
     public KafkaTopicBootstrap(
             final String metricsTopicName,
             final int topicPartitions,
             final short topicReplicas,
             final Map<String, Object> kafkaAdminConfigMap) {
-        adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
+
+        final AdminClient adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
+        Shutdown.addShutdownHook(adminClient);
 
         try {
             final NewTopic canaryTopic = new NewTopic(metricsTopicName, topicPartitions, topicReplicas);
@@ -34,12 +35,7 @@ public class KafkaTopicBootstrap implements Bootstrap {
                 throw new CanaryException(e);
             }
         }
-        log.trace("Initialized");
-    }
 
-    @Override
-    public void shutdown() {
-        adminClient.close();
-        log.trace("Shutdown");
+        log.trace("Initialized");
     }
 }

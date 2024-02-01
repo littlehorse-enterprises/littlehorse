@@ -4,6 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.StreamTopologyFailure;
+import io.littlehorse.canary.util.Shutdown;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -19,10 +20,11 @@ import org.apache.kafka.streams.kstream.KStream;
 public class AggregatorBootstrap implements Bootstrap {
 
     private static final Consumed<String, Bytes> SERDES = Consumed.with(Serdes.String(), Serdes.Bytes());
-    private final KafkaStreams kafkaStreams;
 
     public AggregatorBootstrap(final String metricsTopicName, final Map<String, Object> kafkaStreamsConfigMap) {
-        kafkaStreams = new KafkaStreams(buildTopology(metricsTopicName), new StreamsConfig(kafkaStreamsConfigMap));
+        final KafkaStreams kafkaStreams =
+                new KafkaStreams(buildTopology(metricsTopicName), new StreamsConfig(kafkaStreamsConfigMap));
+        Shutdown.addShutdownHook(kafkaStreams);
         kafkaStreams.start();
 
         log.trace("Initialized");
@@ -39,18 +41,12 @@ public class AggregatorBootstrap implements Bootstrap {
         }
     }
 
-    private Topology buildTopology(final String metricsTopicName) {
+    private static Topology buildTopology(final String metricsTopicName) {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final KStream<String, Metric> metricStream =
                 builder.stream(metricsTopicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
 
         return builder.build();
-    }
-
-    @Override
-    public void shutdown() {
-        kafkaStreams.close();
-        log.trace("Shutdown");
     }
 }
