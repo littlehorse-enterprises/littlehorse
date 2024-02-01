@@ -20,9 +20,9 @@ class MetronomeTask {
         this.emitter = emitter;
     }
 
-    @LHTaskMethod(MetronomeBootstrap.TASK_NAME)
+    @LHTaskMethod(MetronomeWorkflow.TASK_NAME)
     public void executeTask(final long startTime, final WorkerContext context) {
-        log.trace("Executing task {}", MetronomeBootstrap.TASK_NAME);
+        log.trace("Executing task {}", MetronomeWorkflow.TASK_NAME);
         emitTaskRunLatencyMetric(startTime, context);
         emitDuplicatedTaskRunMetric(context);
     }
