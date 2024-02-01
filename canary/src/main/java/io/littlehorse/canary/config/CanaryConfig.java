@@ -63,4 +63,12 @@ public class CanaryConfig implements Config {
     public long getMetronomeFrequency() {
         return Long.parseLong(configs.get(LH_CANARY_METRONOME_FREQUENCY_MS).toString());
     }
+
+    public int getMetronomeThreads() {
+        return Integer.parseInt(configs.get(LH_CANARY_METRONOME_THREADS).toString());
+    }
+
+    public int getMetronomeRuns() {
+        return Integer.parseInt(configs.get(LH_CANARY_METRONOME_RUNS).toString());
+    }
 }

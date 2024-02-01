@@ -44,7 +44,9 @@ public class Main {
                     config.getTopicName(),
                     config.toKafkaProducerConfig().toMap(),
                     config.toLittleHorseConfig().toMap(),
-                    config.getMetronomeFrequency());
+                    config.getMetronomeFrequency(),
+                    config.getMetronomeThreads(),
+                    config.getMetronomeRuns());
         }
 
         if (config.isAggregatorEnabled()) {
