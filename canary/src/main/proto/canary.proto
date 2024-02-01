@@ -7,12 +7,19 @@ option java_package = "io.littlehorse.canary.proto";
 import "google/protobuf/timestamp.proto";
 
 message Metric {
-  google.protobuf.Timestamp time = 1;
+  Metadata metadata = 1;
   oneof metric {
     DuplicatedTaskRun duplicated_task_run = 2;
     TaskRunLatency task_run_latency = 3;
     StreamTopologyFailure stream_topology_failure= 9;
   }
+}
+
+message Metadata {
+  google.protobuf.Timestamp time = 1;
+  string server_host = 2;
+  int32 server_port = 3;
+  string server_version = 4;
 }
 
 message DuplicatedTaskRun {

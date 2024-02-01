@@ -3,7 +3,6 @@ package io.littlehorse.canary.aggregator;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.proto.Metric;
-import io.littlehorse.canary.proto.Metric.MetricCase;
 import io.littlehorse.canary.proto.StreamTopologyFailure;
 import io.littlehorse.canary.util.Shutdown;
 import java.util.Map;
@@ -14,13 +13,13 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
 
 @Slf4j
 public class AggregatorBootstrap implements Bootstrap {
 
     private static final Consumed<String, Bytes> SERDES = Consumed.with(Serdes.String(), Serdes.Bytes());
-    public static final String PREFIX_BRANCH = "CANARY_";
 
     public AggregatorBootstrap(final String metricsTopicName, final Map<String, Object> kafkaStreamsConfigMap) {
         final KafkaStreams kafkaStreams =
@@ -48,23 +47,15 @@ public class AggregatorBootstrap implements Bootstrap {
         final KStream<String, Metric> metricStream =
                 builder.stream(metricsTopicName, SERDES).mapValues(AggregatorBootstrap::toMetric);
 
-        final Map<String, KStream<String, Metric>> branches = metricStream
-                .split(Named.as(PREFIX_BRANCH))
-                .branch((key, value) -> value.hasTaskRunLatency(), Branched.as(MetricCase.TASK_RUN_LATENCY.name()))
-                .branch(
-                        (key, value) -> value.hasDuplicatedTaskRun(),
-                        Branched.as(MetricCase.DUPLICATED_TASK_RUN.name()))
-                .branch(
-                        (key, value) -> value.hasStreamTopologyFailure(),
-                        Branched.as(MetricCase.STREAM_TOPOLOGY_FAILURE.name()))
-                .noDefaultBranch();
-
-        buildTaskRunLatencyTopology(branches.get(PREFIX_BRANCH + MetricCase.TASK_RUN_LATENCY.name()));
+        buildTaskRunLatencyTopology(metricStream);
 
         return builder.build();
     }
 
-    private static void buildTaskRunLatencyTopology(final KStream<String, Metric> taskRunLatencyStream) {
-        taskRunLatencyStream.peek((key, value) -> log.debug("Here {}", value.getMetricCase()));
+    private static void buildTaskRunLatencyTopology(final KStream<String, Metric> metricStream) {
+        final KStream<String, Metric> taskRunLatencyStream =
+                metricStream.filter((key, value) -> value.hasTaskRunLatency());
+        taskRunLatencyStream.peek((key, value) ->
+                log.debug("Hello Mijail {} {} {}", value.getMetricCase(), key, value.getTaskRunLatency()));
     }
 }

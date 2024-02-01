@@ -198,7 +198,6 @@ public class LHConfig extends ConfigBase {
      * @return an async gRPC stub for that host/port combo.
      */
     public LittleHorseStub getAsyncStub(String host, int port) {
-
         if (isOauth()) {
             return getBaseAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }

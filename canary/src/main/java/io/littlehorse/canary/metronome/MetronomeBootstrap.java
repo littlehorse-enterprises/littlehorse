@@ -1,10 +1,12 @@
 package io.littlehorse.canary.metronome;
 
+import com.google.protobuf.Empty;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.kafka.MetricsEmitter;
 import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +51,24 @@ public class MetronomeBootstrap implements Bootstrap {
     }
 
     private static void initializeWorker(final MetricsEmitter emitter, final LHConfig lhConfig) {
-        final LHTaskWorker worker = new LHTaskWorker(new MetronomeTask(emitter), MetronomeWorkflow.TASK_NAME, lhConfig);
+        final MetronomeTask executable = new MetronomeTask(
+                emitter, lhConfig.getApiBootstrapHost(), lhConfig.getApiBootstrapPort(), getServerVersion(lhConfig));
+        final LHTaskWorker worker = new LHTaskWorker(executable, MetronomeWorkflow.TASK_NAME, lhConfig);
         Shutdown.addShutdownHook(worker);
         worker.registerTaskDef();
         worker.start();
+    }
+
+    private static String getServerVersion(final LHConfig lhConfig) {
+        final ServerVersionResponse serverVersionResponse =
+                lhConfig.getBlockingStub().getServerVersion(Empty.getDefaultInstance());
+        return String.format(
+                "%s.%s.%s%s",
+                serverVersionResponse.getMajorVersion(),
+                serverVersionResponse.getMinorVersion(),
+                serverVersionResponse.getPatchVersion(),
+                serverVersionResponse.hasPreReleaseIdentifier()
+                        ? "-" + serverVersionResponse.getPreReleaseIdentifier()
+                        : "");
     }
 }
