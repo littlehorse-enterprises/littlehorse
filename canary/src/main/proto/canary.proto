@@ -11,7 +11,6 @@ message Metric {
   oneof metric {
     DuplicatedTaskRun duplicated_task_run = 2;
     TaskRunLatency task_run_latency = 3;
-    StreamTopologyFailure stream_topology_failure= 9;
   }
 }
 
