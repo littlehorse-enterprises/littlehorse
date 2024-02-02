@@ -41,7 +41,10 @@ public class AggregatorBootstrap implements Bootstrap {
     private static void buildTaskRunLatencyTopology(final KStream<String, Metric> metricStream) {
         final KStream<String, Metric> taskRunLatencyStream =
                 metricStream.filter((key, value) -> value.hasTaskRunLatency());
-        taskRunLatencyStream.peek((key, value) ->
-                log.debug("Hello Mijail {} {} {}", value.getMetricCase(), key, value.getTaskRunLatency()));
+        taskRunLatencyStream.peek((key, value) -> log.debug(
+                "Hello Mijail {} {} {}",
+                value.getMetricCase(),
+                key,
+                value.getTaskRunLatency().getLatency()));
     }
 }

@@ -18,7 +18,6 @@ public class MetricDeserializer implements Deserializer<Metric> {
         try {
             return Metric.parseFrom(data);
         } catch (InvalidProtocolBufferException e) {
-            log.error("Error in stream topology {}", e.getMessage(), e);
             throw new CanaryException(e);
         }
     }
