@@ -57,7 +57,7 @@ public interface LHTimerPbOrBuilder extends
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
@@ -66,27 +66,25 @@ public interface LHTimerPbOrBuilder extends
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    * @return The tenantId.
    */
-  java.lang.String getTenantId();
+  io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
    * <pre>
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
-   * @return The bytes for tenantId.
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
    * <pre>
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    * @return Whether the principalId field is set.
    */
   boolean hasPrincipalId();
@@ -95,18 +93,16 @@ public interface LHTimerPbOrBuilder extends
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    * @return The principalId.
    */
-  java.lang.String getPrincipalId();
+  io.littlehorse.sdk.common.proto.PrincipalId getPrincipalId();
   /**
    * <pre>
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
-   * @return The bytes for principalId.
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    */
-  com.google.protobuf.ByteString
-      getPrincipalIdBytes();
+  io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalIdOrBuilder();
 }

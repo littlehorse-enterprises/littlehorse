@@ -2,10 +2,11 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
+import "object_id.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
-option java_package = "io.littlehorse.common.proto";
+option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 // This is a GlobalGetable.
@@ -13,7 +14,7 @@ message Principal {
     // Principals are agnostic of the Authentication protocol that you use. In OAuth,
     // the id is retrieved by looking at the claims on the request. In mTLS, the
     // id is retrived by looking at the Subject Name of the client certificate.
-    string id = 1;
+    PrincipalId id = 1;
     google.protobuf.Timestamp created_at = 2;
 
     // Maps a Tenant ID to a list of ACL's that the Principal has permission to
@@ -28,7 +29,7 @@ message Principal {
 
 // This is a GlobalGetable
 message Tenant {
-    string id = 1;
+    TenantId id = 1;
     google.protobuf.Timestamp created_at = 2;
     // Future versions will include quotas on a per-Tenant basis.
 }

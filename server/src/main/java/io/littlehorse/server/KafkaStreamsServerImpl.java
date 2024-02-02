@@ -39,6 +39,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -58,16 +59,12 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestM
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.proto.Principal;
-import io.littlehorse.common.proto.PutPrincipalRequest;
-import io.littlehorse.common.proto.PutTenantRequest;
-import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
@@ -103,9 +100,12 @@ import io.littlehorse.sdk.common.proto.NodeRunIdList;
 import io.littlehorse.sdk.common.proto.NodeRunList;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
@@ -133,6 +133,7 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
+import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdList;
@@ -243,18 +244,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
-                // Core topology must be EOS
-                config.getStreamsConfig("core", true));
-        this.timerStreams = new KafkaStreams(
-                ServerTopology.initTimerTopology(config),
-                // We don't want the Timer topology to be EOS. The reason for this
-                // has to do with the fact that:
-                // a) Timer is idempotent, so it doesn't really matter
-                // b) If it's EOS, then there will be transactional records on
-                //    the core command topic. With the EOS for the core topology,
-                //    that means processing will block until the commit() of the
-                //    timer, which means latency will jump from 15ms to >100ms
-                config.getStreamsConfig("timer", false));
+                config.getCoreStreamsConfig());
+        this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
         this.healthService = new HealthService(config, coreStreams, timerStreams);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
@@ -793,7 +784,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
         RequestExecutionContext requestContext = requestContext();
         AuthorizationContext authorizationContext = requestContext.authorization();
-        String principalId = authorizationContext.principalId();
+        PrincipalIdModel principalId = authorizationContext.principalId();
         PrincipalModel principal = requestContext.service().getPrincipal(principalId);
         responseObserver.onNext(principal.toProto().build());
         responseObserver.onCompleted();

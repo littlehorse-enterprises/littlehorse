@@ -1,6 +1,8 @@
 package io.littlehorse.common;
 
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import java.util.Collection;
 
 /**
@@ -18,13 +20,13 @@ public interface AuthorizationContext {
      * Current principal id in the context
      * @return not null
      */
-    String principalId();
+    PrincipalIdModel principalId();
 
     /**
      * Current tenant id in the context
      * @return not null
      */
-    String tenantId();
+    TenantIdModel tenantId();
 
     /**
      * ACLs for the current principal in the context

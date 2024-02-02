@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -80,7 +81,7 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = TenantScopedStore.newInstance(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

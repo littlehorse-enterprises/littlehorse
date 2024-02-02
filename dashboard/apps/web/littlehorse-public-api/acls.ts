@@ -1,6 +1,7 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { PrincipalId, TenantId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
@@ -157,7 +158,7 @@ export interface Principal {
    * the id is retrieved by looking at the claims on the request. In mTLS, the
    * id is retrived by looking at the Subject Name of the client certificate.
    */
-  id: string;
+  id: PrincipalId | undefined;
   createdAt:
     | string
     | undefined;
@@ -177,7 +178,9 @@ export interface Principal_PerTenantAclsEntry {
 
 /** This is a GlobalGetable */
 export interface Tenant {
-  id: string;
+  id:
+    | TenantId
+    | undefined;
   /** Future versions will include quotas on a per-Tenant basis. */
   createdAt: string | undefined;
 }
@@ -214,13 +217,13 @@ export interface PutTenantRequest {
 }
 
 function createBasePrincipal(): Principal {
-  return { id: "", createdAt: undefined, perTenantAcls: {}, globalAcls: undefined };
+  return { id: undefined, createdAt: undefined, perTenantAcls: {}, globalAcls: undefined };
 }
 
 export const Principal = {
   encode(message: Principal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      PrincipalId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
@@ -246,7 +249,7 @@ export const Principal = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = PrincipalId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -283,7 +286,7 @@ export const Principal = {
 
   fromJSON(object: any): Principal {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      id: isSet(object.id) ? PrincipalId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       perTenantAcls: isObject(object.perTenantAcls)
         ? Object.entries(object.perTenantAcls).reduce<{ [key: string]: ServerACLs }>((acc, [key, value]) => {
@@ -297,8 +300,8 @@ export const Principal = {
 
   toJSON(message: Principal): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
+    if (message.id !== undefined) {
+      obj.id = PrincipalId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
@@ -323,7 +326,7 @@ export const Principal = {
   },
   fromPartial<I extends Exact<DeepPartial<Principal>, I>>(object: I): Principal {
     const message = createBasePrincipal();
-    message.id = object.id ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? PrincipalId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.perTenantAcls = Object.entries(object.perTenantAcls ?? {}).reduce<{ [key: string]: ServerACLs }>(
       (acc, [key, value]) => {
@@ -418,13 +421,13 @@ export const Principal_PerTenantAclsEntry = {
 };
 
 function createBaseTenant(): Tenant {
-  return { id: "", createdAt: undefined };
+  return { id: undefined, createdAt: undefined };
 }
 
 export const Tenant = {
   encode(message: Tenant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      TenantId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
@@ -444,7 +447,7 @@ export const Tenant = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = TenantId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -464,15 +467,15 @@ export const Tenant = {
 
   fromJSON(object: any): Tenant {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      id: isSet(object.id) ? TenantId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
     };
   },
 
   toJSON(message: Tenant): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
+    if (message.id !== undefined) {
+      obj.id = TenantId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
@@ -485,7 +488,7 @@ export const Tenant = {
   },
   fromPartial<I extends Exact<DeepPartial<Tenant>, I>>(object: I): Tenant {
     const message = createBaseTenant();
-    message.id = object.id ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? TenantId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     return message;
   },

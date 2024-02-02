@@ -1,6 +1,7 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -31,6 +32,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final TenantScopedStore tenantMetadataStore;
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
+    private final KafkaStreamsServerImpl server;
 
     public TestProcessorExecutionContext(
             Command currentCommand,
@@ -46,7 +48,8 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         this.lhConfig = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
 
-        String tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        this.server = server;
 
         this.coreStore = TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);

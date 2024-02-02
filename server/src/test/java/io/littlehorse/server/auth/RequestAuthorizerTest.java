@@ -22,6 +22,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.TestMetadataManager;
@@ -91,14 +92,14 @@ public class RequestAuthorizerTest {
         assertThat(resolvedAuthContext.acls())
                 .containsExactly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
-        assertThat(resolvedAuthContext.principalId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
+        assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
     }
 
     @Test
     public void supportAnonymousPrincipalWhenClientIdIsNotFound() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         startCall();
-        assertThat(resolvedAuthContext.principalId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
+        assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
         assertThat(resolvedAuthContext.acls())
                 .containsAll(inMemoryAnonymousPrincipal.getGlobalAcls().getAcls());
     }
@@ -108,7 +109,7 @@ public class RequestAuthorizerTest {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
         PrincipalModel newPrincipal = new PrincipalModel();
-        newPrincipal.setId("principal-id");
+        newPrincipal.setId(new PrincipalIdModel("principal-id"));
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
         TenantModel tenant = new TenantModel("my-tenant");
         metadataManager.put(tenant);
@@ -116,7 +117,7 @@ public class RequestAuthorizerTest {
         MethodDescriptor<Object, Object> mockMethod = mock();
         when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
-        assertThat(resolvedAuthContext.principalId()).isEqualTo("principal-id");
+        assertThat(resolvedAuthContext.principalId().getId()).isEqualTo("principal-id");
         assertThat(resolvedAuthContext.acls()).containsOnly(TestUtil.adminAcl());
     }
 
@@ -125,7 +126,7 @@ public class RequestAuthorizerTest {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         metadataManager.put(new TenantModel("my-tenant"));
         startCall();
-        assertThat(resolvedAuthContext.principalId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
+        assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
         assertThat(resolvedAuthContext.acls())
                 .containsOnly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
@@ -163,14 +164,14 @@ public class RequestAuthorizerTest {
 
         private PrincipalModel buildLimitedPrincipal() {
             PrincipalModel limitedPrincipal = new PrincipalModel();
-            limitedPrincipal.setId("limited-principal");
+            limitedPrincipal.setId(new PrincipalIdModel("limited-principal"));
             limitedPrincipal.setPerTenantAcls(Map.of("my-tenant", TestUtil.singleAcl()));
             return limitedPrincipal;
         }
 
         private PrincipalModel buildAdminPrincipal() {
             PrincipalModel adminPrincipal = new PrincipalModel();
-            adminPrincipal.setId("admin-principal");
+            adminPrincipal.setId(new PrincipalIdModel("admin-principal"));
             adminPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
             return adminPrincipal;
         }
@@ -192,7 +193,7 @@ public class RequestAuthorizerTest {
             final Metadata mockMetadata = new Metadata();
             mockMetadata.put(ServerAuthorizer.CLIENT_ID, principalId);
             PrincipalModel newPrincipal = new PrincipalModel();
-            newPrincipal.setId(principalId);
+            newPrincipal.setId(new PrincipalIdModel(principalId));
             newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
             metadataManager.put(newPrincipal);
             def.getServerCallHandler().startCall(stubCall, mockMetadata);
@@ -240,7 +241,8 @@ public class RequestAuthorizerTest {
             ServerServiceDefinition.Builder definitionBuilder, Collection<MethodDescriptor<?, ?>> stubMethods) {
         for (MethodDescriptor<?, ?> method : stubMethods) {
             definitionBuilder = definitionBuilder.addMethod(method, (call, headers) -> {
-                String principalId = contextKey.get().authorization().principalId();
+                String principalId =
+                        contextKey.get().authorization().principalId().toString();
                 assertThat(principalId).isEqualTo(headers.get(ServerAuthorizer.CLIENT_ID));
                 return new NoopServerCall.NoopServerCallListener<>();
             });

@@ -67,12 +67,13 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, LHConstants.DEFAULT_TENANT, executionContext);
+    private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private TestProcessorExecutionContext processorContext;
+    private TestProcessorExecutionContext tenantProcessorContext;
+    private TestProcessorExecutionContext defaultProcessorContext;
 
     @BeforeEach
     public void setup() {
@@ -85,22 +86,34 @@ public class CommandProcessorTest {
                 RunWfRequest.newBuilder().setWfSpecName("name").build();
         Command commandToExecute =
                 Command.newBuilder().setRunWf(runWfSubCommand).build();
-        processorContext = TestProcessorExecutionContext.create(
+
+        tenantProcessorContext = TestProcessorExecutionContext.create(
                 commandToExecute, HeadersUtil.metadataHeadersFor("my-tenant", "tyler"), mockProcessorContext);
+        defaultProcessorContext = new TestProcessorExecutionContext(
+                commandToExecute,
+                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.DEFAULT_TENANT),
+                tenantProcessorContext.getLhConfig(),
+                mockProcessorContext,
+                tenantProcessorContext.getGlobalTaskQueueManager(),
+                tenantProcessorContext.getMetadataCache(),
+                tenantProcessorContext.getServer());
+        defaultProcessorContext.getableManager();
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
                 mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
-                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
-        processorContext.getableManager().put(nodeRun);
+                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);
+        tenantProcessorContext.getableManager().put(nodeRun);
         final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
-                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, processorContext);
-        processorContext.getTaskManager().scheduleTask(scheduledTask);
-        processorContext.endExecution();
+                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, tenantProcessorContext);
+        tenantProcessorContext.getTaskManager().scheduleTask(scheduledTask);
+        defaultProcessorContext.getTaskManager().scheduleTask(scheduledTask);
+        tenantProcessorContext.endExecution();
+        defaultProcessorContext.endExecution();
         defaultStore.put(scheduledTask);
         clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(1))
+        verify(server, times(2))
                 .onTaskScheduled(
                         eq(scheduledTask.getTaskDefId()), any(), eq(new TenantIdModel(LHConstants.DEFAULT_TENANT)));
     }

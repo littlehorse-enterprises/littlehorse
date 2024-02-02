@@ -6,6 +6,9 @@ import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -35,8 +38,14 @@ public class InternalAuthorizer implements ServerAuthorizer {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        String clientId = headers.get(CLIENT_ID);
-        String tenantId = headers.get(TENANT_ID);
+        String clientIdStr = headers.get(CLIENT_ID);
+        PrincipalIdModel clientId = clientIdStr == null
+                ? null
+                : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
+        String tenantIdStr = headers.get(TENANT_ID);
+        TenantIdModel tenantId = tenantIdStr == null
+                ? null
+                : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(tenantId);
         RequestExecutionContext requestContext = new RequestExecutionContext(

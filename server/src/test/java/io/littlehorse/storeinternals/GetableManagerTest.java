@@ -18,6 +18,8 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
@@ -74,12 +76,12 @@ public class GetableManagerTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ProcessorExecutionContext executionContext;
 
-    private AuthorizationContext testContext =
-            new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
+    private AuthorizationContext testContext = new AuthorizationContextImpl(
+            new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = TenantScopedStore.newInstance(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
