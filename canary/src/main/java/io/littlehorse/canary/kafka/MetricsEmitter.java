@@ -24,6 +24,12 @@ public class MetricsEmitter implements Closeable {
         this.topicName = topicName;
     }
 
+    /**
+     * Asynchronous method that produces a metric to kafka but does not block the current thread
+     * @param key
+     * @param metric
+     * @return Future<RecordMetadata>
+     */
     public Future<RecordMetadata> future(final String key, final Metric metric) {
         final ProducerRecord<String, Bytes> record =
                 new ProducerRecord<>(topicName, key, Bytes.wrap(metric.toByteArray()));
@@ -37,6 +43,12 @@ public class MetricsEmitter implements Closeable {
         });
     }
 
+    /**
+     * Blocking method that produces a metric and waits until kafka acknowledges
+     * @param key
+     * @param metric
+     * @return RecordMetadata
+     */
     public RecordMetadata emit(final String key, final Metric metric) {
         try {
             return future(key, metric).get();

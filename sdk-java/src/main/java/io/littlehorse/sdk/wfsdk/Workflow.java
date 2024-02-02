@@ -239,7 +239,7 @@ public abstract class Workflow {
      * @param client is an LHClient.
      */
     public void registerWfSpec(LittleHorseBlockingStub client) {
-        log.debug("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
+        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 
     /**

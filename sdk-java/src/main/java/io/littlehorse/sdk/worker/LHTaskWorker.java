@@ -121,7 +121,7 @@ public class LHTaskWorker implements Closeable {
     public void registerTaskDef() {
         TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
         TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
-        log.debug("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
+        log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
