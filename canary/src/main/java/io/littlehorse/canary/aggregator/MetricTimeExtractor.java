@@ -18,6 +18,12 @@ public class MetricTimeExtractor implements TimestampExtractor {
         }
 
         final Metric metric = (Metric) record.value();
+
+        if (!metric.getMetadata().hasTime()) {
+            log.warn("Metadata is was not provided for record {}, using default timestamp", record.key());
+            return partitionTime;
+        }
+
         return Timestamps.toMillis(metric.getMetadata().getTime());
     }
 }
