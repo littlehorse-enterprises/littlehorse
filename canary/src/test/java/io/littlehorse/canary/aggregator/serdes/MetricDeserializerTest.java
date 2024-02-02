@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator;
+package io.littlehorse.canary.aggregator.serdes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -8,27 +8,30 @@ import io.littlehorse.canary.proto.Metadata;
 import io.littlehorse.canary.proto.Metric;
 import org.junit.jupiter.api.Test;
 
-class MetricSerializerTest {
+class MetricDeserializerTest {
 
     @Test
-    void returnNullInCaseOfNull() {
-        MetricSerializer serializer = new MetricSerializer();
-        assertNull(serializer.serialize(null, null));
+    void returnNullIfReceivesNull() {
+        MetricDeserializer deserializer = new MetricDeserializer();
+
+        assertNull(deserializer.deserialize(null, null));
     }
 
     @Test
-    void rightSerialization() {
-        MetricSerializer serializer = new MetricSerializer();
-        Metric metric = Metric.newBuilder()
+    void deserialize() {
+        MetricDeserializer deserializer = new MetricDeserializer();
+
+        Metric expected = Metric.newBuilder()
                 .setMetadata(Metadata.newBuilder()
                         .setTime(Timestamps.now())
                         .setServerVersion("my-version")
                         .setServerHost("my-server"))
                 .build();
 
-        byte[] expected = metric.toByteArray();
-        byte[] actual = serializer.serialize(null, metric);
+        byte[] input = expected.toByteArray();
 
-        assertThat(actual).isEqualTo(expected);
+        Metric actual = deserializer.deserialize(null, input);
+
+        assertThat(expected).isEqualTo(actual);
     }
 }

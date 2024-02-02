@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator;
+package io.littlehorse.canary.aggregator.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

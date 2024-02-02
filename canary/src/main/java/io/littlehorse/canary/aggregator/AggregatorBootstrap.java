@@ -1,6 +1,9 @@
 package io.littlehorse.canary.aggregator;
 
 import io.littlehorse.canary.Bootstrap;
+import io.littlehorse.canary.aggregator.internal.MetricTimeExtractor;
+import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
+import io.littlehorse.canary.aggregator.topology.TaskRunLatencyTopology;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.util.Shutdown;
 import java.util.Map;
@@ -17,7 +20,7 @@ import org.apache.kafka.streams.kstream.KStream;
 public class AggregatorBootstrap implements Bootstrap {
 
     private static final Consumed<String, Metric> SERDES =
-            Consumed.with(Serdes.String(), MetricSerdes.Metric()).withTimestampExtractor(new MetricTimeExtractor());
+            Consumed.with(Serdes.String(), ProtobufSerdes.Metric()).withTimestampExtractor(new MetricTimeExtractor());
 
     public AggregatorBootstrap(final String metricsTopicName, final Map<String, Object> kafkaStreamsConfigMap) {
         final KafkaStreams kafkaStreams =
@@ -30,21 +33,8 @@ public class AggregatorBootstrap implements Bootstrap {
 
     private static Topology buildTopology(final String metricsTopicName) {
         final StreamsBuilder builder = new StreamsBuilder();
-
         final KStream<String, Metric> metricStream = builder.stream(metricsTopicName, SERDES);
-
-        buildTaskRunLatencyTopology(metricStream);
-
+        new TaskRunLatencyTopology(metricStream);
         return builder.build();
-    }
-
-    private static void buildTaskRunLatencyTopology(final KStream<String, Metric> metricStream) {
-        final KStream<String, Metric> taskRunLatencyStream =
-                metricStream.filter((key, value) -> value.hasTaskRunLatency());
-        taskRunLatencyStream.peek((key, value) -> log.debug(
-                "Hello Mijail {} {} {}",
-                value.getMetricCase(),
-                key,
-                value.getTaskRunLatency().getLatency()));
     }
 }

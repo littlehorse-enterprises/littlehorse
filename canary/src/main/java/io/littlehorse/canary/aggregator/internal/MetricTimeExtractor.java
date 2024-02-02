@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator;
+package io.littlehorse.canary.aggregator.internal;
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.proto.Metric;

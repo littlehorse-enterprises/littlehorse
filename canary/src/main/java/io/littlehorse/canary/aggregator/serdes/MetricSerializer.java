@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator;
+package io.littlehorse.canary.aggregator.serdes;
 
 import io.littlehorse.canary.proto.Metric;
 import org.apache.kafka.common.serialization.Serializer;

@@ -6,6 +6,12 @@ option java_package = "io.littlehorse.canary.proto";
 
 import "google/protobuf/timestamp.proto";
 
+message MetricAverage {
+  int64 count=1;
+  double sum=2;
+  double avg=3;
+}
+
 message Metric {
   Metadata metadata = 1;
   oneof metric {
@@ -27,8 +33,4 @@ message DuplicatedTaskRun {
 
 message TaskRunLatency {
   int64 latency = 1;
-}
-
-message StreamTopologyFailure {
-  string message = 1;
 }

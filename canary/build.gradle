@@ -38,6 +38,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.10.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
     testImplementation 'net.datafaker:datafaker:2.1.0'
+    testImplementation 'org.apache.kafka:kafka-streams-test-utils:3.6.1'
 }
 
 test {

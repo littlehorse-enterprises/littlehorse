@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator;
+package io.littlehorse.canary.aggregator.internal;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,15 +8,20 @@ import org.apache.kafka.streams.errors.DeserializationExceptionHandler;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
 @Slf4j
-public class MetricDeserializationExceptionHandler implements DeserializationExceptionHandler {
+public class ProtobufDeserializationExceptionHandler implements DeserializationExceptionHandler {
 
     private AtomicInteger errorsCounter;
 
     @Override
     public DeserializationHandlerResponse handle(
             final ProcessorContext context, final ConsumerRecord<byte[], byte[]> record, final Exception exception) {
-        log.warn("Exception caught {}", exception.getMessage());
-        return DeserializationHandlerResponse.CONTINUE;
+
+        if (ProtobufDeserializationException.class.isInstance(exception)) {
+            return DeserializationHandlerResponse.CONTINUE;
+        }
+
+        log.error("Unexpected error when deserializing", exception);
+        return DeserializationHandlerResponse.FAIL;
     }
 
     @Override
