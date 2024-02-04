@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.VariableMutation;
@@ -90,11 +91,19 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     private VariableValueModel getVarValFromThreadInTxn(
             String varName, ThreadRunModel thread, Map<String, VariableValueModel> txnCache) throws LHVarSubError {
-        VariableValueModel lhsVar = txnCache.get(this.lhsName);
-        if (lhsVar == null) {
-            lhsVar = thread.getVariable(this.lhsName).getValue();
+        VariableValueModel result = txnCache.get(this.lhsName);
+        if (result == null) {
+            VariableModel rawVariable = thread.getVariable(varName);
+            if (rawVariable == null) {
+                throw new LHVarSubError(
+                        null,
+                        "Variable %s is out of scope for threadRun %d of spec %s. Invalid WfSpec!"
+                                .formatted(varName, thread.getNumber(), thread.getThreadSpecName()));
+            }
+            result = rawVariable.getValue();
         }
-        return lhsVar.getCopy();
+
+        return result.getCopy();
     }
 
     public VariableValueModel getRhsValue(
