@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -14,8 +15,11 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+
+import org.awaitility.Awaitility;
 
 public class ATInterruptsBasic extends WorkflowLogicTest {
 
@@ -65,8 +69,9 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
             throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
         assertStatus(client, id, LHStatus.RUNNING);
-        Thread.sleep(3 * 1000);
-        assertStatus(client, id, LHStatus.COMPLETED);
+        Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> {
+            return client.getWfRun(WfRunId.newBuilder().setId(id).build()).getStatus() == LHStatus.COMPLETED;
+        });
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
     }
