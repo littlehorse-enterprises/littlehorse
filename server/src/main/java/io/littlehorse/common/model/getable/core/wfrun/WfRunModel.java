@@ -424,7 +424,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             if (fh.status == LHStatus.ERROR) {
                 fh.fail(
                         new FailureModel(
-                                "Failed launching interrupt thread with id: " + fh.number, LHConstants.CHILD_FAILURE),
+                                "Failed launching exception handler thread with id: " + fh.number, LHConstants.CHILD_FAILURE),
                         time);
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);

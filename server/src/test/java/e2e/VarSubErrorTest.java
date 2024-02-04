@@ -31,11 +31,12 @@ public class VarSubErrorTest {
         verifier.prepareRun(accessOutOfScopeVarWf)
                 // this WfRun should be terminated on the first RPC since there are no
                 // TaskRun's, ExternalEvents, or User Tasks. Everything is synchronous.
+                //
+                // Therefore, we should NOT do a waitForStatus().
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.ERROR);
-                })
-                .thenVerifyNodeRun(0, 2, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
+                    Assertions.assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.EXCEPTION);
+                    Assertions.assertThat(wfRun.getThreadRuns(2).getStatus()).isEqualTo(LHStatus.ERROR);
                 })
                 .start();
     }
