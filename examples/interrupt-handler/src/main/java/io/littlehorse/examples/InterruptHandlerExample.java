@@ -58,7 +58,7 @@ public class InterruptHandlerExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         InterruptHandlerWorker executable = new InterruptHandlerWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "my-task", config),

@@ -19,7 +19,6 @@ import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class TestContext {
         this.wfSpecStoreLock = new ReentrantLock();
     }
 
-    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) throws IOException {
+    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
         List<LHTaskWorker> workers = new ArrayList<>();
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);

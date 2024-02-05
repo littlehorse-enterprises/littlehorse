@@ -970,7 +970,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         }
     }
 
-    public static void doMain(LHServerConfig config) throws IOException, InterruptedException {
+    public static void doMain(LHServerConfig config) throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

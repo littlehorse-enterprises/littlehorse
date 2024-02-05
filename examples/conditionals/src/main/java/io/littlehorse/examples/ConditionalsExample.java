@@ -68,7 +68,7 @@ public class ConditionalsExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ConditionalsTaskWorker executable = new ConditionalsTaskWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "task-a", config),

@@ -47,7 +47,7 @@ public class HundredTasks {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> out = new ArrayList<>();
 

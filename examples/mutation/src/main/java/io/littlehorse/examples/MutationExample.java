@@ -47,7 +47,7 @@ public class MutationExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
+    public static LHTaskWorker getTaskWorker(LHConfig config) {
         SpiderManMutator executable = new SpiderManMutator();
         LHTaskWorker worker = new LHTaskWorker(executable, "spider-bite", config);
 

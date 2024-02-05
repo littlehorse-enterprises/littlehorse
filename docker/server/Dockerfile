@@ -1,5 +1,5 @@
 FROM amazoncorretto:17
-RUN mkdir /lh
+WORKDIR /lh
 COPY ./docker/server/docker-entrypoint.sh /lh
 COPY ./docker/server/log4j2.properties /lh
 COPY ./server/build/libs/server-*-all.jar /lh/server.jar

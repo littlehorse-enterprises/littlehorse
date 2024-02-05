@@ -1,7 +1,6 @@
 package io.littlehorse.driver;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -21,10 +20,6 @@ public class TestDriverExternal extends TestDriver {
         if (Files.exists(configPath)) {
             workerConfig = new LHConfig(configPath.toString());
         }
-        try {
-            client = workerConfig.getBlockingStub();
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
-        }
+        client = workerConfig.getBlockingStub();
     }
 }
