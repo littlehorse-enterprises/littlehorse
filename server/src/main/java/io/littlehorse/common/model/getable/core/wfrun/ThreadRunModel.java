@@ -601,7 +601,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     break;
                 }
             } catch (LHVarSubError exn) {
-                log.error("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
+                log.debug("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
                 fail(
                         new FailureModel(
                                 "Failed evaluating outgoing edge: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
@@ -723,7 +723,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             try {
                 mut.execute(this, varCache, nodeOutput);
             } catch (LHVarSubError exn) {
-                log.error(exn.getMessage(), exn);
                 exn.addPrefix("Mutating variable " + mut.lhsName + " with operation " + mut.operation);
                 throw exn;
             }
