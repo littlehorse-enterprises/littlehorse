@@ -8,25 +8,19 @@ public class Shutdown {
     private Shutdown() {}
 
     public static void addShutdownHook(final AutoCloseable closeable) {
-        addShutdownHook(null, closeable);
-    }
-
-    public static void addShutdownHook(final String name, final AutoCloseable closeable) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            final String nameToPresent =
-                    name != null ? name : closeable.getClass().getSimpleName();
             try {
                 closeable.close();
             } catch (Exception e) {
-                log.error("Error in ShutdownHook '{}'", nameToPresent, e);
+                log.error("Error in ShutdownHook '{}'", closeable.getClass().getName(), e);
             }
-            log.trace("{} shutdown process completed", nameToPresent);
+            log.trace("{} shutdown process completed", closeable.getClass().getName());
         }));
     }
 
     public static void block() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
-        addShutdownHook("Main", latch::countDown);
+        addShutdownHook(latch::countDown);
         latch.await();
     }
 }

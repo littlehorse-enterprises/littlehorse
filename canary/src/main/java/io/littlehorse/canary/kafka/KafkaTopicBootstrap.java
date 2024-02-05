@@ -1,8 +1,10 @@
 package io.littlehorse.canary.kafka;
 
-import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.CanaryException;
+import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.util.Shutdown;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +14,9 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.errors.TopicExistsException;
 
 @Slf4j
-public class KafkaTopicBootstrap implements Bootstrap {
+public class KafkaTopicBootstrap implements Measurable {
+
+    private final KafkaClientMetrics kafkaClientMetrics;
 
     public KafkaTopicBootstrap(
             final String metricsTopicName,
@@ -22,6 +26,9 @@ public class KafkaTopicBootstrap implements Bootstrap {
 
         final AdminClient adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
         Shutdown.addShutdownHook(adminClient);
+
+        kafkaClientMetrics = new KafkaClientMetrics(adminClient);
+        Shutdown.addShutdownHook(kafkaClientMetrics);
 
         try {
             final NewTopic canaryTopic = new NewTopic(metricsTopicName, topicPartitions, topicReplicas);
@@ -37,5 +44,10 @@ public class KafkaTopicBootstrap implements Bootstrap {
         }
 
         log.trace("Initialized");
+    }
+
+    @Override
+    public void bindTo(final MeterRegistry registry) {
+        kafkaClientMetrics.bindTo(registry);
     }
 }

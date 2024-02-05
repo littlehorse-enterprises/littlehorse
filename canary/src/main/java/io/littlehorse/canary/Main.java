@@ -1,11 +1,11 @@
 package io.littlehorse.canary;
 
 import io.littlehorse.canary.aggregator.AggregatorBootstrap;
-import io.littlehorse.canary.api.ApiBootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
 import io.littlehorse.canary.metronome.MetronomeBootstrap;
+import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
 import io.littlehorse.canary.util.Shutdown;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -35,13 +35,15 @@ public class Main {
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {
-        final ApiBootstrap apiBootstrap = new ApiBootstrap(config.getApiPort());
+        final PrometheusExporterBootstrap prometheusExporterBootstrap =
+                new PrometheusExporterBootstrap(config.getApiPort());
 
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),
                 config.getTopicPartitions(),
                 config.getTopicReplicas(),
                 config.toKafkaAdminConfig().toMap());
+        prometheusExporterBootstrap.addMesurable(kafkaTopicBootstrap);
 
         if (config.isMetronomeEnabled()) {
             final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
@@ -51,11 +53,13 @@ public class Main {
                     config.getMetronomeFrequency(),
                     config.getMetronomeThreads(),
                     config.getMetronomeRuns());
+            prometheusExporterBootstrap.addMesurable(metronomeBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {
             final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(
                     config.getTopicName(), config.toKafkaStreamsConfig().toMap());
+            prometheusExporterBootstrap.addMesurable(aggregatorBootstrap);
         }
     }
 }

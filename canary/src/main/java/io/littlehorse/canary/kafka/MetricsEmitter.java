@@ -1,8 +1,11 @@
 package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.CanaryException;
+import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.proto.Metric;
-import java.io.Closeable;
+import io.littlehorse.canary.util.Shutdown;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -14,14 +17,20 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetricsEmitter implements Closeable {
+public class MetricsEmitter implements Measurable {
 
     private final Producer<String, Bytes> producer;
     private final String topicName;
+    private final KafkaClientMetrics kafkaClientMetrics;
 
     public MetricsEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
-        this.producer = new KafkaProducer<>(kafkaProducerConfigMap);
         this.topicName = topicName;
+
+        producer = new KafkaProducer<>(kafkaProducerConfigMap);
+        Shutdown.addShutdownHook(producer);
+
+        kafkaClientMetrics = new KafkaClientMetrics(producer);
+        Shutdown.addShutdownHook(kafkaClientMetrics);
     }
 
     /**
@@ -58,7 +67,7 @@ public class MetricsEmitter implements Closeable {
     }
 
     @Override
-    public void close() {
-        producer.close();
+    public void bindTo(final MeterRegistry registry) {
+        kafkaClientMetrics.bindTo(registry);
     }
 }

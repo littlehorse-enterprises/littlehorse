@@ -1,18 +1,21 @@
 package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.Empty;
-import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.kafka.MetricsEmitter;
+import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeBootstrap implements Bootstrap {
+public class MetronomeBootstrap implements Measurable {
+
+    private final MetricsEmitter emitter;
 
     public MetronomeBootstrap(
             final String metricsTopicName,
@@ -25,8 +28,7 @@ public class MetronomeBootstrap implements Bootstrap {
         final LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
         final LittleHorseBlockingStub lhClient = lhConfig.getBlockingStub();
 
-        final MetricsEmitter emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
-        Shutdown.addShutdownHook(emitter);
+        emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
 
         initializeWorker(emitter, lhConfig);
         initializeWorkflow(lhClient);
@@ -42,7 +44,6 @@ public class MetronomeBootstrap implements Bootstrap {
             final int threads,
             final int runs) {
         final Metronome metronome = new Metronome(emitter, lhClient, frequency, threads, runs);
-        Shutdown.addShutdownHook(metronome);
     }
 
     private static void initializeWorkflow(final LittleHorseBlockingStub lhClient) {
@@ -70,5 +71,10 @@ public class MetronomeBootstrap implements Bootstrap {
                 serverVersionResponse.hasPreReleaseIdentifier()
                         ? "-" + serverVersionResponse.getPreReleaseIdentifier()
                         : "");
+    }
+
+    @Override
+    public void bindTo(final MeterRegistry registry) {
+        emitter.bindTo(registry);
     }
 }

@@ -5,9 +5,9 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.VARIABLE_NAME;
 import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 
 import io.littlehorse.canary.kafka.MetricsEmitter;
+import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import java.io.Closeable;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Metronome implements Closeable {
+public class Metronome {
 
     private final MetricsEmitter emitter;
     private final ScheduledExecutorService mainExecutor;
@@ -36,9 +36,17 @@ public class Metronome implements Closeable {
         this.lhClient = lhClient;
 
         mainExecutor = Executors.newScheduledThreadPool(1);
+        Shutdown.addShutdownHook(() -> {
+            mainExecutor.shutdownNow();
+            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
+        });
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency, TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
+        Shutdown.addShutdownHook(() -> {
+            requestsExecutor.shutdownNow();
+            requestsExecutor.awaitTermination(1, TimeUnit.SECONDS);
+        });
     }
 
     private void executeRun() {
@@ -60,24 +68,6 @@ public class Metronome implements Closeable {
         log.trace("Executing metronome");
         for (int i = 0; i < runs; i++) {
             requestsExecutor.submit(this::executeRun);
-        }
-    }
-
-    @Override
-    public void close() {
-        mainExecutor.shutdown();
-        requestsExecutor.shutdown();
-
-        try {
-            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.error("Error on terminating main executor {}", e.getMessage(), e);
-        }
-
-        try {
-            requestsExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.error("Error on terminating requests executor {}", e.getMessage(), e);
         }
     }
 }
