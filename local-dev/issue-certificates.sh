@@ -13,13 +13,11 @@ cd "$SCRIPT_DIR"
 CA_PATH=certs/ca
 CLIENT_PATH=certs/client
 SERVER_PATH=certs/server
-KEYCLOAK_PATH=certs/keycloak
 
 rm -rf certs
 mkdir -p "$CA_PATH"
 mkdir "$CLIENT_PATH"
 mkdir "$SERVER_PATH"
-mkdir "$KEYCLOAK_PATH"
 
 ########################################################
 # CA Cert
@@ -61,18 +59,3 @@ openssl x509 -req -sha256 -days 3650 \
     -in "$CLIENT_PATH/client.csr" \
     -out "$CLIENT_PATH/client.crt" \
     -set_serial 1 > /dev/null 2>&1
-########################################################
-# Keycloak Certs
-########################################################
-echo "Creating Keycloak Certificates"
-openssl req -out "$KEYCLOAK_PATH/keycloak.csr" -newkey rsa:2048 -nodes \
-    -keyout "$KEYCLOAK_PATH/keycloak.key" \
-    -subj "/CN=localhost/O=keycloak" \
-    -addext "subjectAltName = DNS:localhost" > /dev/null 2>&1
-openssl x509 -req -sha256 -days 3650 \
-    -CA "$CA_PATH/ca.crt" \
-    -CAkey "$CA_PATH/ca.key" \
-    -in "$KEYCLOAK_PATH/keycloak.csr" \
-    -out "$KEYCLOAK_PATH/keycloak.crt" \
-    -set_serial 2 \
-    -extfile <(printf "subjectAltName=DNS:localhost") > /dev/null 2>&1
