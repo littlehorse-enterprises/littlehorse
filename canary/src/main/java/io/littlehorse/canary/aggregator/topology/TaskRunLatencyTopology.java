@@ -19,7 +19,7 @@ public class TaskRunLatencyTopology {
         metricStream
                 .filter((key, value) -> value.hasTaskRunLatency())
                 .groupByKey()
-                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(30)))
+                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 .aggregate(
                         () -> MetricAverage.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),

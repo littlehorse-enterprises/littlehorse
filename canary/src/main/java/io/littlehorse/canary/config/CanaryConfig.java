@@ -48,6 +48,10 @@ public class CanaryConfig implements Config {
         return Integer.parseInt(configs.get(LH_CANARY_TOPIC_CREATION_PARTITIONS).toString());
     }
 
+    public int getApiPort() {
+        return Integer.parseInt(configs.get(LH_CANARY_API_PORT).toString());
+    }
+
     public short getTopicReplicas() {
         return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }

@@ -1,6 +1,7 @@
 package io.littlehorse.canary;
 
 import io.littlehorse.canary.aggregator.AggregatorBootstrap;
+import io.littlehorse.canary.api.ApiBootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
@@ -34,6 +35,8 @@ public class Main {
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {
+        final ApiBootstrap apiBootstrap = new ApiBootstrap(config.getApiPort());
+
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),
                 config.getTopicPartitions(),

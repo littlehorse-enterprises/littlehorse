@@ -30,6 +30,12 @@ dependencies {
     // Kafka
     implementation 'org.apache.kafka:kafka-streams:3.6.1'
 
+    // Web API
+    implementation 'io.javalin:javalin:6.0.1'
+
+    // Prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.12.2'
+
     // Tests
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -78,11 +84,6 @@ compileJava {
 protobuf {
     protoc {
         artifact = 'com.google.protobuf:protoc:3.25.2'
-    }
-    plugins {
-        grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
-        }
     }
 }
 
