@@ -39,6 +39,8 @@ The LittleHorse repository contains the following components:
   - Library for creating `TaskRun`'s in .NET.
 - [`dashboard`](dashboard)
   - Web UI for LH.
+- [`canary`](canary)
+  - Synthetic Monitoring Tool for LH Server.
 - [`lhctl`](lhctl)
     - The `lhctl` command line interface.
 - [`e2e-tests`](e2e-tests)

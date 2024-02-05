@@ -47,8 +47,6 @@ That can be done as follows:
 2. Run `./local-dev/setup.sh --refresh`.
 3. Start the LH Servers again.
 
-> To include Keycloak, use `./local-dev/setup.sh --keycloak --refresh`.
-
 ## Running Multiple LH Servers
 
 LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each

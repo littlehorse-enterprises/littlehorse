@@ -4,8 +4,8 @@ set -e
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$SCRIPT_DIR
-DOCKER_COMPOSE_KAFKA=$(
-    cat <<EOF
+
+DOCKER_COMPOSE_KAFKA=$(cat <<EOF
 services:
   kafka:
     ports:
@@ -32,8 +32,7 @@ services:
 EOF
 )
 
-DOCKER_COMPOSE_KEYCLOAK=$(
-    cat <<EOF
+DOCKER_COMPOSE_KEYCLOAK=$(cat <<EOF
 services:
   keycloak:
     ports:
@@ -51,16 +50,9 @@ EOF
 
 if [ -n "$1" ]; then
     command="$1"
-else
-    command="kafka"
 fi
 
 setup_keycloak() {
-    if ! command -v http &> /dev/null; then
-        echo "http command could not be found, install https://httpie.io/"
-        exit 1
-    fi
-
     echo "Setting Up Keycloak"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
@@ -149,7 +141,6 @@ create_keycloak_client() {
         serviceAccountsEnabled:=true \
         directAccessGrantsEnabled:=true \
         publicClient:=false
-
     echo "Client '${1}' created"
 }
 
@@ -166,18 +157,16 @@ EOF
 
 clean() {
     echo "Cleaning"
-    docker compose --file /dev/stdin \
-        --project-directory "$WORK_DIR" \
-        --project-name lh-server-kafka-local-dev \
-        down -v <<EOF
-${DOCKER_COMPOSE_KAFKA}
-EOF
-    docker compose --file /dev/stdin \
-        --project-directory "$WORK_DIR" \
-        --project-name lh-server-auth-local-dev \
-        down -v <<EOF
-${DOCKER_COMPOSE_KEYCLOAK}
-EOF
+    docker compose --project-name lh-server-kafka-local-dev down -v
+    docker compose --project-name lh-server-auth-local-dev down -v
+    rm -rf /tmp/kafkaState*
+    cd "$SCRIPT_DIR/.."
+    ./gradlew -q clean
+}
+
+refresh() {
+    echo "Cleaning"
+    docker compose --project-name lh-server-kafka-local-dev down -v
     rm -rf /tmp/kafkaState*
     cd "$SCRIPT_DIR/.."
     ./gradlew -q clean
@@ -191,21 +180,19 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --clean)
       clean=true
-      shift
       ;;
     --refresh)
       refresh=true
-      shift
       ;;
     --keycloak)
       keycloak=true
-      shift
       ;;
     *)
       echo "Unknown argument: $1"
       exit 1
       ;;
   esac
+  shift
 done
 
 if [ ${clean} = true ]; then
@@ -214,7 +201,7 @@ if [ ${clean} = true ]; then
 fi
 
 if [ ${refresh} = true ]; then
-    clean
+    refresh
 fi
 
 if [ ${keycloak} = true ]; then
