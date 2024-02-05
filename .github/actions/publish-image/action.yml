@@ -19,6 +19,9 @@ inputs:
   prefix:
     description: prefix to be appended to image tag ex brach-
     default: ""
+  tags:
+    description: "tags strategy configuration. For more information see: https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input"
+    default: ""
 
 runs:
   using: composite
@@ -84,6 +87,7 @@ runs:
           ${{ env.DOCKER_IMAGE }}
         flavor: |
           prefix=${{ inputs.prefix }}
+        tags: ${{ inputs.tags }}
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v5
