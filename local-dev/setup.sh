@@ -38,20 +38,14 @@ services:
   keycloak:
     ports:
       - "8888:8888"
-      - "8443:8443"
     container_name: lh-server-auth
     image: quay.io/keycloak/keycloak:23.0
     command:
       - start-dev
       - --http-port=8888
-      - --https-port=8443
-      - --https-certificate-file=/certs/keycloak/keycloak.crt
-      - --https-certificate-key-file=/certs/keycloak/keycloak.key
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    volumes:
-      - $WORK_DIR/certs/keycloak:/certs/keycloak
 EOF
 )
 
@@ -144,7 +138,6 @@ EOF
     echo "Client '${CLI_CLIENT_ID}' created"
 
     echo "Keycloak: http://localhost:${KEYCLOAK_PORT}"
-    echo "Keycloak TLS: https://localhost:8443"
 }
 
 create_keycloak_client() {
@@ -214,8 +207,6 @@ if [ ${clean} = true ]; then
     clean
     exit 0
 fi
-
-"$WORK_DIR/issue-certificates.sh"
 
 if [ ${keycloak} = true ]; then
     setup_keycloak
