@@ -17,7 +17,7 @@ public class PrometheusExporterServer {
         prometheusMeterRegistry = prometheusRegistry;
 
         server = Javalin.create();
-        Shutdown.addShutdownHook(server::stop);
+        Shutdown.addShutdownHook("Prometheus Exporter: Web Server", server::stop);
         server.get(METRICS_PATH, context -> printMetrics(context));
         server.start(webPort);
     }

@@ -27,10 +27,10 @@ public class MetricsEmitter implements Measurable {
         this.topicName = topicName;
 
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
-        Shutdown.addShutdownHook(producer);
+        Shutdown.addShutdownHook("Metrics Emitter", producer);
 
         kafkaClientMetrics = new KafkaClientMetrics(producer);
-        Shutdown.addShutdownHook(kafkaClientMetrics);
+        Shutdown.addShutdownHook("Metrics Emitter: Prometheus Exporter", kafkaClientMetrics);
     }
 
     /**

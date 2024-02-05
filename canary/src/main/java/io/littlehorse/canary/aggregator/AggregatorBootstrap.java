@@ -32,11 +32,11 @@ public class AggregatorBootstrap implements Measurable {
     public AggregatorBootstrap(final String metricsTopicName, final Map<String, Object> kafkaStreamsConfigMap) {
         this.kafkaStreamsConfigMap = kafkaStreamsConfigMap;
         kafkaStreams = new KafkaStreams(buildTopology(metricsTopicName), new StreamsConfig(this.kafkaStreamsConfigMap));
-        Shutdown.addShutdownHook(kafkaStreams);
+        Shutdown.addShutdownHook("Aggregator Topology", kafkaStreams);
         kafkaStreams.start();
 
         kafkaStreamsMetrics = new KafkaStreamsMetrics(kafkaStreams);
-        Shutdown.addShutdownHook(kafkaStreamsMetrics);
+        Shutdown.addShutdownHook("Aggregator Topology: Prometheus Exporter", kafkaStreamsMetrics);
 
         log.trace("Initialized");
     }

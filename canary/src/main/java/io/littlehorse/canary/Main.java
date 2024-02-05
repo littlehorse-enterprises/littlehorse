@@ -9,6 +9,7 @@ import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
 import io.littlehorse.canary.util.Shutdown;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,7 +32,10 @@ public class Main {
         }
 
         log.info("Canary started");
-        Shutdown.block();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        Shutdown.addShutdownHook("Main Thread", latch::countDown);
+        latch.await();
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {

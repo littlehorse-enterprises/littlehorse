@@ -36,14 +36,14 @@ public class Metronome {
         this.lhClient = lhClient;
 
         mainExecutor = Executors.newScheduledThreadPool(1);
-        Shutdown.addShutdownHook(() -> {
+        Shutdown.addShutdownHook("Metronome: Main Executor Thread", () -> {
             mainExecutor.shutdownNow();
             mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
         });
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency, TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
-        Shutdown.addShutdownHook(() -> {
+        Shutdown.addShutdownHook("Metronome: Request Executor Thread", () -> {
             requestsExecutor.shutdownNow();
             requestsExecutor.awaitTermination(1, TimeUnit.SECONDS);
         });

@@ -25,10 +25,10 @@ public class KafkaTopicBootstrap implements Measurable {
             final Map<String, Object> kafkaAdminConfigMap) {
 
         final AdminClient adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
-        Shutdown.addShutdownHook(adminClient);
+        Shutdown.addShutdownHook("Topics Creator", adminClient);
 
         kafkaClientMetrics = new KafkaClientMetrics(adminClient);
-        Shutdown.addShutdownHook(kafkaClientMetrics);
+        Shutdown.addShutdownHook("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
 
         try {
             final NewTopic canaryTopic = new NewTopic(metricsTopicName, topicPartitions, topicReplicas);

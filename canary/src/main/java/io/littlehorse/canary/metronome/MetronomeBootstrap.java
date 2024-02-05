@@ -55,7 +55,7 @@ public class MetronomeBootstrap implements Measurable {
         final MetronomeTask executable = new MetronomeTask(
                 emitter, lhConfig.getApiBootstrapHost(), lhConfig.getApiBootstrapPort(), getServerVersion(lhConfig));
         final LHTaskWorker worker = new LHTaskWorker(executable, MetronomeWorkflow.TASK_NAME, lhConfig);
-        Shutdown.addShutdownHook(worker);
+        Shutdown.addShutdownHook("Metronome: LH Task Worker", worker);
         worker.registerTaskDef();
         worker.start();
     }

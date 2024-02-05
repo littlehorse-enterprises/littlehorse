@@ -14,7 +14,7 @@ public class PrometheusExporterBootstrap {
 
     public PrometheusExporterBootstrap(final int webPort) {
         prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        Shutdown.addShutdownHook(prometheusRegistry::close);
+        Shutdown.addShutdownHook("Prometheus Exporter", prometheusRegistry::close);
 
         prometheusExporterServer = new PrometheusExporterServer(webPort, prometheusRegistry);
 
