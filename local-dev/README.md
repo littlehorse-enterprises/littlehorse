@@ -30,33 +30,33 @@ Result:
 }
 ```
 
-## Setup and Cleanup Kafka
-
-Run:
-
-```
-./local-dev/setup.sh
-```
+## Hard Cleanup
 
 You can clean up (i.e. stop Kafka and delete the data from the state directory) as follows:
 
 ```
-./local-dev/setup.sh clean
+./local-dev/setup.sh --clean
 ```
 
 ## Cleanup Data
 
-To "reset" the LittleHorse cluster, you need to delete the data in Kafka and also delete the KafkaStreams RocksDB state. That can be done as follows:
+To "reset" the LittleHorse cluster, you need to delete the data in Kafka and also delete the KafkaStreams RocksDB state.
+That can be done as follows:
 
 1. Stop all LH Server processes.
-2. Run `./local-dev/refresh.sh`.
+2. Run `./local-dev/setup.sh --refresh`.
 3. Start the LH Servers again.
+
+> To include Keycloak, use `./local-dev/setup.sh --keycloak --refresh`.
 
 ## Running Multiple LH Servers
 
-LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
+LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each
+other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests
+between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
 
-Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance ID's correctly.
+Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance
+ID's correctly.
 
 However, you can start two Brokers in your terminal as follows:
 
@@ -98,46 +98,26 @@ To build the `littlehorse-server` image for local development utilizing the loca
 Run keycloak and creates clients:
 
 ```
-./local-dev/setup.sh keycloak
+./local-dev/setup.sh --keycloak
 ```
 
 Clients:
 
-| Client Id | Client Secret                    | Description                                                    |
-| --------- |----------------------------------| -------------------------------------------------------------- |
-| server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                           |
-| worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
-| lhctl     | N/A                              | For lhctl cli to issue access tokens (Authorization Code Flow) |
-
-Creates certificates:
-
-```
-./local-dev/issue-certificates.sh
-```
-
-Update config:
-
-```
-LHS_LISTENERS=OAUTH:2023
-LHS_LISTENERS_PROTOCOL_MAP=OAUTH:TLS
-LHS_LISTENERS_AUTHENTICATION_MAP=OAUTH:OAUTH
-
-LHS_LISTENER_OAUTH_CERT=local-dev/certs/server/server.crt
-LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
-
-LHS_OAUTH_CLIENT_ID=server
-LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
-LHS_OAUTH_INTROSPECT_URL=http://localhost:8888/realms/lh/protocol/openid-connect/token/introspect
-```
-
-> Check file [oauth.config](configs/oauth.config)
-
+| Client Id | Client Secret                    | Description                                                      |
+|-----------|----------------------------------|------------------------------------------------------------------|
+| server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                             |
+| worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)     |
+| canary    | 8b629ff9b2684014b8c62d4da8cc371e | For LH Canary to issue access tokens (Client Credentials FLow)   |
+| dashboard | 74b897a0b5804ad3879b2117e1d51015 | For LH Dasboard to issue access tokens (Client Credentials FLow) |
+| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow)       |
 
 Run the server:
 
 ```
 ./local-dev/do-server.sh oauth
 ```
+
+> Check file [oauth.config](configs/oauth.config)
 
 Open Keycloak:
 
