@@ -76,8 +76,3 @@ openssl x509 -req -sha256 -days 3650 \
     -out "$KEYCLOAK_PATH/keycloak.crt" \
     -set_serial 2 \
     -extfile <(printf "subjectAltName=DNS:localhost") > /dev/null 2>&1
-
-# Add this to your ~/.config/littlehorse.config file
-# LHC_CLIENT_CERT=$(pwd)/$CLIENT_PATH/client.crt
-# LHC_CLIENT_KEY=$(pwd)/$CLIENT_PATH/client.key
-# LHC_CA_CERT=$(pwd)/$CA_PATH/ca.crt"

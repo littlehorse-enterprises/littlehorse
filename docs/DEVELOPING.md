@@ -34,7 +34,7 @@ pre-commit install
 LittleHorse depends upon Kafka as its backing data store. You can set up Kafka via:
 
 ```
-./local-dev/setup.sh --kafka
+./local-dev/setup.sh
 ```
 
 Note that this will also set up a Keycloak container in case you want to test LittleHorse's OAuth capabilities.

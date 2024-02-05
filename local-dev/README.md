@@ -7,7 +7,7 @@ This tools are intended to be use for development purposes.
 The LH Server depends on Kafka as a backend database. To start Kafka using docker compose, you can run:
 
 ```
-./local-dev/setup.sh --kafka
+./local-dev/setup.sh
 ```
 
 Next, you can start the LH server itself. The server can be started in a single command:
@@ -40,7 +40,8 @@ You can clean up (i.e. stop Kafka and delete the data from the state directory) 
 
 ## Cleanup Data
 
-To "reset" the LittleHorse cluster, you need to delete the data in Kafka and also delete the KafkaStreams RocksDB state. That can be done as follows:
+To "reset" the LittleHorse cluster, you need to delete the data in Kafka and also delete the KafkaStreams RocksDB state.
+That can be done as follows:
 
 1. Stop all LH Server processes.
 2. Run `./local-dev/refresh.sh`.
@@ -48,9 +49,12 @@ To "reset" the LittleHorse cluster, you need to delete the data in Kafka and als
 
 ## Running Multiple LH Servers
 
-LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
+LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each
+other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests
+between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
 
-Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance ID's correctly.
+Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance
+ID's correctly.
 
 However, you can start two Brokers in your terminal as follows:
 
@@ -92,16 +96,18 @@ To build the `littlehorse-server` image for local development utilizing the loca
 Run keycloak and creates clients:
 
 ```
-./local-dev/setup.sh --keycloak --kafka
+./local-dev/setup.sh --keycloak
 ```
 
 Clients:
 
-| Client Id | Client Secret                    | Description                                                    |
-| --------- |----------------------------------| -------------------------------------------------------------- |
-| server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                           |
-| worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
-| lhctl     | N/A                              | For lhctl cli to issue access tokens (Authorization Code Flow) |
+| Client Id | Client Secret                    | Description                                                      |
+|-----------|----------------------------------|------------------------------------------------------------------|
+| server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                             |
+| worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)     |
+| canary    | 8b629ff9b2684014b8c62d4da8cc371e | For LH Canary to issue access tokens (Client Credentials FLow)   |
+| dashboard | 74b897a0b5804ad3879b2117e1d51015 | For LH Dasboard to issue access tokens (Client Credentials FLow) |
+| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow)       |
 
 Run the server:
 
@@ -111,7 +117,7 @@ Run the server:
 
 Open Keycloak:
 
-https://localhost:8443
+http://localhost:8888
 
 - User: `admin`
 - Password: `admin`

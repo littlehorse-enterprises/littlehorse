@@ -85,12 +85,19 @@ EOF
         exit 1
     fi
 
-    REALM_NAME="lh"
+    # clients
+    CANARY_CLIENT_ID="canary"
+    CANARY_CLIENT_SECRET="8b629ff9b2684014b8c62d4da8cc371e"
+    DASHBOARD_CLIENT_ID="dashboard"
+    DASHBOARD_CLIENT_SECRET="74b897a0b5804ad3879b2117e1d51015"
     SERVER_CLIENT_ID="server"
     SERVER_CLIENT_SECRET="3bdca420cf6c48e2aa4f56d46d6327e0"
     WORKER_CLIENT_ID="worker"
     WORKER_CLIENT_SECRET="40317ab43bd34a9e93499c7ea03ad398"
     CLI_CLIENT_ID="lhctl"
+
+    # server
+    REALM_NAME="lh"
     KEYCLOAK_ADMIN="admin"
     KEYCLOAK_ADMIN_PASSWORD="admin"
     KEYCLOAK_PORT="8888"
@@ -121,27 +128,10 @@ EOF
 
     echo "Realm '${REALM_NAME}' created"
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
-        protocol=openid-connect \
-        clientId="$SERVER_CLIENT_ID" \
-        id="$SERVER_CLIENT_ID" \
-        secret="$SERVER_CLIENT_SECRET" \
-        serviceAccountsEnabled:=true \
-        directAccessGrantsEnabled:=true \
-        publicClient:=false
-
-    echo "Client '${SERVER_CLIENT_ID}' created"
-
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
-        protocol=openid-connect \
-        clientId="$WORKER_CLIENT_ID" \
-        id="$WORKER_CLIENT_ID" \
-        secret="$WORKER_CLIENT_SECRET" \
-        serviceAccountsEnabled:=true \
-        directAccessGrantsEnabled:=true \
-        publicClient:=false
-
-    echo "Client '${WORKER_CLIENT_ID}' created"
+    create_keycloak_client $SERVER_CLIENT_ID $SERVER_CLIENT_SECRET
+    create_keycloak_client $WORKER_CLIENT_ID $WORKER_CLIENT_SECRET
+    create_keycloak_client $CANARY_CLIENT_ID $CANARY_CLIENT_SECRET
+    create_keycloak_client $DASHBOARD_CLIENT_ID $DASHBOARD_CLIENT_SECRET
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
@@ -155,6 +145,19 @@ EOF
 
     echo "Keycloak: http://localhost:${KEYCLOAK_PORT}"
     echo "Keycloak TLS: https://localhost:8443"
+}
+
+create_keycloak_client() {
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+        protocol=openid-connect \
+        clientId="$1" \
+        id="$1" \
+        secret="$2" \
+        serviceAccountsEnabled:=true \
+        directAccessGrantsEnabled:=true \
+        publicClient:=false
+
+    echo "Client '${1}' created"
 }
 
 setup_kafka() {
@@ -187,7 +190,6 @@ EOF
     ./gradlew -q clean
 }
 
-kafka=false
 keycloak=false
 clean=false
 
@@ -195,10 +197,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --clean)
       clean=true
-      shift
-      ;;
-    --kafka)
-      kafka=true
       shift
       ;;
     --keycloak)
@@ -223,6 +221,4 @@ if [ ${keycloak} = true ]; then
     setup_keycloak
 fi
 
-if [ ${kafka} = true ]; then
-    setup_kafka
-fi
+setup_kafka
