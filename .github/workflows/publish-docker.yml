@@ -33,17 +33,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Dowload Server Jar artifact
+      - name: Download Server Jar artifact
         uses: actions/download-artifact@v4
         with:
           name: server-jar
           path: server/build/libs/
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-server
           dockerfile: docker/server/Dockerfile
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  lh-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+
+      - name: Tests and Build
+        run: ./gradlew canary:build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: canary-jar
+          path: canary/build/libs/canary-*-all.jar
+
+      - name: Build and Publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-canary
+          dockerfile: docker/canary/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   lhctl:
@@ -54,7 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lhctl
@@ -84,7 +111,7 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-dashboard
@@ -122,7 +149,7 @@ jobs:
           name: server-jar
           path: server/build/libs/
 
-      - name: Build and publish
+      - name: Build and Publish
         uses: ./.github/actions/publish-image
         with:
           image-name: lh-standalone

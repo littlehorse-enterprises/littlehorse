@@ -218,7 +218,7 @@ public abstract class Test {
     }
 
     public NodeRun getNodeRun(LittleHorseBlockingStub client, String wfRunId, int threadRunNumber, int nodeRunPosition)
-            throws TestFailure, IOException {
+            throws TestFailure {
         NodeRun result;
         try {
             result = client.getNodeRun(NodeRunId.newBuilder()

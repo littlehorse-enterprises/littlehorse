@@ -44,7 +44,7 @@ public class BasicExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
+    public static LHTaskWorker getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "greet", config);
 

@@ -193,7 +193,7 @@ public class ParallelApprovalExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         Notifier executable = new Notifier();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "calculate-next-notification", config),
