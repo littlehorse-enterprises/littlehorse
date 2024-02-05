@@ -115,6 +115,8 @@ Run the server:
 ./local-dev/do-server.sh oauth
 ```
 
+> Check file [oauth.config](configs/oauth.config)
+
 Open Keycloak:
 
 http://localhost:8888
