@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a Tenant.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TenantId}
  */
 public final class TenantId extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * The Tenant ID.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -60,6 +68,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The Tenant ID.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -235,6 +247,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a Tenant.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TenantId}
    */
   public static final class Builder extends
@@ -406,6 +422,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * The Tenant ID.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -422,6 +442,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The Tenant ID.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -439,6 +463,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The Tenant ID.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -452,6 +480,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Tenant ID.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -462,6 +494,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Tenant ID.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.

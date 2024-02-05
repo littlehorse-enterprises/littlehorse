@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for a SLEEP NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SleepNodeRun}
  */
 public final class SleepNodeRun extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int MATURATION_TIME_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp maturationTime_;
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    * @return Whether the maturationTime field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return maturationTime_ != null;
   }
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    * @return The maturationTime.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return maturationTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : maturationTime_;
   }
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for a SLEEP NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SleepNodeRun}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> maturationTimeBuilder_;
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      * @return Whether the maturationTime field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      * @return The maturationTime.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public Builder setMaturationTime(com.google.protobuf.Timestamp value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public Builder setMaturationTime(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public Builder mergeMaturationTime(com.google.protobuf.Timestamp value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public Builder clearMaturationTime() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getMaturationTimeBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getMaturationTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time at which the NodeRun will wake up.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

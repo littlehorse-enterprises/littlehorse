@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+ * to be run.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PendingInterruptHaltReason}
  */
 public final class PendingInterruptHaltReason extends
@@ -41,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventId externalEventId_;
   /**
+   * <pre>
+   * The ExternalEventId that caused the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    * @return Whether the externalEventId field is set.
    */
@@ -49,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return externalEventId_ != null;
   }
   /**
+   * <pre>
+   * The ExternalEventId that caused the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    * @return The externalEventId.
    */
@@ -57,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return externalEventId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : externalEventId_;
   }
   /**
+   * <pre>
+   * The ExternalEventId that caused the Interrupt.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +244,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+   * to be run.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PendingInterruptHaltReason}
    */
   public static final class Builder extends
@@ -406,6 +428,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> externalEventIdBuilder_;
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      * @return Whether the externalEventId field is set.
      */
@@ -413,6 +439,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      * @return The externalEventId.
      */
@@ -424,6 +454,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public Builder setExternalEventId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -440,6 +474,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public Builder setExternalEventId(
@@ -454,6 +492,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public Builder mergeExternalEventId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -473,6 +515,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public Builder clearExternalEventId() {
@@ -486,6 +532,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getExternalEventIdBuilder() {
@@ -494,6 +544,10 @@ private static final long serialVersionUID = 0L;
       return getExternalEventIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventIdOrBuilder() {
@@ -505,6 +559,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventId that caused the Interrupt.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventId external_event_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

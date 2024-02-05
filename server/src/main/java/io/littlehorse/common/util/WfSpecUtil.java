@@ -3,10 +3,13 @@ package io.littlehorse.common.util;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +47,10 @@ public class WfSpecUtil {
      */
     public static boolean hasBreakingChanges(WfSpecModel left, WfSpecModel right) {
         return !variablesMatch(left.getRequiredVariables(), right.getRequiredVariables())
-                || !variablesMatch(left.getSearchableVariables(), right.getSearchableVariables());
+                || !variablesMatch(left.getSearchableVariables(), right.getSearchableVariables())
+                || !variableAccessLevelMatch(
+                        left.getEntrypointThread().getVariableDefs(),
+                        right.getEntrypointThread().getVariableDefs());
     }
 
     private static boolean variablesMatch(Map<String, ThreadVarDefModel> left, Map<String, ThreadVarDefModel> right) {
@@ -53,5 +59,24 @@ public class WfSpecUtil {
         if (leftVariables.size() != rightVariables.size()) return false;
 
         return leftVariables.containsAll(rightVariables);
+    }
+
+    private static boolean variableAccessLevelMatch(List<ThreadVarDefModel> left, List<ThreadVarDefModel> right) {
+        final Map<String, WfRunVariableAccessLevel> leftVariables = new HashMap<>();
+        for (ThreadVarDefModel leftVarDefinition : left) {
+            leftVariables.put(leftVarDefinition.getVarDef().getName(), leftVarDefinition.getAccessLevel());
+        }
+        for (ThreadVarDefModel rightVarDefinition : right) {
+            WfRunVariableAccessLevel rightAccessLevel = rightVarDefinition.getAccessLevel();
+            if (rightAccessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
+                    || rightAccessLevel == WfRunVariableAccessLevel.INHERITED_VAR) {
+                WfRunVariableAccessLevel leftAccessLevel =
+                        leftVariables.get(rightVarDefinition.getVarDef().getName());
+                if (leftAccessLevel != null && leftAccessLevel.equals(WfRunVariableAccessLevel.PRIVATE_VAR)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

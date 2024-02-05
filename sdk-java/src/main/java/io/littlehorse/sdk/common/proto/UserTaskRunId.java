@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a UserTaskRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskRunId}
  */
 public final class UserTaskRunId extends
@@ -42,6 +46,11 @@ private static final long serialVersionUID = 0L;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
+   * <pre>
+   * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -50,6 +59,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ != null;
   }
   /**
+   * <pre>
+   * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
@@ -58,6 +72,11 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
   /**
+   * <pre>
+   * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+   * with a WfRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   @java.lang.Override
@@ -69,6 +88,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userTaskGuid_ = "";
   /**
+   * <pre>
+   * Unique identifier for this UserTaskRun.
+   * </pre>
+   *
    * <code>string user_task_guid = 2;</code>
    * @return The userTaskGuid.
    */
@@ -86,6 +109,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Unique identifier for this UserTaskRun.
+   * </pre>
+   *
    * <code>string user_task_guid = 2;</code>
    * @return The bytes for userTaskGuid.
    */
@@ -277,6 +304,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a UserTaskRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskRunId}
    */
   public static final class Builder extends
@@ -470,6 +501,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -477,6 +513,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      * @return The wfRunId.
      */
@@ -488,6 +529,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -504,6 +550,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder setWfRunId(
@@ -518,6 +569,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -537,6 +593,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public Builder clearWfRunId() {
@@ -550,6 +611,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
@@ -558,6 +624,11 @@ private static final long serialVersionUID = 0L;
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
@@ -569,6 +640,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+     * with a WfRun.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -587,6 +663,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userTaskGuid_ = "";
     /**
+     * <pre>
+     * Unique identifier for this UserTaskRun.
+     * </pre>
+     *
      * <code>string user_task_guid = 2;</code>
      * @return The userTaskGuid.
      */
@@ -603,6 +683,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Unique identifier for this UserTaskRun.
+     * </pre>
+     *
      * <code>string user_task_guid = 2;</code>
      * @return The bytes for userTaskGuid.
      */
@@ -620,6 +704,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Unique identifier for this UserTaskRun.
+     * </pre>
+     *
      * <code>string user_task_guid = 2;</code>
      * @param value The userTaskGuid to set.
      * @return This builder for chaining.
@@ -633,6 +721,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Unique identifier for this UserTaskRun.
+     * </pre>
+     *
      * <code>string user_task_guid = 2;</code>
      * @return This builder for chaining.
      */
@@ -643,6 +735,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Unique identifier for this UserTaskRun.
+     * </pre>
+     *
      * <code>string user_task_guid = 2;</code>
      * @param value The bytes for userTaskGuid to set.
      * @return This builder for chaining.

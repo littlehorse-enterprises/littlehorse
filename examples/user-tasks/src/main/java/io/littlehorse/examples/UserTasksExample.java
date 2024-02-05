@@ -133,7 +133,7 @@ public class UserTasksExample {
         return props;
     }
 
-    public LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
+    public LHTaskWorker getTaskWorker(LHConfig config) {
         EmailSender executable = new EmailSender();
         LHTaskWorker worker = new LHTaskWorker(executable, "send-email", config);
 

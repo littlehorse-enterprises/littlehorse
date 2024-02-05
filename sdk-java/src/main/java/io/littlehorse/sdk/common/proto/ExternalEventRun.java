@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for an EXTERNAL_EVENT NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExternalEventRun}
  */
 public final class ExternalEventRun extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
+   * <pre>
+   * The ExternalEventDefId that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return Whether the externalEventDefId field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ != null;
   }
   /**
+   * <pre>
+   * The ExternalEventDefId that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return The externalEventDefId.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
   }
   /**
+   * <pre>
+   * The ExternalEventDefId that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +84,10 @@ private static final long serialVersionUID = 0L;
   public static final int EVENT_TIME_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp eventTime_;
   /**
+   * <pre>
+   * The time that the ExternalEvent arrived. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
    * @return Whether the eventTime field is set.
    */
@@ -76,6 +96,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The time that the ExternalEvent arrived. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
    * @return The eventTime.
    */
@@ -84,6 +108,10 @@ private static final long serialVersionUID = 0L;
     return eventTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : eventTime_;
   }
   /**
+   * <pre>
+   * The time that the ExternalEvent arrived. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
    */
   @java.lang.Override
@@ -94,6 +122,10 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_ID_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.ExternalEventId externalEventId_;
   /**
+   * <pre>
+   * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
    * @return Whether the externalEventId field is set.
    */
@@ -102,6 +134,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
    * @return The externalEventId.
    */
@@ -110,6 +146,10 @@ private static final long serialVersionUID = 0L;
     return externalEventId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : externalEventId_;
   }
   /**
+   * <pre>
+   * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
    */
   @java.lang.Override
@@ -312,6 +352,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for an EXTERNAL_EVENT NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExternalEventRun}
    */
   public static final class Builder extends
@@ -543,6 +587,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return Whether the externalEventDefId field is set.
      */
@@ -550,6 +598,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return The externalEventDefId.
      */
@@ -561,6 +613,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -577,6 +633,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(
@@ -591,6 +651,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -610,6 +674,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder clearExternalEventDefId() {
@@ -623,6 +691,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
@@ -631,6 +703,10 @@ private static final long serialVersionUID = 0L;
       return getExternalEventDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
@@ -642,6 +718,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventDefId that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -662,6 +742,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> eventTimeBuilder_;
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      * @return Whether the eventTime field is set.
      */
@@ -669,6 +753,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      * @return The eventTime.
      */
@@ -680,6 +768,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public Builder setEventTime(com.google.protobuf.Timestamp value) {
@@ -696,6 +788,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public Builder setEventTime(
@@ -710,6 +806,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public Builder mergeEventTime(com.google.protobuf.Timestamp value) {
@@ -729,6 +829,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public Builder clearEventTime() {
@@ -742,6 +846,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEventTimeBuilder() {
@@ -750,6 +858,10 @@ private static final long serialVersionUID = 0L;
       return getEventTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEventTimeOrBuilder() {
@@ -761,6 +873,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time that the ExternalEvent arrived. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp event_time = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -781,6 +897,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> externalEventIdBuilder_;
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      * @return Whether the externalEventId field is set.
      */
@@ -788,6 +908,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      * @return The externalEventId.
      */
@@ -799,6 +923,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public Builder setExternalEventId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -815,6 +943,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public Builder setExternalEventId(
@@ -829,6 +961,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public Builder mergeExternalEventId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -848,6 +984,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public Builder clearExternalEventId() {
@@ -861,6 +1001,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getExternalEventIdBuilder() {
@@ -869,6 +1013,10 @@ private static final long serialVersionUID = 0L;
       return getExternalEventIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventIdOrBuilder() {
@@ -880,6 +1028,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ExternalEventId of the ExternalEvent. Unset if still waiting.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

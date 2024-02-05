@@ -19,7 +19,6 @@ import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ public class TestContext {
 
     private final LHConfig config;
     private final LittleHorseBlockingStub lhClient;
+    private final LittleHorseBlockingStub anonymousClient;
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
 
@@ -47,10 +47,11 @@ public class TestContext {
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
+        this.anonymousClient = bootstrapper.getAnonymousClient();
         this.wfSpecStoreLock = new ReentrantLock();
     }
 
-    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) throws IOException {
+    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
         List<LHTaskWorker> workers = new ArrayList<>();
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
@@ -192,6 +193,10 @@ public class TestContext {
 
     public LittleHorseBlockingStub getLhClient() {
         return lhClient;
+    }
+
+    public LittleHorseBlockingStub getAnonymousClient() {
+        return anonymousClient;
     }
 
     public LHConfig getConfig() {

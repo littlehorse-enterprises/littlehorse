@@ -46,7 +46,7 @@ public class LHServerConnectionManagerTest {
 
     @Test
     @Timeout(value = 20)
-    public void shouldStopManagerWhenRetriesWhereExhaustedAfterErrorsHasOccurred() throws Exception {
+    public void shouldStopManagerWhenRetriesWhereExhaustedAfterErrorsHasOccurred() {
         final long timeout = 15_000;
 
         final ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -79,7 +79,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void connectionManagerIsNotHealthyIfAFailureHasBeenNotified() throws Exception {
+    public void connectionManagerIsNotHealthyIfAFailureHasBeenNotified() {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -91,7 +91,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void connectionManagerRecoverHealthWhenASuccessHeartbeatIsNotified() throws Exception {
+    public void connectionManagerRecoverHealthWhenASuccessHeartbeatIsNotified() {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -105,7 +105,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void clusterIsHealthyWhenResponseIndicatesThat() throws Exception {
+    public void clusterIsHealthyWhenResponseIndicatesThat() {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -120,7 +120,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void establishClusterAsHealthyWhenTheResponseIndicatesThat() throws IOException {
+    public void establishClusterAsHealthyWhenTheResponseIndicatesThat() {
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
         RegisterTaskWorkerResponse responseIndicatingClusterIsHealthy = RegisterTaskWorkerResponse.newBuilder()
                 .setIsClusterHealthy(true)
@@ -135,7 +135,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void establishClusterAsUnhealthyWhenTheResponseIndicatesThat() throws IOException {
+    public void establishClusterAsUnhealthyWhenTheResponseIndicatesThat() {
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
         RegisterTaskWorkerResponse responseIndicatingClusterIsUnhealthy = RegisterTaskWorkerResponse.newBuilder()
                 .setIsClusterHealthy(false)
@@ -150,7 +150,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void establishClusterAsHealthyWhenTheResponseDoesNotHaveThatMetadata() throws IOException {
+    public void establishClusterAsHealthyWhenTheResponseDoesNotHaveThatMetadata() {
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
         RegisterTaskWorkerResponse responseWithoutClusterHealthMetadata =
                 RegisterTaskWorkerResponse.newBuilder().build();
@@ -171,7 +171,7 @@ public class LHServerConnectionManagerTest {
         when(mockConfig.getWorkerThreads()).thenReturn(1);
         when(mockTaskDef.getId())
                 .thenReturn(TaskDefId.newBuilder().setName("test").build());
-        when(mockConfig.getClientId()).thenReturn("test-client-id");
+        when(mockConfig.getTaskWorkerId()).thenReturn("test-client-id");
         when(mockConfig.getConnectListener()).thenReturn("test-listener");
     }
 }

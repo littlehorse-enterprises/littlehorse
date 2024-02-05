@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdateModel;
 import io.littlehorse.common.util.LHUtil;
@@ -48,7 +49,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         RepartitionExecutionContext repartitionContext = buildExecutionContext(record.headers());
         if (record.value() != null) {
             log.debug("Received a metric update!");
-            String tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
+            TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
             record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
         }
     }

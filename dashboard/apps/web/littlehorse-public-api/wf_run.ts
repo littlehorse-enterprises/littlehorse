@@ -6,10 +6,18 @@ import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/** The type of a ThreadRUn. */
 export enum ThreadType {
+  /** ENTRYPOINT - The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0. */
   ENTRYPOINT = "ENTRYPOINT",
+  /**
+   * CHILD - A ThreadRun explicitly created by another ThreadRun via a START_THREAD or START_MULTIPLE_THREADS
+   * NodeRun.
+   */
   CHILD = "CHILD",
+  /** INTERRUPT - A ThreadRun that was created to handle an Interrupt. */
   INTERRUPT = "INTERRUPT",
+  /** FAILURE_HANDLER - A ThreadRun that was created to handle a Failure. */
   FAILURE_HANDLER = "FAILURE_HANDLER",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -67,89 +75,240 @@ export function threadTypeToNumber(object: ThreadType): number {
   }
 }
 
+/** A WfRun is a running instance of a WfSpec. */
 export interface WfRun {
-  id: WfRunId | undefined;
-  wfSpecId: WfSpecId | undefined;
+  /** The ID of the WfRun. */
+  id:
+    | WfRunId
+    | undefined;
+  /** The ID of the WfSpec that this WfRun belongs to. */
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /**
+   * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+   * old WfSpecId to this list for historical auditing and debugging purposes.
+   */
   oldWfSpecVersions: WfSpecId[];
+  /** The status of this WfRun. */
   status: LHStatus;
   /**
+   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+   * is given by greatest_thread_run_number + 1.
+   *
    * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns.
+   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+   * from the thread_runs list once its retention period expires.
    */
   greatestThreadrunNumber: number;
-  startTime: string | undefined;
-  endTime?: string | undefined;
+  /** The time the WfRun was started. */
+  startTime:
+    | string
+    | undefined;
+  /** The time the WfRun failed or completed. */
+  endTime?:
+    | string
+    | undefined;
+  /**
+   * A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+   * have not yet expired.
+   */
   threadRuns: ThreadRun[];
+  /**
+   * A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+   * halting.
+   */
   pendingInterrupts: PendingInterrupt[];
+  /**
+   * A list of pending failure handlers which will fire once their appropriate ThreadRun's
+   * finish halting.
+   */
   pendingFailures: PendingFailureHandler[];
 }
 
+/** A ThreadRun is a running thread of execution within a WfRun. */
 export interface ThreadRun {
-  wfSpecId: WfSpecId | undefined;
+  /**
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   */
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /**
+   * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+   * the chronological ordering of when the ThreadRun's were created. If you have not
+   * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+   * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+   * list.
+   */
   number: number;
+  /** The status of the ThreadRun. */
   status: LHStatus;
+  /** The name of the ThreadSpec being run. */
   threadSpecName: string;
-  startTime: string | undefined;
-  endTime?: string | undefined;
-  errorMessage?: string | undefined;
+  /** The time the ThreadRun was started. */
+  startTime:
+    | string
+    | undefined;
+  /** The time the ThreadRun was completed or failed. Unset if still active. */
+  endTime?:
+    | string
+    | undefined;
+  /** Human-readable error message detailing what went wrong in the case of a failure. */
+  errorMessage?:
+    | string
+    | undefined;
+  /** List of thread_run_number's for all child thread_runs. */
   childThreadIds: number[];
-  parentThreadId?: number | undefined;
+  /** Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread. */
+  parentThreadId?:
+    | number
+    | undefined;
+  /**
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   */
   haltReasons: ThreadHaltReason[];
-  interruptTriggerId?: ExternalEventId | undefined;
-  failureBeingHandled?: FailureBeingHandled | undefined;
+  /**
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   */
+  interruptTriggerId?:
+    | ExternalEventId
+    | undefined;
+  /**
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   */
+  failureBeingHandled?:
+    | FailureBeingHandled
+    | undefined;
+  /**
+   * This is the current `position` of the current NodeRun being run. This is an
+   * auto-incremented field that gets incremented every time we run a new NodeRun.
+   */
   currentNodePosition: number;
+  /**
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   */
   handledFailedChildren: number[];
+  /** The Type of this ThreadRun. */
   type: ThreadType;
 }
 
+/** Points to the Failure that is currently being handled in the ThreadRun. */
 export interface FailureBeingHandled {
+  /** The thread run number. */
   threadRunNumber: number;
+  /** The position of the NodeRun causing the failure. */
   nodeRunPosition: number;
+  /** The number of the failure. */
   failureNumber: number;
 }
 
+/**
+ * Represents an ExternalEvent that has a registered Interrupt Handler for it
+ * and which is pending to be sent to the relevant ThreadRun's.
+ */
 export interface PendingInterrupt {
-  externalEventId: ExternalEventId | undefined;
+  /** The ID of the ExternalEvent triggering the Interrupt. */
+  externalEventId:
+    | ExternalEventId
+    | undefined;
+  /** The name of the ThreadSpec to run to handle the Interrupt. */
   handlerSpecName: string;
+  /**
+   * The ID of the ThreadRun to interrupt. Must wait for this ThreadRun to be
+   * HALTED before running the Interrupt Handler.
+   */
   interruptedThreadId: number;
 }
 
+/** Represents a Failure Handler that is pending to be run. */
 export interface PendingFailureHandler {
+  /** The ThreadRun that failed. */
   failedThreadRun: number;
+  /** The name of the ThreadSpec to run to handle the failure. */
   handlerSpecName: string;
 }
 
+/**
+ * A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+ * to be run.
+ */
 export interface PendingInterruptHaltReason {
+  /** The ExternalEventId that caused the Interrupt. */
   externalEventId: ExternalEventId | undefined;
 }
 
+/**
+ * A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+ * run.
+ */
 export interface PendingFailureHandlerHaltReason {
+  /** The position of the NodeRun which threw the failure. */
   nodeRunPosition: number;
 }
 
+/** A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run. */
 export interface HandlingFailureHaltReason {
+  /** The ID of the Failure Handler ThreadRun. */
   handlerThreadId: number;
 }
 
+/** A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED. */
 export interface ParentHalted {
+  /** The ID of the halted parent. */
   parentThreadId: number;
 }
 
+/**
+ * A Halt Reason denoting that a ThreadRun is halted because it is waiting for the
+ * interrupt handler threadRun to run.
+ */
 export interface Interrupted {
+  /** The ID of the Interrupt Handler ThreadRun. */
   interruptThreadId: number;
 }
 
+/** A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request. */
 export interface ManualHalt {
   /** Nothing to store. */
   meaningOfLife: boolean;
 }
 
+/** Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context. */
 export interface ThreadHaltReason {
-  parentHalted?: ParentHalted | undefined;
-  interrupted?: Interrupted | undefined;
-  pendingInterrupt?: PendingInterruptHaltReason | undefined;
-  pendingFailure?: PendingFailureHandlerHaltReason | undefined;
-  handlingFailure?: HandlingFailureHaltReason | undefined;
+  /** Parent threadRun halted. */
+  parentHalted?:
+    | ParentHalted
+    | undefined;
+  /** Handling an Interrupt. */
+  interrupted?:
+    | Interrupted
+    | undefined;
+  /** Waiting to handle Interrupt. */
+  pendingInterrupt?:
+    | PendingInterruptHaltReason
+    | undefined;
+  /** Waiting to handle a failure. */
+  pendingFailure?:
+    | PendingFailureHandlerHaltReason
+    | undefined;
+  /** Handling a failure. */
+  handlingFailure?:
+    | HandlingFailureHaltReason
+    | undefined;
+  /** Manually stopped the WfRun. */
   manualHalt?: ManualHalt | undefined;
 }
 
@@ -1470,7 +1629,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

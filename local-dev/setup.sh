@@ -169,7 +169,7 @@ EOF
 }
 
 clean() {
-    echo "Cleanning"
+    echo "Cleaning"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-kafka-local-dev \

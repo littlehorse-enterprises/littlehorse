@@ -11,8 +11,14 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
 message TaskDef {
+  // The ID of this TaskDef.
   TaskDefId id = 1;
+
+  // The input variables required to execute this TaskDef.
   repeated VariableDef input_vars = 2;
+
+  // The time at which this TaskDef was created.
   google.protobuf.Timestamp created_at = 3;
 }

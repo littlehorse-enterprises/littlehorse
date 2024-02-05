@@ -10,9 +10,12 @@ import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.Authorize;
 import io.littlehorse.server.streams.ServerTopology;
@@ -54,8 +57,15 @@ public class RequestAuthorizer implements ServerAuthorizer {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        String clientId = headers.get(CLIENT_ID);
-        String tenantId = headers.get(TENANT_ID);
+        String clientIdStr = headers.get(CLIENT_ID);
+        PrincipalIdModel clientId = clientIdStr == null
+                ? null
+                : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
+        String tenantIdStr = headers.get(TENANT_ID);
+        TenantIdModel tenantId = tenantIdStr == null
+                ? null
+                : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
+
         Context context = Context.current();
         try {
             RequestExecutionContext requestContext = contextFor(clientId, tenantId);
@@ -74,7 +84,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
         }
     }
 
-    private RequestExecutionContext contextFor(String clientId, String tenantId) {
+    private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
         return new RequestExecutionContext(
                 clientId,
                 tenantId,

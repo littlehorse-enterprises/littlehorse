@@ -204,12 +204,12 @@ message LHTimerPb {
     string key = 2;
     string topic = 3;
     bytes payload = 4;
-    optional string tenant_id = 5; // default if not set
-    optional string principal_id = 6; // anonymous if not set
+    optional TenantId tenant_id = 5; // default if not set
+    optional PrincipalId principal_id = 6; // anonymous if not set
 }
 
 message TaskWorkerMetadata {
-  string client_id = 1;
+  string task_worker_id = 1;
   google.protobuf.Timestamp latest_heartbeat = 2;
   repeated LHHostInfo hosts = 3;
 }

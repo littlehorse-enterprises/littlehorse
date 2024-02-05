@@ -24,8 +24,6 @@ private static final long serialVersionUID = 0L;
     key_ = "";
     topic_ = "";
     payload_ = com.google.protobuf.ByteString.EMPTY;
-    tenantId_ = "";
-    principalId_ = "";
   }
 
   @java.lang.Override
@@ -165,14 +163,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TENANT_ID_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
+  private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
    * <pre>
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    * @return Whether the tenantId field is set.
    */
   @java.lang.Override
@@ -184,54 +181,33 @@ private static final long serialVersionUID = 0L;
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    * @return The tenantId.
    */
   @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
    * <pre>
    * default if not set
    * </pre>
    *
-   * <code>optional string tenant_id = 5;</code>
-   * @return The bytes for tenantId.
+   * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
 
   public static final int PRINCIPAL_ID_FIELD_NUMBER = 6;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object principalId_ = "";
+  private io.littlehorse.sdk.common.proto.PrincipalId principalId_;
   /**
    * <pre>
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    * @return Whether the principalId field is set.
    */
   @java.lang.Override
@@ -243,43 +219,23 @@ private static final long serialVersionUID = 0L;
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    * @return The principalId.
    */
   @java.lang.Override
-  public java.lang.String getPrincipalId() {
-    java.lang.Object ref = principalId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      principalId_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.PrincipalId getPrincipalId() {
+    return principalId_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : principalId_;
   }
   /**
    * <pre>
    * anonymous if not set
    * </pre>
    *
-   * <code>optional string principal_id = 6;</code>
-   * @return The bytes for principalId.
+   * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getPrincipalIdBytes() {
-    java.lang.Object ref = principalId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      principalId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalIdOrBuilder() {
+    return principalId_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : principalId_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -309,10 +265,10 @@ private static final long serialVersionUID = 0L;
       output.writeBytes(4, payload_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, tenantId_);
+      output.writeMessage(5, getTenantId());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, principalId_);
+      output.writeMessage(6, getPrincipalId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -338,10 +294,12 @@ private static final long serialVersionUID = 0L;
         .computeBytesSize(4, payload_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, tenantId_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getTenantId());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, principalId_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getPrincipalId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -532,13 +490,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.LHTimerPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getMaturationTimeFieldBuilder();
+        getTenantIdFieldBuilder();
+        getPrincipalIdFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -552,8 +518,16 @@ private static final long serialVersionUID = 0L;
       key_ = "";
       topic_ = "";
       payload_ = com.google.protobuf.ByteString.EMPTY;
-      tenantId_ = "";
-      principalId_ = "";
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
+      principalId_ = null;
+      if (principalIdBuilder_ != null) {
+        principalIdBuilder_.dispose();
+        principalIdBuilder_ = null;
+      }
       return this;
     }
 
@@ -603,11 +577,15 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.tenantId_ = tenantId_;
+        result.tenantId_ = tenantIdBuilder_ == null
+            ? tenantId_
+            : tenantIdBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.principalId_ = principalId_;
+        result.principalId_ = principalIdBuilder_ == null
+            ? principalId_
+            : principalIdBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
@@ -674,14 +652,10 @@ private static final long serialVersionUID = 0L;
         setPayload(other.getPayload());
       }
       if (other.hasTenantId()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000010;
-        onChanged();
+        mergeTenantId(other.getTenantId());
       }
       if (other.hasPrincipalId()) {
-        principalId_ = other.principalId_;
-        bitField0_ |= 0x00000020;
-        onChanged();
+        mergePrincipalId(other.getPrincipalId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -732,12 +706,16 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 34
             case 42: {
-              tenantId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getTenantIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000010;
               break;
             } // case 42
             case 50: {
-              principalId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getPrincipalIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000020;
               break;
             } // case 50
@@ -1053,13 +1031,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object tenantId_ = "";
+    private io.littlehorse.sdk.common.proto.TenantId tenantId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
      * <pre>
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      * @return Whether the tenantId field is set.
      */
     public boolean hasTenantId() {
@@ -1070,19 +1050,14 @@ private static final long serialVersionUID = 0L;
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      * @return The tenantId.
      */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+      if (tenantIdBuilder_ == null) {
+        return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
       } else {
-        return (java.lang.String) ref;
+        return tenantIdBuilder_.getMessage();
       }
     }
     /**
@@ -1090,35 +1065,35 @@ private static final long serialVersionUID = 0L;
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
-     * @return The bytes for tenantId.
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      */
-    public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
+    public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        tenantId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        tenantIdBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
     }
     /**
      * <pre>
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
-     * @param value The tenantId to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      */
     public Builder setTenantId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
+        io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
+      if (tenantIdBuilder_ == null) {
+        tenantId_ = builderForValue.build();
+      } else {
+        tenantIdBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
@@ -1128,12 +1103,38 @@ private static final long serialVersionUID = 0L;
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
+     */
+    public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          tenantId_ != null &&
+          tenantId_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
+          getTenantIdBuilder().mergeFrom(value);
+        } else {
+          tenantId_ = value;
+        }
+      } else {
+        tenantIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      */
     public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
       bitField0_ = (bitField0_ & ~0x00000010);
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
@@ -1142,27 +1143,58 @@ private static final long serialVersionUID = 0L;
      * default if not set
      * </pre>
      *
-     * <code>optional string tenant_id = 5;</code>
-     * @param value The bytes for tenantId to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
      */
-    public Builder setTenantIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      tenantId_ = value;
+    public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
       bitField0_ |= 0x00000010;
       onChanged();
-      return this;
+      return getTenantIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+      if (tenantIdBuilder_ != null) {
+        return tenantIdBuilder_.getMessageOrBuilder();
+      } else {
+        return tenantId_ == null ?
+            io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
+      }
+    }
+    /**
+     * <pre>
+     * default if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.TenantId tenant_id = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
+        getTenantIdFieldBuilder() {
+      if (tenantIdBuilder_ == null) {
+        tenantIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
+                getTenantId(),
+                getParentForChildren(),
+                isClean());
+        tenantId_ = null;
+      }
+      return tenantIdBuilder_;
     }
 
-    private java.lang.Object principalId_ = "";
+    private io.littlehorse.sdk.common.proto.PrincipalId principalId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> principalIdBuilder_;
     /**
      * <pre>
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      * @return Whether the principalId field is set.
      */
     public boolean hasPrincipalId() {
@@ -1173,19 +1205,14 @@ private static final long serialVersionUID = 0L;
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      * @return The principalId.
      */
-    public java.lang.String getPrincipalId() {
-      java.lang.Object ref = principalId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        principalId_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.PrincipalId getPrincipalId() {
+      if (principalIdBuilder_ == null) {
+        return principalId_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : principalId_;
       } else {
-        return (java.lang.String) ref;
+        return principalIdBuilder_.getMessage();
       }
     }
     /**
@@ -1193,35 +1220,35 @@ private static final long serialVersionUID = 0L;
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
-     * @return The bytes for principalId.
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      */
-    public com.google.protobuf.ByteString
-        getPrincipalIdBytes() {
-      java.lang.Object ref = principalId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        principalId_ = b;
-        return b;
+    public Builder setPrincipalId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (principalIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        principalId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        principalIdBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
     }
     /**
      * <pre>
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
-     * @param value The principalId to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      */
     public Builder setPrincipalId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      principalId_ = value;
+        io.littlehorse.sdk.common.proto.PrincipalId.Builder builderForValue) {
+      if (principalIdBuilder_ == null) {
+        principalId_ = builderForValue.build();
+      } else {
+        principalIdBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000020;
       onChanged();
       return this;
@@ -1231,12 +1258,38 @@ private static final long serialVersionUID = 0L;
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
+     */
+    public Builder mergePrincipalId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (principalIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0) &&
+          principalId_ != null &&
+          principalId_ != io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance()) {
+          getPrincipalIdBuilder().mergeFrom(value);
+        } else {
+          principalId_ = value;
+        }
+      } else {
+        principalIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      */
     public Builder clearPrincipalId() {
-      principalId_ = getDefaultInstance().getPrincipalId();
       bitField0_ = (bitField0_ & ~0x00000020);
+      principalId_ = null;
+      if (principalIdBuilder_ != null) {
+        principalIdBuilder_.dispose();
+        principalIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
@@ -1245,18 +1298,47 @@ private static final long serialVersionUID = 0L;
      * anonymous if not set
      * </pre>
      *
-     * <code>optional string principal_id = 6;</code>
-     * @param value The bytes for principalId to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
      */
-    public Builder setPrincipalIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      principalId_ = value;
+    public io.littlehorse.sdk.common.proto.PrincipalId.Builder getPrincipalIdBuilder() {
       bitField0_ |= 0x00000020;
       onChanged();
-      return this;
+      return getPrincipalIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalIdOrBuilder() {
+      if (principalIdBuilder_ != null) {
+        return principalIdBuilder_.getMessageOrBuilder();
+      } else {
+        return principalId_ == null ?
+            io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : principalId_;
+      }
+    }
+    /**
+     * <pre>
+     * anonymous if not set
+     * </pre>
+     *
+     * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> 
+        getPrincipalIdFieldBuilder() {
+      if (principalIdBuilder_ == null) {
+        principalIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder>(
+                getPrincipalId(),
+                getParentForChildren(),
+                isClean());
+        principalId_ = null;
+      }
+      return principalIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

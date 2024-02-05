@@ -31,6 +31,59 @@ import { ExternalEventDefId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+export enum WfRunVariableAccessLevel {
+  PUBLIC_VAR = "PUBLIC_VAR",
+  PRIVATE_VAR = "PRIVATE_VAR",
+  INHERITED_VAR = "INHERITED_VAR",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function wfRunVariableAccessLevelFromJSON(object: any): WfRunVariableAccessLevel {
+  switch (object) {
+    case 0:
+    case "PUBLIC_VAR":
+      return WfRunVariableAccessLevel.PUBLIC_VAR;
+    case 1:
+    case "PRIVATE_VAR":
+      return WfRunVariableAccessLevel.PRIVATE_VAR;
+    case 2:
+    case "INHERITED_VAR":
+      return WfRunVariableAccessLevel.INHERITED_VAR;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WfRunVariableAccessLevel.UNRECOGNIZED;
+  }
+}
+
+export function wfRunVariableAccessLevelToJSON(object: WfRunVariableAccessLevel): string {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return "PUBLIC_VAR";
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return "PRIVATE_VAR";
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return "INHERITED_VAR";
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLevel): number {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return 0;
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return 1;
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return 2;
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 export interface WfSpec {
   id: WfSpecId | undefined;
   createdAt: string | undefined;
@@ -66,6 +119,12 @@ export interface WfSpec_ThreadSpecsEntry {
 export interface WfSpec_ParentWfSpecReference {
   /** Name of the Parent WfSpec */
   wfSpecName: string;
+  /**
+   * FOR NOW: no validation of variables on parent. In the future we will pass
+   * wf_spec_major_version, but we should probably examine the rules for
+   * evolution in the future.
+   */
+  wfSpecMajorVersion: number;
 }
 
 export interface WorkflowRetentionPolicy {
@@ -91,6 +150,7 @@ export interface ThreadVarDef {
   required: boolean;
   searchable: boolean;
   jsonIndexes: JsonIndex[];
+  accessLevel: WfRunVariableAccessLevel;
 }
 
 export interface ThreadSpec {
@@ -606,13 +666,16 @@ export const WfSpec_ThreadSpecsEntry = {
 };
 
 function createBaseWfSpec_ParentWfSpecReference(): WfSpec_ParentWfSpecReference {
-  return { wfSpecName: "" };
+  return { wfSpecName: "", wfSpecMajorVersion: 0 };
 }
 
 export const WfSpec_ParentWfSpecReference = {
   encode(message: WfSpec_ParentWfSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
     }
     return writer;
   },
@@ -631,6 +694,13 @@ export const WfSpec_ParentWfSpecReference = {
 
           message.wfSpecName = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -641,13 +711,19 @@ export const WfSpec_ParentWfSpecReference = {
   },
 
   fromJSON(object: any): WfSpec_ParentWfSpecReference {
-    return { wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "" };
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : 0,
+    };
   },
 
   toJSON(message: WfSpec_ParentWfSpecReference): unknown {
     const obj: any = {};
     if (message.wfSpecName !== "") {
       obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
     }
     return obj;
   },
@@ -658,6 +734,7 @@ export const WfSpec_ParentWfSpecReference = {
   fromPartial<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(object: I): WfSpec_ParentWfSpecReference {
     const message = createBaseWfSpec_ParentWfSpecReference();
     message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? 0;
     return message;
   },
 };
@@ -857,7 +934,13 @@ export const SearchableVariableDef = {
 };
 
 function createBaseThreadVarDef(): ThreadVarDef {
-  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [] };
+  return {
+    varDef: undefined,
+    required: false,
+    searchable: false,
+    jsonIndexes: [],
+    accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
+  };
 }
 
 export const ThreadVarDef = {
@@ -873,6 +956,9 @@ export const ThreadVarDef = {
     }
     for (const v of message.jsonIndexes) {
       JsonIndex.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      writer.uint32(40).int32(wfRunVariableAccessLevelToNumber(message.accessLevel));
     }
     return writer;
   },
@@ -912,6 +998,13 @@ export const ThreadVarDef = {
 
           message.jsonIndexes.push(JsonIndex.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.accessLevel = wfRunVariableAccessLevelFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -929,6 +1022,9 @@ export const ThreadVarDef = {
       jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
         ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
         : [],
+      accessLevel: isSet(object.accessLevel)
+        ? wfRunVariableAccessLevelFromJSON(object.accessLevel)
+        : WfRunVariableAccessLevel.PUBLIC_VAR,
     };
   },
 
@@ -946,6 +1042,9 @@ export const ThreadVarDef = {
     if (message.jsonIndexes?.length) {
       obj.jsonIndexes = message.jsonIndexes.map((e) => JsonIndex.toJSON(e));
     }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      obj.accessLevel = wfRunVariableAccessLevelToJSON(message.accessLevel);
+    }
     return obj;
   },
 
@@ -960,6 +1059,7 @@ export const ThreadVarDef = {
     message.required = object.required ?? false;
     message.searchable = object.searchable ?? false;
     message.jsonIndexes = object.jsonIndexes?.map((e) => JsonIndex.fromPartial(e)) || [];
+    message.accessLevel = object.accessLevel ?? WfRunVariableAccessLevel.PUBLIC_VAR;
     return message;
   },
 };
@@ -3371,7 +3471,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

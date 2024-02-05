@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+ *
+ * Note: the output of this NodeRun, which can be used to mutate Variables,
+ * is a JSON_ARR variable containing the ID's of all the child threadRuns.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.StartMultipleThreadsRun}
  */
 public final class StartMultipleThreadsRun extends
@@ -43,6 +50,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object threadSpecName_ = "";
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_runs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The threadSpecName.
    */
@@ -60,6 +71,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_runs.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The bytes for threadSpecName.
    */
@@ -235,6 +250,13 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+   *
+   * Note: the output of this NodeRun, which can be used to mutate Variables,
+   * is a JSON_ARR variable containing the ID's of all the child threadRuns.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.StartMultipleThreadsRun}
    */
   public static final class Builder extends
@@ -406,6 +428,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object threadSpecName_ = "";
     /**
+     * <pre>
+     * The thread_spec_name of the child thread_runs.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The threadSpecName.
      */
@@ -422,6 +448,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The thread_spec_name of the child thread_runs.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The bytes for threadSpecName.
      */
@@ -439,6 +469,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The thread_spec_name of the child thread_runs.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The threadSpecName to set.
      * @return This builder for chaining.
@@ -452,6 +486,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The thread_spec_name of the child thread_runs.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -462,6 +500,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The thread_spec_name of the child thread_runs.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The bytes for threadSpecName to set.
      * @return This builder for chaining.

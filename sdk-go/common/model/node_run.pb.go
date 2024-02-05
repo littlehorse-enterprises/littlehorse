@@ -21,21 +21,40 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun
+// is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 type NodeRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                *NodeRunId             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	WfSpecId          *WfSpecId              `protobuf:"bytes,4,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
-	FailureHandlerIds []int32                `protobuf:"varint,5,rep,packed,name=failure_handler_ids,json=failureHandlerIds,proto3" json:"failure_handler_ids,omitempty"`
-	Status            LHStatus               `protobuf:"varint,6,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
-	ArrivalTime       *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=arrival_time,json=arrivalTime,proto3" json:"arrival_time,omitempty"`
-	EndTime           *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
-	ThreadSpecName    string                 `protobuf:"bytes,9,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
-	NodeName          string                 `protobuf:"bytes,10,opt,name=node_name,json=nodeName,proto3" json:"node_name,omitempty"`
-	ErrorMessage      *string                `protobuf:"bytes,11,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"`
-	Failures          []*Failure             `protobuf:"bytes,12,rep,name=failures,proto3" json:"failures,omitempty"`
+	// The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+	// ThreadRun's number, and the position of the NodeRun within that ThreadRun.
+	Id *NodeRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+	// as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+	// feature.
+	WfSpecId *WfSpecId `protobuf:"bytes,4,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun.
+	FailureHandlerIds []int32 `protobuf:"varint,5,rep,packed,name=failure_handler_ids,json=failureHandlerIds,proto3" json:"failure_handler_ids,omitempty"`
+	// The status of this NodeRun.
+	Status LHStatus `protobuf:"varint,6,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
+	// The time the ThreadRun arrived at this NodeRun.
+	ArrivalTime *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=arrival_time,json=arrivalTime,proto3" json:"arrival_time,omitempty"`
+	// The time the NodeRun was terminated (failed or completed).
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	// The name of the ThreadSpec to which this NodeRun belongs.
+	ThreadSpecName string `protobuf:"bytes,9,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
+	// The name of the Node in the ThreadSpec that this NodeRun belongs to.
+	NodeName string `protobuf:"bytes,10,opt,name=node_name,json=nodeName,proto3" json:"node_name,omitempty"`
+	// A human-readable error message intended to help developers diagnose WfSpec
+	// problems.
+	ErrorMessage *string `protobuf:"bytes,11,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"`
+	// A list of Failures thrown by this NodeRun.
+	Failures []*Failure `protobuf:"bytes,12,rep,name=failures,proto3" json:"failures,omitempty"`
+	// There are many types of Nodes in a WfSpec; therefore, we have many different types
+	// of NodeRun. Each NodeRun can only be one.
+	//
 	// Types that are assignable to NodeType:
 	//	*NodeRun_Task
 	//	*NodeRun_ExternalEvent
@@ -226,38 +245,48 @@ type isNodeRun_NodeType interface {
 }
 
 type NodeRun_Task struct {
+	// Denotes a TASK node, which runs a TaskRun.
 	Task *TaskNodeRun `protobuf:"bytes,13,opt,name=task,proto3,oneof"`
 }
 
 type NodeRun_ExternalEvent struct {
+	// An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
 	ExternalEvent *ExternalEventRun `protobuf:"bytes,14,opt,name=external_event,json=externalEvent,proto3,oneof"`
 }
 
 type NodeRun_Entrypoint struct {
+	// An ENTRYPOINT node is the first thing that runs in a ThreadRun.
 	Entrypoint *EntrypointRun `protobuf:"bytes,15,opt,name=entrypoint,proto3,oneof"`
 }
 
 type NodeRun_Exit struct {
+	// An EXIT node completes a ThreadRun.
 	Exit *ExitRun `protobuf:"bytes,16,opt,name=exit,proto3,oneof"`
 }
 
 type NodeRun_StartThread struct {
+	// A START_THREAD node starts a child ThreadRun.
 	StartThread *StartThreadRun `protobuf:"bytes,17,opt,name=start_thread,json=startThread,proto3,oneof"`
 }
 
 type NodeRun_WaitThreads struct {
+	// A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
 	WaitThreads *WaitForThreadsRun `protobuf:"bytes,18,opt,name=wait_threads,json=waitThreads,proto3,oneof"`
 }
 
 type NodeRun_Sleep struct {
+	// A SLEEP node makes the ThreadRun block for a certain amount of time.
 	Sleep *SleepNodeRun `protobuf:"bytes,19,opt,name=sleep,proto3,oneof"`
 }
 
 type NodeRun_UserTask struct {
+	// A USER_TASK node waits until a human executes some work and reports the result.
 	UserTask *UserTaskNodeRun `protobuf:"bytes,20,opt,name=user_task,json=userTask,proto3,oneof"`
 }
 
 type NodeRun_StartMultipleThreads struct {
+	// A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+	// child ThreadRun for each element in the list.
 	StartMultipleThreads *StartMultipleThreadsRun `protobuf:"bytes,21,opt,name=start_multiple_threads,json=startMultipleThreads,proto3,oneof"`
 }
 
@@ -279,11 +308,14 @@ func (*NodeRun_UserTask) isNodeRun_NodeType() {}
 
 func (*NodeRun_StartMultipleThreads) isNodeRun_NodeType() {}
 
+// The sub-node structure for a TASK NodeRun.
 type TaskNodeRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+	// at this TASK Node, then the task_run_id will be unset.
 	TaskRunId *TaskRunId `protobuf:"bytes,1,opt,name=task_run_id,json=taskRunId,proto3,oneof" json:"task_run_id,omitempty"`
 }
 
@@ -326,11 +358,14 @@ func (x *TaskNodeRun) GetTaskRunId() *TaskRunId {
 	return nil
 }
 
+// The sub-node structure for a USER_TASK NodeRun.
 type UserTaskNodeRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+	// at this USER_TASK node, then the user_task_run_id will be unset.
 	UserTaskRunId *UserTaskRunId `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3,oneof" json:"user_task_run_id,omitempty"`
 }
 
@@ -373,6 +408,7 @@ func (x *UserTaskNodeRun) GetUserTaskRunId() *UserTaskRunId {
 	return nil
 }
 
+// The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
 type EntrypointRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -411,6 +447,8 @@ func (*EntrypointRun) Descriptor() ([]byte, []int) {
 	return file_node_run_proto_rawDescGZIP(), []int{3}
 }
 
+// The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+// about ThreadRun Outputs once those are added in the future.
 type ExitRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -449,12 +487,16 @@ func (*ExitRun) Descriptor() ([]byte, []int) {
 	return file_node_run_proto_rawDescGZIP(), []int{4}
 }
 
+// The sub-node structure for a START_THREAD NodeRun.
 type StartThreadRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChildThreadId  *int32 `protobuf:"varint,1,opt,name=child_thread_id,json=childThreadId,proto3,oneof" json:"child_thread_id,omitempty"`
+	// Contains the thread_run_number of the created Child ThreadRun, if it has
+	// been created already.
+	ChildThreadId *int32 `protobuf:"varint,1,opt,name=child_thread_id,json=childThreadId,proto3,oneof" json:"child_thread_id,omitempty"`
+	// The thread_spec_name of the child thread_run.
 	ThreadSpecName string `protobuf:"bytes,2,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
 }
 
@@ -504,11 +546,16 @@ func (x *StartThreadRun) GetThreadSpecName() string {
 	return ""
 }
 
+// The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+//
+// Note: the output of this NodeRun, which can be used to mutate Variables,
+// is a JSON_ARR variable containing the ID's of all the child threadRuns.
 type StartMultipleThreadsRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The thread_spec_name of the child thread_runs.
 	ThreadSpecName string `protobuf:"bytes,1,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
 }
 
@@ -551,13 +598,17 @@ func (x *StartMultipleThreadsRun) GetThreadSpecName() string {
 	return ""
 }
 
+// The sub-node structure for a WAIT_FOR_THREADS NodeRun.
 type WaitForThreadsRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The threads that are being waited for.
 	Threads []*WaitForThreadsRun_WaitForThread `protobuf:"bytes,1,rep,name=threads,proto3" json:"threads,omitempty"`
-	Policy  WaitForThreadsPolicy               `protobuf:"varint,2,opt,name=policy,proto3,enum=littlehorse.WaitForThreadsPolicy" json:"policy,omitempty"`
+	// The policy to use when handling failures for Threads. Currently, only
+	// one policy exists.
+	Policy WaitForThreadsPolicy `protobuf:"varint,2,opt,name=policy,proto3,enum=littlehorse.WaitForThreadsPolicy" json:"policy,omitempty"`
 }
 
 func (x *WaitForThreadsRun) Reset() {
@@ -606,14 +657,18 @@ func (x *WaitForThreadsRun) GetPolicy() WaitForThreadsPolicy {
 	return WaitForThreadsPolicy_STOP_ON_FAILURE
 }
 
+// The sub-node structure for an EXTERNAL_EVENT NodeRun.
 type ExternalEventRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ExternalEventDefId *ExternalEventDefId    `protobuf:"bytes,1,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	EventTime          *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=event_time,json=eventTime,proto3,oneof" json:"event_time,omitempty"`
-	ExternalEventId    *ExternalEventId       `protobuf:"bytes,3,opt,name=external_event_id,json=externalEventId,proto3,oneof" json:"external_event_id,omitempty"`
+	// The ExternalEventDefId that we are waiting for.
+	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,1,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
+	// The time that the ExternalEvent arrived. Unset if still waiting.
+	EventTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=event_time,json=eventTime,proto3,oneof" json:"event_time,omitempty"`
+	// The ExternalEventId of the ExternalEvent. Unset if still waiting.
+	ExternalEventId *ExternalEventId `protobuf:"bytes,3,opt,name=external_event_id,json=externalEventId,proto3,oneof" json:"external_event_id,omitempty"`
 }
 
 func (x *ExternalEventRun) Reset() {
@@ -669,11 +724,13 @@ func (x *ExternalEventRun) GetExternalEventId() *ExternalEventId {
 	return nil
 }
 
+// The sub-node structure for a SLEEP NodeRun.
 type SleepNodeRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The time at which the NodeRun will wake up.
 	MaturationTime *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=maturation_time,json=maturationTime,proto3" json:"maturation_time,omitempty"`
 }
 
@@ -716,15 +773,29 @@ func (x *SleepNodeRun) GetMaturationTime() *timestamppb.Timestamp {
 	return nil
 }
 
+// Denotes a failure that happened during execution of a NodeRun or the outgoing
+// edges.
 type Failure struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FailureName        string         `protobuf:"bytes,1,opt,name=failure_name,json=failureName,proto3" json:"failure_name,omitempty"`
-	Message            string         `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Content            *VariableValue `protobuf:"bytes,3,opt,name=content,proto3,oneof" json:"content,omitempty"`
-	WasProperlyHandled bool           `protobuf:"varint,4,opt,name=was_properly_handled,json=wasProperlyHandled,proto3" json:"was_properly_handled,omitempty"`
+	// The name of the failure. LittleHorse has certain built-in failures, all named in
+	// UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+	//
+	// Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+	// as an `LHStatus.EXCEPTION`.
+	FailureName string `protobuf:"bytes,1,opt,name=failure_name,json=failureName,proto3" json:"failure_name,omitempty"`
+	// The human-readable message associated with this Failure.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// A user-defined Failure can have a value; for example, in Java an Exception is an
+	// Object with arbitrary properties and behaviors.
+	//
+	// Future versions of LH will allow FailureHandler threads to accept that value as
+	// an input variable.
+	Content *VariableValue `protobuf:"bytes,3,opt,name=content,proto3,oneof" json:"content,omitempty"`
+	// A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+	WasProperlyHandled bool `protobuf:"varint,4,opt,name=was_properly_handled,json=wasProperlyHandled,proto3" json:"was_properly_handled,omitempty"`
 }
 
 func (x *Failure) Reset() {
@@ -787,15 +858,21 @@ func (x *Failure) GetWasProperlyHandled() bool {
 	return false
 }
 
+// A 'WaitForThread' structure defines a thread that is being waited for.
 type WaitForThreadsRun_WaitForThread struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ThreadEndTime   *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=thread_end_time,json=threadEndTime,proto3,oneof" json:"thread_end_time,omitempty"`
-	ThreadStatus    LHStatus               `protobuf:"varint,2,opt,name=thread_status,json=threadStatus,proto3,enum=littlehorse.LHStatus" json:"thread_status,omitempty"`
-	ThreadRunNumber int32                  `protobuf:"varint,3,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
-	AlreadyHandled  bool                   `protobuf:"varint,5,opt,name=already_handled,json=alreadyHandled,proto3" json:"already_handled,omitempty"`
+	// The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+	// is still RUNNING, HALTED, or HALTING.
+	ThreadEndTime *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=thread_end_time,json=threadEndTime,proto3,oneof" json:"thread_end_time,omitempty"`
+	// The current status of the ThreadRun being waited for.
+	ThreadStatus LHStatus `protobuf:"varint,2,opt,name=thread_status,json=threadStatus,proto3,enum=littlehorse.LHStatus" json:"thread_status,omitempty"`
+	// The number of the ThreadRun being waited for.
+	ThreadRunNumber int32 `protobuf:"varint,3,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
+	// INTERNAL: flag used by scheduler internally.
+	AlreadyHandled bool `protobuf:"varint,5,opt,name=already_handled,json=alreadyHandled,proto3" json:"already_handled,omitempty"`
 }
 
 func (x *WaitForThreadsRun_WaitForThread) Reset() {

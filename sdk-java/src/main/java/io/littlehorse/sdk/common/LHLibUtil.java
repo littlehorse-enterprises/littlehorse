@@ -101,8 +101,18 @@ public class LHLibUtil {
         return TaskDefId.newBuilder().setName(name).build();
     }
 
+    public static String wfRunIdToString(WfRunId id) {
+        StringBuilder out = new StringBuilder();
+        if (id.hasParentWfRunId()) {
+            out.append(wfRunIdToString(id.getParentWfRunId()));
+            out.append("_");
+        }
+        out.append(id.getId());
+        return out.toString();
+    }
+
     public static String taskRunIdToString(TaskRunId taskRunId) {
-        return taskRunId.getWfRunId() + "/" + taskRunId.getTaskGuid();
+        return wfRunIdToString(taskRunId.getWfRunId()) + "/" + taskRunId.getTaskGuid();
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeError {

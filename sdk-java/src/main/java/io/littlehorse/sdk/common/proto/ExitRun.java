@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+ * about ThreadRun Outputs once those are added in the future.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExitRun}
  */
 public final class ExitRun extends
@@ -185,6 +190,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+   * about ThreadRun Outputs once those are added in the future.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExitRun}
    */
   public static final class Builder extends

@@ -12,10 +12,10 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.common.proto.Principal;
-import io.littlehorse.common.proto.PutPrincipalRequest;
-import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
+import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -77,7 +77,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
 
         PrincipalModel toSave = new PrincipalModel();
-        toSave.setId(id);
+        toSave.setId(new PrincipalIdModel(id));
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(

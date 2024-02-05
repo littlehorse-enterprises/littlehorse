@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskNode}
  */
 public final class TaskNode extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +84,11 @@ private static final long serialVersionUID = 0L;
   public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 2;
   private int timeoutSeconds_ = 0;
   /**
+   * <pre>
+   * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+   * the worker does not yet reply to the Server.
+   * </pre>
+   *
    * <code>int32 timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
@@ -79,6 +100,12 @@ private static final long serialVersionUID = 0L;
   public static final int RETRIES_FIELD_NUMBER = 3;
   private int retries_ = 0;
   /**
+   * <pre>
+   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+   * Please note that this API may change before version 1.0.0, as we are going to
+   * add significant functionality including backoff policies.
+   * </pre>
+   *
    * <code>int32 retries = 3;</code>
    * @return The retries.
    */
@@ -91,6 +118,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> variables_;
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
@@ -98,6 +129,10 @@ private static final long serialVersionUID = 0L;
     return variables_;
   }
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
@@ -106,6 +141,10 @@ private static final long serialVersionUID = 0L;
     return variables_;
   }
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
@@ -113,6 +152,10 @@ private static final long serialVersionUID = 0L;
     return variables_.size();
   }
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
@@ -120,6 +163,10 @@ private static final long serialVersionUID = 0L;
     return variables_.get(index);
   }
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
@@ -326,6 +373,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskNode}
    */
   public static final class Builder extends
@@ -588,6 +639,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -595,6 +650,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
@@ -606,6 +665,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -622,6 +685,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
@@ -636,6 +703,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -655,6 +726,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
@@ -668,6 +743,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -676,6 +755,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -687,6 +770,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The type of TaskRun to schedule.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -705,6 +792,11 @@ private static final long serialVersionUID = 0L;
 
     private int timeoutSeconds_ ;
     /**
+     * <pre>
+     * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+     * the worker does not yet reply to the Server.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 2;</code>
      * @return The timeoutSeconds.
      */
@@ -713,6 +805,11 @@ private static final long serialVersionUID = 0L;
       return timeoutSeconds_;
     }
     /**
+     * <pre>
+     * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+     * the worker does not yet reply to the Server.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 2;</code>
      * @param value The timeoutSeconds to set.
      * @return This builder for chaining.
@@ -725,6 +822,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+     * the worker does not yet reply to the Server.
+     * </pre>
+     *
      * <code>int32 timeout_seconds = 2;</code>
      * @return This builder for chaining.
      */
@@ -737,6 +839,12 @@ private static final long serialVersionUID = 0L;
 
     private int retries_ ;
     /**
+     * <pre>
+     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+     * Please note that this API may change before version 1.0.0, as we are going to
+     * add significant functionality including backoff policies.
+     * </pre>
+     *
      * <code>int32 retries = 3;</code>
      * @return The retries.
      */
@@ -745,6 +853,12 @@ private static final long serialVersionUID = 0L;
       return retries_;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+     * Please note that this API may change before version 1.0.0, as we are going to
+     * add significant functionality including backoff policies.
+     * </pre>
+     *
      * <code>int32 retries = 3;</code>
      * @param value The retries to set.
      * @return This builder for chaining.
@@ -757,6 +871,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+     * Please note that this API may change before version 1.0.0, as we are going to
+     * add significant functionality including backoff policies.
+     * </pre>
+     *
      * <code>int32 retries = 3;</code>
      * @return This builder for chaining.
      */
@@ -780,6 +900,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> variablesBuilder_;
 
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getVariablesList() {
@@ -790,6 +914,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public int getVariablesCount() {
@@ -800,6 +928,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment getVariables(int index) {
@@ -810,6 +942,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder setVariables(
@@ -827,6 +963,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder setVariables(
@@ -841,6 +981,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -857,6 +1001,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
@@ -874,6 +1022,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
@@ -888,6 +1040,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
@@ -902,6 +1058,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addAllVariables(
@@ -917,6 +1077,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder clearVariables() {
@@ -930,6 +1094,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder removeVariables(int index) {
@@ -943,6 +1111,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getVariablesBuilder(
@@ -950,6 +1122,10 @@ private static final long serialVersionUID = 0L;
       return getVariablesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
@@ -960,6 +1136,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
@@ -971,6 +1151,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addVariablesBuilder() {
@@ -978,6 +1162,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addVariablesBuilder(
@@ -986,6 +1174,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Input variables into the TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment.Builder> 

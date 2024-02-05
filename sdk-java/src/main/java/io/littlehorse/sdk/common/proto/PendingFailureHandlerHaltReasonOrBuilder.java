@@ -8,6 +8,10 @@ public interface PendingFailureHandlerHaltReasonOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The position of the NodeRun which threw the failure.
+   * </pre>
+   *
    * <code>int32 node_run_position = 1;</code>
    * @return The nodeRunPosition.
    */

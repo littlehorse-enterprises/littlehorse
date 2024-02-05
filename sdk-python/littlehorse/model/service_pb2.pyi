@@ -461,14 +461,14 @@ class ExternalEventList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_external_event_pb2.ExternalEvent, _Mapping]]] = ...) -> None: ...
 
 class RegisterTaskWorkerRequest(_message.Message):
-    __slots__ = ["client_id", "task_def_id", "listener_name"]
-    CLIENT_ID_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["task_worker_id", "task_def_id", "listener_name"]
+    TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     LISTENER_NAME_FIELD_NUMBER: _ClassVar[int]
-    client_id: str
+    task_worker_id: str
     task_def_id: _object_id_pb2.TaskDefId
     listener_name: str
-    def __init__(self, client_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., listener_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, task_worker_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., listener_name: _Optional[str] = ...) -> None: ...
 
 class TaskWorkerHeartBeatRequest(_message.Message):
     __slots__ = ["client_id", "task_def_id", "listener_name"]

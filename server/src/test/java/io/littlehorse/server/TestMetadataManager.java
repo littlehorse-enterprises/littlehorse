@@ -1,5 +1,6 @@
 package io.littlehorse.server;
 
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -17,6 +18,6 @@ public class TestMetadataManager extends MetadataManager {
             KeyValueStore<String, Bytes> nativeMetadataStore, String tenantId, ExecutionContext executionContext) {
         return new TestMetadataManager(
                 ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
-                TenantScopedStore.newInstance(nativeMetadataStore, tenantId, executionContext));
+                TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel(tenantId), executionContext));
     }
 }

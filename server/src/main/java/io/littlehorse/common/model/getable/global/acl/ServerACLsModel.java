@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.proto.ServerACL;
-import io.littlehorse.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.ServerACL;
+import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;

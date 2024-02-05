@@ -275,4 +275,17 @@ public class WorkflowThreadImplTest {
         assertThat(child.getRetentionPolicy().getSecondsAfterThreadTermination())
                 .isEqualTo(50);
     }
+
+    @Test
+    void testTimeoutOnExternalEventNode() {
+        Workflow wf = new WorkflowImpl("some-wf", thread -> {
+            thread.waitForEvent("some-event").timeout(10);
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-some-event-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getTimeoutSeconds().getLiteralValue().getInt())
+                .isEqualTo(10);
+    }
 }

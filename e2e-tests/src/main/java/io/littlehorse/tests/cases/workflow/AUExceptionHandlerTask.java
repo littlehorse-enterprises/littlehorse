@@ -39,7 +39,7 @@ public class AUExceptionHandlerTask extends WorkflowLogicTest {
     public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
-        Thread.sleep(300);
+        Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         // Check that the handler ran.

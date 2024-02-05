@@ -11,105 +11,223 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A WfRun is a running instance of a WfSpec.
 message WfRun {
+  // The ID of the WfRun.
   WfRunId id = 1;
+
+  // The ID of the WfSpec that this WfRun belongs to.
   WfSpecId wf_spec_id = 2;
+
+  // When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+  // old WfSpecId to this list for historical auditing and debugging purposes.
   repeated WfSpecId old_wf_spec_versions = 3;
+
+  // The status of this WfRun.
   LHStatus status = 4;
 
+  // The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+  // is given by greatest_thread_run_number + 1.
+  //
   // Introduced now since with ThreadRun-level retention, we can't rely upon
-  // thread_runs.size() to determine the number of ThreadRuns.
+  // thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+  // from the thread_runs list once its retention period expires.
   int32 greatest_threadrun_number = 5;
 
+  // The time the WfRun was started.
   google.protobuf.Timestamp start_time = 6;
+
+  // The time the WfRun failed or completed.
   optional google.protobuf.Timestamp end_time = 7;
+
+  // A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+  // have not yet expired.
   repeated ThreadRun thread_runs = 8;
 
+  // A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+  // halting.
   repeated PendingInterrupt pending_interrupts = 9;
+
+  // A list of pending failure handlers which will fire once their appropriate ThreadRun's
+  // finish halting.
   repeated PendingFailureHandler pending_failures = 10;
 }
 
+// The type of a ThreadRUn.
 enum ThreadType {
+  // The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0.
   ENTRYPOINT = 0;
+
+  // A ThreadRun explicitly created by another ThreadRun via a START_THREAD or START_MULTIPLE_THREADS
+  // NodeRun.
   CHILD = 1;
+
+  // A ThreadRun that was created to handle an Interrupt.
   INTERRUPT = 2;
+
+  // A ThreadRun that was created to handle a Failure.
   FAILURE_HANDLER = 3;
 }
 
+// A ThreadRun is a running thread of execution within a WfRun.
 message ThreadRun {
+  // The current WfSpecId of this ThreadRun. This must be set explicitly because
+  // during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+  // have different WfSpec versions.
   WfSpecId wf_spec_id = 1;
+
+  // The number of the ThreadRun. This is an auto-incremented integer corresponding to
+  // the chronological ordering of when the ThreadRun's were created. If you have not
+  // configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+  // this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+  // list.
   int32 number = 2;
 
+  // The status of the ThreadRun.
   LHStatus status = 3;
+
+  // The name of the ThreadSpec being run.
   string thread_spec_name = 4;
 
+  // The time the ThreadRun was started.
   google.protobuf.Timestamp start_time = 5;
+
+  // The time the ThreadRun was completed or failed. Unset if still active.
   optional google.protobuf.Timestamp end_time = 6;
 
+  // Human-readable error message detailing what went wrong in the case of a failure.
   optional string error_message = 7;
 
+  // List of thread_run_number's for all child thread_runs.
   repeated int32 child_thread_ids = 8;
+
+  // Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
   optional int32 parent_thread_id = 9;
 
+  // If the ThreadRun is HALTED, this contains a list of every reason for which the
+  // ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+  // then the ThreadRun will return to the RUNNING state.
   repeated ThreadHaltReason halt_reasons = 10;
+
+  // If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+  // ExternalEvent that caused the Interrupt.
   optional ExternalEventId interrupt_trigger_id = 11;
+
+  // If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+  // that is being handled by this ThreadRun.
   optional FailureBeingHandled failure_being_handled = 12;
 
+  // This is the current `position` of the current NodeRun being run. This is an
+  // auto-incremented field that gets incremented every time we run a new NodeRun.
   int32 current_node_position = 13;
+
+  // List of every child ThreadRun which both a) failed, and b) was properly handled by a
+  // Failure Handler.
+  //
+  // This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+  // failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+  // If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+  // number is appended to this list, and then the EXIT node ignores that ThreadRun.
   repeated int32 handled_failed_children = 14;
 
+  // The Type of this ThreadRun.
   ThreadType type = 15;
 }
 
+// Points to the Failure that is currently being handled in the ThreadRun.
 message FailureBeingHandled {
+  // The thread run number.
   int32 thread_run_number = 1;
+
+  // The position of the NodeRun causing the failure.
   int32 node_run_position = 2;
+
+  // The number of the failure.
   int32 failure_number = 3;
 }
 
+// Represents an ExternalEvent that has a registered Interrupt Handler for it
+// and which is pending to be sent to the relevant ThreadRun's.
 message PendingInterrupt {
+  // The ID of the ExternalEvent triggering the Interrupt.
   ExternalEventId external_event_id = 1;
+
+  // The name of the ThreadSpec to run to handle the Interrupt.
   string handler_spec_name = 2;
+
+  // The ID of the ThreadRun to interrupt. Must wait for this ThreadRun to be
+  // HALTED before running the Interrupt Handler.
   int32 interrupted_thread_id = 3;
 }
 
+// Represents a Failure Handler that is pending to be run.
 message PendingFailureHandler {
+  // The ThreadRun that failed.
   int32 failed_thread_run = 1;
+
+  // The name of the ThreadSpec to run to handle the failure.
   string handler_spec_name = 2;
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+// to be run.
 message PendingInterruptHaltReason {
+  // The ExternalEventId that caused the Interrupt.
   ExternalEventId external_event_id = 1;
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+// run.
 message PendingFailureHandlerHaltReason {
+  // The position of the NodeRun which threw the failure.
   int32 node_run_position = 1;
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run.
 message HandlingFailureHaltReason {
+  // The ID of the Failure Handler ThreadRun.
   int32 handler_thread_id = 1;
 }
 
+// A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
 message ParentHalted {
+  // The ID of the halted parent.
   int32 parent_thread_id = 1;
 }
 
+// A Halt Reason denoting that a ThreadRun is halted because it is waiting for the
+// interrupt handler threadRun to run.
 message Interrupted {
+  // The ID of the Interrupt Handler ThreadRun.
   int32 interrupt_thread_id = 1;
 }
 
+// A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request.
 message ManualHalt {
   // Nothing to store.
   bool meaning_of_life = 137;
 }
 
+// Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
 message ThreadHaltReason {
+  // The reason for the halt.
   oneof reason {
+    // Parent threadRun halted.
     ParentHalted parent_halted = 1;
+
+    // Handling an Interrupt.
     Interrupted interrupted = 2;
+
+    // Waiting to handle Interrupt.
     PendingInterruptHaltReason pending_interrupt = 3;
+
+    // Waiting to handle a failure.
     PendingFailureHandlerHaltReason pending_failure = 4;
+
+    // Handling a failure.
     HandlingFailureHaltReason handling_failure = 5;
+
+    // Manually stopped the WfRun.
     ManualHalt manual_halt = 6;
   }
 }

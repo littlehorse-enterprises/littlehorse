@@ -1,0 +1,136 @@
+name: tests
+run-name: Tests
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  tests-sdk-java:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ["11", "17"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: ${{ matrix.java-version }}
+      - name: Tests
+        run: ./gradlew sdk-java:test sdk-java:build
+      - name: Java Documentaion
+        run: ./gradlew sdk-java:javadoc
+  tests-sdk-go:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+      - name: Tests
+        run: go test ./...
+  tests-sdk-python:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        working-directory: ./sdk-python
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install poetry
+          poetry install
+      - name: Validate Indentations
+        working-directory: ./sdk-python
+        run: poetry run ruff .
+      - name: Validate Types
+        working-directory: ./sdk-python
+        run: poetry run mypy .
+      - name: Tests
+        working-directory: ./sdk-python
+        run: poetry run python -m unittest -v
+  tests-canary:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+      - name: Tests
+        run: ./gradlew canary:test canary:build
+  tests-server:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+      - name: Validate Indentations
+        run: ./gradlew spotlessCheck
+      - name: Validate Build
+        run: ./gradlew build -x test
+      - name: Tests
+        run: ./gradlew server:test server:e2e server:build
+  tests-e2e:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+      - name: Tests
+        run: ./gradlew e2e-test:run --args="-s -t 1"
+  tests-dashboard:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      - name: Cache Dependencies
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-cache-dir
+      - name: Tests
+        working-directory: ./dashboard
+        run: |
+          npm install pnpm --global
+          pnpm install
+          pnpm test

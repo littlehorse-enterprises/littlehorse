@@ -6,20 +6,58 @@ import { VariableId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/**
+ * VariableValue is a structure containing a value in LittleHorse. It can be
+ * used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+ * from a TaskRun, as the value of a WfRun's Variable, etc.
+ */
 export interface VariableValue {
-  jsonObj?: string | undefined;
-  jsonArr?: string | undefined;
-  double?: number | undefined;
-  bool?: boolean | undefined;
-  str?: string | undefined;
-  int?: number | undefined;
+  /** A String representing a serialized json object. */
+  jsonObj?:
+    | string
+    | undefined;
+  /** A String representing a serialized json list. */
+  jsonArr?:
+    | string
+    | undefined;
+  /** A 64-bit floating point number. */
+  double?:
+    | number
+    | undefined;
+  /** A boolean. */
+  bool?:
+    | boolean
+    | undefined;
+  /** A string. */
+  str?:
+    | string
+    | undefined;
+  /** A 64-bit integer. */
+  int?:
+    | number
+    | undefined;
+  /** An arbitrary String of bytes. */
   bytes?: Uint8Array | undefined;
 }
 
+/** A Variable is an instance of a variable assigned to a WfRun. */
 export interface Variable {
-  id: VariableId | undefined;
-  value: VariableValue | undefined;
-  createdAt: string | undefined;
+  /**
+   * ID of this Variable. Note that the VariableId contains the relevant
+   * WfRunId inside it, the threadRunNumber, and the name of the Variabe.
+   */
+  id:
+    | VariableId
+    | undefined;
+  /** The value of this Variable. */
+  value:
+    | VariableValue
+    | undefined;
+  /** When the Variable was created. */
+  createdAt:
+    | string
+    | undefined;
+  /** The ID of the WfSpec that this Variable belongs to. */
   wfSpecId: WfSpecId | undefined;
 }
 
@@ -327,7 +365,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

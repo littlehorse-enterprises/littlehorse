@@ -32,12 +32,7 @@ public class TestDriverStandalone extends TestDriver {
         kafka.start();
         startServer();
         workerConfig = new LHConfig();
-
-        try {
-            client = workerConfig.getBlockingStub();
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
-        }
+        client = workerConfig.getBlockingStub();
     }
 
     private void startServer() throws Exception {

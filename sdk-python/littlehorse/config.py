@@ -18,7 +18,6 @@ ALLOWED_PROTOCOLS = (TLS_PROTOCOL, PLAINTEXT_PROTOCOL)
 API_HOST = "LHC_API_HOST"
 API_PORT = "LHC_API_PORT"
 API_PROTOCOL = "LHC_API_PROTOCOL"
-CLIENT_ID = "LHC_CLIENT_ID"
 CLIENT_CERT = "LHC_CLIENT_CERT"
 CLIENT_KEY = "LHC_CLIENT_KEY"
 CA_CERT = "LHC_CA_CERT"
@@ -27,6 +26,7 @@ OAUTH_CLIENT_SECRET = "LHC_OAUTH_CLIENT_SECRET"
 OAUTH_TOKEN_ENDPOINT_URL = "LHC_OAUTH_ACCESS_TOKEN_URL"
 NUM_WORKER_THREADS = "LHW_NUM_WORKER_THREADS"
 SERVER_CONNECT_LISTENER = "LHW_SERVER_CONNECT_LISTENER"
+TASK_WORKER_ID = "LHW_TASK_WORKER_ID"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
 GRPC_KEEPALIVE_TIME_MS = "LHC_GRPC_KEEPALIVE_TIME_MS"
 GRPC_KEEPALIVE_TIMEOUT_MS = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
@@ -181,14 +181,14 @@ class LHConfig:
         return protocol == TLS_PROTOCOL
 
     @property
-    def client_id(self) -> str:
-        """Returns a client id to identify an instance.
+    def task_worker_id(self) -> str:
+        """Returns a Task Worker Id id to identify an instance.
 
         Returns:
-            str: A configured client id or a random string otherwise.
+            str: A configured Task Worker ID or a random string otherwise.
         """
-        random_id = f"client-{str(uuid.uuid4()).replace('-', '')}"
-        return str(self.get_or_set_default(CLIENT_ID, random_id))
+        random_id = f"worker-{str(uuid.uuid4()).replace('-', '')}"
+        return str(self.get_or_set_default(TASK_WORKER_ID, random_id))
 
     @property
     def oauth_client_id(self) -> Optional[str]:
@@ -296,6 +296,7 @@ class LHConfig:
             ("grpc.keepalive_time_ms", self.grpc_keepalive_time_ms),
             ("grpc.keepalive_timeout_ms", self.grpc_keepalive_timeout_ms),
             ("grpc.keepalive_permit_without_calls", True),
+            ("grpc.http2.max_pings_without_data", 0),
         ]
 
         if async_channel:

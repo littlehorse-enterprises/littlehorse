@@ -27,7 +27,6 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -39,6 +38,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -67,6 +67,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
+    private int greatestThreadRunNumber;
 
     public LHStatus status;
 
@@ -182,6 +183,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class, context));
         }
         this.executionContext = context;
+        this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
 
     @Override
@@ -195,7 +197,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
      * entrypoint thread is running.
      */
     public boolean isRunning() {
-        return threadRuns.get(0).isRunning();
+        return getThreadRun(0).isRunning();
     }
 
     public WfRun.Builder toProto() {
@@ -203,7 +205,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .setId(id.toProto())
                 .setWfSpecId(wfSpecId.toProto())
                 .setStatus(status)
-                .setStartTime(LHUtil.fromDate(startTime));
+                .setStartTime(LHUtil.fromDate(startTime))
+                .setGreatestThreadrunNumber(greatestThreadRunNumber);
 
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
@@ -248,9 +251,17 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         ThreadRunModel thread = new ThreadRunModel(processorContext);
-        thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
         thread.setWfSpecId(wfSpecId);
+
+        if (parentThreadId == null) {
+            // then this is the entrypoint.
+            this.greatestThreadRunNumber = 0;
+            thread.number = 0;
+        } else {
+            this.greatestThreadRunNumber++;
+            thread.number = this.greatestThreadRunNumber;
+        }
 
         thread.status = LHStatus.RUNNING;
         thread.threadSpecName = threadName;
@@ -279,6 +290,15 @@ public class WfRunModel extends CoreGetable<WfRun> {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
             VariableValueModel val;
+
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                if (variables.containsKey(varName)) {
+                    // TODO: handle exception and fail the request.
+                }
+
+                // We do NOT create a variable since we want to use the one from the parent.
+                continue;
+            }
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
@@ -325,7 +345,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
             PendingInterruptModel pi = pendingInterrupts.get(i);
-            ThreadRunModel toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
 
             if (toInterrupt.canBeInterrupted()) {
                 if (!threadsToHandleNow.contains(pi.interruptedThreadId)) {
@@ -338,7 +358,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         for (PendingInterruptModel pi : toHandleNow) {
-            ThreadRunModel toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
@@ -372,7 +392,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (int i = pendingFailures.size() - 1; i >= 0; i--) {
             PendingFailureHandlerModel pfh = pendingFailures.get(i);
-            ThreadRunModel failedThr = threadRuns.get(pfh.failedThreadRun);
+            ThreadRunModel failedThr = getThreadRun(pfh.failedThreadRun);
 
             if (!failedThr.canBeInterrupted()) {
                 continue;
@@ -473,13 +493,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        ThreadRunModel handler = threadRuns.get(timeout.getNodeRunId().getThreadRunNumber());
+        ThreadRunModel handler = getThreadRun(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
         advance(processorContext.currentCommand().getTime());
     }
 
     public void failDueToWfSpecDeletion() {
-        threadRuns.get(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
+        getThreadRun(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
     }
 
     public void processExternalEvent(ExternalEventModel event) {
@@ -496,7 +516,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to stop a non-existent thread id.");
         }
 
-        ThreadRunModel thread = threadRuns.get(req.threadRunNumber);
+        ThreadRunModel thread = getThreadRun(req.threadRunNumber);
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.MANUAL_HALT;
         haltReason.manualHalt = new ManualHaltModel();
@@ -519,7 +539,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
 
-        ThreadRunModel thread = threadRuns.get(req.threadRunNumber);
+        ThreadRunModel thread = getThreadRun(req.threadRunNumber);
 
         for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
             ThreadHaltReasonModel thr = thread.haltReasons.get(i);
@@ -537,7 +557,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHValidationError(null, "Reference to nonexistent thread.");
         }
 
-        ThreadRunModel thread = threadRuns.get(threadRunNumber);
+        ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationError(null, "Reference to nonexistent nodeRun");
@@ -552,14 +572,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         GetableUpdates.GetableStatusUpdate statusChanged;
         if (Objects.equals(status, LHStatus.COMPLETED)) {
             statusChanged = GetableUpdates.create(
-                    wfSpecId, new TenantIdModel(processorContext.authorization().tenantId()), this.status, status);
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         } else {
             statusChanged = GetableUpdates.createEndEvent(
-                    wfSpecId,
-                    new TenantIdModel(processorContext.authorization().tenantId()),
-                    this.status,
-                    status,
-                    startTime);
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
@@ -612,7 +628,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
                 transitionTo(LHStatus.COMPLETED);
-                log.info("Completed WfRun {} at {} ", id, new Date());
+                log.debug("Completed WfRun {} at {} ", id, new Date());
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
                 transitionTo(LHStatus.ERROR);

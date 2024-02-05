@@ -8,8 +8,8 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 

@@ -292,7 +292,13 @@ message PutExternalEventDefRequest {
   string name = 1;
 
   // Policy to determine how long an ExternalEvent is retained after creation if it
-  // is not yet claimed by a WfRun.
+  // is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+  // ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+  // If not set, then ExternalEvent's are not deleted if they are not matched with
+  // a WfRun.
+  //
+  // A future version of LittleHorse will allow changing the retention_policy, which
+  // will trigger a cleanup of old `ExternalEvent`s.
   ExternalEventRetentionPolicy retention_policy = 2;
 }
 
@@ -795,7 +801,7 @@ message ExternalEventList {
 // Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
 message RegisterTaskWorkerRequest {
   // Is the ID of the Task Worker.
-  string client_id = 1;
+  string task_worker_id = 1;
 
   // The TaskDef the worker wants to poll for.
   TaskDefId task_def_id = 2;

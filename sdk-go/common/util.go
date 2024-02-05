@@ -5,6 +5,7 @@ import (
 	"log"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -26,6 +27,26 @@ func GetInputVarDefs(w *model.WfSpec) map[string]*model.VariableDef {
 	}
 
 	return out
+}
+
+func StrToWfRunId(id string) *model.WfRunId {
+	parts := strings.Split(id, "_")
+	return buildWfRunId(parts)
+}
+
+func buildWfRunId(parts []string) *model.WfRunId {
+	if len(parts) == 0 {
+		return nil
+	}
+
+	currentID := parts[len(parts)-1]
+	parentParts := parts[:len(parts)-1]
+	parent := buildWfRunId(parentParts)
+
+	return &model.WfRunId{
+		Id:            currentID,
+		ParentWfRunId: parent,
+	}
 }
 
 func GetWfRunIdFromTaskSource(source *model.TaskRunSource) *model.WfRunId {

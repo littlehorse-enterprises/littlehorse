@@ -16,7 +16,6 @@ import io.littlehorse.test.internal.step.Step;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.testcontainers.shaded.org.apache.commons.lang3.NotImplementedException;
 
 public class AbstractVerifier implements Verifier {
     protected final LittleHorseBlockingStub lhClient;
@@ -58,7 +57,7 @@ public class AbstractVerifier implements Verifier {
                 .setId(wfId.getId());
 
         if (wfId.hasParentWfRunId()) {
-            throw new NotImplementedException("Parent WfRunId not supported by test framework yet.");
+            req.setParentWfRunId(wfId.getParentWfRunId());
         }
 
         for (Arg arg : args) {

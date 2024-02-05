@@ -19,9 +19,7 @@ var getWfRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetWfRun(
 			requestContext(),
-			&model.WfRunId{
-				Id: args[0],
-			},
+			common.StrToWfRunId(args[0]),
 		))
 	},
 }
@@ -102,7 +100,7 @@ var stopWfRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(),
 			&model.StopWfRunRequest{
-				WfRunId:         &model.WfRunId{Id: args[0]},
+				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -122,7 +120,7 @@ var resumeWfRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			requestContext(),
 			&model.ResumeWfRunRequest{
-				WfRunId:         &model.WfRunId{Id: args[0]},
+				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
 			},
 		))

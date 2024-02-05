@@ -73,31 +73,10 @@ Upgrade to a new version:
 
 ## Building the Docker Image
 
-You can build the `littlehorse-server` and `littlehorse-standalone` docker images by running:
-
-```
-./local-dev/build.sh
-```
-
 To build the `littlehorse-server` image for local development utilizing the local gradle cache, you can run:
 
 ```
-./local-dev/build.sh --quick
-```
-
-Run server with docker (default config `local-dev/server-1.config`):
-
-```
-./local-dev/do-server.sh --docker
-```
-
-Run server with docker and specific config:
-
-```
-./local-dev/do-server.sh --docker <config-name>
-
-# Example
-./local-dev/do-server.sh --docker server-2
+./local-dev/build.sh
 ```
 
 ## Compile Schemas

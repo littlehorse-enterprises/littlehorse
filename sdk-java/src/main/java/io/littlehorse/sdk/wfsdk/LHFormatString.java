@@ -1,3 +1,5 @@
 package io.littlehorse.sdk.wfsdk;
 
-public interface LHFormatString {}
+import java.io.Serializable;
+
+public interface LHFormatString extends Serializable {}

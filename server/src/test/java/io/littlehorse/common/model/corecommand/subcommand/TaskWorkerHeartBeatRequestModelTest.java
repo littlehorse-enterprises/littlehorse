@@ -36,7 +36,7 @@ public class TaskWorkerHeartBeatRequestModelTest {
 
         TaskWorkerMetadataModel taskWorkerToBeRemoved = taskWorkerMetadatas.get(0);
         TaskWorkerMetadataModel taskWorkerToBeKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.setClientId(taskWorkerToBeKeep.clientId);
+        taskWorkerHeartBeat.setClientId(taskWorkerToBeKeep.taskWorkerId);
 
         taskWorkerToBeRemoved.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
@@ -49,7 +49,7 @@ public class TaskWorkerHeartBeatRequestModelTest {
 
         verify(assignor).assign(generateHosts, taskWorkerGroup.taskWorkers.values());
         assertThat(taskWorkerGroup.taskWorkers)
-                .doesNotContain(Map.entry(taskWorkerToBeRemoved.clientId, taskWorkerToBeRemoved));
+                .doesNotContain(Map.entry(taskWorkerToBeRemoved.taskWorkerId, taskWorkerToBeRemoved));
         assertThat(taskWorkerGroup.taskWorkers).hasSize(1);
     }
 
@@ -62,7 +62,7 @@ public class TaskWorkerHeartBeatRequestModelTest {
                 taskWorkerGroup.taskWorkers.values().stream().toList();
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
-        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.clientId);
+        taskWorkerHeartBeat.setClientId(taskWorkerToKeep.taskWorkerId);
 
         when(executionContext.getableManager().get(any())).thenReturn(taskWorkerGroup);
         when(executionContext.getInternalHosts()).thenReturn(generateHosts(2));
@@ -97,9 +97,9 @@ public class TaskWorkerHeartBeatRequestModelTest {
         Map<String, TaskWorkerMetadataModel> taskWorkersMetadata = new HashMap<>();
         for (char clientId : clientIds) {
             TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
-            taskWorker.clientId = String.valueOf(clientId);
+            taskWorker.taskWorkerId = String.valueOf(clientId);
             taskWorker.latestHeartbeat = new Date();
-            taskWorkersMetadata.put(taskWorker.clientId, taskWorker);
+            taskWorkersMetadata.put(taskWorker.taskWorkerId, taskWorker);
             taskWorker.hosts = generateHosts(numberOfHosts);
         }
         return taskWorkersMetadata;

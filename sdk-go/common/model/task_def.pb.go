@@ -21,13 +21,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
 type TaskDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        *TaskDefId             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	InputVars []*VariableDef         `protobuf:"bytes,2,rep,name=input_vars,json=inputVars,proto3" json:"input_vars,omitempty"`
+	// The ID of this TaskDef.
+	Id *TaskDefId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The input variables required to execute this TaskDef.
+	InputVars []*VariableDef `protobuf:"bytes,2,rep,name=input_vars,json=inputVars,proto3" json:"input_vars,omitempty"`
+	// The time at which this TaskDef was created.
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
