@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-
 import org.awaitility.Awaitility;
 
 public class ATInterruptsBasic extends WorkflowLogicTest {
