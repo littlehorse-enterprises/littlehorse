@@ -10,15 +10,16 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.ThreadsToWaitForModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,87 +27,114 @@ import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
-    private List<ThreadToWaitForModel> threads;
-
-    private WaitForThreadsPolicy policy;
-
+    private ThreadsToWaitForCase type;
+    private ThreadsToWaitForModel threads;
     private VariableAssignmentModel threadList;
-    private ExecutionContext context;
-    private ProcessorExecutionContext processorContext;
+
+    private List<FailureHandlerDefModel> perThreadFailureHandlers;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
     }
 
     public WaitForThreadsNodeModel() {
-        threads = new ArrayList<>();
+        perThreadFailureHandlers = new ArrayList<>();
     }
 
     public void initFrom(Message proto, ExecutionContext context) {
         WaitForThreadsNode p = (WaitForThreadsNode) proto;
-        for (ThreadToWaitFor ttwf : p.getThreadsList()) {
-            threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class, context));
+        type = p.getThreadsToWaitForCase();
+
+        switch (type) {
+            case THREADS:
+                threads = LHSerializable.fromProto(p.getThreads(), ThreadsToWaitForModel.class, context);
+                break;
+            case THREAD_LIST:
+                threadList = VariableAssignmentModel.fromProto(p.getThreadList(), context);
+                break;
+            case THREADSTOWAITFOR_NOT_SET:
+                log.warn("should be impossible to get unset threadsToWaitFor");
         }
-        policy = p.getPolicy();
-        if (p.hasThreadList()) {
-            threadList = VariableAssignmentModel.fromProto(p.getThreadList(), context);
+
+        for (FailureHandlerDef handler : p.getPerThreadFailureHandlersList()) {
+            perThreadFailureHandlers.add(FailureHandlerDefModel.fromProto(handler, context));
         }
-        this.context = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     public WaitForThreadsNode.Builder toProto() {
         WaitForThreadsNode.Builder out = WaitForThreadsNode.newBuilder();
-        for (ThreadToWaitForModel ttwf : threads) {
-            out.addThreads(ttwf.toProto());
+        switch (type) {
+            case THREADS:
+                out.setThreads(threads.toProto());
+                break;
+            case THREAD_LIST:
+                out.setThreadList(threadList.toProto());
+                break;
+            case THREADSTOWAITFOR_NOT_SET:
+                log.warn("should be impossible to get unset threadsToWaitFor");
         }
-        out.setPolicy(policy);
-        if (threadList != null) {
-            out.setThreadList(threadList.toProto());
+
+        for (FailureHandlerDefModel handler : perThreadFailureHandlers) {
+            out.addPerThreadFailureHandlers(handler.toProto());
         }
         return out;
     }
 
     public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        WaitForThreadsRunModel waitForThreadsRun = new WaitForThreadsRunModel();
-        waitForThreadsRun.setPolicy(getPolicy());
-        return waitForThreadsRun;
+        return new WaitForThreadsRunModel();
     }
 
-    public List<WaitForThreadModel> getThreadsToWaitFor(NodeRunModel nodeRun) throws LHVarSubError {
+    public List<WaitForThreadModel> getThreadsToWaitFor(NodeRunModel nodeRun, Date currentCommandTime)
+            throws LHVarSubError {
         ThreadRunModel thread = nodeRun.getThreadRun();
         List<WaitForThreadModel> out = new ArrayList<>();
 
-        for (ThreadToWaitForModel ttwf : getThreads()) {
-            int threadRunNumber = thread.assignVariable(ttwf.getThreadRunNumber())
-                    .asInt()
-                    .getIntVal()
-                    .intValue();
-            out.add(new WaitForThreadModel(nodeRun, threadRunNumber, processorContext.currentCommand()));
+        switch (type) {
+            case THREADS:
+                for (ThreadToWaitForModel ttwf : threads.getThreads()) {
+                    int threadRunNumber = thread.assignVariable(ttwf.getThreadRunNumber())
+                            .asInt()
+                            .getIntVal()
+                            .intValue();
+                    out.add(new WaitForThreadModel(nodeRun, threadRunNumber, currentCommandTime));
+                }
+                break;
+            case THREAD_LIST:
+                VariableValueModel threadListVar = thread.assignVariable(threadList);
+
+                for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
+                    out.add(new WaitForThreadModel(
+                            nodeRun, Integer.valueOf(threadNumberObj.toString()), currentCommandTime));
+                }
+                break;
+            case THREADSTOWAITFOR_NOT_SET:
+                log.warn("Should be impossible to have unset threadsToWaitFor");
         }
-
-        if (threadList != null) {
-            VariableValueModel threadListVar = thread.assignVariable(threadList);
-
-            for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
-                out.add(new WaitForThreadModel(
-                        nodeRun, Integer.valueOf(threadNumberObj.toString()), processorContext.currentCommand()));
-            }
-        }
-
         return out;
     }
 
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-        for (ThreadToWaitForModel ttwf : threads) {
-            out.addAll(ttwf.getThreadRunNumber().getRequiredWfRunVarNames());
+
+        switch (type) {
+            case THREADS:
+                for (ThreadToWaitForModel ttwf : threads.getThreads()) {
+                    out.addAll(ttwf.getThreadRunNumber().getRequiredWfRunVarNames());
+                }
+                break;
+            case THREAD_LIST:
+                out.addAll(threadList.getRequiredWfRunVarNames());
+                break;
+            case THREADSTOWAITFOR_NOT_SET:
+                log.warn("Should be impossible");
         }
 
         return out;
@@ -114,11 +142,24 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     @Override
     public void validate() throws LHApiException {
-        for (ThreadToWaitForModel ttwf : threads) {
-            if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.threadSpecModel)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
-            }
+        switch (type) {
+            case THREADS:
+                for (ThreadToWaitForModel ttwf : threads.getThreads()) {
+                    if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.getThreadSpecModel())) {
+                        throw new LHApiException(
+                                Status.INVALID_ARGUMENT,
+                                "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                    }
+                }
+                break;
+            case THREAD_LIST:
+                if (!threadList.canBeType(VariableType.INT, node.getThreadSpecModel())) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                }
+                break;
+            case THREADSTOWAITFOR_NOT_SET:
+                log.warn("Should be impossible");
         }
     }
 }

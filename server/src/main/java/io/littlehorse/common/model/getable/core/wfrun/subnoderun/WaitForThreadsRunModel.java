@@ -79,7 +79,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         WaitForThreadsNodeModel wftn = getNode().getWaitForThreadsNode();
         nodeRun.setStatus(LHStatus.RUNNING);
         try {
-            threads.addAll(wftn.getThreadsToWaitFor(nodeRun));
+            threads.addAll(wftn.getThreadsToWaitFor(nodeRun, time));
         } catch (LHVarSubError exn) {
             nodeRun.fail(
                     new FailureModel(

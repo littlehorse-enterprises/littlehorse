@@ -50,25 +50,4 @@ public interface WaitForThreadsRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThreadOrBuilder getThreadsOrBuilder(
       int index);
-
-  /**
-   * <pre>
-   * The policy to use when handling failures for Threads. Currently, only
-   * one policy exists.
-   * </pre>
-   *
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
-   */
-  int getPolicyValue();
-  /**
-   * <pre>
-   * The policy to use when handling failures for Threads. Currently, only
-   * one policy exists.
-   * </pre>
-   *
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
-   */
-  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
 }

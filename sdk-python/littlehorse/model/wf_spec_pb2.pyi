@@ -171,19 +171,24 @@ class FailureHandlerDef(_message.Message):
     def __init__(self, handler_spec_name: _Optional[str] = ..., specific_failure: _Optional[str] = ..., any_failure_of_type: _Optional[_Union[FailureHandlerDef.LHFailureType, str]] = ...) -> None: ...
 
 class WaitForThreadsNode(_message.Message):
-    __slots__ = ["threads", "thread_list", "policy"]
+    __slots__ = ["threads", "thread_list", "per_thread_failure_handlers"]
     class ThreadToWaitFor(_message.Message):
         __slots__ = ["thread_run_number"]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
         thread_run_number: _common_wfspec_pb2.VariableAssignment
         def __init__(self, thread_run_number: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    class ThreadsToWaitFor(_message.Message):
+        __slots__ = ["threads"]
+        THREADS_FIELD_NUMBER: _ClassVar[int]
+        threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsNode.ThreadToWaitFor]
+        def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
     THREAD_LIST_FIELD_NUMBER: _ClassVar[int]
-    POLICY_FIELD_NUMBER: _ClassVar[int]
-    threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsNode.ThreadToWaitFor]
+    PER_THREAD_FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
+    threads: WaitForThreadsNode.ThreadsToWaitFor
     thread_list: _common_wfspec_pb2.VariableAssignment
-    policy: _common_enums_pb2.WaitForThreadsPolicy
-    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ...) -> None: ...
+    per_thread_failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
+    def __init__(self, threads: _Optional[_Union[WaitForThreadsNode.ThreadsToWaitFor, _Mapping]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., per_thread_failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
     __slots__ = ["external_event_def_id", "timeout_seconds"]

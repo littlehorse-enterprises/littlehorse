@@ -8,77 +8,58 @@ public interface WaitForThreadsNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+   * @return Whether the threads field is set.
    */
-  java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> 
-      getThreadsList();
+  boolean hasThreads();
   /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+   * @return The threads.
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index);
+  io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getThreads();
   /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    */
-  int getThreadsCount();
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
-      getThreadsOrBuilderList();
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
-      int index);
+  io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder getThreadsOrBuilder();
 
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return Whether the threadList field is set.
    */
   boolean hasThreadList();
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return The threadList.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getThreadList();
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder();
 
   /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
-  int getPolicyValue();
+  java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> 
+      getPerThreadFailureHandlersList();
   /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
+  io.littlehorse.sdk.common.proto.FailureHandlerDef getPerThreadFailureHandlers(int index);
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  int getPerThreadFailureHandlersCount();
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
+      getPerThreadFailureHandlersOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(
+      int index);
+
+  io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase getThreadsToWaitForCase();
 }

@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.LHErrorType;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 
 /**
  * The `WaitForThreadsNodeOutput` interface represents a specialized NodeOutput
@@ -18,21 +17,9 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
  */
 public interface WaitForThreadsNodeOutput extends NodeOutput {
 
-    /**
-     * Sets the policy that determines how the node should handle waiting for
-     * threads' parallel executions.
-     * Usage example:
-     * WaitForThreadsNodeOutput output = thread.waitForThreads(...)
-     * output.withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
-     *
-     * @param policy The policy to be used by the node to determine whether to
-     *               continue with the execution or not.
-     * @return A reference to the updated WaitForThreadsNodeOutput.
-     * @see WaitForThreadsPolicy
-     */
-    WaitForThreadsNodeOutput withPolicy(WaitForThreadsPolicy policy);
+    // WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, WorkflowThread handler);
 
-    WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, WorkflowThread handler);
-    WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType error, WorkflowThread handler);
-    WaitForThreadsNodeOutput handleAnyFailureOnChild(WorkflowThread handler);
+    // WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType error, WorkflowThread handler);
+
+    // WaitForThreadsNodeOutput handleAnyFailureOnChild(WorkflowThread handler);
 }

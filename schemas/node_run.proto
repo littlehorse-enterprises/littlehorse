@@ -144,10 +144,6 @@ message WaitForThreadsRun {
 
   // The threads that are being waited for.
   repeated WaitForThread threads = 1;
-
-  // The policy to use when handling failures for Threads. Currently, only
-  // one policy exists.
-  WaitForThreadsPolicy policy = 2;
 }
 
 // The sub-node structure for an EXTERNAL_EVENT NodeRun.

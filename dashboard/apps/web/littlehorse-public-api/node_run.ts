@@ -1,15 +1,6 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
-import {
-  LHStatus,
-  lHStatusFromJSON,
-  lHStatusToJSON,
-  lHStatusToNumber,
-  WaitForThreadsPolicy,
-  waitForThreadsPolicyFromJSON,
-  waitForThreadsPolicyToJSON,
-  waitForThreadsPolicyToNumber,
-} from "./common_enums";
+import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, ExternalEventId, NodeRunId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
@@ -157,11 +148,6 @@ export interface StartMultipleThreadsRun {
 export interface WaitForThreadsRun {
   /** The threads that are being waited for. */
   threads: WaitForThreadsRun_WaitForThread[];
-  /**
-   * The policy to use when handling failures for Threads. Currently, only
-   * one policy exists.
-   */
-  policy: WaitForThreadsPolicy;
 }
 
 /** A 'WaitForThread' structure defines a thread that is being waited for. */
@@ -949,16 +935,13 @@ export const StartMultipleThreadsRun = {
 };
 
 function createBaseWaitForThreadsRun(): WaitForThreadsRun {
-  return { threads: [], policy: WaitForThreadsPolicy.STOP_ON_FAILURE };
+  return { threads: [] };
 }
 
 export const WaitForThreadsRun = {
   encode(message: WaitForThreadsRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.threads) {
       WaitForThreadsRun_WaitForThread.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      writer.uint32(16).int32(waitForThreadsPolicyToNumber(message.policy));
     }
     return writer;
   },
@@ -977,13 +960,6 @@ export const WaitForThreadsRun = {
 
           message.threads.push(WaitForThreadsRun_WaitForThread.decode(reader, reader.uint32()));
           continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.policy = waitForThreadsPolicyFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -998,7 +974,6 @@ export const WaitForThreadsRun = {
       threads: globalThis.Array.isArray(object?.threads)
         ? object.threads.map((e: any) => WaitForThreadsRun_WaitForThread.fromJSON(e))
         : [],
-      policy: isSet(object.policy) ? waitForThreadsPolicyFromJSON(object.policy) : WaitForThreadsPolicy.STOP_ON_FAILURE,
     };
   },
 
@@ -1006,9 +981,6 @@ export const WaitForThreadsRun = {
     const obj: any = {};
     if (message.threads?.length) {
       obj.threads = message.threads.map((e) => WaitForThreadsRun_WaitForThread.toJSON(e));
-    }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      obj.policy = waitForThreadsPolicyToJSON(message.policy);
     }
     return obj;
   },
@@ -1019,7 +991,6 @@ export const WaitForThreadsRun = {
   fromPartial<I extends Exact<DeepPartial<WaitForThreadsRun>, I>>(object: I): WaitForThreadsRun {
     const message = createBaseWaitForThreadsRun();
     message.threads = object.threads?.map((e) => WaitForThreadsRun_WaitForThread.fromPartial(e)) || [];
-    message.policy = object.policy ?? WaitForThreadsPolicy.STOP_ON_FAILURE;
     return message;
   },
 };

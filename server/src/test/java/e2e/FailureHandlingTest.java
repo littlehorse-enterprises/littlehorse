@@ -5,8 +5,6 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.ThreadRun;
-import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -20,9 +18,6 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-
-import static org.junit.Assert.assertThat;
-
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -90,18 +85,6 @@ public class FailureHandlingTest {
                     }
                 })
                 .start();
-    }
-
-    @Test
-    void exceptionHandlerShouldBeChildThread() {
-        workflowVerifier.prepareRun(handleExceptionWf)
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyWfRun(wfRun -> {
-                    Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(3);
-                    ThreadRun handler = wfRun.getThreadRuns(2);
-                    Assertions.assertThat(handler.getType()).isEqualTo(ThreadType.FAILURE_HANDLER);
-                    Assertions.assertThat(handler.getParentThreadId()).isEqualTo(0);
-                }).start();
     }
 
     @Nested

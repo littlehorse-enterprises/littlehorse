@@ -2,7 +2,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import java.util.Collection;
@@ -29,9 +28,8 @@ public final class FixedSpawnedThreads implements SpawnedThreads {
             WaitForThreadsNode.ThreadToWaitFor threadToWaitFor = WaitForThreadsNode.ThreadToWaitFor.newBuilder()
                     .setThreadRunNumber(BuilderUtil.assignVariable(threadNumberVariable))
                     .build();
-            waitNode.addThreads(threadToWaitFor);
+            waitNode.getThreadsBuilder().addThreads(threadToWaitFor);
         }
-        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         return waitNode.build();
     }
 }
