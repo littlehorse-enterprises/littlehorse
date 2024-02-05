@@ -185,11 +185,16 @@ EOF
 
 keycloak=false
 clean=false
+refresh=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --clean)
       clean=true
+      shift
+      ;;
+    --refresh)
+      refresh=true
       shift
       ;;
     --keycloak)
@@ -206,6 +211,10 @@ done
 if [ ${clean} = true ]; then
     clean
     exit 0
+fi
+
+if [ ${refresh} = true ]; then
+    clean
 fi
 
 if [ ${keycloak} = true ]; then

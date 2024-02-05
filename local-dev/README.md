@@ -44,8 +44,10 @@ To "reset" the LittleHorse cluster, you need to delete the data in Kafka and als
 That can be done as follows:
 
 1. Stop all LH Server processes.
-2. Run `./local-dev/refresh.sh`.
+2. Run `./local-dev/setup.sh --refresh`.
 3. Start the LH Servers again.
+
+> To include Keycloak, use `./local-dev/setup.sh --keycloak --refresh`.
 
 ## Running Multiple LH Servers
 
