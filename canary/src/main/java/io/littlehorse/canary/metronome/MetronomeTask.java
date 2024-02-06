@@ -46,7 +46,7 @@ class MetronomeTask {
 
     private void emitTaskRunLatencyMetric(final long startTime, final WorkerContext context) {
         final Duration latency = Duration.between(Instant.ofEpochMilli(startTime), Instant.now());
-        final String key = String.format("%s:%s", serverHost, serverPort);
+        final String key = "%s:%s".formatted(serverHost, serverPort);
 
         final Metric metric = getMetricBuilder()
                 .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency.toMillis()))
@@ -56,7 +56,7 @@ class MetronomeTask {
     }
 
     private void emitDuplicatedTaskRunMetric(final WorkerContext context) {
-        final String key = String.format("%s/%s", context.getIdempotencyKey(), context.getAttemptNumber());
+        final String key = "%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber());
 
         final Metric metric = getMetricBuilder()
                 .setDuplicatedTaskRun(DuplicatedTaskRun.newBuilder().setUniqueTaskScheduleId(key))

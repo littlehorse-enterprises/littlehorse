@@ -63,14 +63,14 @@ public class MetronomeBootstrap implements Measurable {
     private static String getServerVersion(final LHConfig lhConfig) {
         final ServerVersionResponse serverVersionResponse =
                 lhConfig.getBlockingStub().getServerVersion(Empty.getDefaultInstance());
-        return String.format(
-                "%s.%s.%s%s",
-                serverVersionResponse.getMajorVersion(),
-                serverVersionResponse.getMinorVersion(),
-                serverVersionResponse.getPatchVersion(),
-                serverVersionResponse.hasPreReleaseIdentifier()
-                        ? "-" + serverVersionResponse.getPreReleaseIdentifier()
-                        : "");
+        return "%s.%s.%s%s"
+                .formatted(
+                        serverVersionResponse.getMajorVersion(),
+                        serverVersionResponse.getMinorVersion(),
+                        serverVersionResponse.getPatchVersion(),
+                        serverVersionResponse.hasPreReleaseIdentifier()
+                                ? "-" + serverVersionResponse.getPreReleaseIdentifier()
+                                : "");
     }
 
     @Override

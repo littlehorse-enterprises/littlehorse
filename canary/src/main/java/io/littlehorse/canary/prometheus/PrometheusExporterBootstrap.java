@@ -12,9 +12,13 @@ public class PrometheusExporterBootstrap {
     private final PrometheusMeterRegistry prometheusRegistry;
     private final PrometheusExporterServer prometheusExporterServer;
 
-    public PrometheusExporterBootstrap(final int webPort, final String webPath, final String applicationId) {
+    public PrometheusExporterBootstrap(
+            final int webPort, final String webPath, final boolean metricsFilterEnabled, final String applicationId) {
         prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusRegistry.config().commonTags("application", "canary", "application_id", applicationId);
+        if (metricsFilterEnabled) {
+            prometheusRegistry.config().meterFilter(new PrometheusMetricFilter());
+        }
         Shutdown.addShutdownHook("Prometheus Exporter", prometheusRegistry::close);
 
         final JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();

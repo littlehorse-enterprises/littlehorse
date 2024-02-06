@@ -18,6 +18,7 @@ public interface Config {
     String LH_CANARY_ID = LH_CANARY_PREFIX + "id";
     String LH_CANARY_METRICS_PORT = LH_CANARY_PREFIX + "metrics.port";
     String LH_CANARY_METRICS_PATH = LH_CANARY_PREFIX + "metrics.path";
+    String LH_CANARY_METRICS_FILTER_ENABLE = LH_CANARY_PREFIX + "metrics.filter.enable";
 
     Map<String, Object> toMap();
 }

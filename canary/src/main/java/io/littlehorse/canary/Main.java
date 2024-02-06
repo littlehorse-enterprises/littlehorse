@@ -39,8 +39,8 @@ public class Main {
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {
-        final PrometheusExporterBootstrap prometheusExporterBootstrap =
-                new PrometheusExporterBootstrap(config.getMetricsPort(), config.getMetricsPath(), config.getId());
+        final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(
+                config.getMetricsPort(), config.getMetricsPath(), config.isMetricsFilterEnabled(), config.getId());
 
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),

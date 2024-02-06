@@ -60,6 +60,10 @@ public class CanaryConfig implements Config {
         return configs.get(LH_CANARY_METRICS_PATH).toString();
     }
 
+    public boolean isMetricsFilterEnabled() {
+        return Boolean.parseBoolean(configs.get(LH_CANARY_METRICS_FILTER_ENABLE).toString());
+    }
+
     public short getTopicReplicas() {
         return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }
