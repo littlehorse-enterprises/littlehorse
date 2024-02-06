@@ -17,17 +17,13 @@ import org.apache.kafka.common.errors.TopicExistsException;
 @Slf4j
 public class KafkaTopicBootstrap extends Bootstrap implements Measurable {
 
-    private final KafkaClientMetrics kafkaClientMetrics;
+    private final AdminClient adminClient;
 
     public KafkaTopicBootstrap(final CanaryConfig config) {
         super(config);
 
-        final AdminClient adminClient =
-                KafkaAdminClient.create(config.toKafkaAdminConfig().toMap());
+        adminClient = KafkaAdminClient.create(config.toKafkaAdminConfig().toMap());
         Shutdown.addShutdownHook("Topics Creator", adminClient);
-
-        kafkaClientMetrics = new KafkaClientMetrics(adminClient);
-        Shutdown.addShutdownHook("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
 
         try {
             final NewTopic canaryTopic =
@@ -48,6 +44,8 @@ public class KafkaTopicBootstrap extends Bootstrap implements Measurable {
 
     @Override
     public void bindTo(final MeterRegistry registry) {
+        final KafkaClientMetrics kafkaClientMetrics = new KafkaClientMetrics(adminClient);
+        Shutdown.addShutdownHook("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
         kafkaClientMetrics.bindTo(registry);
     }
 }

@@ -17,12 +17,10 @@ import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
 import java.io.File;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
@@ -62,8 +60,8 @@ public class AggregatorBootstrap extends Bootstrap implements Measurable {
         diskSpaceMetrics.bindTo(registry);
 
         final ReadOnlyKeyValueStore<String, MetricAverage> store = null;
-        //        kafkaStreams.store(
-        //                StoreQueryParameters.fromNameAndType("latency-metrics", QueryableStoreTypes.keyValueStore()));
+        kafkaStreams.store(
+                StoreQueryParameters.fromNameAndType("latency-metrics", QueryableStoreTypes.keyValueStore()));
         final LatencyMetricExporter latencyMetricExporter = new LatencyMetricExporter(store);
         latencyMetricExporter.bindTo(registry);
     }

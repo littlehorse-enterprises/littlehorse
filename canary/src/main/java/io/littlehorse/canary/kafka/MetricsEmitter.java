@@ -21,16 +21,12 @@ public class MetricsEmitter implements Measurable {
 
     private final Producer<String, Bytes> producer;
     private final String topicName;
-    private final KafkaClientMetrics kafkaClientMetrics;
 
     public MetricsEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
         this.topicName = topicName;
 
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
         Shutdown.addShutdownHook("Metrics Emitter", producer);
-
-        kafkaClientMetrics = new KafkaClientMetrics(producer);
-        Shutdown.addShutdownHook("Metrics Emitter: Prometheus Exporter", kafkaClientMetrics);
     }
 
     /**
@@ -68,6 +64,8 @@ public class MetricsEmitter implements Measurable {
 
     @Override
     public void bindTo(final MeterRegistry registry) {
+        final KafkaClientMetrics kafkaClientMetrics = new KafkaClientMetrics(producer);
+        Shutdown.addShutdownHook("Metrics Emitter: Prometheus Exporter", kafkaClientMetrics);
         kafkaClientMetrics.bindTo(registry);
     }
 }
