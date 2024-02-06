@@ -1,6 +1,8 @@
 package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.Empty;
+import io.littlehorse.canary.Bootstrap;
+import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.kafka.MetricsEmitter;
 import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.util.Shutdown;
@@ -9,55 +11,40 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeBootstrap implements Measurable {
+public class MetronomeBootstrap extends Bootstrap implements Measurable {
 
     private final MetricsEmitter emitter;
 
-    public MetronomeBootstrap(
-            final String metricsTopicName,
-            final Map<String, Object> kafkaProducerConfigMap,
-            final Map<String, Object> littleHorseConfigMap,
-            final long frequency,
-            final int threads,
-            final int runs) {
+    public MetronomeBootstrap(final CanaryConfig config) {
+        super(config);
 
-        final LHConfig lhConfig = new LHConfig(littleHorseConfigMap);
+        final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
         final LittleHorseBlockingStub lhClient = lhConfig.getBlockingStub();
 
-        emitter = new MetricsEmitter(metricsTopicName, kafkaProducerConfigMap);
+        emitter = new MetricsEmitter(
+                config.getTopicName(), config.toKafkaProducerConfig().toMap());
 
-        initializeWorker(emitter, lhConfig);
-        initializeWorkflow(lhClient);
-        initializeMetronome(emitter, lhClient, frequency, threads, runs);
-
-        log.trace("Initialized");
-    }
-
-    private static void initializeMetronome(
-            final MetricsEmitter emitter,
-            final LittleHorseBlockingStub lhClient,
-            final long frequency,
-            final int threads,
-            final int runs) {
-        final Metronome metronome = new Metronome(emitter, lhClient, frequency, threads, runs);
-    }
-
-    private static void initializeWorkflow(final LittleHorseBlockingStub lhClient) {
-        final MetronomeWorkflow workflow = new MetronomeWorkflow(lhClient);
-        workflow.register();
-    }
-
-    private static void initializeWorker(final MetricsEmitter emitter, final LHConfig lhConfig) {
         final MetronomeTask executable = new MetronomeTask(
                 emitter, lhConfig.getApiBootstrapHost(), lhConfig.getApiBootstrapPort(), getServerVersion(lhConfig));
         final LHTaskWorker worker = new LHTaskWorker(executable, MetronomeWorkflow.TASK_NAME, lhConfig);
         Shutdown.addShutdownHook("Metronome: LH Task Worker", worker);
         worker.registerTaskDef();
         worker.start();
+
+        final MetronomeWorkflow workflow = new MetronomeWorkflow(lhClient);
+        workflow.register();
+
+        final Metronome metronome = new Metronome(
+                emitter,
+                lhClient,
+                config.getMetronomeFrequency(),
+                config.getMetronomeThreads(),
+                config.getMetronomeRuns());
+
+        log.trace("Initialized");
     }
 
     private static String getServerVersion(final LHConfig lhConfig) {

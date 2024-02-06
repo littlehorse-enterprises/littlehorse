@@ -40,34 +40,18 @@ public class Main {
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {
-        final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(
-                config.getMetricsPort(),
-                config.getMetricsPath(),
-                config.isMetricsFilterEnabled(),
-                config.getEnabledMetrics(),
-                config.getId());
+        final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(config);
 
-        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
-                config.getTopicName(),
-                config.getTopicPartitions(),
-                config.getTopicReplicas(),
-                config.toKafkaAdminConfig().toMap());
+        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(config);
         prometheusExporterBootstrap.addMesurable(kafkaTopicBootstrap);
 
         if (config.isMetronomeEnabled()) {
-            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
-                    config.getTopicName(),
-                    config.toKafkaProducerConfig().toMap(),
-                    config.toLittleHorseConfig().toMap(),
-                    config.getMetronomeFrequency(),
-                    config.getMetronomeThreads(),
-                    config.getMetronomeRuns());
+            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
             prometheusExporterBootstrap.addMesurable(metronomeBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {
-            final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(
-                    config.getTopicName(), config.toKafkaStreamsConfig().toMap());
+            final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(config);
             prometheusExporterBootstrap.addMesurable(aggregatorBootstrap);
         }
     }
