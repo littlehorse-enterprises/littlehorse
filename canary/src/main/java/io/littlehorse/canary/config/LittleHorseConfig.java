@@ -11,10 +11,10 @@ public class LittleHorseConfig implements Config {
 
     public LittleHorseConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(LH_CANARY_PREFIX))
+                .filter(entry -> entry.getKey().startsWith(CanaryConfig.LH_CANARY_PREFIX))
                 .map(entry -> {
                     final String formattedKey = entry.getKey()
-                            .substring(LH_CANARY_PREFIX.length())
+                            .substring(CanaryConfig.LH_CANARY_PREFIX.length())
                             .toUpperCase()
                             .replace(".", "_")
                             .replace("-", "_");

@@ -6,11 +6,10 @@ import io.littlehorse.canary.proto.MetricAverage;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Suppressed;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class TaskRunLatencyTopology {
@@ -23,12 +22,15 @@ public class TaskRunLatencyTopology {
                 .aggregate(
                         () -> MetricAverage.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
+                        Named.as("test"),
                         Materialized.with(Serdes.String(), ProtobufSerdes.MetricAverage()))
                 .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded()))
                 .toStream()
                 .map((key, value) -> KeyValue.pair(key.key(), value))
-                .peek((key, value) -> log.info(
-                        "server={}, count={}, sum={}, avg={}", key, value.getCount(), value.getSum(), value.getAvg()));
+                .peek((key, value) -> log.debug(
+                        "server={}, count={}, sum={}, avg={}", key, value.getCount(), value.getSum(), value.getAvg()))
+                .toTable(Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
+                        .with(Serdes.String(), ProtobufSerdes.MetricAverage()));
     }
 
     private static MetricAverage aggregate(final Metric value, final MetricAverage aggregate) {

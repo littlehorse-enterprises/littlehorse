@@ -1,17 +1,38 @@
 package io.littlehorse.canary.config;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class CanaryConfig implements Config {
 
+    public static final String LH_CANARY_PREFIX = "lh.canary.";
+    public static final String LH_CANARY_KAFKA_PREFIX = LH_CANARY_PREFIX + "kafka.";
+
+    public static final String TOPIC_NAME = "topic.name";
+    public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
+    public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";
+    public static final String METRONOME_ENABLE = "metronome.enable";
+    public static final String AGGREGATOR_ENABLE = "aggregator.enable";
+    public static final String METRONOME_FREQUENCY_MS = "metronome.frequency.ms";
+    public static final String METRONOME_THREADS = "metronome.threads";
+    public static final String METRONOME_RUNS = "metronome.runs";
+    public static final String API_PORT = "api.port";
+    public static final String ID = "id";
+    public static final String METRICS_PORT = "metrics.port";
+    public static final String METRICS_PATH = "metrics.path";
+    public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
     private final Map<String, Object> configs;
 
     public CanaryConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_PREFIX))
                 .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
+    }
+
+    public static String prefix(final String configName) {
+        return LH_CANARY_PREFIX + configName;
     }
 
     @Override
@@ -41,54 +62,66 @@ public class CanaryConfig implements Config {
     }
 
     public String getTopicName() {
-        return configs.get(LH_CANARY_TOPIC_NAME).toString();
+        return getConfig(TOPIC_NAME);
+    }
+
+    private String getConfig(final String configName) {
+        return configs.get(prefix(configName)).toString();
     }
 
     public int getTopicPartitions() {
-        return Integer.parseInt(configs.get(LH_CANARY_TOPIC_CREATION_PARTITIONS).toString());
+        return Integer.parseInt(getConfig(TOPIC_CREATION_PARTITIONS));
     }
 
     public int getApiPort() {
-        return Integer.parseInt(configs.get(LH_CANARY_API_PORT).toString());
+        return Integer.parseInt(getConfig(API_PORT));
     }
 
     public int getMetricsPort() {
-        return Integer.parseInt(configs.get(LH_CANARY_METRICS_PORT).toString());
+        return Integer.parseInt(getConfig(METRICS_PORT));
     }
 
     public String getMetricsPath() {
-        return configs.get(LH_CANARY_METRICS_PATH).toString();
+        return getConfig(METRICS_PATH);
     }
 
     public boolean isMetricsFilterEnabled() {
-        return Boolean.parseBoolean(configs.get(LH_CANARY_METRICS_FILTER_ENABLE).toString());
+        return Boolean.parseBoolean(getConfig(METRICS_FILTER_ENABLE));
     }
 
     public short getTopicReplicas() {
-        return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
+        return Short.parseShort(getConfig(TOPIC_CREATION_REPLICAS));
     }
 
     public boolean isMetronomeEnabled() {
-        return Boolean.parseBoolean(configs.get(LH_CANARY_METRONOME_ENABLE).toString());
+        return Boolean.parseBoolean(getConfig(METRONOME_ENABLE));
     }
 
     public boolean isAggregatorEnabled() {
-        return Boolean.parseBoolean(configs.get(LH_CANARY_AGGREGATOR_ENABLE).toString());
+        return Boolean.parseBoolean(getConfig(AGGREGATOR_ENABLE));
     }
 
     public long getMetronomeFrequency() {
-        return Long.parseLong(configs.get(LH_CANARY_METRONOME_FREQUENCY_MS).toString());
+        return Long.parseLong(getConfig(METRONOME_FREQUENCY_MS));
     }
 
     public int getMetronomeThreads() {
-        return Integer.parseInt(configs.get(LH_CANARY_METRONOME_THREADS).toString());
+        return Integer.parseInt(getConfig(METRONOME_THREADS));
     }
 
     public int getMetronomeRuns() {
-        return Integer.parseInt(configs.get(LH_CANARY_METRONOME_RUNS).toString());
+        return Integer.parseInt(getConfig(METRONOME_RUNS));
     }
 
     public String getId() {
-        return configs.get(LH_CANARY_ID).toString();
+        return getConfig(ID);
+    }
+
+    public List<String> getEnabledMetrics() {
+        return configs.entrySet().stream()
+                .filter(entry -> entry.getKey().matches("%s\\[\\d+\\]".formatted(prefix(METRICS_FILTER_ENABLE))))
+                .map(Entry::getValue)
+                .map(Object::toString)
+                .toList();
     }
 }

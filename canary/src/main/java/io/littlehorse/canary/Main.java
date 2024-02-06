@@ -19,6 +19,7 @@ public class Main {
         final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
         log.info("Canary configurations: {}", config);
+        log.info("Canary active metrics: {}", config.getEnabledMetrics());
         log.info("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
         log.info("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
         log.info("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
@@ -40,7 +41,11 @@ public class Main {
 
     private static void initializeBootstraps(final CanaryConfig config) {
         final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(
-                config.getMetricsPort(), config.getMetricsPath(), config.isMetricsFilterEnabled(), config.getId());
+                config.getMetricsPort(),
+                config.getMetricsPath(),
+                config.isMetricsFilterEnabled(),
+                config.getEnabledMetrics(),
+                config.getId());
 
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),

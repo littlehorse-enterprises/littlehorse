@@ -11,8 +11,9 @@ public class KafkaStreamsConfig implements Config {
 
     public KafkaStreamsConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(LH_CANARY_KAFKA_PREFIX))
-                .map(entry -> entry(entry.getKey().substring(LH_CANARY_KAFKA_PREFIX.length()), entry.getValue()))
+                .filter(entry -> entry.getKey().startsWith(CanaryConfig.LH_CANARY_KAFKA_PREFIX))
+                .map(entry ->
+                        entry(entry.getKey().substring(CanaryConfig.LH_CANARY_KAFKA_PREFIX.length()), entry.getValue()))
                 .filter(entry -> StreamsConfig.configDef().names().contains(entry.getKey()))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }

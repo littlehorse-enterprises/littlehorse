@@ -6,6 +6,7 @@ import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import java.util.List;
 
 public class PrometheusExporterBootstrap {
 
@@ -13,11 +14,15 @@ public class PrometheusExporterBootstrap {
     private final PrometheusExporterServer prometheusExporterServer;
 
     public PrometheusExporterBootstrap(
-            final int webPort, final String webPath, final boolean metricsFilterEnabled, final String applicationId) {
+            final int webPort,
+            final String webPath,
+            final boolean filterMetrics,
+            final List<String> enabledMetrics,
+            final String applicationId) {
         prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusRegistry.config().commonTags("application_id", applicationId);
-        if (metricsFilterEnabled) {
-            prometheusRegistry.config().meterFilter(new PrometheusMetricFilter());
+        if (filterMetrics) {
+            prometheusRegistry.config().meterFilter(new PrometheusMetricFilter(enabledMetrics));
         }
         Shutdown.addShutdownHook("Prometheus Exporter", prometheusRegistry::close);
 
