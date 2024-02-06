@@ -31,6 +31,7 @@ dependencies {
 
     // Web API
     implementation 'io.javalin:javalin:6.0.1'
+    implementation 'io.javalin:javalin-micrometer:6.0.1'
 
     // Prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:1.12.2'

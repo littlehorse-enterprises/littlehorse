@@ -40,7 +40,7 @@ public class Main {
 
     private static void initializeBootstraps(final CanaryConfig config) {
         final PrometheusExporterBootstrap prometheusExporterBootstrap =
-                new PrometheusExporterBootstrap(config.getApiPort());
+                new PrometheusExporterBootstrap(config.getApiPort(), config.getId());
 
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
                 config.getTopicName(),

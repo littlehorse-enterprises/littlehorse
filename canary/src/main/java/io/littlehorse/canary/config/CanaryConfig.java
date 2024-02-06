@@ -75,4 +75,8 @@ public class CanaryConfig implements Config {
     public int getMetronomeRuns() {
         return Integer.parseInt(configs.get(LH_CANARY_METRONOME_RUNS).toString());
     }
+
+    public String getId() {
+        return configs.get(LH_CANARY_ID).toString();
+    }
 }

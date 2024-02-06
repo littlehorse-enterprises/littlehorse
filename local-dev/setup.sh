@@ -160,6 +160,7 @@ clean() {
     docker compose --project-name lh-server-kafka-local-dev down -v
     docker compose --project-name lh-server-auth-local-dev down -v
     rm -rf /tmp/kafkaState*
+    rm -rf /tmp/canaryState*
     cd "$SCRIPT_DIR/.."
     ./gradlew -q clean
 }
@@ -168,6 +169,7 @@ refresh() {
     echo "Cleaning"
     docker compose --project-name lh-server-kafka-local-dev down -v
     rm -rf /tmp/kafkaState*
+    rm -rf /tmp/canaryState*
     cd "$SCRIPT_DIR/.."
     ./gradlew -q clean
 }

@@ -15,6 +15,7 @@ public interface Config {
     String LH_CANARY_METRONOME_THREADS = LH_CANARY_PREFIX + "metronome.threads";
     String LH_CANARY_METRONOME_RUNS = LH_CANARY_PREFIX + "metronome.runs";
     String LH_CANARY_API_PORT = LH_CANARY_PREFIX + "api.port";
+    String LH_CANARY_ID = "lh.canary.id";
 
     Map<String, Object> toMap();
 }

@@ -12,11 +12,10 @@ public class PrometheusExporterBootstrap {
     private final PrometheusMeterRegistry prometheusRegistry;
     private final PrometheusExporterServer prometheusExporterServer;
 
-    public PrometheusExporterBootstrap(final int webPort) {
+    public PrometheusExporterBootstrap(final int webPort, final String canaryId) {
         prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        prometheusRegistry.config().commonTags("application", "canary", "application_id", canaryId);
         Shutdown.addShutdownHook("Prometheus Exporter", prometheusRegistry::close);
-
-        prometheusExporterServer = new PrometheusExporterServer(webPort, prometheusRegistry);
 
         final JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();
         jvmMeter.bindTo(prometheusRegistry);
@@ -26,6 +25,8 @@ public class PrometheusExporterBootstrap {
 
         final ProcessorMetrics processorMetrics = new ProcessorMetrics();
         processorMetrics.bindTo(prometheusRegistry);
+
+        prometheusExporterServer = new PrometheusExporterServer(webPort, prometheusRegistry);
     }
 
     public void addMesurable(final Measurable measurable) {
