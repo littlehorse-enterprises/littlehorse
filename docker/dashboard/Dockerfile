@@ -19,7 +19,7 @@ COPY ./docker/dashboard/docker-entrypoint.sh ./
 EXPOSE 8080
 
 ENV PORT 8080
-ENV HOSTNAME localhost
+ENV HOSTNAME 0.0.0.0
 
 ENTRYPOINT ["/lh/dashboard/docker-entrypoint.sh"]
 CMD ["dashboard"]
