@@ -11,17 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PrometheusExporterServer {
 
-    public static final String METRICS_PATH = "/metrics";
     private final Javalin server;
     private final PrometheusMeterRegistry prometheusRegistry;
 
-    public PrometheusExporterServer(final int webPort, final PrometheusMeterRegistry prometheusRegistry) {
+    public PrometheusExporterServer(
+            final int webPort, final String webPath, final PrometheusMeterRegistry prometheusRegistry) {
         this.prometheusRegistry = prometheusRegistry;
         server = Javalin.create(serverConfig -> {
                     serverConfig.registerPlugin(
                             new MicrometerPlugin(pluginConfig -> pluginConfig.registry = prometheusRegistry));
                 })
-                .get(METRICS_PATH, context -> printMetrics(context))
+                .get(webPath, context -> printMetrics(context))
                 .start(webPort);
         Shutdown.addShutdownHook("Prometheus Exporter: Web Server", server::stop);
     }

@@ -85,6 +85,11 @@ protobuf {
     protoc {
         artifact = 'com.google.protobuf:protoc:3.25.2'
     }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
+        }
+    }
 }
 
 checkstyle {

@@ -52,6 +52,14 @@ public class CanaryConfig implements Config {
         return Integer.parseInt(configs.get(LH_CANARY_API_PORT).toString());
     }
 
+    public int getMetricsPort() {
+        return Integer.parseInt(configs.get(LH_CANARY_METRICS_PORT).toString());
+    }
+
+    public String getMetricsPath() {
+        return configs.get(LH_CANARY_METRICS_PATH).toString();
+    }
+
     public short getTopicReplicas() {
         return Short.parseShort(configs.get(LH_CANARY_TOPIC_CREATION_REPLICAS).toString());
     }
