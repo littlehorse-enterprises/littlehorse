@@ -43,6 +43,176 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WaitForThreadsRun.class, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder.class);
   }
 
+  /**
+   * <pre>
+   * The status of a single ThreadRun that we are waiting for.
+   * </pre>
+   *
+   * Protobuf enum {@code littlehorse.WaitForThreadsRun.WaitingThreadStatus}
+   */
+  public enum WaitingThreadStatus
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     * The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+     * </pre>
+     *
+     * <code>THREAD_IN_PROGRESS = 0;</code>
+     */
+    THREAD_IN_PROGRESS(0),
+    /**
+     * <pre>
+     * The ThreadRun failed with some failure, and the FailureHandler is running
+     * for that Failure.
+     * </pre>
+     *
+     * <code>THREAD_HANDLING_FAILURE = 1;</code>
+     */
+    THREAD_HANDLING_FAILURE(1),
+    /**
+     * <pre>
+     * We can mark this ThreadRun as "already waited for", meaning that either:
+     * 1. It completed successfully, OR
+     * 2. It failed, and the Failure Handler successfully completed
+     * </pre>
+     *
+     * <code>THREAD_ALREADY_WAITED = 2;</code>
+     */
+    THREAD_ALREADY_WAITED(2),
+    /**
+     * <pre>
+     * The ThreadRun did not complete successfully, and there wasn't a successful
+     * run of a Failure Handler for the Failure that was thrown.
+     * </pre>
+     *
+     * <code>THREAD_UNSUCCESSFUL = 3;</code>
+     */
+    THREAD_UNSUCCESSFUL(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <pre>
+     * The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+     * </pre>
+     *
+     * <code>THREAD_IN_PROGRESS = 0;</code>
+     */
+    public static final int THREAD_IN_PROGRESS_VALUE = 0;
+    /**
+     * <pre>
+     * The ThreadRun failed with some failure, and the FailureHandler is running
+     * for that Failure.
+     * </pre>
+     *
+     * <code>THREAD_HANDLING_FAILURE = 1;</code>
+     */
+    public static final int THREAD_HANDLING_FAILURE_VALUE = 1;
+    /**
+     * <pre>
+     * We can mark this ThreadRun as "already waited for", meaning that either:
+     * 1. It completed successfully, OR
+     * 2. It failed, and the Failure Handler successfully completed
+     * </pre>
+     *
+     * <code>THREAD_ALREADY_WAITED = 2;</code>
+     */
+    public static final int THREAD_ALREADY_WAITED_VALUE = 2;
+    /**
+     * <pre>
+     * The ThreadRun did not complete successfully, and there wasn't a successful
+     * run of a Failure Handler for the Failure that was thrown.
+     * </pre>
+     *
+     * <code>THREAD_UNSUCCESSFUL = 3;</code>
+     */
+    public static final int THREAD_UNSUCCESSFUL_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WaitingThreadStatus valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static WaitingThreadStatus forNumber(int value) {
+      switch (value) {
+        case 0: return THREAD_IN_PROGRESS;
+        case 1: return THREAD_HANDLING_FAILURE;
+        case 2: return THREAD_ALREADY_WAITED;
+        case 3: return THREAD_UNSUCCESSFUL;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<WaitingThreadStatus>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        WaitingThreadStatus> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<WaitingThreadStatus>() {
+            public WaitingThreadStatus findValueByNumber(int number) {
+              return WaitingThreadStatus.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final WaitingThreadStatus[] VALUES = values();
+
+    public static WaitingThreadStatus valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private WaitingThreadStatus(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.WaitForThreadsRun.WaitingThreadStatus)
+  }
+
   public interface WaitForThreadOrBuilder extends
       // @@protoc_insertion_point(interface_extends:littlehorse.WaitForThreadsRun.WaitForThread)
       com.google.protobuf.MessageOrBuilder {
@@ -108,13 +278,24 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * INTERNAL: flag used by scheduler internally.
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
      * </pre>
      *
-     * <code>bool already_handled = 5;</code>
-     * @return The alreadyHandled.
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The enum numeric value on the wire for waitingStatus.
      */
-    boolean getAlreadyHandled();
+    int getWaitingStatusValue();
+    /**
+     * <pre>
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The waitingStatus.
+     */
+    io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus();
   }
   /**
    * <pre>
@@ -134,6 +315,7 @@ private static final long serialVersionUID = 0L;
     }
     private WaitForThread() {
       threadStatus_ = 0;
+      waitingStatus_ = 0;
     }
 
     @java.lang.Override
@@ -239,19 +421,32 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
 
-    public static final int ALREADY_HANDLED_FIELD_NUMBER = 5;
-    private boolean alreadyHandled_ = false;
+    public static final int WAITING_STATUS_FIELD_NUMBER = 4;
+    private int waitingStatus_ = 0;
     /**
      * <pre>
-     * INTERNAL: flag used by scheduler internally.
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
      * </pre>
      *
-     * <code>bool already_handled = 5;</code>
-     * @return The alreadyHandled.
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The enum numeric value on the wire for waitingStatus.
      */
-    @java.lang.Override
-    public boolean getAlreadyHandled() {
-      return alreadyHandled_;
+    @java.lang.Override public int getWaitingStatusValue() {
+      return waitingStatus_;
+    }
+    /**
+     * <pre>
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The waitingStatus.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus result = io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.forNumber(waitingStatus_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -277,8 +472,8 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         output.writeInt32(3, threadRunNumber_);
       }
-      if (alreadyHandled_ != false) {
-        output.writeBool(5, alreadyHandled_);
+      if (waitingStatus_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.THREAD_IN_PROGRESS.getNumber()) {
+        output.writeEnum(4, waitingStatus_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -301,9 +496,9 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, threadRunNumber_);
       }
-      if (alreadyHandled_ != false) {
+      if (waitingStatus_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.THREAD_IN_PROGRESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, alreadyHandled_);
+          .computeEnumSize(4, waitingStatus_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -328,8 +523,7 @@ private static final long serialVersionUID = 0L;
       if (threadStatus_ != other.threadStatus_) return false;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
-      if (getAlreadyHandled()
-          != other.getAlreadyHandled()) return false;
+      if (waitingStatus_ != other.waitingStatus_) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -349,9 +543,8 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + threadStatus_;
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
-      hash = (37 * hash) + ALREADY_HANDLED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getAlreadyHandled());
+      hash = (37 * hash) + WAITING_STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + waitingStatus_;
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -500,7 +693,7 @@ private static final long serialVersionUID = 0L;
         }
         threadStatus_ = 0;
         threadRunNumber_ = 0;
-        alreadyHandled_ = false;
+        waitingStatus_ = 0;
         return this;
       }
 
@@ -548,7 +741,7 @@ private static final long serialVersionUID = 0L;
           result.threadRunNumber_ = threadRunNumber_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.alreadyHandled_ = alreadyHandled_;
+          result.waitingStatus_ = waitingStatus_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -606,8 +799,8 @@ private static final long serialVersionUID = 0L;
         if (other.getThreadRunNumber() != 0) {
           setThreadRunNumber(other.getThreadRunNumber());
         }
-        if (other.getAlreadyHandled() != false) {
-          setAlreadyHandled(other.getAlreadyHandled());
+        if (other.waitingStatus_ != 0) {
+          setWaitingStatusValue(other.getWaitingStatusValue());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -652,11 +845,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
-              case 40: {
-                alreadyHandled_ = input.readBool();
+              case 32: {
+                waitingStatus_ = input.readEnum();
                 bitField0_ |= 0x00000008;
                 break;
-              } // case 40
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -955,46 +1148,80 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private boolean alreadyHandled_ ;
+      private int waitingStatus_ = 0;
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
-       * @return The alreadyHandled.
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return The enum numeric value on the wire for waitingStatus.
        */
-      @java.lang.Override
-      public boolean getAlreadyHandled() {
-        return alreadyHandled_;
+      @java.lang.Override public int getWaitingStatusValue() {
+        return waitingStatus_;
       }
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
-       * @param value The alreadyHandled to set.
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @param value The enum numeric value on the wire for waitingStatus to set.
        * @return This builder for chaining.
        */
-      public Builder setAlreadyHandled(boolean value) {
-
-        alreadyHandled_ = value;
+      public Builder setWaitingStatusValue(int value) {
+        waitingStatus_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return The waitingStatus.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus() {
+        io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus result = io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.forNumber(waitingStatus_);
+        return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
+       * </pre>
+       *
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @param value The waitingStatus to set.
        * @return This builder for chaining.
        */
-      public Builder clearAlreadyHandled() {
+      public Builder setWaitingStatus(io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        waitingStatus_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
+       * </pre>
+       *
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWaitingStatus() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        alreadyHandled_ = false;
+        waitingStatus_ = 0;
         onChanged();
         return this;
       }

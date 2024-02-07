@@ -150,6 +150,82 @@ export interface WaitForThreadsRun {
   threads: WaitForThreadsRun_WaitForThread[];
 }
 
+/** The status of a single ThreadRun that we are waiting for. */
+export enum WaitForThreadsRun_WaitingThreadStatus {
+  /** THREAD_IN_PROGRESS - The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR) */
+  THREAD_IN_PROGRESS = "THREAD_IN_PROGRESS",
+  /**
+   * THREAD_HANDLING_FAILURE - The ThreadRun failed with some failure, and the FailureHandler is running
+   * for that Failure.
+   */
+  THREAD_HANDLING_FAILURE = "THREAD_HANDLING_FAILURE",
+  /**
+   * THREAD_ALREADY_WAITED - We can mark this ThreadRun as "already waited for", meaning that either:
+   * 1. It completed successfully, OR
+   * 2. It failed, and the Failure Handler successfully completed
+   */
+  THREAD_ALREADY_WAITED = "THREAD_ALREADY_WAITED",
+  /**
+   * THREAD_UNSUCCESSFUL - The ThreadRun did not complete successfully, and there wasn't a successful
+   * run of a Failure Handler for the Failure that was thrown.
+   */
+  THREAD_UNSUCCESSFUL = "THREAD_UNSUCCESSFUL",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function waitForThreadsRun_WaitingThreadStatusFromJSON(object: any): WaitForThreadsRun_WaitingThreadStatus {
+  switch (object) {
+    case 0:
+    case "THREAD_IN_PROGRESS":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS;
+    case 1:
+    case "THREAD_HANDLING_FAILURE":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE;
+    case 2:
+    case "THREAD_ALREADY_WAITED":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED;
+    case 3:
+    case "THREAD_UNSUCCESSFUL":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED;
+  }
+}
+
+export function waitForThreadsRun_WaitingThreadStatusToJSON(object: WaitForThreadsRun_WaitingThreadStatus): string {
+  switch (object) {
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS:
+      return "THREAD_IN_PROGRESS";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
+      return "THREAD_HANDLING_FAILURE";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED:
+      return "THREAD_ALREADY_WAITED";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
+      return "THREAD_UNSUCCESSFUL";
+    case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function waitForThreadsRun_WaitingThreadStatusToNumber(object: WaitForThreadsRun_WaitingThreadStatus): number {
+  switch (object) {
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS:
+      return 0;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
+      return 1;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED:
+      return 2;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
+      return 3;
+    case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** A 'WaitForThread' structure defines a thread that is being waited for. */
 export interface WaitForThreadsRun_WaitForThread {
   /**
@@ -163,8 +239,11 @@ export interface WaitForThreadsRun_WaitForThread {
   threadStatus: LHStatus;
   /** The number of the ThreadRun being waited for. */
   threadRunNumber: number;
-  /** INTERNAL: flag used by scheduler internally. */
-  alreadyHandled: boolean;
+  /**
+   * The "waiting status" of this specific thread: whether it's still running,
+   * already done, handling a failure, or completely failed.
+   */
+  waitingStatus: WaitForThreadsRun_WaitingThreadStatus;
 }
 
 /** The sub-node structure for an EXTERNAL_EVENT NodeRun. */
@@ -996,7 +1075,12 @@ export const WaitForThreadsRun = {
 };
 
 function createBaseWaitForThreadsRun_WaitForThread(): WaitForThreadsRun_WaitForThread {
-  return { threadEndTime: undefined, threadStatus: LHStatus.STARTING, threadRunNumber: 0, alreadyHandled: false };
+  return {
+    threadEndTime: undefined,
+    threadStatus: LHStatus.STARTING,
+    threadRunNumber: 0,
+    waitingStatus: WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
+  };
 }
 
 export const WaitForThreadsRun_WaitForThread = {
@@ -1010,8 +1094,8 @@ export const WaitForThreadsRun_WaitForThread = {
     if (message.threadRunNumber !== 0) {
       writer.uint32(24).int32(message.threadRunNumber);
     }
-    if (message.alreadyHandled === true) {
-      writer.uint32(40).bool(message.alreadyHandled);
+    if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
+      writer.uint32(32).int32(waitForThreadsRun_WaitingThreadStatusToNumber(message.waitingStatus));
     }
     return writer;
   },
@@ -1044,12 +1128,12 @@ export const WaitForThreadsRun_WaitForThread = {
 
           message.threadRunNumber = reader.int32();
           continue;
-        case 5:
-          if (tag !== 40) {
+        case 4:
+          if (tag !== 32) {
             break;
           }
 
-          message.alreadyHandled = reader.bool();
+          message.waitingStatus = waitForThreadsRun_WaitingThreadStatusFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1065,7 +1149,9 @@ export const WaitForThreadsRun_WaitForThread = {
       threadEndTime: isSet(object.threadEndTime) ? globalThis.String(object.threadEndTime) : undefined,
       threadStatus: isSet(object.threadStatus) ? lHStatusFromJSON(object.threadStatus) : LHStatus.STARTING,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
-      alreadyHandled: isSet(object.alreadyHandled) ? globalThis.Boolean(object.alreadyHandled) : false,
+      waitingStatus: isSet(object.waitingStatus)
+        ? waitForThreadsRun_WaitingThreadStatusFromJSON(object.waitingStatus)
+        : WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
     };
   },
 
@@ -1080,8 +1166,8 @@ export const WaitForThreadsRun_WaitForThread = {
     if (message.threadRunNumber !== 0) {
       obj.threadRunNumber = Math.round(message.threadRunNumber);
     }
-    if (message.alreadyHandled === true) {
-      obj.alreadyHandled = message.alreadyHandled;
+    if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
+      obj.waitingStatus = waitForThreadsRun_WaitingThreadStatusToJSON(message.waitingStatus);
     }
     return obj;
   },
@@ -1096,7 +1182,7 @@ export const WaitForThreadsRun_WaitForThread = {
     message.threadEndTime = object.threadEndTime ?? undefined;
     message.threadStatus = object.threadStatus ?? LHStatus.STARTING;
     message.threadRunNumber = object.threadRunNumber ?? 0;
-    message.alreadyHandled = object.alreadyHandled ?? false;
+    message.waitingStatus = object.waitingStatus ?? WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS;
     return message;
   },
 };

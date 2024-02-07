@@ -3,6 +3,7 @@ import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -87,17 +88,27 @@ class StartMultipleThreadsRun(_message.Message):
 
 class WaitForThreadsRun(_message.Message):
     __slots__ = ["threads"]
+    class WaitingThreadStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = []
+        THREAD_IN_PROGRESS: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+        THREAD_HANDLING_FAILURE: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+        THREAD_ALREADY_WAITED: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+        THREAD_UNSUCCESSFUL: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+    THREAD_IN_PROGRESS: WaitForThreadsRun.WaitingThreadStatus
+    THREAD_HANDLING_FAILURE: WaitForThreadsRun.WaitingThreadStatus
+    THREAD_ALREADY_WAITED: WaitForThreadsRun.WaitingThreadStatus
+    THREAD_UNSUCCESSFUL: WaitForThreadsRun.WaitingThreadStatus
     class WaitForThread(_message.Message):
-        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "already_handled"]
+        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "waiting_status"]
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]
         THREAD_STATUS_FIELD_NUMBER: _ClassVar[int]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
-        ALREADY_HANDLED_FIELD_NUMBER: _ClassVar[int]
+        WAITING_STATUS_FIELD_NUMBER: _ClassVar[int]
         thread_end_time: _timestamp_pb2.Timestamp
         thread_status: _common_enums_pb2.LHStatus
         thread_run_number: int
-        already_handled: bool
-        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., already_handled: bool = ...) -> None: ...
+        waiting_status: WaitForThreadsRun.WaitingThreadStatus
+        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., waiting_status: _Optional[_Union[WaitForThreadsRun.WaitingThreadStatus, str]] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...

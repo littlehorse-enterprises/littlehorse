@@ -1,8 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 
 class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThreadsNodeOutput {

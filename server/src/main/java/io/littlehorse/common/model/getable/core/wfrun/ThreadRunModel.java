@@ -423,11 +423,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     /*
      * Returns true if this thread is in a dynamic (running) state.
      */
-
     public boolean isRunning() {
         return (status == LHStatus.RUNNING || status == LHStatus.STARTING || status == LHStatus.HALTING);
     }
 
+    /**
+     * Tells the ThreadRun to try to move forward. Returns true if the state of the ThreadRun is changed,
+     * meaning that the ThreadRun either advanced to a new NodeRun, changed its status (eg. from HALTING to
+     * HALTED).
+     */
     public boolean advance(Date eventTime) {
         NodeRunModel currentNodeRunModel = getCurrentNodeRun();
 
@@ -466,11 +470,21 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
     }
 
+    /**
+     * Makes the ThreadRun fail with a given Failure. If the current NodeRun
+     * @param failure is the Failure that was raised.
+     * @param time when the Failure occurred.
+     */
     public void fail(FailureModel failure, Date time) {
         // First determine if the node that was failed has a relevant exception
         // handler attached.
 
         NodeModel curNode = getCurrentNode();
+        FailureModel expected = getCurrentNodeRun().getLatestFailure();
+        if (!expected.getFailureName().equals(failure.getFailureName())) {
+            log.error("HUGE BUG IN LH. Should not happen.");
+        }
+
         FailureHandlerDefModel handler = null;
 
         for (FailureHandlerDefModel candidate : curNode.failureHandlers) {
@@ -481,17 +495,33 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         if (handler == null) {
-            dieForReal(failure, time);
+            failWithoutGrace(failure, time);
         } else {
             handleFailure(failure, handler);
         }
     }
 
+    /**
+     * In the case that a Failure is thrown and there is a FailureHandler defined for that failure,
+     * we start a "Failure Handler ThreadRun" which handles that failure.
+     * @param failure is the failure being handled
+     * @param handler is the FailureHandlerDef that defines the ThreadSpec to handle the failure.
+     */
     private void handleFailure(FailureModel failure, FailureHandlerDefModel handler) {
         PendingFailureHandlerModel pfh = new PendingFailureHandlerModel();
         pfh.failedThreadRun = this.number;
         pfh.handlerSpecName = handler.handlerSpecName;
 
+        /*
+         * It should be noted that the current implementation of Failure Handling is as follows:
+         * - We HALT the ThreadRun that threw the Failure
+         * - Once that ThreadRun is HALTED, we start the FailureHandler ThreadRun.
+         *
+         * Note that for a ThreadRun to be HALTED, we need to wait for all of its children to be
+         * HALTED as well. That is why we add the "pending failure" to the WfRun, which means that
+         * the next time we call advance(), we check to see if the failed ThreadRun is HALTED, and
+         * only the do we start the FailureHandler.
+         */
         wfRun.pendingFailures.add(pfh);
 
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
@@ -504,6 +534,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         getWfRun().advance(processorContext.currentCommand().getTime());
     }
 
+    /**
+     * See the note inside handleFailure(). The WfRunModel is in charge of starting the FailureHandler
+     * ThreadRun once the ThreadRun that threw the Failure has reached the HALTED state.
+     *
+     * When the WfRunModel starts the FailureHandler ThreadRun, then it must also tell the failed
+     * ThreadRunModel to "update" its state to reflect the fact that the failed ThreadRun is no longer
+     * waiting for the FailureHandler to start; rather, the FailureHandler has already started.
+     */
     public void acknowledgeXnHandlerStarted(PendingFailureHandlerModel pfh, int handlerThreadNumber) {
         boolean foundIt = false;
         for (int i = haltReasons.size() - 1; i >= 0; i--) {
@@ -528,7 +566,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         haltReasons.add(thr);
     }
 
-    public void dieForReal(FailureModel failure, Date time) {
+    /**
+     * Bypasses failure handlers and causes the ThreadRun to fail without possibility for handling
+     * the Failure. This is used for exmaple if the FailureHandler ThreadRun throws a failure.
+     *
+     * When a ThreadRun fails, the current behavior of the LH Server is that all child ThreadRun's
+     * are moved to the HALTED state.
+     *
+     * If the failing ThreadRun is an Interrupt Handler ThreadRun, then the parent ThreadRun is marked
+     * as failed as well.
+     */
+    public void failWithoutGrace(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
         this.status = failure.getStatus();
         this.endTime = time;
@@ -546,23 +594,27 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         if (interruptTriggerId != null) {
-            // then we're an interrupt thread and need to fail the parent.
-
-            getParent() // guaranteed not to be null in this case
+            // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
+            // to be not-null in this case
+            getParent()
                     .failWithoutGrace(
-                            new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
+                            new FailureModel(
+                                    "Interrupt thread with id " + number + " failed!",
+                                    failure.getFailureName(),
+                                    failure.getContent()), // propagate failure content
                             time);
         } else if (failureBeingHandled != null) {
+            // Then it's a FailureHandler thread, so we want the parent ThreadRun to fail without
+            // grace.
             getParent().failWithoutGrace(failure, time);
         }
 
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
-    public void failWithoutGrace(FailureModel failure, Date time) {
-        dieForReal(failure, time);
-    }
-
+    /*
+     * Marks the ThreadRun as completed and notifies the WfRunModel as so.
+     */
     public void complete(Date time) {
         this.errorMessage = null;
         setStatus(LHStatus.COMPLETED);
@@ -571,6 +623,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
+    /*
+     * Callback used by the NodeRunModel when the NodeRun is completed, to notify this ThreadRunModel
+     * that it's time to advance the ThreadRun.
+     *
+     * This callback makes the ThreadRun advance to the next Node in the WfSpec (thus creating a new
+     * NodeRun) and it tells the WfRun to try to advance everything.
+     */
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;

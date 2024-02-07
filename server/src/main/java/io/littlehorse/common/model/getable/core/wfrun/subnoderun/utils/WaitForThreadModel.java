@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
+import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
-    private boolean alreadyHandled;
+    private WaitingThreadStatus waitingStatus;;
     private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {
@@ -65,7 +66,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
-        alreadyHandled = p.getAlreadyHandled();
+        waitingStatus = p.getWaitingStatus();
     }
 
     public WaitForThread.Builder toProto() {
@@ -74,7 +75,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
-        out.setAlreadyHandled(alreadyHandled);
+        out.setWaitingStatus(waitingStatus);
         return out;
     }
 
