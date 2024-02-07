@@ -5,7 +5,6 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +16,6 @@ public class MetadataCache extends LHCache<String, StoredGetablePb> {
             "(?<tenant>.+)\\/" + StoreableType.STORED_GETABLE_VALUE + "\\/(?<getableType>\\d+)\\/(?<key>.+)");
     private static final Pattern CACHEABLE_WITHOUT_TENANT_KEY_PATTERN =
             Pattern.compile(StoreableType.STORED_GETABLE_VALUE + "\\/(?<getableType>\\d+)\\/(?<key>.+)");
-    public static final int LATEST_VERSION = -1;
-
-    private final ConcurrentSkipListSet<String> emptyKeys = new ConcurrentSkipListSet<>();
 
     private static Set<GetableClassEnum> allowedObjets = Set.of(
             GetableClassEnum.TENANT, GetableClassEnum.WF_SPEC, GetableClassEnum.PRINCIPAL, GetableClassEnum.TASK_DEF);
@@ -51,19 +47,15 @@ public class MetadataCache extends LHCache<String, StoredGetablePb> {
         }
     }
 
-    public void maybeStoreMissingKey(String missingKey) {
+    public void maybeCacheMissingKey(String missingKey) {
         if (isCacheableKey(missingKey)) {
-            emptyKeys.add(missingKey);
+            super.updateCache(missingKey, null);
         }
-    }
-
-    public boolean isMissingKey(String missingKey) {
-        return emptyKeys.contains(missingKey);
     }
 
     public void removeMissingKey(String missingKey) {
         if (isCacheableKey(missingKey)) {
-            emptyKeys.remove(missingKey);
+            evictCache(missingKey);
         }
     }
 
