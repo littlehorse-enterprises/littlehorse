@@ -27,18 +27,23 @@ public class LatencyTopology {
                 .aggregate(
                         () -> MetricAverage.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Materialized.<String, MetricAverage, WindowStore<Bytes, byte[]>>as("latency-metrics-windows")
+                        Materialized.<String, MetricAverage, WindowStore<Bytes, byte[]>>as("latency-metric-windows")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(ProtobufSerdes.MetricAverage()))
-                // we do not suppress because we want to have the value inmediatally
+                // we do not suppress because we want to have the value immediately
                 .toStream()
                 .map((key, value) -> KeyValue.pair(key.key(), value))
                 .peek((key, value) -> log.debug(
-                        "server={}, count={}, sum={}, avg={}", key, value.getCount(), value.getSum(), value.getAvg()))
+                        "key={}, count={}, sum={}, avg={}, peak={}",
+                        key,
+                        value.getCount(),
+                        value.getSum(),
+                        value.getAvg(),
+                        value.getPeak()))
                 // we create a table to get the last latency for every lh server
                 .toTable(
-                        Named.as("latency-metrics"),
-                        Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
+                        Named.as("latency-metric"),
+                        Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metric")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(ProtobufSerdes.MetricAverage()));
     }

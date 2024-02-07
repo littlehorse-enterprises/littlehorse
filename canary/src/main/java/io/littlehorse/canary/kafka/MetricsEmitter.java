@@ -41,7 +41,7 @@ public class MetricsEmitter implements MeterBinder {
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
-                log.debug("Emitting message {} {}", metric.getMetricCase(), key);
+                log.trace("Emitting message {} {}", metric.getMetricCase(), key);
             } else {
                 log.error("Emitting message {} {}", metric.getMetricCase(), key, exception);
             }

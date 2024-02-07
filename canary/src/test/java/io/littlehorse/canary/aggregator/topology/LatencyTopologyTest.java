@@ -60,7 +60,7 @@ class LatencyTopologyTest {
         inputTopic.pipeInput(key, metric1);
         inputTopic.pipeInput(key, metric2);
 
-        KeyValueStore store = testDriver.getKeyValueStore("latency-metrics");
+        KeyValueStore store = testDriver.getKeyValueStore("latency-metric");
 
         assertThat(store.get(key))
                 .isEqualTo(MetricAverage.newBuilder()
