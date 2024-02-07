@@ -6,6 +6,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.TestRequestExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import org.junit.jupiter.api.Test;
 
 public class WfServiceTest {
@@ -13,7 +14,10 @@ public class WfServiceTest {
     private final TestRequestExecutionContext executionContext = TestRequestExecutionContext.create();
     private final WfService service = executionContext.service();
     private final TestMetadataManager metadataManager = TestMetadataManager.create(
-            executionContext.getGlobalMetadataNativeStore(), executionContext.getTenantId(), executionContext);
+            executionContext.getGlobalMetadataNativeStore(),
+            executionContext.getTenantId(),
+            executionContext,
+            new MetadataCache());
 
     /*@Test
     public void shouldReturnTaskDefFromCache() {

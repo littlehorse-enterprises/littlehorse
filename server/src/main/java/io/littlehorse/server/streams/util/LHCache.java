@@ -29,4 +29,8 @@ public class LHCache<K, V> {
     public void evictCache(K key) {
         cache.remove(key);
     }
+
+    public void clear() {
+        cache.clear();
+    }
 }

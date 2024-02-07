@@ -57,7 +57,7 @@ public class TaskDefLifecycleTest {
     }
 
     @Test
-    void shouldBeAbleToReadTaskDefImmediatelyAfterCreation() {
+    void shouldBeAbleToReadTaskDefImmediatelyAfterCreation() throws Exception {
         // Repeat 5 times to make race conditions more likely to appear
         for (int i = 0; i < 5; i++) {
             String taskDefName = UUID.randomUUID().toString();
@@ -82,7 +82,6 @@ public class TaskDefLifecycleTest {
             client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
                     .setId(TaskDefId.newBuilder().setName(taskDefName))
                     .build());
-
             // Now make sure we can't create the WfSpec
             assertThatThrownBy(() -> client.putWfSpec(putWfSpec))
                     .matches((exn) ->

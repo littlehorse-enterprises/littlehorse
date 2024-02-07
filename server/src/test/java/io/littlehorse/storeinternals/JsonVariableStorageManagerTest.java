@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -108,8 +110,10 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock());
-        getableManager = new GetableManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
+        storeWrapper = TenantScopedStore.newInstance(
+                store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS), new MetadataCache());
+        getableManager = new GetableManager(
+                storeWrapper, mockProcessorContext, lhConfig, mock(), mock(Answers.RETURNS_DEEP_STUBS));
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

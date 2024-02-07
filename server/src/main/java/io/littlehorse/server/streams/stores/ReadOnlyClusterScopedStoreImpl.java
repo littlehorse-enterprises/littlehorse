@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -10,7 +11,8 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  */
 class ReadOnlyClusterScopedStoreImpl extends ReadOnlyBaseStoreImpl implements ReadOnlyClusterScopedStore {
 
-    public ReadOnlyClusterScopedStoreImpl(ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx) {
-        super(nativeStore, ctx);
+    public ReadOnlyClusterScopedStoreImpl(
+            ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx, MetadataCache metadataCache) {
+        super(nativeStore, ctx, metadataCache);
     }
 }

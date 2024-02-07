@@ -1,13 +1,17 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Slf4j
 public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Void, Void> {
 
     private KeyValueStore<String, Bytes> store;
@@ -17,6 +21,7 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         this.metadataCache = metadataCache;
     }
 
+    @Override
     public void init(final ProcessorContext<Void, Void> ctx) {
         store = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
@@ -37,17 +42,16 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
     public void process(final Record<String, Bytes> record) {
         String key = record.key();
         Bytes value = record.value();
-
-        /*try {
-            metadataCache.updateCache(key, value);
-        } catch (Exception ex) {
-            log.error("Failed to update metadata cache", ex);
-        }*/
-
-        if (value == null) {
-            store.delete(key);
-        } else {
-            store.put(key, value);
+        try {
+            if (value != null) {
+                store.put(key, value);
+                metadataCache.updateCache(key, StoredGetablePb.parseFrom(value.get()));
+            } else {
+                store.delete(key);
+                metadataCache.evictCache(key);
+            }
+        } catch (InvalidProtocolBufferException e) {
+            log.error("unable to parse metadata object");
         }
     }
 }

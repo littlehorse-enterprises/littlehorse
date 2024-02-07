@@ -28,7 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,8 +45,7 @@ public class CreateRemoteTagRepartitionCommandTest {
     @Mock
     private KafkaStreamsServerImpl server;
 
-    @Mock
-    private ExecutionContext executionContext;
+    private final ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MetadataCache metadataCache = new MetadataCache();
 
@@ -65,12 +66,12 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
-    private TenantScopedStore tenantAStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext);
-    private TenantScopedStore tenantBStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext);
-    private TenantScopedStore defaultStore =
-            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT), executionContext);
+    private TenantScopedStore tenantAStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext, metadataCache);
+    private TenantScopedStore tenantBStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext, metadataCache);
+    private TenantScopedStore defaultStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT), executionContext, metadataCache);
 
     @BeforeEach
     public void setup() {

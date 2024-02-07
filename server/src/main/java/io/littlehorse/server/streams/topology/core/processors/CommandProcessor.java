@@ -145,7 +145,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+        ClusterScopedStore clusterStore =
+                ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext(), metadataCache);
         rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
@@ -160,7 +161,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
-                TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
+                TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext(), metadataCache);
         try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
@@ -179,8 +180,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        ClusterScopedStore coreDefaultStore =
-                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
+        ClusterScopedStore coreDefaultStore = ClusterScopedStore.newInstance(
+                ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext(), metadataCache);
         PartitionMetricsModel metricsOnCurrentPartition =
                 coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
 

@@ -35,6 +35,7 @@ import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
@@ -646,6 +647,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("application.id", getKafkaGroupId("core"));
         props.put("processing.guarantee", "exactly_once_v2");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
+        props.put(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG");
 
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the

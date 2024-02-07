@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -13,8 +14,11 @@ import org.apache.kafka.streams.state.KeyValueStore;
 class TenantScopedStoreImpl extends BaseStoreImpl implements TenantScopedStore {
 
     public TenantScopedStoreImpl(
-            KeyValueStore<String, Bytes> nativeStore, TenantIdModel tenantId, ExecutionContext ctx) {
-        super(nativeStore, tenantId, ctx);
+            KeyValueStore<String, Bytes> nativeStore,
+            TenantIdModel tenantId,
+            ExecutionContext ctx,
+            MetadataCache metadataCache) {
+        super(nativeStore, tenantId, ctx, metadataCache);
         Objects.requireNonNull(tenantId);
     }
 }

@@ -40,12 +40,12 @@ public class RequestExecutionContext implements ExecutionContext {
         }
 
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
 
         ReadOnlyTenantScopedStore tenantCoreStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this, metadataCache);
 
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);

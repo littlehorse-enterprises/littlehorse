@@ -64,21 +64,21 @@ public class ProcessorExecutionContext implements ExecutionContext {
             KafkaStreamsServerImpl server) {
 
         this.processorContext = processorContext;
+        this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
 
         this.config = config;
-        this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
-        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this, metadataCache);
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
@@ -170,7 +170,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            metricsAggregator = new MetricsUpdater(ClusterScopedStore.newInstance(nativeCoreStore(), this));
+            metricsAggregator =
+                    new MetricsUpdater(ClusterScopedStore.newInstance(nativeCoreStore(), this, metadataCache));
             getableUpdates.subscribe(metricsAggregator);
         }
         return getableUpdates;

@@ -213,6 +213,7 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -245,6 +246,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
+        for (StreamsMetadata metadata : this.coreStreams.metadataForAllStreamsClients()) {
+            metadata.stateStoreNames();
+        }
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
         this.healthService = new HealthService(config, coreStreams, timerStreams);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());

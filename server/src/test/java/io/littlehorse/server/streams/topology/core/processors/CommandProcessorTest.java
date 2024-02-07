@@ -33,8 +33,10 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +50,7 @@ public class CommandProcessorTest {
     @Mock
     private TaskQueueManager taskQueueManager;
 
-    @Mock
-    private ExecutionContext executionContext;
+    private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MetadataCache metadataCache = new MetadataCache();
 
@@ -68,7 +69,7 @@ public class CommandProcessorTest {
             .build();
 
     private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext, metadataCache);
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
@@ -99,7 +100,9 @@ public class CommandProcessorTest {
                 tenantProcessorContext.getServer());
         defaultProcessorContext.getableManager();
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
-                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
+                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE),
+                executionContext,
+                metadataCache);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);

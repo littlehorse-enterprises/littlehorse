@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -34,6 +35,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -56,7 +58,7 @@ public class UserTaskRunModelStorageManagerTest {
     private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExecutionContext executionContext;
 
     // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
@@ -81,7 +83,8 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(
+                store, new TenantIdModel(tenantId), executionContext, new MetadataCache());
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

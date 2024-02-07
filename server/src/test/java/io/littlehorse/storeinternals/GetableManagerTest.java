@@ -33,6 +33,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -81,7 +82,8 @@ public class GetableManagerTest {
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(
+                store, new TenantIdModel(tenantId), executionContext, new MetadataCache());
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

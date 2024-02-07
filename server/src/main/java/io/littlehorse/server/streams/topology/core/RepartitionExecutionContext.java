@@ -28,17 +28,17 @@ public class RepartitionExecutionContext implements ExecutionContext {
             MetadataCache metadataCache) {
 
         this.repartitionContext = repartitionContext;
+        this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
 
         this.lhConfig = lhConfig;
-        this.metadataCache = metadataCache;
     }
 
     @Override

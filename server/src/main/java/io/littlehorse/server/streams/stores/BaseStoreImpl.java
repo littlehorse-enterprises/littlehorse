@@ -4,6 +4,7 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -14,14 +15,20 @@ import org.apache.kafka.streams.state.KeyValueStore;
 abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
+    private final MetadataCache metadataCache;
 
-    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, TenantIdModel tenantId, ExecutionContext context) {
-        super(nativeStore, tenantId, context);
+    BaseStoreImpl(
+            KeyValueStore<String, Bytes> nativeStore,
+            TenantIdModel tenantId,
+            ExecutionContext context,
+            MetadataCache metadataCache) {
+        super(nativeStore, tenantId, context, metadataCache);
         this.nativeStore = nativeStore;
+        this.metadataCache = metadataCache;
     }
 
-    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, ExecutionContext context) {
-        this(nativeStore, null, context);
+    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, ExecutionContext context, MetadataCache metadataCache) {
+        this(nativeStore, null, context, metadataCache);
     }
 
     @Override
@@ -33,6 +40,7 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
     @Override
     public void delete(String storeKey, StoreableType type) {
         String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(type, storeKey));
+        metadataCache.evictCache(fullKey);
         nativeStore.delete(fullKey);
     }
 }

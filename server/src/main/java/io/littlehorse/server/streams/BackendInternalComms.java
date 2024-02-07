@@ -108,6 +108,7 @@ public class BackendInternalComms implements Closeable {
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern objectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
+    private final MetadataCache metadataCache;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -121,6 +122,7 @@ public class BackendInternalComms implements Closeable {
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
+        this.metadataCache = metadataCache;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -335,7 +337,7 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
-        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
+        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext, metadataCache);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
@@ -964,12 +966,12 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext(), metadataCache);
             return clusterStore.range(startKey, endKey, Tag.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext(), metadataCache);
             return tenantStore.range(startKey, endKey, Tag.class);
         }
     }
@@ -979,12 +981,12 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext(), metadataCache);
             return clusterStore.range(startKey, endKey, StoredGetable.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext(), metadataCache);
             return tenantStore.range(startKey, endKey, StoredGetable.class);
         }
     }

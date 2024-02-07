@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
+import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -30,7 +31,9 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,8 +45,7 @@ public class TenantAdministrationTest {
     @Mock
     private KafkaStreamsServerImpl server;
 
-    @Mock
-    private ExecutionContext executionContext;
+    private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
@@ -63,8 +65,9 @@ public class TenantAdministrationTest {
             new TenantIdModel(tenantId), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
 
     private final ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(
-            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
-            TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext));
+            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext, metadataCache),
+            TenantScopedStore.newInstance(
+                    nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext, metadataCache));
 
     @BeforeEach
     public void setup() {
@@ -83,11 +86,13 @@ public class TenantAdministrationTest {
     }
 
     @Test
-    public void shouldValidateExistingTenant() {
+    public void shouldValidateExistingTenant() throws Exception {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+        Bytes bytes = nativeMetadataStore.get("0/14/test-tenant-id");
+        metadataCache.maybeUpdateCache("0/14/test-tenant-id", StoredGetablePb.parseFrom(bytes.get()));
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         verify(server, times(1)).sendErrorToClient(any(), any());

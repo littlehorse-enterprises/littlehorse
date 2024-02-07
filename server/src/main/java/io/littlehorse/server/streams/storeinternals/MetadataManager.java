@@ -30,7 +30,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        StoredGetable<?, ?> old = clusterStore.get(getable.getObjectId().toString(), StoredGetable.class);
+        StoredGetable<?, ?> old = clusterStore.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
         if (old != null) {
             log.trace("removing tags for metadata getable {}", getable.getObjectId());
             for (String tagId : old.getIndexCache().getTagIds()) {

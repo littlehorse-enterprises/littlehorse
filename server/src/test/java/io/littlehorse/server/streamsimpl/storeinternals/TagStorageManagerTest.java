@@ -16,6 +16,7 @@ import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -51,7 +52,8 @@ public class TagStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    private TenantScopedStore localStore = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock());
+    private TenantScopedStore localStore = TenantScopedStore.newInstance(
+            store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS), new MetadataCache());
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
