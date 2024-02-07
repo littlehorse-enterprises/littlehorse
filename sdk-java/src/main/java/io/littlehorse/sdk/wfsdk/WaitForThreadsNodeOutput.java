@@ -1,5 +1,7 @@
 package io.littlehorse.sdk.wfsdk;
 
+import io.littlehorse.sdk.common.proto.LHErrorType;
+
 /**
  * The `WaitForThreadsNodeOutput` interface represents a specialized NodeOutput
  * used to manage parallel thread executions and control their behavior during
@@ -15,9 +17,9 @@ package io.littlehorse.sdk.wfsdk;
  */
 public interface WaitForThreadsNodeOutput extends NodeOutput {
 
-    // WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, WorkflowThread handler);
+    WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, WorkflowThread handler);
 
-    // WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType error, WorkflowThread handler);
+    WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType error, WorkflowThread handler);
 
-    // WaitForThreadsNodeOutput handleAnyFailureOnChild(WorkflowThread handler);
+    WaitForThreadsNodeOutput handleAnyFailureOnChild(WorkflowThread handler);
 }

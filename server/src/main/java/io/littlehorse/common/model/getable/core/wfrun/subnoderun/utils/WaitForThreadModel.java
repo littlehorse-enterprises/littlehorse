@@ -23,7 +23,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
-    private WaitingThreadStatus waitingStatus;;
+    private WaitingThreadStatus waitingStatus;
+    ;
     private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {

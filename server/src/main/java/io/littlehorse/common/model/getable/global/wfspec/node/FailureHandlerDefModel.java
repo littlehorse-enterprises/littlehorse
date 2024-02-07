@@ -6,9 +6,11 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
 
     public String specificFailure;
