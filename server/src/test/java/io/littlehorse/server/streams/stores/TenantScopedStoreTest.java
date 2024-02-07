@@ -177,6 +177,7 @@ public class TenantScopedStoreTest {
         WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
         TenantScopedStore store =
                 TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+        store.enableCache(cache);
         store.put(new StoredGetable<>(wfSpec));
         StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
         Assertions.assertThat(result.getStoredObject()).isNotNull();
@@ -190,6 +191,7 @@ public class TenantScopedStoreTest {
         WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
         TenantScopedStore store =
                 TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+        store.enableCache(metadataCache);
         StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
         Assertions.assertThat(result).isNull();
         result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
