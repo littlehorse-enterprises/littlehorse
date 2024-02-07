@@ -11,6 +11,7 @@ import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.MetricAverage;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Properties;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
@@ -54,24 +55,21 @@ class LatencyTopologyTest {
     @Test
     void calculateLatency() {
         String key = "localhost:2023";
-        Metric metric1 = buildLatencyMetric(20);
-        Metric metric2 = buildLatencyMetric(40);
+        List<Metric> metrics = List.of(newMetric(20), newMetric(40), newMetric(10), newMetric(10));
 
-        inputTopic.pipeInput(key, metric1);
-        inputTopic.pipeInput(key, metric2);
-
+        metrics.forEach(metric -> inputTopic.pipeInput(key, metric));
         KeyValueStore store = testDriver.getKeyValueStore("latency-metric");
 
         assertThat(store.get(key))
                 .isEqualTo(MetricAverage.newBuilder()
-                        .setSum(60)
-                        .setAvg(30)
-                        .setCount(2)
+                        .setSum(80)
+                        .setAvg(20)
+                        .setCount(4)
                         .setPeak(40)
                         .build());
     }
 
-    private static Metric buildLatencyMetric(int latency) {
+    private static Metric newMetric(int latency) {
         return Metric.newBuilder()
                 .setMetadata(Metadata.newBuilder().setTime(Timestamps.now()))
                 .setLatency(Latency.newBuilder().setLatency(latency))
