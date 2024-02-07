@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.aggregator.internal.MetricTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
+import io.littlehorse.canary.proto.Latency;
 import io.littlehorse.canary.proto.Metadata;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.MetricAverage;
-import io.littlehorse.canary.proto.TaskRunLatency;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class TaskRunLatencyTopologyTest {
+class LatencyTopologyTest {
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, Metric> inputTopic;
@@ -33,7 +33,7 @@ class TaskRunLatencyTopologyTest {
                 .withTimestampExtractor(new MetricTimeExtractor());
 
         StreamsBuilder builder = new StreamsBuilder();
-        new TaskRunLatencyTopology(builder.stream(topicName, serdes));
+        new LatencyTopology(builder.stream(topicName, serdes));
         Topology topology = builder.build();
 
         Properties properties = new Properties();
@@ -67,13 +67,14 @@ class TaskRunLatencyTopologyTest {
                         .setSum(60)
                         .setAvg(30)
                         .setCount(2)
+                        .setPeak(40)
                         .build());
     }
 
     private static Metric buildLatencyMetric(int latency) {
         return Metric.newBuilder()
                 .setMetadata(Metadata.newBuilder().setTime(Timestamps.now()))
-                .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency))
+                .setLatency(Latency.newBuilder().setLatency(latency))
                 .build();
     }
 }

@@ -3,9 +3,9 @@ package io.littlehorse.canary.metronome;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MetricsEmitter;
 import io.littlehorse.canary.proto.DuplicatedTaskRun;
+import io.littlehorse.canary.proto.Latency;
 import io.littlehorse.canary.proto.Metadata;
 import io.littlehorse.canary.proto.Metric;
-import io.littlehorse.canary.proto.TaskRunLatency;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.time.Duration;
@@ -46,10 +46,11 @@ class MetronomeTask {
 
     private void emitTaskRunLatencyMetric(final long startTime, final WorkerContext context) {
         final Duration latency = Duration.between(Instant.ofEpochMilli(startTime), Instant.now());
-        final String key = "%s:%s".formatted(serverHost, serverPort);
+        final String metricName = "task_run_latency";
+        final String key = "%s:%s/%s".formatted(serverHost, serverPort, metricName);
 
         final Metric metric = getMetricBuilder()
-                .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency.toMillis()))
+                .setLatency(Latency.newBuilder().setName(metricName).setLatency(latency.toMillis()))
                 .build();
 
         emitter.future(key, metric);

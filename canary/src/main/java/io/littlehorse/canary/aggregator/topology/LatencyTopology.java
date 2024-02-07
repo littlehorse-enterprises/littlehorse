@@ -8,16 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Named;
+import org.apache.kafka.streams.kstream.TimeWindows;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.WindowStore;
 
 @Slf4j
-public class TaskRunLatencyTopology {
+public class LatencyTopology {
 
-    public TaskRunLatencyTopology(final KStream<String, Metric> metricStream) {
+    public LatencyTopology(final KStream<String, Metric> metricStream) {
         metricStream
-                .filter((key, value) -> value.hasTaskRunLatency())
+                .filter((key, value) -> value.hasLatency())
                 .groupByKey()
                 // this window resets the agregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
@@ -42,12 +45,17 @@ public class TaskRunLatencyTopology {
 
     private static MetricAverage aggregate(final Metric value, final MetricAverage aggregate) {
         final long count = aggregate.getCount() + 1;
-        final double sum = aggregate.getSum() + value.getTaskRunLatency().getLatency();
+        final double sum = aggregate.getSum() + value.getLatency().getLatency();
         final double avg = sum / count;
+        final double peak = value.getLatency().getLatency() > aggregate.getPeak()
+                ? value.getLatency().getLatency()
+                : aggregate.getPeak();
+
         return MetricAverage.newBuilder()
                 .setCount(count)
                 .setSum(sum)
                 .setAvg(avg)
+                .setPeak(peak)
                 .build();
     }
 }

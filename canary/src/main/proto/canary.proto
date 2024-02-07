@@ -7,16 +7,17 @@ option java_package = "io.littlehorse.canary.proto";
 import "google/protobuf/timestamp.proto";
 
 message MetricAverage {
-  int64 count=1;
-  double sum=2;
-  double avg=3;
+  int64 count = 1;
+  double sum = 2;
+  double avg = 3;
+  double peak = 4;
 }
 
 message Metric {
   Metadata metadata = 1;
   oneof metric {
     DuplicatedTaskRun duplicated_task_run = 2;
-    TaskRunLatency task_run_latency = 3;
+    Latency latency = 3;
   }
 }
 
@@ -31,6 +32,7 @@ message DuplicatedTaskRun {
   string unique_task_schedule_id = 1;
 }
 
-message TaskRunLatency {
-  int64 latency = 1;
+message Latency {
+  string name = 1;
+  int64 latency = 2;
 }
