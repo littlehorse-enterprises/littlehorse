@@ -186,8 +186,19 @@ public class TenantScopedStoreTest {
     }
 
     @Test
+    public void shouldCacheMissingValues() {
+        WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
+        TenantScopedStore store = TenantScopedStore.newInstance(
+                nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);
+        StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result).isNull();
+        result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result).isNull();
+        Mockito.verify(nativeInMemoryStore, Mockito.times(1)).get(Mockito.anyString());
+    }
+
+    @Test
     public void shouldNotUseCacheForNonMetadataObjects() {
-        MetadataCache cache = new MetadataCache();
         WfRunModel wfRun = TestUtil.wfRun(UUID.randomUUID().toString());
         TenantScopedStore store = TenantScopedStore.newInstance(
                 nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);

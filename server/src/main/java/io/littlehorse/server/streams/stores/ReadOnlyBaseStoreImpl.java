@@ -63,6 +63,9 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         if (storedGetablePb != null) {
             return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
         } else {
+            if (metadataCache.isMissingKey(keyToLookFor)) {
+                return null;
+            }
             GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
             if (stored instanceof StoredGetablePb storedGetable) {
                 metadataCache.maybeUpdateCache(keyToLookFor, storedGetable);
@@ -70,6 +73,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
             if (stored != null) {
                 return LHSerializable.fromProto(stored, cls, executionContext);
             }
+            metadataCache.maybeStoreMissingKey(keyToLookFor);
             return null;
         }
     }
