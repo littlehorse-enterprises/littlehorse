@@ -19,9 +19,9 @@ public final class ServerFilterRules {
             accept("kafka_producer_request"),
             accept("kafka_producer_outgoing_byte"),
             accept("kafka_producer_record_error"),
-            // deny("kafka_stream_state"),
+            deny("kafka_stream_state"),
             deny("kafka_stream_task"),
-            // deny("kafka_stream_processor"),
+            deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
             deny("kafka_admin"));

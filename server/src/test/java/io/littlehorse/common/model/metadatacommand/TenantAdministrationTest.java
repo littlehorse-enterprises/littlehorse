@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
-import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -91,8 +90,6 @@ public class TenantAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
-        Bytes bytes = nativeMetadataStore.get("0/14/test-tenant-id");
-        metadataCache.maybeUpdateCache("0/14/test-tenant-id", StoredGetablePb.parseFrom(bytes.get()));
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         verify(server, times(1)).sendErrorToClient(any(), any());
