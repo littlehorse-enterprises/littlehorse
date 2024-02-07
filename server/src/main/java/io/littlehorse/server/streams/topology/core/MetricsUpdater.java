@@ -1,9 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.LHStatusChangedModel;
 import io.littlehorse.common.model.PartitionMetricsModel;
-import io.littlehorse.common.model.TaskStatusChangedModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.util.Optional;
@@ -20,7 +18,7 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
 
     @Override
     public void listen(GetableStatusUpdate statusUpdate) {
-        if (statusUpdate instanceof GetableUpdates.WfRunStatusUpdate wfRunEvent) {
+        /*if (statusUpdate instanceof GetableUpdates.WfRunStatusUpdate wfRunEvent) {
             LHStatusChangedModel statusChanged =
                     new LHStatusChangedModel(wfRunEvent.getPreviousStatus(), wfRunEvent.getNewStatus());
             currentAggregateCommand()
@@ -44,7 +42,7 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));
         }
-        dirtyState = true;
+        dirtyState = true;*/
     }
 
     private PartitionMetricsModel currentAggregateCommand() {

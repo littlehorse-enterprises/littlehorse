@@ -51,10 +51,10 @@ public class TenantScopedStoreTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
     private final MetadataCache metadataCache = new MetadataCache();
-    private final TenantScopedStore storeForTenantA = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);
-    private final TenantScopedStore storeForTenantB = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(tenantB), executionContext, metadataCache);
+    private final TenantScopedStore storeForTenantA =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+    private final TenantScopedStore storeForTenantB =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantB), executionContext);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());
@@ -175,8 +175,8 @@ public class TenantScopedStoreTest {
     public void shouldFindStoredGetableFromCache() {
         MetadataCache cache = new MetadataCache();
         WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
-        TenantScopedStore store = TenantScopedStore.newInstance(
-                nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
         store.put(new StoredGetable<>(wfSpec));
         StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
         Assertions.assertThat(result.getStoredObject()).isNotNull();
@@ -188,8 +188,8 @@ public class TenantScopedStoreTest {
     @Test
     public void shouldCacheMissingValues() {
         WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
-        TenantScopedStore store = TenantScopedStore.newInstance(
-                nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
         StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
         Assertions.assertThat(result).isNull();
         result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
@@ -200,8 +200,8 @@ public class TenantScopedStoreTest {
     @Test
     public void shouldNotUseCacheForNonMetadataObjects() {
         WfRunModel wfRun = TestUtil.wfRun(UUID.randomUUID().toString());
-        TenantScopedStore store = TenantScopedStore.newInstance(
-                nativeInMemoryStore, new TenantIdModel(tenantA), executionContext, metadataCache);
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
         store.put(new StoredGetable<>(wfRun));
         StoredGetable result = store.get(wfRun.getObjectId().getStoreableKey(), StoredGetable.class);
         Assertions.assertThat(result.getStoredObject()).isNotNull();

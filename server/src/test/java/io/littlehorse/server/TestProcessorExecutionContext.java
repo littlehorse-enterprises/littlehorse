@@ -52,11 +52,11 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         this.server = server;
 
         this.coreStore = TenantScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this, metadataCache);
+                processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);
         this.tenantMetadataStore = TenantScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this, metadataCache);
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this);
         this.clusterMetadataStore = ClusterScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this, metadataCache);
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this);
     }
 
     public static TestProcessorExecutionContext create(
@@ -96,6 +96,6 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
 
     @Override
     public MetadataManager metadataManager() {
-        return new MetadataManager(clusterMetadataStore, tenantMetadataStore);
+        return new MetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
     }
 }

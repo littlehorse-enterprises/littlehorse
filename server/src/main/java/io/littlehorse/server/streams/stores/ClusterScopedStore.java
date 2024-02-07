@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -11,8 +10,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
  */
 public interface ClusterScopedStore extends ReadOnlyClusterScopedStore, BaseStore {
 
-    static ClusterScopedStore newInstance(
-            KeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx, MetadataCache metadataCache) {
-        return new ClusterScopedStoreImpl(nativeStore, ctx, metadataCache);
+    static ClusterScopedStore newInstance(KeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx) {
+        return new ClusterScopedStoreImpl(nativeStore, ctx);
     }
 }

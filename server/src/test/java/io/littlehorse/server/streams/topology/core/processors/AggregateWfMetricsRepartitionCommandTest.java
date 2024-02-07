@@ -71,7 +71,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
 
     private RepartitionCommandProcessor commandProcessor;
     private TenantScopedStore defaultStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext, metadataCache);
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
 
     @BeforeEach
     public void setup() {

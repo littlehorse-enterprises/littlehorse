@@ -66,12 +66,12 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
-    private TenantScopedStore tenantAStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext, metadataCache);
-    private TenantScopedStore tenantBStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext, metadataCache);
-    private TenantScopedStore defaultStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT), executionContext, metadataCache);
+    private TenantScopedStore tenantAStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext);
+    private TenantScopedStore tenantBStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext);
+    private TenantScopedStore defaultStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT), executionContext);
 
     @BeforeEach
     public void setup() {

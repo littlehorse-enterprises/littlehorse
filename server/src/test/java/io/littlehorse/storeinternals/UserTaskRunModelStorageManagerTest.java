@@ -18,7 +18,6 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -83,8 +82,7 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = TenantScopedStore.newInstance(
-                store, new TenantIdModel(tenantId), executionContext, new MetadataCache());
+        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

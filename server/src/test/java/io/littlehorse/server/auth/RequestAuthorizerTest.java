@@ -55,8 +55,8 @@ public class RequestAuthorizerTest {
     private LHServerConfig lhConfig = mock();
 
     private final TestRequestExecutionContext requestContext = TestRequestExecutionContext.create();
-    private TestMetadataManager metadataManager = TestMetadataManager.create(
-            requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext, metadataCache);
+    private TestMetadataManager metadataManager =
+            TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
     private final RequestAuthorizer requestAuthorizer =
             new RequestAuthorizer(server, contextKey, metadataCache, requestContext::resolveStoreName, lhConfig);
     private ServerCall<Object, Object> mockCall = mock();

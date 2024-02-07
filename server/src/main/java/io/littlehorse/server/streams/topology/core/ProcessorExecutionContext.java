@@ -69,16 +69,16 @@ public class ProcessorExecutionContext implements ExecutionContext {
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
-        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
 
         this.config = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
-        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this, metadataCache);
+        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
@@ -170,8 +170,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            metricsAggregator =
-                    new MetricsUpdater(ClusterScopedStore.newInstance(nativeCoreStore(), this, metadataCache));
+            metricsAggregator = new MetricsUpdater(ClusterScopedStore.newInstance(nativeCoreStore(), this));
             getableUpdates.subscribe(metricsAggregator);
         }
         return getableUpdates;

@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.stores;
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.util.MetadataCache;
 
 interface ReadOnlyBaseStore {
 
@@ -15,4 +16,6 @@ interface ReadOnlyBaseStore {
     <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls);
 
     <T extends Storeable<?>> T getLastFromPrefix(String prefix, Class<T> cls);
+
+    void enableCache(MetadataCache metadataCache);
 }

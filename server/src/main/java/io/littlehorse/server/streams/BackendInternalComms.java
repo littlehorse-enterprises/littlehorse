@@ -337,7 +337,7 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
-        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext, metadataCache);
+        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
@@ -966,12 +966,12 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext(), metadataCache);
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
             return clusterStore.range(startKey, endKey, Tag.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext(), metadataCache);
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
             return tenantStore.range(startKey, endKey, Tag.class);
         }
     }
@@ -981,12 +981,12 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext(), metadataCache);
+                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
             return clusterStore.range(startKey, endKey, StoredGetable.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext(), metadataCache);
+                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
             return tenantStore.range(startKey, endKey, StoredGetable.class);
         }
     }

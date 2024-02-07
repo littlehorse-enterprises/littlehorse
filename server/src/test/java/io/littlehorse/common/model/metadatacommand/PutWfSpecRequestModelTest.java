@@ -65,13 +65,13 @@ public class PutWfSpecRequestModelTest {
             .build();
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
-    private TenantScopedStore defaultStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT_ID), executionContext, metadataCache);
-    private TenantScopedStore tenantAStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext, metadataCache);
+    private TenantScopedStore defaultStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT_ID), executionContext);
+    private TenantScopedStore tenantAStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_A), executionContext);
 
-    private TenantScopedStore tenantBStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext, metadataCache);
+    private TenantScopedStore tenantBStore =
+            TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(TENANT_ID_B), executionContext);
 
     @BeforeEach
     public void setup() {

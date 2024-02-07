@@ -70,7 +70,7 @@ public class PrincipalAdministrationTest {
     private final String principalId = "test-principal-id";
 
     private final ClusterScopedStore defaultStore =
-            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext, metadataCache);
+            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext);
 
     @BeforeEach
     public void setup() {

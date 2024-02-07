@@ -40,15 +40,15 @@ public class RequestExecutionContext implements ExecutionContext {
         }
 
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
 
         ReadOnlyTenantScopedStore tenantCoreStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this, metadataCache);
+                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
 
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
-        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
         this.service = new WfService(this.metadataManager, metadataCache, this);
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;

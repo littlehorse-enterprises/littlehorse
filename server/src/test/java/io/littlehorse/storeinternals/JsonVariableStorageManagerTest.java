@@ -21,7 +21,6 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.util.MetadataCache;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,8 +109,8 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = TenantScopedStore.newInstance(
-                store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS), new MetadataCache());
+        storeWrapper =
+                TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
         getableManager = new GetableManager(
                 storeWrapper, mockProcessorContext, lhConfig, mock(), mock(Answers.RETURNS_DEEP_STUBS));
         store.init(mockProcessorContext.getStateStoreContext(), store);

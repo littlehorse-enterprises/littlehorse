@@ -64,9 +64,9 @@ public class TenantAdministrationTest {
             new TenantIdModel(tenantId), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
 
     private final ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(
-            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext, metadataCache),
-            TenantScopedStore.newInstance(
-                    nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext, metadataCache));
+            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
+            TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext),
+            metadataCache);
 
     @BeforeEach
     public void setup() {

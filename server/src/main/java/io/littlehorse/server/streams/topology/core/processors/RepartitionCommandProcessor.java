@@ -50,15 +50,12 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         if (record.value() != null) {
             log.debug("Received a metric update!");
             TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
-            record.value()
-                    .process(
-                            TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext, metadataCache),
-                            ctx);
+            record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
         }
     }
 
     public void cleanOldMetrics(long timestamp) {
-        final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeStore, null, metadataCache);
+        final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeStore, null);
         Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
         cleanOldTaskMetrics(store, thirtyDaysAgo);
     }

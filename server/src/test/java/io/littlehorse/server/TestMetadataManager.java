@@ -11,18 +11,16 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public class TestMetadataManager extends MetadataManager {
 
-    public TestMetadataManager(ClusterScopedStore clusterStore, TenantScopedStore tenantStore) {
-        super(clusterStore, tenantStore);
+    public TestMetadataManager(
+            ClusterScopedStore clusterStore, TenantScopedStore tenantStore, MetadataCache metadataCache) {
+        super(clusterStore, tenantStore, metadataCache);
     }
 
     public static TestMetadataManager create(
-            KeyValueStore<String, Bytes> nativeMetadataStore,
-            String tenantId,
-            ExecutionContext executionContext,
-            MetadataCache metadataCache) {
+            KeyValueStore<String, Bytes> nativeMetadataStore, String tenantId, ExecutionContext executionContext) {
         return new TestMetadataManager(
-                ClusterScopedStore.newInstance(nativeMetadataStore, executionContext, metadataCache),
-                TenantScopedStore.newInstance(
-                        nativeMetadataStore, new TenantIdModel(tenantId), executionContext, metadataCache));
+                ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
+                TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel(tenantId), executionContext),
+                new MetadataCache());
     }
 }

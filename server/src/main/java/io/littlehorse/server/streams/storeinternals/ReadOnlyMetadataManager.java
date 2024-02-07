@@ -15,6 +15,7 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,13 @@ public class ReadOnlyMetadataManager {
     private final ReadOnlyTenantScopedStore tenantStore;
 
     public ReadOnlyMetadataManager(
-            final ReadOnlyClusterScopedStore clusterStore, final ReadOnlyTenantScopedStore tenantStore) {
+            final ReadOnlyClusterScopedStore clusterStore,
+            final ReadOnlyTenantScopedStore tenantStore,
+            final MetadataCache metadataCache) {
         this.clusterStore = clusterStore;
         this.tenantStore = tenantStore;
+        this.clusterStore.enableCache(metadataCache);
+        this.tenantStore.enableCache(metadataCache);
     }
 
     public <U extends Message, T extends MetadataGetable<U>> T get(MetadataId<?, U, T> id) {

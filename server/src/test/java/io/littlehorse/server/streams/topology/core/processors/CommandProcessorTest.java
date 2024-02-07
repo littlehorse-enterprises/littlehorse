@@ -69,7 +69,7 @@ public class CommandProcessorTest {
             .build();
 
     private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
-            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext, metadataCache);
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
@@ -100,9 +100,7 @@ public class CommandProcessorTest {
                 tenantProcessorContext.getServer());
         defaultProcessorContext.getableManager();
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
-                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE),
-                executionContext,
-                metadataCache);
+                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);

@@ -33,10 +33,10 @@ public class RepartitionExecutionContext implements ExecutionContext {
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this, metadataCache);
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this, metadataCache);
-        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
 
         this.lhConfig = lhConfig;
     }

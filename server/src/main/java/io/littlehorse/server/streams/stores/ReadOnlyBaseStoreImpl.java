@@ -32,13 +32,12 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     protected final ExecutionContext executionContext;
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
-    private final MetadataCache metadataCache;
+    protected MetadataCache metadataCache;
 
     ReadOnlyBaseStoreImpl(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore,
             TenantIdModel tenantId,
-            ExecutionContext executionContext,
-            MetadataCache metadataCache) {
+            ExecutionContext executionContext) {
 
         if (nativeStore == null) {
             throw new NullPointerException();
@@ -46,39 +45,49 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         this.tenantId = tenantId;
         this.nativeStore = nativeStore;
         this.executionContext = executionContext;
-        this.metadataCache = metadataCache;
     }
 
-    ReadOnlyBaseStoreImpl(
-            ReadOnlyKeyValueStore<String, Bytes> nativeStore,
-            ExecutionContext executionContext,
-            MetadataCache metadataCache) {
-        this(nativeStore, null, executionContext, metadataCache);
+    ReadOnlyBaseStoreImpl(ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext executionContext) {
+        this(nativeStore, null, executionContext);
     }
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
-        StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
-        if (storedGetablePb != null) {
-            return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
-        } else {
-            if (metadataCache.containsKey(keyToLookFor)) {
-                // we already know that the store does not contain this key
+        if (metadataCache != null) {
+            StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
+            if (storedGetablePb != null) {
+                return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
+            } else {
+                if (metadataCache.containsKey(keyToLookFor)) {
+                    // we already know that the store does not contain this key
+                    return null;
+                }
+                // time to get things from the store
+                GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
+                if (stored instanceof StoredGetablePb storedGetable) {
+                    metadataCache.maybeUpdateCache(keyToLookFor, storedGetable);
+                }
+                if (stored != null) {
+                    return LHSerializable.fromProto(stored, cls, executionContext);
+                }
+                // key is not in the store, now we try to cache this missing key
+                metadataCache.maybeCacheMissingKey(keyToLookFor);
                 return null;
             }
+        } else {
             // time to get things from the store
             GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
-            if (stored instanceof StoredGetablePb storedGetable) {
-                metadataCache.maybeUpdateCache(keyToLookFor, storedGetable);
+            if (stored == null) {
+                return null;
             }
-            if (stored != null) {
-                return LHSerializable.fromProto(stored, cls, executionContext);
-            }
-            // key is not in the store, now we try to cache this missing key
-            metadataCache.maybeCacheMissingKey(keyToLookFor);
-            return null;
+            return LHSerializable.fromProto(stored, cls, executionContext);
         }
+    }
+
+    @Override
+    public void enableCache(MetadataCache metadataCache) {
+        this.metadataCache = metadataCache;
     }
 
     private <U extends Message, T extends Storeable<U>> GeneratedMessageV3 getFromNativeStore(
