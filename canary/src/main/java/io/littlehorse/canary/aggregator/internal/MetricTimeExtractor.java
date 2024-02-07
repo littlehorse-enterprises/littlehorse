@@ -12,15 +12,14 @@ public class MetricTimeExtractor implements TimestampExtractor {
     public long extract(final ConsumerRecord<Object, Object> record, final long partitionTime) {
         if (!Metric.class.isInstance(record.value())) {
             log.warn(
-                    "It's not possible to extract timestamp for class {}, using default timestamp",
-                    record.value().getClass());
+                    "Invalid class: {}, using default timestamp", record.value().getClass());
             return partitionTime;
         }
 
         final Metric metric = (Metric) record.value();
 
         if (!metric.getMetadata().hasTime()) {
-            log.warn("Metadata is was not provided for record {}, using default timestamp", record.key());
+            log.warn("Metadata is missing for key {}, using default timestamp", record.key());
             return partitionTime;
         }
 

@@ -10,13 +10,12 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 class KafkaProducerConfigTest {
 
-    public static final String PREFIX = "lh.canary.kafka.";
     public static final String EXPECTED_KEY = "bootstrap.servers";
     public static final String EXPECTED_VALUE = "localhost:9092";
 
     @Test
     void toMapMustCreateCopy() {
-        Map<String, Object> input = Map.of(PREFIX + EXPECTED_KEY, EXPECTED_VALUE);
+        Map<String, Object> input = Map.of(EXPECTED_KEY, EXPECTED_VALUE);
         KafkaProducerConfig kafkaAdminConfig = new KafkaProducerConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
@@ -27,7 +26,7 @@ class KafkaProducerConfigTest {
 
     @Test
     void filterMap() {
-        Map<String, Object> input = Map.of(PREFIX + EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
+        Map<String, Object> input = Map.of(EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
         KafkaProducerConfig kafkaAdminConfig = new KafkaProducerConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
@@ -38,11 +37,12 @@ class KafkaProducerConfigTest {
     @Test
     void mustKeepProducerConfigs() {
         Map<String, Object> input = Map.of(
-                "lh.canary.kafka.key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
-                "lh.canary.kafka.value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
-                "lh.canary.kafka.acks", "all",
-                "lh.canary.kafka.client.id", "id",
-                "lh.canary.kafka.enable.idempotence", "true");
+                "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
+                "value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
+                "acks", "all",
+                "client.id", "id",
+                "enable.idempotence", "true",
+                "not.a.key", "not.a.value");
         Map<String, Object> expected = Map.of(
                 "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
                 "value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",

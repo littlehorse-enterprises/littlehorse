@@ -11,7 +11,7 @@ class LittleHorseConfigTest {
 
     @Nested
     class WorkerConfigs {
-        public static final String INPUT_LHW_KEY = "lh.canary.lhw.task-worker.id";
+        public static final String INPUT_LHW_KEY = "lhw.task-worker.id";
         public static final String EXPECTED_LHW_KEY = "LHW_TASK_WORKER_ID";
         public static final String EXPECTED_LHW_VALUE = "MY-ID-123";
 
@@ -38,7 +38,7 @@ class LittleHorseConfigTest {
 
     @Nested
     class ClientConfigs {
-        public static final String INPUT_LHC_KEY = "lh.canary.lhc.api.host";
+        public static final String INPUT_LHC_KEY = "lhc.api.host";
         public static final String EXPECTED_LHC_KEY = "LHC_API_HOST";
         public static final String EXPECTED_LHC_VALUE = "localhost";
 

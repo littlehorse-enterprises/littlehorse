@@ -1,5 +1,7 @@
 package io.littlehorse.canary.config;
 
+import static java.util.Map.entry;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,8 +10,6 @@ import java.util.stream.Collectors;
 public class CanaryConfig implements Config {
 
     public static final String LH_CANARY_PREFIX = "lh.canary.";
-    public static final String LH_CANARY_KAFKA_PREFIX = LH_CANARY_PREFIX + "kafka.";
-
     public static final String TOPIC_NAME = "topic.name";
     public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
     public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";
@@ -28,11 +28,8 @@ public class CanaryConfig implements Config {
     public CanaryConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(LH_CANARY_PREFIX))
+                .map(entry -> entry(entry.getKey().substring(CanaryConfig.LH_CANARY_PREFIX.length()), entry.getValue()))
                 .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
-    }
-
-    public static String prefix(final String configName) {
-        return LH_CANARY_PREFIX + configName;
     }
 
     @Override
@@ -61,12 +58,12 @@ public class CanaryConfig implements Config {
         return new KafkaStreamsConfig(configs);
     }
 
-    public String getTopicName() {
-        return getConfig(TOPIC_NAME);
+    private String getConfig(final String configName) {
+        return configs.get(configName).toString();
     }
 
-    private String getConfig(final String configName) {
-        return configs.get(prefix(configName)).toString();
+    public String getTopicName() {
+        return getConfig(TOPIC_NAME);
     }
 
     public int getTopicPartitions() {
@@ -119,7 +116,7 @@ public class CanaryConfig implements Config {
 
     public List<String> getEnabledMetrics() {
         return configs.entrySet().stream()
-                .filter(entry -> entry.getKey().matches("%s\\[\\d+\\]".formatted(prefix(METRICS_FILTER_ENABLE))))
+                .filter(entry -> entry.getKey().matches("%s\\[\\d+\\]".formatted(METRICS_FILTER_ENABLE)))
                 .map(Entry::getValue)
                 .map(Object::toString)
                 .toList();
