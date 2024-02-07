@@ -3,9 +3,9 @@ package io.littlehorse.canary.kafka;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.config.CanaryConfig;
-import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.errors.TopicExistsException;
 
 @Slf4j
-public class KafkaTopicBootstrap extends Bootstrap implements Measurable {
+public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
 
     private final AdminClient adminClient;
 

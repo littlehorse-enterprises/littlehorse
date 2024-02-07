@@ -4,17 +4,17 @@ import com.google.protobuf.Empty;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.kafka.MetricsEmitter;
-import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeBootstrap extends Bootstrap implements Measurable {
+public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
 
     private final MetricsEmitter emitter;
 

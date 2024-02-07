@@ -10,6 +10,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.WindowStore;
 
 @Slf4j
 public class TaskRunLatencyTopology {
@@ -18,19 +19,25 @@ public class TaskRunLatencyTopology {
         metricStream
                 .filter((key, value) -> value.hasTaskRunLatency())
                 .groupByKey()
+                // this window resets the agregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 .aggregate(
                         () -> MetricAverage.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Named.as("test"),
-                        Materialized.with(Serdes.String(), ProtobufSerdes.MetricAverage()))
-                .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded()))
+                        Materialized.<String, MetricAverage, WindowStore<Bytes, byte[]>>as("latency-metrics-windows")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(ProtobufSerdes.MetricAverage()))
+                // we do not suppress because we want to have the value inmediatally
                 .toStream()
                 .map((key, value) -> KeyValue.pair(key.key(), value))
                 .peek((key, value) -> log.debug(
                         "server={}, count={}, sum={}, avg={}", key, value.getCount(), value.getSum(), value.getAvg()))
-                .toTable(Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
-                        .with(Serdes.String(), ProtobufSerdes.MetricAverage()));
+                // we create a table to get the last latency for every lh server
+                .toTable(
+                        Named.as("latency-metrics"),
+                        Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(ProtobufSerdes.MetricAverage()));
     }
 
     private static MetricAverage aggregate(final Metric value, final MetricAverage aggregate) {

@@ -1,10 +1,10 @@
 package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.CanaryException;
-import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -17,7 +17,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetricsEmitter implements Measurable {
+public class MetricsEmitter implements MeterBinder {
 
     private final Producer<String, Bytes> producer;
     private final String topicName;

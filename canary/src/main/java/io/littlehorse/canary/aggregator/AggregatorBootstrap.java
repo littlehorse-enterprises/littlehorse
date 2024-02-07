@@ -1,17 +1,15 @@
 package io.littlehorse.canary.aggregator;
 
 import io.littlehorse.canary.Bootstrap;
-import io.littlehorse.canary.aggregator.internal.LatencyMetricExporter;
 import io.littlehorse.canary.aggregator.internal.MetricTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.aggregator.topology.TaskRunLatencyTopology;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.KafkaStreamsConfig;
-import io.littlehorse.canary.prometheus.Measurable;
 import io.littlehorse.canary.proto.Metric;
-import io.littlehorse.canary.proto.MetricAverage;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaStreamsMetrics;
 import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
 import java.io.File;
@@ -20,11 +18,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
-public class AggregatorBootstrap extends Bootstrap implements Measurable {
+public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
 
     private static final Consumed<String, Metric> SERDES =
             Consumed.with(Serdes.String(), ProtobufSerdes.Metric()).withTimestampExtractor(new MetricTimeExtractor());
@@ -59,10 +55,13 @@ public class AggregatorBootstrap extends Bootstrap implements Measurable {
         final DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(new File(kafkaStreamsConfigMap.getStateDir()));
         diskSpaceMetrics.bindTo(registry);
 
-        final ReadOnlyKeyValueStore<String, MetricAverage> store = null;
-        kafkaStreams.store(
-                StoreQueryParameters.fromNameAndType("latency-metrics", QueryableStoreTypes.keyValueStore()));
-        final LatencyMetricExporter latencyMetricExporter = new LatencyMetricExporter(store);
-        latencyMetricExporter.bindTo(registry);
+        //        kafkaStreams.metadataForAllStreamsClients().stream().flatMap(streamsMetadata ->
+        // streamsMetadata.stateStoreNames().stream())
+        //                .forEach(s -> log.error(s));
+
+        //        final ReadOnlyKeyValueStore<String, MetricAverage> store = kafkaStreams.store(
+        //                StoreQueryParameters.fromNameAndType("latency-metrics", QueryableStoreTypes.keyValueStore()));
+        //        final LatencyMetricExporter latencyMetricExporter = new LatencyMetricExporter(store);
+        //        latencyMetricExporter.bindTo(registry);
     }
 }
