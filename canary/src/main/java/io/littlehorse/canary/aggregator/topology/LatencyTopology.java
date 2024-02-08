@@ -21,6 +21,8 @@ import org.apache.kafka.streams.state.WindowStore;
 @Slf4j
 public class LatencyTopology {
 
+    public static final String LATENCY_METRICS_STORE = "latency-metrics";
+
     public LatencyTopology(final KStream<BeatKey, Beat> metricStream) {
         metricStream
                 .filter((key, value) -> value.hasLatencyBeat())
@@ -34,15 +36,15 @@ public class LatencyTopology {
                                 .withKeySerde(ProtobufSerdes.BeatKey())
                                 .withValueSerde(ProtobufSerdes.AverageAggregator()))
                 .toStream()
-                // peek
+                // peek aggregate
                 .map((key, value) -> KeyValue.pair(key.key(), value))
-                .peek((key, value) -> peekLatency(key, value))
-                // make the metrics
+                .peek((key, value) -> peekAggregate(key, value))
+                // extract metrics
                 .flatMap((key, value) -> makeMetrics(key, value))
                 // create store
                 .toTable(
-                        Named.as("latency-metrics"),
-                        Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
+                        Named.as(LATENCY_METRICS_STORE),
+                        Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as(LATENCY_METRICS_STORE)
                                 .withKeySerde(ProtobufSerdes.MetricKey())
                                 .withValueSerde(Serdes.Double()));
     }
@@ -62,9 +64,9 @@ public class LatencyTopology {
                 .build();
     }
 
-    private static void peekLatency(final BeatKey key, final AverageAggregator value) {
+    private static void peekAggregate(final BeatKey key, final AverageAggregator value) {
         log.debug(
-                "server={}:{}, latency={}, count={}, sum={}, avg={}, peak={}",
+                "server={}:{}, latency={}, count={}, sum={}, avg={}, max={}",
                 key.getServerHost(),
                 key.getServerPort(),
                 key.getLatencyBeatKey().getName(),
