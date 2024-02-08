@@ -560,14 +560,16 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public long getCoreMemtableSize() {
-        return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 64)));
+        // 64MB default
+        return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
     }
 
     // Timer Topology generally has smaller values that are written. The majority of them
     // are LHTimer's with short (i.e. 10-second) TTL's (i.e. TaskRun Timeout timers), so
     // we don't expect the timer memtable to overflow that quickly.
     public long getTimerMemtableSize() {
-        return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 32)));
+        // 32MB default
+        return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 32)));
     }
 
     public Properties getKafkaProducerConfig(String component) {
