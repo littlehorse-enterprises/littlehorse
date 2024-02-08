@@ -43,7 +43,7 @@ public class PrometheusExporterBootstrap extends Bootstrap {
         return prometheusRegistry;
     }
 
-    public void addMesurable(final MeterBinder measurable) {
+    public void addMeasurable(final MeterBinder measurable) {
         measurable.bindTo(prometheusRegistry);
     }
 }

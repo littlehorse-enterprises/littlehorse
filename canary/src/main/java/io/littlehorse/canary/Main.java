@@ -43,16 +43,16 @@ public class Main {
         final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(config);
 
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(config);
-        prometheusExporterBootstrap.addMesurable(kafkaTopicBootstrap);
+        prometheusExporterBootstrap.addMeasurable(kafkaTopicBootstrap);
 
         if (config.isMetronomeEnabled()) {
             final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
-            prometheusExporterBootstrap.addMesurable(metronomeBootstrap);
+            prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {
             final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(config);
-            prometheusExporterBootstrap.addMesurable(aggregatorBootstrap);
+            prometheusExporterBootstrap.addMeasurable(aggregatorBootstrap);
         }
     }
 }
