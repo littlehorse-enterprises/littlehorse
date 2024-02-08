@@ -2,7 +2,6 @@ package io.littlehorse;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class App {
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
         LHServerConfig config;
 
         if (args.length > 0) {

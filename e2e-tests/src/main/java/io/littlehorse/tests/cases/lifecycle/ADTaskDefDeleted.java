@@ -15,7 +15,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
-import java.io.IOException;
 
 /*
  * This test involves deploying a WfSpec, then deleting a TaskDef, then
@@ -48,7 +47,7 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
                 """;
     }
 
-    public void test() throws InterruptedException, IOException {
+    public void test() throws InterruptedException {
         worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
         worker1.registerTaskDef();
         worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);

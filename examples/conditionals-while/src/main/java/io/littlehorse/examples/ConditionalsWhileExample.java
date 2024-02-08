@@ -55,7 +55,7 @@ public class ConditionalsWhileExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
+    public static LHTaskWorker getTaskWorker(LHConfig config) {
         ConditionalWhileTaskWorker executable = new ConditionalWhileTaskWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "eating-donut", config);
 

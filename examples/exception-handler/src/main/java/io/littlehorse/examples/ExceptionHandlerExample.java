@@ -58,7 +58,7 @@ public class ExceptionHandlerExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ExceptionHandlerWorker executable = new ExceptionHandlerWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "fail", config),

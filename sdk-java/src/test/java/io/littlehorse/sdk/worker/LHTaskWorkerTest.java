@@ -10,7 +10,7 @@ public class LHTaskWorkerTest {
     private final LHServerConnectionManager manager = mock();
 
     @Test
-    public void theWorkerIsHealthyIfNoCallFailureHasBeenNotifiedAndClusterIsHealthy() throws Exception {
+    public void theWorkerIsHealthyIfNoCallFailureHasBeenNotifiedAndClusterIsHealthy() {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
 
         when(manager.wasThereAnyFailure()).thenReturn(false);
@@ -23,7 +23,7 @@ public class LHTaskWorkerTest {
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfAFailureHasBeenNotifiedEvenIfClusterIsHealthy() throws Exception {
+    public void theWorkerIsUnhealthyIfAFailureHasBeenNotifiedEvenIfClusterIsHealthy() {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
 
         when(manager.wasThereAnyFailure()).thenReturn(true);
@@ -34,7 +34,7 @@ public class LHTaskWorkerTest {
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfNoFailureOnCallsButClusterIsUnhealthy() throws Exception {
+    public void theWorkerIsUnhealthyIfNoFailureOnCallsButClusterIsUnhealthy() {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
 
         when(manager.wasThereAnyFailure()).thenReturn(false);
@@ -45,7 +45,7 @@ public class LHTaskWorkerTest {
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfFailureOnCallsAndClusterIsUnhealthy() throws Exception {
+    public void theWorkerIsUnhealthyIfFailureOnCallsAndClusterIsUnhealthy() {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
 
         when(manager.wasThereAnyFailure()).thenReturn(true);

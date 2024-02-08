@@ -1,6 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-define: &exclude |
+exclude: |
   (?x)(
       ^server/src/main/java/io/littlehorse/common/proto/|
       ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
@@ -10,17 +10,15 @@ define: &exclude |
       ^dashboard/apps/web/littlehorse-public-api/|
       ^docs/images/
   )
-
+fail_fast: true
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: trailing-whitespace
         name: Trailing Whitespace
-        exclude: *exclude
       - id: end-of-file-fixer
         name: Check End of Files
-        exclude: *exclude
       - id: check-added-large-files
         name: Check For Any Large Added File
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -89,25 +87,11 @@ repos:
       # Tests
 
       - id: java-build
-        name: Tests Build
+        name: Tests Java Projects
         language: system
         always_run: true
         pass_filenames: false
         entry: ./gradlew build
-
-      - id: server-tests
-        name: Running Server Tests
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: ./gradlew server:test
-
-      - id: java-tests
-        name: Running SDK Java Tests
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: ./gradlew sdk-java:test
 
       - id: javadoc
         name: Running JavaDoc
@@ -130,8 +114,8 @@ repos:
         pass_filenames: false
         entry: poetry -C ./sdk-python run python -m unittest discover -s sdk-python/
 
-      - id: js-linting
-        name: Verify Build & Linting Dashboard Code
+      - id: js-build
+        name: Verify Build
         language: system
         always_run: true
         pass_filenames: false
