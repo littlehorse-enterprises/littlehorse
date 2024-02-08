@@ -1,9 +1,12 @@
 package io.littlehorse.canary.aggregator.topology;
 
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.proto.Metric;
-import io.littlehorse.canary.proto.MetricAverage;
+import io.littlehorse.canary.proto.AverageAggregator;
+import io.littlehorse.canary.proto.Beat;
+import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.proto.MetricKey;
 import java.time.Duration;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -18,49 +21,72 @@ import org.apache.kafka.streams.state.WindowStore;
 @Slf4j
 public class LatencyTopology {
 
-    public LatencyTopology(final KStream<String, Metric> metricStream) {
+    public LatencyTopology(final KStream<BeatKey, Beat> metricStream) {
         metricStream
-                .filter((key, value) -> value.hasLatency())
+                .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
-                // this window resets the agregator every minute
+                // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 .aggregate(
-                        () -> MetricAverage.newBuilder().build(),
+                        () -> AverageAggregator.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Materialized.<String, MetricAverage, WindowStore<Bytes, byte[]>>as("latency-metric-windows")
-                                .withKeySerde(Serdes.String())
-                                .withValueSerde(ProtobufSerdes.MetricAverage()))
-                // we do not suppress because we want to have the value immediately
+                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as("latency-windows")
+                                .withKeySerde(ProtobufSerdes.BeatKey())
+                                .withValueSerde(ProtobufSerdes.AverageAggregator()))
                 .toStream()
+                // peek
                 .map((key, value) -> KeyValue.pair(key.key(), value))
-                .peek((key, value) -> log.debug(
-                        "key={}, count={}, sum={}, avg={}, peak={}",
-                        key,
-                        value.getCount(),
-                        value.getSum(),
-                        value.getAvg(),
-                        value.getPeak()))
-                // we create a table to get the last latency for every lh server
+                .peek((key, value) -> peekLatency(key, value))
+                // make the metrics
+                .flatMap((key, value) -> makeMetrics(key, value))
+                // create store
                 .toTable(
-                        Named.as("latency-metric"),
-                        Materialized.<String, MetricAverage, KeyValueStore<Bytes, byte[]>>as("latency-metric")
-                                .withKeySerde(Serdes.String())
-                                .withValueSerde(ProtobufSerdes.MetricAverage()));
+                        Named.as("latency-metrics"),
+                        Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as("latency-metrics")
+                                .withKeySerde(ProtobufSerdes.MetricKey())
+                                .withValueSerde(Serdes.Double()));
     }
 
-    private static MetricAverage aggregate(final Metric value, final MetricAverage aggregate) {
-        final long count = aggregate.getCount() + 1;
-        final double sum = aggregate.getSum() + value.getLatency().getLatency();
-        final double avg = sum / count;
-        final double peak = value.getLatency().getLatency() > aggregate.getPeak()
-                ? value.getLatency().getLatency()
-                : aggregate.getPeak();
+    private static List<KeyValue<MetricKey, Double>> makeMetrics(final BeatKey key, final AverageAggregator value) {
+        return List.of(
+                KeyValue.pair(buildMetricKey(key, "avg"), value.getAvg()),
+                KeyValue.pair(buildMetricKey(key, "max"), value.getMax()));
+    }
 
-        return MetricAverage.newBuilder()
+    private static MetricKey buildMetricKey(final BeatKey key, final String suffix) {
+        return MetricKey.newBuilder()
+                .setServerVersion(key.getServerVersion())
+                .setServerPort(key.getServerPort())
+                .setServerHost(key.getServerHost())
+                .setId("%s_%s".formatted(key.getLatencyBeatKey().getName(), suffix))
+                .build();
+    }
+
+    private static void peekLatency(final BeatKey key, final AverageAggregator value) {
+        log.debug(
+                "server={}:{}, latency={}, count={}, sum={}, avg={}, peak={}",
+                key.getServerHost(),
+                key.getServerPort(),
+                key.getLatencyBeatKey().getName(),
+                value.getCount(),
+                value.getSum(),
+                value.getAvg(),
+                value.getMax());
+    }
+
+    private static AverageAggregator aggregate(final Beat value, final AverageAggregator aggregate) {
+        final int count = aggregate.getCount() + 1;
+        final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
+        final double avg = sum / count;
+        final double max = value.getLatencyBeat().getLatency() > aggregate.getMax()
+                ? value.getLatencyBeat().getLatency()
+                : aggregate.getMax();
+
+        return AverageAggregator.newBuilder()
                 .setCount(count)
                 .setSum(sum)
                 .setAvg(avg)
-                .setPeak(peak)
+                .setMax(max)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package io.littlehorse.canary.prometheus;
 
+import com.google.common.base.Strings;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
@@ -22,7 +23,8 @@ public class PrometheusMetricFilter implements MeterFilter {
             return MeterFilterReply.DENY;
         }
 
-        final String metricName = "%s_%s".formatted(id.getName().replace(".", "_"), id.getBaseUnit());
+        final String metricName = id.getName().replace(".", "_")
+                + (Strings.isNullOrEmpty(id.getBaseUnit()) ? "" : "_" + id.getBaseUnit());
 
         for (String rule : rules) {
             if (rule.equals(metricName)) {

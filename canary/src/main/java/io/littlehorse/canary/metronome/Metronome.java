@@ -35,7 +35,7 @@ public class Metronome {
         this.runs = runs;
         this.lhClient = lhClient;
 
-        mainExecutor = Executors.newScheduledThreadPool(1);
+        mainExecutor = Executors.newSingleThreadScheduledExecutor();
         Shutdown.addShutdownHook("Metronome: Main Executor Thread", () -> {
             mainExecutor.shutdownNow();
             mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
