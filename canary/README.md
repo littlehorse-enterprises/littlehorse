@@ -18,7 +18,7 @@ Start LH Canary:
 ../local-dev/do-canary.sh
 ```
 
-Get metrcis:
+Get metrics:
 
 ```
 http -b :4023/metrics
