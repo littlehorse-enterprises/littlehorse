@@ -138,7 +138,7 @@ message WaitForThreadsRun {
     // We can mark this ThreadRun as "already waited for", meaning that either:
     // 1. It completed successfully, OR
     // 2. It failed, and the Failure Handler successfully completed
-    THREAD_ALREADY_WAITED = 2;
+    THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;
 
     // The ThreadRun did not complete successfully, and there wasn't a successful
     // run of a Failure Handler for the Failure that was thrown.

@@ -399,15 +399,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
             }
             somethingChanged = true;
             pendingFailures.remove(i);
-            Map<String, VariableValueModel> vars;
+            Map<String, VariableValueModel> vars = new HashMap<>();
+            ;
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
-                vars = new HashMap<>();
                 FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure();
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
-            } else {
-                vars = new HashMap<>();
             }
 
             ThreadRunModel fh =

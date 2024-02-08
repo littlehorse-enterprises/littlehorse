@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -25,6 +24,7 @@ import io.littlehorse.test.WorkflowVerifier;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest(
@@ -47,6 +47,9 @@ public class WaitForThreadsTest {
 
     @LHWorkflow("wait-for-threads-without-exception-handler")
     private Workflow waitForThreadsWithoutExceptionHandlerWorkflow;
+
+    @LHWorkflow("handle-exception-on-children")
+    private Workflow handleExceptionOnChildren;
 
     @Test
     void shouldExecuteSimpleWorkflowSuccessfully() {
@@ -201,8 +204,7 @@ public class WaitForThreadsTest {
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread))
-                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
@@ -255,8 +257,7 @@ public class WaitForThreadsTest {
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread))
-                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
@@ -279,8 +280,38 @@ public class WaitForThreadsTest {
             SpawnedThread child2 = thread.spawnThread(
                     buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(SpawnedThreads.of(child1, child2)).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(child1, child2));
         });
+    }
+
+    @LHWorkflow("handle-exception-on-children")
+    public Workflow buildHandleExceptionOnChildren() {
+        return new WorkflowImpl("handle-exception-on-children", wf -> {
+            SpawnedThread childThread = wf.spawnThread(
+                    child -> {
+                        child.execute("add-1", 1);
+                        child.fail("child-exception", "asdf");
+                    },
+                    "child",
+                    Map.of());
+
+            wf.waitForThreads(SpawnedThreads.of(childThread)).handleExceptionOnChild("child-exception", handler -> {
+                handler.execute("add-1", 137);
+            });
+        });
+    }
+
+    @Test
+    void testShouldHandleExceptionOnChildren() {
+        workflowVerifier
+                .prepareRun(handleExceptionOnChildren)
+                .waitForStatus(COMPLETED)
+                .thenVerifyWfRun(wfRun -> {
+                    Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(3);
+                    Assertions.assertThat(wfRun.getThreadRuns(2).getParentThreadId())
+                            .isEqualTo(1);
+                    Assertions.assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.EXCEPTION);
+                });
     }
 
     @LHTaskMethod("exc-handler")

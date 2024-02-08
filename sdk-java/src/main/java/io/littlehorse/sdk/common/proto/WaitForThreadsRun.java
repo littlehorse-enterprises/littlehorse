@@ -76,9 +76,9 @@ private static final long serialVersionUID = 0L;
      * 2. It failed, and the Failure Handler successfully completed
      * </pre>
      *
-     * <code>THREAD_ALREADY_WAITED = 2;</code>
+     * <code>THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;</code>
      */
-    THREAD_ALREADY_WAITED(2),
+    THREAD_COMPLETED_OR_FAILURE_HANDLED(2),
     /**
      * <pre>
      * The ThreadRun did not complete successfully, and there wasn't a successful
@@ -115,9 +115,9 @@ private static final long serialVersionUID = 0L;
      * 2. It failed, and the Failure Handler successfully completed
      * </pre>
      *
-     * <code>THREAD_ALREADY_WAITED = 2;</code>
+     * <code>THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;</code>
      */
-    public static final int THREAD_ALREADY_WAITED_VALUE = 2;
+    public static final int THREAD_COMPLETED_OR_FAILURE_HANDLED_VALUE = 2;
     /**
      * <pre>
      * The ThreadRun did not complete successfully, and there wasn't a successful
@@ -155,7 +155,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 0: return THREAD_IN_PROGRESS;
         case 1: return THREAD_HANDLING_FAILURE;
-        case 2: return THREAD_ALREADY_WAITED;
+        case 2: return THREAD_COMPLETED_OR_FAILURE_HANDLED;
         case 3: return THREAD_UNSUCCESSFUL;
         default: return null;
       }

@@ -160,11 +160,11 @@ export enum WaitForThreadsRun_WaitingThreadStatus {
    */
   THREAD_HANDLING_FAILURE = "THREAD_HANDLING_FAILURE",
   /**
-   * THREAD_ALREADY_WAITED - We can mark this ThreadRun as "already waited for", meaning that either:
+   * THREAD_COMPLETED_OR_FAILURE_HANDLED - We can mark this ThreadRun as "already waited for", meaning that either:
    * 1. It completed successfully, OR
    * 2. It failed, and the Failure Handler successfully completed
    */
-  THREAD_ALREADY_WAITED = "THREAD_ALREADY_WAITED",
+  THREAD_COMPLETED_OR_FAILURE_HANDLED = "THREAD_COMPLETED_OR_FAILURE_HANDLED",
   /**
    * THREAD_UNSUCCESSFUL - The ThreadRun did not complete successfully, and there wasn't a successful
    * run of a Failure Handler for the Failure that was thrown.
@@ -182,8 +182,8 @@ export function waitForThreadsRun_WaitingThreadStatusFromJSON(object: any): Wait
     case "THREAD_HANDLING_FAILURE":
       return WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE;
     case 2:
-    case "THREAD_ALREADY_WAITED":
-      return WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED;
+    case "THREAD_COMPLETED_OR_FAILURE_HANDLED":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED;
     case 3:
     case "THREAD_UNSUCCESSFUL":
       return WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL;
@@ -200,8 +200,8 @@ export function waitForThreadsRun_WaitingThreadStatusToJSON(object: WaitForThrea
       return "THREAD_IN_PROGRESS";
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
       return "THREAD_HANDLING_FAILURE";
-    case WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED:
-      return "THREAD_ALREADY_WAITED";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED:
+      return "THREAD_COMPLETED_OR_FAILURE_HANDLED";
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return "THREAD_UNSUCCESSFUL";
     case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
@@ -216,7 +216,7 @@ export function waitForThreadsRun_WaitingThreadStatusToNumber(object: WaitForThr
       return 0;
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
       return 1;
-    case WaitForThreadsRun_WaitingThreadStatus.THREAD_ALREADY_WAITED:
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED:
       return 2;
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return 3;

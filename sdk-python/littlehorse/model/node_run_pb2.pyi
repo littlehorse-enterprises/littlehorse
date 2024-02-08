@@ -92,11 +92,11 @@ class WaitForThreadsRun(_message.Message):
         __slots__ = []
         THREAD_IN_PROGRESS: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
         THREAD_HANDLING_FAILURE: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
-        THREAD_ALREADY_WAITED: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+        THREAD_COMPLETED_OR_FAILURE_HANDLED: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
         THREAD_UNSUCCESSFUL: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
     THREAD_IN_PROGRESS: WaitForThreadsRun.WaitingThreadStatus
     THREAD_HANDLING_FAILURE: WaitForThreadsRun.WaitingThreadStatus
-    THREAD_ALREADY_WAITED: WaitForThreadsRun.WaitingThreadStatus
+    THREAD_COMPLETED_OR_FAILURE_HANDLED: WaitForThreadsRun.WaitingThreadStatus
     THREAD_UNSUCCESSFUL: WaitForThreadsRun.WaitingThreadStatus
     class WaitForThread(_message.Message):
         __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "waiting_status"]

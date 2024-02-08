@@ -116,7 +116,7 @@ public final class NodeRunOuterClass {
       "Run\"\\\n\016StartThreadRun\022\034\n\017child_thread_id" +
       "\030\001 \001(\005H\000\210\001\001\022\030\n\020thread_spec_name\030\002 \001(\tB\022\n" +
       "\020_child_thread_id\"3\n\027StartMultipleThread" +
-      "sRun\022\030\n\020thread_spec_name\030\001 \001(\t\"\307\003\n\021WaitF" +
+      "sRun\022\030\n\020thread_spec_name\030\001 \001(\t\"\326\003\n\021WaitF" +
       "orThreadsRun\022=\n\007threads\030\001 \003(\0132,.littleho" +
       "rse.WaitForThreadsRun.WaitForThread\032\362\001\n\r" +
       "WaitForThread\0228\n\017thread_end_time\030\001 \001(\0132\032" +
@@ -125,23 +125,23 @@ public final class NodeRunOuterClass {
       "\021thread_run_number\030\003 \001(\005\022J\n\016waiting_stat" +
       "us\030\004 \001(\01622.littlehorse.WaitForThreadsRun" +
       ".WaitingThreadStatusB\022\n\020_thread_end_time" +
-      "\"~\n\023WaitingThreadStatus\022\026\n\022THREAD_IN_PRO" +
-      "GRESS\020\000\022\033\n\027THREAD_HANDLING_FAILURE\020\001\022\031\n\025" +
-      "THREAD_ALREADY_WAITED\020\002\022\027\n\023THREAD_UNSUCC" +
-      "ESSFUL\020\003\"\352\001\n\020ExternalEventRun\022>\n\025externa" +
-      "l_event_def_id\030\001 \001(\0132\037.littlehorse.Exter" +
-      "nalEventDefId\0223\n\nevent_time\030\002 \001(\0132\032.goog" +
-      "le.protobuf.TimestampH\000\210\001\001\022<\n\021external_e" +
-      "vent_id\030\003 \001(\0132\034.littlehorse.ExternalEven" +
-      "tIdH\001\210\001\001B\r\n\013_event_timeB\024\n\022_external_eve" +
-      "nt_id\"C\n\014SleepNodeRun\0223\n\017maturation_time" +
-      "\030\001 \001(\0132\032.google.protobuf.Timestamp\"\214\001\n\007F" +
-      "ailure\022\024\n\014failure_name\030\001 \001(\t\022\017\n\007message\030" +
-      "\002 \001(\t\0220\n\007content\030\003 \001(\0132\032.littlehorse.Var" +
-      "iableValueH\000\210\001\001\022\034\n\024was_properly_handled\030" +
-      "\004 \001(\010B\n\n\010_contentBG\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\007.;model\252\002\030LittleHorse.Co" +
-      "mmon.Protob\006proto3"
+      "\"\214\001\n\023WaitingThreadStatus\022\026\n\022THREAD_IN_PR" +
+      "OGRESS\020\000\022\033\n\027THREAD_HANDLING_FAILURE\020\001\022\'\n" +
+      "#THREAD_COMPLETED_OR_FAILURE_HANDLED\020\002\022\027" +
+      "\n\023THREAD_UNSUCCESSFUL\020\003\"\352\001\n\020ExternalEven" +
+      "tRun\022>\n\025external_event_def_id\030\001 \001(\0132\037.li" +
+      "ttlehorse.ExternalEventDefId\0223\n\nevent_ti" +
+      "me\030\002 \001(\0132\032.google.protobuf.TimestampH\000\210\001" +
+      "\001\022<\n\021external_event_id\030\003 \001(\0132\034.littlehor" +
+      "se.ExternalEventIdH\001\210\001\001B\r\n\013_event_timeB\024" +
+      "\n\022_external_event_id\"C\n\014SleepNodeRun\0223\n\017" +
+      "maturation_time\030\001 \001(\0132\032.google.protobuf." +
+      "Timestamp\"\214\001\n\007Failure\022\024\n\014failure_name\030\001 " +
+      "\001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007content\030\003 \001(\0132\032." +
+      "littlehorse.VariableValueH\000\210\001\001\022\034\n\024was_pr" +
+      "operly_handled\030\004 \001(\010B\n\n\010_contentBG\n\037io.l" +
+      "ittlehorse.sdk.common.protoP\001Z\007.;model\252\002" +
+      "\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
