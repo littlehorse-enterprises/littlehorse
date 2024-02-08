@@ -6,31 +6,66 @@ option java_package = "io.littlehorse.canary.proto";
 
 import "google/protobuf/timestamp.proto";
 
-message MetricAverage {
-  int64 count=1;
-  double sum=2;
-  double avg=3;
-}
+////////////////////////////////////////////////
+// BEATS KEY
+////////////////////////////////////////////////
 
-message Metric {
-  Metadata metadata = 1;
-  oneof metric {
-    DuplicatedTaskRun duplicated_task_run = 2;
-    TaskRunLatency task_run_latency = 3;
+message BeatKey {
+  string server_host = 1;
+  int32 server_port = 2;
+  string server_version = 3;
+  oneof beat_key {
+    LatencyBeatKey latency_beat_key = 4;
+    TaskRunBeatKey task_run_beat_key = 5;
   }
 }
 
-message Metadata {
+message LatencyBeatKey {
+  string name = 1;
+}
+
+message TaskRunBeatKey {
+  string idempotency_key = 1;
+}
+
+////////////////////////////////////////////////
+// BEATS VALUE
+////////////////////////////////////////////////
+
+message Beat {
   google.protobuf.Timestamp time = 1;
-  string server_host = 2;
-  int32 server_port = 3;
-  string server_version = 4;
+  oneof beat {
+    LatencyBeat latency_beat = 2;
+    TaskRunBeat task_run_beat = 3;
+  }
 }
 
-message DuplicatedTaskRun {
-  string unique_task_schedule_id = 1;
+message LatencyBeat {
+  double latency = 1;
 }
 
-message TaskRunLatency {
-  int64 latency = 1;
+message TaskRunBeat {
+  int32 attempt_number = 1;
+}
+
+////////////////////////////////////////////////
+// METRICS
+////////////////////////////////////////////////
+
+message MetricKey {
+  string server_host = 1;
+  int32 server_port = 2;
+  string server_version = 3;
+  string id = 4;
+}
+
+////////////////////////////////////////////////
+// AGGREGATORS
+////////////////////////////////////////////////
+
+message AverageAggregator {
+  int32 count = 1;
+  double sum = 2;
+  double avg = 3;
+  double max = 4;
 }

@@ -14,8 +14,9 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 class ConfigLoaderTest {
 
-    public static final String EXPECTED_KEY = "lh.canary.test";
+    public static final String KEY = "lh.canary.test";
     public static final String ENV_VARIABLE_NAME = "LH_CANARY_TEST";
+    public static final String EXPECTED_KEY = "test";
     public static final String EXPECTED_FILE_VALUE = "test from file";
     public static final String EXPECTED_ENV_VALUE = "test from env";
     public static final String EXPECTED_PROPERTIES_VALUE = "test from properties";
@@ -44,7 +45,7 @@ class ConfigLoaderTest {
     @ClearEnvironmentVariable(key = ENV_VARIABLE_NAME)
     void loadFromPropertiesObject() {
         Properties properties = new Properties();
-        properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
+        properties.put(KEY, EXPECTED_PROPERTIES_VALUE);
 
         CanaryConfig canaryConfig = ConfigLoader.load(properties);
 
@@ -65,7 +66,7 @@ class ConfigLoaderTest {
     private static Path createTemporaryProperties() throws IOException {
         Path tmpFile = Files.createTempFile("canaryUnitTests", "properties");
         Properties tmpProperties = new Properties();
-        tmpProperties.put(EXPECTED_KEY, EXPECTED_FILE_VALUE);
+        tmpProperties.put(KEY, EXPECTED_FILE_VALUE);
         tmpProperties.store(new FileWriter(tmpFile.toFile()), null);
         return tmpFile;
     }

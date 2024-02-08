@@ -5,9 +5,11 @@ import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
 import io.littlehorse.canary.metronome.MetronomeBootstrap;
+import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
 import io.littlehorse.canary.util.Shutdown;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,6 +19,7 @@ public class Main {
         final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
         log.info("Canary configurations: {}", config);
+        log.info("Canary active metrics: {}", config.getEnabledMetrics());
         log.info("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
         log.info("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
         log.info("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
@@ -30,29 +33,26 @@ public class Main {
         }
 
         log.info("Canary started");
-        Shutdown.block();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        Shutdown.addShutdownHook("Main Thread", latch::countDown);
+        latch.await();
     }
 
     private static void initializeBootstraps(final CanaryConfig config) {
-        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(
-                config.getTopicName(),
-                config.getTopicPartitions(),
-                config.getTopicReplicas(),
-                config.toKafkaAdminConfig().toMap());
+        final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(config);
+
+        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(config);
+        prometheusExporterBootstrap.addMeasurable(kafkaTopicBootstrap);
 
         if (config.isMetronomeEnabled()) {
-            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(
-                    config.getTopicName(),
-                    config.toKafkaProducerConfig().toMap(),
-                    config.toLittleHorseConfig().toMap(),
-                    config.getMetronomeFrequency(),
-                    config.getMetronomeThreads(),
-                    config.getMetronomeRuns());
+            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
+            prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {
-            final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(
-                    config.getTopicName(), config.toKafkaStreamsConfig().toMap());
+            final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(config);
+            prometheusExporterBootstrap.addMeasurable(aggregatorBootstrap);
         }
     }
 }

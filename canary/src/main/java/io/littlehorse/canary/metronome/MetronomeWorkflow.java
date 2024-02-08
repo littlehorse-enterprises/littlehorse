@@ -12,10 +12,11 @@ public class MetronomeWorkflow {
     private final LittleHorseBlockingStub lhClient;
 
     public MetronomeWorkflow(final LittleHorseBlockingStub lhClient) {
+        this.lhClient = lhClient;
+
         workflow = Workflow.newWorkflow(
                 CANARY_WORKFLOW,
                 thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
-        this.lhClient = lhClient;
     }
 
     public void register() {

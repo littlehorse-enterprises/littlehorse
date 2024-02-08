@@ -2,9 +2,13 @@ package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.CanaryException;
+import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.util.Shutdown;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
+import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -12,22 +16,22 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.errors.TopicExistsException;
 
 @Slf4j
-public class KafkaTopicBootstrap implements Bootstrap {
+public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
 
-    public KafkaTopicBootstrap(
-            final String metricsTopicName,
-            final int topicPartitions,
-            final short topicReplicas,
-            final Map<String, Object> kafkaAdminConfigMap) {
+    private final AdminClient adminClient;
 
-        final AdminClient adminClient = KafkaAdminClient.create(kafkaAdminConfigMap);
-        Shutdown.addShutdownHook(adminClient);
+    public KafkaTopicBootstrap(final CanaryConfig config) {
+        super(config);
+
+        adminClient = KafkaAdminClient.create(config.toKafkaAdminConfig().toMap());
+        Shutdown.addShutdownHook("Topics Creator", adminClient);
 
         try {
-            final NewTopic canaryTopic = new NewTopic(metricsTopicName, topicPartitions, topicReplicas);
+            final NewTopic canaryTopic =
+                    new NewTopic(config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas());
 
-            adminClient.createTopics(List.of(canaryTopic)).all().get();
-            log.info("Topics {} created", metricsTopicName);
+            adminClient.createTopics(List.of(canaryTopic)).all().get(1, TimeUnit.SECONDS);
+            log.info("Topics {} created", config.getTopicName());
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());
@@ -37,5 +41,12 @@ public class KafkaTopicBootstrap implements Bootstrap {
         }
 
         log.trace("Initialized");
+    }
+
+    @Override
+    public void bindTo(final MeterRegistry registry) {
+        final KafkaClientMetrics kafkaClientMetrics = new KafkaClientMetrics(adminClient);
+        Shutdown.addShutdownHook("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
+        kafkaClientMetrics.bindTo(registry);
     }
 }

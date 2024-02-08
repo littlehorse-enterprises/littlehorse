@@ -3,34 +3,34 @@ package io.littlehorse.canary.aggregator.serdes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import io.littlehorse.canary.proto.MetricAverage;
+import io.littlehorse.canary.proto.AverageAggregator;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
-class MetricAverageDeserializerTest {
+class AverageAggregatorDeserializerTest {
 
     Faker faker = new Faker();
 
     @Test
     void returnNullIfReceivesNull() {
-        MetricAverageDeserializer deserializer = new MetricAverageDeserializer();
+        AverageAggregatorDeserializer deserializer = new AverageAggregatorDeserializer();
 
         assertNull(deserializer.deserialize(null, null));
     }
 
     @Test
     void deserialize() {
-        MetricAverageDeserializer deserializer = new MetricAverageDeserializer();
+        AverageAggregatorDeserializer deserializer = new AverageAggregatorDeserializer();
 
-        MetricAverage expected = MetricAverage.newBuilder()
+        AverageAggregator expected = AverageAggregator.newBuilder()
                 .setAvg(faker.number().randomNumber())
-                .setCount(faker.number().randomNumber())
+                .setCount(faker.number().randomDigit())
                 .setAvg(faker.number().randomNumber())
                 .build();
 
         byte[] input = expected.toByteArray();
 
-        MetricAverage actual = deserializer.deserialize(null, input);
+        AverageAggregator actual = deserializer.deserialize(null, input);
 
         assertThat(expected).isEqualTo(actual);
     }

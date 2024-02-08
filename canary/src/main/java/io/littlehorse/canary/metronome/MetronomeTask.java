@@ -2,10 +2,7 @@ package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MetricsEmitter;
-import io.littlehorse.canary.proto.DuplicatedTaskRun;
-import io.littlehorse.canary.proto.Metadata;
-import io.littlehorse.canary.proto.Metric;
-import io.littlehorse.canary.proto.TaskRunLatency;
+import io.littlehorse.canary.proto.*;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.time.Duration;
@@ -28,13 +25,15 @@ class MetronomeTask {
         this.serverVersion = serverVersion;
     }
 
-    private Metric.Builder getMetricBuilder() {
-        return Metric.newBuilder()
-                .setMetadata(Metadata.newBuilder()
-                        .setTime(Timestamps.fromMillis(System.currentTimeMillis()))
-                        .setServerHost(serverHost)
-                        .setServerPort(serverPort)
-                        .setServerVersion(serverVersion));
+    private BeatKey.Builder getBeatKeyBuilder() {
+        return BeatKey.newBuilder()
+                .setServerHost(serverHost)
+                .setServerPort(serverPort)
+                .setServerVersion(serverVersion);
+    }
+
+    private Beat.Builder getBeatBuilder() {
+        return Beat.newBuilder().setTime(Timestamps.now());
     }
 
     @LHTaskMethod(MetronomeWorkflow.TASK_NAME)
@@ -46,22 +45,27 @@ class MetronomeTask {
 
     private void emitTaskRunLatencyMetric(final long startTime, final WorkerContext context) {
         final Duration latency = Duration.between(Instant.ofEpochMilli(startTime), Instant.now());
-        final String key = String.format("%s:%s", serverHost, serverPort);
+        final String beatName = "task_run_latency";
 
-        final Metric metric = getMetricBuilder()
-                .setTaskRunLatency(TaskRunLatency.newBuilder().setLatency(latency.toMillis()))
+        final BeatKey key = getBeatKeyBuilder()
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(beatName))
+                .build();
+        final Beat beat = getBeatBuilder()
+                .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency.toMillis()))
                 .build();
 
-        emitter.future(key, metric);
+        emitter.future(key, beat);
     }
 
     private void emitDuplicatedTaskRunMetric(final WorkerContext context) {
-        final String key = String.format("%s/%s", context.getIdempotencyKey(), context.getAttemptNumber());
-
-        final Metric metric = getMetricBuilder()
-                .setDuplicatedTaskRun(DuplicatedTaskRun.newBuilder().setUniqueTaskScheduleId(key))
+        final BeatKey key = getBeatKeyBuilder()
+                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder().setIdempotencyKey(context.getIdempotencyKey()))
+                .build();
+        final Beat beat = getBeatBuilder()
+                .setTaskRunBeat(TaskRunBeat.newBuilder().setAttemptNumber(context.getAttemptNumber()))
                 .build();
 
-        emitter.emit(key, metric);
+        // TODO: WHAT HAPPEN IF THIS FAILS?
+        emitter.emit(key, beat);
     }
 }
