@@ -8,6 +8,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -29,7 +31,7 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
             final NewTopic canaryTopic =
                     new NewTopic(config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas());
 
-            adminClient.createTopics(List.of(canaryTopic)).all().get();
+            adminClient.createTopics(List.of(canaryTopic)).all().get(1, TimeUnit.SECONDS);
             log.info("Topics {} created", config.getTopicName());
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
