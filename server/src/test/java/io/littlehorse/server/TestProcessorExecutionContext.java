@@ -96,6 +96,6 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
 
     @Override
     public MetadataManager metadataManager() {
-        return new MetadataManager(clusterMetadataStore, tenantMetadataStore);
+        return new MetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
     }
 }

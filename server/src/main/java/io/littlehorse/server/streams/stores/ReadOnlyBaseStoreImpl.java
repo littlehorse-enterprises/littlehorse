@@ -1,12 +1,15 @@
 package io.littlehorse.server.streams.stores;
 
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -29,6 +32,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     protected final ExecutionContext executionContext;
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
+    protected MetadataCache metadataCache;
 
     ReadOnlyBaseStoreImpl(
             ReadOnlyKeyValueStore<String, Bytes> nativeStore,
@@ -50,12 +54,50 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+        if (metadataCache != null) {
+            StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
+            if (storedGetablePb != null) {
+                return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
+            } else {
+                if (metadataCache.containsKey(keyToLookFor)) {
+                    // we already know that the store does not contain this key
+                    return null;
+                }
+                // time to get things from the store
+                GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
+                if (stored instanceof StoredGetablePb storedGetable) {
+                    metadataCache.evictOrUpdate(storedGetable, keyToLookFor);
+                }
+                if (stored != null) {
+                    return LHSerializable.fromProto(stored, cls, executionContext);
+                }
+                // key is not in the store, now we try to cache this missing key
+                metadataCache.updateMissingKey(keyToLookFor);
+                return null;
+            }
+        } else {
+            // time to get things from the store
+            GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
+            if (stored == null) {
+                return null;
+            }
+            return LHSerializable.fromProto(stored, cls, executionContext);
+        }
+    }
+
+    @Override
+    public void enableCache(MetadataCache metadataCache) {
+        this.metadataCache = metadataCache;
+    }
+
+    private <U extends Message, T extends Storeable<U>> GeneratedMessageV3 getFromNativeStore(
+            String keyToLookFor, Class<T> cls) {
         Bytes raw = nativeStore.get(keyToLookFor);
 
         if (raw == null) return null;
 
         try {
-            return LHSerializable.fromBytes(raw.get(), cls, executionContext);
+            return LHSerializable.protoFromBytes(raw.get(), cls);
         } catch (LHSerdeError exn) {
             throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
         }

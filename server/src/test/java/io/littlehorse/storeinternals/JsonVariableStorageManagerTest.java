@@ -38,6 +38,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -108,8 +109,10 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock());
-        getableManager = new GetableManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
+        storeWrapper =
+                TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
+        getableManager = new GetableManager(
+                storeWrapper, mockProcessorContext, lhConfig, mock(), mock(Answers.RETURNS_DEEP_STUBS));
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

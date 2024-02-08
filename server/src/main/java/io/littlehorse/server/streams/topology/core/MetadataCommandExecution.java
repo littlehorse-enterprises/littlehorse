@@ -35,13 +35,14 @@ public class MetadataCommandExecution implements ExecutionContext {
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
+        this.metadataCache = metadataCache;
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ClusterScopedStore.newInstance(nativeMetadataStore, this),
                 TenantScopedStore.newInstance(
-                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
+                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this),
+                metadataCache);
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
-        this.metadataCache = metadataCache;
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
         this.lhConfig = lhConfig;
