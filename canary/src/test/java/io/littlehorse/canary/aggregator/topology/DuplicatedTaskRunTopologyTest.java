@@ -1,6 +1,6 @@
 package io.littlehorse.canary.aggregator.topology;
 
-import static io.littlehorse.canary.aggregator.topology.LatencyTopology.LATENCY_METRICS_STORE;
+import static io.littlehorse.canary.aggregator.topology.DuplicatedTaskRunTopology.DUPLICATED_TASK_RUN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.util.Timestamps;
@@ -18,15 +18,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class LatencyTopologyTest {
+class DuplicatedTaskRunTopologyTest {
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<BeatKey, Beat> inputTopic;
 
-    private static Beat newBeat(int latency) {
+    private static Beat newEmptyBeat() {
         return Beat.newBuilder()
                 .setTime(Timestamps.now())
-                .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency))
+                .setTaskRunBeat(TaskRunBeat.newBuilder().setScheduledTime(Timestamps.now()))
                 .build();
     }
 
@@ -38,7 +38,7 @@ class LatencyTopologyTest {
                 .withTimestampExtractor(new BeatTimeExtractor());
 
         StreamsBuilder builder = new StreamsBuilder();
-        new LatencyTopology(builder.stream(topicName, serdes));
+        new DuplicatedTaskRunTopology(builder.stream(topicName, serdes));
         Topology topology = builder.build();
 
         Properties properties = new Properties();
@@ -59,7 +59,7 @@ class LatencyTopologyTest {
     }
 
     @Test
-    void calculateLatency() {
+    void countDuplicated() {
         String expectedMetricName = "my_metric";
         String expectedHost = "localhost";
         int expectedPort = 2023;
@@ -67,25 +67,21 @@ class LatencyTopologyTest {
         BeatKey key = BeatKey.newBuilder()
                 .setServerHost(expectedHost)
                 .setServerPort(expectedPort)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(expectedMetricName))
+                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder()
+                        .setIdempotencyKey("my-unique-key")
+                        .setAttemptNumber(0))
                 .build();
 
-        List<Beat> beats = List.of(newBeat(20), newBeat(40), newBeat(10), newBeat(10));
+        List<Beat> beats = List.of(newEmptyBeat(), newEmptyBeat(), newEmptyBeat(), newEmptyBeat());
 
         beats.forEach(metric -> inputTopic.pipeInput(key, metric));
-        KeyValueStore store = testDriver.getKeyValueStore(LATENCY_METRICS_STORE);
+        KeyValueStore store = testDriver.getKeyValueStore(DUPLICATED_TASK_RUN);
 
         assertThat(store.get(MetricKey.newBuilder()
                         .setServerHost(expectedHost)
                         .setServerPort(expectedPort)
-                        .setId(expectedMetricName + "_avg")
+                        .setId("duplicated_task_run_count")
                         .build()))
-                .isEqualTo(20.);
-        assertThat(store.get(MetricKey.newBuilder()
-                        .setServerHost(expectedHost)
-                        .setServerPort(expectedPort)
-                        .setId(expectedMetricName + "_max")
-                        .build()))
-                .isEqualTo(40.);
+                .isEqualTo(9);
     }
 }

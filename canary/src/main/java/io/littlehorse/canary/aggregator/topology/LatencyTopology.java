@@ -22,9 +22,10 @@ import org.apache.kafka.streams.state.WindowStore;
 public class LatencyTopology {
 
     public static final String LATENCY_METRICS_STORE = "latency-metrics";
+    public static final String LATENCY_WINDOWS_STORE = "latency-windows";
 
-    public LatencyTopology(final KStream<BeatKey, Beat> metricStream) {
-        metricStream
+    public LatencyTopology(final KStream<BeatKey, Beat> mainStream) {
+        mainStream
                 .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
                 // reset aggregator every minute
@@ -32,12 +33,11 @@ public class LatencyTopology {
                 .aggregate(
                         () -> AverageAggregator.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as("latency-windows")
+                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as(LATENCY_WINDOWS_STORE)
                                 .withKeySerde(ProtobufSerdes.BeatKey())
                                 .withValueSerde(ProtobufSerdes.AverageAggregator()))
-                .toStream()
+                .toStream((key, value) -> key.key())
                 // peek aggregate
-                .map((key, value) -> KeyValue.pair(key.key(), value))
                 .peek((key, value) -> peekAggregate(key, value))
                 // extract metrics
                 .flatMap((key, value) -> makeMetrics(key, value))
@@ -80,9 +80,7 @@ public class LatencyTopology {
         final int count = aggregate.getCount() + 1;
         final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
         final double avg = sum / count;
-        final double max = value.getLatencyBeat().getLatency() > aggregate.getMax()
-                ? value.getLatencyBeat().getLatency()
-                : aggregate.getMax();
+        final double max = Math.max(value.getLatencyBeat().getLatency(), aggregate.getMax());
 
         return AverageAggregator.newBuilder()
                 .setCount(count)

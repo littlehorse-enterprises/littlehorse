@@ -4,6 +4,7 @@ import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.internal.LatencyMetricExporter;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
+import io.littlehorse.canary.aggregator.topology.DuplicatedTaskRunTopology;
 import io.littlehorse.canary.aggregator.topology.LatencyTopology;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.KafkaStreamsConfig;
@@ -42,8 +43,9 @@ public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
 
     private static Topology buildTopology(final String metricsTopicName) {
         final StreamsBuilder builder = new StreamsBuilder();
-        final KStream<BeatKey, Beat> metricStream = builder.stream(metricsTopicName, SERDES);
-        new LatencyTopology(metricStream);
+        final KStream<BeatKey, Beat> mainStream = builder.stream(metricsTopicName, SERDES);
+        new LatencyTopology(mainStream);
+        new DuplicatedTaskRunTopology(mainStream);
         return builder.build();
     }
 

@@ -27,8 +27,10 @@ public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
         emitter = new MetricsEmitter(
                 config.getTopicName(), config.toKafkaProducerConfig().toMap());
 
+        final String serverVersion = getServerVersion(lhConfig);
+
         final MetronomeTask executable = new MetronomeTask(
-                emitter, lhConfig.getApiBootstrapHost(), lhConfig.getApiBootstrapPort(), getServerVersion(lhConfig));
+                emitter, lhConfig.getApiBootstrapHost(), lhConfig.getApiBootstrapPort(), serverVersion);
         final LHTaskWorker worker = new LHTaskWorker(executable, MetronomeWorkflow.TASK_NAME, lhConfig);
         Shutdown.addShutdownHook("Metronome: LH Task Worker", worker);
         worker.registerTaskDef();
@@ -42,7 +44,10 @@ public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
                 lhClient,
                 config.getMetronomeFrequency(),
                 config.getMetronomeThreads(),
-                config.getMetronomeRuns());
+                config.getMetronomeRuns(),
+                lhConfig.getApiBootstrapHost(),
+                lhConfig.getApiBootstrapPort(),
+                serverVersion);
 
         log.trace("Initialized");
     }
