@@ -48,8 +48,7 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
                 metadataCache.updateCache(key, StoredGetablePb.parseFrom(value.get()));
             } else {
                 store.delete(key);
-                metadataCache.evictCache(key);
-                metadataCache.maybeCacheMissingKey(key);
+                metadataCache.updateMissingKey(key);
             }
         } catch (InvalidProtocolBufferException e) {
             log.error("unable to parse metadata object");
