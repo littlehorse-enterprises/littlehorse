@@ -256,8 +256,9 @@ public class TestUtil {
     }
 
     public static KeyValueStore<String, Bytes> testStore(String storeName) {
-        return Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
-                .withLoggingDisabled()
-                .build();
+        return Mockito.spy(
+                Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
+                        .withLoggingDisabled()
+                        .build());
     }
 }

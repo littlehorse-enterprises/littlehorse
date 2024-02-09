@@ -51,7 +51,8 @@ public class TagStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    private TenantScopedStore localStore = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock());
+    private TenantScopedStore localStore =
+            TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 

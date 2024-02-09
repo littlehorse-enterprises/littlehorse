@@ -64,6 +64,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             KafkaStreamsServerImpl server) {
 
         this.processorContext = processorContext;
+        this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
@@ -71,10 +72,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
                 ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
                 ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
-        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
 
         this.config = config;
-        this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;

@@ -20,7 +20,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class ClusterScopedStoreTest {
 
@@ -29,8 +29,7 @@ public class ClusterScopedStoreTest {
             .withLoggingDisabled()
             .build();
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ProcessorExecutionContext executionContext;
+    private ProcessorExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeInMemoryStore, executionContext);
 

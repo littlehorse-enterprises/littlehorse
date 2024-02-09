@@ -33,8 +33,10 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +50,7 @@ public class CommandProcessorTest {
     @Mock
     private TaskQueueManager taskQueueManager;
 
-    @Mock
-    private ExecutionContext executionContext;
+    private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MetadataCache metadataCache = new MetadataCache();
 

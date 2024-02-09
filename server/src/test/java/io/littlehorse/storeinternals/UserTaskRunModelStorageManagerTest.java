@@ -34,6 +34,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -56,7 +57,7 @@ public class UserTaskRunModelStorageManagerTest {
     private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExecutionContext executionContext;
 
     // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());

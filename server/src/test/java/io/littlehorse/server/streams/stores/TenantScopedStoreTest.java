@@ -7,6 +7,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -14,6 +15,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
@@ -22,11 +24,13 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,17 +41,16 @@ public class TenantScopedStoreTest {
 
     private final String tenantA = "A";
     private final String tenantB = "B";
-    private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
-            .withLoggingDisabled()
-            .build();
+    private final KeyValueStore<String, Bytes> nativeInMemoryStore = Mockito.spy(
+            Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+                    .withLoggingDisabled()
+                    .build());
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ProcessorExecutionContext executionContext;
+    private ProcessorExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
-
+    private final MetadataCache metadataCache = new MetadataCache();
     private final TenantScopedStore storeForTenantA =
             TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
     private final TenantScopedStore storeForTenantB =
@@ -58,6 +61,7 @@ public class TenantScopedStoreTest {
 
     @BeforeEach
     public void setup() {
+        Mockito.doReturn(executionContext).when(executionContext).castOnSupport(ProcessorExecutionContext.class);
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
     }
 
@@ -165,5 +169,46 @@ public class TenantScopedStoreTest {
                 .isNotNull();
         assertThat(storeForTenantB.get(getableToSave.getStoreKey(), StoredGetable.class))
                 .isNotNull();
+    }
+
+    @Test
+    public void shouldFindStoredGetableFromCache() {
+        MetadataCache cache = new MetadataCache();
+        WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+        store.enableCache(cache);
+        store.put(new StoredGetable<>(wfSpec));
+        StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result.getStoredObject()).isNotNull();
+        result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result.getStoredObject()).isNotNull();
+        Mockito.verify(nativeInMemoryStore, Mockito.times(1)).get(Mockito.anyString());
+    }
+
+    @Test
+    public void shouldCacheMissingValues() {
+        WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+        store.enableCache(metadataCache);
+        StoredGetable result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result).isNull();
+        result = store.get(wfSpec.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result).isNull();
+        Mockito.verify(nativeInMemoryStore, Mockito.times(1)).get(Mockito.anyString());
+    }
+
+    @Test
+    public void shouldNotUseCacheForNonMetadataObjects() {
+        WfRunModel wfRun = TestUtil.wfRun(UUID.randomUUID().toString());
+        TenantScopedStore store =
+                TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(tenantA), executionContext);
+        store.put(new StoredGetable<>(wfRun));
+        StoredGetable result = store.get(wfRun.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result.getStoredObject()).isNotNull();
+        result = store.get(wfRun.getObjectId().getStoreableKey(), StoredGetable.class);
+        Assertions.assertThat(result.getStoredObject()).isNotNull();
+        Mockito.verify(nativeInMemoryStore, Mockito.times(2)).get(Mockito.anyString());
     }
 }

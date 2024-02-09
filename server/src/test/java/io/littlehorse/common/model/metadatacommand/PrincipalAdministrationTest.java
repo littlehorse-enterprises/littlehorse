@@ -34,7 +34,9 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,8 +54,7 @@ public class PrincipalAdministrationTest {
             .withLoggingDisabled()
             .build();
 
-    @Mock
-    private ExecutionContext executionContext;
+    private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
 
@@ -147,6 +148,7 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(
                 Map.of(tenantId.toString(), TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(false);
+        metadataCache.clear();
         metadataProcessor.process(
                 new Record<>(principalId.toString(), command.toProto().build(), 0L, metadata));
         verify(server).sendErrorToClient(eq(command.getCommandId()), any());
@@ -184,6 +186,7 @@ public class PrincipalAdministrationTest {
 
         assertThat(storedPrincipal()).isNotNull();
         MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
+        metadataCache.clear();
         metadataProcessor.process(
                 new Record<>(principalId.toString(), deleteCommand.toProto().build(), 0L, metadata));
         assertThat(defaultStore.get(new PrincipalIdModel(principalId).getStoreableKey(), StoredGetable.class))
@@ -209,6 +212,7 @@ public class PrincipalAdministrationTest {
     }
 
     private PrincipalModel storedPrincipal() {
+        metadataCache.clear();
         StoredGetable<Principal, PrincipalModel> storedPrincipal =
                 defaultStore.get(new PrincipalIdModel(principalId.toString()).getStoreableKey(), StoredGetable.class);
         assertThat(storedPrincipal).isNotNull();

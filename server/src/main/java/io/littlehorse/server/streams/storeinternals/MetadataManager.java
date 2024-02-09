@@ -12,6 +12,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,8 +21,9 @@ public class MetadataManager extends ReadOnlyMetadataManager {
     private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantStore;
 
-    public MetadataManager(ClusterScopedStore clusterStore, TenantScopedStore tenantStore) {
-        super(clusterStore, tenantStore);
+    public MetadataManager(
+            ClusterScopedStore clusterStore, TenantScopedStore tenantStore, MetadataCache metadataCache) {
+        super(clusterStore, tenantStore, metadataCache);
         this.clusterStore = clusterStore;
         this.tenantStore = tenantStore;
     }
@@ -30,7 +32,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        StoredGetable<?, ?> old = clusterStore.get(getable.getObjectId().toString(), StoredGetable.class);
+        StoredGetable<?, ?> old = clusterStore.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
         if (old != null) {
             log.trace("removing tags for metadata getable {}", getable.getObjectId());
             for (String tagId : old.getIndexCache().getTagIds()) {

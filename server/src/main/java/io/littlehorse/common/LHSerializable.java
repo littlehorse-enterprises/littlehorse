@@ -34,7 +34,7 @@ public abstract class LHSerializable<T extends Message> {
     }
 
     public static <U extends Message, T extends LHSerializable<U>> T fromProto(
-            U proto, Class<T> cls, ExecutionContext context) {
+            Message proto, Class<T> cls, ExecutionContext context) {
         try {
             T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto, context);
@@ -57,6 +57,20 @@ public abstract class LHSerializable<T extends Message> {
                     protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
             out.initFrom(proto, context);
             return out;
+        } catch (Exception exn) {
+            log.error(exn.getMessage(), exn);
+            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
+        }
+    }
+
+    public static <T extends LHSerializable<?>> GeneratedMessageV3 protoFromBytes(byte[] b, Class<T> cls) {
+        try {
+            T out = load(cls);
+            Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
+
+            GeneratedMessageV3 proto = protoClass.cast(
+                    protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
+            return proto;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
             throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());

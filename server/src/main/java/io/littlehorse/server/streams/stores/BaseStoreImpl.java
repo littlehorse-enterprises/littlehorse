@@ -27,12 +27,18 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
     @Override
     public void put(Storeable<?> thing) {
         String key = maybeAddTenantPrefix(thing.getFullStoreKey());
+        if (metadataCache != null) {
+            metadataCache.evictCache(key);
+        }
         nativeStore.put(key, new Bytes(thing.toBytes()));
     }
 
     @Override
     public void delete(String storeKey, StoreableType type) {
         String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(type, storeKey));
+        if (metadataCache != null) {
+            metadataCache.evictCache(fullKey);
+        }
         nativeStore.delete(fullKey);
     }
 }

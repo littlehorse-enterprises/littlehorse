@@ -21,6 +21,7 @@ import io.littlehorse.test.internal.TestContext;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -63,8 +64,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                 TaskDefId taskDefId =
                         TaskDefId.newBuilder().setName(worker.getTaskDefName()).build();
                 Awaitility.await()
-                        .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
-                        .until(() -> testContext.getLhClient().getTaskDef(taskDefId), taskDef -> taskDef != null);
+                        .ignoreExceptionsMatching(LHTestExceptionUtil::isNotFoundException)
+                        .until(() -> testContext.getLhClient().getTaskDef(taskDefId), Objects::nonNull);
                 Awaitility.await().until(() -> {
                     worker.start();
                     return true;

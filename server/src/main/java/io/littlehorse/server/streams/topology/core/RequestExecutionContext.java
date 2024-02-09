@@ -48,7 +48,7 @@ public class RequestExecutionContext implements ExecutionContext {
                 ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
 
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
-        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
         this.service = new WfService(this.metadataManager, metadataCache, this);
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;
