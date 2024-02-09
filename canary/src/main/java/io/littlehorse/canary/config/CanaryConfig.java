@@ -23,6 +23,8 @@ public class CanaryConfig implements Config {
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
     public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
+    public static final String METRONOME_ACTIVE_MODE_ENABLE = "metronome.active.mode.enable";
+    public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
     private final Map<String, Object> configs;
 
     public CanaryConfig(final Map<String, Object> configs) {
@@ -94,12 +96,20 @@ public class CanaryConfig implements Config {
         return Boolean.parseBoolean(getConfig(METRONOME_ENABLE));
     }
 
+    public boolean isMetronomeActiveModeEnabled() {
+        return Boolean.parseBoolean(getConfig(METRONOME_ACTIVE_MODE_ENABLE));
+    }
+
     public boolean isAggregatorEnabled() {
         return Boolean.parseBoolean(getConfig(AGGREGATOR_ENABLE));
     }
 
-    public long getMetronomeFrequency() {
+    public long getMetronomeFrequencyMs() {
         return Long.parseLong(getConfig(METRONOME_FREQUENCY_MS));
+    }
+
+    public long getAggregatorStoreRetentionMs() {
+        return Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS));
     }
 
     public int getMetronomeThreads() {
