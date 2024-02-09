@@ -3,6 +3,7 @@ package io.littlehorse.canary.prometheus;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.littlehorse.canary.proto.MetricKey;
 import io.littlehorse.canary.util.Shutdown;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -28,7 +29,7 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
 
     private final KafkaStreams kafkaStreams;
     private final String storeName;
-    private final Map<MetricKey, AtomicDouble> currentMeters;
+    private final Map<MetricKey, PrometheusMetric> currentMeters;
 
     public PrometheusMetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
         this.kafkaStreams = kafkaStreams;
@@ -42,10 +43,6 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
                 "%s:%s".formatted(key.getServerHost(), key.getServerPort()),
                 "server_version",
                 key.getServerVersion());
-    }
-
-    private static Meter.Id toMeterId(final MetricKey key) {
-        return new Meter.Id(key.getId(), toTags(key), null, null, Meter.Type.GAUGE);
     }
 
     @Override
@@ -76,13 +73,16 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
                 final KeyValue<MetricKey, Double> record = records.next();
                 foundMetrics.add(record.key);
 
-                final AtomicDouble meter = currentMeters.get(record.key);
-                if (meter == null) {
-                    final AtomicDouble newMeter =
-                            registry.gauge(record.key.getId(), toTags(record.key), new AtomicDouble(record.value));
-                    currentMeters.put(record.key, newMeter);
+                final PrometheusMetric current = currentMeters.get(record.key);
+                if (current == null) {
+                    final AtomicDouble newMeter = new AtomicDouble(record.value);
+                    final Meter.Id meterId = Gauge.builder(record.key.getId(), newMeter, AtomicDouble::get)
+                            .tags(toTags(record.key))
+                            .register(registry)
+                            .getId();
+                    currentMeters.put(record.key, new PrometheusMetric(meterId, newMeter));
                 } else {
-                    meter.set(record.value);
+                    current.meter.set(record.value);
                 }
             }
         }
@@ -92,9 +92,18 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
             final Set<MetricKey> metricsToRemove = currentMetricKeys.stream()
                     .filter(metricKey -> !foundMetrics.contains(metricKey))
                     .collect(Collectors.toSet());
+
             for (MetricKey metricToRemove : metricsToRemove) {
-                currentMeters.remove(metricToRemove);
-                registry.remove(toMeterId(metricToRemove));
+                final PrometheusMetric prometheusMetric = currentMeters.remove(metricToRemove);
+                final boolean wasRemovedFromRegitry = registry.remove(prometheusMetric.id) != null;
+
+                if (wasRemovedFromRegitry) {
+                    log.debug("Metric {} removed", metricToRemove.getId());
+                } else {
+                    log.error(
+                            "It was not possible to remove metric '{}', not present at the MeterRegistry",
+                            metricToRemove.getId());
+                }
             }
         }
     }
