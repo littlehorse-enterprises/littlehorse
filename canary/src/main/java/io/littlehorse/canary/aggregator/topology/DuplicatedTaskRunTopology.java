@@ -20,14 +20,14 @@ public class DuplicatedTaskRunTopology {
 
     private final KStream<MetricKey, Double> stream;
 
-    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetetion) {
+    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetention) {
         stream = mainStream
                 .filter((key, value) -> value.hasTaskRunBeat())
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
                 .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>with(
                                 ProtobufSerdes.BeatKey(), Serdes.Long())
-                        .withRetention(storeRetetion))
+                        .withRetention(storeRetention))
                 // filter by duplicated
                 .filter((key, value) -> value > 1L)
                 .toStream()
@@ -39,7 +39,7 @@ public class DuplicatedTaskRunTopology {
                 // count how many task were duplicated
                 .count(Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>with(
                                 ProtobufSerdes.MetricKey(), Serdes.Long())
-                        .withRetention(storeRetetion))
+                        .withRetention(storeRetention))
                 .mapValues((readOnlyKey, value) -> Double.valueOf(value))
                 .toStream();
     }
