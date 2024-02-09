@@ -24,7 +24,6 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private LHStatus threadStatus;
     private int threadRunNumber;
     private WaitingThreadStatus waitingStatus;
-    ;
     private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {
@@ -58,6 +57,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
 
         this.threadStatus = threadRunModel.getStatus();
+        this.waitingStatus = WaitingThreadStatus.THREAD_IN_PROGRESS;
     }
 
     public void initFrom(Message proto, ExecutionContext context) {

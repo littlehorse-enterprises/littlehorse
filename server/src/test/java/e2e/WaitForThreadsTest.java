@@ -311,7 +311,7 @@ public class WaitForThreadsTest {
                     Assertions.assertThat(wfRun.getThreadRuns(2).getParentThreadId())
                             .isEqualTo(1);
                     Assertions.assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.EXCEPTION);
-                });
+                }).start();
     }
 
     @LHTaskMethod("exc-handler")

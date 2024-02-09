@@ -480,10 +480,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // handler attached.
 
         NodeModel curNode = getCurrentNode();
-        FailureModel expected = getCurrentNodeRun().getLatestFailure();
-        if (!expected.getFailureName().equals(failure.getFailureName())) {
-            log.error("HUGE BUG IN LH. Should not happen.");
-        }
+        // FailureModel expected = getCurrentNodeRun().getLatestFailure();
+        // if (!expected.getFailureName().equals(failure.getFailureName())) {
+        //     log.error("HUGE BUG IN LH. Should not happen.");
+        // }
 
         FailureHandlerDefModel handler = null;
 
