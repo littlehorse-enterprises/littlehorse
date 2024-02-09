@@ -107,4 +107,14 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
             }
         }
     }
+
+    class PrometheusMetric {
+        final Meter.Id id;
+        final AtomicDouble meter;
+
+        PrometheusMetric(final Meter.Id id, final AtomicDouble meter) {
+            this.id = id;
+            this.meter = meter;
+        }
+    }
 }
