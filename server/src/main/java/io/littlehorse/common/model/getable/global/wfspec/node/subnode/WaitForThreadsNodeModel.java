@@ -20,6 +20,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
+
+    private ExecutionContext context;
 
     private ThreadsToWaitForCase type;
     private ThreadsToWaitForModel threads;
@@ -49,6 +53,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     public void initFrom(Message proto, ExecutionContext context) {
+        this.context = context;
+
         WaitForThreadsNode p = (WaitForThreadsNode) proto;
         type = p.getThreadsToWaitForCase();
 
@@ -88,7 +94,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        return new WaitForThreadsRunModel();
+        return new WaitForThreadsRunModel(context.castOnSupport(ProcessorExecutionContext.class));
     }
 
     public List<WaitForThreadModel> getThreadsToWaitFor(NodeRunModel nodeRun, Date currentCommandTime)
