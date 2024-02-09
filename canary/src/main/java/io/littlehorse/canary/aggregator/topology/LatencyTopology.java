@@ -27,6 +27,7 @@ public class LatencyTopology {
         metricStream
                 .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
+                .re
                 // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 .aggregate(
@@ -39,9 +40,11 @@ public class LatencyTopology {
                 // peek aggregate
                 .map((key, value) -> KeyValue.pair(key.key(), value))
                 .peek((key, value) -> peekAggregate(key, value))
+
                 // extract metrics
                 .flatMap((key, value) -> makeMetrics(key, value))
                 // create store
+
                 .toTable(
                         Named.as(LATENCY_METRICS_STORE),
                         Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as(LATENCY_METRICS_STORE)

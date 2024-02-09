@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.StandaloneTestBootstrapper;
+import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -40,7 +40,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         getStore(context)
                 .getOrComputeIfAbsent(
                         LH_TEST_CONTEXT,
-                        s -> new TestContext(new StandaloneTestBootstrapper(new PrincipalIdModel(getPrincipalId()))),
+                        s -> new TestContext(new ExternalTestBootstrapper(new PrincipalIdModel(getPrincipalId()))),
                         TestContext.class);
     }
 
@@ -83,6 +83,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
         String principalId = getPrincipalId();
+        if (testContext.getConfig().getTenantId() == null) {
+            return;
+        }
         try {
             testContext
                     .getAnonymousClient()
