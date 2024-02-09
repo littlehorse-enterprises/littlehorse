@@ -5,6 +5,7 @@ import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.proto.MetricKey;
 import java.time.Duration;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -13,6 +14,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Getter
 @Slf4j
 public class DuplicatedTaskRunTopology {
 
@@ -31,7 +33,7 @@ public class DuplicatedTaskRunTopology {
                 .toStream()
                 .mapValues((readOnlyKey, value) -> Double.valueOf(value))
                 // debug peek aggregate
-                .peek((key, value) -> peekAggregate(key, value))
+                .peek(DuplicatedTaskRunTopology::peekAggregate)
                 // re-key from task run to lh cluster
                 .groupBy((key, value) -> toMetricKey(key), Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Double()))
                 // count how many task were duplicated
@@ -59,9 +61,5 @@ public class DuplicatedTaskRunTopology {
                 key.getTaskRunBeatKey().getIdempotencyKey(),
                 key.getTaskRunBeatKey().getAttemptNumber(),
                 count);
-    }
-
-    public KStream<MetricKey, Double> getStream() {
-        return stream;
     }
 }

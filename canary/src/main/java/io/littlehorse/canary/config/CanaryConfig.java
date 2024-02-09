@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class CanaryConfig implements Config {
 
     public static final String LH_CANARY_PREFIX = "lh.canary.";
-    public static final String TOPIC_METRICS = "topic.metrics";
     public static final String TOPIC_NAME = "topic.name";
     public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
     public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";

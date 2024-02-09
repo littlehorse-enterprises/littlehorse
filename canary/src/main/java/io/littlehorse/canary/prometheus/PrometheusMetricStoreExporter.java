@@ -95,12 +95,12 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
 
             for (MetricKey metricToRemove : metricsToRemove) {
                 final PrometheusMetric prometheusMetric = currentMeters.remove(metricToRemove);
-                final boolean wasRemovedFromRegitry = registry.remove(prometheusMetric.id) != null;
+                final boolean wasRemovedFromRegistry = registry.remove(prometheusMetric.id) != null;
 
-                if (wasRemovedFromRegitry) {
+                if (wasRemovedFromRegistry) {
                     log.debug("Metric {} removed", metricToRemove.getId());
                 } else {
-                    log.error(
+                    log.warn(
                             "It was not possible to remove metric '{}', not present at the MeterRegistry",
                             metricToRemove.getId());
                 }
@@ -108,13 +108,5 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
         }
     }
 
-    class PrometheusMetric {
-        final Meter.Id id;
-        final AtomicDouble meter;
-
-        PrometheusMetric(final Meter.Id id, final AtomicDouble meter) {
-            this.id = id;
-            this.meter = meter;
-        }
-    }
+    record PrometheusMetric(Meter.Id id, AtomicDouble meter) {}
 }
