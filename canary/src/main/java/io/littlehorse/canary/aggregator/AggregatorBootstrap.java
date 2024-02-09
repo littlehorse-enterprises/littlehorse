@@ -1,15 +1,12 @@
 package io.littlehorse.canary.aggregator;
 
+import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
+
 import io.littlehorse.canary.Bootstrap;
-import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
-import io.littlehorse.canary.aggregator.internal.LatencyMetricExporter;
-import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.aggregator.topology.DuplicatedTaskRunTopology;
-import io.littlehorse.canary.aggregator.topology.LatencyTopology;
+import io.littlehorse.canary.aggregator.topology.MetricsTopology;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.KafkaStreamsConfig;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.prometheus.PrometheusMetricStoreExporter;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -17,15 +14,12 @@ import io.micrometer.core.instrument.binder.kafka.KafkaStreamsMetrics;
 import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
 import java.io.File;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.streams.*;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsConfig;
 
 @Slf4j
 public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
 
-    private static final Consumed<BeatKey, Beat> SERDES = Consumed.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.Beat())
-            .withTimestampExtractor(new BeatTimeExtractor());
     private final KafkaStreams kafkaStreams;
     private final KafkaStreamsConfig kafkaStreamsConfigMap;
 
@@ -33,20 +27,14 @@ public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
         super(config);
 
         kafkaStreamsConfigMap = config.toKafkaStreamsConfig();
-        kafkaStreams = new KafkaStreams(
-                buildTopology(config.getTopicName()), new StreamsConfig(kafkaStreamsConfigMap.toMap()));
+
+        final MetricsTopology metricsTopology =
+                new MetricsTopology(config.getTopicName(), config.getAggregatorStoreRetentionMs());
+        kafkaStreams = new KafkaStreams(metricsTopology.toTopology(), new StreamsConfig(kafkaStreamsConfigMap.toMap()));
         Shutdown.addShutdownHook("Aggregator Topology", kafkaStreams);
 
         kafkaStreams.start();
         log.trace("Initialized");
-    }
-
-    private static Topology buildTopology(final String metricsTopicName) {
-        final StreamsBuilder builder = new StreamsBuilder();
-        final KStream<BeatKey, Beat> mainStream = builder.stream(metricsTopicName, SERDES);
-        new LatencyTopology(mainStream);
-        new DuplicatedTaskRunTopology(mainStream);
-        return builder.build();
     }
 
     @Override
@@ -58,7 +46,8 @@ public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
         final DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(new File(kafkaStreamsConfigMap.getStateDir()));
         diskSpaceMetrics.bindTo(registry);
 
-        final LatencyMetricExporter latencyMetricExporter = new LatencyMetricExporter(kafkaStreams);
-        latencyMetricExporter.bindTo(registry);
+        final PrometheusMetricStoreExporter prometheusMetricStoreExporter =
+                new PrometheusMetricStoreExporter(kafkaStreams, METRICS_STORE);
+        prometheusMetricStoreExporter.bindTo(registry);
     }
 }

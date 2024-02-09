@@ -11,60 +11,47 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.SessionWindows;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.SessionStore;
 
 @Slf4j
 public class DuplicatedTaskRunTopology {
 
-    public static final String DUPLICATED_TASK_RUN_WINDOWS = "duplicated-task-run-windows";
-    public static final String DUPLICATED_TASK_RUN = "duplicated-task-run";
+    private final KStream<MetricKey, Double> stream;
 
-    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream) {
-        mainStream
+    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetetion) {
+        stream = mainStream
                 .filter((key, value) -> value.hasTaskRunBeat())
                 .groupByKey()
-                // open a window sessions
-                .windowedBy(SessionWindows.ofInactivityGapAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
-                // count all the records with the same key
-                .aggregate(
-                        () -> 0,
-                        (key, value, aggregate) -> aggregate + 1,
-                        (aggKey, aggOne, aggTwo) -> aggOne + aggTwo,
-                        Materialized.<BeatKey, Integer, SessionStore<Bytes, byte[]>>as(DUPLICATED_TASK_RUN_WINDOWS)
-                                .withKeySerde(ProtobufSerdes.BeatKey())
-                                .withValueSerde(Serdes.Integer()))
-                .toStream((key, value) -> key.key())
+                // count all the records with the same idempotency key and attempt number
+                .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>with(
+                                ProtobufSerdes.BeatKey(), Serdes.Long())
+                        .withRetention(storeRetetion))
                 // filter by duplicated
-                .filterNot((key, value) -> value == null)
-                .filter((key, value) -> value > 1)
-                // peek aggregate
+                .filter((key, value) -> value > 1L)
+                .toStream()
+                .mapValues((readOnlyKey, value) -> Double.valueOf(value))
+                // debug peek aggregate
                 .peek((key, value) -> peekAggregate(key, value))
-                // re-key by lh cluster
-                .groupBy(
-                        (key, value) -> toMetricKey(key),
-                        Grouped.<MetricKey, Integer>as(DUPLICATED_TASK_RUN)
-                                .withKeySerde(ProtobufSerdes.MetricKey())
-                                .withValueSerde(Serdes.Integer()))
-                // create store
-                .reduce(
-                        (value1, value2) -> value1 + value2,
-                        Materialized.<MetricKey, Integer, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_RUN)
-                                .withKeySerde(ProtobufSerdes.MetricKey())
-                                .withValueSerde(Serdes.Integer()));
+                // re-key from task run to lh cluster
+                .groupBy((key, value) -> toMetricKey(key), Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Double()))
+                // count how many task were duplicated
+                .count(Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>with(
+                                ProtobufSerdes.MetricKey(), Serdes.Long())
+                        .withRetention(storeRetetion))
+                .mapValues((readOnlyKey, value) -> Double.valueOf(value))
+                .toStream();
     }
 
     private static MetricKey toMetricKey(final BeatKey key) {
         return MetricKey.newBuilder()
-                .setId("duplicated_task_run_count")
+                .setId("duplicated_task_run_max_count")
                 .setServerHost(key.getServerHost())
                 .setServerPort(key.getServerPort())
                 .setServerVersion(key.getServerVersion())
                 .build();
     }
 
-    private static void peekAggregate(final BeatKey key, final Integer count) {
+    private static void peekAggregate(final BeatKey key, final Double count) {
         log.debug(
                 "server={}:{}, idempotency_key={}, attempt_number={}, count={}",
                 key.getServerHost(),
@@ -72,5 +59,9 @@ public class DuplicatedTaskRunTopology {
                 key.getTaskRunBeatKey().getIdempotencyKey(),
                 key.getTaskRunBeatKey().getAttemptNumber(),
                 count);
+    }
+
+    public KStream<MetricKey, Double> getStream() {
+        return stream;
     }
 }

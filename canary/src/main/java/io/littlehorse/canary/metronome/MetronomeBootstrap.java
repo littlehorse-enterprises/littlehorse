@@ -39,15 +39,17 @@ public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
         final MetronomeWorkflow workflow = new MetronomeWorkflow(lhClient);
         workflow.register();
 
-        final Metronome metronome = new Metronome(
-                emitter,
-                lhClient,
-                config.getMetronomeFrequency(),
-                config.getMetronomeThreads(),
-                config.getMetronomeRuns(),
-                lhConfig.getApiBootstrapHost(),
-                lhConfig.getApiBootstrapPort(),
-                serverVersion);
+        if (config.isMetronomeActiveModeEnabled()) {
+            final Metronome metronome = new Metronome(
+                    emitter,
+                    lhClient,
+                    config.getMetronomeFrequencyMs(),
+                    config.getMetronomeThreads(),
+                    config.getMetronomeRuns(),
+                    lhConfig.getApiBootstrapHost(),
+                    lhConfig.getApiBootstrapPort(),
+                    serverVersion);
+        }
 
         log.trace("Initialized");
     }
