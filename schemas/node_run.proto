@@ -160,6 +160,11 @@ message WaitForThreadsRun {
     // The "waiting status" of this specific thread: whether it's still running,
     // already done, handling a failure, or completely failed.
     WaitingThreadStatus waiting_status = 4;
+
+    // If there is a failure on the ThreadRun, and we have a failure handler defined
+    // for it, then we will start a failure handler for this threadrun. This field
+    // is the id of that threadRun.
+    optional int32 failure_handler_thread_run_id = 5;
   }
 
   // The threads that are being waited for.

@@ -296,6 +296,29 @@ private static final long serialVersionUID = 0L;
      * @return The waitingStatus.
      */
     io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus();
+
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return Whether the failureHandlerThreadRunId field is set.
+     */
+    boolean hasFailureHandlerThreadRunId();
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return The failureHandlerThreadRunId.
+     */
+    int getFailureHandlerThreadRunId();
   }
   /**
    * <pre>
@@ -449,6 +472,37 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.UNRECOGNIZED : result;
     }
 
+    public static final int FAILURE_HANDLER_THREAD_RUN_ID_FIELD_NUMBER = 5;
+    private int failureHandlerThreadRunId_ = 0;
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return Whether the failureHandlerThreadRunId field is set.
+     */
+    @java.lang.Override
+    public boolean hasFailureHandlerThreadRunId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return The failureHandlerThreadRunId.
+     */
+    @java.lang.Override
+    public int getFailureHandlerThreadRunId() {
+      return failureHandlerThreadRunId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -475,6 +529,9 @@ private static final long serialVersionUID = 0L;
       if (waitingStatus_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.THREAD_IN_PROGRESS.getNumber()) {
         output.writeEnum(4, waitingStatus_);
       }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(5, failureHandlerThreadRunId_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -500,6 +557,10 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, waitingStatus_);
       }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, failureHandlerThreadRunId_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -524,6 +585,11 @@ private static final long serialVersionUID = 0L;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
       if (waitingStatus_ != other.waitingStatus_) return false;
+      if (hasFailureHandlerThreadRunId() != other.hasFailureHandlerThreadRunId()) return false;
+      if (hasFailureHandlerThreadRunId()) {
+        if (getFailureHandlerThreadRunId()
+            != other.getFailureHandlerThreadRunId()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -545,6 +611,10 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getThreadRunNumber();
       hash = (37 * hash) + WAITING_STATUS_FIELD_NUMBER;
       hash = (53 * hash) + waitingStatus_;
+      if (hasFailureHandlerThreadRunId()) {
+        hash = (37 * hash) + FAILURE_HANDLER_THREAD_RUN_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getFailureHandlerThreadRunId();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -694,6 +764,7 @@ private static final long serialVersionUID = 0L;
         threadStatus_ = 0;
         threadRunNumber_ = 0;
         waitingStatus_ = 0;
+        failureHandlerThreadRunId_ = 0;
         return this;
       }
 
@@ -742,6 +813,10 @@ private static final long serialVersionUID = 0L;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.waitingStatus_ = waitingStatus_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.failureHandlerThreadRunId_ = failureHandlerThreadRunId_;
+          to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -802,6 +877,9 @@ private static final long serialVersionUID = 0L;
         if (other.waitingStatus_ != 0) {
           setWaitingStatusValue(other.getWaitingStatusValue());
         }
+        if (other.hasFailureHandlerThreadRunId()) {
+          setFailureHandlerThreadRunId(other.getFailureHandlerThreadRunId());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -850,6 +928,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
+              case 40: {
+                failureHandlerThreadRunId_ = input.readInt32();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1222,6 +1305,70 @@ private static final long serialVersionUID = 0L;
       public Builder clearWaitingStatus() {
         bitField0_ = (bitField0_ & ~0x00000008);
         waitingStatus_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int failureHandlerThreadRunId_ ;
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return Whether the failureHandlerThreadRunId field is set.
+       */
+      @java.lang.Override
+      public boolean hasFailureHandlerThreadRunId() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return The failureHandlerThreadRunId.
+       */
+      @java.lang.Override
+      public int getFailureHandlerThreadRunId() {
+        return failureHandlerThreadRunId_;
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @param value The failureHandlerThreadRunId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFailureHandlerThreadRunId(int value) {
+
+        failureHandlerThreadRunId_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFailureHandlerThreadRunId() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        failureHandlerThreadRunId_ = 0;
         onChanged();
         return this;
       }

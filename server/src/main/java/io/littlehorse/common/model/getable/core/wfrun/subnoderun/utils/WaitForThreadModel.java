@@ -24,6 +24,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private LHStatus threadStatus;
     private int threadRunNumber;
     private WaitingThreadStatus waitingStatus;
+    private Integer failureHandlerThreadRunId;
     private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {
@@ -68,6 +69,10 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
         waitingStatus = p.getWaitingStatus();
+
+        if (p.hasFailureHandlerThreadRunId()) {
+            failureHandlerThreadRunId = p.getFailureHandlerThreadRunId();
+        }
     }
 
     public WaitForThread.Builder toProto() {
@@ -77,6 +82,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
         out.setWaitingStatus(waitingStatus);
+
+        if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadRunId(failureHandlerThreadRunId);
         return out;
     }
 

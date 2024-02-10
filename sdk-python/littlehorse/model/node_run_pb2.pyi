@@ -99,16 +99,18 @@ class WaitForThreadsRun(_message.Message):
     THREAD_COMPLETED_OR_FAILURE_HANDLED: WaitForThreadsRun.WaitingThreadStatus
     THREAD_UNSUCCESSFUL: WaitForThreadsRun.WaitingThreadStatus
     class WaitForThread(_message.Message):
-        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "waiting_status"]
+        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "waiting_status", "failure_handler_thread_run_id"]
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]
         THREAD_STATUS_FIELD_NUMBER: _ClassVar[int]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
         WAITING_STATUS_FIELD_NUMBER: _ClassVar[int]
+        FAILURE_HANDLER_THREAD_RUN_ID_FIELD_NUMBER: _ClassVar[int]
         thread_end_time: _timestamp_pb2.Timestamp
         thread_status: _common_enums_pb2.LHStatus
         thread_run_number: int
         waiting_status: WaitForThreadsRun.WaitingThreadStatus
-        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., waiting_status: _Optional[_Union[WaitForThreadsRun.WaitingThreadStatus, str]] = ...) -> None: ...
+        failure_handler_thread_run_id: int
+        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., waiting_status: _Optional[_Union[WaitForThreadsRun.WaitingThreadStatus, str]] = ..., failure_handler_thread_run_id: _Optional[int] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...

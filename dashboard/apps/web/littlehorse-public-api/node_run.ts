@@ -244,6 +244,12 @@ export interface WaitForThreadsRun_WaitForThread {
    * already done, handling a failure, or completely failed.
    */
   waitingStatus: WaitForThreadsRun_WaitingThreadStatus;
+  /**
+   * If there is a failure on the ThreadRun, and we have a failure handler defined
+   * for it, then we will start a failure handler for this threadrun. This field
+   * is the id of that threadRun.
+   */
+  failureHandlerThreadRunId?: number | undefined;
 }
 
 /** The sub-node structure for an EXTERNAL_EVENT NodeRun. */
@@ -1080,6 +1086,7 @@ function createBaseWaitForThreadsRun_WaitForThread(): WaitForThreadsRun_WaitForT
     threadStatus: LHStatus.STARTING,
     threadRunNumber: 0,
     waitingStatus: WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
+    failureHandlerThreadRunId: undefined,
   };
 }
 
@@ -1096,6 +1103,9 @@ export const WaitForThreadsRun_WaitForThread = {
     }
     if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
       writer.uint32(32).int32(waitForThreadsRun_WaitingThreadStatusToNumber(message.waitingStatus));
+    }
+    if (message.failureHandlerThreadRunId !== undefined) {
+      writer.uint32(40).int32(message.failureHandlerThreadRunId);
     }
     return writer;
   },
@@ -1135,6 +1145,13 @@ export const WaitForThreadsRun_WaitForThread = {
 
           message.waitingStatus = waitForThreadsRun_WaitingThreadStatusFromJSON(reader.int32());
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.failureHandlerThreadRunId = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1152,6 +1169,9 @@ export const WaitForThreadsRun_WaitForThread = {
       waitingStatus: isSet(object.waitingStatus)
         ? waitForThreadsRun_WaitingThreadStatusFromJSON(object.waitingStatus)
         : WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
+      failureHandlerThreadRunId: isSet(object.failureHandlerThreadRunId)
+        ? globalThis.Number(object.failureHandlerThreadRunId)
+        : undefined,
     };
   },
 
@@ -1169,6 +1189,9 @@ export const WaitForThreadsRun_WaitForThread = {
     if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
       obj.waitingStatus = waitForThreadsRun_WaitingThreadStatusToJSON(message.waitingStatus);
     }
+    if (message.failureHandlerThreadRunId !== undefined) {
+      obj.failureHandlerThreadRunId = Math.round(message.failureHandlerThreadRunId);
+    }
     return obj;
   },
 
@@ -1183,6 +1206,7 @@ export const WaitForThreadsRun_WaitForThread = {
     message.threadStatus = object.threadStatus ?? LHStatus.STARTING;
     message.threadRunNumber = object.threadRunNumber ?? 0;
     message.waitingStatus = object.waitingStatus ?? WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS;
+    message.failureHandlerThreadRunId = object.failureHandlerThreadRunId ?? undefined;
     return message;
   },
 };

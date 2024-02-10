@@ -7,7 +7,6 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
-import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 
 @Slf4j
