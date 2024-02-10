@@ -26,7 +26,7 @@ public interface WaitForThreadsNodeOutput extends NodeOutput {
     /**
      * Specifies a Failure Handler to run in case any of the ThreadRun's that we are waiting for in this
      * WaitForThreadsNode fails with a specific ERROR.
-     * @param exceptionName the ERROR type
+     * @param error the ERROR type
      * @param handler the WorkflowThread defining the failure handler
      * @return this WaitForThreadsNodeOutput
      */
