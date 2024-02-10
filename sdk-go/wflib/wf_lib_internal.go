@@ -789,14 +789,18 @@ func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
 	node.Node = &model.Node_WaitForThreads{
 		WaitForThreads: &model.WaitForThreadsNode{
-			Threads: make([]*model.WaitForThreadsNode_ThreadToWaitFor, 0),
+			ThreadsToWaitFor: &model.WaitForThreadsNode_Threads{
+				Threads: &model.WaitForThreadsNode_ThreadsToWaitFor{
+					Threads: make([]*model.WaitForThreadsNode_ThreadToWaitFor, 0),
+				},
+			},
 		},
 	}
 
 	for _, spawnedThread := range s {
 		threadRunNumberAssn, _ := t.assignVariable(spawnedThread.threadNumVar)
 
-		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads,
+		node.GetWaitForThreads().GetThreads().Threads = append(node.GetWaitForThreads().GetThreads().Threads,
 			&model.WaitForThreadsNode_ThreadToWaitFor{
 				ThreadRunNumber: threadRunNumberAssn,
 			},
@@ -870,8 +874,9 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	}
 
 	subNode := &model.WaitForThreadsNode{
-		ThreadList: threadListAssn,
-		Policy:     model.WaitForThreadsPolicy_STOP_ON_FAILURE,
+		ThreadsToWaitFor: &model.WaitForThreadsNode_ThreadList{
+			ThreadList: threadListAssn,
+		},
 	}
 
 	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")

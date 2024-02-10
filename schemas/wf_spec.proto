@@ -141,12 +141,6 @@ message WaitForThreadsNode {
   repeated FailureHandlerDef per_thread_failure_handlers = 3;
 }
 
-//   // Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-//   // for compatibility reasons, we cannot wrap it into a separate message.
-//   repeated ThreadToWaitFor threads = 1;
-//   optional VariableAssignment thread_list = 3;
-// }
-
 message ExternalEventNode {
   ExternalEventDefId external_event_def_id = 1;
   VariableAssignment timeout_seconds = 2;
