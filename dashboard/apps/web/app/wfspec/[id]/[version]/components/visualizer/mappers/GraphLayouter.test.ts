@@ -7,7 +7,6 @@ import {
     LHStatus,
     MetadataStatus,
     VariableType,
-    WaitForThreadsPolicy
 } from '../../../../../../../littlehorse-public-api/common_enums'
 import type {
     TaskNode,
@@ -2795,14 +2794,15 @@ describe('Layouting graph from LH Nodes', () => {
                                 ],
                                 'failureHandlers': [],
                                 'waitForThreads': {
-                                    'threads': [
+                                    'threads': {
+                                        threads: [
                                         {
                                             'threadRunNumber': {
                                                 'variableName': '2-spawned-thread-START_THREAD'
                                             }
                                         }
-                                    ],
-                                    'policy': WaitForThreadsPolicy.STOP_ON_FAILURE
+                                    ]},
+                                    perThreadFailureHandlers: []
                                 }
                             },
                             '4-parent-task-2-TASK': {
