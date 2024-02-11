@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
@@ -17,8 +19,6 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
-import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
-import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
@@ -312,8 +312,10 @@ public class WorkflowThreadImplTest {
         WaitForThreadsNode wftn = node.getWaitForThreads();
 
         assertThat(wftn.getPerThreadFailureHandlersCount()).isEqualTo(1);
-        assertThat(wftn.getPerThreadFailureHandlers(0).getFailureToCatchCase()).isEqualTo(FailureToCatchCase.FAILURETOCATCH_NOT_SET);
-        assertThat(wftn.getPerThreadFailureHandlers(0).getHandlerSpecName()).isEqualTo("failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE");
+        assertThat(wftn.getPerThreadFailureHandlers(0).getFailureToCatchCase())
+                .isEqualTo(FailureToCatchCase.FAILURETOCATCH_NOT_SET);
+        assertThat(wftn.getPerThreadFailureHandlers(0).getHandlerSpecName())
+                .isEqualTo("failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE");
     }
 
     @Test
@@ -341,7 +343,8 @@ public class WorkflowThreadImplTest {
 
         assertThat(anyErrorHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.ANY_FAILURE_OF_TYPE);
         assertThat(anyErrorHandler.getAnyFailureOfType()).isEqualTo(LHFailureType.FAILURE_TYPE_ERROR);
-        assertThat(anyErrorHandler.getHandlerSpecName()).isEqualTo("error-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_ERROR");
+        assertThat(anyErrorHandler.getHandlerSpecName())
+                .isEqualTo("error-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_ERROR");
     }
 
     @Test
@@ -365,10 +368,12 @@ public class WorkflowThreadImplTest {
 
         assertThat(specificHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.SPECIFIC_FAILURE);
         assertThat(specificHandler.getSpecificFailure()).isEqualTo("my-exception");
-        assertThat(specificHandler.getHandlerSpecName()).isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-my-exception");
+        assertThat(specificHandler.getHandlerSpecName())
+                .isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-my-exception");
 
         assertThat(anyHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.ANY_FAILURE_OF_TYPE);
         assertThat(anyHandler.getAnyFailureOfType()).isEqualTo(LHFailureType.FAILURE_TYPE_EXCEPTION);
-        assertThat(anyHandler.getHandlerSpecName()).isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_EXCEPTION");
+        assertThat(anyHandler.getHandlerSpecName())
+                .isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_EXCEPTION");
     }
 }
