@@ -400,7 +400,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
             somethingChanged = true;
             pendingFailures.remove(i);
             Map<String, VariableValueModel> vars = new HashMap<>();
-            ;
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {

@@ -1,18 +1,17 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.worker.LHTaskWorker;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Properties;
-
-import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.wfsdk.SpawnedThread;
-import io.littlehorse.sdk.wfsdk.SpawnedThreads;
-import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.LHTaskWorker;
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
@@ -21,19 +20,16 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 public class BasicExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("handle-exception-on-children", wf -> {
-            SpawnedThread childThread = wf.spawnThread(
-                    child -> {
-                        child.execute("greet", "colt");
-                        child.fail("child-exception", "asdf");
-                    },
-                    "child",
-                    Map.of());
-
-            wf.waitForThreads(SpawnedThreads.of(childThread)).handleExceptionOnChild("child-exception", handler -> {
-                handler.execute("greet", "edu");
-            });
-        });
+        return new WorkflowImpl(
+            "example-basic",
+            wf -> {
+                WfRunVariable theName = wf.addVariable(
+                    "input-name",
+                    VariableType.STR
+                );
+                wf.execute("greet", theName);
+            }
+        );
     }
 
     public static Properties getConfigProps() throws IOException {

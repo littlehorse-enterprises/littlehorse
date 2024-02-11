@@ -23,7 +23,7 @@ class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThre
         if (exceptionName != null) {
             handlerDef.setSpecificFailure(exceptionName);
         } else {
-            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION);
         }
 
         parent.addFailureHandlerOnWaitForThreadsNode(this, handlerDef.build());
@@ -33,7 +33,7 @@ class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThre
 
     @Override
     public WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType errorType, ThreadFunc handler) {
-        String threadName = "exn-handler-" + this.nodeName + "-"
+        String threadName = "error-handler-" + this.nodeName + "-"
                 + (errorType != null ? errorType.name() : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
         threadName = parent.getParent().addSubThread(threadName, handler);
         FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
@@ -50,7 +50,7 @@ class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThre
 
     @Override
     public WaitForThreadsNodeOutput handleAnyFailureOnChild(ThreadFunc handler) {
-        String threadName = "exn-handler-" + this.nodeName + "-ANY_FAILURE";
+        String threadName = "failure-handler-" + this.nodeName + "-ANY_FAILURE";
         threadName = parent.getParent().addSubThread(threadName, handler);
         FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
         parent.addFailureHandlerOnWaitForThreadsNode(this, handlerDef.build());
