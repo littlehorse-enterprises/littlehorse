@@ -15,7 +15,6 @@ import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -170,8 +169,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            metricsAggregator = new MetricsUpdater(ClusterScopedStore.newInstance(nativeCoreStore(), this));
-            getableUpdates.subscribe(metricsAggregator);
+            // TODO: enable metrics here
         }
         return getableUpdates;
     }
