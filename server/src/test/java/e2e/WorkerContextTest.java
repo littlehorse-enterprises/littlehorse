@@ -1,5 +1,7 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -9,15 +11,14 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-public class SequentialWorkflowTest {
+public class WorkerContextTest {
 
     private WorkflowVerifier workflowVerifier;
 
-    @LHWorkflow("simple-sequential-wf")
+    @LHWorkflow("worker-context-test")
     private Workflow workflow;
 
     @Test
@@ -27,11 +28,12 @@ public class SequentialWorkflowTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
-                .thenVerifyTaskRunResult(
-                        0,
-                        1,
-                        variableValue ->
-                                Assertions.assertTrue(variableValue.getStr().contains("hello there from wfRun")))
+                .thenVerifyAllTaskRuns(0, taskRuns -> {
+                    assertThat(taskRuns.get(0).getAttempts(0).getOutput().getStr())
+                            .contains(" on nodeRun 1");
+                    assertThat(taskRuns.get(1).getAttempts(0).getOutput().getStr())
+                            .contains(" on nodeRun 2");
+                })
                 .start();
     }
 
@@ -49,15 +51,15 @@ public class SequentialWorkflowTest {
         }
     }
 
-    @LHWorkflow("simple-sequential-wf")
+    @LHWorkflow("worker-context-test")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("simple-sequential-wf", thread -> {
-            thread.execute("aa-simple");
-            thread.execute("aa-simple");
+        return new WorkflowImpl("worker-context-test", thread -> {
+            thread.execute("worker-cntext-test");
+            thread.execute("worker-context-test");
         });
     }
 
-    @LHTaskMethod("aa-simple")
+    @LHTaskMethod("worker-context-test")
     public String obiWan(WorkerContext context) {
 
         return ("hello there from wfRun "

@@ -1,67 +1,86 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.NodeOutput;
-import io.littlehorse.sdk.wfsdk.SpawnedThread;
-import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
 public class VarSubErrorTest {
 
-    // Need to put it here so that we can access it in an illegal manner
-    private WfRunVariable variableOnlyAccessibleInChild;
-
+    private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
-    @LHWorkflow("access-out-of-scope-var")
-    private Workflow accessOutOfScopeVarWf;
+    @LHWorkflow("var-type-validations")
+    private Workflow varTypeValidationsWf;
 
     @Test
-    void shouldThrowVarSubErrorOnIllegalAccess() {
-        verifier.prepareRun(accessOutOfScopeVarWf)
-                // this WfRun should be terminated on the first RPC since there are no
-                // TaskRun's, ExternalEvents, or User Tasks. Everything is synchronous.
-                //
-                // Therefore, we should NOT do a waitForStatus().
-                .thenVerifyWfRun(wfRun -> {
-                    Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.ERROR);
-                    Assertions.assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.EXCEPTION);
-                    Assertions.assertThat(wfRun.getThreadRuns(2).getStatus()).isEqualTo(LHStatus.ERROR);
-                })
+    void shouldThrowInvalidArgumentIfRequiredVarMissing() {
+        // The RunWf RPC would throw an error, and currently the test framework doesn't have
+        // a way to test this. So we first run a simple test with the framework to ensure
+        // that the WfSpec gets created.
+        verifier.prepareRun(
+                        varTypeValidationsWf,
+                        Arg.of("input-int", 2),
+                        Arg.of("input-json", Map.of("int", 1, "string", "hello")))
+                .waitForStatus(LHStatus.COMPLETED)
                 .start();
+
+        // Now we run our test manually.
+        assertThatThrownBy(() -> {
+                    client.runWf(RunWfRequest.newBuilder()
+                            .setWfSpecName("var-type-validations")
+                            .build());
+                })
+                .matches(exn -> {
+                    assertThat(exn).isInstanceOf(StatusRuntimeException.class);
+                    StatusRuntimeException sre = (StatusRuntimeException) exn;
+                    assertThat(sre.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
+
+                    return sre.getMessage().toLowerCase().contains("input-int");
+                });
     }
 
-    @LHWorkflow("access-out-of-scope-var")
-    public Workflow getAccessOutOfScopeVarWf() {
-        return Workflow.newWorkflow("access-out-of-scope-var", wf -> {
-            SpawnedThread spawnedThread = wf.spawnThread(
-                    child -> {
-                        variableOnlyAccessibleInChild = child.addVariable("out-of-scope-var", VariableType.BOOL);
-                        child.fail("some-failure", "some failure message");
-                    },
-                    "child-thread",
-                    Map.of());
+    /*
+     * Allows testers to check that variable type validations are working properly on the following:
+     * - input variables
+     * - input to first task run
+     * - input to later task runs
+     */
+    @LHWorkflow("var-type-validations")
+    public Workflow getVarTypeValidationsWf() {
+        return Workflow.newWorkflow("var-type-validations", wf -> {
+            WfRunVariable inputInt =
+                    wf.addVariable("input-int", VariableType.INT).required();
+            WfRunVariable inputJson = wf.addVariable("input-json", VariableType.JSON_OBJ);
 
-            // In order to "trick" the SDK into creating a WfSpec that accesses an
-            // out-of-scope variable, we have to use a failure handler on a waitForThreads
-            // node.
-            NodeOutput nodeThatWillFail = wf.waitForThreads(SpawnedThreads.of(spawnedThread));
-
-            wf.handleException(nodeThatWillFail, handler -> {
-                // We once had an NPE in which accessing a variable from the child in this thread
-                // was permitted by the SDK but the server threw an orzdash.
-                handler.mutate(variableOnlyAccessibleInChild, VariableMutationType.ASSIGN, true);
-            });
+            wf.execute("takes-in-int", inputJson.jsonPath("$.int"));
+            wf.execute("takes-in-int", inputInt);
+            wf.execute("takes-in-string", inputJson.jsonPath("$.string"));
         });
+    }
+
+    @LHTaskMethod("takes-in-int")
+    public int obiWan(int input) {
+        return input + 1;
+    }
+
+    @LHTaskMethod("takes-in-string")
+    public String anakin(String input) {
+        return input + "!";
     }
 }
