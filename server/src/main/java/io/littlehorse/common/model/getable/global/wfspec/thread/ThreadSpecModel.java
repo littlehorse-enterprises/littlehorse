@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -311,6 +312,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             if (val.getType() != varDef.getType() && val.getType() != null) {
                 throw new LHValidationError(
                         "Var " + varName + " should be " + varDef.getType() + " but is " + val.getType());
+            }
+
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                if (vars.containsKey(varName)) {
+                    throw new LHValidationError("Variable %s is an inherited var but it was provided as input".formatted(varName));
+                }
             }
         }
 

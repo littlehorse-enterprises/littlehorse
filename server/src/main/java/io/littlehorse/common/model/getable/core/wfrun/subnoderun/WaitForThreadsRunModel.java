@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads = new ArrayList<>();
-    ;
     private ProcessorExecutionContext context;
 
     public WaitForThreadsRunModel() {}

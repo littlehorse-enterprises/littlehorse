@@ -136,7 +136,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         }
 
         // Validate input variables before saving anything.
-        ThreadSpecModel entrypointThread = spec.getThreadSpecs().get(spec.getEntrypointThreadName());
+        ThreadSpecModel entrypointThread = spec.getEntrypointThread();
         try {
             entrypointThread.validateStartVariables(variables);
         } catch (LHValidationError exn) {

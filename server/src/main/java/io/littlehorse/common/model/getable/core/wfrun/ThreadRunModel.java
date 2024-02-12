@@ -258,10 +258,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             VariableValueModel val;
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-                if (variables.containsKey(varName)) {
-                    // TODO: handle exception and fail the request.
-                }
-
                 // We do NOT create a variable since we want to use the one from the parent.
                 continue;
             }
