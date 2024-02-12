@@ -316,7 +316,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 if (vars.containsKey(varName)) {
-                    throw new LHValidationError("Variable %s is an inherited var but it was provided as input".formatted(varName));
+                    throw new LHValidationError(
+                            "Variable %s is an inherited var but it was provided as input".formatted(varName));
                 }
             }
         }
