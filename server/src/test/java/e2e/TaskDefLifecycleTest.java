@@ -56,7 +56,7 @@ public class TaskDefLifecycleTest {
     }
 
     @Test
-    void shouldBeAbleToReadTaskDefImmediatelyAfterCreation() throws Exception {
+    void shouldBeAbleToUseTaskDefImmediatelyAfterCreation() throws Exception {
         // Repeat 5 times to make race conditions more likely to appear
         for (int i = 0; i < 5; i++) {
             String taskDefName = UUID.randomUUID().toString();

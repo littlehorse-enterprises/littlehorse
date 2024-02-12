@@ -158,9 +158,10 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                 }
                 break;
             case THREAD_LIST:
-                if (!threadList.canBeType(VariableType.INT, node.getThreadSpecModel())) {
+                if (!threadList.canBeType(VariableType.JSON_ARR, node.getThreadSpecModel())) {
                     throw new LHApiException(
-                            Status.INVALID_ARGUMENT, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                            Status.INVALID_ARGUMENT,
+                            "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to JSON_ARR!");
                 }
                 break;
             case THREADSTOWAITFOR_NOT_SET:

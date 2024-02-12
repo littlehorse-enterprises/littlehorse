@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
@@ -182,6 +183,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
+    @Override
     public Class<ThreadRun> getProtoBaseClass() {
         return ThreadRun.class;
     }
@@ -211,6 +213,75 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public NodeRunModel getCurrentNodeRun() {
         return getNodeRun(currentNodePosition);
+    }
+
+    public void validateVariablesAndStart(Map<String, VariableValueModel> variables) {
+        if (currentNodePosition > 0) {
+            throw new IllegalStateException("Should only be called on creation");
+        }
+        currentNodePosition = 0;
+
+        Date now = new Date();
+        ThreadSpecModel threadSpec = getThreadSpecModel();
+        setStatus(LHStatus.RUNNING);
+        setStartTime(now);
+
+        NodeModel entrypointNode = threadSpec.getNodes().get(threadSpec.getEntrypointNodeName());
+
+        NodeRunModel entrypointRun = new NodeRunModel(processorContext);
+        entrypointRun.setThreadRun(this);
+        entrypointRun.setNodeName(entrypointNode.name);
+        entrypointRun.setStatus(LHStatus.STARTING);
+        entrypointRun.setId(new NodeRunIdModel(wfRun.getId(), this.number, 0));
+        entrypointRun.setWfSpecId(wfSpecId);
+        entrypointRun.setThreadSpecName(threadSpecName);
+        entrypointRun.setArrivalTime(now);
+        entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now));
+        putNodeRun(entrypointRun);
+
+        try {
+            threadSpec.validateStartVariables(variables);
+        } catch (LHValidationError exn) {
+            log.error("Invalid variables received", exn);
+            // TODO: determine how observability events should look like for this case.
+            entrypointRun.fail(
+                    new FailureModel(
+                            "Failed validating variables on start: " + exn.getMessage(),
+                            LHConstants.VAR_MUTATION_ERROR),
+                    now);
+            return;
+        }
+
+        for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
+            VariableDefModel varDef = threadVarDef.getVarDef();
+            String varName = varDef.getName();
+            VariableValueModel val;
+
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                if (variables.containsKey(varName)) {
+                    // TODO: handle exception and fail the request.
+                }
+
+                // We do NOT create a variable since we want to use the one from the parent.
+                continue;
+            }
+
+            if (variables.containsKey(varName)) {
+                val = variables.get(varName);
+            } else if (varDef.getDefaultValue() != null) {
+                val = varDef.getDefaultValue();
+            } else {
+                // TODO: Will need to update this when we add the required variable feature.
+                val = new VariableValueModel();
+            }
+
+            VariableModel variable = new VariableModel(varName, val, wfRun.getId(), getNumber(), wfRun.getWfSpec());
+            processorContext.getableManager().put(variable);
+        }
+
+        entrypointRun.setStatus(LHStatus.RUNNING);
+        entrypointRun.getSubNodeRun().arrive(now);
+        entrypointRun.getSubNodeRun().advanceIfPossible(now);
     }
 
     /*
@@ -657,21 +728,25 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 }
             } catch (LHVarSubError exn) {
                 log.debug("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
-                fail(
-                        new FailureModel(
-                                "Failed evaluating outgoing edge: " + exn.getMessage(), LHConstants.VAR_MUTATION_ERROR),
-                        new Date());
+                getCurrentNodeRun()
+                        .fail(
+                                new FailureModel(
+                                        "Failed evaluating outgoing edge: " + exn.getMessage(),
+                                        LHConstants.VAR_MUTATION_ERROR),
+                                new Date());
                 return;
             }
         }
         if (nextNode == null) {
-            // TODO: Later versions should validate wfSpec's so that this is not
-            // possible
-            fail(
-                    new FailureModel(
-                            "WfSpec was invalid. There were no activated outgoing edges" + " from a non-exit node.",
-                            LHConstants.INTERNAL_ERROR),
-                    new Date());
+            // TODO: Later versions should validate wfSpec's so that this is not possible; however, it may
+            // always require some runtime checks.
+            getCurrentNodeRun()
+                    .fail(
+                            new FailureModel(
+                                    "WfSpec was invalid. There were no activated outgoing edges"
+                                            + " from a non-exit node.",
+                                    LHConstants.INTERNAL_ERROR),
+                            new Date());
         } else {
             activateNode(nextNode);
         }
@@ -897,25 +972,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     /**
-     * Creates a new variable on the current ThreadRun or any of its parents
-     * depending on who has
-     * the variable on its definition
-     *
-     * @param varName name of the variable
-     * @param var     value of the variable
-     * @throws LHVarSubError when the varName is not found either on the current
-     *                       ThreadRun
-     *                       definition or its parents definition
-     */
-    public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
-        VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpec());
-            processorContext.getableManager().put(variable);
-        };
-        applyVarMutationOnAppropriateThread(varName, createVariable);
-    }
-
-    /**
      * Mutates an existing variable on the current ThreadRun or any of its parents
      * depending on who
      * has the variable on its definition
@@ -952,6 +1008,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .getAllVariables()
                 .get(varName);
         if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+            System.out.println("yep!");
+            log.warn("{}", varName);
             // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
             WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();
             WfRunModel parentWfRun = processorContext.getableManager().get(parentWfRunId);

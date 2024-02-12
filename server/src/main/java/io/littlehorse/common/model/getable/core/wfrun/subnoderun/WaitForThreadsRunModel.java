@@ -137,8 +137,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
         private void handleChildThreadFailure(WaitForThreadModel failedWaitingThread, Date time) {
             ThreadRunModel threadRun = wfRun.getThreadRun(failedWaitingThread.getThreadRunNumber());
-            FailureModel latestFailure =
-                    threadRun.getNodeRun(threadRun.getCurrentNodePosition()).getLatestFailure();
+            FailureModel latestFailure = threadRun.getCurrentNodeRun().getLatestFailure();
 
             FailureHandlerDefModel handler = getHandlerFor(latestFailure);
             if (handler != null) {

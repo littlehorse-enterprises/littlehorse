@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -375,5 +376,22 @@ public class WorkflowThreadImplTest {
         assertThat(anyHandler.getAnyFailureOfType()).isEqualTo(LHFailureType.FAILURE_TYPE_EXCEPTION);
         assertThat(anyHandler.getHandlerSpecName())
                 .isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_EXCEPTION");
+    }
+
+    @Test
+    void testWaitForParallelSpawnThreads() {
+        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable toSpawn = wf.addVariable("to-spawn", VariableType.JSON_ARR);
+            wf.waitForThreads(wf.spawnThreadForEach(toSpawn, "child", child -> {}));
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(2);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("2-threads-WAIT_FOR_THREADS");
+        WaitForThreadsNode wftn = node.getWaitForThreads();
+
+        assertThat(wftn.getThreadsToWaitForCase()).isEqualTo(ThreadsToWaitForCase.THREAD_LIST);
+        assertThat(wftn.getThreadList().getVariableName()).isEqualTo("1-child-START_MULTIPLE_THREADS");
     }
 }

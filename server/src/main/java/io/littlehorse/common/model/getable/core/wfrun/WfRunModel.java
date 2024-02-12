@@ -6,7 +6,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
@@ -25,8 +24,6 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -38,7 +35,6 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
-import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -263,60 +259,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
             thread.number = this.greatestThreadRunNumber;
         }
 
-        thread.status = LHStatus.RUNNING;
         thread.threadSpecName = threadName;
         thread.currentNodePosition = -1; // this gets bumped when we start the thread
-
-        thread.startTime = new Date();
 
         thread.wfRun = this;
         thread.type = type;
         threadRuns.add(thread);
 
-        try {
-            tspec.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
-            log.error("Invalid variables received", exn);
-            // TODO: determine how observability events should look like for this case.
-            thread.fail(
-                    new FailureModel(
-                            "Failed validating variables on start: " + exn.getMessage(),
-                            LHConstants.VAR_MUTATION_ERROR),
-                    thread.startTime);
-            return thread;
-        }
-
-        for (ThreadVarDefModel threadVarDef : tspec.getVariableDefs()) {
-            VariableDefModel varDef = threadVarDef.getVarDef();
-            String varName = varDef.getName();
-            VariableValueModel val;
-
-            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-                if (variables.containsKey(varName)) {
-                    // TODO: handle exception and fail the request.
-                }
-
-                // We do NOT create a variable since we want to use the one from the parent.
-                continue;
-            }
-
-            if (variables.containsKey(varName)) {
-                val = variables.get(varName);
-            } else if (varDef.getDefaultValue() != null) {
-                val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
-                val = new VariableValueModel();
-            }
-
-            try {
-                thread.createVariable(varName, val);
-            } catch (LHVarSubError exn) {
-                throw new RuntimeException("Not possible");
-            }
-        }
-        thread.activateNode(thread.getCurrentNode());
-        thread.advance(start);
+        thread.validateVariablesAndStart(variables);
         return thread;
     }
 
