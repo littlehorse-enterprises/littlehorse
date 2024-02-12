@@ -2796,12 +2796,13 @@ describe('Layouting graph from LH Nodes', () => {
                                 'waitForThreads': {
                                     'threads': {
                                         threads: [
-                                        {
-                                            'threadRunNumber': {
-                                                'variableName': '2-spawned-thread-START_THREAD'
+                                            {
+                                                'threadRunNumber': {
+                                                    'variableName': '2-spawned-thread-START_THREAD'
+                                                }
                                             }
-                                        }
-                                    ]},
+                                        ]
+                                    },
                                     perThreadFailureHandlers: []
                                 }
                             },
