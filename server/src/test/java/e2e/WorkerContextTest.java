@@ -54,7 +54,7 @@ public class WorkerContextTest {
     @LHWorkflow("worker-context-test")
     public Workflow buildWorkflow() {
         return new WorkflowImpl("worker-context-test", thread -> {
-            thread.execute("worker-cntext-test");
+            thread.execute("worker-context-test");
             thread.execute("worker-context-test");
         });
     }

@@ -5,11 +5,13 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ParentWfSpecReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
@@ -131,6 +133,14 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
                         "Parent WfRun is of incorrect type %s but should be %s"
                                 .formatted(parent.getWfSpec().getName(), parentSpec.getWfSpecName()));
             }
+        }
+
+        // Validate input variables before saving anything.
+        ThreadSpecModel entrypointThread = spec.getThreadSpecs().get(spec.getEntrypointThreadName());
+        try {
+            entrypointThread.validateStartVariables(variables);
+        } catch (LHValidationError exn) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
 
         WfRunModel newRun = spec.startNewRun(this, processorContext);

@@ -294,26 +294,30 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     // TODO: check input variables.
     public void validateStartVariables(Map<String, VariableValueModel> vars) throws LHValidationError {
-        Map<String, ThreadVarDefModel> required = getInputVariableDefs();
-
-        for (Map.Entry<String, ThreadVarDefModel> e : required.entrySet()) {
-            VariableValueModel val = vars.get(e.getKey());
-            VariableDefModel varDef = e.getValue().getVarDef();
+        for (Map.Entry<String, ThreadVarDefModel> e : getInputVariableDefs().entrySet()) {
+            String varName = e.getKey();
+            ThreadVarDefModel threadVarDef = e.getValue();
+            VariableValueModel val = vars.get(varName);
+            VariableDefModel varDef = threadVarDef.getVarDef();
             if (val == null) {
-                log.debug("Variable {} not provided, defaulting to null", e.getKey());
+                if (threadVarDef.isRequired()) {
+                    throw new LHValidationError(
+                            "Must provide required input variable %s of type %s".formatted(varName, varDef.getType()));
+                }
+                log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
             }
 
             if (val.getType() != varDef.getType() && val.getType() != null) {
                 throw new LHValidationError(
-                        null, "Var " + e.getKey() + " should be " + varDef.getType() + " but is " + val.getType());
+                        "Var " + varName + " should be " + varDef.getType() + " but is " + val.getType());
             }
         }
 
         for (Map.Entry<String, VariableValueModel> e : vars.entrySet()) {
-            if (getVd(e.getKey()) == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Var " + e.getKey() + " provided but not needed for thread " + name);
+            String varName = e.getKey();
+            if (getVd(varName) == null) {
+                throw new LHValidationError("Var " + varName + " provided but not needed for thread " + name);
             }
         }
     }
