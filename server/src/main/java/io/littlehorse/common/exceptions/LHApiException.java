@@ -22,6 +22,10 @@ public class LHApiException extends StatusRuntimeException {
     }
 
     public LHApiException getCopyWithPrefix(String prefix) {
-        return new LHApiException(getStatus().withCause(getCause()), prefix + getMessage());
+        if (!prefix.endsWith(": ")) {
+            prefix = prefix + ": ";
+        }
+        return new LHApiException(
+                getStatus().withCause(getCause()), prefix + getStatus().getDescription());
     }
 }

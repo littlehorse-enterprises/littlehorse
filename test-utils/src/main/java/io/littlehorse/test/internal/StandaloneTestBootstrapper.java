@@ -1,9 +1,6 @@
 package io.littlehorse.test.internal;
 
 import com.google.protobuf.Empty;
-import io.grpc.CallCredentials;
-import io.grpc.Metadata;
-import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -11,13 +8,11 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.awaitility.Awaitility;
@@ -118,30 +113,5 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         String tenantId = System.getenv().getOrDefault(LHConfig.TENANT_ID_KEY, "test-tenant");
         configs.put(LHConfig.TENANT_ID_KEY, tenantId);
         return configs;
-    }
-
-    private static final class MockCallCredentials extends CallCredentials {
-
-        private final PrincipalIdModel principalId;
-        private final TenantIdModel tenantId;
-
-        MockCallCredentials(final PrincipalIdModel principalId, final TenantIdModel tenantId) {
-            this.principalId = principalId;
-            this.tenantId = tenantId;
-        }
-
-        @Override
-        public void applyRequestMetadata(RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
-            executor.execute(() -> {
-                try {
-                    Metadata headers = new Metadata();
-                    headers.put(ServerAuthorizer.CLIENT_ID, principalId.getId());
-                    headers.put(ServerAuthorizer.TENANT_ID, tenantId.getId());
-                    metadataApplier.apply(headers);
-                } catch (Exception e) {
-                    metadataApplier.fail(Status.UNAUTHENTICATED.withCause(e));
-                }
-            });
-        }
     }
 }

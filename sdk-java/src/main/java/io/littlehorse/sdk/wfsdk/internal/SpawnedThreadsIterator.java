@@ -2,7 +2,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 
 public class SpawnedThreadsIterator implements SpawnedThreads {
@@ -20,7 +19,6 @@ public class SpawnedThreadsIterator implements SpawnedThreads {
     public WaitForThreadsNode buildNode() {
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
         waitNode.setThreadList(BuilderUtil.assignVariable(internalStartedThreadVar));
-        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         return waitNode.build();
     }
 }

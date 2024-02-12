@@ -519,6 +519,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, n.build());
     }
 
+    public void addFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutputImpl node, FailureHandlerDef handler) {
+        checkIfIsActive();
+        Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        if (n.getNodeCase() != NodeCase.WAIT_FOR_THREADS) {
+            throw new IllegalStateException("orzdash this should only be a WAIT_FOR_THREADS node");
+        }
+
+        WaitForThreadsNode.Builder subBuilder = n.getWaitForThreadsBuilder();
+        subBuilder.addPerThreadFailureHandlers(handler);
+        n.setWaitForThreads(subBuilder);
+
+        spec.putNodes(node.nodeName, n.build());
+    }
+
     public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;

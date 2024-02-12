@@ -105,7 +105,3 @@ enum LHErrorType {
   // An unexpected LittleHorse Internal error occurred. This is not expected to happen.
   INTERNAL_ERROR = 8;
 }
-
-enum WaitForThreadsPolicy{
-  STOP_ON_FAILURE = 0;
-}

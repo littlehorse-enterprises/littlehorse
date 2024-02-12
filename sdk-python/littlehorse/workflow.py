@@ -10,10 +10,7 @@ import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import (
-    VariableType,
-    WaitForThreadsPolicy,
-)
+from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     TaskNode,
@@ -566,7 +563,7 @@ class SpawnedThreads:
                     )
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
-                threads=threads, policy=WaitForThreadsPolicy.STOP_ON_FAILURE
+                threads=WaitForThreadsNode.ThreadsToWaitFor(threads),
             )
 
         def build_iterator_threads(
@@ -574,7 +571,6 @@ class SpawnedThreads:
         ) -> WaitForThreadsNode:
             return WaitForThreadsNode(
                 thread_list=to_variable_assignment(iterable),
-                policy=WaitForThreadsPolicy.STOP_ON_FAILURE,
             )
 
         return (

@@ -79,7 +79,7 @@ public class UserTaskTest {
             UserTaskOutput formOutput =
                     entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
 
-            entrypointThread.releaseToGroupOnDeadline(formOutput, 4);
+            entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
@@ -94,7 +94,7 @@ public class UserTaskTest {
 
             UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null);
 
-            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 4);
+            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 1);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 

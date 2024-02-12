@@ -212,12 +212,7 @@ public class NodeModel extends LHSerializable<Node> {
             }
         }
 
-        try {
-            getSubNode().validate();
-        } catch (LHApiException exn) {
-            // Decorate the exception with contextual info
-            throw exn.getCopyWithPrefix("Sub Node");
-        }
+        getSubNode().validate();
     }
 
     public SubNode<?> getSubNode() {

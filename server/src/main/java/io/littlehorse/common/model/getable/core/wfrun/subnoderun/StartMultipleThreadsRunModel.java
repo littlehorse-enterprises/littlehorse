@@ -56,7 +56,6 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
 
     @Override
     public boolean advanceIfPossible(Date time) {
-        log.warn("Shouldn't get here");
         return false;
     }
 

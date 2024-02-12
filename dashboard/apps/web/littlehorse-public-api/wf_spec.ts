@@ -10,10 +10,6 @@ import {
   variableTypeFromJSON,
   variableTypeToJSON,
   variableTypeToNumber,
-  WaitForThreadsPolicy,
-  waitForThreadsPolicyFromJSON,
-  waitForThreadsPolicyToJSON,
-  waitForThreadsPolicyToNumber,
 } from "./common_enums";
 import {
   Comparator,
@@ -251,17 +247,17 @@ export function failureHandlerDef_LHFailureTypeToNumber(object: FailureHandlerDe
 }
 
 export interface WaitForThreadsNode {
-  /**
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   */
-  threads: WaitForThreadsNode_ThreadToWaitFor[];
+  threads?: WaitForThreadsNode_ThreadsToWaitFor | undefined;
   threadList?: VariableAssignment | undefined;
-  policy: WaitForThreadsPolicy;
+  perThreadFailureHandlers: FailureHandlerDef[];
 }
 
 export interface WaitForThreadsNode_ThreadToWaitFor {
   threadRunNumber: VariableAssignment | undefined;
+}
+
+export interface WaitForThreadsNode_ThreadsToWaitFor {
+  threads: WaitForThreadsNode_ThreadToWaitFor[];
 }
 
 export interface ExternalEventNode {
@@ -1867,19 +1863,19 @@ export const FailureHandlerDef = {
 };
 
 function createBaseWaitForThreadsNode(): WaitForThreadsNode {
-  return { threads: [], threadList: undefined, policy: WaitForThreadsPolicy.STOP_ON_FAILURE };
+  return { threads: undefined, threadList: undefined, perThreadFailureHandlers: [] };
 }
 
 export const WaitForThreadsNode = {
   encode(message: WaitForThreadsNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.threads) {
-      WaitForThreadsNode_ThreadToWaitFor.encode(v!, writer.uint32(10).fork()).ldelim();
+    if (message.threads !== undefined) {
+      WaitForThreadsNode_ThreadsToWaitFor.encode(message.threads, writer.uint32(10).fork()).ldelim();
     }
     if (message.threadList !== undefined) {
-      VariableAssignment.encode(message.threadList, writer.uint32(26).fork()).ldelim();
+      VariableAssignment.encode(message.threadList, writer.uint32(18).fork()).ldelim();
     }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      writer.uint32(16).int32(waitForThreadsPolicyToNumber(message.policy));
+    for (const v of message.perThreadFailureHandlers) {
+      FailureHandlerDef.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1896,21 +1892,21 @@ export const WaitForThreadsNode = {
             break;
           }
 
-          message.threads.push(WaitForThreadsNode_ThreadToWaitFor.decode(reader, reader.uint32()));
+          message.threads = WaitForThreadsNode_ThreadsToWaitFor.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.threadList = VariableAssignment.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.threadList = VariableAssignment.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.policy = waitForThreadsPolicyFromJSON(reader.int32());
+          message.perThreadFailureHandlers.push(FailureHandlerDef.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1923,24 +1919,24 @@ export const WaitForThreadsNode = {
 
   fromJSON(object: any): WaitForThreadsNode {
     return {
-      threads: globalThis.Array.isArray(object?.threads)
-        ? object.threads.map((e: any) => WaitForThreadsNode_ThreadToWaitFor.fromJSON(e))
-        : [],
+      threads: isSet(object.threads) ? WaitForThreadsNode_ThreadsToWaitFor.fromJSON(object.threads) : undefined,
       threadList: isSet(object.threadList) ? VariableAssignment.fromJSON(object.threadList) : undefined,
-      policy: isSet(object.policy) ? waitForThreadsPolicyFromJSON(object.policy) : WaitForThreadsPolicy.STOP_ON_FAILURE,
+      perThreadFailureHandlers: globalThis.Array.isArray(object?.perThreadFailureHandlers)
+        ? object.perThreadFailureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: WaitForThreadsNode): unknown {
     const obj: any = {};
-    if (message.threads?.length) {
-      obj.threads = message.threads.map((e) => WaitForThreadsNode_ThreadToWaitFor.toJSON(e));
+    if (message.threads !== undefined) {
+      obj.threads = WaitForThreadsNode_ThreadsToWaitFor.toJSON(message.threads);
     }
     if (message.threadList !== undefined) {
       obj.threadList = VariableAssignment.toJSON(message.threadList);
     }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      obj.policy = waitForThreadsPolicyToJSON(message.policy);
+    if (message.perThreadFailureHandlers?.length) {
+      obj.perThreadFailureHandlers = message.perThreadFailureHandlers.map((e) => FailureHandlerDef.toJSON(e));
     }
     return obj;
   },
@@ -1950,11 +1946,14 @@ export const WaitForThreadsNode = {
   },
   fromPartial<I extends Exact<DeepPartial<WaitForThreadsNode>, I>>(object: I): WaitForThreadsNode {
     const message = createBaseWaitForThreadsNode();
-    message.threads = object.threads?.map((e) => WaitForThreadsNode_ThreadToWaitFor.fromPartial(e)) || [];
+    message.threads = (object.threads !== undefined && object.threads !== null)
+      ? WaitForThreadsNode_ThreadsToWaitFor.fromPartial(object.threads)
+      : undefined;
     message.threadList = (object.threadList !== undefined && object.threadList !== null)
       ? VariableAssignment.fromPartial(object.threadList)
       : undefined;
-    message.policy = object.policy ?? WaitForThreadsPolicy.STOP_ON_FAILURE;
+    message.perThreadFailureHandlers = object.perThreadFailureHandlers?.map((e) => FailureHandlerDef.fromPartial(e)) ||
+      [];
     return message;
   },
 };
@@ -2020,6 +2019,71 @@ export const WaitForThreadsNode_ThreadToWaitFor = {
     message.threadRunNumber = (object.threadRunNumber !== undefined && object.threadRunNumber !== null)
       ? VariableAssignment.fromPartial(object.threadRunNumber)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseWaitForThreadsNode_ThreadsToWaitFor(): WaitForThreadsNode_ThreadsToWaitFor {
+  return { threads: [] };
+}
+
+export const WaitForThreadsNode_ThreadsToWaitFor = {
+  encode(message: WaitForThreadsNode_ThreadsToWaitFor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.threads) {
+      WaitForThreadsNode_ThreadToWaitFor.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WaitForThreadsNode_ThreadsToWaitFor {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWaitForThreadsNode_ThreadsToWaitFor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.threads.push(WaitForThreadsNode_ThreadToWaitFor.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WaitForThreadsNode_ThreadsToWaitFor {
+    return {
+      threads: globalThis.Array.isArray(object?.threads)
+        ? object.threads.map((e: any) => WaitForThreadsNode_ThreadToWaitFor.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: WaitForThreadsNode_ThreadsToWaitFor): unknown {
+    const obj: any = {};
+    if (message.threads?.length) {
+      obj.threads = message.threads.map((e) => WaitForThreadsNode_ThreadToWaitFor.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WaitForThreadsNode_ThreadsToWaitFor>, I>>(
+    base?: I,
+  ): WaitForThreadsNode_ThreadsToWaitFor {
+    return WaitForThreadsNode_ThreadsToWaitFor.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WaitForThreadsNode_ThreadsToWaitFor>, I>>(
+    object: I,
+  ): WaitForThreadsNode_ThreadsToWaitFor {
+    const message = createBaseWaitForThreadsNode_ThreadsToWaitFor();
+    message.threads = object.threads?.map((e) => WaitForThreadsNode_ThreadToWaitFor.fromPartial(e)) || [];
     return message;
   },
 };

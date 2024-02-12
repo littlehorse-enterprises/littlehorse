@@ -41,10 +41,9 @@ public final class CommonEnums {
       "\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027\n\023USER_TASK_" +
       "CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014TASK_FAILURE" +
       "\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ERROR\020\007\022\022\n\016INT" +
-      "ERNAL_ERROR\020\010*+\n\024WaitForThreadsPolicy\022\023\n" +
-      "\017STOP_ON_FAILURE\020\000BG\n\037io.littlehorse.sdk" +
-      ".common.protoP\001Z\007.;model\252\002\030LittleHorse.C" +
-      "ommon.Protob\006proto3"
+      "ERNAL_ERROR\020\010BG\n\037io.littlehorse.sdk.comm" +
+      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
+      ".Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
