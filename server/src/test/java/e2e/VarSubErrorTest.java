@@ -5,10 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TaskAttempt;
+import io.littlehorse.sdk.common.proto.TaskAttempt.ResultCase;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -17,6 +24,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -68,6 +76,107 @@ public class VarSubErrorTest {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.NOT_FOUND;
                 });
+
+        // Finally, we are going to test that RunWf throws an error when we provide the wrong types.
+        assertThatThrownBy(() -> {
+                    client.runWf(RunWfRequest.newBuilder()
+                            .setWfSpecName("var-type-validations")
+                            .setId(wfRunId)
+                            .putVariables("input-int", LHLibUtil.objToVarVal("not-an-int"))
+                            .build());
+                })
+                .matches(exn -> {
+                    assertThat(exn).isInstanceOf(StatusRuntimeException.class);
+                    StatusRuntimeException sre = (StatusRuntimeException) exn;
+                    assertThat(sre.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
+
+                    return sre.getMessage().toLowerCase().contains("input-int");
+                });
+    }
+
+    @Test
+    void shouldFindVarSubErrorOnFirstNodeRun() {
+        verifier.prepareRun(
+                        varTypeValidationsWf,
+                        Arg.of("input-int", 123),
+                        Arg.of("input-json", Map.of("int", "notanint", "str", "yod")))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nr -> {
+                    assertThat(nr.getFailuresCount()).isEqualTo(1);
+                    Failure failure = nr.getFailures(0);
+                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
+                })
+                .start();
+    }
+
+    @Test
+    void shouldThrowVarSubErrorWhenKeyMissingFromJsonObj() {
+        verifier.prepareRun(varTypeValidationsWf, Arg.of("input-int", 123), Arg.of("input-json", Map.of("str", "yoda")))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
+                    Failure failure = nodeRun.getFailures(0);
+                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
+                    assertThat(failure.getMessage()).contains("$.int");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldBeAbleToPassNullAsIntIntoTaskRunAndTaskRunShouldFail() {
+        Map<String, String> jsonStuff = new HashMap<>();
+        jsonStuff.put("str", "my-str");
+        jsonStuff.put("int", null);
+
+        verifier.prepareRun(varTypeValidationsWf, Arg.of("input-int", 123), Arg.of("input-json", jsonStuff))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyTaskRun(0, 1, taskRun -> {
+                    assertThat(taskRun.getStatus()).isEqualTo(TaskStatus.TASK_FAILED);
+
+                    assertThat(taskRun.getInputVariables(0).getValue().getValueCase())
+                            .isEqualTo(ValueCase.VALUE_NOT_SET);
+                    TaskAttempt attempt = taskRun.getAttempts(0);
+                    assertThat(attempt.getResultCase()).isEqualTo(ResultCase.ERROR);
+                })
+                .start();
+    }
+
+    @Test
+    void shouldNotCastStuffToString() {
+        verifier.prepareRun(
+                        varTypeValidationsWf,
+                        Arg.of("input-int", 123),
+                        Arg.of("input-json", Map.of("int", 1234, "string", 5432)))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRuns(0).getCurrentNodePosition()).isEqualTo(3);
+                })
+                .thenVerifyNodeRun(0, 3, nodeRun -> {
+                    assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
+                    Failure failure = nodeRun.getFailures(0);
+                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
+                    assertThat(failure.getMessage()).contains("STR");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldNotCastDoubleToInt() {
+        verifier.prepareRun(
+                        varTypeValidationsWf,
+                        Arg.of("input-int", 123),
+                        Arg.of("input-json", Map.of("int", 12.3, "string", 5432)))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRuns(0).getCurrentNodePosition()).isEqualTo(1);
+                })
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
+                    Failure failure = nodeRun.getFailures(0);
+                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
+                    assertThat(failure.getMessage()).contains("DOUBLE");
+                })
+                .start();
     }
 
     /*
