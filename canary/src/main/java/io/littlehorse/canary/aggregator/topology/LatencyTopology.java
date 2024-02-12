@@ -7,46 +7,40 @@ import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.proto.MetricKey;
 import java.time.Duration;
 import java.util.List;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.WindowStore;
 
+@Getter
 @Slf4j
 public class LatencyTopology {
 
-    public static final String LATENCY_METRICS_STORE = "latency-metrics";
+    private final KStream<MetricKey, Double> stream;
 
-    public LatencyTopology(final KStream<BeatKey, Beat> metricStream) {
-        metricStream
+    public LatencyTopology(
+            final KStream<BeatKey, Beat> mainStream, final TimeWindows windows, final Duration storeRetention) {
+        stream = mainStream
                 .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
                 // reset aggregator every minute
-                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
+                .windowedBy(windows)
+                // calculate average
                 .aggregate(
                         () -> AverageAggregator.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as("latency-windows")
-                                .withKeySerde(ProtobufSerdes.BeatKey())
-                                .withValueSerde(ProtobufSerdes.AverageAggregator()))
-                .toStream()
-                // peek aggregate
-                .map((key, value) -> KeyValue.pair(key.key(), value))
-                .peek((key, value) -> peekAggregate(key, value))
+                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>with(
+                                        ProtobufSerdes.BeatKey(), ProtobufSerdes.AverageAggregator())
+                                .withRetention(storeRetention))
+                .toStream((key, value) -> key.key())
+                // debug peek aggregate
+                .peek(LatencyTopology::peekAggregate)
                 // extract metrics
-                .flatMap((key, value) -> makeMetrics(key, value))
-                // create store
-                .toTable(
-                        Named.as(LATENCY_METRICS_STORE),
-                        Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as(LATENCY_METRICS_STORE)
-                                .withKeySerde(ProtobufSerdes.MetricKey())
-                                .withValueSerde(Serdes.Double()));
+                .flatMap(LatencyTopology::makeMetrics);
     }
 
     private static List<KeyValue<MetricKey, Double>> makeMetrics(final BeatKey key, final AverageAggregator value) {
@@ -80,9 +74,7 @@ public class LatencyTopology {
         final int count = aggregate.getCount() + 1;
         final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
         final double avg = sum / count;
-        final double max = value.getLatencyBeat().getLatency() > aggregate.getMax()
-                ? value.getLatencyBeat().getLatency()
-                : aggregate.getMax();
+        final double max = Math.max(value.getLatencyBeat().getLatency(), aggregate.getMax());
 
         return AverageAggregator.newBuilder()
                 .setCount(count)

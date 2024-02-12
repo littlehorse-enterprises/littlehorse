@@ -26,6 +26,7 @@ message LatencyBeatKey {
 
 message TaskRunBeatKey {
   string idempotency_key = 1;
+  int32 attempt_number = 2;
 }
 
 ////////////////////////////////////////////////
@@ -45,7 +46,7 @@ message LatencyBeat {
 }
 
 message TaskRunBeat {
-  int32 attempt_number = 1;
+  google.protobuf.Timestamp scheduled_time = 2;
 }
 
 ////////////////////////////////////////////////
