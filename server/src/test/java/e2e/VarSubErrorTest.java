@@ -19,7 +19,6 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -62,15 +61,13 @@ public class VarSubErrorTest {
 
         // Next, we need to make sure the WfRun wasn't actually saved since it had invalid variables.
         assertThatThrownBy(() -> {
-            client.getWfRun(WfRunId.newBuilder()
-                    .setId(wfRunId)
-                    .build());
-        })
-        .matches(exn -> {
-            assertThat(exn).isInstanceOf(StatusRuntimeException.class);
-            StatusRuntimeException sre = (StatusRuntimeException) exn;
-            return sre.getStatus().getCode() == Code.NOT_FOUND;
-        });
+                    client.getWfRun(WfRunId.newBuilder().setId(wfRunId).build());
+                })
+                .matches(exn -> {
+                    assertThat(exn).isInstanceOf(StatusRuntimeException.class);
+                    StatusRuntimeException sre = (StatusRuntimeException) exn;
+                    return sre.getStatus().getCode() == Code.NOT_FOUND;
+                });
     }
 
     /*
