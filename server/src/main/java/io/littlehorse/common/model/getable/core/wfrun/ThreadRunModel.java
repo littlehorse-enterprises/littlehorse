@@ -513,14 +513,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // This means we just need to wait until advance() is called again
             // after Thread Resumption
 
-            log.info("Tried to advance HALTED thread. Doing nothing.");
+            log.trace("Tried to advance HALTED thread. Doing nothing.");
             return false;
         } else if (status == LHStatus.HALTING) {
-            log.info("Tried to advance HALTING thread, checking if halted yet.");
+            log.trace("Tried to advance HALTING thread, checking if halted yet.");
 
             if (currentNodeRunModel.canBeInterrupted()) {
                 setStatus(LHStatus.HALTED);
-                log.info("Moving thread to HALTED");
+                log.trace("Moving thread to HALTED");
                 return true;
             } else {
                 return false;
