@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A ThreadRun is a running thread of execution within a WfRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadRun}
  */
 public final class ThreadRun extends
@@ -49,6 +53,12 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -57,6 +67,12 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
@@ -65,6 +81,12 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   @java.lang.Override
@@ -75,6 +97,14 @@ private static final long serialVersionUID = 0L;
   public static final int NUMBER_FIELD_NUMBER = 2;
   private int number_ = 0;
   /**
+   * <pre>
+   * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+   * the chronological ordering of when the ThreadRun's were created. If you have not
+   * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+   * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+   * list.
+   * </pre>
+   *
    * <code>int32 number = 2;</code>
    * @return The number.
    */
@@ -86,6 +116,10 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 3;
   private int status_ = 0;
   /**
+   * <pre>
+   * The status of the ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -93,6 +127,10 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
+   * <pre>
+   * The status of the ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 3;</code>
    * @return The status.
    */
@@ -105,6 +143,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object threadSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec being run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 4;</code>
    * @return The threadSpecName.
    */
@@ -122,6 +164,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec being run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 4;</code>
    * @return The bytes for threadSpecName.
    */
@@ -143,6 +189,10 @@ private static final long serialVersionUID = 0L;
   public static final int START_TIME_FIELD_NUMBER = 5;
   private com.google.protobuf.Timestamp startTime_;
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    * @return Whether the startTime field is set.
    */
@@ -151,6 +201,10 @@ private static final long serialVersionUID = 0L;
     return startTime_ != null;
   }
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    * @return The startTime.
    */
@@ -159,6 +213,10 @@ private static final long serialVersionUID = 0L;
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    */
   @java.lang.Override
@@ -169,6 +227,10 @@ private static final long serialVersionUID = 0L;
   public static final int END_TIME_FIELD_NUMBER = 6;
   private com.google.protobuf.Timestamp endTime_;
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    * @return Whether the endTime field is set.
    */
@@ -177,6 +239,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    * @return The endTime.
    */
@@ -185,6 +251,10 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    */
   @java.lang.Override
@@ -196,6 +266,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object errorMessage_ = "";
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return Whether the errorMessage field is set.
    */
@@ -204,6 +278,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return The errorMessage.
    */
@@ -221,6 +299,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return The bytes for errorMessage.
    */
@@ -243,6 +325,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private com.google.protobuf.Internal.IntList childThreadIds_;
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @return A list containing the childThreadIds.
    */
@@ -252,6 +338,10 @@ private static final long serialVersionUID = 0L;
     return childThreadIds_;
   }
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @return The count of childThreadIds.
    */
@@ -259,6 +349,10 @@ private static final long serialVersionUID = 0L;
     return childThreadIds_.size();
   }
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @param index The index of the element to return.
    * @return The childThreadIds at the given index.
@@ -271,6 +365,10 @@ private static final long serialVersionUID = 0L;
   public static final int PARENT_THREAD_ID_FIELD_NUMBER = 9;
   private int parentThreadId_ = 0;
   /**
+   * <pre>
+   * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+   * </pre>
+   *
    * <code>optional int32 parent_thread_id = 9;</code>
    * @return Whether the parentThreadId field is set.
    */
@@ -279,6 +377,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+   * </pre>
+   *
    * <code>optional int32 parent_thread_id = 9;</code>
    * @return The parentThreadId.
    */
@@ -291,6 +393,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> haltReasons_;
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   @java.lang.Override
@@ -298,6 +406,12 @@ private static final long serialVersionUID = 0L;
     return haltReasons_;
   }
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   @java.lang.Override
@@ -306,6 +420,12 @@ private static final long serialVersionUID = 0L;
     return haltReasons_;
   }
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   @java.lang.Override
@@ -313,6 +433,12 @@ private static final long serialVersionUID = 0L;
     return haltReasons_.size();
   }
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   @java.lang.Override
@@ -320,6 +446,12 @@ private static final long serialVersionUID = 0L;
     return haltReasons_.get(index);
   }
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   @java.lang.Override
@@ -331,6 +463,11 @@ private static final long serialVersionUID = 0L;
   public static final int INTERRUPT_TRIGGER_ID_FIELD_NUMBER = 11;
   private io.littlehorse.sdk.common.proto.ExternalEventId interruptTriggerId_;
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    * @return Whether the interruptTriggerId field is set.
    */
@@ -339,6 +476,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    * @return The interruptTriggerId.
    */
@@ -347,6 +489,11 @@ private static final long serialVersionUID = 0L;
     return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : interruptTriggerId_;
   }
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    */
   @java.lang.Override
@@ -357,6 +504,11 @@ private static final long serialVersionUID = 0L;
   public static final int FAILURE_BEING_HANDLED_FIELD_NUMBER = 12;
   private io.littlehorse.sdk.common.proto.FailureBeingHandled failureBeingHandled_;
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    * @return Whether the failureBeingHandled field is set.
    */
@@ -365,6 +517,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    * @return The failureBeingHandled.
    */
@@ -373,6 +530,11 @@ private static final long serialVersionUID = 0L;
     return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance() : failureBeingHandled_;
   }
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    */
   @java.lang.Override
@@ -383,6 +545,11 @@ private static final long serialVersionUID = 0L;
   public static final int CURRENT_NODE_POSITION_FIELD_NUMBER = 13;
   private int currentNodePosition_ = 0;
   /**
+   * <pre>
+   * This is the current `position` of the current NodeRun being run. This is an
+   * auto-incremented field that gets incremented every time we run a new NodeRun.
+   * </pre>
+   *
    * <code>int32 current_node_position = 13;</code>
    * @return The currentNodePosition.
    */
@@ -395,6 +562,16 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private com.google.protobuf.Internal.IntList handledFailedChildren_;
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @return A list containing the handledFailedChildren.
    */
@@ -404,6 +581,16 @@ private static final long serialVersionUID = 0L;
     return handledFailedChildren_;
   }
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @return The count of handledFailedChildren.
    */
@@ -411,6 +598,16 @@ private static final long serialVersionUID = 0L;
     return handledFailedChildren_.size();
   }
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @param index The index of the element to return.
    * @return The handledFailedChildren at the given index.
@@ -423,6 +620,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 15;
   private int type_ = 0;
   /**
+   * <pre>
+   * The Type of this ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadType type = 15;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -430,6 +631,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * The Type of this ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadType type = 15;</code>
    * @return The type.
    */
@@ -816,6 +1021,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A ThreadRun is a running thread of execution within a WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadRun}
    */
   public static final class Builder extends
@@ -1304,6 +1513,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -1311,6 +1526,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return The wfSpecId.
      */
@@ -1322,6 +1543,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1338,6 +1565,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(
@@ -1352,6 +1585,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1371,6 +1610,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder clearWfSpecId() {
@@ -1384,6 +1629,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -1392,6 +1643,12 @@ private static final long serialVersionUID = 0L;
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -1403,6 +1660,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The current WfSpecId of this ThreadRun. This must be set explicitly because
+     * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+     * have different WfSpec versions.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1421,6 +1684,14 @@ private static final long serialVersionUID = 0L;
 
     private int number_ ;
     /**
+     * <pre>
+     * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+     * the chronological ordering of when the ThreadRun's were created. If you have not
+     * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+     * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+     * list.
+     * </pre>
+     *
      * <code>int32 number = 2;</code>
      * @return The number.
      */
@@ -1429,6 +1700,14 @@ private static final long serialVersionUID = 0L;
       return number_;
     }
     /**
+     * <pre>
+     * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+     * the chronological ordering of when the ThreadRun's were created. If you have not
+     * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+     * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+     * list.
+     * </pre>
+     *
      * <code>int32 number = 2;</code>
      * @param value The number to set.
      * @return This builder for chaining.
@@ -1441,6 +1720,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+     * the chronological ordering of when the ThreadRun's were created. If you have not
+     * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+     * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+     * list.
+     * </pre>
+     *
      * <code>int32 number = 2;</code>
      * @return This builder for chaining.
      */
@@ -1453,6 +1740,10 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
+     * <pre>
+     * The status of the ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 3;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1460,6 +1751,10 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
+     * <pre>
+     * The status of the ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 3;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1471,6 +1766,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of the ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 3;</code>
      * @return The status.
      */
@@ -1480,6 +1779,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The status of the ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 3;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1494,6 +1797,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The status of the ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 3;</code>
      * @return This builder for chaining.
      */
@@ -1506,6 +1813,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object threadSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec being run.
+     * </pre>
+     *
      * <code>string thread_spec_name = 4;</code>
      * @return The threadSpecName.
      */
@@ -1522,6 +1833,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec being run.
+     * </pre>
+     *
      * <code>string thread_spec_name = 4;</code>
      * @return The bytes for threadSpecName.
      */
@@ -1539,6 +1854,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec being run.
+     * </pre>
+     *
      * <code>string thread_spec_name = 4;</code>
      * @param value The threadSpecName to set.
      * @return This builder for chaining.
@@ -1552,6 +1871,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec being run.
+     * </pre>
+     *
      * <code>string thread_spec_name = 4;</code>
      * @return This builder for chaining.
      */
@@ -1562,6 +1885,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec being run.
+     * </pre>
+     *
      * <code>string thread_spec_name = 4;</code>
      * @param value The bytes for threadSpecName to set.
      * @return This builder for chaining.
@@ -1580,6 +1907,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      * @return Whether the startTime field is set.
      */
@@ -1587,6 +1918,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      * @return The startTime.
      */
@@ -1598,6 +1933,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public Builder setStartTime(com.google.protobuf.Timestamp value) {
@@ -1614,6 +1953,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public Builder setStartTime(
@@ -1628,6 +1971,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
@@ -1647,6 +1994,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public Builder clearStartTime() {
@@ -1660,6 +2011,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
@@ -1668,6 +2023,10 @@ private static final long serialVersionUID = 0L;
       return getStartTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
@@ -1679,6 +2038,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ThreadRun was started.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp start_time = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1699,6 +2062,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      * @return Whether the endTime field is set.
      */
@@ -1706,6 +2073,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      * @return The endTime.
      */
@@ -1717,6 +2088,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public Builder setEndTime(com.google.protobuf.Timestamp value) {
@@ -1733,6 +2108,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public Builder setEndTime(
@@ -1747,6 +2126,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
@@ -1766,6 +2149,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public Builder clearEndTime() {
@@ -1779,6 +2166,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
@@ -1787,6 +2178,10 @@ private static final long serialVersionUID = 0L;
       return getEndTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
@@ -1798,6 +2193,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time the ThreadRun was completed or failed. Unset if still active.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1816,6 +2215,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object errorMessage_ = "";
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @return Whether the errorMessage field is set.
      */
@@ -1823,6 +2226,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @return The errorMessage.
      */
@@ -1839,6 +2246,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @return The bytes for errorMessage.
      */
@@ -1856,6 +2267,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @param value The errorMessage to set.
      * @return This builder for chaining.
@@ -1869,6 +2284,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @return This builder for chaining.
      */
@@ -1879,6 +2298,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human-readable error message detailing what went wrong in the case of a failure.
+     * </pre>
+     *
      * <code>optional string error_message = 7;</code>
      * @param value The bytes for errorMessage to set.
      * @return This builder for chaining.
@@ -1901,6 +2324,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @return A list containing the childThreadIds.
      */
@@ -1910,6 +2337,10 @@ private static final long serialVersionUID = 0L;
                java.util.Collections.unmodifiableList(childThreadIds_) : childThreadIds_;
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @return The count of childThreadIds.
      */
@@ -1917,6 +2348,10 @@ private static final long serialVersionUID = 0L;
       return childThreadIds_.size();
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @param index The index of the element to return.
      * @return The childThreadIds at the given index.
@@ -1925,6 +2360,10 @@ private static final long serialVersionUID = 0L;
       return childThreadIds_.getInt(index);
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @param index The index to set the value at.
      * @param value The childThreadIds to set.
@@ -1939,6 +2378,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @param value The childThreadIds to add.
      * @return This builder for chaining.
@@ -1951,6 +2394,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @param values The childThreadIds to add.
      * @return This builder for chaining.
@@ -1964,6 +2411,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of thread_run_number's for all child thread_runs.
+     * </pre>
+     *
      * <code>repeated int32 child_thread_ids = 8;</code>
      * @return This builder for chaining.
      */
@@ -1976,6 +2427,10 @@ private static final long serialVersionUID = 0L;
 
     private int parentThreadId_ ;
     /**
+     * <pre>
+     * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+     * </pre>
+     *
      * <code>optional int32 parent_thread_id = 9;</code>
      * @return Whether the parentThreadId field is set.
      */
@@ -1984,6 +2439,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
+     * <pre>
+     * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+     * </pre>
+     *
      * <code>optional int32 parent_thread_id = 9;</code>
      * @return The parentThreadId.
      */
@@ -1992,6 +2451,10 @@ private static final long serialVersionUID = 0L;
       return parentThreadId_;
     }
     /**
+     * <pre>
+     * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+     * </pre>
+     *
      * <code>optional int32 parent_thread_id = 9;</code>
      * @param value The parentThreadId to set.
      * @return This builder for chaining.
@@ -2004,6 +2467,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+     * </pre>
+     *
      * <code>optional int32 parent_thread_id = 9;</code>
      * @return This builder for chaining.
      */
@@ -2027,6 +2494,12 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ThreadHaltReason, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> haltReasonsBuilder_;
 
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> getHaltReasonsList() {
@@ -2037,6 +2510,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public int getHaltReasonsCount() {
@@ -2047,6 +2526,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadHaltReason getHaltReasons(int index) {
@@ -2057,6 +2542,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder setHaltReasons(
@@ -2074,6 +2565,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder setHaltReasons(
@@ -2088,6 +2585,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder addHaltReasons(io.littlehorse.sdk.common.proto.ThreadHaltReason value) {
@@ -2104,6 +2607,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder addHaltReasons(
@@ -2121,6 +2630,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder addHaltReasons(
@@ -2135,6 +2650,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder addHaltReasons(
@@ -2149,6 +2670,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder addAllHaltReasons(
@@ -2164,6 +2691,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder clearHaltReasons() {
@@ -2177,6 +2710,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public Builder removeHaltReasons(int index) {
@@ -2190,6 +2729,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder getHaltReasonsBuilder(
@@ -2197,6 +2742,12 @@ private static final long serialVersionUID = 0L;
       return getHaltReasonsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder getHaltReasonsOrBuilder(
@@ -2207,6 +2758,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
@@ -2218,6 +2775,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder addHaltReasonsBuilder() {
@@ -2225,6 +2788,12 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.ThreadHaltReason.getDefaultInstance());
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder addHaltReasonsBuilder(
@@ -2233,6 +2802,12 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.ThreadHaltReason.getDefaultInstance());
     }
     /**
+     * <pre>
+     * If the ThreadRun is HALTED, this contains a list of every reason for which the
+     * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+     * then the ThreadRun will return to the RUNNING state.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder> 
@@ -2258,6 +2833,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> interruptTriggerIdBuilder_;
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      * @return Whether the interruptTriggerId field is set.
      */
@@ -2265,6 +2845,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000400) != 0);
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      * @return The interruptTriggerId.
      */
@@ -2276,6 +2861,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public Builder setInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -2292,6 +2882,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public Builder setInterruptTriggerId(
@@ -2306,6 +2901,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public Builder mergeInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
@@ -2325,6 +2925,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public Builder clearInterruptTriggerId() {
@@ -2338,6 +2943,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getInterruptTriggerIdBuilder() {
@@ -2346,6 +2956,11 @@ private static final long serialVersionUID = 0L;
       return getInterruptTriggerIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getInterruptTriggerIdOrBuilder() {
@@ -2357,6 +2972,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+     * ExternalEvent that caused the Interrupt.
+     * </pre>
+     *
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2377,6 +2997,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.FailureBeingHandled, io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder> failureBeingHandledBuilder_;
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      * @return Whether the failureBeingHandled field is set.
      */
@@ -2384,6 +3009,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000800) != 0);
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      * @return The failureBeingHandled.
      */
@@ -2395,6 +3025,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public Builder setFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandled value) {
@@ -2411,6 +3046,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public Builder setFailureBeingHandled(
@@ -2425,6 +3065,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public Builder mergeFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandled value) {
@@ -2444,6 +3089,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public Builder clearFailureBeingHandled() {
@@ -2457,6 +3107,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder getFailureBeingHandledBuilder() {
@@ -2465,6 +3120,11 @@ private static final long serialVersionUID = 0L;
       return getFailureBeingHandledFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder getFailureBeingHandledOrBuilder() {
@@ -2476,6 +3136,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+     * that is being handled by this ThreadRun.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2494,6 +3159,11 @@ private static final long serialVersionUID = 0L;
 
     private int currentNodePosition_ ;
     /**
+     * <pre>
+     * This is the current `position` of the current NodeRun being run. This is an
+     * auto-incremented field that gets incremented every time we run a new NodeRun.
+     * </pre>
+     *
      * <code>int32 current_node_position = 13;</code>
      * @return The currentNodePosition.
      */
@@ -2502,6 +3172,11 @@ private static final long serialVersionUID = 0L;
       return currentNodePosition_;
     }
     /**
+     * <pre>
+     * This is the current `position` of the current NodeRun being run. This is an
+     * auto-incremented field that gets incremented every time we run a new NodeRun.
+     * </pre>
+     *
      * <code>int32 current_node_position = 13;</code>
      * @param value The currentNodePosition to set.
      * @return This builder for chaining.
@@ -2514,6 +3189,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * This is the current `position` of the current NodeRun being run. This is an
+     * auto-incremented field that gets incremented every time we run a new NodeRun.
+     * </pre>
+     *
      * <code>int32 current_node_position = 13;</code>
      * @return This builder for chaining.
      */
@@ -2532,6 +3212,16 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @return A list containing the handledFailedChildren.
      */
@@ -2541,6 +3231,16 @@ private static final long serialVersionUID = 0L;
                java.util.Collections.unmodifiableList(handledFailedChildren_) : handledFailedChildren_;
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @return The count of handledFailedChildren.
      */
@@ -2548,6 +3248,16 @@ private static final long serialVersionUID = 0L;
       return handledFailedChildren_.size();
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @param index The index of the element to return.
      * @return The handledFailedChildren at the given index.
@@ -2556,6 +3266,16 @@ private static final long serialVersionUID = 0L;
       return handledFailedChildren_.getInt(index);
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @param index The index to set the value at.
      * @param value The handledFailedChildren to set.
@@ -2570,6 +3290,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @param value The handledFailedChildren to add.
      * @return This builder for chaining.
@@ -2582,6 +3312,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @param values The handledFailedChildren to add.
      * @return This builder for chaining.
@@ -2595,6 +3335,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+     * Failure Handler.
+     *
+     * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+     * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+     * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+     * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+     * </pre>
+     *
      * <code>repeated int32 handled_failed_children = 14;</code>
      * @return This builder for chaining.
      */
@@ -2607,6 +3357,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * The Type of this ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadType type = 15;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -2614,6 +3368,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * The Type of this ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadType type = 15;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -2625,6 +3383,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Type of this ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadType type = 15;</code>
      * @return The type.
      */
@@ -2634,6 +3396,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.ThreadType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The Type of this ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadType type = 15;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -2648,6 +3414,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Type of this ThreadRun.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadType type = 15;</code>
      * @return This builder for chaining.
      */

@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A UserTaskRun is a running instance of a UserTaskDef. It is created when a
+ * ThreadRun arrives at a Node of type `USER_TASK`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskRun}
  */
 public final class UserTaskRun extends
@@ -59,6 +64,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.UserTaskRunId id_;
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -67,6 +76,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    * @return The id.
    */
@@ -75,6 +88,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunId id = 1;</code>
    */
   @java.lang.Override
@@ -85,6 +102,10 @@ private static final long serialVersionUID = 0L;
   public static final int USER_TASK_DEF_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.UserTaskDefId userTaskDefId_;
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    * @return Whether the userTaskDefId field is set.
    */
@@ -93,6 +114,10 @@ private static final long serialVersionUID = 0L;
     return userTaskDefId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    * @return The userTaskDefId.
    */
@@ -101,6 +126,10 @@ private static final long serialVersionUID = 0L;
     return userTaskDefId_ == null ? io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance() : userTaskDefId_;
   }
   /**
+   * <pre>
+   * The ID of the UserTaskDef that this UserTaskRun comes from.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
    */
   @java.lang.Override
@@ -112,6 +141,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userGroup_ = "";
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return Whether the userGroup field is set.
    */
@@ -120,6 +155,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The userGroup.
    */
@@ -137,6 +178,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   * </pre>
+   *
    * <code>optional string user_group = 3;</code>
    * @return The bytes for userGroup.
    */
@@ -159,6 +206,13 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return Whether the userId field is set.
    */
@@ -167,6 +221,13 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The userId.
    */
@@ -184,6 +245,13 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   * </pre>
+   *
    * <code>optional string user_id = 4;</code>
    * @return The bytes for userId.
    */
@@ -229,6 +297,12 @@ private static final long serialVersionUID = 0L;
     return internalGetResults().getMap().size();
   }
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   @java.lang.Override
@@ -246,6 +320,12 @@ private static final long serialVersionUID = 0L;
     return getResultsMap();
   }
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   @java.lang.Override
@@ -253,6 +333,12 @@ private static final long serialVersionUID = 0L;
     return internalGetResults().getMap();
   }
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   @java.lang.Override
@@ -267,6 +353,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   @java.lang.Override
@@ -284,6 +376,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   public static final int STATUS_FIELD_NUMBER = 7;
   private int status_ = 0;
   /**
+   * <pre>
+   * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -291,6 +387,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return status_;
   }
   /**
+   * <pre>
+   * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
    * @return The status.
    */
@@ -303,6 +403,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent> events_;
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
@@ -310,6 +414,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return events_;
   }
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
@@ -318,6 +426,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return events_;
   }
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
@@ -325,6 +437,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return events_.size();
   }
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
@@ -332,6 +448,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return events_.get(index);
   }
   /**
+   * <pre>
+   * A list of events that have happened. Used for auditing information.
+   * </pre>
+   *
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
@@ -344,6 +464,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object notes_ = "";
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return Whether the notes field is set.
    */
@@ -352,6 +479,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return The notes.
    */
@@ -369,6 +503,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
+   * <pre>
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   * </pre>
+   *
    * <code>optional string notes = 9;</code>
    * @return The bytes for notes.
    */
@@ -390,6 +531,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   public static final int SCHEDULED_TIME_FIELD_NUMBER = 10;
   private com.google.protobuf.Timestamp scheduledTime_;
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    * @return Whether the scheduledTime field is set.
    */
@@ -398,6 +543,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return scheduledTime_ != null;
   }
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    * @return The scheduledTime.
    */
@@ -406,6 +555,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return scheduledTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledTime_;
   }
   /**
+   * <pre>
+   * The time that the UserTaskRun was created/scheduled.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
    */
   @java.lang.Override
@@ -417,9 +570,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -431,9 +582,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   }
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -445,9 +594,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   }
   /**
    * <pre>
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * The NodeRun with which the UserTaskRun is associated.
    * </pre>
    *
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -758,6 +905,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * A UserTaskRun is a running instance of a UserTaskDef. It is created when a
+   * ThreadRun arrives at a Node of type `USER_TASK`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskRun}
    */
   public static final class Builder extends
@@ -1154,6 +1306,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -1161,6 +1317,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      * @return The id.
      */
@@ -1172,6 +1332,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -1188,6 +1352,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public Builder setId(
@@ -1202,6 +1370,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
@@ -1221,6 +1393,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public Builder clearId() {
@@ -1234,6 +1410,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId.Builder getIdBuilder() {
@@ -1242,6 +1422,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getIdOrBuilder() {
@@ -1253,6 +1437,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1273,6 +1461,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder> userTaskDefIdBuilder_;
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      * @return Whether the userTaskDefId field is set.
      */
@@ -1280,6 +1472,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      * @return The userTaskDefId.
      */
@@ -1291,6 +1487,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public Builder setUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefId value) {
@@ -1307,6 +1507,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public Builder setUserTaskDefId(
@@ -1321,6 +1525,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public Builder mergeUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefId value) {
@@ -1340,6 +1548,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public Builder clearUserTaskDefId() {
@@ -1353,6 +1565,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDefId.Builder getUserTaskDefIdBuilder() {
@@ -1361,6 +1577,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getUserTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder() {
@@ -1372,6 +1592,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the UserTaskDef that this UserTaskRun comes from.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1390,6 +1614,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object userGroup_ = "";
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return Whether the userGroup field is set.
      */
@@ -1397,6 +1627,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return The userGroup.
      */
@@ -1413,6 +1649,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return The bytes for userGroup.
      */
@@ -1430,6 +1672,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @param value The userGroup to set.
      * @return This builder for chaining.
@@ -1443,6 +1691,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @return This builder for chaining.
      */
@@ -1453,6 +1707,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a group. At least one of user_group or user_id will be set for any given
+     * UserTaskRun.
+     * </pre>
+     *
      * <code>optional string user_group = 3;</code>
      * @param value The bytes for userGroup to set.
      * @return This builder for chaining.
@@ -1469,6 +1729,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object userId_ = "";
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return Whether the userId field is set.
      */
@@ -1476,6 +1743,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return The userId.
      */
@@ -1492,6 +1766,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return The bytes for userId.
      */
@@ -1509,6 +1790,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -1522,6 +1810,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @return This builder for chaining.
      */
@@ -1532,6 +1827,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+     * to a user. At least one of user_group or user_id will be set for any given
+     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+     * UNASSIGNED status.
+     * </pre>
+     *
      * <code>optional string user_id = 4;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.
@@ -1573,6 +1875,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetResults().getMap().size();
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     @java.lang.Override
@@ -1590,6 +1898,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getResultsMap();
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     @java.lang.Override
@@ -1597,6 +1911,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetResults().getMap();
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     @java.lang.Override
@@ -1611,6 +1931,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     @java.lang.Override
@@ -1631,6 +1957,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     public Builder removeResults(
@@ -1650,6 +1982,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetMutableResults().getMutableMap();
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     public Builder putResults(
@@ -1663,6 +2001,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+     * UserTaskDef.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
      */
     public Builder putAllResults(
@@ -1675,6 +2019,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private int status_ = 0;
     /**
+     * <pre>
+     * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1682,6 +2030,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return status_;
     }
     /**
+     * <pre>
+     * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1693,6 +2045,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
      * @return The status.
      */
@@ -1702,6 +2058,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return result == null ? io.littlehorse.sdk.common.proto.UserTaskRunStatus.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1716,6 +2076,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
      * @return This builder for chaining.
      */
@@ -1739,6 +2103,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         io.littlehorse.sdk.common.proto.UserTaskEvent, io.littlehorse.sdk.common.proto.UserTaskEvent.Builder, io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> eventsBuilder_;
 
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent> getEventsList() {
@@ -1749,6 +2117,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public int getEventsCount() {
@@ -1759,6 +2131,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent getEvents(int index) {
@@ -1769,6 +2145,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder setEvents(
@@ -1786,6 +2166,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder setEvents(
@@ -1800,6 +2184,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder addEvents(io.littlehorse.sdk.common.proto.UserTaskEvent value) {
@@ -1816,6 +2204,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder addEvents(
@@ -1833,6 +2225,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder addEvents(
@@ -1847,6 +2243,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder addEvents(
@@ -1861,6 +2261,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder addAllEvents(
@@ -1876,6 +2280,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder clearEvents() {
@@ -1889,6 +2297,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public Builder removeEvents(int index) {
@@ -1902,6 +2314,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent.Builder getEventsBuilder(
@@ -1909,6 +2325,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getEventsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder getEventsOrBuilder(
@@ -1919,6 +2339,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> 
@@ -1930,6 +2354,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent.Builder addEventsBuilder() {
@@ -1937,6 +2365,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent.Builder addEventsBuilder(
@@ -1945,6 +2377,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           index, io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of events that have happened. Used for auditing information.
+     * </pre>
+     *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent.Builder> 
@@ -1968,6 +2404,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object notes_ = "";
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @return Whether the notes field is set.
      */
@@ -1975,6 +2418,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @return The notes.
      */
@@ -1991,6 +2441,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @return The bytes for notes.
      */
@@ -2008,6 +2465,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @param value The notes to set.
      * @return This builder for chaining.
@@ -2021,6 +2485,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @return This builder for chaining.
      */
@@ -2031,6 +2502,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+     * are set by the WfSpec based on variables inside the specific `WfRun` and are
+     * intended to be displayed on the User Task Manager application. They do not
+     * affect WfRun execution.
+     * </pre>
+     *
      * <code>optional string notes = 9;</code>
      * @param value The bytes for notes to set.
      * @return This builder for chaining.
@@ -2049,6 +2527,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduledTimeBuilder_;
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      * @return Whether the scheduledTime field is set.
      */
@@ -2056,6 +2538,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      * @return The scheduledTime.
      */
@@ -2067,6 +2553,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public Builder setScheduledTime(com.google.protobuf.Timestamp value) {
@@ -2083,6 +2573,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public Builder setScheduledTime(
@@ -2097,6 +2591,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public Builder mergeScheduledTime(com.google.protobuf.Timestamp value) {
@@ -2116,6 +2614,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public Builder clearScheduledTime() {
@@ -2129,6 +2631,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public com.google.protobuf.Timestamp.Builder getScheduledTimeBuilder() {
@@ -2137,6 +2643,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getScheduledTimeFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getScheduledTimeOrBuilder() {
@@ -2148,6 +2658,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The time that the UserTaskRun was created/scheduled.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2169,9 +2683,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2182,9 +2694,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2199,9 +2709,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2221,9 +2729,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2241,9 +2747,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2266,9 +2770,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2285,9 +2787,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2299,9 +2799,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
@@ -2316,9 +2814,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * If we ever allow ad-hoc User Tasks, this will move to an optional
-     * field, or a `oneof user_task_source` field. However, note that such
-     * a change would be fine from the API Compatibility perspective.
+     * The NodeRun with which the UserTaskRun is associated.
      * </pre>
      *
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>

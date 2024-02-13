@@ -11,7 +11,10 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -49,6 +52,45 @@ public class LHUtil {
 
     public static String generateGuid() {
         return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    /**
+     * To index values to enable search in LittleHorse, we use a key-value mechanism where the value that we
+     * are searching for is stored in the key, enabling us to use Prefix Scans over all keys that have
+     * that value in them. The value is just a pointer back to the original object.
+     *
+     * RocksDB runs into problems with long keys (i.e. more than 1KB) because it messes up with the block
+     * cache (I think that's what it's called)? Additionally, the comparator when doing lookups needs to read
+     * every element of the key, so having long keys means more work during read/write operations.
+     *
+     * In order to limit key length, when tagging a String value, we now truncate it to 64 characters (which
+     * will allow us to do a prefix scan on small prefixes in the future) and hash the rest with a cryptographically
+     * secure hash function (which allows us to retain the exact match search).
+     * @param stringToIndex string to index
+     * @return a LH DB-safe indexable representation.
+     */
+    public static String toLHDbSearchFormat(String stringToIndex) {
+        if (stringToIndex.length() <= 64) return stringToIndex;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(stringToIndex.getBytes());
+            stringToIndex.hashCode();
+
+            // Convert byte array to hexadecimal representation
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+
+            return stringToIndex.substring(0, 64) + hexString.toString().substring(0, 16);
+        } catch (NoSuchAlgorithmException impossible) {
+            // Handle the exception (e.g., log or throw a custom exception)
+            throw new IllegalStateException("Not possible", impossible);
+        }
     }
 
     public static String toLhDbFormat(Date date) {
@@ -142,6 +184,22 @@ public class LHUtil {
             throw new RuntimeException("Stupid programmer error.");
         }
         return str;
+    }
+
+    public static boolean isPrimitive(VariableType variableType) {
+        switch (variableType) {
+            case INT:
+            case BOOL:
+            case DOUBLE:
+            case STR:
+                return true;
+            case JSON_OBJ:
+            case JSON_ARR:
+            case BYTES:
+            case UNRECOGNIZED:
+                return false;
+        }
+        return false;
     }
 
     /**
@@ -252,5 +310,35 @@ public class LHUtil {
         } else {
             return left.equals(right);
         }
+    }
+
+    public static boolean isUserError(Exception exn) {
+        if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
+            StatusRuntimeException sre = (StatusRuntimeException) exn;
+
+            switch (sre.getStatus().getCode()) {
+                case NOT_FOUND,
+                        INVALID_ARGUMENT,
+                        ALREADY_EXISTS,
+                        OUT_OF_RANGE,
+                        PERMISSION_DENIED,
+                        UNAUTHENTICATED,
+                        FAILED_PRECONDITION,
+                        // RESOURCE_EXHAUSTED used for quota violations.
+                        RESOURCE_EXHAUSTED:
+                    return true;
+
+                case OK,
+                        UNKNOWN,
+                        UNIMPLEMENTED,
+                        UNAVAILABLE,
+                        INTERNAL,
+                        DEADLINE_EXCEEDED,
+                        DATA_LOSS,
+                        ABORTED,
+                        CANCELLED:
+            }
+        }
+        return false;
     }
 }

@@ -4,6 +4,15 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A VariableMutation defines a modification made to one of a ThreadRun's variables.
+ * The LHS determines the variable that is modified; the operation determines how
+ * it is modified, and the RHS is the input to the operation.
+ *
+ * Day-to-day users of LittleHorse generally don't interact with this structure unless
+ * they are writing their own WfSpec SDK.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.VariableMutation}
  */
 public final class VariableMutation extends
@@ -46,16 +55,28 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return Whether the jsonpath field is set.
      */
     boolean hasJsonpath();
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return The jsonpath.
      */
     java.lang.String getJsonpath();
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return The bytes for jsonpath.
      */
@@ -63,6 +84,10 @@ private static final long serialVersionUID = 0L;
         getJsonpathBytes();
   }
   /**
+   * <pre>
+   * Specifies to use the output of a NodeRun as the RHS.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableMutation.NodeOutputSource}
    */
   public static final class NodeOutputSource extends
@@ -103,6 +128,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object jsonpath_ = "";
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return Whether the jsonpath field is set.
      */
@@ -111,6 +140,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return The jsonpath.
      */
@@ -128,6 +161,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Use this specific field from a JSON output
+     * </pre>
+     *
      * <code>optional string jsonpath = 10;</code>
      * @return The bytes for jsonpath.
      */
@@ -308,6 +345,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Specifies to use the output of a NodeRun as the RHS.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.VariableMutation.NodeOutputSource}
      */
     public static final class Builder extends
@@ -482,6 +523,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object jsonpath_ = "";
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @return Whether the jsonpath field is set.
        */
@@ -489,6 +534,10 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @return The jsonpath.
        */
@@ -505,6 +554,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @return The bytes for jsonpath.
        */
@@ -522,6 +575,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @param value The jsonpath to set.
        * @return This builder for chaining.
@@ -535,6 +592,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @return This builder for chaining.
        */
@@ -545,6 +606,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Use this specific field from a JSON output
+       * </pre>
+       *
        * <code>optional string jsonpath = 10;</code>
        * @param value The bytes for jsonpath to set.
        * @return This builder for chaining.
@@ -671,6 +736,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object lhsName_ = "";
   /**
+   * <pre>
+   * The name of the variable to mutate
+   * </pre>
+   *
    * <code>string lhs_name = 1;</code>
    * @return The lhsName.
    */
@@ -688,6 +757,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the variable to mutate
+   * </pre>
+   *
    * <code>string lhs_name = 1;</code>
    * @return The bytes for lhsName.
    */
@@ -710,6 +783,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object lhsJsonPath_ = "";
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return Whether the lhsJsonPath field is set.
    */
@@ -718,6 +796,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return The lhsJsonPath.
    */
@@ -735,6 +818,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+   * a specific sub-field of the variable.
+   * </pre>
+   *
    * <code>optional string lhs_json_path = 2;</code>
    * @return The bytes for lhsJsonPath.
    */
@@ -756,6 +844,10 @@ private static final long serialVersionUID = 0L;
   public static final int OPERATION_FIELD_NUMBER = 3;
   private int operation_ = 0;
   /**
+   * <pre>
+   * Defines the operation that we are executing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The enum numeric value on the wire for operation.
    */
@@ -763,6 +855,10 @@ private static final long serialVersionUID = 0L;
     return operation_;
   }
   /**
+   * <pre>
+   * Defines the operation that we are executing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The operation.
    */
@@ -773,6 +869,11 @@ private static final long serialVersionUID = 0L;
 
   public static final int SOURCE_VARIABLE_FIELD_NUMBER = 4;
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return Whether the sourceVariable field is set.
    */
@@ -781,6 +882,11 @@ private static final long serialVersionUID = 0L;
     return rhsValueCase_ == 4;
   }
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return The sourceVariable.
    */
@@ -792,6 +898,11 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Set the source_variable as the RHS to use another variable from the workflow to
+   * as the RHS/
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    */
   @java.lang.Override
@@ -804,6 +915,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int LITERAL_VALUE_FIELD_NUMBER = 5;
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return Whether the literalValue field is set.
    */
@@ -812,6 +927,10 @@ private static final long serialVersionUID = 0L;
     return rhsValueCase_ == 5;
   }
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return The literalValue.
    */
@@ -823,6 +942,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Use a literal value as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
    */
   @java.lang.Override
@@ -835,6 +958,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    * @return Whether the nodeOutput field is set.
    */
@@ -843,6 +970,10 @@ private static final long serialVersionUID = 0L;
     return rhsValueCase_ == 6;
   }
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    * @return The nodeOutput.
    */
@@ -854,6 +985,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Use the output of the current node as the RHS.
+   * </pre>
+   *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
    */
   @java.lang.Override
@@ -1100,6 +1235,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A VariableMutation defines a modification made to one of a ThreadRun's variables.
+   * The LHS determines the variable that is modified; the operation determines how
+   * it is modified, and the RHS is the input to the operation.
+   *
+   * Day-to-day users of LittleHorse generally don't interact with this structure unless
+   * they are writing their own WfSpec SDK.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.VariableMutation}
    */
   public static final class Builder extends
@@ -1382,6 +1526,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object lhsName_ = "";
     /**
+     * <pre>
+     * The name of the variable to mutate
+     * </pre>
+     *
      * <code>string lhs_name = 1;</code>
      * @return The lhsName.
      */
@@ -1398,6 +1546,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable to mutate
+     * </pre>
+     *
      * <code>string lhs_name = 1;</code>
      * @return The bytes for lhsName.
      */
@@ -1415,6 +1567,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the variable to mutate
+     * </pre>
+     *
      * <code>string lhs_name = 1;</code>
      * @param value The lhsName to set.
      * @return This builder for chaining.
@@ -1428,6 +1584,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable to mutate
+     * </pre>
+     *
      * <code>string lhs_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -1438,6 +1598,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the variable to mutate
+     * </pre>
+     *
      * <code>string lhs_name = 1;</code>
      * @param value The bytes for lhsName to set.
      * @return This builder for chaining.
@@ -1454,6 +1618,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object lhsJsonPath_ = "";
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @return Whether the lhsJsonPath field is set.
      */
@@ -1461,6 +1630,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @return The lhsJsonPath.
      */
@@ -1477,6 +1651,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @return The bytes for lhsJsonPath.
      */
@@ -1494,6 +1673,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @param value The lhsJsonPath to set.
      * @return This builder for chaining.
@@ -1507,6 +1691,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @return This builder for chaining.
      */
@@ -1517,6 +1706,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+     * a specific sub-field of the variable.
+     * </pre>
+     *
      * <code>optional string lhs_json_path = 2;</code>
      * @param value The bytes for lhsJsonPath to set.
      * @return This builder for chaining.
@@ -1533,6 +1727,10 @@ private static final long serialVersionUID = 0L;
 
     private int operation_ = 0;
     /**
+     * <pre>
+     * Defines the operation that we are executing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutationType operation = 3;</code>
      * @return The enum numeric value on the wire for operation.
      */
@@ -1540,6 +1738,10 @@ private static final long serialVersionUID = 0L;
       return operation_;
     }
     /**
+     * <pre>
+     * Defines the operation that we are executing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutationType operation = 3;</code>
      * @param value The enum numeric value on the wire for operation to set.
      * @return This builder for chaining.
@@ -1551,6 +1753,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the operation that we are executing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutationType operation = 3;</code>
      * @return The operation.
      */
@@ -1560,6 +1766,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Defines the operation that we are executing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutationType operation = 3;</code>
      * @param value The operation to set.
      * @return This builder for chaining.
@@ -1574,6 +1784,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the operation that we are executing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutationType operation = 3;</code>
      * @return This builder for chaining.
      */
@@ -1587,6 +1801,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> sourceVariableBuilder_;
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      * @return Whether the sourceVariable field is set.
      */
@@ -1595,6 +1814,11 @@ private static final long serialVersionUID = 0L;
       return rhsValueCase_ == 4;
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      * @return The sourceVariable.
      */
@@ -1613,6 +1837,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder setSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -1629,6 +1858,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder setSourceVariable(
@@ -1643,6 +1877,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder mergeSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -1666,6 +1905,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder clearSourceVariable() {
@@ -1685,12 +1929,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getSourceVariableBuilder() {
       return getSourceVariableFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     @java.lang.Override
@@ -1705,6 +1959,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Set the source_variable as the RHS to use another variable from the workflow to
+     * as the RHS/
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1729,6 +1988,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> literalValueBuilder_;
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      * @return Whether the literalValue field is set.
      */
@@ -1737,6 +2000,10 @@ private static final long serialVersionUID = 0L;
       return rhsValueCase_ == 5;
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      * @return The literalValue.
      */
@@ -1755,6 +2022,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder setLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1771,6 +2042,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder setLiteralValue(
@@ -1785,6 +2060,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder mergeLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -1808,6 +2087,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder clearLiteralValue() {
@@ -1827,12 +2110,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getLiteralValueBuilder() {
       return getLiteralValueFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     @java.lang.Override
@@ -1847,6 +2138,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Use a literal value as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1871,6 +2166,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource, io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.Builder, io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSourceOrBuilder> nodeOutputBuilder_;
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      * @return Whether the nodeOutput field is set.
      */
@@ -1879,6 +2178,10 @@ private static final long serialVersionUID = 0L;
       return rhsValueCase_ == 6;
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      * @return The nodeOutput.
      */
@@ -1897,6 +2200,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     public Builder setNodeOutput(io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource value) {
@@ -1913,6 +2220,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     public Builder setNodeOutput(
@@ -1927,6 +2238,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     public Builder mergeNodeOutput(io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource value) {
@@ -1950,6 +2265,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     public Builder clearNodeOutput() {
@@ -1969,12 +2288,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.Builder getNodeOutputBuilder() {
       return getNodeOutputFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     @java.lang.Override
@@ -1989,6 +2316,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Use the output of the current node as the RHS.
+     * </pre>
+     *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

@@ -4,13 +4,13 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
+import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -23,7 +23,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
-    private boolean alreadyHandled;
+    private WaitingThreadStatus waitingStatus;
+    private Integer failureHandlerThreadRunId;
     private ExecutionContext executionContext;
 
     public Class<WaitForThread> getProtoBaseClass() {
@@ -33,7 +34,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     public WaitForThreadModel() {}
 
     public WaitForThreadModel(
-            NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor, CommandModel currentCommand)
+            NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor, Date currentCommandTime)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;
@@ -51,12 +52,13 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
                         new FailureModel(
                                 "Determined threadrunnumber " + threadRunNumber + " is a parent!",
                                 LHConstants.VAR_SUB_ERROR),
-                        currentCommand.getTime());
+                        currentCommandTime);
             }
             potentialParent = potentialParent.getParent();
         }
 
         this.threadStatus = threadRunModel.getStatus();
+        this.waitingStatus = WaitingThreadStatus.THREAD_IN_PROGRESS;
     }
 
     public void initFrom(Message proto, ExecutionContext context) {
@@ -66,7 +68,11 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
-        alreadyHandled = p.getAlreadyHandled();
+        waitingStatus = p.getWaitingStatus();
+
+        if (p.hasFailureHandlerThreadRunId()) {
+            failureHandlerThreadRunId = p.getFailureHandlerThreadRunId();
+        }
     }
 
     public WaitForThread.Builder toProto() {
@@ -75,7 +81,9 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
-        out.setAlreadyHandled(alreadyHandled);
+        out.setWaitingStatus(waitingStatus);
+
+        if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadRunId(failureHandlerThreadRunId);
         return out;
     }
 

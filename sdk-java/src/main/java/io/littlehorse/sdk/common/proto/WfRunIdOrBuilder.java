@@ -8,14 +8,49 @@ public interface WfRunIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID for this WfRun instance.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * The ID for this WfRun instance.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
   com.google.protobuf.ByteString
       getIdBytes();
+
+  /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   * @return Whether the parentWfRunId field is set.
+   */
+  boolean hasParentWfRunId();
+  /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   * @return The parentWfRunId.
+   */
+  io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
+  /**
+   * <pre>
+   * A WfRun may have a parent WfRun. If so, this field is set to the parent's ID.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 }

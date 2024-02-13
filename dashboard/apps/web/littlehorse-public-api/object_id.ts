@@ -10,78 +10,183 @@ import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "littlehorse";
 
+/** The ID of a WfSpec. */
 export interface WfSpecId {
+  /** Name of the WfSpec. */
   name: string;
+  /**
+   * Major Version of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   */
   majorVersion: number;
+  /**
+   * Revision of a WfSpec.
+   *
+   * Note that WfSpec's are versioned. Creating a new WfSpec with the same name
+   * and no breaking changes to the public Variables API results in a new WfSpec
+   * being created with the same MajorVersion and a new revision. Creating a
+   * WfSpec with a breaking change to the public Variables API results in a
+   * new WfSpec being created with the same name, an incremented major_version,
+   * and revision = 0.
+   */
   revision: number;
 }
 
+/** ID for a TaskDef. */
 export interface TaskDefId {
+  /** TaskDef's are uniquely identified by their name. */
   name: string;
 }
 
+/** ID for ExternalEventDef */
 export interface ExternalEventDefId {
+  /** ExternalEventDef's are uniquedly identified by their name. */
   name: string;
 }
 
+/** ID for a UserTaskDef */
 export interface UserTaskDefId {
+  /** The name of a UserTaskDef */
   name: string;
+  /** Note that UserTaskDef's use simple versioning. */
   version: number;
 }
 
+/** ID for a TaskWorkerGroup. */
 export interface TaskWorkerGroupId {
+  /** TaskWorkerGroups are uniquely identified by their TaskDefId. */
   taskDefId: TaskDefId | undefined;
 }
 
+/** Id for a Variable. */
 export interface VariableId {
-  wfRunId: WfRunId | undefined;
+  /**
+   * WfRunId for the variable. Note that every Variable is associated with
+   * a WfRun.
+   */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /**
+   * Each Variable is owned by a specific ThreadRun inside the WfRun it belongs
+   * to. This is that ThreadRun's number.
+   */
   threadRunNumber: number;
+  /** The name of the variable. */
   name: string;
 }
 
+/** ID for an ExternalEvent. */
 export interface ExternalEventId {
-  wfRunId: WfRunId | undefined;
-  externalEventDefId: ExternalEventDefId | undefined;
+  /**
+   * WfRunId for the ExternalEvent. Note that every ExternalEvent is associated
+   * with a WfRun.
+   */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** The ExternalEventDef for this ExternalEvent. */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * A unique guid allowing for distinguishing this ExternalEvent from other events
+   * of the same ExternalEventDef and WfRun.
+   */
   guid: string;
 }
 
+/** ID for a WfRun */
 export interface WfRunId {
+  /** The ID for this WfRun instance. */
   id: string;
+  /** A WfRun may have a parent WfRun. If so, this field is set to the parent's ID. */
+  parentWfRunId?: WfRunId | undefined;
 }
 
+/** ID for a NodeRun. */
 export interface NodeRunId {
-  wfRunId: WfRunId | undefined;
+  /**
+   * ID of the WfRun for this NodeRun. Note that every NodeRun is associated with
+   * a WfRun.
+   */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun. */
   threadRunNumber: number;
+  /** Position of this NodeRun within its ThreadRun. */
   position: number;
 }
 
+/** ID for a TaskRun. */
 export interface TaskRunId {
-  wfRunId: WfRunId | undefined;
+  /**
+   * WfRunId for this TaskRun. Note that every TaskRun is associated with
+   * a WfRun.
+   */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Unique identifier for this TaskRun. Unique among the WfRun. */
   taskGuid: string;
 }
 
+/** ID for a UserTaskRun */
 export interface UserTaskRunId {
-  wfRunId: WfRunId | undefined;
+  /**
+   * WfRunId for this UserTaskRun. Note that every UserTaskRun is associated
+   * with a WfRun.
+   */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Unique identifier for this UserTaskRun. */
   userTaskGuid: string;
 }
 
+/** ID for a specific window of TaskDef metrics. */
 export interface TaskDefMetricsId {
-  windowStart: string | undefined;
+  /** The timestamp at which this metrics window starts. */
+  windowStart:
+    | string
+    | undefined;
+  /** The length of this window. */
   windowType: MetricsWindowLength;
+  /** The TaskDefId that this metrics window reports on. */
   taskDefId: TaskDefId | undefined;
 }
 
+/** ID for a specific window of WfSpec metrics. */
 export interface WfSpecMetricsId {
-  windowStart: string | undefined;
+  /** The timestamp at which this metrics window starts. */
+  windowStart:
+    | string
+    | undefined;
+  /** The length of this window. */
   windowType: MetricsWindowLength;
+  /** The WfSpecId that this metrics window reports on. */
   wfSpecId: WfSpecId | undefined;
 }
 
+/** ID for a Principal. */
 export interface PrincipalId {
+  /**
+   * The id of this principal. In OAuth, this is the OAuth Client ID (for
+   * machine principals) or the OAuth User Id (for human principals).
+   */
   id: string;
 }
 
+/** ID for a Tenant. */
 export interface TenantId {
+  /** The Tenant ID. */
   id: string;
 }
 
@@ -608,13 +713,16 @@ export const ExternalEventId = {
 };
 
 function createBaseWfRunId(): WfRunId {
-  return { id: "" };
+  return { id: "", parentWfRunId: undefined };
 }
 
 export const WfRunId = {
   encode(message: WfRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -633,6 +741,13 @@ export const WfRunId = {
 
           message.id = reader.string();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -643,13 +758,19 @@ export const WfRunId = {
   },
 
   fromJSON(object: any): WfRunId {
-    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
+    };
   },
 
   toJSON(message: WfRunId): unknown {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
+    }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
     }
     return obj;
   },
@@ -660,6 +781,9 @@ export const WfRunId = {
   fromPartial<I extends Exact<DeepPartial<WfRunId>, I>>(object: I): WfRunId {
     const message = createBaseWfRunId();
     message.id = object.id ?? "";
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
     return message;
   },
 };
@@ -1221,7 +1345,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

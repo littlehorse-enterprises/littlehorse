@@ -3,9 +3,11 @@ package io.littlehorse.server.streams.taskqueue;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,6 +18,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String clientId;
     private TaskDefIdModel taskDefId;
     private String taskWorkerVersion;
+    private final TenantIdModel tenantId;
+
+    @Getter
     private final RequestExecutionContext requestContext;
 
     public PollTaskRequestObserver(
@@ -26,6 +31,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.taskQueueManager = manager;
         this.clientId = null;
         this.requestContext = requestContext;
+        this.tenantId = requestContext.authorization().tenantId();
     }
 
     public String getTaskWorkerVersion() {
@@ -51,7 +57,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
                 taskQueueManager.backend.getInstanceId(),
                 clientId,
                 taskDefId);
-        taskQueueManager.onRequestDisconnected(this);
+        taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 
     @Override
@@ -70,11 +76,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
 
-        taskQueueManager.onPollRequest(this);
+        taskQueueManager.onPollRequest(this, tenantId);
     }
 
     @Override
     public void onCompleted() {
-        taskQueueManager.onRequestDisconnected(this);
+        taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 }

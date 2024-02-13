@@ -25,6 +25,25 @@ message WfSpec {
 
   optional WorkflowRetentionPolicy retention_policy = 7;
   optional WfSpecVersionMigration migration = 8;
+
+  // Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+  // WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+  // that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+  // WfSpec.
+  //
+  // Currently, only reference by names is supported.
+  message ParentWfSpecReference {
+    // Name of the Parent WfSpec
+    string wf_spec_name = 1;
+    int32 wf_spec_major_version = 2;
+    // FOR NOW: no validation of variables on parent. In the future we will pass
+    // wf_spec_major_version, but we should probably examine the rules for
+    // evolution in the future.
+  }
+
+  // Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+  // child of a WfRun belonging to the referenced WfSpec.
+  optional ParentWfSpecReference parent_wf_spec = 9;
 }
 
 message WorkflowRetentionPolicy {
@@ -47,11 +66,18 @@ message SearchableVariableDef {
   // Future: Add index information (local/remote/etc)
 }
 
+enum WfRunVariableAccessLevel {
+  PUBLIC_VAR = 0;
+  PRIVATE_VAR = 1;
+  INHERITED_VAR = 2;
+}
+
 message ThreadVarDef {
   VariableDef var_def = 1;
   bool required = 2;
   bool searchable = 3;
   repeated JsonIndex json_indexes = 4;
+  WfRunVariableAccessLevel access_level = 5;
 }
 
 message ThreadSpec {
@@ -104,13 +130,15 @@ message WaitForThreadsNode {
   message ThreadToWaitFor {
     VariableAssignment thread_run_number = 1;
   }
+  message ThreadsToWaitFor {
+    repeated ThreadToWaitFor threads = 1;
+  }
 
-  // Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-  // for compatibility reasons, we cannot wrap it into a separate message.
-  repeated ThreadToWaitFor threads = 1;
-  optional VariableAssignment thread_list = 3;
-
-  WaitForThreadsPolicy policy = 2;
+  oneof threads_to_wait_for {
+    ThreadsToWaitFor threads = 1;
+    VariableAssignment thread_list = 2;
+  }
+  repeated FailureHandlerDef per_thread_failure_handlers = 3;
 }
 
 message ExternalEventNode {
@@ -134,7 +162,6 @@ message FailureDef {
 
 message Node {
   repeated Edge outgoing_edges = 1;
-  repeated VariableMutation variable_mutations = 2;
   repeated FailureHandlerDef failure_handlers = 4;
 
   oneof node {
@@ -181,6 +208,7 @@ message EdgeCondition {
 message Edge {
   string sink_node_name = 1;
   optional EdgeCondition condition = 2;
+  repeated VariableMutation variable_mutations = 3;
 }
 
 message NopNode {

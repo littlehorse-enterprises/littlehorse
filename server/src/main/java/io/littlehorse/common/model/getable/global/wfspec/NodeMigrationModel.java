@@ -36,7 +36,7 @@ public class NodeMigrationModel extends LHSerializable<NodeMigration> {
 
     public void execute(ThreadRunModel thread) {
         NodeRunModel currentNode = thread.getCurrentNodeRun();
-        
+
         // TODO: handle TASK differently
         currentNode.cancel();
         thread.setWfSpecId();

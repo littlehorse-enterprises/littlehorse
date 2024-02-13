@@ -10,14 +10,12 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const TOTAL_RETRIES = 5
 
-func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
+func (tw *LHTaskWorker) registerTaskDef() error {
 	ptd := &model.PutTaskDefRequest{
 		Name:      tw.taskDefId.Name,
 		InputVars: make([]*model.VariableDef, 0),
@@ -32,11 +30,7 @@ func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 
 	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
 
-	if ignoreAlreadyExistsError && status.Code(err) == codes.AlreadyExists {
-		return nil
-	} else {
-		return err
-	}
+	return err
 }
 
 func (tw *LHTaskWorker) start() error {
@@ -55,8 +49,8 @@ type serverConnection struct {
 	manager        *serverConnectionManager
 	host           *model.LHHostInfo
 	running        bool
-	pollTaskClient *model.LHPublicApi_PollTaskClient
-	grpcClient     *model.LHPublicApiClient
+	pollTaskClient *model.LittleHorse_PollTaskClient
+	grpcClient     *model.LittleHorseClient
 }
 
 func newServerConnection(
@@ -83,7 +77,7 @@ func newServerConnection(
 	}
 
 	stream.Send(&model.PollTaskRequest{
-		ClientId:          manager.tw.config.ClientId,
+		ClientId:          manager.tw.config.TaskWorkerId,
 		TaskDefId:         manager.tw.taskDefId,
 		TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 	})
@@ -110,7 +104,7 @@ func newServerConnection(
 
 			if out.running {
 				req := model.PollTaskRequest{
-					ClientId:          manager.tw.config.ClientId,
+					ClientId:          manager.tw.config.TaskWorkerId,
 					TaskDefId:         manager.tw.taskDefId,
 					TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
 				}
@@ -238,7 +232,7 @@ func (m *serverConnectionManager) start() {
 			context.Background(),
 			&model.RegisterTaskWorkerRequest{
 				TaskDefId:    m.tw.taskDefId,
-				ClientId:     m.tw.config.ClientId,
+				TaskWorkerId: m.tw.config.TaskWorkerId,
 				ListenerName: m.tw.config.ServerConnectListener,
 			},
 		)
@@ -323,11 +317,11 @@ func (m *serverConnectionManager) onConnectionClosed(conn *serverConnection) {
 
 // stores the info related to the task and which stub it should connect to
 type taskExecutionInfo struct {
-	specificStub *model.LHPublicApiClient
+	specificStub *model.LittleHorseClient
 	task         *model.ScheduledTask
 }
 
-func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LHPublicApiClient) {
+func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LittleHorseClient) {
 	taskToExecution := &taskExecutionInfo{
 		specificStub: specificStub,
 		task:         task,

@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "start": "turbo run start",
-    "build": "node apps/web/generate-feature-toggles-types.js && turbo run build",
-    "dev": "node apps/web/generate-feature-toggles-types.js && turbo run dev",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
     "test-watch": "jest --watch",
     "test": "jest",
     "lint": "turbo run lint"
@@ -27,5 +27,8 @@
     "ts-jest": "29.1.1",
     "turbo": "^1.10.16"
   },
-  "packageManager": "pnpm@7.15.0"
+  "dependencies": {
+    "material-icons": "^1.13.12"
+  },
+  "packageManager": "pnpm@7.33.6"
 }

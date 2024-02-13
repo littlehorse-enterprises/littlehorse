@@ -9,8 +9,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.sdk.common.proto.LHTaskError;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -22,7 +22,6 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.ReportTaskObserver;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public TaskDef taskDef;
 
     private List<LHServerConnection> runningConnections;
-    private LHPublicApiStub bootstrapStub;
+    private LittleHorseStub bootstrapStub;
     private ExecutorService threadPool;
     private Semaphore workerSemaphore;
     private Thread rebalanceThread;
@@ -62,8 +61,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             LHConfig config,
             List<VariableMapping> mappings,
             Object executable,
-            ConnectionManagerLivenessController livenessController)
-            throws IOException {
+            ConnectionManagerLivenessController livenessController) {
         this.executable = executable;
         this.taskMethod = taskMethod;
         taskMethod.setAccessible(true);
@@ -89,7 +87,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         });
     }
 
-    public void submitTaskForExecution(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+    public void submitTaskForExecution(ScheduledTask scheduledTask, LittleHorseStub specificStub) {
         try {
             this.workerSemaphore.acquire();
         } catch (InterruptedException exn) {
@@ -100,7 +98,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         });
     }
 
-    private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+    private void doTask(ScheduledTask scheduledTask, LittleHorseStub specificStub) {
         ReportTaskRun result = executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
@@ -122,17 +120,12 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
-                try {
-                    runningConnections.add(new LHServerConnection(this, host));
-                    log.info(
-                            "Adding connection to: {}:{} for taskdef {}",
-                            host.getHost(),
-                            host.getPort(),
-                            taskDef.getId().getName());
-                } catch (IOException exn) {
-                    log.error("Yikes, caught IOException in onNext", exn);
-                    throw new RuntimeException(exn);
-                }
+                runningConnections.add(new LHServerConnection(this, host));
+                log.info(
+                        "Adding connection to: {}:{} for taskdef {}",
+                        host.getHost(),
+                        host.getPort(),
+                        taskDef.getId().getName());
             }
         }
 
@@ -186,7 +179,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         bootstrapStub.registerTaskWorker(
                 RegisterTaskWorkerRequest.newBuilder()
                         .setTaskDefId(taskDef.getId())
-                        .setClientId(config.getClientId())
+                        .setTaskWorkerId(config.getTaskWorkerId())
                         .setListenerName(config.getConnectListener())
                         .build(),
                 this // the callbacks come back to this manager.
@@ -288,8 +281,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return taskResult.build();
     }
 
-    private Object invoke(ScheduledTask scheduledTask, WorkerContext context)
-            throws InputVarSubstitutionError, Exception {
+    private Object invoke(ScheduledTask scheduledTask, WorkerContext context) throws Exception {
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {
             inputs.add(mapping.assign(scheduledTask, context));

@@ -8,11 +8,19 @@ public interface TaskDefIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * TaskDef's are uniquely identified by their name.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * TaskDef's are uniquely identified by their name.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */

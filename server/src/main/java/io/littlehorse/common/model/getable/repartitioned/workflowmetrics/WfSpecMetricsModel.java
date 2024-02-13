@@ -7,11 +7,9 @@ import io.littlehorse.common.model.RepartitionedGetable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
-import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -36,6 +34,14 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
     public long startToCompleteMax;
     public long startToCompleteAvg;
     private ExecutionContext executionContext;
+
+    public WfSpecMetricsModel() {}
+
+    public WfSpecMetricsModel(Date windowStart, MetricsWindowLength type, WfSpecIdModel wfSpecId) {
+        this.windowStart = windowStart;
+        this.type = type;
+        this.wfSpecId = wfSpecId;
+    }
 
     public Class<WfSpecMetrics> getProtoBaseClass() {
         return WfSpecMetrics.class;
@@ -79,16 +85,7 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, WfSpecIdModel wfSpecId) {
-        return new WfSpecMetricsIdModel(time, windowType, wfSpecId).getStoreableKey();
-    }
-
-    public static String getObjectId(WfSpecMetricsQueryRequest request, ExecutionContext executionContext) {
-        request.getWfSpecId();
-        return new WfSpecMetricsIdModel(
-                        LHUtil.getWindowStart(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowLength()),
-                        request.getWindowLength(),
-                        LHSerializable.fromProto(request.getWfSpecId(), WfSpecIdModel.class, executionContext))
-                .getStoreableKey();
+        return new WfSpecMetricsIdModel(time, windowType, wfSpecId).toString();
     }
 
     public WfSpecMetricsIdModel getObjectId() {

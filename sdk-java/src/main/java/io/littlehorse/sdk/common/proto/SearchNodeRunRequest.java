@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search for NodeRun's by certain criteria.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchNodeRunRequest}
  */
 public final class SearchNodeRunRequest extends
@@ -42,43 +46,83 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
+   * <pre>
+   * This enum denotes the type of a NodeRun.
+   * </pre>
+   *
    * Protobuf enum {@code littlehorse.SearchNodeRunRequest.NodeType}
    */
   public enum NodeType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
+     * <pre>
+     * TASK node schedules a TaskRun
+     * </pre>
+     *
      * <code>TASK = 0;</code>
      */
     TASK(0),
     /**
+     * <pre>
+     * EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
+     * </pre>
+     *
      * <code>EXTERNAL_EVENT = 1;</code>
      */
     EXTERNAL_EVENT(1),
     /**
+     * <pre>
+     * ENTRYPOINT kicks off a ThreadRun
+     * </pre>
+     *
      * <code>ENTRYPOINT = 2;</code>
      */
     ENTRYPOINT(2),
     /**
+     * <pre>
+     * EXIT completes a ThreadRun
+     * </pre>
+     *
      * <code>EXIT = 3;</code>
      */
     EXIT(3),
     /**
+     * <pre>
+     * START_THREAD creates a Child ThreadRun
+     * </pre>
+     *
      * <code>START_THREAD = 4;</code>
      */
     START_THREAD(4),
     /**
+     * <pre>
+     * WAIT_THREADS waits for one or more child ThreadRuns to complete
+     * </pre>
+     *
      * <code>WAIT_THREADS = 5;</code>
      */
     WAIT_THREADS(5),
     /**
+     * <pre>
+     * SLEEP makes the ThreadRun sleep for a specified time
+     * </pre>
+     *
      * <code>SLEEP = 6;</code>
      */
     SLEEP(6),
     /**
+     * <pre>
+     * USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
+     * </pre>
+     *
      * <code>USER_TASK = 7;</code>
      */
     USER_TASK(7),
     /**
+     * <pre>
+     * START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
+     * </pre>
+     *
      * <code>START_MULTIPLE_THREADS = 8;</code>
      */
     START_MULTIPLE_THREADS(8),
@@ -86,38 +130,74 @@ private static final long serialVersionUID = 0L;
     ;
 
     /**
+     * <pre>
+     * TASK node schedules a TaskRun
+     * </pre>
+     *
      * <code>TASK = 0;</code>
      */
     public static final int TASK_VALUE = 0;
     /**
+     * <pre>
+     * EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
+     * </pre>
+     *
      * <code>EXTERNAL_EVENT = 1;</code>
      */
     public static final int EXTERNAL_EVENT_VALUE = 1;
     /**
+     * <pre>
+     * ENTRYPOINT kicks off a ThreadRun
+     * </pre>
+     *
      * <code>ENTRYPOINT = 2;</code>
      */
     public static final int ENTRYPOINT_VALUE = 2;
     /**
+     * <pre>
+     * EXIT completes a ThreadRun
+     * </pre>
+     *
      * <code>EXIT = 3;</code>
      */
     public static final int EXIT_VALUE = 3;
     /**
+     * <pre>
+     * START_THREAD creates a Child ThreadRun
+     * </pre>
+     *
      * <code>START_THREAD = 4;</code>
      */
     public static final int START_THREAD_VALUE = 4;
     /**
+     * <pre>
+     * WAIT_THREADS waits for one or more child ThreadRuns to complete
+     * </pre>
+     *
      * <code>WAIT_THREADS = 5;</code>
      */
     public static final int WAIT_THREADS_VALUE = 5;
     /**
+     * <pre>
+     * SLEEP makes the ThreadRun sleep for a specified time
+     * </pre>
+     *
      * <code>SLEEP = 6;</code>
      */
     public static final int SLEEP_VALUE = 6;
     /**
+     * <pre>
+     * USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
+     * </pre>
+     *
      * <code>USER_TASK = 7;</code>
      */
     public static final int USER_TASK_VALUE = 7;
     /**
+     * <pre>
+     * START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
+     * </pre>
+     *
      * <code>START_MULTIPLE_THREADS = 8;</code>
      */
     public static final int START_MULTIPLE_THREADS_VALUE = 8;
@@ -216,6 +296,10 @@ private static final long serialVersionUID = 0L;
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return Whether the bookmark field is set.
    */
@@ -224,6 +308,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
    * <code>optional bytes bookmark = 1;</code>
    * @return The bookmark.
    */
@@ -235,6 +323,10 @@ private static final long serialVersionUID = 0L;
   public static final int LIMIT_FIELD_NUMBER = 2;
   private int limit_ = 0;
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return Whether the limit field is set.
    */
@@ -243,6 +335,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
    * <code>optional int32 limit = 2;</code>
    * @return The limit.
    */
@@ -254,6 +350,10 @@ private static final long serialVersionUID = 0L;
   public static final int EARLIEST_START_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp earliestStart_;
   /**
+   * <pre>
+   * Only return NodeRun's created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return Whether the earliestStart field is set.
    */
@@ -262,6 +362,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Only return NodeRun's created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return The earliestStart.
    */
@@ -270,6 +374,10 @@ private static final long serialVersionUID = 0L;
     return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
   }
   /**
+   * <pre>
+   * Only return NodeRun's created after this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
   @java.lang.Override
@@ -280,6 +388,10 @@ private static final long serialVersionUID = 0L;
   public static final int LATEST_START_FIELD_NUMBER = 4;
   private com.google.protobuf.Timestamp latestStart_;
   /**
+   * <pre>
+   * Only return NodeRun's created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return Whether the latestStart field is set.
    */
@@ -288,6 +400,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Only return NodeRun's created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return The latestStart.
    */
@@ -296,6 +412,10 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
   /**
+   * <pre>
+   * Only return NodeRun's created before this time.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    */
   @java.lang.Override
@@ -306,6 +426,10 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_TYPE_FIELD_NUMBER = 5;
   private int nodeType_ = 0;
   /**
+   * <pre>
+   * Specifies the type of NodeRun to search for.
+   * </pre>
+   *
    * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
    * @return The enum numeric value on the wire for nodeType.
    */
@@ -313,6 +437,10 @@ private static final long serialVersionUID = 0L;
     return nodeType_;
   }
   /**
+   * <pre>
+   * Specifies the type of NodeRun to search for.
+   * </pre>
+   *
    * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
    * @return The nodeType.
    */
@@ -324,6 +452,10 @@ private static final long serialVersionUID = 0L;
   public static final int STATUS_FIELD_NUMBER = 6;
   private int status_ = 0;
   /**
+   * <pre>
+   * Specifies the status of NodeRun to search for.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -331,6 +463,10 @@ private static final long serialVersionUID = 0L;
     return status_;
   }
   /**
+   * <pre>
+   * Specifies the status of NodeRun to search for.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 6;</code>
    * @return The status.
    */
@@ -570,6 +706,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search for NodeRun's by certain criteria.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchNodeRunRequest}
    */
   public static final class Builder extends
@@ -828,6 +968,10 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return Whether the bookmark field is set.
      */
@@ -836,6 +980,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return The bookmark.
      */
@@ -844,6 +992,10 @@ private static final long serialVersionUID = 0L;
       return bookmark_;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @param value The bookmark to set.
      * @return This builder for chaining.
@@ -856,6 +1008,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
      * <code>optional bytes bookmark = 1;</code>
      * @return This builder for chaining.
      */
@@ -868,6 +1024,10 @@ private static final long serialVersionUID = 0L;
 
     private int limit_ ;
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return Whether the limit field is set.
      */
@@ -876,6 +1036,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return The limit.
      */
@@ -884,6 +1048,10 @@ private static final long serialVersionUID = 0L;
       return limit_;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @param value The limit to set.
      * @return This builder for chaining.
@@ -896,6 +1064,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
      * <code>optional int32 limit = 2;</code>
      * @return This builder for chaining.
      */
@@ -910,6 +1082,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      * @return Whether the earliestStart field is set.
      */
@@ -917,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      * @return The earliestStart.
      */
@@ -928,6 +1108,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
@@ -944,6 +1128,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder setEarliestStart(
@@ -958,6 +1146,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
@@ -977,6 +1169,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder clearEarliestStart() {
@@ -990,6 +1186,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
@@ -998,6 +1198,10 @@ private static final long serialVersionUID = 0L;
       return getEarliestStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
@@ -1009,6 +1213,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Only return NodeRun's created after this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1029,6 +1237,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      * @return Whether the latestStart field is set.
      */
@@ -1036,6 +1248,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      * @return The latestStart.
      */
@@ -1047,6 +1263,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder setLatestStart(com.google.protobuf.Timestamp value) {
@@ -1063,6 +1283,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder setLatestStart(
@@ -1077,6 +1301,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
@@ -1096,6 +1324,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder clearLatestStart() {
@@ -1109,6 +1341,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
@@ -1117,6 +1353,10 @@ private static final long serialVersionUID = 0L;
       return getLatestStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
@@ -1128,6 +1368,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Only return NodeRun's created before this time.
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1146,6 +1390,10 @@ private static final long serialVersionUID = 0L;
 
     private int nodeType_ = 0;
     /**
+     * <pre>
+     * Specifies the type of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
      * @return The enum numeric value on the wire for nodeType.
      */
@@ -1153,6 +1401,10 @@ private static final long serialVersionUID = 0L;
       return nodeType_;
     }
     /**
+     * <pre>
+     * Specifies the type of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
      * @param value The enum numeric value on the wire for nodeType to set.
      * @return This builder for chaining.
@@ -1164,6 +1416,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the type of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
      * @return The nodeType.
      */
@@ -1173,6 +1429,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Specifies the type of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
      * @param value The nodeType to set.
      * @return This builder for chaining.
@@ -1187,6 +1447,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the type of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
      * @return This builder for chaining.
      */
@@ -1199,6 +1463,10 @@ private static final long serialVersionUID = 0L;
 
     private int status_ = 0;
     /**
+     * <pre>
+     * Specifies the status of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 6;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -1206,6 +1474,10 @@ private static final long serialVersionUID = 0L;
       return status_;
     }
     /**
+     * <pre>
+     * Specifies the status of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 6;</code>
      * @param value The enum numeric value on the wire for status to set.
      * @return This builder for chaining.
@@ -1217,6 +1489,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the status of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 6;</code>
      * @return The status.
      */
@@ -1226,6 +1502,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Specifies the status of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 6;</code>
      * @param value The status to set.
      * @return This builder for chaining.
@@ -1240,6 +1520,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the status of NodeRun to search for.
+     * </pre>
+     *
      * <code>.littlehorse.LHStatus status = 6;</code>
      * @return This builder for chaining.
      */

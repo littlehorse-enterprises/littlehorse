@@ -4,17 +4,20 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -24,7 +27,12 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
+/**
+ * Execution context used in the Core Sub-Topology. This is the processor where the real work of
+ * scheduling WfRun's is actually done.
+ */
 public class ProcessorExecutionContext implements ExecutionContext {
 
     private final LHServerConfig config;
@@ -32,40 +40,47 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final AuthorizationContext authContext;
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
-    private final boolean isClusterLevelCommand;
     private LHTaskManager currentTaskManager;
     private TaskQueueManager globalTaskQueueManager;
     private GetableManager storageManager;
     private final Headers recordMetadata;
     private final CommandModel currentCommand;
-    private final ModelStore coreStore;
+    private final TenantScopedStore coreStore;
     private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
 
     private final KafkaStreamsServerImpl server;
+    private GetableUpdates getableUpdates;
+    private MetricsUpdater metricsAggregator;
 
     public ProcessorExecutionContext(
             Command currentCommand,
-            Headers recordMetadata,
+            Headers recordHeaders,
             LHServerConfig config,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             KafkaStreamsServerImpl server) {
+
         this.processorContext = processorContext;
-        KeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
-        this.config = config;
         this.metadataCache = metadataCache;
+
+        ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        ReadOnlyClusterScopedStore clusterMetadataStore =
+                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+        ReadOnlyTenantScopedStore tenantMetadataStore =
+                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+        this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
+
+        this.config = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.recordMetadata = recordMetadata;
+        this.recordMetadata = recordHeaders;
         this.server = server;
-        this.metadataManager = new ReadOnlyMetadataManager(
-                ModelStore.defaultStore(nativeGlobalStore, this),
-                ModelStore.tenantStoreFor(nativeGlobalStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this));
+        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
-        this.isClusterLevelCommand = this.currentCommand instanceof ClusterLevelCommand;
-        this.coreStore = storeFor(HeadersUtil.tenantIdFromMetadata(recordMetadata), nativeCoreStore());
     }
 
     /**
@@ -124,6 +139,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
+        if (metricsAggregator != null) {
+            metricsAggregator.maybePersistState();
+        }
     }
 
     public CommandModel currentCommand() {
@@ -148,28 +166,26 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return config;
     }
 
-    private AuthorizationContext authContextFor() {
-        String principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
-        String tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
-        // TODO: get current acls for principal and isAdmin boolean. It is required for fine-grained acls verification
-        return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
+    public GetableUpdates getableUpdates() {
+        if (getableUpdates == null) {
+            getableUpdates = new GetableUpdates();
+            // TODO: enable metrics here
+        }
+        return getableUpdates;
     }
 
-    private ModelStore storeFor(String tenantId, KeyValueStore<String, Bytes> nativeStore) {
-        ModelStore store;
-        if (isClusterLevelCommand) {
-            store = ModelStore.defaultStore(nativeStore, this);
-        } else {
-            store = ModelStore.instanceFor(nativeStore, tenantId, this);
-        }
-        return store;
+    private AuthorizationContext authContextFor() {
+        PrincipalIdModel principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        // TODO: get current acls for principal and isAdmin boolean. It is required for fine-grained acls verification
+        return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
     }
 
     private KeyValueStore<String, Bytes> nativeCoreStore() {
         return processorContext.getStateStore(ServerTopology.CORE_STORE);
     }
 
-    private KeyValueStore<String, Bytes> nativeGlobalStore() {
+    private ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore() {
         return processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
 }

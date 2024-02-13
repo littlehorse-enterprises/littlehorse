@@ -7,8 +7,8 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
@@ -43,7 +43,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "some-usertask";
 
-    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
+    public AZUserTasksBasic(LittleHorseBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -79,7 +79,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return Arrays.asList(new AZSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+    public List<String> launchAndCheckWorkflows(LittleHorseBlockingStub client)
             throws TestFailure, InterruptedException, IOException {
         List<String> out = new ArrayList<>();
 

@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	donutWorker.RegisterTaskDef(true)
+	donutWorker.RegisterTaskDef()
 
 	defer func() {
 		log.Default().Print("Shutting down task workers")

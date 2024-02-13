@@ -10,10 +10,6 @@ import {
   variableTypeFromJSON,
   variableTypeToJSON,
   variableTypeToNumber,
-  WaitForThreadsPolicy,
-  waitForThreadsPolicyFromJSON,
-  waitForThreadsPolicyToJSON,
-  waitForThreadsPolicyToNumber,
 } from "./common_enums";
 import {
   Comparator,
@@ -31,6 +27,59 @@ import { ExternalEventDefId, WfSpecId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+export enum WfRunVariableAccessLevel {
+  PUBLIC_VAR = "PUBLIC_VAR",
+  PRIVATE_VAR = "PRIVATE_VAR",
+  INHERITED_VAR = "INHERITED_VAR",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function wfRunVariableAccessLevelFromJSON(object: any): WfRunVariableAccessLevel {
+  switch (object) {
+    case 0:
+    case "PUBLIC_VAR":
+      return WfRunVariableAccessLevel.PUBLIC_VAR;
+    case 1:
+    case "PRIVATE_VAR":
+      return WfRunVariableAccessLevel.PRIVATE_VAR;
+    case 2:
+    case "INHERITED_VAR":
+      return WfRunVariableAccessLevel.INHERITED_VAR;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WfRunVariableAccessLevel.UNRECOGNIZED;
+  }
+}
+
+export function wfRunVariableAccessLevelToJSON(object: WfRunVariableAccessLevel): string {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return "PUBLIC_VAR";
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return "PRIVATE_VAR";
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return "INHERITED_VAR";
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLevel): number {
+  switch (object) {
+    case WfRunVariableAccessLevel.PUBLIC_VAR:
+      return 0;
+    case WfRunVariableAccessLevel.PRIVATE_VAR:
+      return 1;
+    case WfRunVariableAccessLevel.INHERITED_VAR:
+      return 2;
+    case WfRunVariableAccessLevel.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 export interface WfSpec {
   id: WfSpecId | undefined;
   createdAt: string | undefined;
@@ -40,12 +89,38 @@ export interface WfSpec {
   threadSpecs: { [key: string]: ThreadSpec };
   entrypointThreadName: string;
   retentionPolicy?: WorkflowRetentionPolicy | undefined;
-  migration?: WfSpecVersionMigration | undefined;
+  migration?:
+    | WfSpecVersionMigration
+    | undefined;
+  /**
+   * Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+   * child of a WfRun belonging to the referenced WfSpec.
+   */
+  parentWfSpec?: WfSpec_ParentWfSpecReference | undefined;
 }
 
 export interface WfSpec_ThreadSpecsEntry {
   key: string;
   value: ThreadSpec | undefined;
+}
+
+/**
+ * Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+ * WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+ * that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+ * WfSpec.
+ *
+ * Currently, only reference by names is supported.
+ */
+export interface WfSpec_ParentWfSpecReference {
+  /** Name of the Parent WfSpec */
+  wfSpecName: string;
+  /**
+   * FOR NOW: no validation of variables on parent. In the future we will pass
+   * wf_spec_major_version, but we should probably examine the rules for
+   * evolution in the future.
+   */
+  wfSpecMajorVersion: number;
 }
 
 export interface WorkflowRetentionPolicy {
@@ -71,6 +146,7 @@ export interface ThreadVarDef {
   required: boolean;
   searchable: boolean;
   jsonIndexes: JsonIndex[];
+  accessLevel: WfRunVariableAccessLevel;
 }
 
 export interface ThreadSpec {
@@ -171,17 +247,17 @@ export function failureHandlerDef_LHFailureTypeToNumber(object: FailureHandlerDe
 }
 
 export interface WaitForThreadsNode {
-  /**
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   */
-  threads: WaitForThreadsNode_ThreadToWaitFor[];
+  threads?: WaitForThreadsNode_ThreadsToWaitFor | undefined;
   threadList?: VariableAssignment | undefined;
-  policy: WaitForThreadsPolicy;
+  perThreadFailureHandlers: FailureHandlerDef[];
 }
 
 export interface WaitForThreadsNode_ThreadToWaitFor {
   threadRunNumber: VariableAssignment | undefined;
+}
+
+export interface WaitForThreadsNode_ThreadsToWaitFor {
+  threads: WaitForThreadsNode_ThreadToWaitFor[];
 }
 
 export interface ExternalEventNode {
@@ -204,7 +280,6 @@ export interface FailureDef {
 
 export interface Node {
   outgoingEdges: Edge[];
-  variableMutations: VariableMutation[];
   failureHandlers: FailureHandlerDef[];
   entrypoint?: EntrypointNode | undefined;
   exit?: ExitNode | undefined;
@@ -252,6 +327,7 @@ export interface EdgeCondition {
 export interface Edge {
   sinkNodeName: string;
   condition?: EdgeCondition | undefined;
+  variableMutations: VariableMutation[];
 }
 
 export interface NopNode {
@@ -298,6 +374,7 @@ function createBaseWfSpec(): WfSpec {
     entrypointThreadName: "",
     retentionPolicy: undefined,
     migration: undefined,
+    parentWfSpec: undefined,
   };
 }
 
@@ -326,6 +403,9 @@ export const WfSpec = {
     }
     if (message.migration !== undefined) {
       WfSpecVersionMigration.encode(message.migration, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.parentWfSpec !== undefined) {
+      WfSpec_ParentWfSpecReference.encode(message.parentWfSpec, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -396,6 +476,13 @@ export const WfSpec = {
 
           message.migration = WfSpecVersionMigration.decode(reader, reader.uint32());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.parentWfSpec = WfSpec_ParentWfSpecReference.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -424,6 +511,7 @@ export const WfSpec = {
         ? WorkflowRetentionPolicy.fromJSON(object.retentionPolicy)
         : undefined,
       migration: isSet(object.migration) ? WfSpecVersionMigration.fromJSON(object.migration) : undefined,
+      parentWfSpec: isSet(object.parentWfSpec) ? WfSpec_ParentWfSpecReference.fromJSON(object.parentWfSpec) : undefined,
     };
   },
 
@@ -459,6 +547,9 @@ export const WfSpec = {
     if (message.migration !== undefined) {
       obj.migration = WfSpecVersionMigration.toJSON(message.migration);
     }
+    if (message.parentWfSpec !== undefined) {
+      obj.parentWfSpec = WfSpec_ParentWfSpecReference.toJSON(message.parentWfSpec);
+    }
     return obj;
   },
 
@@ -486,6 +577,9 @@ export const WfSpec = {
       : undefined;
     message.migration = (object.migration !== undefined && object.migration !== null)
       ? WfSpecVersionMigration.fromPartial(object.migration)
+      : undefined;
+    message.parentWfSpec = (object.parentWfSpec !== undefined && object.parentWfSpec !== null)
+      ? WfSpec_ParentWfSpecReference.fromPartial(object.parentWfSpec)
       : undefined;
     return message;
   },
@@ -563,6 +657,80 @@ export const WfSpec_ThreadSpecsEntry = {
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadSpec.fromPartial(object.value)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseWfSpec_ParentWfSpecReference(): WfSpec_ParentWfSpecReference {
+  return { wfSpecName: "", wfSpecMajorVersion: 0 };
+}
+
+export const WfSpec_ParentWfSpecReference = {
+  encode(message: WfSpec_ParentWfSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfSpec_ParentWfSpecReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfSpec_ParentWfSpecReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfSpec_ParentWfSpecReference {
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : 0,
+    };
+  },
+
+  toJSON(message: WfSpec_ParentWfSpecReference): unknown {
+    const obj: any = {};
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== 0) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(base?: I): WfSpec_ParentWfSpecReference {
+    return WfSpec_ParentWfSpecReference.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WfSpec_ParentWfSpecReference>, I>>(object: I): WfSpec_ParentWfSpecReference {
+    const message = createBaseWfSpec_ParentWfSpecReference();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? 0;
     return message;
   },
 };
@@ -762,7 +930,13 @@ export const SearchableVariableDef = {
 };
 
 function createBaseThreadVarDef(): ThreadVarDef {
-  return { varDef: undefined, required: false, searchable: false, jsonIndexes: [] };
+  return {
+    varDef: undefined,
+    required: false,
+    searchable: false,
+    jsonIndexes: [],
+    accessLevel: WfRunVariableAccessLevel.PUBLIC_VAR,
+  };
 }
 
 export const ThreadVarDef = {
@@ -778,6 +952,9 @@ export const ThreadVarDef = {
     }
     for (const v of message.jsonIndexes) {
       JsonIndex.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      writer.uint32(40).int32(wfRunVariableAccessLevelToNumber(message.accessLevel));
     }
     return writer;
   },
@@ -817,6 +994,13 @@ export const ThreadVarDef = {
 
           message.jsonIndexes.push(JsonIndex.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.accessLevel = wfRunVariableAccessLevelFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -834,6 +1018,9 @@ export const ThreadVarDef = {
       jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
         ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
         : [],
+      accessLevel: isSet(object.accessLevel)
+        ? wfRunVariableAccessLevelFromJSON(object.accessLevel)
+        : WfRunVariableAccessLevel.PUBLIC_VAR,
     };
   },
 
@@ -851,6 +1038,9 @@ export const ThreadVarDef = {
     if (message.jsonIndexes?.length) {
       obj.jsonIndexes = message.jsonIndexes.map((e) => JsonIndex.toJSON(e));
     }
+    if (message.accessLevel !== WfRunVariableAccessLevel.PUBLIC_VAR) {
+      obj.accessLevel = wfRunVariableAccessLevelToJSON(message.accessLevel);
+    }
     return obj;
   },
 
@@ -865,6 +1055,7 @@ export const ThreadVarDef = {
     message.required = object.required ?? false;
     message.searchable = object.searchable ?? false;
     message.jsonIndexes = object.jsonIndexes?.map((e) => JsonIndex.fromPartial(e)) || [];
+    message.accessLevel = object.accessLevel ?? WfRunVariableAccessLevel.PUBLIC_VAR;
     return message;
   },
 };
@@ -1672,19 +1863,19 @@ export const FailureHandlerDef = {
 };
 
 function createBaseWaitForThreadsNode(): WaitForThreadsNode {
-  return { threads: [], threadList: undefined, policy: WaitForThreadsPolicy.STOP_ON_FAILURE };
+  return { threads: undefined, threadList: undefined, perThreadFailureHandlers: [] };
 }
 
 export const WaitForThreadsNode = {
   encode(message: WaitForThreadsNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.threads) {
-      WaitForThreadsNode_ThreadToWaitFor.encode(v!, writer.uint32(10).fork()).ldelim();
+    if (message.threads !== undefined) {
+      WaitForThreadsNode_ThreadsToWaitFor.encode(message.threads, writer.uint32(10).fork()).ldelim();
     }
     if (message.threadList !== undefined) {
-      VariableAssignment.encode(message.threadList, writer.uint32(26).fork()).ldelim();
+      VariableAssignment.encode(message.threadList, writer.uint32(18).fork()).ldelim();
     }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      writer.uint32(16).int32(waitForThreadsPolicyToNumber(message.policy));
+    for (const v of message.perThreadFailureHandlers) {
+      FailureHandlerDef.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1701,21 +1892,21 @@ export const WaitForThreadsNode = {
             break;
           }
 
-          message.threads.push(WaitForThreadsNode_ThreadToWaitFor.decode(reader, reader.uint32()));
+          message.threads = WaitForThreadsNode_ThreadsToWaitFor.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.threadList = VariableAssignment.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.threadList = VariableAssignment.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.policy = waitForThreadsPolicyFromJSON(reader.int32());
+          message.perThreadFailureHandlers.push(FailureHandlerDef.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1728,24 +1919,24 @@ export const WaitForThreadsNode = {
 
   fromJSON(object: any): WaitForThreadsNode {
     return {
-      threads: globalThis.Array.isArray(object?.threads)
-        ? object.threads.map((e: any) => WaitForThreadsNode_ThreadToWaitFor.fromJSON(e))
-        : [],
+      threads: isSet(object.threads) ? WaitForThreadsNode_ThreadsToWaitFor.fromJSON(object.threads) : undefined,
       threadList: isSet(object.threadList) ? VariableAssignment.fromJSON(object.threadList) : undefined,
-      policy: isSet(object.policy) ? waitForThreadsPolicyFromJSON(object.policy) : WaitForThreadsPolicy.STOP_ON_FAILURE,
+      perThreadFailureHandlers: globalThis.Array.isArray(object?.perThreadFailureHandlers)
+        ? object.perThreadFailureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: WaitForThreadsNode): unknown {
     const obj: any = {};
-    if (message.threads?.length) {
-      obj.threads = message.threads.map((e) => WaitForThreadsNode_ThreadToWaitFor.toJSON(e));
+    if (message.threads !== undefined) {
+      obj.threads = WaitForThreadsNode_ThreadsToWaitFor.toJSON(message.threads);
     }
     if (message.threadList !== undefined) {
       obj.threadList = VariableAssignment.toJSON(message.threadList);
     }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      obj.policy = waitForThreadsPolicyToJSON(message.policy);
+    if (message.perThreadFailureHandlers?.length) {
+      obj.perThreadFailureHandlers = message.perThreadFailureHandlers.map((e) => FailureHandlerDef.toJSON(e));
     }
     return obj;
   },
@@ -1755,11 +1946,14 @@ export const WaitForThreadsNode = {
   },
   fromPartial<I extends Exact<DeepPartial<WaitForThreadsNode>, I>>(object: I): WaitForThreadsNode {
     const message = createBaseWaitForThreadsNode();
-    message.threads = object.threads?.map((e) => WaitForThreadsNode_ThreadToWaitFor.fromPartial(e)) || [];
+    message.threads = (object.threads !== undefined && object.threads !== null)
+      ? WaitForThreadsNode_ThreadsToWaitFor.fromPartial(object.threads)
+      : undefined;
     message.threadList = (object.threadList !== undefined && object.threadList !== null)
       ? VariableAssignment.fromPartial(object.threadList)
       : undefined;
-    message.policy = object.policy ?? WaitForThreadsPolicy.STOP_ON_FAILURE;
+    message.perThreadFailureHandlers = object.perThreadFailureHandlers?.map((e) => FailureHandlerDef.fromPartial(e)) ||
+      [];
     return message;
   },
 };
@@ -1825,6 +2019,71 @@ export const WaitForThreadsNode_ThreadToWaitFor = {
     message.threadRunNumber = (object.threadRunNumber !== undefined && object.threadRunNumber !== null)
       ? VariableAssignment.fromPartial(object.threadRunNumber)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseWaitForThreadsNode_ThreadsToWaitFor(): WaitForThreadsNode_ThreadsToWaitFor {
+  return { threads: [] };
+}
+
+export const WaitForThreadsNode_ThreadsToWaitFor = {
+  encode(message: WaitForThreadsNode_ThreadsToWaitFor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.threads) {
+      WaitForThreadsNode_ThreadToWaitFor.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WaitForThreadsNode_ThreadsToWaitFor {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWaitForThreadsNode_ThreadsToWaitFor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.threads.push(WaitForThreadsNode_ThreadToWaitFor.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WaitForThreadsNode_ThreadsToWaitFor {
+    return {
+      threads: globalThis.Array.isArray(object?.threads)
+        ? object.threads.map((e: any) => WaitForThreadsNode_ThreadToWaitFor.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: WaitForThreadsNode_ThreadsToWaitFor): unknown {
+    const obj: any = {};
+    if (message.threads?.length) {
+      obj.threads = message.threads.map((e) => WaitForThreadsNode_ThreadToWaitFor.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WaitForThreadsNode_ThreadsToWaitFor>, I>>(
+    base?: I,
+  ): WaitForThreadsNode_ThreadsToWaitFor {
+    return WaitForThreadsNode_ThreadsToWaitFor.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WaitForThreadsNode_ThreadsToWaitFor>, I>>(
+    object: I,
+  ): WaitForThreadsNode_ThreadsToWaitFor {
+    const message = createBaseWaitForThreadsNode_ThreadsToWaitFor();
+    message.threads = object.threads?.map((e) => WaitForThreadsNode_ThreadToWaitFor.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2105,7 +2364,6 @@ export const FailureDef = {
 function createBaseNode(): Node {
   return {
     outgoingEdges: [],
-    variableMutations: [],
     failureHandlers: [],
     entrypoint: undefined,
     exit: undefined,
@@ -2124,9 +2382,6 @@ export const Node = {
   encode(message: Node, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.outgoingEdges) {
       Edge.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    for (const v of message.variableMutations) {
-      VariableMutation.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.failureHandlers) {
       FailureHandlerDef.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -2177,13 +2432,6 @@ export const Node = {
           }
 
           message.outgoingEdges.push(Edge.decode(reader, reader.uint32()));
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.variableMutations.push(VariableMutation.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 34) {
@@ -2276,9 +2524,6 @@ export const Node = {
       outgoingEdges: globalThis.Array.isArray(object?.outgoingEdges)
         ? object.outgoingEdges.map((e: any) => Edge.fromJSON(e))
         : [],
-      variableMutations: globalThis.Array.isArray(object?.variableMutations)
-        ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
-        : [],
       failureHandlers: globalThis.Array.isArray(object?.failureHandlers)
         ? object.failureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
         : [],
@@ -2301,9 +2546,6 @@ export const Node = {
     const obj: any = {};
     if (message.outgoingEdges?.length) {
       obj.outgoingEdges = message.outgoingEdges.map((e) => Edge.toJSON(e));
-    }
-    if (message.variableMutations?.length) {
-      obj.variableMutations = message.variableMutations.map((e) => VariableMutation.toJSON(e));
     }
     if (message.failureHandlers?.length) {
       obj.failureHandlers = message.failureHandlers.map((e) => FailureHandlerDef.toJSON(e));
@@ -2347,7 +2589,6 @@ export const Node = {
   fromPartial<I extends Exact<DeepPartial<Node>, I>>(object: I): Node {
     const message = createBaseNode();
     message.outgoingEdges = object.outgoingEdges?.map((e) => Edge.fromPartial(e)) || [];
-    message.variableMutations = object.variableMutations?.map((e) => VariableMutation.fromPartial(e)) || [];
     message.failureHandlers = object.failureHandlers?.map((e) => FailureHandlerDef.fromPartial(e)) || [];
     message.entrypoint = (object.entrypoint !== undefined && object.entrypoint !== null)
       ? EntrypointNode.fromPartial(object.entrypoint)
@@ -2620,7 +2861,7 @@ export const EdgeCondition = {
 };
 
 function createBaseEdge(): Edge {
-  return { sinkNodeName: "", condition: undefined };
+  return { sinkNodeName: "", condition: undefined, variableMutations: [] };
 }
 
 export const Edge = {
@@ -2630,6 +2871,9 @@ export const Edge = {
     }
     if (message.condition !== undefined) {
       EdgeCondition.encode(message.condition, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.variableMutations) {
+      VariableMutation.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2655,6 +2899,13 @@ export const Edge = {
 
           message.condition = EdgeCondition.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.variableMutations.push(VariableMutation.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2668,6 +2919,9 @@ export const Edge = {
     return {
       sinkNodeName: isSet(object.sinkNodeName) ? globalThis.String(object.sinkNodeName) : "",
       condition: isSet(object.condition) ? EdgeCondition.fromJSON(object.condition) : undefined,
+      variableMutations: globalThis.Array.isArray(object?.variableMutations)
+        ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
+        : [],
     };
   },
 
@@ -2678,6 +2932,9 @@ export const Edge = {
     }
     if (message.condition !== undefined) {
       obj.condition = EdgeCondition.toJSON(message.condition);
+    }
+    if (message.variableMutations?.length) {
+      obj.variableMutations = message.variableMutations.map((e) => VariableMutation.toJSON(e));
     }
     return obj;
   },
@@ -2691,6 +2948,7 @@ export const Edge = {
     message.condition = (object.condition !== undefined && object.condition !== null)
       ? EdgeCondition.fromPartial(object.condition)
       : undefined;
+    message.variableMutations = object.variableMutations?.map((e) => VariableMutation.fromPartial(e)) || [];
     return message;
   },
 };
@@ -3277,7 +3535,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

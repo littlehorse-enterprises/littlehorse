@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.freefair.lombok' version '8.4'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // LittleHorse
+    implementation project(':sdk-java')
+
+    // Tools
+    implementation 'com.google.guava:guava:33.0.0-jre'
+
+    // Configurations
+    implementation 'io.smallrye.config:smallrye-config:3.5.2'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.11'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1'
+
+    // Kafka
+    implementation 'org.apache.kafka:kafka-streams:3.6.1'
+    testImplementation 'org.apache.kafka:kafka-streams-test-utils:3.6.1'
+
+    // Web API
+    implementation 'io.javalin:javalin:6.0.1'
+    implementation 'io.javalin:javalin-micrometer:6.0.1'
+
+    // Prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.12.2'
+
+    // Tests
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
+    testImplementation 'org.mockito:mockito-core:5.10.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+    testImplementation 'net.datafaker:datafaker:2.1.0'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
+}
+
+application {
+    mainClass = 'io.littlehorse.canary.Main'
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.2'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
+        }
+    }
+}
+
+checkstyle {
+    configFile = file("${rootDir}/canary/checkstyle.xml")
+    checkstyleTest.enabled = false
+}
+
+tasks.withType(Checkstyle).configureEach {
+    exclude('**io/littlehorse/canary/proto**')
+}

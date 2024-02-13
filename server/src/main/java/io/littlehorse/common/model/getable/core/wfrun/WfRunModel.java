@@ -6,7 +6,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
@@ -25,8 +24,6 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -42,6 +39,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
@@ -66,8 +65,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
+    private int greatestThreadRunNumber;
 
     public LHStatus status;
+
     public Date startTime;
     public Date endTime;
     private List<ThreadRunModel> threadRuns = new ArrayList<>();
@@ -180,6 +181,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class, context));
         }
         this.executionContext = context;
+        this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
 
     @Override
@@ -193,7 +195,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
      * entrypoint thread is running.
      */
     public boolean isRunning() {
-        return threadRuns.get(0).isRunning();
+        return getThreadRun(0).isRunning();
     }
 
     public WfRun.Builder toProto() {
@@ -201,7 +203,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 .setId(id.toProto())
                 .setWfSpecId(wfSpecId.toProto())
                 .setStatus(status)
-                .setStartTime(LHUtil.fromDate(startTime));
+                .setStartTime(LHUtil.fromDate(startTime))
+                .setGreatestThreadrunNumber(greatestThreadRunNumber);
 
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
@@ -246,55 +249,26 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         ThreadRunModel thread = new ThreadRunModel(processorContext);
-        thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
         thread.setWfSpecId(wfSpecId);
 
-        thread.status = LHStatus.RUNNING;
+        if (parentThreadId == null) {
+            // then this is the entrypoint.
+            this.greatestThreadRunNumber = 0;
+            thread.number = 0;
+        } else {
+            this.greatestThreadRunNumber++;
+            thread.number = this.greatestThreadRunNumber;
+        }
+
         thread.threadSpecName = threadName;
         thread.currentNodePosition = -1; // this gets bumped when we start the thread
-
-        thread.startTime = new Date();
 
         thread.wfRun = this;
         thread.type = type;
         threadRuns.add(thread);
 
-        try {
-            tspec.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
-            log.error("Invalid variables received", exn);
-            // TODO: determine how observability events should look like for this case.
-            thread.fail(
-                    new FailureModel(
-                            "Failed validating variables on start: " + exn.getMessage(),
-                            LHConstants.VAR_MUTATION_ERROR),
-                    thread.startTime);
-            return thread;
-        }
-
-        for (ThreadVarDefModel threadVarDef : tspec.getVariableDefs()) {
-            VariableDefModel varDef = threadVarDef.getVarDef();
-            String varName = varDef.getName();
-            VariableValueModel val;
-
-            if (variables.containsKey(varName)) {
-                val = variables.get(varName);
-            } else if (varDef.getDefaultValue() != null) {
-                val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
-                val = new VariableValueModel();
-            }
-
-            try {
-                thread.createVariable(varName, val);
-            } catch (LHVarSubError exn) {
-                throw new RuntimeException("Not possible");
-            }
-        }
-        thread.activateNode(thread.getCurrentNode());
-        thread.advance(start);
+        thread.validateVariablesAndStart(variables);
         return thread;
     }
 
@@ -323,7 +297,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
             PendingInterruptModel pi = pendingInterrupts.get(i);
-            ThreadRunModel toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
 
             if (toInterrupt.canBeInterrupted()) {
                 if (!threadsToHandleNow.contains(pi.interruptedThreadId)) {
@@ -336,7 +310,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         for (PendingInterruptModel pi : toHandleNow) {
-            ThreadRunModel toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
@@ -370,22 +344,19 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (int i = pendingFailures.size() - 1; i >= 0; i--) {
             PendingFailureHandlerModel pfh = pendingFailures.get(i);
-            ThreadRunModel failedThr = threadRuns.get(pfh.failedThreadRun);
+            ThreadRunModel failedThr = getThreadRun(pfh.failedThreadRun);
 
             if (!failedThr.canBeInterrupted()) {
                 continue;
             }
             somethingChanged = true;
             pendingFailures.remove(i);
-            Map<String, VariableValueModel> vars;
+            Map<String, VariableValueModel> vars = new HashMap<>();
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
-                vars = new HashMap<>();
                 FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure();
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
-            } else {
-                vars = new HashMap<>();
             }
 
             ThreadRunModel fh =
@@ -402,7 +373,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
             if (fh.status == LHStatus.ERROR) {
                 fh.fail(
                         new FailureModel(
-                                "Failed launching interrupt thread with id: " + fh.number, LHConstants.CHILD_FAILURE),
+                                "Failed launching exception handler thread with id: " + fh.number,
+                                LHConstants.CHILD_FAILURE),
                         time);
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
@@ -475,13 +447,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        ThreadRunModel handler = threadRuns.get(timeout.getNodeRunId().getThreadRunNumber());
+        ThreadRunModel handler = getThreadRun(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
         advance(processorContext.currentCommand().getTime());
     }
 
     public void failDueToWfSpecDeletion() {
-        threadRuns.get(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
+        getThreadRun(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
     }
 
     public void processExternalEvent(ExternalEventModel event) {
@@ -498,7 +470,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to stop a non-existent thread id.");
         }
 
-        ThreadRunModel thread = threadRuns.get(req.threadRunNumber);
+        ThreadRunModel thread = getThreadRun(req.threadRunNumber);
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.MANUAL_HALT;
         haltReason.manualHalt = new ManualHaltModel();
@@ -521,7 +493,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
 
-        ThreadRunModel thread = threadRuns.get(req.threadRunNumber);
+        ThreadRunModel thread = getThreadRun(req.threadRunNumber);
 
         for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
             ThreadHaltReasonModel thr = thread.haltReasons.get(i);
@@ -539,7 +511,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new LHValidationError(null, "Reference to nonexistent thread.");
         }
 
-        ThreadRunModel thread = threadRuns.get(threadRunNumber);
+        ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationError(null, "Reference to nonexistent nodeRun");
@@ -549,9 +521,18 @@ public class WfRunModel extends CoreGetable<WfRun> {
         advance(time);
     }
 
-    private void setStatus(LHStatus status) {
+    public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        GetableUpdates.GetableStatusUpdate statusChanged;
+        if (Objects.equals(status, LHStatus.COMPLETED)) {
+            statusChanged = GetableUpdates.create(
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status);
+        } else {
+            statusChanged = GetableUpdates.createEndEvent(
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
+        }
         this.status = status;
+        processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -600,14 +581,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
             // design.
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
-                setStatus(LHStatus.COMPLETED);
-                log.info("Completed WfRun {} at {} ", id, new Date());
+                transitionTo(LHStatus.COMPLETED);
+                log.debug("Completed WfRun {} at {} ", id, new Date());
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
-                setStatus(LHStatus.ERROR);
+                transitionTo(LHStatus.ERROR);
             } else if (newStatus == LHStatus.EXCEPTION) {
                 endTime = time;
-                setStatus(LHStatus.EXCEPTION);
+                transitionTo(LHStatus.EXCEPTION);
             }
         }
 

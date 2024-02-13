@@ -8,18 +8,30 @@ public interface FailureBeingHandledOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The thread run number.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 1;</code>
    * @return The threadRunNumber.
    */
   int getThreadRunNumber();
 
   /**
+   * <pre>
+   * The position of the NodeRun causing the failure.
+   * </pre>
+   *
    * <code>int32 node_run_position = 2;</code>
    * @return The nodeRunPosition.
    */
   int getNodeRunPosition();
 
   /**
+   * <pre>
+   * The number of the failure.
+   * </pre>
+   *
    * <code>int32 failure_number = 3;</code>
    * @return The failureNumber.
    */

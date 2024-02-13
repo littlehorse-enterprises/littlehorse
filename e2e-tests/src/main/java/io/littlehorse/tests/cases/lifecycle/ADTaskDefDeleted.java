@@ -4,8 +4,8 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -15,7 +15,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
-import java.io.IOException;
 
 /*
  * This test involves deploying a WfSpec, then deleting a TaskDef, then
@@ -35,7 +34,7 @@ public class ADTaskDefDeleted extends Test {
     private LHTaskWorker worker1;
     private LHTaskWorker worker2;
 
-    public ADTaskDefDeleted(LHPublicApiBlockingStub client, LHConfig config) {
+    public ADTaskDefDeleted(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 
@@ -48,11 +47,11 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
                 """;
     }
 
-    public void test() throws InterruptedException, IOException {
+    public void test() throws InterruptedException {
         worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
-        worker1.registerTaskDef(true);
+        worker1.registerTaskDef();
         worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
-        worker2.registerTaskDef(true);
+        worker2.registerTaskDef();
 
         new WorkflowImpl(WF_SPEC_NAME, thread -> {
                     thread.execute(TASK_DEF_1);

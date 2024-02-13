@@ -8,11 +8,19 @@ public interface UserTaskDefIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of a UserTaskDef
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * The name of a UserTaskDef
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -20,6 +28,10 @@ public interface UserTaskDefIdOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * Note that UserTaskDef's use simple versioning.
+   * </pre>
+   *
    * <code>int32 version = 2;</code>
    * @return The version.
    */

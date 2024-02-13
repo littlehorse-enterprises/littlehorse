@@ -13,9 +13,9 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -28,13 +28,11 @@ public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
-    private final ExecutionContext executionContext;
 
     public WfService(
             ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
         this.metadataCache = metadataCache;
         this.metadataManager = metadataManager;
-        this.executionContext = executionContext;
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
@@ -44,9 +42,10 @@ public class WfService {
             if (majorVersion != null && revision != null) {
                 storedResult = metadataManager.get(new WfSpecIdModel(name, majorVersion, revision));
             } else if (majorVersion != null) {
-                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name, majorVersion));
+                storedResult = metadataManager.getLastFromPrefix(
+                        WfSpecIdModel.getPrefix(name, majorVersion), WfSpecModel.class);
             } else {
-                storedResult = metadataManager.lastFromPrefix(WfSpecIdModel.getPrefix(name));
+                storedResult = metadataManager.getLastFromPrefix(WfSpecIdModel.getPrefix(name), WfSpecModel.class);
             }
 
             return storedResult;
@@ -64,7 +63,7 @@ public class WfService {
             UserTaskDefIdModel id = new UserTaskDefIdModel(name, version);
             return metadataManager.get(id);
         } else {
-            return metadataManager.lastFromPrefix(UserTaskDefIdModel.getPrefix(name));
+            return metadataManager.getLastFromPrefix(UserTaskDefIdModel.getPrefix(name), UserTaskDefModel.class);
         }
     }
 
@@ -97,15 +96,14 @@ public class WfService {
         return metadataManager.get(id);
     }
 
-    public PrincipalModel getPrincipal(String id) {
+    public PrincipalModel getPrincipal(PrincipalIdModel id) {
         if (id == null) {
-            id = LHConstants.ANONYMOUS_PRINCIPAL;
+            id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
-        @SuppressWarnings("unchecked")
-        PrincipalModel storedResult = metadataManager.get(new PrincipalIdModel(id));
+        PrincipalModel storedResult = metadataManager.get(id);
 
-        if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
+        if (storedResult == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // This means that all of the following are true:
             // - The `anonymous` Principal has not yet been modified by the customer.
             // - We just implicitly create it.
@@ -123,7 +121,7 @@ public class WfService {
         acls.getAcls().add(new ServerACLModel(allResources, allActions));
 
         PrincipalModel out = new PrincipalModel();
-        out.setId(LHConstants.ANONYMOUS_PRINCIPAL);
+        out.setId(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
         out.setGlobalAcls(acls);
         return out;
     }

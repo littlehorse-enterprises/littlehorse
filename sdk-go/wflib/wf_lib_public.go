@@ -28,6 +28,7 @@ type WorkflowThread struct {
 	wf                *LHWorkflow
 	lastNodeName      *string
 	lastNodeCondition *WorkflowCondition
+	variableMutations []*model.VariableMutation
 }
 
 type WfRunVariable struct {
@@ -52,8 +53,7 @@ type UserTaskOutput struct {
 }
 
 type WorkflowCondition struct {
-	spec          *model.EdgeCondition
-	createdAtNode string
+	spec *model.EdgeCondition
 }
 
 type SpawnedThread struct {
@@ -94,6 +94,10 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
+func (w *WfRunVariable) WithAccessLevel(accessLevel model.WfRunVariableAccessLevel) WfRunVariable {
+	return w.withAccessLevel(accessLevel)
+}
+
 func (w *WfRunVariable) Searchable() *WfRunVariable {
 	return w.searchableImpl()
 }
@@ -106,14 +110,28 @@ func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
 
+func (l *LHWorkflow) WithRetentionPolicy(policy *model.WorkflowRetentionPolicy) *LHWorkflow {
+	l.spec.RetentionPolicy = policy
+	return l
+}
+
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
+}
+
+func (l *LHWorkflow) WithUpdateType(updateType model.AllowedUpdateType) *LHWorkflow {
+	l.spec.AllowedUpdates = updateType
+	return l
 }
 
 func (t *WorkflowThread) AddVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType, nil)
+}
+
+func (t *WorkflowThread) WithRetentionPolicy(policy *model.ThreadRetentionPolicy) {
+	t.spec.RetentionPolicy = policy
 }
 
 func (t *WorkflowThread) AddVariableWithDefault(

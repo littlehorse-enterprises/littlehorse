@@ -8,38 +8,68 @@ public interface RegisterTaskWorkerRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string client_id = 1;</code>
-   * @return The clientId.
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
+   * <code>string task_worker_id = 1;</code>
+   * @return The taskWorkerId.
    */
-  java.lang.String getClientId();
+  java.lang.String getTaskWorkerId();
   /**
-   * <code>string client_id = 1;</code>
-   * @return The bytes for clientId.
+   * <pre>
+   * Is the ID of the Task Worker.
+   * </pre>
+   *
+   * <code>string task_worker_id = 1;</code>
+   * @return The bytes for taskWorkerId.
    */
   com.google.protobuf.ByteString
-      getClientIdBytes();
+      getTaskWorkerIdBytes();
 
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * The TaskDef the worker wants to poll for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * The listener that the worker is polling on. Used by the server to determine which
+   * advertised hosts to return.
+   * </pre>
+   *
    * <code>string listener_name = 3;</code>
    * @return The listenerName.
    */
   java.lang.String getListenerName();
   /**
+   * <pre>
+   * The listener that the worker is polling on. Used by the server to determine which
+   * advertised hosts to return.
+   * </pre>
+   *
    * <code>string listener_name = 3;</code>
    * @return The bytes for listenerName.
    */

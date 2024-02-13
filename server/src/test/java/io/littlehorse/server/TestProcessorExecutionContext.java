@@ -1,14 +1,16 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.DefaultModelStore;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
 import org.apache.kafka.common.header.Headers;
@@ -26,9 +28,11 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
-    private final DefaultModelStore metadataStore;
-    private final DefaultModelStore globalMetadataStore;
+    private final TenantScopedStore coreStore;
+    private final TenantScopedStore tenantMetadataStore;
+    private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
+    private final KafkaStreamsServerImpl server;
 
     public TestProcessorExecutionContext(
             Command currentCommand,
@@ -43,9 +47,16 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         this.recordMetadata = recordMetadata;
         this.lhConfig = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        metadataStore = ModelStore.defaultStore(processorContext.getStateStore(ServerTopology.METADATA_STORE), this);
-        this.globalMetadataStore =
-                ModelStore.defaultStore(processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this);
+
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
+        this.server = server;
+
+        this.coreStore = TenantScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);
+        this.tenantMetadataStore = TenantScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this);
+        this.clusterMetadataStore = ClusterScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this);
     }
 
     public static TestProcessorExecutionContext create(
@@ -85,10 +96,6 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
 
     @Override
     public MetadataManager metadataManager() {
-        return new MetadataManager(metadataStore, null);
-    }
-
-    public MetadataManager globalMetadataManager() {
-        return new MetadataManager(globalMetadataStore, null);
+        return new MetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
     }
 }

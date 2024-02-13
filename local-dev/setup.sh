@@ -4,8 +4,8 @@ set -e
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$SCRIPT_DIR
-DOCKER_COMPOSE_KAFKA=$(
-    cat <<EOF
+
+DOCKER_COMPOSE_KAFKA=$(cat <<EOF
 services:
   kafka:
     ports:
@@ -32,15 +32,16 @@ services:
 EOF
 )
 
-DOCKER_COMPOSE_KEYCLOAK=$(
-    cat <<EOF
+DOCKER_COMPOSE_KEYCLOAK=$(cat <<EOF
 services:
   keycloak:
     ports:
       - "8888:8888"
     container_name: lh-server-auth
-    image: quay.io/keycloak/keycloak:21.1.1
-    command: ["start-dev", "--http-port=8888"]
+    image: quay.io/keycloak/keycloak:23.0
+    command:
+      - start-dev
+      - --http-port=8888
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -49,11 +50,10 @@ EOF
 
 if [ -n "$1" ]; then
     command="$1"
-else
-    command="kafka"
 fi
 
 setup_keycloak() {
+    echo "Setting Up Keycloak"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-auth-local-dev \
@@ -71,12 +71,19 @@ EOF
         exit 1
     fi
 
-    REALM_NAME="lh"
+    # clients
+    CANARY_CLIENT_ID="canary"
+    CANARY_CLIENT_SECRET="8b629ff9b2684014b8c62d4da8cc371e"
+    DASHBOARD_CLIENT_ID="dashboard"
+    DASHBOARD_CLIENT_SECRET="74b897a0b5804ad3879b2117e1d51015"
     SERVER_CLIENT_ID="server"
     SERVER_CLIENT_SECRET="3bdca420cf6c48e2aa4f56d46d6327e0"
     WORKER_CLIENT_ID="worker"
     WORKER_CLIENT_SECRET="40317ab43bd34a9e93499c7ea03ad398"
     CLI_CLIENT_ID="lhctl"
+
+    # server
+    REALM_NAME="lh"
     KEYCLOAK_ADMIN="admin"
     KEYCLOAK_ADMIN_PASSWORD="admin"
     KEYCLOAK_PORT="8888"
@@ -107,27 +114,10 @@ EOF
 
     echo "Realm '${REALM_NAME}' created"
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
-        protocol=openid-connect \
-        clientId="$SERVER_CLIENT_ID" \
-        id="$SERVER_CLIENT_ID" \
-        secret="$SERVER_CLIENT_SECRET" \
-        serviceAccountsEnabled:=true \
-        directAccessGrantsEnabled:=true \
-        publicClient:=false
-
-    echo "Client '${SERVER_CLIENT_ID}' created"
-
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
-        protocol=openid-connect \
-        clientId="$WORKER_CLIENT_ID" \
-        id="$WORKER_CLIENT_ID" \
-        secret="$WORKER_CLIENT_SECRET" \
-        serviceAccountsEnabled:=true \
-        directAccessGrantsEnabled:=true \
-        publicClient:=false
-
-    echo "Client '${WORKER_CLIENT_ID}' created"
+    create_keycloak_client $SERVER_CLIENT_ID $SERVER_CLIENT_SECRET
+    create_keycloak_client $WORKER_CLIENT_ID $WORKER_CLIENT_SECRET
+    create_keycloak_client $CANARY_CLIENT_ID $CANARY_CLIENT_SECRET
+    create_keycloak_client $DASHBOARD_CLIENT_ID $DASHBOARD_CLIENT_SECRET
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
@@ -139,10 +129,23 @@ EOF
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
-    echo "Keycloak url: http://localhost:${KEYCLOAK_PORT}"
+    echo "Keycloak: http://localhost:${KEYCLOAK_PORT}"
+}
+
+create_keycloak_client() {
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+        protocol=openid-connect \
+        clientId="$1" \
+        id="$1" \
+        secret="$2" \
+        serviceAccountsEnabled:=true \
+        directAccessGrantsEnabled:=true \
+        publicClient:=false
+    echo "Client '${1}' created"
 }
 
 setup_kafka() {
+    echo "Setting Up Kafka"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-kafka-local-dev \
@@ -153,32 +156,58 @@ EOF
 }
 
 clean() {
-    echo "Cleanning"
-    docker compose --file /dev/stdin \
-        --project-directory "$WORK_DIR" \
-        --project-name lh-server-kafka-local-dev \
-        down -v <<EOF
-${DOCKER_COMPOSE_KAFKA}
-EOF
-    docker compose --file /dev/stdin \
-        --project-directory "$WORK_DIR" \
-        --project-name lh-server-auth-local-dev \
-        down -v <<EOF
-${DOCKER_COMPOSE_KEYCLOAK}
-EOF
+    echo "Cleaning"
+    docker compose --project-name lh-server-kafka-local-dev down -v
+    docker compose --project-name lh-server-auth-local-dev down -v
     rm -rf /tmp/kafkaState*
+    rm -rf /tmp/canaryState*
     cd "$SCRIPT_DIR/.."
     ./gradlew -q clean
 }
 
-case $command in
---clean)
+refresh() {
+    echo "Cleaning"
+    docker compose --project-name lh-server-kafka-local-dev down -v
+    rm -rf /tmp/kafkaState*
+    rm -rf /tmp/canaryState*
+    cd "$SCRIPT_DIR/.."
+    ./gradlew -q clean
+}
+
+keycloak=false
+clean=false
+refresh=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --clean)
+      clean=true
+      ;;
+    --refresh)
+      refresh=true
+      ;;
+    --keycloak)
+      keycloak=true
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+if [ ${clean} = true ]; then
     clean
-    ;;
-keycloak)
+    exit 0
+fi
+
+if [ ${refresh} = true ]; then
+    refresh
+fi
+
+if [ ${keycloak} = true ]; then
     setup_keycloak
-    ;;
-*)
-    setup_kafka
-    ;;
-esac
+fi
+
+setup_kafka

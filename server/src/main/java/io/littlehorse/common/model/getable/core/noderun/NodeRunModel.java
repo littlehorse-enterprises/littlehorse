@@ -371,6 +371,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return getSubNodeRun().canBeInterrupted();
     }
 
+    /**
+     * Tries to advance the NodeRun, and returns true if the status of something
+     * changes.
+     */
     public boolean advanceIfPossible(Date time) {
         if (isCompletedOrRecoveredFromFailure()) {
             getThreadRun().advanceFrom(getNode());

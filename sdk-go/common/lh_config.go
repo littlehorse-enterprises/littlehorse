@@ -24,7 +24,6 @@ const (
 	API_HOST_KEY     = "LHC_API_HOST"
 	API_PORT_KEY     = "LHC_API_PORT"
 	API_PROTOCOL_KEY = "LHC_API_PROTOCOL"
-	CLIENT_ID_KEY    = "LHC_CLIENT_ID"
 
 	TENANT_ID = "LHC_TENANT_ID"
 
@@ -35,6 +34,7 @@ const (
 	NUM_WORKER_THREADS_KEY      = "LHW_NUM_WORKER_THREADS"
 	TASK_WORKER_VERSION_KEY     = "LHW_TASK_WORKER_VERSION"
 	SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER"
+	TASK_WORKER_ID_KEY          = "LHW_TASK_WORKER_ID"
 
 	OAUTH_CLIENT_ID_KEY     = "LHC_OAUTH_CLIENT_ID"
 	OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET"
@@ -54,14 +54,14 @@ const (
 )
 
 type LHConfig struct {
-	ApiHost     string
-	ApiProtocol string
-	ApiPort     string
-	ClientId    string
-	CertFile    *string
-	KeyFile     *string
-	CaCert      *string
-	TenantId    *string
+	ApiHost      string
+	ApiProtocol  string
+	ApiPort      string
+	TaskWorkerId string
+	CertFile     *string
+	KeyFile      *string
+	CaCert       *string
+	TenantId     *string
 
 	NumWorkerThreads      int32
 	TaskWorkerVersion     string
@@ -70,7 +70,7 @@ type LHConfig struct {
 	GrpcKeepaliveTimeMs    int64
 	GrpcKeepaliveTimeoutMs int64
 
-	clients  map[string]*model.LHPublicApiClient
+	clients  map[string]*model.LittleHorseClient
 	channels map[string]*grpc.ClientConn
 
 	OauthConfig *auth.OauthConfig
@@ -117,7 +117,7 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 	return config.channels[url], nil
 }
 
-func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
+func (l *LHConfig) GetGrpcClient() (*model.LittleHorseClient, error) {
 	url := l.ApiHost + ":" + l.ApiPort
 	if l.ApiProtocol != DEFAULT_PROTOCOL && l.ApiProtocol != TLS_PROTOCOL {
 		return nil, fmt.Errorf("invalid protocol: %s", l.ApiProtocol)
@@ -125,13 +125,13 @@ func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
 	return l.GetGrpcClientForHost(url)
 }
 
-func (l *LHConfig) GetGrpcClientForHost(url string) (*model.LHPublicApiClient, error) {
+func (l *LHConfig) GetGrpcClientForHost(url string) (*model.LittleHorseClient, error) {
 	if l.clients[url] == nil {
 		conn, err := l.GetGrpcConn(l.ApiHost + ":" + l.ApiPort)
 		if err != nil {
 			return nil, err
 		}
-		temp := model.NewLHPublicApiClient(conn)
+		temp := model.NewLittleHorseClient(conn)
 		l.clients[url] = &temp
 	}
 
@@ -145,10 +145,10 @@ func NewConfigFromEnv() *LHConfig {
 	}
 
 	return &LHConfig{
-		ApiHost:     getEnvOrDefault(API_HOST_KEY, "localhost"),
-		ApiProtocol: getEnvOrDefault(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
-		ApiPort:     getEnvOrDefault(API_PORT_KEY, "2023"),
-		ClientId:    getEnvOrDefault(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
+		ApiHost:      getEnvOrDefault(API_HOST_KEY, "localhost"),
+		ApiProtocol:  getEnvOrDefault(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
+		ApiPort:      getEnvOrDefault(API_PORT_KEY, "2023"),
+		TaskWorkerId: getEnvOrDefault(TASK_WORKER_ID_KEY, "worker-"+generateRandomWorkerId()),
 
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
 		KeyFile:  stringPtr(os.Getenv(KEY_FILE_KEY)),
@@ -162,7 +162,7 @@ func NewConfigFromEnv() *LHConfig {
 		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
 
-		clients:  make(map[string]*model.LHPublicApiClient),
+		clients:  make(map[string]*model.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
 
 		OauthConfig: &auth.OauthConfig{
@@ -183,10 +183,10 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	}
 
 	return &LHConfig{
-		ApiHost:     p.GetString(API_HOST_KEY, "localhost"),
-		ApiProtocol: p.GetString(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
-		ApiPort:     p.GetString(API_PORT_KEY, "2023"),
-		ClientId:    p.GetString(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
+		ApiHost:      p.GetString(API_HOST_KEY, "localhost"),
+		ApiProtocol:  p.GetString(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
+		ApiPort:      p.GetString(API_PORT_KEY, "2023"),
+		TaskWorkerId: p.GetString(TASK_WORKER_ID_KEY, "worker-"+generateRandomWorkerId()),
 
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
@@ -200,7 +200,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
 
-		clients:  make(map[string]*model.LHPublicApiClient),
+		clients:  make(map[string]*model.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
 
 		OauthConfig: &auth.OauthConfig{
@@ -214,7 +214,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	}, nil
 }
 
-func generateRandomClientId() string {
+func generateRandomWorkerId() string {
 	uuid := uuid.NewString()
 	return strings.ReplaceAll(uuid, "-", "")
 }

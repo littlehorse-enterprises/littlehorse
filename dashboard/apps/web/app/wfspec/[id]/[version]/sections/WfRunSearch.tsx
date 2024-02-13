@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { WfRunSearchTable } from '../components/search/WfRunSearchTable'
+import { getVersionFromFormattedString } from '../components/common/VersionExtractor'
 
 export interface Result {
     id: string
@@ -39,13 +40,6 @@ export function WfRunSearch({ id, version }: any) {
     const [ type, setType ] = useState('')
     const [ wfRunSearchResults, setWfRunSearchResults ] = useState<any[]>([])
 
-    const getVersionFromFormattedString = (formattedVersion: string) => {
-        const versionValues = formattedVersion.split('.')
-        return {
-            majorVersion: versionValues[0],
-            revision: versionValues[1]
-        }
-    }
     const fetchData = async (wfRunStatus: string, paginate = false, useLimit = true) => {
         let bookmark: string | undefined
         if (wfRunStatus === 'ERROR') {bookmark = errorBookmark}

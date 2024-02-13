@@ -8,16 +8,28 @@ public interface SleepNodeRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    * @return Whether the maturationTime field is set.
    */
   boolean hasMaturationTime();
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    * @return The maturationTime.
    */
   com.google.protobuf.Timestamp getMaturationTime();
   /**
+   * <pre>
+   * The time at which the NodeRun will wake up.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();

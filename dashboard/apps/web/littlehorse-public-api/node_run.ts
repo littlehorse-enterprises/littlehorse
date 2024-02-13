@@ -1,92 +1,303 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
-import {
-  LHStatus,
-  lHStatusFromJSON,
-  lHStatusToJSON,
-  lHStatusToNumber,
-  WaitForThreadsPolicy,
-  waitForThreadsPolicyFromJSON,
-  waitForThreadsPolicyToJSON,
-  waitForThreadsPolicyToNumber,
-} from "./common_enums";
+import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, ExternalEventId, NodeRunId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
+/**
+ * A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun
+ * is a Getable object, meaning it can be retried from the LittleHorse grpc API.
+ */
 export interface NodeRun {
-  id: NodeRunId | undefined;
-  wfSpecId: WfSpecId | undefined;
+  /**
+   * The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+   * ThreadRun's number, and the position of the NodeRun within that ThreadRun.
+   */
+  id:
+    | NodeRunId
+    | undefined;
+  /**
+   * The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+   * as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+   * feature.
+   */
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /** A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun. */
   failureHandlerIds: number[];
+  /** The status of this NodeRun. */
   status: LHStatus;
-  arrivalTime: string | undefined;
-  endTime?: string | undefined;
+  /** The time the ThreadRun arrived at this NodeRun. */
+  arrivalTime:
+    | string
+    | undefined;
+  /** The time the NodeRun was terminated (failed or completed). */
+  endTime?:
+    | string
+    | undefined;
+  /** The name of the ThreadSpec to which this NodeRun belongs. */
   threadSpecName: string;
+  /** The name of the Node in the ThreadSpec that this NodeRun belongs to. */
   nodeName: string;
-  errorMessage?: string | undefined;
+  /**
+   * A human-readable error message intended to help developers diagnose WfSpec
+   * problems.
+   */
+  errorMessage?:
+    | string
+    | undefined;
+  /** A list of Failures thrown by this NodeRun. */
   failures: Failure[];
-  task?: TaskNodeRun | undefined;
-  externalEvent?: ExternalEventRun | undefined;
-  entrypoint?: EntrypointRun | undefined;
-  exit?: ExitRun | undefined;
-  startThread?: StartThreadRun | undefined;
-  waitThreads?: WaitForThreadsRun | undefined;
-  sleep?: SleepNodeRun | undefined;
-  userTask?: UserTaskNodeRun | undefined;
+  /** Denotes a TASK node, which runs a TaskRun. */
+  task?:
+    | TaskNodeRun
+    | undefined;
+  /** An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. */
+  externalEvent?:
+    | ExternalEventRun
+    | undefined;
+  /** An ENTRYPOINT node is the first thing that runs in a ThreadRun. */
+  entrypoint?:
+    | EntrypointRun
+    | undefined;
+  /** An EXIT node completes a ThreadRun. */
+  exit?:
+    | ExitRun
+    | undefined;
+  /** A START_THREAD node starts a child ThreadRun. */
+  startThread?:
+    | StartThreadRun
+    | undefined;
+  /** A WAIT_THREADS node waits for one or more child ThreadRun's to complete. */
+  waitThreads?:
+    | WaitForThreadsRun
+    | undefined;
+  /** A SLEEP node makes the ThreadRun block for a certain amount of time. */
+  sleep?:
+    | SleepNodeRun
+    | undefined;
+  /** A USER_TASK node waits until a human executes some work and reports the result. */
+  userTask?:
+    | UserTaskNodeRun
+    | undefined;
+  /**
+   * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+   * child ThreadRun for each element in the list.
+   */
   startMultipleThreads?: StartMultipleThreadsRun | undefined;
 }
 
+/** The sub-node structure for a TASK NodeRun. */
 export interface TaskNodeRun {
+  /**
+   * The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this TASK Node, then the task_run_id will be unset.
+   */
   taskRunId?: TaskRunId | undefined;
 }
 
+/** The sub-node structure for a USER_TASK NodeRun. */
 export interface UserTaskNodeRun {
+  /**
+   * The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+   * at this USER_TASK node, then the user_task_run_id will be unset.
+   */
   userTaskRunId?: UserTaskRunId | undefined;
 }
 
+/** The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty. */
 export interface EntrypointRun {
 }
 
+/**
+ * The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+ * about ThreadRun Outputs once those are added in the future.
+ */
 export interface ExitRun {
 }
 
+/** The sub-node structure for a START_THREAD NodeRun. */
 export interface StartThreadRun {
-  childThreadId?: number | undefined;
+  /**
+   * Contains the thread_run_number of the created Child ThreadRun, if it has
+   * been created already.
+   */
+  childThreadId?:
+    | number
+    | undefined;
+  /** The thread_spec_name of the child thread_run. */
   threadSpecName: string;
 }
 
+/**
+ * The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+ *
+ * Note: the output of this NodeRun, which can be used to mutate Variables,
+ * is a JSON_ARR variable containing the ID's of all the child threadRuns.
+ */
 export interface StartMultipleThreadsRun {
+  /** The thread_spec_name of the child thread_runs. */
   threadSpecName: string;
 }
 
+/** The sub-node structure for a WAIT_FOR_THREADS NodeRun. */
 export interface WaitForThreadsRun {
+  /** The threads that are being waited for. */
   threads: WaitForThreadsRun_WaitForThread[];
-  policy: WaitForThreadsPolicy;
 }
 
+/** The status of a single ThreadRun that we are waiting for. */
+export enum WaitForThreadsRun_WaitingThreadStatus {
+  /** THREAD_IN_PROGRESS - The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR) */
+  THREAD_IN_PROGRESS = "THREAD_IN_PROGRESS",
+  /**
+   * THREAD_HANDLING_FAILURE - The ThreadRun failed with some failure, and the FailureHandler is running
+   * for that Failure.
+   */
+  THREAD_HANDLING_FAILURE = "THREAD_HANDLING_FAILURE",
+  /**
+   * THREAD_COMPLETED_OR_FAILURE_HANDLED - We can mark this ThreadRun as "already waited for", meaning that either:
+   * 1. It completed successfully, OR
+   * 2. It failed, and the Failure Handler successfully completed
+   */
+  THREAD_COMPLETED_OR_FAILURE_HANDLED = "THREAD_COMPLETED_OR_FAILURE_HANDLED",
+  /**
+   * THREAD_UNSUCCESSFUL - The ThreadRun did not complete successfully, and there wasn't a successful
+   * run of a Failure Handler for the Failure that was thrown.
+   */
+  THREAD_UNSUCCESSFUL = "THREAD_UNSUCCESSFUL",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function waitForThreadsRun_WaitingThreadStatusFromJSON(object: any): WaitForThreadsRun_WaitingThreadStatus {
+  switch (object) {
+    case 0:
+    case "THREAD_IN_PROGRESS":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS;
+    case 1:
+    case "THREAD_HANDLING_FAILURE":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE;
+    case 2:
+    case "THREAD_COMPLETED_OR_FAILURE_HANDLED":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED;
+    case 3:
+    case "THREAD_UNSUCCESSFUL":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED;
+  }
+}
+
+export function waitForThreadsRun_WaitingThreadStatusToJSON(object: WaitForThreadsRun_WaitingThreadStatus): string {
+  switch (object) {
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS:
+      return "THREAD_IN_PROGRESS";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
+      return "THREAD_HANDLING_FAILURE";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED:
+      return "THREAD_COMPLETED_OR_FAILURE_HANDLED";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
+      return "THREAD_UNSUCCESSFUL";
+    case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function waitForThreadsRun_WaitingThreadStatusToNumber(object: WaitForThreadsRun_WaitingThreadStatus): number {
+  switch (object) {
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS:
+      return 0;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_HANDLING_FAILURE:
+      return 1;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED:
+      return 2;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
+      return 3;
+    case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/** A 'WaitForThread' structure defines a thread that is being waited for. */
 export interface WaitForThreadsRun_WaitForThread {
-  threadEndTime?: string | undefined;
+  /**
+   * The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+   * is still RUNNING, HALTED, or HALTING.
+   */
+  threadEndTime?:
+    | string
+    | undefined;
+  /** The current status of the ThreadRun being waited for. */
   threadStatus: LHStatus;
+  /** The number of the ThreadRun being waited for. */
   threadRunNumber: number;
-  alreadyHandled: boolean;
+  /**
+   * The "waiting status" of this specific thread: whether it's still running,
+   * already done, handling a failure, or completely failed.
+   */
+  waitingStatus: WaitForThreadsRun_WaitingThreadStatus;
+  /**
+   * If there is a failure on the ThreadRun, and we have a failure handler defined
+   * for it, then we will start a failure handler for this threadrun. This field
+   * is the id of that threadRun.
+   */
+  failureHandlerThreadRunId?: number | undefined;
 }
 
+/** The sub-node structure for an EXTERNAL_EVENT NodeRun. */
 export interface ExternalEventRun {
-  externalEventDefId: ExternalEventDefId | undefined;
-  eventTime?: string | undefined;
+  /** The ExternalEventDefId that we are waiting for. */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /** The time that the ExternalEvent arrived. Unset if still waiting. */
+  eventTime?:
+    | string
+    | undefined;
+  /** The ExternalEventId of the ExternalEvent. Unset if still waiting. */
   externalEventId?: ExternalEventId | undefined;
 }
 
+/** The sub-node structure for a SLEEP NodeRun. */
 export interface SleepNodeRun {
+  /** The time at which the NodeRun will wake up. */
   maturationTime: string | undefined;
 }
 
+/**
+ * Denotes a failure that happened during execution of a NodeRun or the outgoing
+ * edges.
+ */
 export interface Failure {
+  /**
+   * The name of the failure. LittleHorse has certain built-in failures, all named in
+   * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+   *
+   * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+   * as an `LHStatus.EXCEPTION`.
+   */
   failureName: string;
+  /** The human-readable message associated with this Failure. */
   message: string;
-  content?: VariableValue | undefined;
+  /**
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   */
+  content?:
+    | VariableValue
+    | undefined;
+  /** A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. */
   wasProperlyHandled: boolean;
 }
 
@@ -809,16 +1020,13 @@ export const StartMultipleThreadsRun = {
 };
 
 function createBaseWaitForThreadsRun(): WaitForThreadsRun {
-  return { threads: [], policy: WaitForThreadsPolicy.STOP_ON_FAILURE };
+  return { threads: [] };
 }
 
 export const WaitForThreadsRun = {
   encode(message: WaitForThreadsRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.threads) {
       WaitForThreadsRun_WaitForThread.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      writer.uint32(16).int32(waitForThreadsPolicyToNumber(message.policy));
     }
     return writer;
   },
@@ -837,13 +1045,6 @@ export const WaitForThreadsRun = {
 
           message.threads.push(WaitForThreadsRun_WaitForThread.decode(reader, reader.uint32()));
           continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.policy = waitForThreadsPolicyFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -858,7 +1059,6 @@ export const WaitForThreadsRun = {
       threads: globalThis.Array.isArray(object?.threads)
         ? object.threads.map((e: any) => WaitForThreadsRun_WaitForThread.fromJSON(e))
         : [],
-      policy: isSet(object.policy) ? waitForThreadsPolicyFromJSON(object.policy) : WaitForThreadsPolicy.STOP_ON_FAILURE,
     };
   },
 
@@ -866,9 +1066,6 @@ export const WaitForThreadsRun = {
     const obj: any = {};
     if (message.threads?.length) {
       obj.threads = message.threads.map((e) => WaitForThreadsRun_WaitForThread.toJSON(e));
-    }
-    if (message.policy !== WaitForThreadsPolicy.STOP_ON_FAILURE) {
-      obj.policy = waitForThreadsPolicyToJSON(message.policy);
     }
     return obj;
   },
@@ -879,13 +1076,18 @@ export const WaitForThreadsRun = {
   fromPartial<I extends Exact<DeepPartial<WaitForThreadsRun>, I>>(object: I): WaitForThreadsRun {
     const message = createBaseWaitForThreadsRun();
     message.threads = object.threads?.map((e) => WaitForThreadsRun_WaitForThread.fromPartial(e)) || [];
-    message.policy = object.policy ?? WaitForThreadsPolicy.STOP_ON_FAILURE;
     return message;
   },
 };
 
 function createBaseWaitForThreadsRun_WaitForThread(): WaitForThreadsRun_WaitForThread {
-  return { threadEndTime: undefined, threadStatus: LHStatus.STARTING, threadRunNumber: 0, alreadyHandled: false };
+  return {
+    threadEndTime: undefined,
+    threadStatus: LHStatus.STARTING,
+    threadRunNumber: 0,
+    waitingStatus: WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
+    failureHandlerThreadRunId: undefined,
+  };
 }
 
 export const WaitForThreadsRun_WaitForThread = {
@@ -899,8 +1101,11 @@ export const WaitForThreadsRun_WaitForThread = {
     if (message.threadRunNumber !== 0) {
       writer.uint32(24).int32(message.threadRunNumber);
     }
-    if (message.alreadyHandled === true) {
-      writer.uint32(40).bool(message.alreadyHandled);
+    if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
+      writer.uint32(32).int32(waitForThreadsRun_WaitingThreadStatusToNumber(message.waitingStatus));
+    }
+    if (message.failureHandlerThreadRunId !== undefined) {
+      writer.uint32(40).int32(message.failureHandlerThreadRunId);
     }
     return writer;
   },
@@ -933,12 +1138,19 @@ export const WaitForThreadsRun_WaitForThread = {
 
           message.threadRunNumber = reader.int32();
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.waitingStatus = waitForThreadsRun_WaitingThreadStatusFromJSON(reader.int32());
+          continue;
         case 5:
           if (tag !== 40) {
             break;
           }
 
-          message.alreadyHandled = reader.bool();
+          message.failureHandlerThreadRunId = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -954,7 +1166,12 @@ export const WaitForThreadsRun_WaitForThread = {
       threadEndTime: isSet(object.threadEndTime) ? globalThis.String(object.threadEndTime) : undefined,
       threadStatus: isSet(object.threadStatus) ? lHStatusFromJSON(object.threadStatus) : LHStatus.STARTING,
       threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
-      alreadyHandled: isSet(object.alreadyHandled) ? globalThis.Boolean(object.alreadyHandled) : false,
+      waitingStatus: isSet(object.waitingStatus)
+        ? waitForThreadsRun_WaitingThreadStatusFromJSON(object.waitingStatus)
+        : WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
+      failureHandlerThreadRunId: isSet(object.failureHandlerThreadRunId)
+        ? globalThis.Number(object.failureHandlerThreadRunId)
+        : undefined,
     };
   },
 
@@ -969,8 +1186,11 @@ export const WaitForThreadsRun_WaitForThread = {
     if (message.threadRunNumber !== 0) {
       obj.threadRunNumber = Math.round(message.threadRunNumber);
     }
-    if (message.alreadyHandled === true) {
-      obj.alreadyHandled = message.alreadyHandled;
+    if (message.waitingStatus !== WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS) {
+      obj.waitingStatus = waitForThreadsRun_WaitingThreadStatusToJSON(message.waitingStatus);
+    }
+    if (message.failureHandlerThreadRunId !== undefined) {
+      obj.failureHandlerThreadRunId = Math.round(message.failureHandlerThreadRunId);
     }
     return obj;
   },
@@ -985,7 +1205,8 @@ export const WaitForThreadsRun_WaitForThread = {
     message.threadEndTime = object.threadEndTime ?? undefined;
     message.threadStatus = object.threadStatus ?? LHStatus.STARTING;
     message.threadRunNumber = object.threadRunNumber ?? 0;
-    message.alreadyHandled = object.alreadyHandled ?? false;
+    message.waitingStatus = object.waitingStatus ?? WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS;
+    message.failureHandlerThreadRunId = object.failureHandlerThreadRunId ?? undefined;
     return message;
   },
 };
@@ -1262,7 +1483,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

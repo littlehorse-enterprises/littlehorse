@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -12,9 +13,9 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -47,7 +49,7 @@ public class UserTaskRunModelStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private ModelStore localStoreWrapper;
+    private TenantScopedStore localStoreWrapper;
 
     private String tenantId = "myTenant";
 
@@ -55,7 +57,7 @@ public class UserTaskRunModelStorageManagerTest {
     private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExecutionContext executionContext;
 
     // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
@@ -80,7 +82,7 @@ public class UserTaskRunModelStorageManagerTest {
         // Commented out due to "UnnecessaryStubbingException";
 
         // when(mockCoreDao.context()).thenReturn(testContext);
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);

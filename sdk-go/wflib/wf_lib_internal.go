@@ -44,10 +44,11 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 				seenThreads[threadName] = function
 
 				thr := WorkflowThread{
-					Name:     threadName,
-					isActive: true,
-					wf:       l,
-					spec:     model.ThreadSpec{},
+					Name:              threadName,
+					isActive:          true,
+					wf:                l,
+					spec:              model.ThreadSpec{},
+					variableMutations: make([]*model.VariableMutation, 0),
 				}
 				thr.spec.InterruptDefs = make([]*model.InterruptDef, 0)
 				thr.spec.VariableDefs = make([]*model.ThreadVarDef, 0)
@@ -358,9 +359,12 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 
 	// Need to add an edge from that node to this node
 	lastNode := t.spec.Nodes[*t.lastNodeName]
+
 	edge := model.Edge{
-		SinkNodeName: nodeName,
+		SinkNodeName:      nodeName,
+		VariableMutations: t.collectVariableMutations(),
 	}
+
 	if t.lastNodeCondition != nil {
 		edge.Condition = t.lastNodeCondition.spec
 		t.lastNodeCondition = nil
@@ -368,9 +372,8 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Nod
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
 
 	node := &model.Node{
-		OutgoingEdges:     make([]*model.Edge, 0),
-		VariableMutations: make([]*model.VariableMutation, 0),
-		FailureHandlers:   make([]*model.FailureHandlerDef, 0),
+		OutgoingEdges:   make([]*model.Edge, 0),
+		FailureHandlers: make([]*model.FailureHandlerDef, 0),
 	}
 
 	t.spec.Nodes[nodeName] = node
@@ -406,6 +409,11 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType model.Varia
 		FieldType: fieldType,
 	})
 	return w
+}
+
+func (w *WfRunVariable) withAccessLevel(accessLevel model.WfRunVariableAccessLevel) WfRunVariable {
+	w.threadVarDef.AccessLevel = accessLevel
+	return *w
 }
 
 func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
@@ -511,8 +519,7 @@ func (t *WorkflowThread) mutate(
 		}
 	}
 
-	node := t.spec.Nodes[*t.lastNodeName]
-	node.VariableMutations = append(node.VariableMutations, mutation)
+	t.variableMutations = append(t.variableMutations, mutation)
 }
 
 func (t *WorkflowThread) addVariable(
@@ -529,7 +536,7 @@ func (t *WorkflowThread) addVariable(
 		if err != nil {
 			log.Fatal(err)
 		}
-		if common.GetVarType(defaultVarVal.GetValue()) != varType {
+		if *common.GetVarType(defaultVarVal) != varType {
 			log.Fatal("provided default value for variable " + name + " didn't match type " + varType.String())
 		}
 		varDef.DefaultValue = defaultVarVal
@@ -571,8 +578,7 @@ func (t *WorkflowThread) condition(
 	}
 
 	return &WorkflowCondition{
-		spec:          cond,
-		createdAtNode: *t.lastNodeName,
+		spec: cond,
 	}
 }
 
@@ -631,30 +637,40 @@ func (t *WorkflowThread) doIfElse(
 	t.lastNodeCondition = cond
 	doIf(t)
 
-	t.addNopNode()
-	joinerNodeName := t.lastNodeName
+	lastConditionFromIfBlock := t.lastNodeCondition
+	lastNodeFromIfBlockName := t.lastNodeName
+	variablesFromIfBlock := t.collectVariableMutations()
 
 	// Go back to the tree root
 	t.lastNodeName = treeRootNodeName
+	t.lastNodeCondition = &WorkflowCondition{spec: cond.getReverse()}
 	doElse(t)
 
-	if t.lastNodeCondition != nil {
-		panic(
-			"Impossible (bug): After doing else body, last condition should be nil",
-		)
+	t.addNopNode()
+
+	ifBlockEdge := model.Edge{
+		SinkNodeName:      *t.lastNodeName,
+		VariableMutations: variablesFromIfBlock,
 	}
 
-	lastNodeFromElseBlock := t.spec.Nodes[*t.lastNodeName]
+	// If the treeRootNodeName is equal to the lastNodeFromIfBlockName it means that
+	// no node was created within the if block, thus the edge of the starting NOP should be created
+	// with the appropriate conditional
+	if lastNodeFromIfBlockName == treeRootNodeName {
+		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
+	}
 
-	// Make the last node from the else block point to the joiner node
-	lastNodeFromElseBlock.OutgoingEdges = append(
-		lastNodeFromElseBlock.OutgoingEdges,
-		&model.Edge{
-			SinkNodeName: *joinerNodeName,
-		},
+	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
+		t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges,
+		&ifBlockEdge,
 	)
+}
 
-	t.lastNodeName = joinerNodeName
+func (t *WorkflowThread) collectVariableMutations() []*model.VariableMutation {
+	variablesFromIfBlock := make([]*model.VariableMutation, len(t.variableMutations))
+	copy(variablesFromIfBlock, t.variableMutations)
+	t.variableMutations = nil
+	return variablesFromIfBlock
 }
 
 func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
@@ -773,14 +789,18 @@ func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
 	node.Node = &model.Node_WaitForThreads{
 		WaitForThreads: &model.WaitForThreadsNode{
-			Threads: make([]*model.WaitForThreadsNode_ThreadToWaitFor, 0),
+			ThreadsToWaitFor: &model.WaitForThreadsNode_Threads{
+				Threads: &model.WaitForThreadsNode_ThreadsToWaitFor{
+					Threads: make([]*model.WaitForThreadsNode_ThreadToWaitFor, 0),
+				},
+			},
 		},
 	}
 
 	for _, spawnedThread := range s {
 		threadRunNumberAssn, _ := t.assignVariable(spawnedThread.threadNumVar)
 
-		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads,
+		node.GetWaitForThreads().GetThreads().Threads = append(node.GetWaitForThreads().GetThreads().Threads,
 			&model.WaitForThreadsNode_ThreadToWaitFor{
 				ThreadRunNumber: threadRunNumberAssn,
 			},
@@ -854,8 +874,9 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	}
 
 	subNode := &model.WaitForThreadsNode{
-		ThreadList: threadListAssn,
-		Policy:     model.WaitForThreadsPolicy_STOP_ON_FAILURE,
+		ThreadsToWaitFor: &model.WaitForThreadsNode_ThreadList{
+			ThreadList: threadListAssn,
+		},
 	}
 
 	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")

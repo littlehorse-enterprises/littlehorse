@@ -12,82 +12,203 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun
+// is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 message NodeRun {
+  // The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the
+  // ThreadRun's number, and the position of the NodeRun within that ThreadRun.
   NodeRunId id = 1;
 
+  // The ID of the WfSpec that this NodeRun is from. This is not _always_ the same
+  // as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration
+  // feature.
   WfSpecId wf_spec_id = 4;
+
+  // A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun.
   repeated int32 failure_handler_ids = 5;
+
+  // The status of this NodeRun.
   LHStatus status = 6;
 
+  // The time the ThreadRun arrived at this NodeRun.
   google.protobuf.Timestamp arrival_time = 7;
+
+  // The time the NodeRun was terminated (failed or completed).
   optional google.protobuf.Timestamp end_time = 8;
+
+  // The name of the ThreadSpec to which this NodeRun belongs.
   string thread_spec_name = 9;
+
+  // The name of the Node in the ThreadSpec that this NodeRun belongs to.
   string node_name = 10;
 
+  // A human-readable error message intended to help developers diagnose WfSpec
+  // problems.
   optional string error_message = 11;
+
+  // A list of Failures thrown by this NodeRun.
   repeated Failure failures = 12;
 
+  // There are many types of Nodes in a WfSpec; therefore, we have many different types
+  // of NodeRun. Each NodeRun can only be one.
   oneof node_type {
+    // Denotes a TASK node, which runs a TaskRun.
     TaskNodeRun task = 13;
+
+    // An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
     ExternalEventRun external_event = 14;
+
+    // An ENTRYPOINT node is the first thing that runs in a ThreadRun.
     EntrypointRun entrypoint = 15;
+
+    // An EXIT node completes a ThreadRun.
     ExitRun exit = 16;
+
+    // A START_THREAD node starts a child ThreadRun.
     StartThreadRun start_thread = 17;
+
+    // A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
     WaitForThreadsRun wait_threads = 18;
+
+    // A SLEEP node makes the ThreadRun block for a certain amount of time.
     SleepNodeRun sleep = 19;
+
+    // A USER_TASK node waits until a human executes some work and reports the result.
     UserTaskNodeRun user_task = 20;
+
+    // A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+    // child ThreadRun for each element in the list.
     StartMultipleThreadsRun start_multiple_threads = 21;
   }
 }
 
+// The sub-node structure for a TASK NodeRun.
 message TaskNodeRun {
+  // The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
+  // at this TASK Node, then the task_run_id will be unset.
   optional TaskRunId task_run_id = 1;
 }
 
+// The sub-node structure for a USER_TASK NodeRun.
 message UserTaskNodeRun {
+  // The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived
+  // at this USER_TASK node, then the user_task_run_id will be unset.
   optional UserTaskRunId user_task_run_id = 1;
 }
 
+// The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
 message EntrypointRun {
 }
 
+// The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+// about ThreadRun Outputs once those are added in the future.
 message ExitRun {
-} // Later will have info once we add threads
+}
 
+// The sub-node structure for a START_THREAD NodeRun.
 message StartThreadRun {
+  // Contains the thread_run_number of the created Child ThreadRun, if it has
+  // been created already.
   optional int32 child_thread_id = 1;
+
+  // The thread_spec_name of the child thread_run.
   string thread_spec_name = 2;
 }
 
+// The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+//
+// Note: the output of this NodeRun, which can be used to mutate Variables,
+// is a JSON_ARR variable containing the ID's of all the child threadRuns.
 message StartMultipleThreadsRun {
+  // The thread_spec_name of the child thread_runs.
   string thread_spec_name = 1;
 }
 
+// The sub-node structure for a WAIT_FOR_THREADS NodeRun.
 message WaitForThreadsRun {
-  message WaitForThread {
-    optional google.protobuf.Timestamp thread_end_time = 1;
-    LHStatus thread_status = 2;
-    int32 thread_run_number = 3;
-    bool already_handled = 5;
+  // The status of a single ThreadRun that we are waiting for.
+  enum WaitingThreadStatus {
+    // The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+    THREAD_IN_PROGRESS = 0;
+
+    // The ThreadRun failed with some failure, and the FailureHandler is running
+    // for that Failure.
+    THREAD_HANDLING_FAILURE = 1;
+
+    // We can mark this ThreadRun as "already waited for", meaning that either:
+    // 1. It completed successfully, OR
+    // 2. It failed, and the Failure Handler successfully completed
+    THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;
+
+    // The ThreadRun did not complete successfully, and there wasn't a successful
+    // run of a Failure Handler for the Failure that was thrown.
+    THREAD_UNSUCCESSFUL = 3;
   }
+
+  // A 'WaitForThread' structure defines a thread that is being waited for.
+  message WaitForThread {
+    // The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
+    // is still RUNNING, HALTED, or HALTING.
+    optional google.protobuf.Timestamp thread_end_time = 1;
+
+    // The current status of the ThreadRun being waited for.
+    LHStatus thread_status = 2;
+
+    // The number of the ThreadRun being waited for.
+    int32 thread_run_number = 3;
+
+    // The "waiting status" of this specific thread: whether it's still running,
+    // already done, handling a failure, or completely failed.
+    WaitingThreadStatus waiting_status = 4;
+
+    // If there is a failure on the ThreadRun, and we have a failure handler defined
+    // for it, then we will start a failure handler for this threadrun. This field
+    // is the id of that threadRun.
+    optional int32 failure_handler_thread_run_id = 5;
+  }
+
+  // The threads that are being waited for.
   repeated WaitForThread threads = 1;
-  WaitForThreadsPolicy policy = 2;
 }
 
+// The sub-node structure for an EXTERNAL_EVENT NodeRun.
 message ExternalEventRun {
+  // The ExternalEventDefId that we are waiting for.
   ExternalEventDefId external_event_def_id = 1;
+
+  // The time that the ExternalEvent arrived. Unset if still waiting.
   optional google.protobuf.Timestamp event_time = 2;
+
+  // The ExternalEventId of the ExternalEvent. Unset if still waiting.
   optional ExternalEventId external_event_id = 3;
 }
 
+// The sub-node structure for a SLEEP NodeRun.
 message SleepNodeRun {
+  // The time at which the NodeRun will wake up.
   google.protobuf.Timestamp maturation_time = 1;
 }
 
-
+// Denotes a failure that happened during execution of a NodeRun or the outgoing
+// edges.
 message Failure {
+  // The name of the failure. LittleHorse has certain built-in failures, all named in
+  // UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+  //
+  // Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+  // as an `LHStatus.EXCEPTION`.
   string failure_name = 1;
+
+  // The human-readable message associated with this Failure.
   string message = 2;
+
+  // A user-defined Failure can have a value; for example, in Java an Exception is an
+  // Object with arbitrary properties and behaviors.
+  //
+  // Future versions of LH will allow FailureHandler threads to accept that value as
+  // an input variable.
   optional VariableValue content = 3;
+
+  // A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
   bool was_properly_handled = 4;
 }

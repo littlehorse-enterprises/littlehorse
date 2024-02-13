@@ -21,17 +21,36 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+// Generally, an ExternalEvent is used to represent a document getting signed, an incident
+// being resolved, an order being fulfilled, etc.
+//
+// ExternalEvent's are created via the 'rpc PutExternalEvent'
+//
+// For more context on ExternalEvents, check our documentation here:
+// https://littlehorse.dev/docs/concepts/external-events
 type ExternalEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              *ExternalEventId       `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	Content         *VariableValue         `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
-	ThreadRunNumber *int32                 `protobuf:"varint,4,opt,name=thread_run_number,json=threadRunNumber,proto3,oneof" json:"thread_run_number,omitempty"`
-	NodeRunPosition *int32                 `protobuf:"varint,5,opt,name=node_run_position,json=nodeRunPosition,proto3,oneof" json:"node_run_position,omitempty"`
-	Claimed         bool                   `protobuf:"varint,6,opt,name=claimed,proto3" json:"claimed,omitempty"`
+	// The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId,
+	// and a unique guid which can be used for idempotency of the `PutExternalEvent`
+	// rpc call.
+	Id *ExternalEventId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The time the ExternalEvent was registered with LittleHorse.
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// The payload of this ExternalEvent.
+	Content *VariableValue `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	// If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or
+	// EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun.
+	ThreadRunNumber *int32 `protobuf:"varint,4,opt,name=thread_run_number,json=threadRunNumber,proto3,oneof" json:"thread_run_number,omitempty"`
+	// If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT
+	// Node; note that in the case of an Interrupt the node_run_position will never
+	// be set), this is set to the number of the relevant NodeRun.
+	NodeRunPosition *int32 `protobuf:"varint,5,opt,name=node_run_position,json=nodeRunPosition,proto3,oneof" json:"node_run_position,omitempty"`
+	// Whether the ExternalEvent has been claimed by a WfRun.
+	Claimed bool `protobuf:"varint,6,opt,name=claimed,proto3" json:"claimed,omitempty"`
 }
 
 func (x *ExternalEvent) Reset() {
@@ -108,14 +127,18 @@ func (x *ExternalEvent) GetClaimed() bool {
 	return false
 }
 
-// ExternalEventDef
+// The ExternalEventDef defines the blueprint for an ExternalEvent.
 type ExternalEventDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name            string                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	CreatedAt       *timestamppb.Timestamp        `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// The name of the ExternalEventDef.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// When the ExternalEventDef was created.
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
+	// ExternalEvent **only before** it is matched with a WfRun.
 	RetentionPolicy *ExternalEventRetentionPolicy `protobuf:"bytes,3,opt,name=retention_policy,json=retentionPolicy,proto3" json:"retention_policy,omitempty"`
 }
 
@@ -172,11 +195,22 @@ func (x *ExternalEventDef) GetRetentionPolicy() *ExternalEventRetentionPolicy {
 	return nil
 }
 
+// Policy to determine how long an ExternalEvent is retained after creation if it
+// is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+// ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+// If not set, then ExternalEvent's are not deleted if they are not matched with
+// a WfRun.
+//
+// A future version of LittleHorse will allow changing the retention_policy, which
+// will trigger a cleanup of old `ExternalEvent`s.
 type ExternalEventRetentionPolicy struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The retention policy choice. If not set, then the ExternalEvent is not cleaned up
+	// until matched with a WfRun (which may mean it is never cleaned up).
+	//
 	// Types that are assignable to ExtEvtGcPolicy:
 	//	*ExternalEventRetentionPolicy_SecondsAfterPut
 	ExtEvtGcPolicy isExternalEventRetentionPolicy_ExtEvtGcPolicy `protobuf_oneof:"ext_evt_gc_policy"`

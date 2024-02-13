@@ -21,12 +21,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// The type of a ThreadRUn.
 type ThreadType int32
 
 const (
-	ThreadType_ENTRYPOINT      ThreadType = 0
-	ThreadType_CHILD           ThreadType = 1
-	ThreadType_INTERRUPT       ThreadType = 2
+	// The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0.
+	ThreadType_ENTRYPOINT ThreadType = 0
+	// A ThreadRun explicitly created by another ThreadRun via a START_THREAD or START_MULTIPLE_THREADS
+	// NodeRun.
+	ThreadType_CHILD ThreadType = 1
+	// A ThreadRun that was created to handle an Interrupt.
+	ThreadType_INTERRUPT ThreadType = 2
+	// A ThreadRun that was created to handle a Failure.
 	ThreadType_FAILURE_HANDLER ThreadType = 3
 )
 
@@ -73,23 +79,41 @@ func (ThreadType) EnumDescriptor() ([]byte, []int) {
 	return file_wf_run_proto_rawDescGZIP(), []int{0}
 }
 
+// A WfRun is a running instance of a WfSpec.
 type WfRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                *WfRunId    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	WfSpecId          *WfSpecId   `protobuf:"bytes,2,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// The ID of the WfRun.
+	Id *WfRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the WfSpec that this WfRun belongs to.
+	WfSpecId *WfSpecId `protobuf:"bytes,2,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
+	// old WfSpecId to this list for historical auditing and debugging purposes.
 	OldWfSpecVersions []*WfSpecId `protobuf:"bytes,3,rep,name=old_wf_spec_versions,json=oldWfSpecVersions,proto3" json:"old_wf_spec_versions,omitempty"`
-	Status            LHStatus    `protobuf:"varint,4,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
+	// The status of this WfRun.
+	Status LHStatus `protobuf:"varint,4,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
+	// The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+	// is given by greatest_thread_run_number + 1.
+	//
 	// Introduced now since with ThreadRun-level retention, we can't rely upon
-	// thread_runs.size() to determine the number of ThreadRuns.
-	GreatestThreadrunNumber int32                    `protobuf:"varint,5,opt,name=greatest_threadrun_number,json=greatestThreadrunNumber,proto3" json:"greatest_threadrun_number,omitempty"`
-	StartTime               *timestamppb.Timestamp   `protobuf:"bytes,6,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime                 *timestamppb.Timestamp   `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
-	ThreadRuns              []*ThreadRun             `protobuf:"bytes,8,rep,name=thread_runs,json=threadRuns,proto3" json:"thread_runs,omitempty"`
-	PendingInterrupts       []*PendingInterrupt      `protobuf:"bytes,9,rep,name=pending_interrupts,json=pendingInterrupts,proto3" json:"pending_interrupts,omitempty"`
-	PendingFailures         []*PendingFailureHandler `protobuf:"bytes,10,rep,name=pending_failures,json=pendingFailures,proto3" json:"pending_failures,omitempty"`
+	// thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+	// from the thread_runs list once its retention period expires.
+	GreatestThreadrunNumber int32 `protobuf:"varint,5,opt,name=greatest_threadrun_number,json=greatestThreadrunNumber,proto3" json:"greatest_threadrun_number,omitempty"`
+	// The time the WfRun was started.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// The time the WfRun failed or completed.
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	// A list of all active ThreadRun's and terminated ThreadRun's whose retention periods
+	// have not yet expired.
+	ThreadRuns []*ThreadRun `protobuf:"bytes,8,rep,name=thread_runs,json=threadRuns,proto3" json:"thread_runs,omitempty"`
+	// A list of Interrupt events that will fire once their appropriate ThreadRun's finish
+	// halting.
+	PendingInterrupts []*PendingInterrupt `protobuf:"bytes,9,rep,name=pending_interrupts,json=pendingInterrupts,proto3" json:"pending_interrupts,omitempty"`
+	// A list of pending failure handlers which will fire once their appropriate ThreadRun's
+	// finish halting.
+	PendingFailures []*PendingFailureHandler `protobuf:"bytes,10,rep,name=pending_failures,json=pendingFailures,proto3" json:"pending_failures,omitempty"`
 }
 
 func (x *WfRun) Reset() {
@@ -194,26 +218,59 @@ func (x *WfRun) GetPendingFailures() []*PendingFailureHandler {
 	return nil
 }
 
+// A ThreadRun is a running thread of execution within a WfRun.
 type ThreadRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfSpecId              *WfSpecId              `protobuf:"bytes,1,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
-	Number                int32                  `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`
-	Status                LHStatus               `protobuf:"varint,3,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
-	ThreadSpecName        string                 `protobuf:"bytes,4,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
-	StartTime             *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime               *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
-	ErrorMessage          *string                `protobuf:"bytes,7,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"`
-	ChildThreadIds        []int32                `protobuf:"varint,8,rep,packed,name=child_thread_ids,json=childThreadIds,proto3" json:"child_thread_ids,omitempty"`
-	ParentThreadId        *int32                 `protobuf:"varint,9,opt,name=parent_thread_id,json=parentThreadId,proto3,oneof" json:"parent_thread_id,omitempty"`
-	HaltReasons           []*ThreadHaltReason    `protobuf:"bytes,10,rep,name=halt_reasons,json=haltReasons,proto3" json:"halt_reasons,omitempty"`
-	InterruptTriggerId    *ExternalEventId       `protobuf:"bytes,11,opt,name=interrupt_trigger_id,json=interruptTriggerId,proto3,oneof" json:"interrupt_trigger_id,omitempty"`
-	FailureBeingHandled   *FailureBeingHandled   `protobuf:"bytes,12,opt,name=failure_being_handled,json=failureBeingHandled,proto3,oneof" json:"failure_being_handled,omitempty"`
-	CurrentNodePosition   int32                  `protobuf:"varint,13,opt,name=current_node_position,json=currentNodePosition,proto3" json:"current_node_position,omitempty"`
-	HandledFailedChildren []int32                `protobuf:"varint,14,rep,packed,name=handled_failed_children,json=handledFailedChildren,proto3" json:"handled_failed_children,omitempty"`
-	Type                  ThreadType             `protobuf:"varint,15,opt,name=type,proto3,enum=littlehorse.ThreadType" json:"type,omitempty"`
+	// The current WfSpecId of this ThreadRun. This must be set explicitly because
+	// during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+	// have different WfSpec versions.
+	WfSpecId *WfSpecId `protobuf:"bytes,1,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	// The number of the ThreadRun. This is an auto-incremented integer corresponding to
+	// the chronological ordering of when the ThreadRun's were created. If you have not
+	// configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+	// this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+	// list.
+	Number int32 `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`
+	// The status of the ThreadRun.
+	Status LHStatus `protobuf:"varint,3,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
+	// The name of the ThreadSpec being run.
+	ThreadSpecName string `protobuf:"bytes,4,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
+	// The time the ThreadRun was started.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// The time the ThreadRun was completed or failed. Unset if still active.
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	// Human-readable error message detailing what went wrong in the case of a failure.
+	ErrorMessage *string `protobuf:"bytes,7,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"`
+	// List of thread_run_number's for all child thread_runs.
+	ChildThreadIds []int32 `protobuf:"varint,8,rep,packed,name=child_thread_ids,json=childThreadIds,proto3" json:"child_thread_ids,omitempty"`
+	// Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+	ParentThreadId *int32 `protobuf:"varint,9,opt,name=parent_thread_id,json=parentThreadId,proto3,oneof" json:"parent_thread_id,omitempty"`
+	// If the ThreadRun is HALTED, this contains a list of every reason for which the
+	// ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+	// then the ThreadRun will return to the RUNNING state.
+	HaltReasons []*ThreadHaltReason `protobuf:"bytes,10,rep,name=halt_reasons,json=haltReasons,proto3" json:"halt_reasons,omitempty"`
+	// If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+	// ExternalEvent that caused the Interrupt.
+	InterruptTriggerId *ExternalEventId `protobuf:"bytes,11,opt,name=interrupt_trigger_id,json=interruptTriggerId,proto3,oneof" json:"interrupt_trigger_id,omitempty"`
+	// If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+	// that is being handled by this ThreadRun.
+	FailureBeingHandled *FailureBeingHandled `protobuf:"bytes,12,opt,name=failure_being_handled,json=failureBeingHandled,proto3,oneof" json:"failure_being_handled,omitempty"`
+	// This is the current `position` of the current NodeRun being run. This is an
+	// auto-incremented field that gets incremented every time we run a new NodeRun.
+	CurrentNodePosition int32 `protobuf:"varint,13,opt,name=current_node_position,json=currentNodePosition,proto3" json:"current_node_position,omitempty"`
+	// List of every child ThreadRun which both a) failed, and b) was properly handled by a
+	// Failure Handler.
+	//
+	// This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+	// failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+	// If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+	// number is appended to this list, and then the EXIT node ignores that ThreadRun.
+	HandledFailedChildren []int32 `protobuf:"varint,14,rep,packed,name=handled_failed_children,json=handledFailedChildren,proto3" json:"handled_failed_children,omitempty"`
+	// The Type of this ThreadRun.
+	Type ThreadType `protobuf:"varint,15,opt,name=type,proto3,enum=littlehorse.ThreadType" json:"type,omitempty"`
 }
 
 func (x *ThreadRun) Reset() {
@@ -353,14 +410,18 @@ func (x *ThreadRun) GetType() ThreadType {
 	return ThreadType_ENTRYPOINT
 }
 
+// Points to the Failure that is currently being handled in the ThreadRun.
 type FailureBeingHandled struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The thread run number.
 	ThreadRunNumber int32 `protobuf:"varint,1,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
+	// The position of the NodeRun causing the failure.
 	NodeRunPosition int32 `protobuf:"varint,2,opt,name=node_run_position,json=nodeRunPosition,proto3" json:"node_run_position,omitempty"`
-	FailureNumber   int32 `protobuf:"varint,3,opt,name=failure_number,json=failureNumber,proto3" json:"failure_number,omitempty"`
+	// The number of the failure.
+	FailureNumber int32 `protobuf:"varint,3,opt,name=failure_number,json=failureNumber,proto3" json:"failure_number,omitempty"`
 }
 
 func (x *FailureBeingHandled) Reset() {
@@ -416,14 +477,20 @@ func (x *FailureBeingHandled) GetFailureNumber() int32 {
 	return 0
 }
 
+// Represents an ExternalEvent that has a registered Interrupt Handler for it
+// and which is pending to be sent to the relevant ThreadRun's.
 type PendingInterrupt struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ExternalEventId     *ExternalEventId `protobuf:"bytes,1,opt,name=external_event_id,json=externalEventId,proto3" json:"external_event_id,omitempty"`
-	HandlerSpecName     string           `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
-	InterruptedThreadId int32            `protobuf:"varint,3,opt,name=interrupted_thread_id,json=interruptedThreadId,proto3" json:"interrupted_thread_id,omitempty"`
+	// The ID of the ExternalEvent triggering the Interrupt.
+	ExternalEventId *ExternalEventId `protobuf:"bytes,1,opt,name=external_event_id,json=externalEventId,proto3" json:"external_event_id,omitempty"`
+	// The name of the ThreadSpec to run to handle the Interrupt.
+	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
+	// The ID of the ThreadRun to interrupt. Must wait for this ThreadRun to be
+	// HALTED before running the Interrupt Handler.
+	InterruptedThreadId int32 `protobuf:"varint,3,opt,name=interrupted_thread_id,json=interruptedThreadId,proto3" json:"interrupted_thread_id,omitempty"`
 }
 
 func (x *PendingInterrupt) Reset() {
@@ -479,12 +546,15 @@ func (x *PendingInterrupt) GetInterruptedThreadId() int32 {
 	return 0
 }
 
+// Represents a Failure Handler that is pending to be run.
 type PendingFailureHandler struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FailedThreadRun int32  `protobuf:"varint,1,opt,name=failed_thread_run,json=failedThreadRun,proto3" json:"failed_thread_run,omitempty"`
+	// The ThreadRun that failed.
+	FailedThreadRun int32 `protobuf:"varint,1,opt,name=failed_thread_run,json=failedThreadRun,proto3" json:"failed_thread_run,omitempty"`
+	// The name of the ThreadSpec to run to handle the failure.
 	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
 }
 
@@ -534,11 +604,14 @@ func (x *PendingFailureHandler) GetHandlerSpecName() string {
 	return ""
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+// to be run.
 type PendingInterruptHaltReason struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ExternalEventId that caused the Interrupt.
 	ExternalEventId *ExternalEventId `protobuf:"bytes,1,opt,name=external_event_id,json=externalEventId,proto3" json:"external_event_id,omitempty"`
 }
 
@@ -581,11 +654,14 @@ func (x *PendingInterruptHaltReason) GetExternalEventId() *ExternalEventId {
 	return nil
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+// run.
 type PendingFailureHandlerHaltReason struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The position of the NodeRun which threw the failure.
 	NodeRunPosition int32 `protobuf:"varint,1,opt,name=node_run_position,json=nodeRunPosition,proto3" json:"node_run_position,omitempty"`
 }
 
@@ -628,11 +704,13 @@ func (x *PendingFailureHandlerHaltReason) GetNodeRunPosition() int32 {
 	return 0
 }
 
+// A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run.
 type HandlingFailureHaltReason struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the Failure Handler ThreadRun.
 	HandlerThreadId int32 `protobuf:"varint,1,opt,name=handler_thread_id,json=handlerThreadId,proto3" json:"handler_thread_id,omitempty"`
 }
 
@@ -675,11 +753,13 @@ func (x *HandlingFailureHaltReason) GetHandlerThreadId() int32 {
 	return 0
 }
 
+// A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
 type ParentHalted struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the halted parent.
 	ParentThreadId int32 `protobuf:"varint,1,opt,name=parent_thread_id,json=parentThreadId,proto3" json:"parent_thread_id,omitempty"`
 }
 
@@ -722,11 +802,14 @@ func (x *ParentHalted) GetParentThreadId() int32 {
 	return 0
 }
 
+// A Halt Reason denoting that a ThreadRun is halted because it is waiting for the
+// interrupt handler threadRun to run.
 type Interrupted struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the Interrupt Handler ThreadRun.
 	InterruptThreadId int32 `protobuf:"varint,1,opt,name=interrupt_thread_id,json=interruptThreadId,proto3" json:"interrupt_thread_id,omitempty"`
 }
 
@@ -769,6 +852,7 @@ func (x *Interrupted) GetInterruptThreadId() int32 {
 	return 0
 }
 
+// A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request.
 type ManualHalt struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -817,11 +901,14 @@ func (x *ManualHalt) GetMeaningOfLife() bool {
 	return false
 }
 
+// Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
 type ThreadHaltReason struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The reason for the halt.
+	//
 	// Types that are assignable to Reason:
 	//	*ThreadHaltReason_ParentHalted
 	//	*ThreadHaltReason_Interrupted
@@ -918,26 +1005,32 @@ type isThreadHaltReason_Reason interface {
 }
 
 type ThreadHaltReason_ParentHalted struct {
+	// Parent threadRun halted.
 	ParentHalted *ParentHalted `protobuf:"bytes,1,opt,name=parent_halted,json=parentHalted,proto3,oneof"`
 }
 
 type ThreadHaltReason_Interrupted struct {
+	// Handling an Interrupt.
 	Interrupted *Interrupted `protobuf:"bytes,2,opt,name=interrupted,proto3,oneof"`
 }
 
 type ThreadHaltReason_PendingInterrupt struct {
+	// Waiting to handle Interrupt.
 	PendingInterrupt *PendingInterruptHaltReason `protobuf:"bytes,3,opt,name=pending_interrupt,json=pendingInterrupt,proto3,oneof"`
 }
 
 type ThreadHaltReason_PendingFailure struct {
+	// Waiting to handle a failure.
 	PendingFailure *PendingFailureHandlerHaltReason `protobuf:"bytes,4,opt,name=pending_failure,json=pendingFailure,proto3,oneof"`
 }
 
 type ThreadHaltReason_HandlingFailure struct {
+	// Handling a failure.
 	HandlingFailure *HandlingFailureHaltReason `protobuf:"bytes,5,opt,name=handling_failure,json=handlingFailure,proto3,oneof"`
 }
 
 type ThreadHaltReason_ManualHalt struct {
+	// Manually stopped the WfRun.
 	ManualHalt *ManualHalt `protobuf:"bytes,6,opt,name=manual_halt,json=manualHalt,proto3,oneof"`
 }
 

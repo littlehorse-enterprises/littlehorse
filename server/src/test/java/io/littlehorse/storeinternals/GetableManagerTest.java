@@ -18,17 +18,21 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,6 +50,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -62,21 +67,21 @@ public class GetableManagerTest {
 
     private String tenantId = "myTenant";
 
-    private ModelStore localStoreWrapper;
+    private TenantScopedStore localStoreWrapper;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
-    @Mock
-    private ExecutionContext executionContext;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ProcessorExecutionContext executionContext;
 
-    private AuthorizationContext testContext =
-            new AuthorizationContextImpl("my-principal-id", tenantId, List.of(), false);
+    private AuthorizationContext testContext = new AuthorizationContextImpl(
+            new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = ModelStore.instanceFor(store, tenantId, executionContext);
+        localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
@@ -89,13 +94,15 @@ public class GetableManagerTest {
         getableManager.commit();
 
         final var keys = getAllKeys(store);
-        assertThat(localStoreWrapper.get(getable.getObjectId())).isNotNull();
+        assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
+                .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
     }
 
     @Test
     void deleteGetableAndTags() {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
+        wfRunModel.status = LHStatus.RUNNING;
         getableManager.put(wfRunModel);
         getableManager.commit();
 
@@ -136,7 +143,8 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.BOOL);
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, true, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -167,8 +175,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -234,8 +242,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -300,8 +308,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, true, false),
-                    new ThreadVarDefModel(variableDef2, false, false)));
+                    new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -383,8 +391,8 @@ public class GetableManagerTest {
             variableDef2.setName("variableName2");
             variableDef2.setType(VariableType.STR);
             threadSpec.setVariableDefs(List.of(
-                    new ThreadVarDefModel(variableDef1, indices, false),
-                    new ThreadVarDefModel(variableDef2, true, false)));
+                    new ThreadVarDefModel(variableDef1, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR),
+                    new ThreadVarDefModel(variableDef2, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
 
         getableManager.put(variable);
@@ -505,7 +513,8 @@ public class GetableManagerTest {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
-            threadSpec.setVariableDefs(List.of(new ThreadVarDefModel(variableDef1, false, false)));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
         ExternalEventModel externalEvent = TestUtil.externalEvent();
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();

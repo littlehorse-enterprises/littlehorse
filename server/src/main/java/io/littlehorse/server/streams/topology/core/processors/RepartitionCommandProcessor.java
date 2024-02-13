@@ -1,13 +1,14 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdateModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.RepartitionExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -48,21 +49,20 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         RepartitionExecutionContext repartitionContext = buildExecutionContext(record.headers());
         if (record.value() != null) {
             log.debug("Received a metric update!");
-            String tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
-            record.value().process(ModelStore.instanceFor(nativeStore, tenantId, repartitionContext), ctx);
+            TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
+            record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
         }
     }
 
     public void cleanOldMetrics(long timestamp) {
-        final ModelStore defaultStore = ModelStore.defaultStore(nativeStore, null);
+        final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeStore, null);
         Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
-        cleanOldTaskMetrics(defaultStore, thirtyDaysAgo);
-        cleanOldWfMetrics(defaultStore, thirtyDaysAgo);
+        cleanOldTaskMetrics(store, thirtyDaysAgo);
     }
 
-    private void cleanOldTaskMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<TaskMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
+    private void cleanOldTaskMetrics(ClusterScopedStore store, Date daysAgo) {
+        try (LHKeyValueIterator<TaskMetricUpdateModel> iter =
+                store.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdateModel.class)) {
             while (iter.hasNext()) {
                 log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
 
@@ -73,23 +73,6 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
                  * metric.windowStart,
                  * metric.taskDefName);
                  * store.delete(taskDefMetricKey, TaskDefMetricsModel.class);*/
-            }
-        }
-    }
-
-    private void cleanOldWfMetrics(ModelStore defaultStore, Date daysAgo) {
-        try (LHKeyValueIterator<WfMetricUpdate> iter =
-                defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
-            while (iter.hasNext()) {
-                log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
-
-                /* * LHIterKeyValue<WfMetricUpdate> next = iter.next();
-                 * WfMetricUpdate metric = next.getValue();
-                 * store.delete(metric.getStoreKey());
-                 * String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
-                 * metric.type, metric.windowStart, metric.wfSpecName, metric.wfSpecVersion);
-                 * store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);*/
-
             }
         }
     }

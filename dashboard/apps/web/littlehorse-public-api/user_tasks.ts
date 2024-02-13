@@ -7,10 +7,15 @@ import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
 
+/** The status that a UserTaskRun can be in. */
 export enum UserTaskRunStatus {
+  /** UNASSIGNED - Not assigned to a specific user yet. */
   UNASSIGNED = "UNASSIGNED",
+  /** ASSIGNED - Assigned to a specific user, but not completed or cancelled yet. */
   ASSIGNED = "ASSIGNED",
+  /** DONE - Done. */
   DONE = "DONE",
+  /** CANCELLED - Cancelled. */
   CANCELLED = "CANCELLED",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -68,47 +73,109 @@ export function userTaskRunStatusToNumber(object: UserTaskRunStatus): number {
   }
 }
 
+/** UserTaskDef is the metadata blueprint for UserTaskRuns. */
 export interface UserTaskDef {
+  /** The name of the `UserTaskDef` */
   name: string;
+  /** The version of the `UserTaskDef`. Only simple versioning is supported. */
   version: number;
-  description?: string | undefined;
-  fields: UserTaskField[];
-  createdAt: string | undefined;
-}
-
-export interface UserTaskField {
-  name: string;
-  type: VariableType;
-  description?: string | undefined;
-  displayName: string;
   /**
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
+   * Metadata field that does not impact WfRun execution. Useful for providing
+   * context on the UserTaskRun, for example when displaying it on a general-purpose
+   * task manager application.
    */
-  required: boolean;
-}
-
-export interface UserTaskRun {
-  id: UserTaskRunId | undefined;
-  userTaskDefId: UserTaskDefId | undefined;
-  userGroup?: string | undefined;
-  userId?: string | undefined;
-  results: { [key: string]: VariableValue };
-  status: UserTaskRunStatus;
-  events: UserTaskEvent[];
-  notes?: string | undefined;
-  scheduledTime:
+  description?:
     | string
     | undefined;
   /**
-   * If we ever allow ad-hoc User Tasks, this will move to an optional
-   * field, or a `oneof user_task_source` field. However, note that such
-   * a change would be fine from the API Compatibility perspective.
+   * These are the fields comprise the User Task. A User Task Manager application, or
+   * any application used to complete a UserTaskRun, should inspect these fields and
+   * display form entries for each one.
    */
+  fields: UserTaskField[];
+  /** The time the UserTaskRun was created. */
+  createdAt: string | undefined;
+}
+
+/** A UserTaskField is a specific field of data to be entered into a UserTaskRun. */
+export interface UserTaskField {
+  /**
+   * The name of the field. When a UserTaskRun is completed, the NodeOutput is a
+   * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
+   */
+  name: string;
+  /** The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). */
+  type: VariableType;
+  /**
+   * Optional description which can be displayed by the User Task UI application.
+   * Does not affect WfRun execution.
+   */
+  description?:
+    | string
+    | undefined;
+  /**
+   * The name to be displayed by the User Task UI application. Does not affect
+   * WfRun execution.
+   */
+  displayName: string;
+  /** Whether this field is required for UserTaskRun completion. */
+  required: boolean;
+}
+
+/**
+ * A UserTaskRun is a running instance of a UserTaskDef. It is created when a
+ * ThreadRun arrives at a Node of type `USER_TASK`.
+ */
+export interface UserTaskRun {
+  /** The ID of the UserTaskRun. */
+  id:
+    | UserTaskRunId
+    | undefined;
+  /** The ID of the UserTaskDef that this UserTaskRun comes from. */
+  userTaskDefId:
+    | UserTaskDefId
+    | undefined;
+  /**
+   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a group. At least one of user_group or user_id will be set for any given
+   * UserTaskRun.
+   */
+  userGroup?:
+    | string
+    | undefined;
+  /**
+   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
+   * to a user. At least one of user_group or user_id will be set for any given
+   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
+   * UNASSIGNED status.
+   */
+  userId?:
+    | string
+    | undefined;
+  /**
+   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
+   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
+   * UserTaskDef.
+   */
+  results: { [key: string]: VariableValue };
+  /** Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED. */
+  status: UserTaskRunStatus;
+  /** A list of events that have happened. Used for auditing information. */
+  events: UserTaskEvent[];
+  /**
+   * Notes about this UserTaskRun that are **specific to the WfRun**. These notes
+   * are set by the WfSpec based on variables inside the specific `WfRun` and are
+   * intended to be displayed on the User Task Manager application. They do not
+   * affect WfRun execution.
+   */
+  notes?:
+    | string
+    | undefined;
+  /** The time that the UserTaskRun was created/scheduled. */
+  scheduledTime:
+    | string
+    | undefined;
+  /** The NodeRun with which the UserTaskRun is associated. */
   nodeRunId: NodeRunId | undefined;
 }
 
@@ -117,16 +184,47 @@ export interface UserTaskRun_ResultsEntry {
   value: VariableValue | undefined;
 }
 
+/** Re-Assigns a UserTaskRun to a specific userId or userGroup. */
 export interface AssignUserTaskRunRequest {
-  userTaskRunId: UserTaskRunId | undefined;
+  /** The UserTaskRun to assign to a new user_id or user_group. */
+  userTaskRunId:
+    | UserTaskRunId
+    | undefined;
+  /**
+   * If override_claim is set to false and the UserTaskRun is already assigned to
+   * a user_id, then the request throws a FAILED_PRECONDITION error. If set to
+   * true, then the old claim is overriden and the UserTaskRun is assigned to
+   * the new user.
+   */
   overrideClaim: boolean;
-  userGroup?: string | undefined;
+  /**
+   * The new user_group to which the UserTaskRun is assigned. If not set, then
+   * the user_group of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   */
+  userGroup?:
+    | string
+    | undefined;
+  /**
+   * The new user_id to which the UserTaskRun is assigned. If not set, then
+   * the user_id of the UserTaskRun is actively unset by this request. At least
+   * one of the user_group and user_id must be set.
+   */
   userId?: string | undefined;
 }
 
+/** Completes a UserTaskRun with provided values. */
 export interface CompleteUserTaskRunRequest {
-  userTaskRunId: UserTaskRunId | undefined;
+  /** The id of UserTaskRun to complete. */
+  userTaskRunId:
+    | UserTaskRunId
+    | undefined;
+  /**
+   * A map from UserTaskField.name to a VariableValue containing the results of the
+   * user filling out the form.
+   */
   results: { [key: string]: VariableValue };
+  /** The ID of the user who executed the task. */
   userId: string;
 }
 
@@ -135,41 +233,93 @@ export interface CompleteUserTaskRunRequest_ResultsEntry {
   value: VariableValue | undefined;
 }
 
+/** Cancels a UserTaskRun. */
 export interface CancelUserTaskRunRequest {
+  /** The id of the UserTaskRun to cancel. */
   userTaskRunId: UserTaskRunId | undefined;
 }
 
+/**
+ * All TaskRun's have a "trigger reference" which refers to the WfRun Element that
+ * caused the TaskRun to be scheduled. For example, a TaskRun on a regular TASK_NODE
+ * has a TaskNodeReference.
+ *
+ * The UserTaskTriggerReference serves as the "Trigger Reference" for a TaskRun that
+ * was scheduled by a lifecycle hook on a UserTaskRun (eg. a reminder task).
+ *
+ * The UserTaskTriggerReference is most useful in the WorkerContext of the Task Worker
+ * SDK, which allows the Task Method to determine where the TaskRun comes from.
+ */
 export interface UserTaskTriggerReference {
-  nodeRunId: NodeRunId | undefined;
+  /** Is the NodeRun that the UserTaskRun belongs to. */
+  nodeRunId:
+    | NodeRunId
+    | undefined;
+  /**
+   * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+   * to.
+   */
   userTaskEventNumber: number;
-  userId?: string | undefined;
+  /**
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   */
+  userId?:
+    | string
+    | undefined;
+  /**
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   */
   userGroup?: string | undefined;
 }
 
+/**
+ * This is an event stored in the audit log of a `UserTaskRun` purely for observability
+ * purposes.
+ */
 export interface UserTaskEvent {
-  time: string | undefined;
-  taskExecuted?: UserTaskEvent_UTETaskExecuted | undefined;
+  /** the time the event occurred. */
+  time:
+    | string
+    | undefined;
+  /** Denotes that a TaskRun was scheduled via a trigger. */
+  taskExecuted?:
+    | UserTaskEvent_UTETaskExecuted
+    | undefined;
+  /** Denotes that the UserTaskRun was assigned. */
   assigned?:
     | UserTaskEvent_UTEAssigned
     | undefined;
-  /**
-   * TODO: Add "save user task" and "complete user task" to the
-   * audit log
-   */
+  /** Denotes that the UserTaskRun was cancelled. */
   cancelled?: UserTaskEvent_UTECancelled | undefined;
 }
 
+/** Empty message used to denote that the `UserTaskRun` was cancelled. */
 export interface UserTaskEvent_UTECancelled {
 }
 
+/** Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun. */
 export interface UserTaskEvent_UTETaskExecuted {
+  /** The `TaskRunId` of the scheduled `TaskRun` */
   taskRun: TaskRunId | undefined;
 }
 
+/** Message denoting that the UserTaskRun was assigned. */
 export interface UserTaskEvent_UTEAssigned {
-  oldUserId?: string | undefined;
-  oldUserGroup?: string | undefined;
-  newUserId?: string | undefined;
+  /** The user_id before the ownership change, if set. */
+  oldUserId?:
+    | string
+    | undefined;
+  /** The user_group before the ownership change, if set. */
+  oldUserGroup?:
+    | string
+    | undefined;
+  /** The user_id after the ownership change, if set. */
+  newUserId?:
+    | string
+    | undefined;
+  /** The user_group after the ownership change, if set. */
   newUserGroup?: string | undefined;
 }
 
@@ -1516,7 +1666,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function toTimestamp(dateStr: string): Timestamp {
   const date = new globalThis.Date(dateStr);
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }

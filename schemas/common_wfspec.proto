@@ -12,60 +12,145 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A VariableAssignment is used within a WfSpec to determine how a value should be
+// assigned in the context of a specific WfRun. For example, in a TASK node, you
+// use a VariableAssignment for each input parameter to determine how the value
+// is set.
+//
+// Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+// have to worry about this in daily LittleHorse usage.
 message VariableAssignment {
+  // A FormatString formats a template String with values from the WfRun.
   message FormatString {
+    // A VariableAssignment which must resolve to a String that has format args.
+    // A valid string is "This is a format string with three args: {0}, {1}, {2}"
     VariableAssignment format = 1;
+
+    // VariableAssignments which fill out the args.
     repeated VariableAssignment args = 2;
   }
 
+  // If you provide a `variable_name` and the specified variable is JSON_OBJ or
+  // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+  // resolve to the specified field.
   optional string json_path = 1;
+
+  // The oneof determines where the value is resolved to.
   oneof source {
+    // Assign the value from a variable.
     string variable_name = 2;
+    // Assign a literal value
     VariableValue literal_value = 3;
+    // Assign a format string
     FormatString format_string = 4;
   }
 }
 
+// Enumerates the available operations to mutate a variable in a WfRun.
 enum VariableMutationType {
+  // Set the variable specified by the LHS to the value of the RHS.
   ASSIGN = 0;
+  // Add the RHS to the LHS.
   ADD = 1;
+  // Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
   EXTEND = 2;
+  // Subtract the RHS from the LHS (both must be INT or DOUBLE)
   SUBTRACT = 3;
+  // Multiply the LHS by the RHS (both must be INT or DOUBLE)
   MULTIPLY = 4;
+  // Divide the LHS by the RHS (both must be INT or DOUBLE)
   DIVIDE = 5;
+  // Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
   REMOVE_IF_PRESENT = 6;
+  // Remove item at index RHS from LHS (LHS must be JSON_ARR)
   REMOVE_INDEX = 7;
+  // Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
   REMOVE_KEY = 8;
 }
 
+// A VariableMutation defines a modification made to one of a ThreadRun's variables.
+// The LHS determines the variable that is modified; the operation determines how
+// it is modified, and the RHS is the input to the operation.
+//
+// Day-to-day users of LittleHorse generally don't interact with this structure unless
+// they are writing their own WfSpec SDK.
 message VariableMutation {
+  // Specifies to use the output of a NodeRun as the RHS.
   message NodeOutputSource {
+    // Use this specific field from a JSON output
     optional string jsonpath = 10;
   }
+
+  // The name of the variable to mutate
   string lhs_name = 1;
+
+  // For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+  // a specific sub-field of the variable.
   optional string lhs_json_path = 2;
+
+  // Defines the operation that we are executing.
   VariableMutationType operation = 3;
+
+  // The RHS of the mutation; i.e. what is operated _with_.
   oneof rhs_value {
+    // Set the source_variable as the RHS to use another variable from the workflow to
+    // as the RHS/
     VariableAssignment source_variable = 4;
+
+    // Use a literal value as the RHS.
     VariableValue literal_value = 5;
+
+    // Use the output of the current node as the RHS.
     NodeOutputSource node_output = 6;
   }
 }
 
+// Declares a Variable.
 message VariableDef {
+  // The Type of the variable.
   VariableType type = 1;
+
+  // The name of the variable.
   string name = 2;
+
+  // Optional default value if the variable isn't set; for example, in a ThreadRun
+  // if you start a ThreadRun or WfRun without passing a variable in, then this is
+  // used.
   optional VariableValue default_value = 3;
 }
 
+// Operator for comparing two values to create a boolean expression.
 enum Comparator {
+  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   LESS_THAN = 0;
+
+  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   GREATER_THAN = 1;
+
+  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   LESS_THAN_EQ = 2;
+
+  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
   GREATER_THAN_EQ = 3;
+
+  // This is valid for any variable type, and is similar to .equals() in Java.
+  //
+  // One note: if the RHS is a different type from the LHS, then LittleHorse will
+  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
+  // ThreadRun fails with a VAR_SUB_ERROR.
   EQUALS = 4;
+
+  // This is the inverse of `EQUALS`
   NOT_EQUALS = 5;
+
+  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+  //
+  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+  // is equal to the LHS.
   IN = 6;
+
+  // The inverse of IN.
   NOT_IN = 7;
 }
 
@@ -79,19 +164,31 @@ enum Comparator {
 // - Upon creation of the UserTaskRun
 // - Upon rescheduling the UserTaskRun
 message UTActionTrigger {
+  // A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
   message UTACancel {
   }
 
+  // A UserTaskAction that causes a TaskRun to be scheduled when it fires.
   message UTATask {
+    // The specification of the Task to schedule.
     TaskNode task = 1;
+
+    // EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
     repeated VariableMutation mutations = 2;
   }
 
+  // A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
   message UTAReassign {
+    // A variable assignment that resolves to a STR representing the new user_id. If
+    // not set, the user_id of the UserTaskRun will be un-set.
     optional VariableAssignment user_id = 1;
+
+    // A variable assignment that resolves to a STR representing the new user_group. If
+    // not set, the user_group of the UserTaskRun will be un-set.
     optional VariableAssignment user_group = 2;
   }
 
+  // The action that is scheduled by the hook
   oneof action {
     UTATask task = 1;
     UTACancel cancel = 2;
@@ -99,18 +196,42 @@ message UTActionTrigger {
     // later on, might enable scheduling entire ThreadRuns
   }
 
+  // The Action is triggered some time after the Hook matures. The delay is controlled
+  // by this field.
+  VariableAssignment delay_seconds = 5;
+
+  // Enumerates the different lifecycle hooks that can cause the timer to start running.
   enum UTHook {
+    // The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+    // hook only causes the action to be scheduled once.
     ON_ARRIVAL = 0;
+
+    // The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+    // changes. This hook causes the Action to be scheduled one or more times. The first
+    // time is scheduled when the UserTaskRun is created, since we treat the change from
+    // "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+    // a change in ownership.
     ON_TASK_ASSIGNED = 1;
   }
-  //Action's delay
-  VariableAssignment delay_seconds = 5;
+
+  // The hook on which this UserTaskAction is scheduled.
   UTHook hook = 6;
 }
 
+// Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 message TaskNode {
+  // The type of TaskRun to schedule.
   TaskDefId task_def_id = 1;
+
+  // How long until LittleHorse determines that the Task Worker had a technical ERROR if
+  // the worker does not yet reply to the Server.
   int32 timeout_seconds = 2;
+
+  // EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+  // Please note that this API may change before version 1.0.0, as we are going to
+  // add significant functionality including backoff policies.
   int32 retries = 3;
+
+  // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;
 }

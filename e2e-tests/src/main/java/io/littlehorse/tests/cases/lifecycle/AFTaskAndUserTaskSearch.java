@@ -7,8 +7,8 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -68,7 +68,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         thread.assignUserTask(USER_TASK, "obiwan", null);
     }
 
-    public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHConfig config) {
+    public AFTaskAndUserTaskSearch(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 
@@ -84,15 +84,15 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         }
         failWorker = new LHTaskWorker(new AFSearchWorker(), FAIL_TASK, workerConfig);
         slowWorker = new LHTaskWorker(new AFSearchWorker(), SLOW_TASK, workerConfig);
-        failWorker.registerTaskDef(true);
-        slowWorker.registerTaskDef(true);
+        failWorker.registerTaskDef();
+        slowWorker.registerTaskDef();
 
         Thread.sleep(200);
         slowWorker.start();
         // will start the failWorker later so we can catch the STARTING tasks
 
         client.putWfSpec(new WorkflowImpl(WF_SPEC_NAME, this::wf).compileWorkflow());
-        Thread.sleep(150);
+        Thread.sleep(300);
 
         String failWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", true));
         String succeedWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", false));

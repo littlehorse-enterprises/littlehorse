@@ -3,6 +3,7 @@ package wflib_test
 import (
 	"testing"
 
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 	"github.com/stretchr/testify/assert"
@@ -188,13 +189,13 @@ func TestParallelSpawnThreads(t *testing.T) {
 
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	spawnNode := entrypoint.Nodes["1-some-threads-START_MULTIPLE_THREADS"]
-	assert.Equal(t, len(spawnNode.VariableMutations), 1)
-	assert.NotNil(t, spawnNode.VariableMutations[0].GetNodeOutput())
+	assert.Equal(t, len(spawnNode.OutgoingEdges[0].VariableMutations), 1)
+	assert.NotNil(t, spawnNode.OutgoingEdges[0].VariableMutations[0].GetNodeOutput())
 
 	_, ok := putWf.ThreadSpecs[spawnNode.GetStartMultipleThreads().ThreadSpecName]
 	assert.True(t, ok)
 
-	internalVarName := spawnNode.VariableMutations[0].LhsName
+	internalVarName := spawnNode.OutgoingEdges[0].VariableMutations[0].LhsName
 
 	waitNode := entrypoint.Nodes["2-threads-WAIT_FOR_THREADS"].GetWaitForThreads()
 	assert.Equal(t, waitNode.GetThreadList().GetVariableName(), internalVarName)
@@ -373,4 +374,113 @@ func TestCatchAnyFailure(t *testing.T) {
 	_, ok := putWf.ThreadSpecs[handler.HandlerSpecName]
 	assert.True(t, ok)
 	assert.Nil(t, handler.GetFailureToCatch())
+}
+
+type someObject struct {
+	Foo int32
+	Bar string
+}
+
+func TestVarValToVarType(t *testing.T) {
+	// Int
+	varVal, err := common.InterfaceToVarVal(123)
+	assert.Nil(t, err)
+	varType := common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_INT)
+
+	// Str
+	varVal, err = common.InterfaceToVarVal("hello there")
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_STR)
+
+	// Str pointer
+	mystr := "hello there"
+	varVal, err = common.InterfaceToVarVal(&mystr)
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_STR)
+	assert.Equal(t, varVal.GetStr(), mystr)
+
+	// struct/JSON_OBJ
+	varVal, err = common.InterfaceToVarVal(someObject{
+		Foo: 137,
+		Bar: "meaningoflife",
+	})
+	assert.Nil(t, err)
+	varType = common.VarValToVarType(varVal)
+	assert.Equal(t, *varType, model.VariableType_JSON_OBJ)
+
+	// Nil varval
+	varVal = &model.VariableValue{}
+	varType = common.VarValToVarType(varVal)
+	assert.Nil(t, varType)
+}
+
+func TestUpdateType(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		nodeOutput := t.Execute("some-task")
+		t.HandleAnyFailure(&nodeOutput, someHandler)
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+
+	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NO_UPDATES)
+}
+
+func TestJsonPath(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		myVar := t.AddVariable("my-var", model.VariableType_JSON_OBJ)
+		t.Execute("some-task", myVar.JsonPath("$.foo"))
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-task-TASK"]
+	assert.Equal(t, *(node.GetTask().Variables[0].JsonPath), "$.foo")
+}
+
+func TestVariableAccessLevel(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		inheritedVar := t.AddVariable("my-var", model.VariableType_BOOL)
+		inheritedVar.WithAccessLevel(model.WfRunVariableAccessLevel_PRIVATE_VAR)
+
+		// Test that default is PUBLIC_VAR
+		t.AddVariable("default-access", model.VariableType_INT)
+
+		t.Execute("some-task")
+	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	varDef := entrypoint.VariableDefs[0]
+	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PRIVATE_VAR)
+	assert.Equal(t, varDef.VarDef.Name, "my-var")
+
+	varDef = entrypoint.VariableDefs[1]
+	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PUBLIC_VAR)
+	assert.Equal(t, varDef.VarDef.Name, "default-access")
+}
+
+func TestRetentionPolicy(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+
+		t.WithRetentionPolicy(&model.ThreadRetentionPolicy{
+			ThreadGcPolicy: &model.ThreadRetentionPolicy_SecondsAfterThreadTermination{
+				SecondsAfterThreadTermination: 137,
+			},
+		})
+
+		t.Execute("some-task")
+	}, "my-workflow").WithRetentionPolicy(&model.WorkflowRetentionPolicy{
+		WfGcPolicy: &model.WorkflowRetentionPolicy_SecondsAfterWfTermination{
+			SecondsAfterWfTermination: 10,
+		},
+	})
+
+	putWf, _ := wf.Compile()
+	assert.Equal(t, int(putWf.RetentionPolicy.GetSecondsAfterWfTermination()), int(10))
+
+	thread := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	assert.Equal(t, int(thread.RetentionPolicy.GetSecondsAfterThreadTermination()), int(137))
 }

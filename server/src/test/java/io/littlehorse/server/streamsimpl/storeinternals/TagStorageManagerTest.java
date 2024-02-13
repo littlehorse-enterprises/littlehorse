@@ -5,14 +5,15 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
@@ -50,7 +51,8 @@ public class TagStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    private ModelStore localStore = ModelStore.instanceFor(store, tenantId, mock());
+    private TenantScopedStore localStore =
+            TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 

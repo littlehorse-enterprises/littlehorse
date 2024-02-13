@@ -4,9 +4,8 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -16,13 +15,14 @@ import io.littlehorse.sdk.worker.internal.ConnectionManagerLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.Awaitility;
 
 /**
  * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task
@@ -49,7 +49,7 @@ public class LHTaskWorker implements Closeable {
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;
     private String taskDefName;
-    private LHPublicApiBlockingStub grpcClient;
+    private LittleHorseBlockingStub grpcClient;
 
     private static final long KEEP_ALIVE_TIMEOUT = 60_000;
 
@@ -61,9 +61,8 @@ public class LHTaskWorker implements Closeable {
      *                    That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
      * @param config      is a valid LHConfig.
-     * @throws IOException
      */
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
@@ -71,8 +70,7 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
     }
 
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager)
-            throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager) {
         this(executable, taskDefName, config);
         this.manager = manager;
     }
@@ -86,7 +84,7 @@ public class LHTaskWorker implements Closeable {
         return taskDefName;
     }
 
-    private void createManager() throws IOException {
+    private void createManager() {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
@@ -121,38 +119,30 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        registerTaskDef(false);
-    }
-
-    /**
-     * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
-     * recommended for production (in production you should manually use the PutTaskDef).
-     *
-     * @param swallowAlreadyExists if true, then ignore grpc ALREADY_EXISTS error when registering
-     *                             the TaskDef.
-     */
-    public void registerTaskDef(boolean swallowAlreadyExists) {
         TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
-        log.info("Creating TaskDef: {}", taskDefName);
-
-        try {
-            TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
-            log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
-
-        } catch (StatusRuntimeException exn) {
-            if (swallowAlreadyExists && exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
-                log.info("TaskDef {} already exists!", taskDefName);
-            } else {
-                throw exn;
-            }
-        }
+        TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
+        log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            this.taskDef = grpcClient.getTaskDef(
-                    TaskDefId.newBuilder().setName(taskDefName).build());
+            // Await the TaskDef
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(2))
+                    .ignoreExceptionsMatching((exn) -> {
+                        return exn instanceof StatusRuntimeException
+                                && ((StatusRuntimeException) exn)
+                                        .getStatus()
+                                        .getCode()
+                                        .equals(Code.NOT_FOUND);
+                    })
+                    .until(() -> {
+                        this.taskDef = grpcClient.getTaskDef(
+                                TaskDefId.newBuilder().setName(taskDefName).build());
+                        return true;
+                    });
         }
+
         LHTaskSignature signature = new LHTaskSignature(taskDef.getId().getName(), executable);
         taskMethod = signature.getTaskMethod();
 
@@ -194,13 +184,8 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * Starts polling for and executing tasks.
-     *
-     * @throws IOException if unexpected error occurs opening connections.
      */
-    public void start() throws IOException {
-        if (!doesTaskDefExist()) {
-            throw new LHMisconfigurationException("Couldn't find TaskDef: " + taskDefName);
-        }
+    public void start() {
         createManager();
         manager.start();
     }

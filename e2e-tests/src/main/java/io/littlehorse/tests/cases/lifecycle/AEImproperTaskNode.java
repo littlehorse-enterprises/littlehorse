@@ -10,8 +10,8 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
@@ -26,7 +26,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
-import java.io.IOException;
 import java.util.Map;
 
 public class AEImproperTaskNode extends Test {
@@ -37,7 +36,7 @@ public class AEImproperTaskNode extends Test {
     private String successWfRun;
     private LHTaskWorker worker;
 
-    public AEImproperTaskNode(LHPublicApiBlockingStub client, LHConfig config) {
+    public AEImproperTaskNode(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
     }
 
@@ -52,9 +51,9 @@ public class AEImproperTaskNode extends Test {
     """;
     }
 
-    public void test() throws InterruptedException, IOException {
+    public void test() throws InterruptedException {
         worker = new LHTaskWorker(new AETaskNodeValidationWorker(), TASK_DEF_NAME, workerConfig);
-        worker.registerTaskDef(true);
+        worker.registerTaskDef();
 
         // First, verify that we get an error when trying to create a WfRun that
         // has a definitive variable mismatch.

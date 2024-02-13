@@ -50,10 +50,10 @@ private static final long serialVersionUID = 0L;
   public enum RepartitionCommandCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK_METRIC_UPDATE(3),
-    WF_METRIC_UPDATE(4),
     CREATE_REMOTE_TAG(5),
     REMOVE_REMOTE_TAG(6),
+    AGGREGATE_WF_METRICS(7),
+    AGGREGATE_TASK_METRICS(8),
     REPARTITIONCOMMAND_NOT_SET(0);
     private final int value;
     private RepartitionCommandCase(int value) {
@@ -71,10 +71,10 @@ private static final long serialVersionUID = 0L;
 
     public static RepartitionCommandCase forNumber(int value) {
       switch (value) {
-        case 3: return TASK_METRIC_UPDATE;
-        case 4: return WF_METRIC_UPDATE;
         case 5: return CREATE_REMOTE_TAG;
         case 6: return REMOVE_REMOTE_TAG;
+        case 7: return AGGREGATE_WF_METRICS;
+        case 8: return AGGREGATE_TASK_METRICS;
         case 0: return REPARTITIONCOMMAND_NOT_SET;
         default: return null;
       }
@@ -163,68 +163,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TASK_METRIC_UPDATE_FIELD_NUMBER = 3;
-  /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   * @return Whether the taskMetricUpdate field is set.
-   */
-  @java.lang.Override
-  public boolean hasTaskMetricUpdate() {
-    return repartitionCommandCase_ == 3;
-  }
-  /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   * @return The taskMetricUpdate.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate() {
-    if (repartitionCommandCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
-    if (repartitionCommandCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-  }
-
-  public static final int WF_METRIC_UPDATE_FIELD_NUMBER = 4;
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return Whether the wfMetricUpdate field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfMetricUpdate() {
-    return repartitionCommandCase_ == 4;
-  }
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   * @return The wfMetricUpdate.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate() {
-    if (repartitionCommandCase_ == 4) {
-       return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
-    if (repartitionCommandCase_ == 4) {
-       return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-  }
-
   public static final int CREATE_REMOTE_TAG_FIELD_NUMBER = 5;
   /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
@@ -287,6 +225,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
   }
 
+  public static final int AGGREGATE_WF_METRICS_FIELD_NUMBER = 7;
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return Whether the aggregateWfMetrics field is set.
+   */
+  @java.lang.Override
+  public boolean hasAggregateWfMetrics() {
+    return repartitionCommandCase_ == 7;
+  }
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   * @return The aggregateWfMetrics.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateWfMetrics getAggregateWfMetrics() {
+    if (repartitionCommandCase_ == 7) {
+       return (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateWfMetricsOrBuilder getAggregateWfMetricsOrBuilder() {
+    if (repartitionCommandCase_ == 7) {
+       return (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+  }
+
+  public static final int AGGREGATE_TASK_METRICS_FIELD_NUMBER = 8;
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   * @return Whether the aggregateTaskMetrics field is set.
+   */
+  @java.lang.Override
+  public boolean hasAggregateTaskMetrics() {
+    return repartitionCommandCase_ == 8;
+  }
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   * @return The aggregateTaskMetrics.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateTaskMetrics getAggregateTaskMetrics() {
+    if (repartitionCommandCase_ == 8) {
+       return (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder getAggregateTaskMetricsOrBuilder() {
+    if (repartitionCommandCase_ == 8) {
+       return (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -307,17 +307,17 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
     }
-    if (repartitionCommandCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
-    }
-    if (repartitionCommandCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
-    }
     if (repartitionCommandCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
     }
     if (repartitionCommandCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -335,14 +335,6 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, commandId_);
     }
-    if (repartitionCommandCase_ == 3) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
-    }
-    if (repartitionCommandCase_ == 4) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
-    }
     if (repartitionCommandCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
@@ -350,6 +342,14 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -378,14 +378,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!getRepartitionCommandCase().equals(other.getRepartitionCommandCase())) return false;
     switch (repartitionCommandCase_) {
-      case 3:
-        if (!getTaskMetricUpdate()
-            .equals(other.getTaskMetricUpdate())) return false;
-        break;
-      case 4:
-        if (!getWfMetricUpdate()
-            .equals(other.getWfMetricUpdate())) return false;
-        break;
       case 5:
         if (!getCreateRemoteTag()
             .equals(other.getCreateRemoteTag())) return false;
@@ -393,6 +385,14 @@ private static final long serialVersionUID = 0L;
       case 6:
         if (!getRemoveRemoteTag()
             .equals(other.getRemoveRemoteTag())) return false;
+        break;
+      case 7:
+        if (!getAggregateWfMetrics()
+            .equals(other.getAggregateWfMetrics())) return false;
+        break;
+      case 8:
+        if (!getAggregateTaskMetrics()
+            .equals(other.getAggregateTaskMetrics())) return false;
         break;
       case 0:
       default:
@@ -417,14 +417,6 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getCommandId().hashCode();
     }
     switch (repartitionCommandCase_) {
-      case 3:
-        hash = (37 * hash) + TASK_METRIC_UPDATE_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskMetricUpdate().hashCode();
-        break;
-      case 4:
-        hash = (37 * hash) + WF_METRIC_UPDATE_FIELD_NUMBER;
-        hash = (53 * hash) + getWfMetricUpdate().hashCode();
-        break;
       case 5:
         hash = (37 * hash) + CREATE_REMOTE_TAG_FIELD_NUMBER;
         hash = (53 * hash) + getCreateRemoteTag().hashCode();
@@ -432,6 +424,14 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + REMOVE_REMOTE_TAG_FIELD_NUMBER;
         hash = (53 * hash) + getRemoveRemoteTag().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + AGGREGATE_WF_METRICS_FIELD_NUMBER;
+        hash = (53 * hash) + getAggregateWfMetrics().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + AGGREGATE_TASK_METRICS_FIELD_NUMBER;
+        hash = (53 * hash) + getAggregateTaskMetrics().hashCode();
         break;
       case 0:
       default:
@@ -577,17 +577,17 @@ private static final long serialVersionUID = 0L;
         timeBuilder_ = null;
       }
       commandId_ = "";
-      if (taskMetricUpdateBuilder_ != null) {
-        taskMetricUpdateBuilder_.clear();
-      }
-      if (wfMetricUpdateBuilder_ != null) {
-        wfMetricUpdateBuilder_.clear();
-      }
       if (createRemoteTagBuilder_ != null) {
         createRemoteTagBuilder_.clear();
       }
       if (removeRemoteTagBuilder_ != null) {
         removeRemoteTagBuilder_.clear();
+      }
+      if (aggregateWfMetricsBuilder_ != null) {
+        aggregateWfMetricsBuilder_.clear();
+      }
+      if (aggregateTaskMetricsBuilder_ != null) {
+        aggregateTaskMetricsBuilder_.clear();
       }
       repartitionCommandCase_ = 0;
       repartitionCommand_ = null;
@@ -641,14 +641,6 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.common.proto.RepartitionCommandPb result) {
       result.repartitionCommandCase_ = repartitionCommandCase_;
       result.repartitionCommand_ = this.repartitionCommand_;
-      if (repartitionCommandCase_ == 3 &&
-          taskMetricUpdateBuilder_ != null) {
-        result.repartitionCommand_ = taskMetricUpdateBuilder_.build();
-      }
-      if (repartitionCommandCase_ == 4 &&
-          wfMetricUpdateBuilder_ != null) {
-        result.repartitionCommand_ = wfMetricUpdateBuilder_.build();
-      }
       if (repartitionCommandCase_ == 5 &&
           createRemoteTagBuilder_ != null) {
         result.repartitionCommand_ = createRemoteTagBuilder_.build();
@@ -656,6 +648,14 @@ private static final long serialVersionUID = 0L;
       if (repartitionCommandCase_ == 6 &&
           removeRemoteTagBuilder_ != null) {
         result.repartitionCommand_ = removeRemoteTagBuilder_.build();
+      }
+      if (repartitionCommandCase_ == 7 &&
+          aggregateWfMetricsBuilder_ != null) {
+        result.repartitionCommand_ = aggregateWfMetricsBuilder_.build();
+      }
+      if (repartitionCommandCase_ == 8 &&
+          aggregateTaskMetricsBuilder_ != null) {
+        result.repartitionCommand_ = aggregateTaskMetricsBuilder_.build();
       }
     }
 
@@ -712,20 +712,20 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       switch (other.getRepartitionCommandCase()) {
-        case TASK_METRIC_UPDATE: {
-          mergeTaskMetricUpdate(other.getTaskMetricUpdate());
-          break;
-        }
-        case WF_METRIC_UPDATE: {
-          mergeWfMetricUpdate(other.getWfMetricUpdate());
-          break;
-        }
         case CREATE_REMOTE_TAG: {
           mergeCreateRemoteTag(other.getCreateRemoteTag());
           break;
         }
         case REMOVE_REMOTE_TAG: {
           mergeRemoveRemoteTag(other.getRemoveRemoteTag());
+          break;
+        }
+        case AGGREGATE_WF_METRICS: {
+          mergeAggregateWfMetrics(other.getAggregateWfMetrics());
+          break;
+        }
+        case AGGREGATE_TASK_METRICS: {
+          mergeAggregateTaskMetrics(other.getAggregateTaskMetrics());
           break;
         }
         case REPARTITIONCOMMAND_NOT_SET: {
@@ -770,20 +770,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 26: {
-              input.readMessage(
-                  getTaskMetricUpdateFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              repartitionCommandCase_ = 3;
-              break;
-            } // case 26
-            case 34: {
-              input.readMessage(
-                  getWfMetricUpdateFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              repartitionCommandCase_ = 4;
-              break;
-            } // case 34
             case 42: {
               input.readMessage(
                   getCreateRemoteTagFieldBuilder().getBuilder(),
@@ -798,6 +784,20 @@ private static final long serialVersionUID = 0L;
               repartitionCommandCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getAggregateWfMetricsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 7;
+              break;
+            } // case 58
+            case 66: {
+              input.readMessage(
+                  getAggregateTaskMetricsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1026,290 +1026,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> taskMetricUpdateBuilder_;
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     * @return Whether the taskMetricUpdate field is set.
-     */
-    @java.lang.Override
-    public boolean hasTaskMetricUpdate() {
-      return repartitionCommandCase_ == 3;
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     * @return The taskMetricUpdate.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate() {
-      if (taskMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-      } else {
-        if (repartitionCommandCase_ == 3) {
-          return taskMetricUpdateBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    public Builder setTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
-      if (taskMetricUpdateBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        repartitionCommand_ = value;
-        onChanged();
-      } else {
-        taskMetricUpdateBuilder_.setMessage(value);
-      }
-      repartitionCommandCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    public Builder setTaskMetricUpdate(
-        io.littlehorse.common.proto.TaskMetricUpdatePb.Builder builderForValue) {
-      if (taskMetricUpdateBuilder_ == null) {
-        repartitionCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        taskMetricUpdateBuilder_.setMessage(builderForValue.build());
-      }
-      repartitionCommandCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    public Builder mergeTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
-      if (taskMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 3 &&
-            repartitionCommand_ != io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance()) {
-          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdatePb.newBuilder((io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          repartitionCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (repartitionCommandCase_ == 3) {
-          taskMetricUpdateBuilder_.mergeFrom(value);
-        } else {
-          taskMetricUpdateBuilder_.setMessage(value);
-        }
-      }
-      repartitionCommandCase_ = 3;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    public Builder clearTaskMetricUpdate() {
-      if (taskMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 3) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (repartitionCommandCase_ == 3) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-        }
-        taskMetricUpdateBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    public io.littlehorse.common.proto.TaskMetricUpdatePb.Builder getTaskMetricUpdateBuilder() {
-      return getTaskMetricUpdateFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
-      if ((repartitionCommandCase_ == 3) && (taskMetricUpdateBuilder_ != null)) {
-        return taskMetricUpdateBuilder_.getMessageOrBuilder();
-      } else {
-        if (repartitionCommandCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> 
-        getTaskMetricUpdateFieldBuilder() {
-      if (taskMetricUpdateBuilder_ == null) {
-        if (!(repartitionCommandCase_ == 3)) {
-          repartitionCommand_ = io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
-        }
-        taskMetricUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder>(
-                (io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_,
-                getParentForChildren(),
-                isClean());
-        repartitionCommand_ = null;
-      }
-      repartitionCommandCase_ = 3;
-      onChanged();
-      return taskMetricUpdateBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> wfMetricUpdateBuilder_;
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     * @return Whether the wfMetricUpdate field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfMetricUpdate() {
-      return repartitionCommandCase_ == 4;
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     * @return The wfMetricUpdate.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4) {
-          return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          return wfMetricUpdateBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder setWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        repartitionCommand_ = value;
-        onChanged();
-      } else {
-        wfMetricUpdateBuilder_.setMessage(value);
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder setWfMetricUpdate(
-        io.littlehorse.common.proto.WfMetricUpdatePb.Builder builderForValue) {
-      if (wfMetricUpdateBuilder_ == null) {
-        repartitionCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        wfMetricUpdateBuilder_.setMessage(builderForValue.build());
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder mergeWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4 &&
-            repartitionCommand_ != io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance()) {
-          repartitionCommand_ = io.littlehorse.common.proto.WfMetricUpdatePb.newBuilder((io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          repartitionCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          wfMetricUpdateBuilder_.mergeFrom(value);
-        } else {
-          wfMetricUpdateBuilder_.setMessage(value);
-        }
-      }
-      repartitionCommandCase_ = 4;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public Builder clearWfMetricUpdate() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (repartitionCommandCase_ == 4) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-        }
-        wfMetricUpdateBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    public io.littlehorse.common.proto.WfMetricUpdatePb.Builder getWfMetricUpdateBuilder() {
-      return getWfMetricUpdateFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
-      if ((repartitionCommandCase_ == 4) && (wfMetricUpdateBuilder_ != null)) {
-        return wfMetricUpdateBuilder_.getMessageOrBuilder();
-      } else {
-        if (repartitionCommandCase_ == 4) {
-          return (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> 
-        getWfMetricUpdateFieldBuilder() {
-      if (wfMetricUpdateBuilder_ == null) {
-        if (!(repartitionCommandCase_ == 4)) {
-          repartitionCommand_ = io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
-        }
-        wfMetricUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder>(
-                (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_,
-                getParentForChildren(),
-                isClean());
-        repartitionCommand_ = null;
-      }
-      repartitionCommandCase_ = 4;
-      onChanged();
-      return wfMetricUpdateBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1594,6 +1310,290 @@ private static final long serialVersionUID = 0L;
       repartitionCommandCase_ = 6;
       onChanged();
       return removeRemoteTagBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.AggregateWfMetrics, io.littlehorse.common.proto.AggregateWfMetrics.Builder, io.littlehorse.common.proto.AggregateWfMetricsOrBuilder> aggregateWfMetricsBuilder_;
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     * @return Whether the aggregateWfMetrics field is set.
+     */
+    @java.lang.Override
+    public boolean hasAggregateWfMetrics() {
+      return repartitionCommandCase_ == 7;
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     * @return The aggregateWfMetrics.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateWfMetrics getAggregateWfMetrics() {
+      if (aggregateWfMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 7) {
+          return (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+      } else {
+        if (repartitionCommandCase_ == 7) {
+          return aggregateWfMetricsBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    public Builder setAggregateWfMetrics(io.littlehorse.common.proto.AggregateWfMetrics value) {
+      if (aggregateWfMetricsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        repartitionCommand_ = value;
+        onChanged();
+      } else {
+        aggregateWfMetricsBuilder_.setMessage(value);
+      }
+      repartitionCommandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    public Builder setAggregateWfMetrics(
+        io.littlehorse.common.proto.AggregateWfMetrics.Builder builderForValue) {
+      if (aggregateWfMetricsBuilder_ == null) {
+        repartitionCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        aggregateWfMetricsBuilder_.setMessage(builderForValue.build());
+      }
+      repartitionCommandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    public Builder mergeAggregateWfMetrics(io.littlehorse.common.proto.AggregateWfMetrics value) {
+      if (aggregateWfMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 7 &&
+            repartitionCommand_ != io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance()) {
+          repartitionCommand_ = io.littlehorse.common.proto.AggregateWfMetrics.newBuilder((io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          repartitionCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (repartitionCommandCase_ == 7) {
+          aggregateWfMetricsBuilder_.mergeFrom(value);
+        } else {
+          aggregateWfMetricsBuilder_.setMessage(value);
+        }
+      }
+      repartitionCommandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    public Builder clearAggregateWfMetrics() {
+      if (aggregateWfMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 7) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (repartitionCommandCase_ == 7) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+        }
+        aggregateWfMetricsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    public io.littlehorse.common.proto.AggregateWfMetrics.Builder getAggregateWfMetricsBuilder() {
+      return getAggregateWfMetricsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateWfMetricsOrBuilder getAggregateWfMetricsOrBuilder() {
+      if ((repartitionCommandCase_ == 7) && (aggregateWfMetricsBuilder_ != null)) {
+        return aggregateWfMetricsBuilder_.getMessageOrBuilder();
+      } else {
+        if (repartitionCommandCase_ == 7) {
+          return (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateWfMetrics aggregate_wf_metrics = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.AggregateWfMetrics, io.littlehorse.common.proto.AggregateWfMetrics.Builder, io.littlehorse.common.proto.AggregateWfMetricsOrBuilder> 
+        getAggregateWfMetricsFieldBuilder() {
+      if (aggregateWfMetricsBuilder_ == null) {
+        if (!(repartitionCommandCase_ == 7)) {
+          repartitionCommand_ = io.littlehorse.common.proto.AggregateWfMetrics.getDefaultInstance();
+        }
+        aggregateWfMetricsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.AggregateWfMetrics, io.littlehorse.common.proto.AggregateWfMetrics.Builder, io.littlehorse.common.proto.AggregateWfMetricsOrBuilder>(
+                (io.littlehorse.common.proto.AggregateWfMetrics) repartitionCommand_,
+                getParentForChildren(),
+                isClean());
+        repartitionCommand_ = null;
+      }
+      repartitionCommandCase_ = 7;
+      onChanged();
+      return aggregateWfMetricsBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.AggregateTaskMetrics, io.littlehorse.common.proto.AggregateTaskMetrics.Builder, io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder> aggregateTaskMetricsBuilder_;
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     * @return Whether the aggregateTaskMetrics field is set.
+     */
+    @java.lang.Override
+    public boolean hasAggregateTaskMetrics() {
+      return repartitionCommandCase_ == 8;
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     * @return The aggregateTaskMetrics.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateTaskMetrics getAggregateTaskMetrics() {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 8) {
+          return (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+      } else {
+        if (repartitionCommandCase_ == 8) {
+          return aggregateTaskMetricsBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    public Builder setAggregateTaskMetrics(io.littlehorse.common.proto.AggregateTaskMetrics value) {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        repartitionCommand_ = value;
+        onChanged();
+      } else {
+        aggregateTaskMetricsBuilder_.setMessage(value);
+      }
+      repartitionCommandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    public Builder setAggregateTaskMetrics(
+        io.littlehorse.common.proto.AggregateTaskMetrics.Builder builderForValue) {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        repartitionCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        aggregateTaskMetricsBuilder_.setMessage(builderForValue.build());
+      }
+      repartitionCommandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    public Builder mergeAggregateTaskMetrics(io.littlehorse.common.proto.AggregateTaskMetrics value) {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 8 &&
+            repartitionCommand_ != io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance()) {
+          repartitionCommand_ = io.littlehorse.common.proto.AggregateTaskMetrics.newBuilder((io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          repartitionCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (repartitionCommandCase_ == 8) {
+          aggregateTaskMetricsBuilder_.mergeFrom(value);
+        } else {
+          aggregateTaskMetricsBuilder_.setMessage(value);
+        }
+      }
+      repartitionCommandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    public Builder clearAggregateTaskMetrics() {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        if (repartitionCommandCase_ == 8) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (repartitionCommandCase_ == 8) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+        }
+        aggregateTaskMetricsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    public io.littlehorse.common.proto.AggregateTaskMetrics.Builder getAggregateTaskMetricsBuilder() {
+      return getAggregateTaskMetricsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder getAggregateTaskMetricsOrBuilder() {
+      if ((repartitionCommandCase_ == 8) && (aggregateTaskMetricsBuilder_ != null)) {
+        return aggregateTaskMetricsBuilder_.getMessageOrBuilder();
+      } else {
+        if (repartitionCommandCase_ == 8) {
+          return (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateTaskMetrics aggregate_task_metrics = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.AggregateTaskMetrics, io.littlehorse.common.proto.AggregateTaskMetrics.Builder, io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder> 
+        getAggregateTaskMetricsFieldBuilder() {
+      if (aggregateTaskMetricsBuilder_ == null) {
+        if (!(repartitionCommandCase_ == 8)) {
+          repartitionCommand_ = io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
+        }
+        aggregateTaskMetricsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.AggregateTaskMetrics, io.littlehorse.common.proto.AggregateTaskMetrics.Builder, io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder>(
+                (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_,
+                getParentForChildren(),
+                isClean());
+        repartitionCommand_ = null;
+      }
+      repartitionCommandCase_ = 8;
+      onChanged();
+      return aggregateTaskMetricsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

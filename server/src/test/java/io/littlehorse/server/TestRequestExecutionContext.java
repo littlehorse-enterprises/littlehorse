@@ -2,6 +2,8 @@ package io.littlehorse.server;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -24,16 +26,16 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
     private final MockProcessorContext<String, Bytes> processorContext;
 
     public TestRequestExecutionContext(
-            String clientId,
-            String tenantId,
+            PrincipalIdModel clientId,
+            TenantIdModel tenantId,
             MockProcessorContext<String, Bytes> processorContext,
             KeyValueStore<String, Bytes> globalMetadataNativeStore,
             KeyValueStore<String, Bytes> coreNativeStore,
             MetadataCache metadataCache,
             LHServerConfig lhConfig) {
         super(clientId, tenantId, globalMetadataNativeStore, coreNativeStore, metadataCache, lhConfig);
-        this.clientId = clientId;
-        this.tenantId = tenantId;
+        this.clientId = clientId.toString();
+        this.tenantId = tenantId.toString();
         this.globalMetadataNativeStore = globalMetadataNativeStore;
         this.coreNativeStore = coreNativeStore;
         this.metadataCache = metadataCache;
@@ -53,8 +55,8 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         MetadataCache metadataCache = new MetadataCache();
         LHServerConfig lhConfig = Mockito.mock();
         return new TestRequestExecutionContext(
-                clientId,
-                tenantId,
+                new PrincipalIdModel(clientId),
+                new TenantIdModel(tenantId),
                 mockProcessorContext,
                 globalMetadataNativeStore,
                 coreNativeStore,

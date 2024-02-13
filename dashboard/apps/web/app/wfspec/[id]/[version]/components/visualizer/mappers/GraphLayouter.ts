@@ -4,7 +4,7 @@ import type { ElkLabel } from 'elkjs'
 import type { Client } from 'nice-grpc/src/client/Client'
 import type { ThreadRun, WfRun } from '../../../../../../../littlehorse-public-api/wf_run'
 import type { Edge as LHEdge, Node as LHNode, WfSpec } from '../../../../../../../littlehorse-public-api/wf_spec'
-import type { LHPublicApiDefinition } from '../../../../../../../littlehorse-public-api/service'
+import type { LittleHorseDefinition } from '../../../../../../../littlehorse-public-api/service'
 import type { NodeRun } from '../../../../../../../littlehorse-public-api/node_run'
 import EdgeHandler from './ReactFlowEdgeHandler'
 import ELKNodeMapper from './ElkNodeMapper'
@@ -25,9 +25,9 @@ const defaultThreadSpec = 'entrypoint'
 class GraphLayouter {
     private elkJsInstance: ELKType
     private readonly extractLabel: (edge: LHEdge) => (string | null)
-    private lhClient: Client<LHPublicApiDefinition> | undefined
+    private lhClient: Client<LittleHorseDefinition> | undefined
 
-    constructor(elkJsInstance: ELKType, extractLabel: (edge: LHEdge) => string | null, lhClient?: Client<LHPublicApiDefinition>) {
+    constructor(elkJsInstance: ELKType, extractLabel: (edge: LHEdge) => string | null, lhClient?: Client<LittleHorseDefinition>) {
         this.extractLabel = extractLabel
         this.elkJsInstance = elkJsInstance
         this.lhClient = lhClient

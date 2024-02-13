@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -13,7 +17,12 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
+import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import java.time.Duration;
@@ -274,5 +283,115 @@ public class WorkflowThreadImplTest {
         ThreadSpec child = wfSpec.getThreadSpecsOrThrow("child-thread");
         assertThat(child.getRetentionPolicy().getSecondsAfterThreadTermination())
                 .isEqualTo(50);
+    }
+
+    @Test
+    void testTimeoutOnExternalEventNode() {
+        Workflow wf = new WorkflowImpl("some-wf", thread -> {
+            thread.waitForEvent("some-event").timeout(10);
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-some-event-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getTimeoutSeconds().getLiteralValue().getInt())
+                .isEqualTo(10);
+    }
+
+    @Test
+    void testWaitForThreadsHandleAnyFailureOnChild() {
+        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
+            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+            result.handleAnyFailureOnChild(handler -> {});
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(3);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("2-threads-WAIT_FOR_THREADS");
+        WaitForThreadsNode wftn = node.getWaitForThreads();
+
+        assertThat(wftn.getPerThreadFailureHandlersCount()).isEqualTo(1);
+        assertThat(wftn.getPerThreadFailureHandlers(0).getFailureToCatchCase())
+                .isEqualTo(FailureToCatchCase.FAILURETOCATCH_NOT_SET);
+        assertThat(wftn.getPerThreadFailureHandlers(0).getHandlerSpecName())
+                .isEqualTo("failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE");
+    }
+
+    @Test
+    void testWaitForThreadsHandleAnyErrorOnChild() {
+        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
+            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+            result.handleErrorOnChild(LHErrorType.TIMEOUT, handler -> {});
+            result.handleErrorOnChild(null, handler -> {});
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(4);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("2-threads-WAIT_FOR_THREADS");
+        WaitForThreadsNode wftn = node.getWaitForThreads();
+
+        assertThat(wftn.getPerThreadFailureHandlersCount()).isEqualTo(2);
+        FailureHandlerDef timeoutHandler = wftn.getPerThreadFailureHandlers(0);
+        FailureHandlerDef anyErrorHandler = wftn.getPerThreadFailureHandlers(1);
+
+        assertThat(timeoutHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.SPECIFIC_FAILURE);
+        assertThat(timeoutHandler.getSpecificFailure()).isEqualTo(LHErrorType.TIMEOUT.toString());
+        assertThat(timeoutHandler.getHandlerSpecName()).isEqualTo("error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT");
+
+        assertThat(anyErrorHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.ANY_FAILURE_OF_TYPE);
+        assertThat(anyErrorHandler.getAnyFailureOfType()).isEqualTo(LHFailureType.FAILURE_TYPE_ERROR);
+        assertThat(anyErrorHandler.getHandlerSpecName())
+                .isEqualTo("error-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_ERROR");
+    }
+
+    @Test
+    void testWaitForThreadsHandleAnyExceptionOnChild() {
+        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
+            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+            result.handleExceptionOnChild("my-exception", handler -> {});
+            result.handleExceptionOnChild(null, handler -> {});
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(4);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("2-threads-WAIT_FOR_THREADS");
+        WaitForThreadsNode wftn = node.getWaitForThreads();
+
+        assertThat(wftn.getPerThreadFailureHandlersCount()).isEqualTo(2);
+        FailureHandlerDef specificHandler = wftn.getPerThreadFailureHandlers(0);
+        FailureHandlerDef anyHandler = wftn.getPerThreadFailureHandlers(1);
+
+        assertThat(specificHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.SPECIFIC_FAILURE);
+        assertThat(specificHandler.getSpecificFailure()).isEqualTo("my-exception");
+        assertThat(specificHandler.getHandlerSpecName())
+                .isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-my-exception");
+
+        assertThat(anyHandler.getFailureToCatchCase()).isEqualTo(FailureToCatchCase.ANY_FAILURE_OF_TYPE);
+        assertThat(anyHandler.getAnyFailureOfType()).isEqualTo(LHFailureType.FAILURE_TYPE_EXCEPTION);
+        assertThat(anyHandler.getHandlerSpecName())
+                .isEqualTo("exn-handler-2-threads-WAIT_FOR_THREADS-FAILURE_TYPE_EXCEPTION");
+    }
+
+    @Test
+    void testWaitForParallelSpawnThreads() {
+        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable toSpawn = wf.addVariable("to-spawn", VariableType.JSON_ARR);
+            wf.waitForThreads(wf.spawnThreadForEach(toSpawn, "child", child -> {}));
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(2);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("2-threads-WAIT_FOR_THREADS");
+        WaitForThreadsNode wftn = node.getWaitForThreads();
+
+        assertThat(wftn.getThreadsToWaitForCase()).isEqualTo(ThreadsToWaitForCase.THREAD_LIST);
+        assertThat(wftn.getThreadList().getVariableName()).isEqualTo("1-child-START_MULTIPLE_THREADS");
     }
 }

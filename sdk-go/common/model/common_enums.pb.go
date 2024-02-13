@@ -20,6 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Status used for WfRun, ThreadRun, and NodeRun
 type LHStatus int32
 
 const (
@@ -81,11 +82,17 @@ func (LHStatus) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{0}
 }
 
+// Status of a Metadata Object, such as WfSpec or TaskDef
 type MetadataStatus int32
 
 const (
-	MetadataStatus_ACTIVE      MetadataStatus = 0
-	MetadataStatus_ARCHIVED    MetadataStatus = 1
+	// ACTIVE means the object can be used.
+	MetadataStatus_ACTIVE MetadataStatus = 0
+	// An ARCHIVED WfSpec can no longer be used to create new WfRun's, but
+	// existing WfRun's will be allowed to run to completion.
+	MetadataStatus_ARCHIVED MetadataStatus = 1
+	// A TERMINATING WfSpec is actively deleting all running WfRun's, and will
+	// self-destruct once all of its child WfRun's are terminated.
 	MetadataStatus_TERMINATING MetadataStatus = 2
 )
 
@@ -130,17 +137,27 @@ func (MetadataStatus) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{1}
 }
 
+// Status of a TaskRun.
 type TaskStatus int32
 
 const (
-	TaskStatus_TASK_SCHEDULED                TaskStatus = 0
-	TaskStatus_TASK_RUNNING                  TaskStatus = 1
-	TaskStatus_TASK_SUCCESS                  TaskStatus = 2
-	TaskStatus_TASK_FAILED                   TaskStatus = 3
-	TaskStatus_TASK_TIMEOUT                  TaskStatus = 4
+	// Scheduled in the Task Queue but not yet picked up by a Task Worker.
+	TaskStatus_TASK_SCHEDULED TaskStatus = 0
+	// Picked up by a Task Worker, but not yet reported or timed out.
+	TaskStatus_TASK_RUNNING TaskStatus = 1
+	// Successfully completed.
+	TaskStatus_TASK_SUCCESS TaskStatus = 2
+	// Task Worker reported a technical failure while attempting to execute the TaskRun
+	TaskStatus_TASK_FAILED TaskStatus = 3
+	// Task Worker did not report a result in time.
+	TaskStatus_TASK_TIMEOUT TaskStatus = 4
+	// Task Worker reported that it was unable to serialize the output of the TaskRun.
 	TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR TaskStatus = 5
-	TaskStatus_TASK_INPUT_VAR_SUB_ERROR      TaskStatus = 6
-	TaskStatus_TASK_EXCEPTION                TaskStatus = 8
+	// Task Worker was unable to deserialize the input variables into appropriate language-specific
+	// objects to pass into the Task Function
+	TaskStatus_TASK_INPUT_VAR_SUB_ERROR TaskStatus = 6
+	// Task Function business logic determined that there was a business exception.
+	TaskStatus_TASK_EXCEPTION TaskStatus = 8
 )
 
 // Enum value maps for TaskStatus.
@@ -244,16 +261,25 @@ func (MetricsWindowLength) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{3}
 }
 
+// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
+// VariableValue.
 type VariableType int32
 
 const (
+	// An object represented as a json string.
 	VariableType_JSON_OBJ VariableType = 0
+	// A list represented as a json array string.
 	VariableType_JSON_ARR VariableType = 1
-	VariableType_DOUBLE   VariableType = 2
-	VariableType_BOOL     VariableType = 3
-	VariableType_STR      VariableType = 4
-	VariableType_INT      VariableType = 5
-	VariableType_BYTES    VariableType = 6
+	// A 64-bit floating point number.
+	VariableType_DOUBLE VariableType = 2
+	// A boolean
+	VariableType_BOOL VariableType = 3
+	// A string
+	VariableType_STR VariableType = 4
+	// A 64-bit integer
+	VariableType_INT VariableType = 5
+	// A byte array
+	VariableType_BYTES VariableType = 6
 )
 
 // Enum value maps for VariableType.
@@ -305,18 +331,28 @@ func (VariableType) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{4}
 }
 
+// This enum is all of the types of technical failure that can occur in a WfRun.
 type LHErrorType int32
 
 const (
-	LHErrorType_CHILD_FAILURE       LHErrorType = 0
-	LHErrorType_VAR_SUB_ERROR       LHErrorType = 1
-	LHErrorType_VAR_MUTATION_ERROR  LHErrorType = 2
+	// A child ThreadRun failed with a technical ERROR.
+	LHErrorType_CHILD_FAILURE LHErrorType = 0
+	// Failed substituting input variables into a NodeRun.
+	LHErrorType_VAR_SUB_ERROR LHErrorType = 1
+	// Failed mutating variables after a NodeRun successfully completed.
+	LHErrorType_VAR_MUTATION_ERROR LHErrorType = 2
+	// A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)
 	LHErrorType_USER_TASK_CANCELLED LHErrorType = 3
-	LHErrorType_TIMEOUT             LHErrorType = 4
-	LHErrorType_TASK_FAILURE        LHErrorType = 5
-	LHErrorType_VAR_ERROR           LHErrorType = 6
-	LHErrorType_TASK_ERROR          LHErrorType = 7
-	LHErrorType_INTERNAL_ERROR      LHErrorType = 8
+	// A NodeRun failed due to a timeout.
+	LHErrorType_TIMEOUT LHErrorType = 4
+	// A TaskRun failed due to an unexpected error.
+	LHErrorType_TASK_FAILURE LHErrorType = 5
+	// Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR
+	LHErrorType_VAR_ERROR LHErrorType = 6
+	// Wrapper for TASK_FALIURE and TIMEOUT
+	LHErrorType_TASK_ERROR LHErrorType = 7
+	// An unexpected LittleHorse Internal error occurred. This is not expected to happen.
+	LHErrorType_INTERNAL_ERROR LHErrorType = 8
 )
 
 // Enum value maps for LHErrorType.
@@ -372,49 +408,6 @@ func (LHErrorType) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{5}
 }
 
-type WaitForThreadsPolicy int32
-
-const (
-	WaitForThreadsPolicy_STOP_ON_FAILURE WaitForThreadsPolicy = 0
-)
-
-// Enum value maps for WaitForThreadsPolicy.
-var (
-	WaitForThreadsPolicy_name = map[int32]string{
-		0: "STOP_ON_FAILURE",
-	}
-	WaitForThreadsPolicy_value = map[string]int32{
-		"STOP_ON_FAILURE": 0,
-	}
-)
-
-func (x WaitForThreadsPolicy) Enum() *WaitForThreadsPolicy {
-	p := new(WaitForThreadsPolicy)
-	*p = x
-	return p
-}
-
-func (x WaitForThreadsPolicy) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (WaitForThreadsPolicy) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_enums_proto_enumTypes[6].Descriptor()
-}
-
-func (WaitForThreadsPolicy) Type() protoreflect.EnumType {
-	return &file_common_enums_proto_enumTypes[6]
-}
-
-func (x WaitForThreadsPolicy) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use WaitForThreadsPolicy.Descriptor instead.
-func (WaitForThreadsPolicy) EnumDescriptor() ([]byte, []int) {
-	return file_common_enums_proto_rawDescGZIP(), []int{6}
-}
-
 var File_common_enums_proto protoreflect.FileDescriptor
 
 var file_common_enums_proto_rawDesc = []byte{
@@ -463,15 +456,12 @@ var file_common_enums_proto_rawDesc = []byte{
 	0x5f, 0x46, 0x41, 0x49, 0x4c, 0x55, 0x52, 0x45, 0x10, 0x05, 0x12, 0x0d, 0x0a, 0x09, 0x56, 0x41,
 	0x52, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x06, 0x12, 0x0e, 0x0a, 0x0a, 0x54, 0x41, 0x53,
 	0x4b, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x07, 0x12, 0x12, 0x0a, 0x0e, 0x49, 0x4e, 0x54,
-	0x45, 0x52, 0x4e, 0x41, 0x4c, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x08, 0x2a, 0x2b, 0x0a,
-	0x14, 0x57, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x50,
-	0x6f, 0x6c, 0x69, 0x63, 0x79, 0x12, 0x13, 0x0a, 0x0f, 0x53, 0x54, 0x4f, 0x50, 0x5f, 0x4f, 0x4e,
-	0x5f, 0x46, 0x41, 0x49, 0x4c, 0x55, 0x52, 0x45, 0x10, 0x00, 0x42, 0x47, 0x0a, 0x1f, 0x69, 0x6f,
-	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b,
-	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
-	0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x45, 0x52, 0x4e, 0x41, 0x4c, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x08, 0x42, 0x47, 0x0a,
+	0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x50, 0x01, 0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -486,15 +476,14 @@ func file_common_enums_proto_rawDescGZIP() []byte {
 	return file_common_enums_proto_rawDescData
 }
 
-var file_common_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
+var file_common_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
 var file_common_enums_proto_goTypes = []interface{}{
-	(LHStatus)(0),             // 0: littlehorse.LHStatus
-	(MetadataStatus)(0),       // 1: littlehorse.MetadataStatus
-	(TaskStatus)(0),           // 2: littlehorse.TaskStatus
-	(MetricsWindowLength)(0),  // 3: littlehorse.MetricsWindowLength
-	(VariableType)(0),         // 4: littlehorse.VariableType
-	(LHErrorType)(0),          // 5: littlehorse.LHErrorType
-	(WaitForThreadsPolicy)(0), // 6: littlehorse.WaitForThreadsPolicy
+	(LHStatus)(0),            // 0: littlehorse.LHStatus
+	(MetadataStatus)(0),      // 1: littlehorse.MetadataStatus
+	(TaskStatus)(0),          // 2: littlehorse.TaskStatus
+	(MetricsWindowLength)(0), // 3: littlehorse.MetricsWindowLength
+	(VariableType)(0),        // 4: littlehorse.VariableType
+	(LHErrorType)(0),         // 5: littlehorse.LHErrorType
 }
 var file_common_enums_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -514,7 +503,7 @@ func file_common_enums_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_common_enums_proto_rawDesc,
-			NumEnums:      7,
+			NumEnums:      6,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,

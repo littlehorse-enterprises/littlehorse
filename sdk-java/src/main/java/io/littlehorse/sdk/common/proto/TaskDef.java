@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskDef}
  */
 public final class TaskDef extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId id_;
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    * @return The id.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of this TaskDef.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId id = 1;</code>
    */
   @java.lang.Override
@@ -69,6 +85,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_;
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
@@ -76,6 +96,10 @@ private static final long serialVersionUID = 0L;
     return inputVars_;
   }
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
@@ -84,6 +108,10 @@ private static final long serialVersionUID = 0L;
     return inputVars_;
   }
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
@@ -91,6 +119,10 @@ private static final long serialVersionUID = 0L;
     return inputVars_.size();
   }
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
@@ -98,6 +130,10 @@ private static final long serialVersionUID = 0L;
     return inputVars_.get(index);
   }
   /**
+   * <pre>
+   * The input variables required to execute this TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
@@ -109,6 +145,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return Whether the createdAt field is set.
    */
@@ -117,6 +157,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return The createdAt.
    */
@@ -125,6 +169,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The time at which this TaskDef was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   @java.lang.Override
@@ -324,6 +372,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskDef}
    */
   public static final class Builder extends
@@ -582,6 +634,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -589,6 +645,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      * @return The id.
      */
@@ -600,6 +660,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -616,6 +680,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public Builder setId(
@@ -630,6 +698,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -649,6 +721,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public Builder clearId() {
@@ -662,6 +738,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getIdBuilder() {
@@ -670,6 +750,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getIdOrBuilder() {
@@ -681,6 +765,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of this TaskDef.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -710,6 +798,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> inputVarsBuilder_;
 
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getInputVarsList() {
@@ -720,6 +812,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public int getInputVarsCount() {
@@ -730,6 +826,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index) {
@@ -740,6 +840,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder setInputVars(
@@ -757,6 +861,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder setInputVars(
@@ -771,6 +879,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(io.littlehorse.sdk.common.proto.VariableDef value) {
@@ -787,6 +899,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
@@ -804,6 +920,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
@@ -818,6 +938,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
@@ -832,6 +956,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addAllInputVars(
@@ -847,6 +975,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder clearInputVars() {
@@ -860,6 +992,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder removeInputVars(int index) {
@@ -873,6 +1009,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef.Builder getInputVarsBuilder(
@@ -880,6 +1020,10 @@ private static final long serialVersionUID = 0L;
       return getInputVarsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
@@ -890,6 +1034,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
@@ -901,6 +1049,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder() {
@@ -908,6 +1060,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder(
@@ -916,6 +1072,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The input variables required to execute this TaskDef.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableDef.Builder> 
@@ -941,6 +1101,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return Whether the createdAt field is set.
      */
@@ -948,6 +1112,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return The createdAt.
      */
@@ -959,6 +1127,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -975,6 +1147,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(
@@ -989,6 +1165,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -1008,6 +1188,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder clearCreatedAt() {
@@ -1021,6 +1205,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -1029,6 +1217,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -1040,6 +1232,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The time at which this TaskDef was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

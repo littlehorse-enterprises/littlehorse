@@ -1,0 +1,13 @@
+name: master
+run-name: Merge on master branch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+permissions:
+  packages: write
+  contents: read
+jobs:
+  publish-docker:
+    uses: ./.github/workflows/publish-docker.yml

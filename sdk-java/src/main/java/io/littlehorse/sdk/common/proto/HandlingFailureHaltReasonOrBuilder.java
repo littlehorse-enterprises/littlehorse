@@ -8,6 +8,10 @@ public interface HandlingFailureHaltReasonOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the Failure Handler ThreadRun.
+   * </pre>
+   *
    * <code>int32 handler_thread_id = 1;</code>
    * @return The handlerThreadId.
    */

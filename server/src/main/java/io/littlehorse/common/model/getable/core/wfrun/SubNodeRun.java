@@ -15,6 +15,10 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
     public NodeRunModel nodeRun;
 
+    /*
+     * Tries to move forward. Returns true if the status of something in the noderun changed. That means
+     * the WfRunModel#advance() method will try to call advance again on everything.
+     */
     public abstract boolean advanceIfPossible(Date time);
 
     public abstract void arrive(Date time);

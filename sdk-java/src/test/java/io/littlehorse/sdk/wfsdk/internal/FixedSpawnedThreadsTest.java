@@ -24,7 +24,7 @@ public class FixedSpawnedThreadsTest {
     @Test
     void shouldBuildNodeForTwoThreadsToWaitFor() {
         WaitForThreadsNode waitForThreadsNode = fixedSpawnedThreads.buildNode();
-        assertThat(waitForThreadsNode.getThreadsList()).hasSize(2);
+        assertThat(waitForThreadsNode.getThreads().getThreadsList()).hasSize(2);
     }
 
     @Test

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ParentHalted}
  */
 public final class ParentHalted extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int PARENT_THREAD_ID_FIELD_NUMBER = 1;
   private int parentThreadId_ = 0;
   /**
+   * <pre>
+   * The ID of the halted parent.
+   * </pre>
+   *
    * <code>int32 parent_thread_id = 1;</code>
    * @return The parentThreadId.
    */
@@ -207,6 +215,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ParentHalted}
    */
   public static final class Builder extends
@@ -376,6 +388,10 @@ private static final long serialVersionUID = 0L;
 
     private int parentThreadId_ ;
     /**
+     * <pre>
+     * The ID of the halted parent.
+     * </pre>
+     *
      * <code>int32 parent_thread_id = 1;</code>
      * @return The parentThreadId.
      */
@@ -384,6 +400,10 @@ private static final long serialVersionUID = 0L;
       return parentThreadId_;
     }
     /**
+     * <pre>
+     * The ID of the halted parent.
+     * </pre>
+     *
      * <code>int32 parent_thread_id = 1;</code>
      * @param value The parentThreadId to set.
      * @return This builder for chaining.
@@ -396,6 +416,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the halted parent.
+     * </pre>
+     *
      * <code>int32 parent_thread_id = 1;</code>
      * @return This builder for chaining.
      */

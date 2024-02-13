@@ -1,6 +1,5 @@
 package io.littlehorse;
 
-import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -20,6 +19,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -29,12 +29,12 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -156,7 +156,7 @@ public class TestUtil {
         WfSpecModel spec = new WfSpecModel(Mockito.mock());
         spec.setId(new WfSpecIdModel(name, 0, 0));
         spec.setCreatedAt(new Date());
-        spec.setEntrypointThreadName("testEntrypointThreadName");
+        spec.setEntrypointThreadName("entrypoint");
         spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
         return spec;
     }
@@ -166,6 +166,11 @@ public class TestUtil {
         threadSpecModel.setName("test-name");
         threadSpecModel.setNodes(Map.of("node-1", node()));
         return threadSpecModel;
+    }
+
+    public static ThreadVarDefModel threadVarDef(
+            String variableName, VariableType type, WfRunVariableAccessLevel accessLevel) {
+        return new ThreadVarDefModel(variableDef(variableName, type), false, false, accessLevel);
     }
 
     public static NodeModel node() {
@@ -179,14 +184,6 @@ public class TestUtil {
         TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
         return taskNode;
-    }
-
-    public static AbstractGetable<?> getable(Class<?> getableClass, String id) {
-        if (getableClass.equals(WfRunModel.class)) {
-            return wfRun(id);
-        } else {
-            throw new IllegalArgumentException("There is no test data for " + getableClass.getName());
-        }
     }
 
     public static Tag tag() {
@@ -259,8 +256,9 @@ public class TestUtil {
     }
 
     public static KeyValueStore<String, Bytes> testStore(String storeName) {
-        return Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
-                .withLoggingDisabled()
-                .build();
+        return Mockito.spy(
+                Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
+                        .withLoggingDisabled()
+                        .build());
     }
 }

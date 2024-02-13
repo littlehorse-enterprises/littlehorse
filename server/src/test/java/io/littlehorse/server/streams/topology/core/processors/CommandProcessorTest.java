@@ -8,12 +8,16 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -29,8 +33,10 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,8 +50,7 @@ public class CommandProcessorTest {
     @Mock
     private TaskQueueManager taskQueueManager;
 
-    @Mock
-    private ExecutionContext executionContext;
+    private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MetadataCache metadataCache = new MetadataCache();
 
@@ -63,16 +68,17 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final ModelStore defaultStore = ModelStore.defaultStore(nativeInMemoryStore, executionContext);
-
+    private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
+            nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
-    private TestProcessorExecutionContext processorContext;
+
+    private TestProcessorExecutionContext tenantProcessorContext;
+    private TestProcessorExecutionContext defaultProcessorContext;
 
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
     }
 
     @Test
@@ -81,21 +87,36 @@ public class CommandProcessorTest {
                 RunWfRequest.newBuilder().setWfSpecName("name").build();
         Command commandToExecute =
                 Command.newBuilder().setRunWf(runWfSubCommand).build();
-        processorContext = TestProcessorExecutionContext.create(
+
+        tenantProcessorContext = TestProcessorExecutionContext.create(
+                commandToExecute, HeadersUtil.metadataHeadersFor("my-tenant", "tyler"), mockProcessorContext);
+        defaultProcessorContext = new TestProcessorExecutionContext(
                 commandToExecute,
-                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL),
-                mockProcessorContext);
+                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.DEFAULT_TENANT),
+                tenantProcessorContext.getLhConfig(),
+                mockProcessorContext,
+                tenantProcessorContext.getGlobalTaskQueueManager(),
+                tenantProcessorContext.getMetadataCache(),
+                tenantProcessorContext.getServer());
+        defaultProcessorContext.getableManager();
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
+                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRunModel =
-                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
-        processorContext.getableManager().put(nodeRun);
+                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);
+        tenantProcessorContext.getableManager().put(nodeRun);
         final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
-                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, processorContext);
-        processorContext.getTaskManager().scheduleTask(scheduledTask);
-        processorContext.endExecution();
+                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, tenantProcessorContext);
+        tenantProcessorContext.getTaskManager().scheduleTask(scheduledTask);
+        defaultProcessorContext.getTaskManager().scheduleTask(scheduledTask);
+        tenantProcessorContext.endExecution();
+        defaultProcessorContext.endExecution();
         defaultStore.put(scheduledTask);
+        clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(1)).onTaskScheduled(eq(scheduledTask.getTaskDefId()), any());
+        verify(server, times(2))
+                .onTaskScheduled(
+                        eq(scheduledTask.getTaskDefId()), any(), eq(new TenantIdModel(LHConstants.DEFAULT_TENANT)));
     }
 
     /*@Test

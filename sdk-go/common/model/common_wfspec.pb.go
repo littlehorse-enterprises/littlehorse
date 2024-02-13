@@ -20,18 +20,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Enumerates the available operations to mutate a variable in a WfRun.
 type VariableMutationType int32
 
 const (
-	VariableMutationType_ASSIGN            VariableMutationType = 0
-	VariableMutationType_ADD               VariableMutationType = 1
-	VariableMutationType_EXTEND            VariableMutationType = 2
-	VariableMutationType_SUBTRACT          VariableMutationType = 3
-	VariableMutationType_MULTIPLY          VariableMutationType = 4
-	VariableMutationType_DIVIDE            VariableMutationType = 5
+	// Set the variable specified by the LHS to the value of the RHS.
+	VariableMutationType_ASSIGN VariableMutationType = 0
+	// Add the RHS to the LHS.
+	VariableMutationType_ADD VariableMutationType = 1
+	// Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+	VariableMutationType_EXTEND VariableMutationType = 2
+	// Subtract the RHS from the LHS (both must be INT or DOUBLE)
+	VariableMutationType_SUBTRACT VariableMutationType = 3
+	// Multiply the LHS by the RHS (both must be INT or DOUBLE)
+	VariableMutationType_MULTIPLY VariableMutationType = 4
+	// Divide the LHS by the RHS (both must be INT or DOUBLE)
+	VariableMutationType_DIVIDE VariableMutationType = 5
+	// Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
 	VariableMutationType_REMOVE_IF_PRESENT VariableMutationType = 6
-	VariableMutationType_REMOVE_INDEX      VariableMutationType = 7
-	VariableMutationType_REMOVE_KEY        VariableMutationType = 8
+	// Remove item at index RHS from LHS (LHS must be JSON_ARR)
+	VariableMutationType_REMOVE_INDEX VariableMutationType = 7
+	// Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
+	VariableMutationType_REMOVE_KEY VariableMutationType = 8
 )
 
 // Enum value maps for VariableMutationType.
@@ -87,17 +97,34 @@ func (VariableMutationType) EnumDescriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{0}
 }
 
+// Operator for comparing two values to create a boolean expression.
 type Comparator int32
 
 const (
-	Comparator_LESS_THAN       Comparator = 0
-	Comparator_GREATER_THAN    Comparator = 1
-	Comparator_LESS_THAN_EQ    Comparator = 2
+	// Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+	Comparator_LESS_THAN Comparator = 0
+	// Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+	Comparator_GREATER_THAN Comparator = 1
+	// Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+	Comparator_LESS_THAN_EQ Comparator = 2
+	// Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
 	Comparator_GREATER_THAN_EQ Comparator = 3
-	Comparator_EQUALS          Comparator = 4
-	Comparator_NOT_EQUALS      Comparator = 5
-	Comparator_IN              Comparator = 6
-	Comparator_NOT_IN          Comparator = 7
+	// This is valid for any variable type, and is similar to .equals() in Java.
+	//
+	// One note: if the RHS is a different type from the LHS, then LittleHorse will
+	// try to cast the RHS to the same type as the LHS. If the cast fails, then the
+	// ThreadRun fails with a VAR_SUB_ERROR.
+	Comparator_EQUALS Comparator = 4
+	// This is the inverse of `EQUALS`
+	Comparator_NOT_EQUALS Comparator = 5
+	// Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+	//
+	// For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+	// RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+	// is equal to the LHS.
+	Comparator_IN Comparator = 6
+	// The inverse of IN.
+	Comparator_NOT_IN Comparator = 7
 )
 
 // Enum value maps for Comparator.
@@ -151,10 +178,18 @@ func (Comparator) EnumDescriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{1}
 }
 
+// Enumerates the different lifecycle hooks that can cause the timer to start running.
 type UTActionTrigger_UTHook int32
 
 const (
-	UTActionTrigger_ON_ARRIVAL       UTActionTrigger_UTHook = 0
+	// The hook should be scheduled `delay_seconds` after the UserTaskRun is created. This
+	// hook only causes the action to be scheduled once.
+	UTActionTrigger_ON_ARRIVAL UTActionTrigger_UTHook = 0
+	// The hook should be scheduled `delay_seconds` after the ownership of the UserTaskRun
+	// changes. This hook causes the Action to be scheduled one or more times. The first
+	// time is scheduled when the UserTaskRun is created, since we treat the change from
+	// "UserTaskRun is nonexistent" to "UserTaskRun is owned by a userId or userGroup" as
+	// a change in ownership.
 	UTActionTrigger_ON_TASK_ASSIGNED UTActionTrigger_UTHook = 1
 )
 
@@ -197,12 +232,24 @@ func (UTActionTrigger_UTHook) EnumDescriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{3, 0}
 }
 
+// A VariableAssignment is used within a WfSpec to determine how a value should be
+// assigned in the context of a specific WfRun. For example, in a TASK node, you
+// use a VariableAssignment for each input parameter to determine how the value
+// is set.
+//
+// Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+// have to worry about this in daily LittleHorse usage.
 type VariableAssignment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// If you provide a `variable_name` and the specified variable is JSON_OBJ or
+	// JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
+	// resolve to the specified field.
 	JsonPath *string `protobuf:"bytes,1,opt,name=json_path,json=jsonPath,proto3,oneof" json:"json_path,omitempty"`
+	// The oneof determines where the value is resolved to.
+	//
 	// Types that are assignable to Source:
 	//	*VariableAssignment_VariableName
 	//	*VariableAssignment_LiteralValue
@@ -282,14 +329,17 @@ type isVariableAssignment_Source interface {
 }
 
 type VariableAssignment_VariableName struct {
+	// Assign the value from a variable.
 	VariableName string `protobuf:"bytes,2,opt,name=variable_name,json=variableName,proto3,oneof"`
 }
 
 type VariableAssignment_LiteralValue struct {
+	// Assign a literal value
 	LiteralValue *VariableValue `protobuf:"bytes,3,opt,name=literal_value,json=literalValue,proto3,oneof"`
 }
 
 type VariableAssignment_FormatString_ struct {
+	// Assign a format string
 	FormatString *VariableAssignment_FormatString `protobuf:"bytes,4,opt,name=format_string,json=formatString,proto3,oneof"`
 }
 
@@ -299,14 +349,26 @@ func (*VariableAssignment_LiteralValue) isVariableAssignment_Source() {}
 
 func (*VariableAssignment_FormatString_) isVariableAssignment_Source() {}
 
+// A VariableMutation defines a modification made to one of a ThreadRun's variables.
+// The LHS determines the variable that is modified; the operation determines how
+// it is modified, and the RHS is the input to the operation.
+//
+// Day-to-day users of LittleHorse generally don't interact with this structure unless
+// they are writing their own WfSpec SDK.
 type VariableMutation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LhsName     string               `protobuf:"bytes,1,opt,name=lhs_name,json=lhsName,proto3" json:"lhs_name,omitempty"`
-	LhsJsonPath *string              `protobuf:"bytes,2,opt,name=lhs_json_path,json=lhsJsonPath,proto3,oneof" json:"lhs_json_path,omitempty"`
-	Operation   VariableMutationType `protobuf:"varint,3,opt,name=operation,proto3,enum=littlehorse.VariableMutationType" json:"operation,omitempty"`
+	// The name of the variable to mutate
+	LhsName string `protobuf:"bytes,1,opt,name=lhs_name,json=lhsName,proto3" json:"lhs_name,omitempty"`
+	// For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
+	// a specific sub-field of the variable.
+	LhsJsonPath *string `protobuf:"bytes,2,opt,name=lhs_json_path,json=lhsJsonPath,proto3,oneof" json:"lhs_json_path,omitempty"`
+	// Defines the operation that we are executing.
+	Operation VariableMutationType `protobuf:"varint,3,opt,name=operation,proto3,enum=littlehorse.VariableMutationType" json:"operation,omitempty"`
+	// The RHS of the mutation; i.e. what is operated _with_.
+	//
 	// Types that are assignable to RhsValue:
 	//	*VariableMutation_SourceVariable
 	//	*VariableMutation_LiteralValue
@@ -400,14 +462,18 @@ type isVariableMutation_RhsValue interface {
 }
 
 type VariableMutation_SourceVariable struct {
+	// Set the source_variable as the RHS to use another variable from the workflow to
+	// as the RHS/
 	SourceVariable *VariableAssignment `protobuf:"bytes,4,opt,name=source_variable,json=sourceVariable,proto3,oneof"`
 }
 
 type VariableMutation_LiteralValue struct {
+	// Use a literal value as the RHS.
 	LiteralValue *VariableValue `protobuf:"bytes,5,opt,name=literal_value,json=literalValue,proto3,oneof"`
 }
 
 type VariableMutation_NodeOutput struct {
+	// Use the output of the current node as the RHS.
 	NodeOutput *VariableMutation_NodeOutputSource `protobuf:"bytes,6,opt,name=node_output,json=nodeOutput,proto3,oneof"`
 }
 
@@ -417,13 +483,19 @@ func (*VariableMutation_LiteralValue) isVariableMutation_RhsValue() {}
 
 func (*VariableMutation_NodeOutput) isVariableMutation_RhsValue() {}
 
+// Declares a Variable.
 type VariableDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type         VariableType   `protobuf:"varint,1,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
-	Name         string         `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// The Type of the variable.
+	Type VariableType `protobuf:"varint,1,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
+	// The name of the variable.
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Optional default value if the variable isn't set; for example, in a ThreadRun
+	// if you start a ThreadRun or WfRun without passing a variable in, then this is
+	// used.
 	DefaultValue *VariableValue `protobuf:"bytes,3,opt,name=default_value,json=defaultValue,proto3,oneof" json:"default_value,omitempty"`
 }
 
@@ -494,14 +566,18 @@ type UTActionTrigger struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The action that is scheduled by the hook
+	//
 	// Types that are assignable to Action:
 	//	*UTActionTrigger_Task
 	//	*UTActionTrigger_Cancel
 	//	*UTActionTrigger_Reassign
 	Action isUTActionTrigger_Action `protobuf_oneof:"action"`
-	//Action's delay
-	DelaySeconds *VariableAssignment    `protobuf:"bytes,5,opt,name=delay_seconds,json=delaySeconds,proto3" json:"delay_seconds,omitempty"`
-	Hook         UTActionTrigger_UTHook `protobuf:"varint,6,opt,name=hook,proto3,enum=littlehorse.UTActionTrigger_UTHook" json:"hook,omitempty"`
+	// The Action is triggered some time after the Hook matures. The delay is controlled
+	// by this field.
+	DelaySeconds *VariableAssignment `protobuf:"bytes,5,opt,name=delay_seconds,json=delaySeconds,proto3" json:"delay_seconds,omitempty"`
+	// The hook on which this UserTaskAction is scheduled.
+	Hook UTActionTrigger_UTHook `protobuf:"varint,6,opt,name=hook,proto3,enum=littlehorse.UTActionTrigger_UTHook" json:"hook,omitempty"`
 }
 
 func (x *UTActionTrigger) Reset() {
@@ -600,15 +676,23 @@ func (*UTActionTrigger_Cancel) isUTActionTrigger_Action() {}
 
 func (*UTActionTrigger_Reassign) isUTActionTrigger_Action() {}
 
+// Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 type TaskNode struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TaskDefId      *TaskDefId            `protobuf:"bytes,1,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
-	TimeoutSeconds int32                 `protobuf:"varint,2,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
-	Retries        int32                 `protobuf:"varint,3,opt,name=retries,proto3" json:"retries,omitempty"`
-	Variables      []*VariableAssignment `protobuf:"bytes,4,rep,name=variables,proto3" json:"variables,omitempty"`
+	// The type of TaskRun to schedule.
+	TaskDefId *TaskDefId `protobuf:"bytes,1,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
+	// How long until LittleHorse determines that the Task Worker had a technical ERROR if
+	// the worker does not yet reply to the Server.
+	TimeoutSeconds int32 `protobuf:"varint,2,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
+	// EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+	// Please note that this API may change before version 1.0.0, as we are going to
+	// add significant functionality including backoff policies.
+	Retries int32 `protobuf:"varint,3,opt,name=retries,proto3" json:"retries,omitempty"`
+	// Input variables into the TaskDef.
+	Variables []*VariableAssignment `protobuf:"bytes,4,rep,name=variables,proto3" json:"variables,omitempty"`
 }
 
 func (x *TaskNode) Reset() {
@@ -671,13 +755,17 @@ func (x *TaskNode) GetVariables() []*VariableAssignment {
 	return nil
 }
 
+// A FormatString formats a template String with values from the WfRun.
 type VariableAssignment_FormatString struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Format *VariableAssignment   `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
-	Args   []*VariableAssignment `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
+	// A VariableAssignment which must resolve to a String that has format args.
+	// A valid string is "This is a format string with three args: {0}, {1}, {2}"
+	Format *VariableAssignment `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
+	// VariableAssignments which fill out the args.
+	Args []*VariableAssignment `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
 }
 
 func (x *VariableAssignment_FormatString) Reset() {
@@ -726,11 +814,13 @@ func (x *VariableAssignment_FormatString) GetArgs() []*VariableAssignment {
 	return nil
 }
 
+// Specifies to use the output of a NodeRun as the RHS.
 type VariableMutation_NodeOutputSource struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Use this specific field from a JSON output
 	Jsonpath *string `protobuf:"bytes,10,opt,name=jsonpath,proto3,oneof" json:"jsonpath,omitempty"`
 }
 
@@ -773,6 +863,7 @@ func (x *VariableMutation_NodeOutputSource) GetJsonpath() string {
 	return ""
 }
 
+// A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
 type UTActionTrigger_UTACancel struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -811,12 +902,15 @@ func (*UTActionTrigger_UTACancel) Descriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{3, 0}
 }
 
+// A UserTaskAction that causes a TaskRun to be scheduled when it fires.
 type UTActionTrigger_UTATask struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Task      *TaskNode           `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+	// The specification of the Task to schedule.
+	Task *TaskNode `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+	// EXPERIMENTAL: Any variables in the ThreadRun which we should mutate.
 	Mutations []*VariableMutation `protobuf:"bytes,2,rep,name=mutations,proto3" json:"mutations,omitempty"`
 }
 
@@ -866,12 +960,17 @@ func (x *UTActionTrigger_UTATask) GetMutations() []*VariableMutation {
 	return nil
 }
 
+// A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
 type UTActionTrigger_UTAReassign struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId    *VariableAssignment `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	// A variable assignment that resolves to a STR representing the new user_id. If
+	// not set, the user_id of the UserTaskRun will be un-set.
+	UserId *VariableAssignment `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	// A variable assignment that resolves to a STR representing the new user_group. If
+	// not set, the user_group of the UserTaskRun will be un-set.
 	UserGroup *VariableAssignment `protobuf:"bytes,2,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
 }
 

@@ -8,51 +8,94 @@ public interface TaskNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * The type of TaskRun to schedule.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * How long until LittleHorse determines that the Task Worker had a technical ERROR if
+   * the worker does not yet reply to the Server.
+   * </pre>
+   *
    * <code>int32 timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
   int getTimeoutSeconds();
 
   /**
+   * <pre>
+   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
+   * Please note that this API may change before version 1.0.0, as we are going to
+   * add significant functionality including backoff policies.
+   * </pre>
+   *
    * <code>int32 retries = 3;</code>
    * @return The retries.
    */
   int getRetries();
 
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> 
       getVariablesList();
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getVariables(int index);
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   int getVariablesCount();
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
       getVariablesOrBuilderList();
   /**
+   * <pre>
+   * Input variables into the TaskDef.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(

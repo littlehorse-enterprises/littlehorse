@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
-import type { NodeRun } from '../../../littlehorse-public-api/node_run'
+import { WaitForThreadsRun_WaitingThreadStatus, type NodeRun } from '../../../littlehorse-public-api/node_run'
 import type { ThreadRun } from '../../../littlehorse-public-api/wf_run'
 import { ThreadType } from '../../../littlehorse-public-api/wf_run'
-import { LHStatus, WaitForThreadsPolicy } from '../../../littlehorse-public-api/common_enums'
+import { LHStatus } from '../../../littlehorse-public-api/common_enums'
 import ThreadRunsHandler from './ThreadRunsHandler'
 
 describe('handle Thread Runs related logic', () => {
@@ -86,15 +86,14 @@ describe('handle Thread Runs related logic', () => {
                     {
                         'threadStatus': LHStatus.RUNNING,
                         'threadRunNumber': 1,
-                        'alreadyHandled': false
+                        'waitingStatus': WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS
                     },
                     {
                         'threadStatus': LHStatus.RUNNING,
                         'threadRunNumber': 2,
-                        'alreadyHandled': false
+                        'waitingStatus': WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS
                     }
-                ],
-                'policy': WaitForThreadsPolicy.STOP_ON_FAILURE
+                ]
             },
             'failureHandlerIds': []
         }
@@ -150,10 +149,9 @@ describe('handle Thread Runs related logic', () => {
                     {
                         'threadStatus': LHStatus.RUNNING,
                         'threadRunNumber': 1,
-                        'alreadyHandled': false
+                        'waitingStatus': WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS
                     }
-                ],
-                'policy': WaitForThreadsPolicy.STOP_ON_FAILURE
+                ]
             },
             'failureHandlerIds': []
         }

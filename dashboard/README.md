@@ -19,39 +19,29 @@ pnpm install
 
 ## Feature Toggles
 At this point you can configure the feature toggles through an environment variable that will enable/disabled the feature in any environment.
-You can find the toggles in the file `apps/web/featureToggles.js`, to define a toggle please follow the next structure:
-```
-const flags = {
-    ...
-    __A_TOGGLE_ENABLED_IN_DEV_AND_PROD__: process.env.A_TOGGLE_ENABLED_IN_DEV_AND_PROD ?? 'true' //LH-4
-}
-```
-The LH-X codes indicate the jira ticket that required the toggle to be created, so we can have context about that at any point in time and analyze if it is time to remove it.
-As you can see you need to define a default value, for the toggle above, it is `'true'` in the case that the ENV variable was not set.
-
-We are using the [Webpack Define Plugin](https://webpack.js.org/plugins/define-plugin/) which transforms the toggle into an actual `boolean` value when compiling/building the app. Also as Webpack removes deadCode, with that on the client side (browser) that code won't be available.
-
-To be able to use those toggles on our Typescript files we need to define them as global variables in the file `apps/web/globals.d.ts`. This is done automatically by the script `apps/web/generate-feature-toggles-types.js` which is executed every time you run `pnpm dev` or `pnpm build` from the root folder.
+The name of the environment variable that you need to set as `true` or `false` is `LHD_OAUTH_ENABLED`.
 
 ### CHANGING A TOOGLE'S STATUS
 * You need to change the environment variable value.
-* You need to build and deploy the dashboard again.
+* You need to re-run the application.
 
 ### HOW TO USE THEM
-In the code you can use them as `boolean` values:
-
+#### Server side
+On the server side code you can do:
 ```
-if (__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
-  console.log('toggle enabled)
-} else {
-  console.log('this is dead code')
+if (process.env.LHD_OAUTH_ENABLED === 'true') {
+  // ...some code here...
 }
+```
 
-if (!__A_TOGGLE_ENABLED_IN_DEV_AND_PROD__) {
-  console.log('toggle disabled')
-} else {
-  console.log('this is dead code')
-}
+#### Client side
+We have created a React Hook in order to read the feature toggles on the client side components.
+```
+  const isAuthenticationEnabled = useFeatureToggle('isAuthenticationEnabled')
+
+  if (isAuthenticationEnabled) {
+     // do something here
+  }
 ```
 
 ### Testing
@@ -67,7 +57,7 @@ To make the feature toggles available for the tests the following has been put i
     ```
 
 ## SINGLE SIGN ON FOR THE DASHBOARD
-* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `__AUTHENTICATION_ENABLED__` in the needed environments.
+* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `LHD_OATUH_ENABLED` in the needed environments.
 
 * You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
 
@@ -215,26 +205,27 @@ pnpm test --watch
 You need to create a `env.test.local` file to contain any env variable you might for your tests.
 
 
-## Docker
+## Start the Dashboard with Docker
 
-### Build Docker Image
+The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
+1. Ensure pnpm is installed, if not please execute `npm install -g pnpm `
 
-_In this folder_, rename `.env.sample` to `.env`, the values you specify in this file will be copied to `apps/web/.env`.
+2. Go under the `dashboard` directory, execute: `pnpm install`
 
-Next, _navigate to the root of the repo, NOT this folder_, and run the following:
-
+3. Build the docker image
 ```
-docker build -f docker/dashboard/Dockerfile -t lhd .
+ docker build -f docker/dashboard/Dockerfile -t a-tag-name .
 ```
 
-Note: The Docker file will copy the `.env` file from the root folder to apps/web
+Execute either of the following:
 
-### Run Docker Image
+4.1. If you want to run it the Authentication Enabled:
+```
+docker run --env LHD_OAUTH_ENABLED='true' --env LHD_OAUTH_CLIENT_ID='{a-client-id}' --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' --env LHD_OAUTH_SERVER_URL='{https://keycloack-env}/realms/lh' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_OAUTH_CALLBACK_URL='localhost:8080' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
+```
 
+5.1. If you want to run it the Authentication Disabled:
 ```
-docker run -p 80:80 -d lhd
+docker run --env LHD_OAUTH_ENABLED='false' --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' --env LHD_API_HOST=localhost --env LHD_API_PORT=2023 --network host a-tag-name
 ```
-Remap the port
-```
-docker run -p 3001:80 -d lhd
-```
+**Note**: For **2.1** and **2.2** please replace the placeholders between the curly braces with the corresponding values.

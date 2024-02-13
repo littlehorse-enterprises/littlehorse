@@ -17,9 +17,9 @@ public class LHClientConfigTest {
     void getRandomIdIfItIsUnset() {
         LHConfig config = new LHConfig();
 
-        String result = config.getClientId();
+        String result = config.getTaskWorkerId();
 
-        assertThat(result).matches("client-[a-z0-9]{32}");
+        assertThat(result).matches("worker-[a-z0-9]{32}");
     }
 
     @Test
@@ -27,11 +27,11 @@ public class LHClientConfigTest {
         String expectedClientId = faker.app().name();
 
         Properties properties = new Properties();
-        properties.put(LHConfig.CLIENT_ID_KEY, expectedClientId);
+        properties.put(LHConfig.TASK_WORKER_ID_KEY, expectedClientId);
 
         LHConfig config = new LHConfig(properties);
 
-        String result = config.getClientId();
+        String result = config.getTaskWorkerId();
 
         assertThat(result).isEqualTo(expectedClientId);
     }
@@ -72,8 +72,8 @@ public class LHClientConfigTest {
     void getOnlyOneRandomId() {
         LHConfig config = new LHConfig();
 
-        String result1 = config.getClientId();
-        String result2 = config.getClientId();
+        String result1 = config.getTaskWorkerId();
+        String result2 = config.getTaskWorkerId();
 
         assertThat(result1).isEqualTo(result2);
     }

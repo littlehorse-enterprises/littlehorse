@@ -4,6 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * All TaskRun's have a "trigger reference" which refers to the WfRun Element that
+ * caused the TaskRun to be scheduled. For example, a TaskRun on a regular TASK_NODE
+ * has a TaskNodeReference.
+ *
+ * The UserTaskTriggerReference serves as the "Trigger Reference" for a TaskRun that
+ * was scheduled by a lifecycle hook on a UserTaskRun (eg. a reminder task).
+ *
+ * The UserTaskTriggerReference is most useful in the WorkerContext of the Task Worker
+ * SDK, which allows the Task Method to determine where the TaskRun comes from.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskTriggerReference}
  */
 public final class UserTaskTriggerReference extends
@@ -44,6 +56,10 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return Whether the nodeRunId field is set.
    */
@@ -52,6 +68,10 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ != null;
   }
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return The nodeRunId.
    */
@@ -60,6 +80,10 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
   /**
+   * <pre>
+   * Is the NodeRun that the UserTaskRun belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   @java.lang.Override
@@ -70,6 +94,11 @@ private static final long serialVersionUID = 0L;
   public static final int USER_TASK_EVENT_NUMBER_FIELD_NUMBER = 2;
   private int userTaskEventNumber_ = 0;
   /**
+   * <pre>
+   * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+   * to.
+   * </pre>
+   *
    * <code>int32 user_task_event_number = 2;</code>
    * @return The userTaskEventNumber.
    */
@@ -82,6 +111,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return Whether the userId field is set.
    */
@@ -90,6 +124,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return The userId.
    */
@@ -107,6 +146,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_id = 3;</code>
    * @return The bytes for userId.
    */
@@ -129,6 +173,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userGroup_ = "";
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
@@ -137,6 +186,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return The userGroup.
    */
@@ -154,6 +208,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_id.
+   * </pre>
+   *
    * <code>optional string user_group = 4;</code>
    * @return The bytes for userGroup.
    */
@@ -376,6 +435,18 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * All TaskRun's have a "trigger reference" which refers to the WfRun Element that
+   * caused the TaskRun to be scheduled. For example, a TaskRun on a regular TASK_NODE
+   * has a TaskNodeReference.
+   *
+   * The UserTaskTriggerReference serves as the "Trigger Reference" for a TaskRun that
+   * was scheduled by a lifecycle hook on a UserTaskRun (eg. a reminder task).
+   *
+   * The UserTaskTriggerReference is most useful in the WorkerContext of the Task Worker
+   * SDK, which allows the Task Method to determine where the TaskRun comes from.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskTriggerReference}
    */
   public static final class Builder extends
@@ -599,6 +670,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return Whether the nodeRunId field is set.
      */
@@ -606,6 +681,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return The nodeRunId.
      */
@@ -617,6 +696,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
@@ -633,6 +716,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder setNodeRunId(
@@ -647,6 +734,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
@@ -666,6 +757,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder clearNodeRunId() {
@@ -679,6 +774,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.NodeRunId.Builder getNodeRunIdBuilder() {
@@ -687,6 +786,10 @@ private static final long serialVersionUID = 0L;
       return getNodeRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
@@ -698,6 +801,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the NodeRun that the UserTaskRun belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -716,6 +823,11 @@ private static final long serialVersionUID = 0L;
 
     private int userTaskEventNumber_ ;
     /**
+     * <pre>
+     * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+     * to.
+     * </pre>
+     *
      * <code>int32 user_task_event_number = 2;</code>
      * @return The userTaskEventNumber.
      */
@@ -724,6 +836,11 @@ private static final long serialVersionUID = 0L;
       return userTaskEventNumber_;
     }
     /**
+     * <pre>
+     * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+     * to.
+     * </pre>
+     *
      * <code>int32 user_task_event_number = 2;</code>
      * @param value The userTaskEventNumber to set.
      * @return This builder for chaining.
@@ -736,6 +853,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds
+     * to.
+     * </pre>
+     *
      * <code>int32 user_task_event_number = 2;</code>
      * @return This builder for chaining.
      */
@@ -748,6 +870,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userId_ = "";
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @return Whether the userId field is set.
      */
@@ -755,6 +882,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @return The userId.
      */
@@ -771,6 +903,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @return The bytes for userId.
      */
@@ -788,6 +925,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -801,6 +943,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @return This builder for chaining.
      */
@@ -811,6 +958,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_id = 3;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.
@@ -827,6 +979,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userGroup_ = "";
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @return Whether the userGroup field is set.
      */
@@ -834,6 +991,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @return The userGroup.
      */
@@ -850,6 +1012,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @return The bytes for userGroup.
      */
@@ -867,6 +1034,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @param value The userGroup to set.
      * @return This builder for chaining.
@@ -880,6 +1052,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @return This builder for chaining.
      */
@@ -890,6 +1067,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_id.
+     * </pre>
+     *
      * <code>optional string user_group = 4;</code>
      * @param value The bytes for userGroup to set.
      * @return This builder for chaining.

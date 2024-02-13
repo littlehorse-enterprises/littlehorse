@@ -18,8 +18,8 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
-import io.littlehorse.test.WfRunTestContext;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
@@ -54,7 +54,7 @@ public class UserTaskTest {
     @Test
     void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
         SearchResultCaptor<WfRunIdList> instanceCaptor = SearchResultCaptor.of(WfRunIdList.class);
-        Function<WfRunTestContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
+        Function<TestExecutionContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
                 .setWfSpecName("deadline-reassignment-workflow-user-without-group")
                 .setStatus(RUNNING)
                 .build();
@@ -79,7 +79,7 @@ public class UserTaskTest {
             UserTaskOutput formOutput =
                     entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
 
-            entrypointThread.releaseToGroupOnDeadline(formOutput, 4);
+            entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
@@ -94,7 +94,7 @@ public class UserTaskTest {
 
             UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null);
 
-            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 4);
+            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 1);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 

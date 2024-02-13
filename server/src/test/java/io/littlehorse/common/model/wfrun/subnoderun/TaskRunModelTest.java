@@ -10,6 +10,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -35,7 +36,7 @@ public class TaskRunModelTest {
         TaskRunModel taskRun = TaskRunModel.fromProto(taskRunProto, executionContext);
         ExecutionContext executionContext = mock(ExecutionContext.class);
         AuthorizationContext mockContext = mock(AuthorizationContext.class);
-        when(mockContext.tenantId()).thenReturn(tenantId);
+        when(mockContext.tenantId()).thenReturn(new TenantIdModel(tenantId));
         when(executionContext.authorization()).thenReturn(mockContext);
         taskRun.setInputVariables(new ArrayList<>());
 

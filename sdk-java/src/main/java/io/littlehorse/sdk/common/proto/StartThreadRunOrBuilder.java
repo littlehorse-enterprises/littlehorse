@@ -8,22 +8,40 @@ public interface StartThreadRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Contains the thread_run_number of the created Child ThreadRun, if it has
+   * been created already.
+   * </pre>
+   *
    * <code>optional int32 child_thread_id = 1;</code>
    * @return Whether the childThreadId field is set.
    */
   boolean hasChildThreadId();
   /**
+   * <pre>
+   * Contains the thread_run_number of the created Child ThreadRun, if it has
+   * been created already.
+   * </pre>
+   *
    * <code>optional int32 child_thread_id = 1;</code>
    * @return The childThreadId.
    */
   int getChildThreadId();
 
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 2;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
+   * <pre>
+   * The thread_spec_name of the child thread_run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 2;</code>
    * @return The bytes for threadSpecName.
    */

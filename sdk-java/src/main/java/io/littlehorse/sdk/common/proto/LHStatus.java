@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Status used for WfRun, ThreadRun, and NodeRun
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.LHStatus}
  */
 public enum LHStatus

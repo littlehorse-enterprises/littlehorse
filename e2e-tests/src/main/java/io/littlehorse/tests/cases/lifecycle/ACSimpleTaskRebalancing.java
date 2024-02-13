@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
@@ -20,7 +20,7 @@ public class ACSimpleTaskRebalancing extends Test {
     private Set<String> allHosts;
     private LHConfig config;
 
-    public ACSimpleTaskRebalancing(LHPublicApiBlockingStub client, LHConfig config) {
+    public ACSimpleTaskRebalancing(LittleHorseBlockingStub client, LHConfig config) {
         super(client, config);
         this.config = config;
         taskDefName = "rebalancing-test-" + UUID.randomUUID().toString();
@@ -86,7 +86,7 @@ public class ACSimpleTaskRebalancing extends Test {
 
     private RegisterTaskWorkerRequest register(String clientId) {
         return RegisterTaskWorkerRequest.newBuilder()
-                .setClientId(clientId)
+                .setTaskWorkerId(clientId)
                 .setTaskDefId(LHLibUtil.taskDefId(taskDefName))
                 .setListenerName(config.getConnectListener())
                 .build();

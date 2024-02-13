@@ -7,15 +7,16 @@ import io.grpc.TlsChannelCredentials;
 import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -38,7 +39,10 @@ public class LHConfig extends ConfigBase {
     public static final String API_PROTOCOL_KEY = "LHC_API_PROTOCOL";
 
     /** The Client Id. */
-    public static final String CLIENT_ID_KEY = "LHC_CLIENT_ID";
+    public static final String TASK_WORKER_ID_KEY = "LHW_TASK_WORKER_ID";
+
+    /** The Tenant Id for this client, null will be used if not set */
+    public static final String TENANT_ID_KEY = "LHC_TENANT_ID";
 
     /** Optional location of Client Cert file. */
     public static final String CLIENT_CERT_KEY = "LHC_CLIENT_CERT";
@@ -69,11 +73,11 @@ public class LHConfig extends ConfigBase {
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
     public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
 
-    private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
+    private static final Set<String> configNames = Set.of(
             LHConfig.API_HOST_KEY,
             LHConfig.API_PORT_KEY,
             LHConfig.API_PROTOCOL_KEY,
-            LHConfig.CLIENT_ID_KEY,
+            LHConfig.TASK_WORKER_ID_KEY,
             LHConfig.CLIENT_CERT_KEY,
             LHConfig.CLIENT_KEY_KEY,
             LHConfig.CA_CERT_KEY,
@@ -82,7 +86,7 @@ public class LHConfig extends ConfigBase {
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
             LHConfig.SERVER_CONNECT_LISTENER_KEY,
-            LHConfig.TASK_WORKER_VERSION_KEY));
+            LHConfig.TASK_WORKER_VERSION_KEY);
 
     /**
      * Returns a set of all config names.
@@ -140,9 +144,8 @@ public class LHConfig extends ConfigBase {
      * generally the loadbalancer url.
      *
      * @return a blocking gRPC stub for the configured host/port.
-     * @throws IOException if stub creation fails.
      */
-    public LHPublicApiBlockingStub getBlockingStub() throws IOException {
+    public LittleHorseBlockingStub getBlockingStub() {
         return getBlockingStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -151,9 +154,8 @@ public class LHConfig extends ConfigBase {
      * the loadbalancer url.
      *
      * @return an async gRPC stub for the configured host/port.
-     * @throws IOException if stub creation fails.
      */
-    public LHPublicApiStub getAsyncStub() throws IOException {
+    public LittleHorseStub getAsyncStub() {
         return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
@@ -163,7 +165,7 @@ public class LHConfig extends ConfigBase {
      * @param taskDefName is the TaskDef's name.
      * @return the specified TaskDefPb.
      */
-    public TaskDef getTaskDef(String taskDefName) throws IOException {
+    public TaskDef getTaskDef(String taskDefName) {
         return getBlockingStub()
                 .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
     }
@@ -194,13 +196,12 @@ public class LHConfig extends ConfigBase {
      * @param host is the host that the LH Server lives on.
      * @param port is the port that the LH Server lives on.
      * @return an async gRPC stub for that host/port combo.
-     * @throws IOException if stub creation fails.
      */
-    public LHPublicApiStub getAsyncStub(String host, int port) throws IOException {
+    public LittleHorseStub getAsyncStub(String host, int port) {
         if (isOauth()) {
-            return LHPublicApiGrpc.newStub(getChannel(host, port)).withCallCredentials(oauthCredentialsProvider);
+            return getBaseAsyncStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return LHPublicApiGrpc.newStub(getChannel(host, port));
+        return getBaseAsyncStub(host, port);
     }
 
     /**
@@ -211,14 +212,12 @@ public class LHConfig extends ConfigBase {
      * @param host is the host that the LH Server lives on.
      * @param port is the port that the LH Server lives on.
      * @return a blocking gRPC stub for that host/port combo.
-     * @throws IOException if stub creation fails.
      */
-    public LHPublicApiBlockingStub getBlockingStub(String host, int port) throws IOException {
+    public LittleHorseBlockingStub getBlockingStub(String host, int port) {
         if (isOauth()) {
-            return LHPublicApiGrpc.newBlockingStub(getChannel(host, port))
-                    .withCallCredentials(oauthCredentialsProvider);
+            return getBaseBlockingStub(host, port).withCallCredentials(oauthCredentialsProvider);
         }
-        return LHPublicApiGrpc.newBlockingStub(getChannel(host, port));
+        return getBaseBlockingStub(host, port);
     }
 
     /**
@@ -227,9 +226,8 @@ public class LHConfig extends ConfigBase {
      * @param host The host to connect to.
      * @param port the port to connect to.
      * @return a gRPC channel for that specified host/port combo.
-     * @throws IOException if we can't connect.
      */
-    private Channel getChannel(String host, int port) throws IOException {
+    private Channel getChannel(String host, int port) {
         String hostKey = host + ":" + port;
         if (createdChannels.containsKey(hostKey)) {
             return createdChannels.get(hostKey);
@@ -249,12 +247,20 @@ public class LHConfig extends ConfigBase {
             TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
 
             if (caCertFile != null) {
-                tlsBuilder.trustManager(new File(caCertFile));
+                try {
+                    tlsBuilder.trustManager(new File(caCertFile));
+                } catch (IOException e) {
+                    throw new LHMisconfigurationException("Error accessing to certificate", e);
+                }
             }
 
             if (clientCertFile != null && clientKeyFile != null) {
                 log.info("Using mtls!");
-                tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
+                try {
+                    tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
+                } catch (IOException e) {
+                    throw new LHMisconfigurationException("Error accessing to certificate", e);
+                }
             }
 
             builder = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build());
@@ -266,6 +272,30 @@ public class LHConfig extends ConfigBase {
         Channel out = builder.build();
         createdChannels.put(hostKey, out);
         return out;
+    }
+
+    /**
+     * Get a blocking stub with the application defaults
+     */
+    private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) {
+        String tenantId = getTenantId();
+        LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
+        if (tenantId != null) {
+            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
+        }
+        return blockingStub;
+    }
+
+    /**
+     * Get a async stub with the application defaults
+     */
+    private LittleHorseStub getBaseAsyncStub(String host, int port) {
+        String tenantId = getTenantId();
+        LittleHorseStub asyncStub = LittleHorseGrpc.newStub(getChannel(host, port));
+        if (tenantId != null) {
+            return asyncStub.withCallCredentials(new TenantMetadataProvider(getTenantId()));
+        }
+        return asyncStub;
     }
 
     public long getKeepaliveTimeMs() {
@@ -292,9 +322,13 @@ public class LHConfig extends ConfigBase {
         return protocol;
     }
 
-    public String getClientId() {
+    public String getTaskWorkerId() {
         return getOrSetDefault(
-                CLIENT_ID_KEY, "client-" + UUID.randomUUID().toString().replaceAll("-", ""));
+                TASK_WORKER_ID_KEY, "worker-" + UUID.randomUUID().toString().replaceAll("-", ""));
+    }
+
+    public String getTenantId() {
+        return getOrSetDefault(TENANT_ID_KEY, null);
     }
 
     public boolean isOauth() {
@@ -303,7 +337,7 @@ public class LHConfig extends ConfigBase {
         String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL, null);
 
         if (clientId == null && clientSecret == null && tokenEndpointUrl == null) {
-            log.info("OAuth is disable");
+            log.warn("OAuth is disable");
             return false;
         }
 
@@ -329,7 +363,6 @@ public class LHConfig extends ConfigBase {
             oauthCredentialsProvider = new OAuthCredentialsProvider(oauthClient);
         }
 
-        log.info("OAuth initialized");
         return true;
     }
 

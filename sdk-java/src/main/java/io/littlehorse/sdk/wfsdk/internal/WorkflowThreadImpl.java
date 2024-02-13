@@ -36,11 +36,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
-import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -48,10 +45,14 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -69,11 +70,13 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private EdgeCondition lastNodeCondition;
     private boolean isActive;
     private ThreadRetentionPolicy retentionPolicy;
+    private Queue<VariableMutation> variableMutations;
 
     public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;
+        this.variableMutations = new LinkedList<>();
 
         // For now, the creation of the entrypoint node is manual.
         Node entrypointNode =
@@ -231,7 +234,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new LHFormatStringImpl(this, format, args);
     }
 
-    public TaskNodeOutputImpl execute(String taskName, Object... args) {
+    @Override
+    public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         TaskNode taskNode = createTaskNode(taskName, args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
@@ -294,13 +298,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
     }
 
-    public void addMutationToCurrentNode(VariableMutation mutation) {
-        checkIfIsActive();
-        Node.Builder builder = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        builder.addVariableMutations(mutation);
-        spec.putNodes(lastNodeName, builder.build());
-    }
-
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
         WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal);
@@ -347,33 +344,41 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeCondition = cond.getSpec();
         ifBody.body(this);
 
-        // Close off the tree. The bottom node from the ifBlock tree is also
-        // going to be the bottom node from the elseBlock.
-        addNopNode();
-        String joinerNodeName = lastNodeName;
+        EdgeCondition lastConditionFromIfBlock = lastNodeCondition;
+        String lastNodeFromIfBlockName = lastNodeName;
+        List<VariableMutation> variablesFromIfBlock = collectVariableMutations();
 
         // Now go back to tree root and do the else.
         lastNodeName = treeRootNodeName; // back to tree root
         lastNodeCondition = cond.getReverse(); // flip to else {}
         elseBody.body(this); // do the body
 
-        // Now need to join the last node to the joiner node.
-        if (lastNodeCondition != null) {
-            throw new RuntimeException("Not possible to have lastNodeCondition after internal call to "
-                    + "elseBody.body(this); please contact maintainers. This is a bug.");
+        // Close off the tree
+        addNopNode();
+
+        // The bottom node from the ifBlock tree is also
+        // going to be the bottom node from the elseBlock.
+        Node.Builder lastNodeFromIfBlock = spec.getNodesOrThrow(lastNodeFromIfBlockName).toBuilder();
+        Edge.Builder ifBlockEdge = Edge.newBuilder().setSinkNodeName(lastNodeName);
+
+        // If the treeRootNodeName is equal to the lastNodeFromIfBlockName it means that
+        // no node was created within the if block, thus the edge of the starting NOP should be created
+        // with the appropriate conditional
+        if (Objects.equals(treeRootNodeName, lastNodeFromIfBlockName)) {
+            ifBlockEdge.setCondition(lastConditionFromIfBlock);
         }
+        variablesFromIfBlock.forEach(ifBlockEdge::addVariableMutations);
+        lastNodeFromIfBlock.addOutgoingEdges(ifBlockEdge.build());
 
-        Node.Builder lastNodeFromElseBlock = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        lastNodeFromElseBlock.addOutgoingEdges(Edge.newBuilder()
-                .setSinkNodeName(joinerNodeName)
-                // No condition necessary since we need to just go straight to
-                // the joiner node
-                .build());
+        spec.putNodes(lastNodeFromIfBlockName, lastNodeFromIfBlock.build());
+    }
 
-        spec.putNodes(lastNodeName, lastNodeFromElseBlock.build());
-
-        // Now we want to resume from the joiner node
-        lastNodeName = joinerNodeName;
+    private List<VariableMutation> collectVariableMutations() {
+        List<VariableMutation> variablesFromIfBlock = new ArrayList<>(variableMutations.size());
+        while (!variableMutations.isEmpty()) {
+            variablesFromIfBlock.add(variableMutations.poll());
+        }
+        return variablesFromIfBlock;
     }
 
     public void doWhile(WorkflowCondition condition, ThreadFunc whileBody) {
@@ -502,7 +507,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             task.setTimeoutSeconds(timeoutSeconds);
             n.setTask(task);
 
-        } else if (n.getNodeCase() != NodeCase.EXTERNAL_EVENT) {
+        } else if (n.getNodeCase() == NodeCase.EXTERNAL_EVENT) {
 
             ExternalEventNode.Builder evt = n.getExternalEventBuilder();
             evt.setTimeoutSeconds(timeoutValue);
@@ -510,6 +515,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
         } else {
             throw new RuntimeException("Timeouts are only supported on ExternalEvent and Task nodes.");
         }
+
+        spec.putNodes(node.nodeName, n.build());
+    }
+
+    public void addFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutputImpl node, FailureHandlerDef handler) {
+        checkIfIsActive();
+        Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        if (n.getNodeCase() != NodeCase.WAIT_FOR_THREADS) {
+            throw new IllegalStateException("orzdash this should only be a WAIT_FOR_THREADS node");
+        }
+
+        WaitForThreadsNode.Builder subBuilder = n.getWaitForThreadsBuilder();
+        subBuilder.addPerThreadFailureHandlers(handler);
+        n.setWaitForThreads(subBuilder);
 
         spec.putNodes(node.nodeName, n.build());
     }
@@ -562,23 +582,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             mutation.setLiteralValue(rhsVal);
         }
 
-        this.addMutationToCurrentNode(mutation.build());
-    }
-
-    @Override
-    @Deprecated(forRemoval = true)
-    public WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
-        checkIfIsActive();
-        WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
-
-        for (int i = 0; i < threadsToWaitFor.length; i++) {
-            SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
-            waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
-        }
-        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
-        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
-
-        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
+        this.variableMutations.add(mutation.build());
     }
 
     @Override
@@ -718,6 +722,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         Node.Builder feederNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         Edge.Builder edge = Edge.newBuilder().setSinkNodeName(nextNodeName);
+
+        edge.addAllVariableMutations(collectVariableMutations());
+
         if (lastNodeCondition != null) {
             edge.setCondition(lastNodeCondition);
             lastNodeCondition = null;

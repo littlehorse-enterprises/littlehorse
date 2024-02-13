@@ -8,11 +8,27 @@ public interface FailureOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the failure. LittleHorse has certain built-in failures, all named in
+   * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+   *
+   * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+   * as an `LHStatus.EXCEPTION`.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The failureName.
    */
   java.lang.String getFailureName();
   /**
+   * <pre>
+   * The name of the failure. LittleHorse has certain built-in failures, all named in
+   * UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+   *
+   * Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated
+   * as an `LHStatus.EXCEPTION`.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The bytes for failureName.
    */
@@ -20,11 +36,19 @@ public interface FailureOrBuilder extends
       getFailureNameBytes();
 
   /**
+   * <pre>
+   * The human-readable message associated with this Failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
+   * <pre>
+   * The human-readable message associated with this Failure.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -32,21 +56,49 @@ public interface FailureOrBuilder extends
       getMessageBytes();
 
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
   io.littlehorse.sdk.common.proto.VariableValue getContent();
   /**
+   * <pre>
+   * A user-defined Failure can have a value; for example, in Java an Exception is an
+   * Object with arbitrary properties and behaviors.
+   *
+   * Future versions of LH will allow FailureHandler threads to accept that value as
+   * an input variable.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
 
   /**
+   * <pre>
+   * A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
+   * </pre>
+   *
    * <code>bool was_properly_handled = 4;</code>
    * @return The wasProperlyHandled.
    */

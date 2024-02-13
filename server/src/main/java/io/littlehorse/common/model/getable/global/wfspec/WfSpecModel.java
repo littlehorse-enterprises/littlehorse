@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.GlobalGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -18,11 +18,13 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.WfSpecUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -46,7 +48,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class WfSpecModel extends GlobalGetable<WfSpec> {
+public class WfSpecModel extends MetadataGetable<WfSpec> {
 
     private WfSpecIdModel id = new WfSpecIdModel();
 
@@ -59,6 +61,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
+    private ParentWfSpecReferenceModel parentWfSpec;
 
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
@@ -141,6 +144,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (ThreadVarDefModel tvdm : frozenVariables.values()) {
             out.addFrozenVariables(tvdm.toProto());
         }
+        if (parentWfSpec != null) out.setParentWfSpec(parentWfSpec.toProto());
 
         return out;
     }
@@ -179,6 +183,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
         }
+
+        if (proto.hasParentWfSpec()) {
+            parentWfSpec = LHSerializable.fromProto(
+                    proto.getParentWfSpec(), ParentWfSpecReferenceModel.class, executionContext);
+        }
     }
 
     public Class<WfSpec> getProtoBaseClass() {
@@ -211,12 +220,13 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion) throws LHApiException {
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, MetadataCommandExecution ctx)
+            throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
 
-        validateVariablesHelper();
+        validateVariablesHelper(ctx);
 
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
@@ -230,6 +240,17 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         if (oldVersion.isPresent()) {
             checkCompatibilityAndSetVersion(oldVersion.get());
         }
+
+        if (parentWfSpec != null) {
+            getParentWfSpec(ctx);
+        }
+    }
+
+    /**
+     * Returns entrypoint thread instance
+     */
+    public ThreadSpecModel getEntrypointThread() {
+        return threadSpecs.get(entrypointThreadName);
     }
 
     /**
@@ -284,14 +305,34 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
      * 2. Validating variable types for mutations, assignments, and task input.
      * 3. Incorporation of JsonSchema or Protobuf Schema for further validation.
      */
-    private void validateVariablesHelper() throws LHApiException {
+    private void validateVariablesHelper(MetadataCommandExecution ctx) throws LHApiException {
         varToThreadSpec = new HashMap<>();
+        boolean hasParentWorkflow = parentWfSpec != null;
+        WfSpecModel parentWfSpec = null;
+        if (hasParentWorkflow) {
+            parentWfSpec = getParentWfSpec(ctx);
+        }
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             // for (Map.Entry<String, VariableDef> e : tspec.variableDefs.entrySet()) {
             for (ThreadVarDefModel tvd : tspec.getVariableDefs()) {
                 VariableDefModel vd = tvd.getVarDef();
                 String varName = vd.getName();
-
+                if (tvd.getAccessLevel().equals(WfRunVariableAccessLevel.INHERITED_VAR) && !hasParentWorkflow) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Only child workflows are allowed to access inherited variables");
+                } else if (tvd.getAccessLevel().equals(WfRunVariableAccessLevel.INHERITED_VAR)) {
+                    ThreadVarDefModel parentVariable =
+                            parentWfSpec.getAllVariables().get(varName);
+                    if (parentVariable == null) {
+                        throw new LHApiException(
+                                Status.INVALID_ARGUMENT,
+                                "Inherited variable %s does not exist in parent WfSpec".formatted(varName));
+                    } else if (parentVariable.getAccessLevel().equals(WfRunVariableAccessLevel.PRIVATE_VAR)) {
+                        throw new LHApiException(
+                                Status.INVALID_ARGUMENT,
+                                "Inherited variable %s is defined as PRIVATE in parent WfSpec".formatted(varName));
+                    }
+                }
                 if (varToThreadSpec.containsKey(varName)) {
                     if (!varName.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                         throw new LHApiException(
@@ -355,44 +396,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             }
         }
 
-        // Now, what we need to do is determine whether we have a new major version
-        // or a new minor revision.
-        boolean breakingChange = false;
-
-        // Rules for minor revision:
-        // - set of searchable variables matches previous version
-        // - set of required variables matches previous version
-        //
-        // If that's not satisfied, then we have a "major" version update.
-        //
-        // TODO: This is an O(N^3) implementation (I think...? Dunno, I'm tired)
-        // TODO: This would fail a LeetCode interview.
-        for (String requiredVar : old.getRequiredVariables().keySet()) {
-            if (!getRequiredVariables().containsKey(requiredVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String requiredVar : getRequiredVariables().keySet()) {
-            if (!old.getRequiredVariables().containsKey(requiredVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String searchableVar : old.getSearchableVariables().keySet()) {
-            if (!getSearchableVariables().containsKey(searchableVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-        for (String searchableVar : getSearchableVariables().keySet()) {
-            if (!old.getSearchableVariables().containsKey(searchableVar)) {
-                breakingChange = true;
-                break;
-            }
-        }
-
-        if (breakingChange) {
+        if (WfSpecUtil.hasBreakingChanges(this, old)) {
             id.setMajorVersion(old.getId().getMajorVersion() + 1);
             id.setRevision(0);
         } else {
@@ -411,16 +415,33 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         GetableManager getableManager = processorContext.getableManager();
         WfRunModel out = new WfRunModel(processorContext);
         out.setId(new WfRunIdModel(evt.getId()));
+        if (evt.getParentWfRunId() != null) out.getId().setParentWfRunId(evt.getParentWfRunId());
 
         out.setWfSpec(this);
         out.setWfSpecId(getObjectId());
         out.startTime = currentCommand.getTime();
-        out.status = LHStatus.RUNNING;
+        out.transitionTo(LHStatus.RUNNING);
 
         out.startThread(
                 entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getableManager.put(out);
         return out;
+    }
+
+    /*
+     * Validates that the parent reference is a valid WfSpec. It doesn't do any
+     * checking of variables, though. That is a future feature we will add in 1.0
+     * or 1.1
+     */
+    private WfSpecModel getParentWfSpec(MetadataCommandExecution ctx) {
+        WfSpecModel parent =
+                ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), parentWfSpec.getWfSpecMajorVersion(), 0);
+        if (parent == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Provided spec refers to nonexistent parent wfSpec %s".formatted(parentWfSpec.getWfSpecName()));
+        }
+        return parent;
     }
 
     public static WfSpecId parseId(String fullId) {

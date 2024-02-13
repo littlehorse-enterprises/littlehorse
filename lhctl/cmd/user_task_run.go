@@ -55,7 +55,7 @@ Lists all UserTaskRun's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &model.ListUserTaskRunRequest{
-			WfRunId: &model.WfRunId{Id: wfRunId},
+			WfRunId: common.StrToWfRunId(wfRunId),
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
@@ -91,7 +91,7 @@ The following option groups are supported:
 
 		reassign := &model.AssignUserTaskRunRequest{
 			UserTaskRunId: &model.UserTaskRunId{
-				WfRunId:      &model.WfRunId{Id: args[0]},
+				WfRunId:      common.StrToWfRunId(args[0]),
 				UserTaskGuid: args[1],
 			},
 			OverrideClaim: overrideClaim,
@@ -146,7 +146,7 @@ var getUserTaskRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
 			requestContext(),
 			&model.UserTaskRunId{
-				WfRunId:      &model.WfRunId{Id: wfRunId},
+				WfRunId:      common.StrToWfRunId(wfRunId),
 				UserTaskGuid: userTaskGuid,
 			},
 		))
@@ -221,13 +221,13 @@ Choose one of the following option groups:
 	},
 }
 
-func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
+func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
 	completeUserTask := &model.CompleteUserTaskRunRequest{
 		Results: make(map[string]*model.VariableValue),
 		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      &model.WfRunId{Id: wfRunId},
+			WfRunId:      common.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
@@ -278,10 +278,10 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	)
 }
 
-func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
+func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
 	cancelUserTask := &model.CancelUserTaskRunRequest{
 		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      &model.WfRunId{Id: wfRunId},
+			WfRunId:      common.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
@@ -299,13 +299,13 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
-func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LHPublicApiClient) (*model.UserTaskDef, error) {
+func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LittleHorseClient) (*model.UserTaskDef, error) {
 	return (*client).GetUserTaskDef(requestContext(), userTaskRun.UserTaskDefId)
 }
 
-func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClient) (*model.UserTaskRun, error) {
+func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LittleHorseClient) (*model.UserTaskRun, error) {
 	resp, err := (*client).GetUserTaskRun(requestContext(), &model.UserTaskRunId{
-		WfRunId:      &model.WfRunId{Id: wfRunId},
+		WfRunId:      common.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})
 	if err != nil {

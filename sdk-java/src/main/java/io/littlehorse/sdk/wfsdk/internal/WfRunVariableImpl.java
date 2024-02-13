@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,16 @@ class WfRunVariableImpl implements WfRunVariable {
     private boolean searchable;
     private Object typeOrDefaultVal;
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
+    private WfRunVariableAccessLevel accessLevel;
 
     public String jsonPath;
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal) {
         this.name = name;
         this.typeOrDefaultVal = typeOrDefaultVal;
+
+        // This is the default zero value.
+        this.accessLevel = WfRunVariableAccessLevel.PUBLIC_VAR;
         initializeType();
     }
 
@@ -44,6 +49,12 @@ class WfRunVariableImpl implements WfRunVariable {
                         "Was unable to convert provided default value to LH Variable Type", e);
             }
         }
+    }
+
+    @Override
+    public WfRunVariableImpl withAccessLevel(WfRunVariableAccessLevel accessLevel) {
+        this.accessLevel = accessLevel;
+        return this;
     }
 
     @Override
@@ -76,7 +87,7 @@ class WfRunVariableImpl implements WfRunVariable {
         if (!fieldPath.startsWith("$.")) {
             throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", fieldPath));
         }
-        if (!type.equals(VariableType.JSON_OBJ)) {
+        if (!type.equals(VariableType.JSON_OBJ) && !type.equals(VariableType.JSON_ARR)) {
             throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
         this.jsonIndexes.add(JsonIndex.newBuilder()
@@ -99,6 +110,7 @@ class WfRunVariableImpl implements WfRunVariable {
                 .setRequired(required)
                 .setSearchable(searchable)
                 .addAllJsonIndexes(jsonIndexes)
+                .setAccessLevel(accessLevel)
                 .build();
     }
 }

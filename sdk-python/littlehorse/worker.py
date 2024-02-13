@@ -278,20 +278,22 @@ class LHConnection:
             args.append(context)
 
         try:
-            output = to_variable_value(await self._task._callable(*args))
-            status = TaskStatus.TASK_SUCCESS
+            raw_output = await self._task._callable(*args)
+            try:
+                output = to_variable_value(raw_output)
+                status = TaskStatus.TASK_SUCCESS
+            except TypeError:
+                output = None
+                stacktrace = traceback.format_exc()
+                logging.error(stacktrace)
+                context.log(stacktrace)
+                status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except LHTaskException:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
             context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
-        except TypeError:
-            output = None
-            stacktrace = traceback.format_exc()
-            logging.error(stacktrace)
-            context.log(stacktrace)
-            status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
@@ -350,7 +352,7 @@ class LHConnection:
                 await self._ask_for_work_semaphore.acquire()
                 if self.running:
                     yield PollTaskRequest(
-                        client_id=self._config.client_id,
+                        client_id=self._config.task_worker_id,
                         task_worker_version=self._config.worker_version,
                         task_def_id=self._task.task_def.id,
                     )
@@ -400,28 +402,28 @@ class LHLivenessController:
     def __init__(self, timeout_millis: int) -> None:
         self.timeout_millis = timeout_millis
         self.running = True
-        self.failure_ocurred_at: Optional[datetime] = None
+        self.failure_occurred_at: Optional[datetime] = None
         self.cluster_healthy = True
 
     def notify_call_failure(self) -> None:
-        if self.failure_ocurred_at is None:
-            self.failure_ocurred_at = datetime.now()
+        if self.failure_occurred_at is None:
+            self.failure_occurred_at = datetime.now()
 
     def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
         if reply.HasField("is_cluster_healthy"):
             self.cluster_healthy = reply.is_cluster_healthy
-        self.failure_ocurred_at = None
+        self.failure_occurred_at = None
 
     def was_failure_notified(self) -> bool:
-        return self.failure_ocurred_at is not None
+        return self.failure_occurred_at is not None
 
     def keep_worker_running(self) -> bool:
         if not self.running:
             return False
 
-        if self.failure_ocurred_at is not None:
+        if self.failure_occurred_at is not None:
             self.running = datetime.now() < (
-                self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis)
+                self.failure_occurred_at + timedelta(milliseconds=self.timeout_millis)
             )
             return self.running
         return True
@@ -484,7 +486,7 @@ class LHTaskWorker:
             )
 
             request = RegisterTaskWorkerRequest(
-                client_id=self._config.client_id,
+                task_worker_id=self._config.task_worker_id,
                 listener_name=self._config.server_listener,
                 task_def_id=self._task.task_def.id,
             )

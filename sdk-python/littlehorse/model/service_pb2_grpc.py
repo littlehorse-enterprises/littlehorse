@@ -16,7 +16,7 @@ import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 
 
-class LHPublicApiStub(object):
+class LittleHorseStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -26,617 +26,706 @@ class LHPublicApiStub(object):
             channel: A grpc.Channel.
         """
         self.PutTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutTaskDef',
+                '/littlehorse.LittleHorse/PutTaskDef',
                 request_serializer=service__pb2.PutTaskDefRequest.SerializeToString,
                 response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
         self.GetTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetTaskDef',
+                '/littlehorse.LittleHorse/GetTaskDef',
                 request_serializer=object__id__pb2.TaskDefId.SerializeToString,
                 response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
         self.PutExternalEventDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutExternalEventDef',
+                '/littlehorse.LittleHorse/PutExternalEventDef',
                 request_serializer=service__pb2.PutExternalEventDefRequest.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEventDef.FromString,
                 )
         self.GetExternalEventDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetExternalEventDef',
+                '/littlehorse.LittleHorse/GetExternalEventDef',
                 request_serializer=object__id__pb2.ExternalEventDefId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEventDef.FromString,
                 )
         self.PutWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutWfSpec',
+                '/littlehorse.LittleHorse/PutWfSpec',
                 request_serializer=service__pb2.PutWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.GetWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetWfSpec',
+                '/littlehorse.LittleHorse/GetWfSpec',
                 request_serializer=object__id__pb2.WfSpecId.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.GetLatestWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetLatestWfSpec',
+                '/littlehorse.LittleHorse/GetLatestWfSpec',
                 request_serializer=service__pb2.GetLatestWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.MigrateWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/MigrateWfSpec',
+                '/littlehorse.LittleHorse/MigrateWfSpec',
                 request_serializer=service__pb2.MigrateWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.PutUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutUserTaskDef',
+                '/littlehorse.LittleHorse/PutUserTaskDef',
                 request_serializer=service__pb2.PutUserTaskDefRequest.SerializeToString,
                 response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.GetUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetUserTaskDef',
+                '/littlehorse.LittleHorse/GetUserTaskDef',
                 request_serializer=object__id__pb2.UserTaskDefId.SerializeToString,
                 response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.GetLatestUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetLatestUserTaskDef',
+                '/littlehorse.LittleHorse/GetLatestUserTaskDef',
                 request_serializer=service__pb2.GetLatestUserTaskDefRequest.SerializeToString,
                 response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.RunWf = channel.unary_unary(
-                '/littlehorse.LHPublicApi/RunWf',
+                '/littlehorse.LittleHorse/RunWf',
                 request_serializer=service__pb2.RunWfRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
         self.GetWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetWfRun',
+                '/littlehorse.LittleHorse/GetWfRun',
                 request_serializer=object__id__pb2.WfRunId.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
         self.GetUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetUserTaskRun',
+                '/littlehorse.LittleHorse/GetUserTaskRun',
                 request_serializer=object__id__pb2.UserTaskRunId.SerializeToString,
                 response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
                 )
         self.AssignUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/AssignUserTaskRun',
+                '/littlehorse.LittleHorse/AssignUserTaskRun',
                 request_serializer=user__tasks__pb2.AssignUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.CompleteUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/CompleteUserTaskRun',
+                '/littlehorse.LittleHorse/CompleteUserTaskRun',
                 request_serializer=user__tasks__pb2.CompleteUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.CancelUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/CancelUserTaskRun',
+                '/littlehorse.LittleHorse/CancelUserTaskRun',
                 request_serializer=user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.ListUserTaskRuns = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListUserTaskRuns',
+                '/littlehorse.LittleHorse/ListUserTaskRuns',
                 request_serializer=service__pb2.ListUserTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.UserTaskRunList.FromString,
                 )
         self.GetNodeRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetNodeRun',
+                '/littlehorse.LittleHorse/GetNodeRun',
                 request_serializer=object__id__pb2.NodeRunId.SerializeToString,
                 response_deserializer=node__run__pb2.NodeRun.FromString,
                 )
         self.ListNodeRuns = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListNodeRuns',
+                '/littlehorse.LittleHorse/ListNodeRuns',
                 request_serializer=service__pb2.ListNodeRunsRequest.SerializeToString,
                 response_deserializer=service__pb2.NodeRunList.FromString,
                 )
         self.GetTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetTaskRun',
+                '/littlehorse.LittleHorse/GetTaskRun',
                 request_serializer=object__id__pb2.TaskRunId.SerializeToString,
                 response_deserializer=task__run__pb2.TaskRun.FromString,
                 )
         self.ListTaskRuns = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListTaskRuns',
+                '/littlehorse.LittleHorse/ListTaskRuns',
                 request_serializer=service__pb2.ListTaskRunsRequest.SerializeToString,
                 response_deserializer=service__pb2.TaskRunList.FromString,
                 )
         self.GetVariable = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetVariable',
+                '/littlehorse.LittleHorse/GetVariable',
                 request_serializer=object__id__pb2.VariableId.SerializeToString,
                 response_deserializer=variable__pb2.Variable.FromString,
                 )
         self.ListVariables = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListVariables',
+                '/littlehorse.LittleHorse/ListVariables',
                 request_serializer=service__pb2.ListVariablesRequest.SerializeToString,
                 response_deserializer=service__pb2.VariableList.FromString,
                 )
         self.PutExternalEvent = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutExternalEvent',
+                '/littlehorse.LittleHorse/PutExternalEvent',
                 request_serializer=service__pb2.PutExternalEventRequest.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 )
         self.GetExternalEvent = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetExternalEvent',
+                '/littlehorse.LittleHorse/GetExternalEvent',
                 request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 )
         self.ListExternalEvents = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListExternalEvents',
+                '/littlehorse.LittleHorse/ListExternalEvents',
                 request_serializer=service__pb2.ListExternalEventsRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventList.FromString,
                 )
         self.SearchWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchWfRun',
+                '/littlehorse.LittleHorse/SearchWfRun',
                 request_serializer=service__pb2.SearchWfRunRequest.SerializeToString,
                 response_deserializer=service__pb2.WfRunIdList.FromString,
                 )
         self.SearchNodeRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchNodeRun',
+                '/littlehorse.LittleHorse/SearchNodeRun',
                 request_serializer=service__pb2.SearchNodeRunRequest.SerializeToString,
                 response_deserializer=service__pb2.NodeRunIdList.FromString,
                 )
         self.SearchTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchTaskRun',
+                '/littlehorse.LittleHorse/SearchTaskRun',
                 request_serializer=service__pb2.SearchTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.TaskRunIdList.FromString,
                 )
         self.SearchUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchUserTaskRun',
+                '/littlehorse.LittleHorse/SearchUserTaskRun',
                 request_serializer=service__pb2.SearchUserTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.UserTaskRunIdList.FromString,
                 )
         self.SearchVariable = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchVariable',
+                '/littlehorse.LittleHorse/SearchVariable',
                 request_serializer=service__pb2.SearchVariableRequest.SerializeToString,
                 response_deserializer=service__pb2.VariableIdList.FromString,
                 )
         self.SearchExternalEvent = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchExternalEvent',
+                '/littlehorse.LittleHorse/SearchExternalEvent',
                 request_serializer=service__pb2.SearchExternalEventRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventIdList.FromString,
                 )
         self.SearchTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchTaskDef',
+                '/littlehorse.LittleHorse/SearchTaskDef',
                 request_serializer=service__pb2.SearchTaskDefRequest.SerializeToString,
                 response_deserializer=service__pb2.TaskDefIdList.FromString,
                 )
         self.SearchUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchUserTaskDef',
+                '/littlehorse.LittleHorse/SearchUserTaskDef',
                 request_serializer=service__pb2.SearchUserTaskDefRequest.SerializeToString,
                 response_deserializer=service__pb2.UserTaskDefIdList.FromString,
                 )
         self.SearchWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchWfSpec',
+                '/littlehorse.LittleHorse/SearchWfSpec',
                 request_serializer=service__pb2.SearchWfSpecRequest.SerializeToString,
                 response_deserializer=service__pb2.WfSpecIdList.FromString,
                 )
         self.SearchExternalEventDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchExternalEventDef',
+                '/littlehorse.LittleHorse/SearchExternalEventDef',
                 request_serializer=service__pb2.SearchExternalEventDefRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventDefIdList.FromString,
                 )
         self.RegisterTaskWorker = channel.unary_unary(
-                '/littlehorse.LHPublicApi/RegisterTaskWorker',
+                '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
                 response_deserializer=service__pb2.RegisterTaskWorkerResponse.FromString,
                 )
         self.PollTask = channel.stream_stream(
-                '/littlehorse.LHPublicApi/PollTask',
+                '/littlehorse.LittleHorse/PollTask',
                 request_serializer=service__pb2.PollTaskRequest.SerializeToString,
                 response_deserializer=service__pb2.PollTaskResponse.FromString,
                 )
         self.ReportTask = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ReportTask',
+                '/littlehorse.LittleHorse/ReportTask',
                 request_serializer=service__pb2.ReportTaskRun.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.StopWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/StopWfRun',
+                '/littlehorse.LittleHorse/StopWfRun',
                 request_serializer=service__pb2.StopWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.ResumeWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ResumeWfRun',
+                '/littlehorse.LittleHorse/ResumeWfRun',
                 request_serializer=service__pb2.ResumeWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteWfRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/DeleteWfRun',
+                '/littlehorse.LittleHorse/DeleteWfRun',
                 request_serializer=service__pb2.DeleteWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/DeleteTaskDef',
+                '/littlehorse.LittleHorse/DeleteTaskDef',
                 request_serializer=service__pb2.DeleteTaskDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/DeleteWfSpec',
+                '/littlehorse.LittleHorse/DeleteWfSpec',
                 request_serializer=service__pb2.DeleteWfSpecRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/DeleteUserTaskDef',
+                '/littlehorse.LittleHorse/DeleteUserTaskDef',
                 request_serializer=service__pb2.DeleteUserTaskDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteExternalEventDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/DeleteExternalEventDef',
+                '/littlehorse.LittleHorse/DeleteExternalEventDef',
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.GetTaskDefMetricsWindow = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetTaskDefMetricsWindow',
+                '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
                 response_deserializer=service__pb2.TaskDefMetrics.FromString,
                 )
         self.GetWfSpecMetricsWindow = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetWfSpecMetricsWindow',
+                '/littlehorse.LittleHorse/GetWfSpecMetricsWindow',
                 request_serializer=service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
                 response_deserializer=service__pb2.WfSpecMetrics.FromString,
                 )
         self.ListTaskDefMetrics = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListTaskDefMetrics',
+                '/littlehorse.LittleHorse/ListTaskDefMetrics',
                 request_serializer=service__pb2.ListTaskMetricsRequest.SerializeToString,
                 response_deserializer=service__pb2.ListTaskMetricsResponse.FromString,
                 )
         self.ListWfSpecMetrics = channel.unary_unary(
-                '/littlehorse.LHPublicApi/ListWfSpecMetrics',
+                '/littlehorse.LittleHorse/ListWfSpecMetrics',
                 request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
                 )
         self.PutTenant = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutTenant',
+                '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
                 response_deserializer=acls__pb2.Tenant.FromString,
                 )
         self.PutPrincipal = channel.unary_unary(
-                '/littlehorse.LHPublicApi/PutPrincipal',
+                '/littlehorse.LittleHorse/PutPrincipal',
                 request_serializer=acls__pb2.PutPrincipalRequest.SerializeToString,
                 response_deserializer=acls__pb2.Principal.FromString,
                 )
         self.Whoami = channel.unary_unary(
-                '/littlehorse.LHPublicApi/Whoami',
+                '/littlehorse.LittleHorse/Whoami',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=acls__pb2.Principal.FromString,
                 )
         self.GetServerVersion = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetServerVersion',
+                '/littlehorse.LittleHorse/GetServerVersion',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=service__pb2.ServerVersionResponse.FromString,
                 )
 
 
-class LHPublicApiServicer(object):
+class LittleHorseServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def PutTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Creates a TaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a TaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Creates an ExternalEventDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetExternalEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets an ExternalEventDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Creates a WfSpec.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a WfSpec.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def MigrateWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+        same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+        you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+        completion.
+
+        As of 0.7.0, this feature is only partially implemented.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutUserTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Creates a UserTaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a specific UserTaskDef.
+
+        This RPC is highly useful for applications built around
+        User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+        might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+        The frontend would inspect the UserTaskDef and display a form field on the browser page
+        for each field in the UserTaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestUserTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns the most recent UserTaskDef with a specific name.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RunWf(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Runs a WfSpec to create a WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a WfRun. Although useful for development and debugging, this RPC is not often
+        used by applications.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+        currently assigned, history of assignments and reassignments, and any context for that
+        UserTaskRun which is specific to the WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AssignUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+        action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+        applications that are using User Tasks to build an internal task-list and wish to
+        administer the tasks.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CompleteUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+        the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+        completed, and unblocks the associated ThreadRun in the WfRun.
+
+        This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CancelUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListUserTaskRuns(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+        to model an entity.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetNodeRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a specific NodeRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListNodeRuns(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists all NodeRun's for a specific WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a specific TaskRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskRuns(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists all TaskRun's for a specific WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVariable(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Get the value of a specific Variable. When using a WfRun to model an entity, this
+        RPC is useful for retrieving information. It is equivalent to looking up the value of a
+        column for a specific row in a SQL table.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListVariables(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """List all Variables from a WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Post an ExternalEvent. This RPC is highly useful for
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetExternalEvent(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Get a specific ExternalEvent.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListExternalEvents(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """List ExternalEvent's for a specific WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for WfRun's. This RPC is highly useful for applications that store data
+        in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchNodeRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+        your workflows or Task Workers.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for UserTaskRun's. This RPC is highly useful for applications that connect
+        human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+        person or group of people.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchVariable(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for Variable's. This RPC is highly useful for applications that store data
+        in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEvent(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for ExternalEvent's.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for TaskDef's.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchUserTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for UserTaskDef's.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for WfSpec's.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for ExteranlEventDef's.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RegisterTaskWorker(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Used by the Task Worker to:
+        1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+        2. Receive the assignemnt of LH Server's to poll from.
+        Generally, you won't use this request manually.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PollTask(self, request_iterator, context):
-        """Missing associated documentation comment in .proto file."""
+        """Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+        use this RPC manually.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ReportTask(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+        this rpc manually.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def StopWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ResumeWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Resumes a WfRun or a specific ThreadRun of a WfRun.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWfRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes a TaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWfSpec(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes a WfSpec.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteUserTaskDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes a UserTaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteExternalEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes an ExternalEventDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskDefMetricsWindow(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWfSpecMetricsWindow(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskDefMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns a list of TaskDef Metrics Windows.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfSpecMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns a list of WfSpec Metrics Windows.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutTenant(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """EXPERIMENTAL: Creates another Tenant in the LH Server.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutPrincipal(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """EXPERIMENTAL: Creates an Principal.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def Whoami(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Returns the Principal of the caller.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetServerVersion(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets the version of the LH Server.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_LHPublicApiServicer_to_server(servicer, server):
+def add_LittleHorseServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'PutTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTaskDef,
@@ -915,12 +1004,12 @@ def add_LHPublicApiServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'littlehorse.LHPublicApi', rpc_method_handlers)
+            'littlehorse.LittleHorse', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class LHPublicApi(object):
+class LittleHorse(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -934,7 +1023,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutTaskDef',
             service__pb2.PutTaskDefRequest.SerializeToString,
             task__def__pb2.TaskDef.FromString,
             options, channel_credentials,
@@ -951,7 +1040,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskDef',
             object__id__pb2.TaskDefId.SerializeToString,
             task__def__pb2.TaskDef.FromString,
             options, channel_credentials,
@@ -968,7 +1057,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutExternalEventDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutExternalEventDef',
             service__pb2.PutExternalEventDefRequest.SerializeToString,
             external__event__pb2.ExternalEventDef.FromString,
             options, channel_credentials,
@@ -985,7 +1074,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetExternalEventDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetExternalEventDef',
             object__id__pb2.ExternalEventDefId.SerializeToString,
             external__event__pb2.ExternalEventDef.FromString,
             options, channel_credentials,
@@ -1002,7 +1091,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutWfSpec',
             service__pb2.PutWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
@@ -1019,7 +1108,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetWfSpec',
             object__id__pb2.WfSpecId.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
@@ -1036,7 +1125,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetLatestWfSpec',
             service__pb2.GetLatestWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
@@ -1053,7 +1142,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/MigrateWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/MigrateWfSpec',
             service__pb2.MigrateWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
@@ -1070,7 +1159,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutUserTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutUserTaskDef',
             service__pb2.PutUserTaskDefRequest.SerializeToString,
             user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
@@ -1087,7 +1176,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetUserTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetUserTaskDef',
             object__id__pb2.UserTaskDefId.SerializeToString,
             user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
@@ -1104,7 +1193,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestUserTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetLatestUserTaskDef',
             service__pb2.GetLatestUserTaskDefRequest.SerializeToString,
             user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
@@ -1121,7 +1210,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/RunWf',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/RunWf',
             service__pb2.RunWfRequest.SerializeToString,
             wf__run__pb2.WfRun.FromString,
             options, channel_credentials,
@@ -1138,7 +1227,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetWfRun',
             object__id__pb2.WfRunId.SerializeToString,
             wf__run__pb2.WfRun.FromString,
             options, channel_credentials,
@@ -1155,7 +1244,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetUserTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetUserTaskRun',
             object__id__pb2.UserTaskRunId.SerializeToString,
             user__tasks__pb2.UserTaskRun.FromString,
             options, channel_credentials,
@@ -1172,7 +1261,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/AssignUserTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/AssignUserTaskRun',
             user__tasks__pb2.AssignUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1189,7 +1278,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/CompleteUserTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/CompleteUserTaskRun',
             user__tasks__pb2.CompleteUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1206,7 +1295,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/CancelUserTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/CancelUserTaskRun',
             user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1223,7 +1312,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListUserTaskRuns',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListUserTaskRuns',
             service__pb2.ListUserTaskRunRequest.SerializeToString,
             service__pb2.UserTaskRunList.FromString,
             options, channel_credentials,
@@ -1240,7 +1329,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetNodeRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetNodeRun',
             object__id__pb2.NodeRunId.SerializeToString,
             node__run__pb2.NodeRun.FromString,
             options, channel_credentials,
@@ -1257,7 +1346,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListNodeRuns',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListNodeRuns',
             service__pb2.ListNodeRunsRequest.SerializeToString,
             service__pb2.NodeRunList.FromString,
             options, channel_credentials,
@@ -1274,7 +1363,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskRun',
             object__id__pb2.TaskRunId.SerializeToString,
             task__run__pb2.TaskRun.FromString,
             options, channel_credentials,
@@ -1291,7 +1380,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListTaskRuns',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListTaskRuns',
             service__pb2.ListTaskRunsRequest.SerializeToString,
             service__pb2.TaskRunList.FromString,
             options, channel_credentials,
@@ -1308,7 +1397,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetVariable',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetVariable',
             object__id__pb2.VariableId.SerializeToString,
             variable__pb2.Variable.FromString,
             options, channel_credentials,
@@ -1325,7 +1414,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListVariables',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListVariables',
             service__pb2.ListVariablesRequest.SerializeToString,
             service__pb2.VariableList.FromString,
             options, channel_credentials,
@@ -1342,7 +1431,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutExternalEvent',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutExternalEvent',
             service__pb2.PutExternalEventRequest.SerializeToString,
             external__event__pb2.ExternalEvent.FromString,
             options, channel_credentials,
@@ -1359,7 +1448,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetExternalEvent',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetExternalEvent',
             object__id__pb2.ExternalEventId.SerializeToString,
             external__event__pb2.ExternalEvent.FromString,
             options, channel_credentials,
@@ -1376,7 +1465,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListExternalEvents',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListExternalEvents',
             service__pb2.ListExternalEventsRequest.SerializeToString,
             service__pb2.ExternalEventList.FromString,
             options, channel_credentials,
@@ -1393,7 +1482,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchWfRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchWfRun',
             service__pb2.SearchWfRunRequest.SerializeToString,
             service__pb2.WfRunIdList.FromString,
             options, channel_credentials,
@@ -1410,7 +1499,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchNodeRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchNodeRun',
             service__pb2.SearchNodeRunRequest.SerializeToString,
             service__pb2.NodeRunIdList.FromString,
             options, channel_credentials,
@@ -1427,7 +1516,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchTaskRun',
             service__pb2.SearchTaskRunRequest.SerializeToString,
             service__pb2.TaskRunIdList.FromString,
             options, channel_credentials,
@@ -1444,7 +1533,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchUserTaskRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchUserTaskRun',
             service__pb2.SearchUserTaskRunRequest.SerializeToString,
             service__pb2.UserTaskRunIdList.FromString,
             options, channel_credentials,
@@ -1461,7 +1550,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchVariable',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchVariable',
             service__pb2.SearchVariableRequest.SerializeToString,
             service__pb2.VariableIdList.FromString,
             options, channel_credentials,
@@ -1478,7 +1567,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEvent',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchExternalEvent',
             service__pb2.SearchExternalEventRequest.SerializeToString,
             service__pb2.ExternalEventIdList.FromString,
             options, channel_credentials,
@@ -1495,7 +1584,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchTaskDef',
             service__pb2.SearchTaskDefRequest.SerializeToString,
             service__pb2.TaskDefIdList.FromString,
             options, channel_credentials,
@@ -1512,7 +1601,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchUserTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchUserTaskDef',
             service__pb2.SearchUserTaskDefRequest.SerializeToString,
             service__pb2.UserTaskDefIdList.FromString,
             options, channel_credentials,
@@ -1529,7 +1618,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchWfSpec',
             service__pb2.SearchWfSpecRequest.SerializeToString,
             service__pb2.WfSpecIdList.FromString,
             options, channel_credentials,
@@ -1546,7 +1635,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEventDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchExternalEventDef',
             service__pb2.SearchExternalEventDefRequest.SerializeToString,
             service__pb2.ExternalEventDefIdList.FromString,
             options, channel_credentials,
@@ -1563,7 +1652,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/RegisterTaskWorker',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/RegisterTaskWorker',
             service__pb2.RegisterTaskWorkerRequest.SerializeToString,
             service__pb2.RegisterTaskWorkerResponse.FromString,
             options, channel_credentials,
@@ -1580,7 +1669,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/littlehorse.LHPublicApi/PollTask',
+        return grpc.experimental.stream_stream(request_iterator, target, '/littlehorse.LittleHorse/PollTask',
             service__pb2.PollTaskRequest.SerializeToString,
             service__pb2.PollTaskResponse.FromString,
             options, channel_credentials,
@@ -1597,7 +1686,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ReportTask',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ReportTask',
             service__pb2.ReportTaskRun.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1614,7 +1703,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/StopWfRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/StopWfRun',
             service__pb2.StopWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1631,7 +1720,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ResumeWfRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ResumeWfRun',
             service__pb2.ResumeWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1648,7 +1737,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteWfRun',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteWfRun',
             service__pb2.DeleteWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1665,7 +1754,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteTaskDef',
             service__pb2.DeleteTaskDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1682,7 +1771,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteWfSpec',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteWfSpec',
             service__pb2.DeleteWfSpecRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1699,7 +1788,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteUserTaskDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteUserTaskDef',
             service__pb2.DeleteUserTaskDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1716,7 +1805,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteExternalEventDef',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteExternalEventDef',
             service__pb2.DeleteExternalEventDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
@@ -1733,7 +1822,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskDefMetricsWindow',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
             service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
             service__pb2.TaskDefMetrics.FromString,
             options, channel_credentials,
@@ -1750,7 +1839,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfSpecMetricsWindow',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetWfSpecMetricsWindow',
             service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
             service__pb2.WfSpecMetrics.FromString,
             options, channel_credentials,
@@ -1767,7 +1856,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListTaskDefMetrics',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListTaskDefMetrics',
             service__pb2.ListTaskMetricsRequest.SerializeToString,
             service__pb2.ListTaskMetricsResponse.FromString,
             options, channel_credentials,
@@ -1784,7 +1873,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListWfSpecMetrics',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListWfSpecMetrics',
             service__pb2.ListWfMetricsRequest.SerializeToString,
             service__pb2.ListWfMetricsResponse.FromString,
             options, channel_credentials,
@@ -1801,7 +1890,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutTenant',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutTenant',
             acls__pb2.PutTenantRequest.SerializeToString,
             acls__pb2.Tenant.FromString,
             options, channel_credentials,
@@ -1818,7 +1907,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutPrincipal',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutPrincipal',
             acls__pb2.PutPrincipalRequest.SerializeToString,
             acls__pb2.Principal.FromString,
             options, channel_credentials,
@@ -1835,7 +1924,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/Whoami',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/Whoami',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             acls__pb2.Principal.FromString,
             options, channel_credentials,
@@ -1852,7 +1941,7 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetServerVersion',
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetServerVersion',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             service__pb2.ServerVersionResponse.FromString,
             options, channel_credentials,

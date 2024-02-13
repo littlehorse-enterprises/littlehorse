@@ -1,4 +1,5 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -48,19 +49,19 @@ class Principal(_message.Message):
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     PER_TENANT_ACLS_FIELD_NUMBER: _ClassVar[int]
     GLOBAL_ACLS_FIELD_NUMBER: _ClassVar[int]
-    id: str
+    id: _object_id_pb2.PrincipalId
     created_at: _timestamp_pb2.Timestamp
     per_tenant_acls: _containers.MessageMap[str, ServerACLs]
     global_acls: ServerACLs
-    def __init__(self, id: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., per_tenant_acls: _Optional[_Mapping[str, ServerACLs]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., per_tenant_acls: _Optional[_Mapping[str, ServerACLs]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
 
 class Tenant(_message.Message):
     __slots__ = ["id", "created_at"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    id: str
+    id: _object_id_pb2.TenantId
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class ServerACLs(_message.Message):
     __slots__ = ["acls"]

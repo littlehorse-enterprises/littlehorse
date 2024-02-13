@@ -3,9 +3,9 @@ package io.littlehorse.common.model.getable.core.taskworkergroup;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.proto.TaskWorkerMetadata;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,14 +14,14 @@ import org.jetbrains.annotations.NotNull;
 public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
         implements Comparable<TaskWorkerMetadataModel> {
 
-    public String clientId;
+    public String taskWorkerId;
     public Date latestHeartbeat;
     public Set<HostModel> hosts = new TreeSet<>();
 
     @Override
     public TaskWorkerMetadata.Builder toProto() {
         return TaskWorkerMetadata.newBuilder()
-                .setClientId(clientId)
+                .setTaskWorkerId(taskWorkerId)
                 .setLatestHeartbeat(Timestamps.fromDate(latestHeartbeat))
                 .addAllHosts(hostsToProto());
     }
@@ -29,7 +29,7 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskWorkerMetadata metadataPb = (TaskWorkerMetadata) proto;
-        clientId = metadataPb.getClientId();
+        taskWorkerId = metadataPb.getTaskWorkerId();
         latestHeartbeat = LHUtil.fromProtoTs(metadataPb.getLatestHeartbeat());
         hosts = metadataPb.getHostsList().stream()
                 .map(host -> new HostModel(host.getHost(), host.getPort()))
@@ -47,8 +47,8 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
 
     @Override
     public int compareTo(@NotNull TaskWorkerMetadataModel o) {
-        if (clientId == null) return -1;
-        return clientId.compareTo(o.clientId);
+        if (taskWorkerId == null) return -1;
+        return taskWorkerId.compareTo(o.taskWorkerId);
     }
 
     @Override
@@ -56,11 +56,11 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskWorkerMetadataModel that = (TaskWorkerMetadataModel) o;
-        return Objects.equals(clientId, that.clientId);
+        return Objects.equals(taskWorkerId, that.taskWorkerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId);
+        return Objects.hash(taskWorkerId);
     }
 }

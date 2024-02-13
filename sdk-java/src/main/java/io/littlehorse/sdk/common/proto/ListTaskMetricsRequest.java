@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Query to retrieve TaskDef Metrics over a period of time.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ListTaskMetricsRequest}
  */
 public final class ListTaskMetricsRequest extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * TaskDef id for whichwe retrieve metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ != null;
   }
   /**
+   * <pre>
+   * TaskDef id for whichwe retrieve metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * TaskDef id for whichwe retrieve metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +84,11 @@ private static final long serialVersionUID = 0L;
   public static final int LAST_WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp lastWindowStart_;
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return Whether the lastWindowStart field is set.
    */
@@ -76,6 +97,11 @@ private static final long serialVersionUID = 0L;
     return lastWindowStart_ != null;
   }
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    * @return The lastWindowStart.
    */
@@ -84,6 +110,11 @@ private static final long serialVersionUID = 0L;
     return lastWindowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastWindowStart_;
   }
   /**
+   * <pre>
+   * This parameter is a timestamp that is used to determine the *last* window returned. The
+   * server will then return `num_windows` worth of data from before this timestamp.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
    */
   @java.lang.Override
@@ -94,6 +125,10 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_LENGTH_FIELD_NUMBER = 3;
   private int windowLength_ = 0;
   /**
+   * <pre>
+   * Window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
@@ -101,6 +136,10 @@ private static final long serialVersionUID = 0L;
     return windowLength_;
   }
   /**
+   * <pre>
+   * Window size
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
    * @return The windowLength.
    */
@@ -112,6 +151,10 @@ private static final long serialVersionUID = 0L;
   public static final int NUM_WINDOWS_FIELD_NUMBER = 4;
   private int numWindows_ = 0;
   /**
+   * <pre>
+   * Number of windows to retrieve.
+   * </pre>
+   *
    * <code>int32 num_windows = 4;</code>
    * @return The numWindows.
    */
@@ -320,6 +363,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Query to retrieve TaskDef Metrics over a period of time.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ListTaskMetricsRequest}
    */
   public static final class Builder extends
@@ -543,6 +590,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -550,6 +601,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
@@ -561,6 +616,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -577,6 +636,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
@@ -591,6 +654,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -610,6 +677,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
@@ -623,6 +694,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -631,6 +706,10 @@ private static final long serialVersionUID = 0L;
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -642,6 +721,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef id for whichwe retrieve metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -662,6 +745,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> lastWindowStartBuilder_;
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      * @return Whether the lastWindowStart field is set.
      */
@@ -669,6 +757,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      * @return The lastWindowStart.
      */
@@ -680,6 +773,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder setLastWindowStart(com.google.protobuf.Timestamp value) {
@@ -696,6 +794,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder setLastWindowStart(
@@ -710,6 +813,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder mergeLastWindowStart(com.google.protobuf.Timestamp value) {
@@ -729,6 +837,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public Builder clearLastWindowStart() {
@@ -742,6 +855,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLastWindowStartBuilder() {
@@ -750,6 +868,11 @@ private static final long serialVersionUID = 0L;
       return getLastWindowStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLastWindowStartOrBuilder() {
@@ -761,6 +884,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * This parameter is a timestamp that is used to determine the *last* window returned. The
+     * server will then return `num_windows` worth of data from before this timestamp.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp last_window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -779,6 +907,10 @@ private static final long serialVersionUID = 0L;
 
     private int windowLength_ = 0;
     /**
+     * <pre>
+     * Window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The enum numeric value on the wire for windowLength.
      */
@@ -786,6 +918,10 @@ private static final long serialVersionUID = 0L;
       return windowLength_;
     }
     /**
+     * <pre>
+     * Window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The enum numeric value on the wire for windowLength to set.
      * @return This builder for chaining.
@@ -797,6 +933,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return The windowLength.
      */
@@ -806,6 +946,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @param value The windowLength to set.
      * @return This builder for chaining.
@@ -820,6 +964,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Window size
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength window_length = 3;</code>
      * @return This builder for chaining.
      */
@@ -832,6 +980,10 @@ private static final long serialVersionUID = 0L;
 
     private int numWindows_ ;
     /**
+     * <pre>
+     * Number of windows to retrieve.
+     * </pre>
+     *
      * <code>int32 num_windows = 4;</code>
      * @return The numWindows.
      */
@@ -840,6 +992,10 @@ private static final long serialVersionUID = 0L;
       return numWindows_;
     }
     /**
+     * <pre>
+     * Number of windows to retrieve.
+     * </pre>
+     *
      * <code>int32 num_windows = 4;</code>
      * @param value The numWindows to set.
      * @return This builder for chaining.
@@ -852,6 +1008,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number of windows to retrieve.
+     * </pre>
+     *
      * <code>int32 num_windows = 4;</code>
      * @return This builder for chaining.
      */

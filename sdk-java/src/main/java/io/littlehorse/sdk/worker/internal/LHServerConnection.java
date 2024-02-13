@@ -3,12 +3,11 @@ package io.littlehorse.sdk.worker.internal;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import java.io.Closeable;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,9 +18,9 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
 
     private boolean stillRunning;
     private StreamObserver<PollTaskRequest> pollClient;
-    private LHPublicApiStub stub;
+    private LittleHorseStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) throws IOException {
+    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) {
         stillRunning = true;
         this.manager = manager;
         this.host = host;
@@ -53,11 +52,11 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
         if (taskToDo.hasResult()) {
             ScheduledTask scheduledTask = taskToDo.getResult();
             String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
-            log.info("Received task schedule request for wfRun {}", wfRunId);
+            log.debug("Received task schedule request for wfRun {}", wfRunId);
 
             manager.submitTaskForExecution(scheduledTask, this.stub);
 
-            log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
+            log.debug("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             log.error("Didn't successfully claim task, likely due to server restart.");
         }
@@ -82,7 +81,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(PollTaskRequest.newBuilder()
-                .setClientId(manager.config.getClientId())
+                .setClientId(manager.config.getTaskWorkerId())
                 .setTaskDefId(manager.taskDef.getId())
                 .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
                 .build());

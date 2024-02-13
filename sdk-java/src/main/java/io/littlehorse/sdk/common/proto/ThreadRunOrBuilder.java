@@ -8,43 +8,85 @@ public interface ThreadRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * The current WfSpecId of this ThreadRun. This must be set explicitly because
+   * during a WfSpec Version Migration, it is possible for different ThreadSpec's to
+   * have different WfSpec versions.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * The number of the ThreadRun. This is an auto-incremented integer corresponding to
+   * the chronological ordering of when the ThreadRun's were created. If you have not
+   * configured any retention policy for the ThreadRun's (i.e. never clean them up), then
+   * this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs`
+   * list.
+   * </pre>
+   *
    * <code>int32 number = 2;</code>
    * @return The number.
    */
   int getNumber();
 
   /**
+   * <pre>
+   * The status of the ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
+   * <pre>
+   * The status of the ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.LHStatus status = 3;</code>
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
   /**
+   * <pre>
+   * The name of the ThreadSpec being run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 4;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec being run.
+   * </pre>
+   *
    * <code>string thread_spec_name = 4;</code>
    * @return The bytes for threadSpecName.
    */
@@ -52,46 +94,82 @@ public interface ThreadRunOrBuilder extends
       getThreadSpecNameBytes();
 
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    * @return Whether the startTime field is set.
    */
   boolean hasStartTime();
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    * @return The startTime.
    */
   com.google.protobuf.Timestamp getStartTime();
   /**
+   * <pre>
+   * The time the ThreadRun was started.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp start_time = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
 
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
+   * <pre>
+   * The time the ThreadRun was completed or failed. Unset if still active.
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp end_time = 6;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return Whether the errorMessage field is set.
    */
   boolean hasErrorMessage();
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
+   * <pre>
+   * Human-readable error message detailing what went wrong in the case of a failure.
+   * </pre>
+   *
    * <code>optional string error_message = 7;</code>
    * @return The bytes for errorMessage.
    */
@@ -99,16 +177,28 @@ public interface ThreadRunOrBuilder extends
       getErrorMessageBytes();
 
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @return A list containing the childThreadIds.
    */
   java.util.List<java.lang.Integer> getChildThreadIdsList();
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @return The count of childThreadIds.
    */
   int getChildThreadIdsCount();
   /**
+   * <pre>
+   * List of thread_run_number's for all child thread_runs.
+   * </pre>
+   *
    * <code>repeated int32 child_thread_ids = 8;</code>
    * @param index The index of the element to return.
    * @return The childThreadIds at the given index.
@@ -116,87 +206,190 @@ public interface ThreadRunOrBuilder extends
   int getChildThreadIds(int index);
 
   /**
+   * <pre>
+   * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+   * </pre>
+   *
    * <code>optional int32 parent_thread_id = 9;</code>
    * @return Whether the parentThreadId field is set.
    */
   boolean hasParentThreadId();
   /**
+   * <pre>
+   * Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread.
+   * </pre>
+   *
    * <code>optional int32 parent_thread_id = 9;</code>
    * @return The parentThreadId.
    */
   int getParentThreadId();
 
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> 
       getHaltReasonsList();
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadHaltReason getHaltReasons(int index);
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   int getHaltReasonsCount();
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
       getHaltReasonsOrBuilderList();
   /**
+   * <pre>
+   * If the ThreadRun is HALTED, this contains a list of every reason for which the
+   * ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list),
+   * then the ThreadRun will return to the RUNNING state.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 10;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder getHaltReasonsOrBuilder(
       int index);
 
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    * @return Whether the interruptTriggerId field is set.
    */
   boolean hasInterruptTriggerId();
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    * @return The interruptTriggerId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventId getInterruptTriggerId();
   /**
+   * <pre>
+   * If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the
+   * ExternalEvent that caused the Interrupt.
+   * </pre>
+   *
    * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 11;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getInterruptTriggerIdOrBuilder();
 
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    * @return Whether the failureBeingHandled field is set.
    */
   boolean hasFailureBeingHandled();
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    * @return The failureBeingHandled.
    */
   io.littlehorse.sdk.common.proto.FailureBeingHandled getFailureBeingHandled();
   /**
+   * <pre>
+   * If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure
+   * that is being handled by this ThreadRun.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 12;</code>
    */
   io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder getFailureBeingHandledOrBuilder();
 
   /**
+   * <pre>
+   * This is the current `position` of the current NodeRun being run. This is an
+   * auto-incremented field that gets incremented every time we run a new NodeRun.
+   * </pre>
+   *
    * <code>int32 current_node_position = 13;</code>
    * @return The currentNodePosition.
    */
   int getCurrentNodePosition();
 
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @return A list containing the handledFailedChildren.
    */
   java.util.List<java.lang.Integer> getHandledFailedChildrenList();
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @return The count of handledFailedChildren.
    */
   int getHandledFailedChildrenCount();
   /**
+   * <pre>
+   * List of every child ThreadRun which both a) failed, and b) was properly handled by a
+   * Failure Handler.
+   *
+   * This is important because at the EXIT node, if a Child ThreadRun was discovered to have
+   * failed, then this ThreadRun (the parent) also fails with the same failure as the child.
+   * If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's
+   * number is appended to this list, and then the EXIT node ignores that ThreadRun.
+   * </pre>
+   *
    * <code>repeated int32 handled_failed_children = 14;</code>
    * @param index The index of the element to return.
    * @return The handledFailedChildren at the given index.
@@ -204,11 +397,19 @@ public interface ThreadRunOrBuilder extends
   int getHandledFailedChildren(int index);
 
   /**
+   * <pre>
+   * The Type of this ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadType type = 15;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * The Type of this ThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadType type = 15;</code>
    * @return The type.
    */
