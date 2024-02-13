@@ -218,19 +218,63 @@ message UTActionTrigger {
   UTHook hook = 6;
 }
 
+// Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
+// attempt `N` is defined as:
+//
+// min(base_interval_seconds * (exponential_rate ^N), max_delay_seconds)
+//
+// Note that timers in LittleHorse have a resolution of one second. Therefore,
+// the actual delay is rounded to the nearest second. For example, a delay of
+// 400 milliseconds is rounded to zero seconds, and the new TaskAttempt is
+// immediately placed onto the Task Queue and will be executed as soon as a
+// Task Worker polls it.
+//
+// On the contrary, a delay of 800 milliseconds rounds to one second, and
+// the scheduler dispatches a timer to be matured in a second. Once the timer
+// is matured, then the new TaskAttempt is placed on the task queue.
+message ExponentialBackoffRetryPolicy {
+    // Base delay in ms for the first retry. We recommend starting with 400.
+    // Note that in LittleHorse, timers have a resolution of 1 second.
+    int32 base_interval_ms = 1;
+
+    // Maximum delay in seconds between retries.
+    int64 max_delay_ms = 2;
+
+    // Maximum number of retry attempts to schedule.
+    int32 max_attempts = 3;
+
+    // The exponent to use in calculating the retry backoff policy. We recommend
+    // starting with 2.0.
+    float exponential_rate = 4;
+}
+
 // Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 message TaskNode {
   // The type of TaskRun to schedule.
   TaskDefId task_def_id = 1;
 
   // How long until LittleHorse determines that the Task Worker had a technical ERROR if
-  // the worker does not yet reply to the Server.
+  // the worker does not yet reply to the Server. This is determined on a per-Attempt
+  // basis.
   int32 timeout_seconds = 2;
 
-  // EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-  // Please note that this API may change before version 1.0.0, as we are going to
-  // add significant functionality including backoff policies.
-  int32 retries = 3;
+  // The policy for scheduling additional TaskAttempt's upon encountering a retryable error.
+  // Retryable errors include:
+  // - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+  //   Task Worker in time.
+  // - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+  //   the Task Function.
+  //
+  // Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+  // TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
+  oneof retry_policy {
+    // Simplest retry policy. Retries are immediately put back on the Task Queue, up to
+    // the configured number of retries.
+    int32 simple_retries = 3;
+
+    // Retry with Exponential Backoff.
+    ExponentialBackoffRetryPolicy exponential_backoff = 5;
+  }
 
   // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;
