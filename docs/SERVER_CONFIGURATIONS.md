@@ -50,6 +50,7 @@
     - [`LHS_TIMER_STATESTORE_CACHE_BYTES`](#lhs_timer_statestore_cache_bytes)
     - [`LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES`](#lhs_rocksdb_total_block_cache_bytes)
     - [`LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES`](#lhs_rocksdb_total_memtable_bytes)
+    - [`LHS_ROCKSDB_COMPACTION_THREADS`](#lhs_rocksdb_compaction_threads)
   - [Monitoring](#monitoring)
     - [`LHS_HEALTH_SERVICE_PORT`](#lhs_health_service_port)
     - [`LHS_HEALTH_PATH_METRICS`](#lhs_health_path_metrics)
@@ -630,6 +631,16 @@ The capacity of the Rocksdb Write Buffer Manager. Memory used by the Write Buffe
 - **Type:** long
 - **Default:** null
 - **Importance:** high
+
+---
+
+### `LHS_ROCKSDB_COMPACTION_THREADS`
+
+The number of threads for RocksDB to use for compaction in the background. From the RocksDB documentation, a good value for this config is the number of cores on your LH Server.
+
+- **Type:** int
+- **Default:** 1
+- **Importance:** medium
 
 ## Monitoring
 
