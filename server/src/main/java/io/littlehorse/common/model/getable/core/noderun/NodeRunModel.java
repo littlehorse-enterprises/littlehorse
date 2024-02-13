@@ -337,19 +337,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         }
 
         if (status == LHStatus.ERROR || status == LHStatus.HALTED || status == LHStatus.EXCEPTION) {
-            if (failureHandlerIds.size() == failures.size()) {
-                if (failures.size() == 0) {
-                    log.warn("Somehow failed with no failures.");
-                    return false;
-                }
-                for (int handlerId : failureHandlerIds) {
-                    ThreadRunModel handler = getThreadRun().wfRun.getThreadRun(handlerId);
-                    if (handler.status != LHStatus.COMPLETED) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            return failures.stream().allMatch(failure -> failure.isProperlyHandled());
         }
         return false;
     }
