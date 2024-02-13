@@ -12,10 +12,9 @@ import org.rocksdb.Options;
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
 
-    // Need to inject the LHServerConfig, but Kafka Streams requires we pass in a Class with
-    // a default constructor. So the only way to do that is to have a static singleton which
-    // we set elsewhere in the code.
-    public static LHServerConfig serverConfig;
+    // This key is used to inject the LHServerConfig into the Map<String, Object> configs
+    // passed into the setConfig() method.
+    public static final String LH_SERVER_CONFIG_KEY = "obiwan.kenobi";
 
     // From RocksDB docs: default is 4kb, but Facebook tends to use 16-32kb in production.
     // With longer keys (we have a lot of long keys), higher block size is recommended. We
@@ -46,6 +45,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
         log.trace("Overriding rocksdb settings for store {}", storeName);
 
+        LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
+
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -62,6 +63,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
         options.setCompactionStyle(CompactionStyle.LEVEL);
+
+        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 
         // Memtable size
         options.setWriteBufferSize(
