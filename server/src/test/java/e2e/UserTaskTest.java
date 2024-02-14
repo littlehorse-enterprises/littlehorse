@@ -2,9 +2,7 @@ package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -41,8 +39,8 @@ public class UserTaskTest {
     @LHWorkflow("deadline-reassignment-workflow-user-without-group")
     private Workflow deadlineReassignmentUserWithoutGroupWorkflow;
 
-    @LHWorkflow("deadline-reassignment")
-    private Workflow deadlineReassignment;
+    @LHWorkflow("deadline-reassignment-with-epoch")
+    private Workflow deadlineReassignmentWithEpoch;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -80,12 +78,9 @@ public class UserTaskTest {
     }
 
     @Test
-    void shouldTestDeadlineReassignment() {
-        SearchResultCaptor<UserTaskRunIdList> instanceCaptor = SearchResultCaptor.of(UserTaskRunIdList.class);
-        Function<TestExecutionContext, SearchUserTaskRunRequest> buildId =
-                context -> SearchUserTaskRunRequest.newBuilder().build();
+    void shouldTestDeadlineReassignmentWithEpoch() {
         WfRunVerifier wfRunVerifier = workflowVerifier
-                .prepareRun(deadlineReassignment)
+                .prepareRun(deadlineReassignmentWithEpoch)
                 .waitForStatus(RUNNING)
                 .waitForUserTaskRunStatus(1, 1, UserTaskRunStatus.ASSIGNED)
                 .waitForNodeRunStatus(2, 1, COMPLETED, Duration.ofSeconds(8))
@@ -129,9 +124,9 @@ public class UserTaskTest {
         });
     }
 
-    @LHWorkflow("deadline-reassignment")
-    public Workflow buildDeadlineReassignment() {
-        return new WorkflowImpl("deadline-reassignment", entrypointThread -> {
+    @LHWorkflow("deadline-reassignment-with-epoch")
+    public Workflow buildDeadlineReassignmentWithEpoch() {
+        return new WorkflowImpl("deadline-reassignment-with-epoch", entrypointThread -> {
             entrypointThread.spawnThread(
                     utThread -> {
                         UserTaskOutput formOutput = utThread.assignUserTask(USER_TASK_DEF_NAME, "yoda", "my-group");
