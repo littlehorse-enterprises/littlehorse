@@ -29,7 +29,10 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     public DeadlineReassignUserTaskModel() {}
 
     public DeadlineReassignUserTaskModel(
-            UserTaskRunIdModel source, VariableAssignmentModel newUserId, VariableAssignmentModel newUserGroup, long epoch) {
+            UserTaskRunIdModel source,
+            VariableAssignmentModel newUserId,
+            VariableAssignmentModel newUserGroup,
+            long epoch) {
         this.source = source;
         this.newUserId = newUserId;
         this.newUserGroup = newUserGroup;

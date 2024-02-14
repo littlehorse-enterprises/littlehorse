@@ -187,6 +187,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         this.userId = newUserId;
         this.userGroup = newUserGroup;
+        this.epoch = new Date().getTime();
 
         // If the assignment changed, then we need to schedule any triggers.
         if (canScheduleActions && !Objects.equals(newUserId, oldUserId) && newUserId != null) {
@@ -256,7 +257,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) throws LHApiException {
-        if (status != UserTaskRunStatus.ASSIGNED && this.epoch != trigger.getEpoch()) {
+        if (status != UserTaskRunStatus.ASSIGNED || this.epoch != trigger.getEpoch()) {
             log.debug("Not doing deadline reassignment on UT. Status {}", status);
             return;
         }
