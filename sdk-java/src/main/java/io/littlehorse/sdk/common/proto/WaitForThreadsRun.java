@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForThreadsRun() {
     threads_ = java.util.Collections.emptyList();
-    policy_ = 0;
   }
 
   @java.lang.Override
@@ -42,6 +41,176 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.NodeRunOuterClass.internal_static_littlehorse_WaitForThreadsRun_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.WaitForThreadsRun.class, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder.class);
+  }
+
+  /**
+   * <pre>
+   * The status of a single ThreadRun that we are waiting for.
+   * </pre>
+   *
+   * Protobuf enum {@code littlehorse.WaitForThreadsRun.WaitingThreadStatus}
+   */
+  public enum WaitingThreadStatus
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     * The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+     * </pre>
+     *
+     * <code>THREAD_IN_PROGRESS = 0;</code>
+     */
+    THREAD_IN_PROGRESS(0),
+    /**
+     * <pre>
+     * The ThreadRun failed with some failure, and the FailureHandler is running
+     * for that Failure.
+     * </pre>
+     *
+     * <code>THREAD_HANDLING_FAILURE = 1;</code>
+     */
+    THREAD_HANDLING_FAILURE(1),
+    /**
+     * <pre>
+     * We can mark this ThreadRun as "already waited for", meaning that either:
+     * 1. It completed successfully, OR
+     * 2. It failed, and the Failure Handler successfully completed
+     * </pre>
+     *
+     * <code>THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;</code>
+     */
+    THREAD_COMPLETED_OR_FAILURE_HANDLED(2),
+    /**
+     * <pre>
+     * The ThreadRun did not complete successfully, and there wasn't a successful
+     * run of a Failure Handler for the Failure that was thrown.
+     * </pre>
+     *
+     * <code>THREAD_UNSUCCESSFUL = 3;</code>
+     */
+    THREAD_UNSUCCESSFUL(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <pre>
+     * The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+     * </pre>
+     *
+     * <code>THREAD_IN_PROGRESS = 0;</code>
+     */
+    public static final int THREAD_IN_PROGRESS_VALUE = 0;
+    /**
+     * <pre>
+     * The ThreadRun failed with some failure, and the FailureHandler is running
+     * for that Failure.
+     * </pre>
+     *
+     * <code>THREAD_HANDLING_FAILURE = 1;</code>
+     */
+    public static final int THREAD_HANDLING_FAILURE_VALUE = 1;
+    /**
+     * <pre>
+     * We can mark this ThreadRun as "already waited for", meaning that either:
+     * 1. It completed successfully, OR
+     * 2. It failed, and the Failure Handler successfully completed
+     * </pre>
+     *
+     * <code>THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;</code>
+     */
+    public static final int THREAD_COMPLETED_OR_FAILURE_HANDLED_VALUE = 2;
+    /**
+     * <pre>
+     * The ThreadRun did not complete successfully, and there wasn't a successful
+     * run of a Failure Handler for the Failure that was thrown.
+     * </pre>
+     *
+     * <code>THREAD_UNSUCCESSFUL = 3;</code>
+     */
+    public static final int THREAD_UNSUCCESSFUL_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WaitingThreadStatus valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static WaitingThreadStatus forNumber(int value) {
+      switch (value) {
+        case 0: return THREAD_IN_PROGRESS;
+        case 1: return THREAD_HANDLING_FAILURE;
+        case 2: return THREAD_COMPLETED_OR_FAILURE_HANDLED;
+        case 3: return THREAD_UNSUCCESSFUL;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<WaitingThreadStatus>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        WaitingThreadStatus> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<WaitingThreadStatus>() {
+            public WaitingThreadStatus findValueByNumber(int number) {
+              return WaitingThreadStatus.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final WaitingThreadStatus[] VALUES = values();
+
+    public static WaitingThreadStatus valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private WaitingThreadStatus(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.WaitForThreadsRun.WaitingThreadStatus)
   }
 
   public interface WaitForThreadOrBuilder extends
@@ -109,13 +278,47 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * INTERNAL: flag used by scheduler internally.
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
      * </pre>
      *
-     * <code>bool already_handled = 5;</code>
-     * @return The alreadyHandled.
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The enum numeric value on the wire for waitingStatus.
      */
-    boolean getAlreadyHandled();
+    int getWaitingStatusValue();
+    /**
+     * <pre>
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The waitingStatus.
+     */
+    io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus();
+
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return Whether the failureHandlerThreadRunId field is set.
+     */
+    boolean hasFailureHandlerThreadRunId();
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return The failureHandlerThreadRunId.
+     */
+    int getFailureHandlerThreadRunId();
   }
   /**
    * <pre>
@@ -135,6 +338,7 @@ private static final long serialVersionUID = 0L;
     }
     private WaitForThread() {
       threadStatus_ = 0;
+      waitingStatus_ = 0;
     }
 
     @java.lang.Override
@@ -240,19 +444,63 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
 
-    public static final int ALREADY_HANDLED_FIELD_NUMBER = 5;
-    private boolean alreadyHandled_ = false;
+    public static final int WAITING_STATUS_FIELD_NUMBER = 4;
+    private int waitingStatus_ = 0;
     /**
      * <pre>
-     * INTERNAL: flag used by scheduler internally.
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
      * </pre>
      *
-     * <code>bool already_handled = 5;</code>
-     * @return The alreadyHandled.
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The enum numeric value on the wire for waitingStatus.
+     */
+    @java.lang.Override public int getWaitingStatusValue() {
+      return waitingStatus_;
+    }
+    /**
+     * <pre>
+     * The "waiting status" of this specific thread: whether it's still running,
+     * already done, handling a failure, or completely failed.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+     * @return The waitingStatus.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus result = io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.forNumber(waitingStatus_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.UNRECOGNIZED : result;
+    }
+
+    public static final int FAILURE_HANDLER_THREAD_RUN_ID_FIELD_NUMBER = 5;
+    private int failureHandlerThreadRunId_ = 0;
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return Whether the failureHandlerThreadRunId field is set.
      */
     @java.lang.Override
-    public boolean getAlreadyHandled() {
-      return alreadyHandled_;
+    public boolean hasFailureHandlerThreadRunId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * If there is a failure on the ThreadRun, and we have a failure handler defined
+     * for it, then we will start a failure handler for this threadrun. This field
+     * is the id of that threadRun.
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+     * @return The failureHandlerThreadRunId.
+     */
+    @java.lang.Override
+    public int getFailureHandlerThreadRunId() {
+      return failureHandlerThreadRunId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -278,8 +526,11 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         output.writeInt32(3, threadRunNumber_);
       }
-      if (alreadyHandled_ != false) {
-        output.writeBool(5, alreadyHandled_);
+      if (waitingStatus_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.THREAD_IN_PROGRESS.getNumber()) {
+        output.writeEnum(4, waitingStatus_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(5, failureHandlerThreadRunId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -302,9 +553,13 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, threadRunNumber_);
       }
-      if (alreadyHandled_ != false) {
+      if (waitingStatus_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.THREAD_IN_PROGRESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, alreadyHandled_);
+          .computeEnumSize(4, waitingStatus_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, failureHandlerThreadRunId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -329,8 +584,12 @@ private static final long serialVersionUID = 0L;
       if (threadStatus_ != other.threadStatus_) return false;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
-      if (getAlreadyHandled()
-          != other.getAlreadyHandled()) return false;
+      if (waitingStatus_ != other.waitingStatus_) return false;
+      if (hasFailureHandlerThreadRunId() != other.hasFailureHandlerThreadRunId()) return false;
+      if (hasFailureHandlerThreadRunId()) {
+        if (getFailureHandlerThreadRunId()
+            != other.getFailureHandlerThreadRunId()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -350,9 +609,12 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + threadStatus_;
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
-      hash = (37 * hash) + ALREADY_HANDLED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getAlreadyHandled());
+      hash = (37 * hash) + WAITING_STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + waitingStatus_;
+      if (hasFailureHandlerThreadRunId()) {
+        hash = (37 * hash) + FAILURE_HANDLER_THREAD_RUN_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getFailureHandlerThreadRunId();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -501,7 +763,8 @@ private static final long serialVersionUID = 0L;
         }
         threadStatus_ = 0;
         threadRunNumber_ = 0;
-        alreadyHandled_ = false;
+        waitingStatus_ = 0;
+        failureHandlerThreadRunId_ = 0;
         return this;
       }
 
@@ -549,7 +812,11 @@ private static final long serialVersionUID = 0L;
           result.threadRunNumber_ = threadRunNumber_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.alreadyHandled_ = alreadyHandled_;
+          result.waitingStatus_ = waitingStatus_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.failureHandlerThreadRunId_ = failureHandlerThreadRunId_;
+          to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -607,8 +874,11 @@ private static final long serialVersionUID = 0L;
         if (other.getThreadRunNumber() != 0) {
           setThreadRunNumber(other.getThreadRunNumber());
         }
-        if (other.getAlreadyHandled() != false) {
-          setAlreadyHandled(other.getAlreadyHandled());
+        if (other.waitingStatus_ != 0) {
+          setWaitingStatusValue(other.getWaitingStatusValue());
+        }
+        if (other.hasFailureHandlerThreadRunId()) {
+          setFailureHandlerThreadRunId(other.getFailureHandlerThreadRunId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -653,9 +923,14 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
-              case 40: {
-                alreadyHandled_ = input.readBool();
+              case 32: {
+                waitingStatus_ = input.readEnum();
                 bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                failureHandlerThreadRunId_ = input.readInt32();
+                bitField0_ |= 0x00000010;
                 break;
               } // case 40
               default: {
@@ -956,46 +1231,144 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private boolean alreadyHandled_ ;
+      private int waitingStatus_ = 0;
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
-       * @return The alreadyHandled.
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return The enum numeric value on the wire for waitingStatus.
        */
-      @java.lang.Override
-      public boolean getAlreadyHandled() {
-        return alreadyHandled_;
+      @java.lang.Override public int getWaitingStatusValue() {
+        return waitingStatus_;
       }
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
-       * @param value The alreadyHandled to set.
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @param value The enum numeric value on the wire for waitingStatus to set.
        * @return This builder for chaining.
        */
-      public Builder setAlreadyHandled(boolean value) {
-
-        alreadyHandled_ = value;
+      public Builder setWaitingStatusValue(int value) {
+        waitingStatus_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * INTERNAL: flag used by scheduler internally.
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
        * </pre>
        *
-       * <code>bool already_handled = 5;</code>
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return The waitingStatus.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus getWaitingStatus() {
+        io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus result = io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.forNumber(waitingStatus_);
+        return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
+       * </pre>
+       *
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @param value The waitingStatus to set.
        * @return This builder for chaining.
        */
-      public Builder clearAlreadyHandled() {
+      public Builder setWaitingStatus(io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        waitingStatus_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The "waiting status" of this specific thread: whether it's still running,
+       * already done, handling a failure, or completely failed.
+       * </pre>
+       *
+       * <code>.littlehorse.WaitForThreadsRun.WaitingThreadStatus waiting_status = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWaitingStatus() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        alreadyHandled_ = false;
+        waitingStatus_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int failureHandlerThreadRunId_ ;
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return Whether the failureHandlerThreadRunId field is set.
+       */
+      @java.lang.Override
+      public boolean hasFailureHandlerThreadRunId() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return The failureHandlerThreadRunId.
+       */
+      @java.lang.Override
+      public int getFailureHandlerThreadRunId() {
+        return failureHandlerThreadRunId_;
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @param value The failureHandlerThreadRunId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFailureHandlerThreadRunId(int value) {
+
+        failureHandlerThreadRunId_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * If there is a failure on the ThreadRun, and we have a failure handler defined
+       * for it, then we will start a failure handler for this threadrun. This field
+       * is the id of that threadRun.
+       * </pre>
+       *
+       * <code>optional int32 failure_handler_thread_run_id = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFailureHandlerThreadRunId() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        failureHandlerThreadRunId_ = 0;
         onChanged();
         return this;
       }
@@ -1124,34 +1497,6 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
 
-  public static final int POLICY_FIELD_NUMBER = 2;
-  private int policy_ = 0;
-  /**
-   * <pre>
-   * The policy to use when handling failures for Threads. Currently, only
-   * one policy exists.
-   * </pre>
-   *
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
-   */
-  @java.lang.Override public int getPolicyValue() {
-    return policy_;
-  }
-  /**
-   * <pre>
-   * The policy to use when handling failures for Threads. Currently, only
-   * one policy exists.
-   * </pre>
-   *
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1169,9 +1514,6 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       output.writeMessage(1, threads_.get(i));
     }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
-      output.writeEnum(2, policy_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1184,10 +1526,6 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, threads_.get(i));
-    }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, policy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1206,7 +1544,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadsList()
         .equals(other.getThreadsList())) return false;
-    if (policy_ != other.policy_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1222,8 +1559,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREADS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadsList().hashCode();
     }
-    hash = (37 * hash) + POLICY_FIELD_NUMBER;
-    hash = (53 * hash) + policy_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1366,7 +1701,6 @@ private static final long serialVersionUID = 0L;
         threadsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      policy_ = 0;
       return this;
     }
 
@@ -1413,9 +1747,6 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsRun result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.policy_ = policy_;
-      }
     }
 
     @java.lang.Override
@@ -1488,9 +1819,6 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.policy_ != 0) {
-        setPolicyValue(other.getPolicyValue());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1530,11 +1858,6 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
-            case 16: {
-              policy_ = input.readEnum();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1862,84 +2185,6 @@ private static final long serialVersionUID = 0L;
         threads_ = null;
       }
       return threadsBuilder_;
-    }
-
-    private int policy_ = 0;
-    /**
-     * <pre>
-     * The policy to use when handling failures for Threads. Currently, only
-     * one policy exists.
-     * </pre>
-     *
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The enum numeric value on the wire for policy.
-     */
-    @java.lang.Override public int getPolicyValue() {
-      return policy_;
-    }
-    /**
-     * <pre>
-     * The policy to use when handling failures for Threads. Currently, only
-     * one policy exists.
-     * </pre>
-     *
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The enum numeric value on the wire for policy to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPolicyValue(int value) {
-      policy_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The policy to use when handling failures for Threads. Currently, only
-     * one policy exists.
-     * </pre>
-     *
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The policy.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * The policy to use when handling failures for Threads. Currently, only
-     * one policy exists.
-     * </pre>
-     *
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The policy to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000002;
-      policy_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The policy to use when handling failures for Threads. Currently, only
-     * one policy exists.
-     * </pre>
-     *
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPolicy() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      policy_ = 0;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

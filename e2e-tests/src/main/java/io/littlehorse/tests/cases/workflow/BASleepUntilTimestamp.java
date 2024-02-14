@@ -44,7 +44,7 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
                 client, Arg.of("timestamp-to-wait-for", new Date(System.currentTimeMillis() + (1000 * 2)).getTime()));
         Thread.sleep(1000);
         assertStatus(client, wfRunId, LHStatus.RUNNING);
-        Thread.sleep(7000); // note that the timer interval is 4 seconds
+        Thread.sleep(3000); // note that the timer interval is 1 second
         assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         return Arrays.asList(wfRunId);

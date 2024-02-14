@@ -95,6 +95,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             WfSpecModel spec = service.getWfSpec(wfRun.getWfSpecId());
             if (spec == null) {
                 wfRun.getThreadRun(0)
+                        .getCurrentNodeRun()
                         .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
 
                 // NOTE: need to commit the dao before we throw the exception.

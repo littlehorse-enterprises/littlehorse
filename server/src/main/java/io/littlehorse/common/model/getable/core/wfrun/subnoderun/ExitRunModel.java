@@ -86,11 +86,9 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
                 nodeRun.fail(getNode().exitNode.failureDef.getFailure(nodeRun.getThreadRun()), time);
             }
         } else {
-            nodeRun.getThreadRun()
-                    .fail(
-                            new FailureModel(
-                                    "Child thread (or threads) failed:" + failedChildren, LHConstants.CHILD_FAILURE),
-                            time);
+            nodeRun.fail(
+                    new FailureModel("Child thread (or threads) failed:" + failedChildren, LHConstants.CHILD_FAILURE),
+                    time);
         }
     }
 }

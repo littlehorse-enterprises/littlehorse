@@ -59,10 +59,13 @@ class MetronomeTask {
 
     private void emitDuplicatedTaskRunMetric(final WorkerContext context) {
         final BeatKey key = getBeatKeyBuilder()
-                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder().setIdempotencyKey(context.getIdempotencyKey()))
+                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder()
+                        .setIdempotencyKey(context.getIdempotencyKey())
+                        .setAttemptNumber(context.getAttemptNumber()))
                 .build();
         final Beat beat = getBeatBuilder()
-                .setTaskRunBeat(TaskRunBeat.newBuilder().setAttemptNumber(context.getAttemptNumber()))
+                .setTaskRunBeat(
+                        TaskRunBeat.newBuilder().setScheduledTime(Timestamps.fromDate(context.getScheduledTime())))
                 .build();
 
         // TODO: WHAT HAPPEN IF THIS FAILS?

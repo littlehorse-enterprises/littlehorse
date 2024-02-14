@@ -77,6 +77,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
+    public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
@@ -559,6 +560,10 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
+    public int getRocksDBCompactionThreads() {
+        return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -745,7 +750,9 @@ public class LHServerConfig extends ConfigBase {
             // As of Kafka 3.6, there is nothing we can do to optimize the group coordinator traffic.
         }
 
-        RocksConfigSetter.serverConfig = this;
+        // Set the RocksDB Config Setter, and inject this LHServerConfig into the options set
+        // into it.
+        props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
         // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.

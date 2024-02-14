@@ -16,8 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private WaitForThreadsNode() {
-    threads_ = java.util.Collections.emptyList();
-    policy_ = 0;
+    perThreadFailureHandlers_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -640,115 +639,931 @@ private static final long serialVersionUID = 0L;
 
   }
 
-  private int bitField0_;
-  public static final int THREADS_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_;
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
-    return threads_;
+  public interface ThreadsToWaitForOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.WaitForThreadsNode.ThreadsToWaitFor)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> 
+        getThreadsList();
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index);
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    int getThreadsCount();
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
+        getThreadsOrBuilderList();
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
+        int index);
   }
   /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+   * Protobuf type {@code littlehorse.WaitForThreadsNode.ThreadsToWaitFor}
    */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
-      getThreadsOrBuilderList() {
-    return threads_;
-  }
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  @java.lang.Override
-  public int getThreadsCount() {
-    return threads_.size();
-  }
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
-    return threads_.get(index);
-  }
-  /**
-   * <pre>
-   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-   * for compatibility reasons, we cannot wrap it into a separate message.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
-      int index) {
-    return threads_.get(index);
+  public static final class ThreadsToWaitFor extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.WaitForThreadsNode.ThreadsToWaitFor)
+      ThreadsToWaitForOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ThreadsToWaitFor.newBuilder() to construct.
+    private ThreadsToWaitFor(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ThreadsToWaitFor() {
+      threads_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ThreadsToWaitFor();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadsToWaitFor_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadsToWaitFor_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.class, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder.class);
+    }
+
+    public static final int THREADS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_;
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
+      return threads_;
+    }
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
+        getThreadsOrBuilderList() {
+      return threads_;
+    }
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public int getThreadsCount() {
+      return threads_.size();
+    }
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
+      return threads_.get(index);
+    }
+    /**
+     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
+        int index) {
+      return threads_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < threads_.size(); i++) {
+        output.writeMessage(1, threads_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < threads_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, threads_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor other = (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) obj;
+
+      if (!getThreadsList()
+          .equals(other.getThreadsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getThreadsCount() > 0) {
+        hash = (37 * hash) + THREADS_FIELD_NUMBER;
+        hash = (53 * hash) + getThreadsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.WaitForThreadsNode.ThreadsToWaitFor}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.WaitForThreadsNode.ThreadsToWaitFor)
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadsToWaitFor_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadsToWaitFor_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.class, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (threadsBuilder_ == null) {
+          threads_ = java.util.Collections.emptyList();
+        } else {
+          threads_ = null;
+          threadsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadsToWaitFor_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor build() {
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor buildPartial() {
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor result = new io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor result) {
+        if (threadsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            threads_ = java.util.Collections.unmodifiableList(threads_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.threads_ = threads_;
+        } else {
+          result.threads_ = threadsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor other) {
+        if (other == io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance()) return this;
+        if (threadsBuilder_ == null) {
+          if (!other.threads_.isEmpty()) {
+            if (threads_.isEmpty()) {
+              threads_ = other.threads_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureThreadsIsMutable();
+              threads_.addAll(other.threads_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.threads_.isEmpty()) {
+            if (threadsBuilder_.isEmpty()) {
+              threadsBuilder_.dispose();
+              threadsBuilder_ = null;
+              threads_ = other.threads_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              threadsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getThreadsFieldBuilder() : null;
+            } else {
+              threadsBuilder_.addAllMessages(other.threads_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor m =
+                    input.readMessage(
+                        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.parser(),
+                        extensionRegistry);
+                if (threadsBuilder_ == null) {
+                  ensureThreadsIsMutable();
+                  threads_.add(m);
+                } else {
+                  threadsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_ =
+        java.util.Collections.emptyList();
+      private void ensureThreadsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          threads_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor>(threads_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> threadsBuilder_;
+
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
+        if (threadsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(threads_);
+        } else {
+          return threadsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public int getThreadsCount() {
+        if (threadsBuilder_ == null) {
+          return threads_.size();
+        } else {
+          return threadsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
+        if (threadsBuilder_ == null) {
+          return threads_.get(index);
+        } else {
+          return threadsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder setThreads(
+          int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
+        if (threadsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureThreadsIsMutable();
+          threads_.set(index, value);
+          onChanged();
+        } else {
+          threadsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder setThreads(
+          int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
+        if (threadsBuilder_ == null) {
+          ensureThreadsIsMutable();
+          threads_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          threadsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder addThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
+        if (threadsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureThreadsIsMutable();
+          threads_.add(value);
+          onChanged();
+        } else {
+          threadsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder addThreads(
+          int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
+        if (threadsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureThreadsIsMutable();
+          threads_.add(index, value);
+          onChanged();
+        } else {
+          threadsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder addThreads(
+          io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
+        if (threadsBuilder_ == null) {
+          ensureThreadsIsMutable();
+          threads_.add(builderForValue.build());
+          onChanged();
+        } else {
+          threadsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder addThreads(
+          int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
+        if (threadsBuilder_ == null) {
+          ensureThreadsIsMutable();
+          threads_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          threadsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder addAllThreads(
+          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> values) {
+        if (threadsBuilder_ == null) {
+          ensureThreadsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, threads_);
+          onChanged();
+        } else {
+          threadsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder clearThreads() {
+        if (threadsBuilder_ == null) {
+          threads_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          threadsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public Builder removeThreads(int index) {
+        if (threadsBuilder_ == null) {
+          ensureThreadsIsMutable();
+          threads_.remove(index);
+          onChanged();
+        } else {
+          threadsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder getThreadsBuilder(
+          int index) {
+        return getThreadsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
+          int index) {
+        if (threadsBuilder_ == null) {
+          return threads_.get(index);  } else {
+          return threadsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
+           getThreadsOrBuilderList() {
+        if (threadsBuilder_ != null) {
+          return threadsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(threads_);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder() {
+        return getThreadsFieldBuilder().addBuilder(
+            io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder(
+          int index) {
+        return getThreadsFieldBuilder().addBuilder(
+            index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+       */
+      public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder> 
+           getThreadsBuilderList() {
+        return getThreadsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
+          getThreadsFieldBuilder() {
+        if (threadsBuilder_ == null) {
+          threadsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder>(
+                  threads_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          threads_ = null;
+        }
+        return threadsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.WaitForThreadsNode.ThreadsToWaitFor)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.WaitForThreadsNode.ThreadsToWaitFor)
+    private static final io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor();
+    }
+
+    public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ThreadsToWaitFor>
+        PARSER = new com.google.protobuf.AbstractParser<ThreadsToWaitFor>() {
+      @java.lang.Override
+      public ThreadsToWaitFor parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ThreadsToWaitFor> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ThreadsToWaitFor> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public static final int THREAD_LIST_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.VariableAssignment threadList_;
+  private int threadsToWaitForCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object threadsToWaitFor_;
+  public enum ThreadsToWaitForCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    THREADS(1),
+    THREAD_LIST(2),
+    THREADSTOWAITFOR_NOT_SET(0);
+    private final int value;
+    private ThreadsToWaitForCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ThreadsToWaitForCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ThreadsToWaitForCase forNumber(int value) {
+      switch (value) {
+        case 1: return THREADS;
+        case 2: return THREAD_LIST;
+        case 0: return THREADSTOWAITFOR_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public ThreadsToWaitForCase
+  getThreadsToWaitForCase() {
+    return ThreadsToWaitForCase.forNumber(
+        threadsToWaitForCase_);
+  }
+
+  public static final int THREADS_FIELD_NUMBER = 1;
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+   * @return Whether the threads field is set.
+   */
+  @java.lang.Override
+  public boolean hasThreads() {
+    return threadsToWaitForCase_ == 1;
+  }
+  /**
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+   * @return The threads.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getThreads() {
+    if (threadsToWaitForCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder getThreadsOrBuilder() {
+    if (threadsToWaitForCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
+  }
+
+  public static final int THREAD_LIST_FIELD_NUMBER = 2;
+  /**
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return Whether the threadList field is set.
    */
   @java.lang.Override
   public boolean hasThreadList() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return threadsToWaitForCase_ == 2;
   }
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return The threadList.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignment getThreadList() {
-    return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+    if (threadsToWaitForCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder() {
-    return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+    if (threadsToWaitForCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
-  public static final int POLICY_FIELD_NUMBER = 2;
-  private int policy_ = 0;
+  public static final int PER_THREAD_FAILURE_HANDLERS_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> perThreadFailureHandlers_;
   /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
-  @java.lang.Override public int getPolicyValue() {
-    return policy_;
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getPerThreadFailureHandlersList() {
+    return perThreadFailureHandlers_;
   }
   /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
+      getPerThreadFailureHandlersOrBuilderList() {
+    return perThreadFailureHandlers_;
+  }
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  @java.lang.Override
+  public int getPerThreadFailureHandlersCount() {
+    return perThreadFailureHandlers_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FailureHandlerDef getPerThreadFailureHandlers(int index) {
+    return perThreadFailureHandlers_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(
+      int index) {
+    return perThreadFailureHandlers_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -765,14 +1580,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < threads_.size(); i++) {
-      output.writeMessage(1, threads_.get(i));
+    if (threadsToWaitForCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_);
     }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
-      output.writeEnum(2, policy_);
+    if (threadsToWaitForCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(3, getThreadList());
+    for (int i = 0; i < perThreadFailureHandlers_.size(); i++) {
+      output.writeMessage(3, perThreadFailureHandlers_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -783,17 +1598,17 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (int i = 0; i < threads_.size(); i++) {
+    if (threadsToWaitForCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, threads_.get(i));
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_);
     }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
+    if (threadsToWaitForCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, policy_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    for (int i = 0; i < perThreadFailureHandlers_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getThreadList());
+        .computeMessageSize(3, perThreadFailureHandlers_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -810,14 +1625,21 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.WaitForThreadsNode other = (io.littlehorse.sdk.common.proto.WaitForThreadsNode) obj;
 
-    if (!getThreadsList()
-        .equals(other.getThreadsList())) return false;
-    if (hasThreadList() != other.hasThreadList()) return false;
-    if (hasThreadList()) {
-      if (!getThreadList()
-          .equals(other.getThreadList())) return false;
+    if (!getPerThreadFailureHandlersList()
+        .equals(other.getPerThreadFailureHandlersList())) return false;
+    if (!getThreadsToWaitForCase().equals(other.getThreadsToWaitForCase())) return false;
+    switch (threadsToWaitForCase_) {
+      case 1:
+        if (!getThreads()
+            .equals(other.getThreads())) return false;
+        break;
+      case 2:
+        if (!getThreadList()
+            .equals(other.getThreadList())) return false;
+        break;
+      case 0:
+      default:
     }
-    if (policy_ != other.policy_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -829,16 +1651,22 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getThreadsCount() > 0) {
-      hash = (37 * hash) + THREADS_FIELD_NUMBER;
-      hash = (53 * hash) + getThreadsList().hashCode();
+    if (getPerThreadFailureHandlersCount() > 0) {
+      hash = (37 * hash) + PER_THREAD_FAILURE_HANDLERS_FIELD_NUMBER;
+      hash = (53 * hash) + getPerThreadFailureHandlersList().hashCode();
     }
-    if (hasThreadList()) {
-      hash = (37 * hash) + THREAD_LIST_FIELD_NUMBER;
-      hash = (53 * hash) + getThreadList().hashCode();
+    switch (threadsToWaitForCase_) {
+      case 1:
+        hash = (37 * hash) + THREADS_FIELD_NUMBER;
+        hash = (53 * hash) + getThreads().hashCode();
+        break;
+      case 2:
+        hash = (37 * hash) + THREAD_LIST_FIELD_NUMBER;
+        hash = (53 * hash) + getThreadList().hashCode();
+        break;
+      case 0:
+      default:
     }
-    hash = (37 * hash) + POLICY_FIELD_NUMBER;
-    hash = (53 * hash) + policy_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -958,38 +1786,33 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.WaitForThreadsNode.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getThreadsFieldBuilder();
-        getThreadListFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (threadsBuilder_ == null) {
-        threads_ = java.util.Collections.emptyList();
-      } else {
-        threads_ = null;
+      if (threadsBuilder_ != null) {
         threadsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
-      threadList_ = null;
       if (threadListBuilder_ != null) {
-        threadListBuilder_.dispose();
-        threadListBuilder_ = null;
+        threadListBuilder_.clear();
       }
-      policy_ = 0;
+      if (perThreadFailureHandlersBuilder_ == null) {
+        perThreadFailureHandlers_ = java.util.Collections.emptyList();
+      } else {
+        perThreadFailureHandlers_ = null;
+        perThreadFailureHandlersBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000004);
+      threadsToWaitForCase_ = 0;
+      threadsToWaitFor_ = null;
       return this;
     }
 
@@ -1018,35 +1841,38 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.sdk.common.proto.WaitForThreadsNode result = new io.littlehorse.sdk.common.proto.WaitForThreadsNode(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
-      if (threadsBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          threads_ = java.util.Collections.unmodifiableList(threads_);
-          bitField0_ = (bitField0_ & ~0x00000001);
+      if (perThreadFailureHandlersBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          perThreadFailureHandlers_ = java.util.Collections.unmodifiableList(perThreadFailureHandlers_);
+          bitField0_ = (bitField0_ & ~0x00000004);
         }
-        result.threads_ = threads_;
+        result.perThreadFailureHandlers_ = perThreadFailureHandlers_;
       } else {
-        result.threads_ = threadsBuilder_.build();
+        result.perThreadFailureHandlers_ = perThreadFailureHandlersBuilder_.build();
       }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.threadList_ = threadListBuilder_ == null
-            ? threadList_
-            : threadListBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
+      result.threadsToWaitForCase_ = threadsToWaitForCase_;
+      result.threadsToWaitFor_ = this.threadsToWaitFor_;
+      if (threadsToWaitForCase_ == 1 &&
+          threadsBuilder_ != null) {
+        result.threadsToWaitFor_ = threadsBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.policy_ = policy_;
+      if (threadsToWaitForCase_ == 2 &&
+          threadListBuilder_ != null) {
+        result.threadsToWaitFor_ = threadListBuilder_.build();
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -1093,37 +1919,44 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.WaitForThreadsNode other) {
       if (other == io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance()) return this;
-      if (threadsBuilder_ == null) {
-        if (!other.threads_.isEmpty()) {
-          if (threads_.isEmpty()) {
-            threads_ = other.threads_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+      if (perThreadFailureHandlersBuilder_ == null) {
+        if (!other.perThreadFailureHandlers_.isEmpty()) {
+          if (perThreadFailureHandlers_.isEmpty()) {
+            perThreadFailureHandlers_ = other.perThreadFailureHandlers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
           } else {
-            ensureThreadsIsMutable();
-            threads_.addAll(other.threads_);
+            ensurePerThreadFailureHandlersIsMutable();
+            perThreadFailureHandlers_.addAll(other.perThreadFailureHandlers_);
           }
           onChanged();
         }
       } else {
-        if (!other.threads_.isEmpty()) {
-          if (threadsBuilder_.isEmpty()) {
-            threadsBuilder_.dispose();
-            threadsBuilder_ = null;
-            threads_ = other.threads_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            threadsBuilder_ = 
+        if (!other.perThreadFailureHandlers_.isEmpty()) {
+          if (perThreadFailureHandlersBuilder_.isEmpty()) {
+            perThreadFailureHandlersBuilder_.dispose();
+            perThreadFailureHandlersBuilder_ = null;
+            perThreadFailureHandlers_ = other.perThreadFailureHandlers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            perThreadFailureHandlersBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getThreadsFieldBuilder() : null;
+                 getPerThreadFailureHandlersFieldBuilder() : null;
           } else {
-            threadsBuilder_.addAllMessages(other.threads_);
+            perThreadFailureHandlersBuilder_.addAllMessages(other.perThreadFailureHandlers_);
           }
         }
       }
-      if (other.hasThreadList()) {
-        mergeThreadList(other.getThreadList());
-      }
-      if (other.policy_ != 0) {
-        setPolicyValue(other.getPolicyValue());
+      switch (other.getThreadsToWaitForCase()) {
+        case THREADS: {
+          mergeThreads(other.getThreads());
+          break;
+        }
+        case THREAD_LIST: {
+          mergeThreadList(other.getThreadList());
+          break;
+        }
+        case THREADSTOWAITFOR_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1152,28 +1985,30 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.parser(),
-                      extensionRegistry);
-              if (threadsBuilder_ == null) {
-                ensureThreadsIsMutable();
-                threads_.add(m);
-              } else {
-                threadsBuilder_.addMessage(m);
-              }
+              input.readMessage(
+                  getThreadsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              threadsToWaitForCase_ = 1;
               break;
             } // case 10
-            case 16: {
-              policy_ = input.readEnum();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 16
-            case 26: {
+            case 18: {
               input.readMessage(
                   getThreadListFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              threadsToWaitForCase_ = 2;
+              break;
+            } // case 18
+            case 26: {
+              io.littlehorse.sdk.common.proto.FailureHandlerDef m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.FailureHandlerDef.parser(),
+                      extensionRegistry);
+              if (perThreadFailureHandlersBuilder_ == null) {
+                ensurePerThreadFailureHandlersIsMutable();
+                perThreadFailureHandlers_.add(m);
+              } else {
+                perThreadFailureHandlersBuilder_.addMessage(m);
+              }
               break;
             } // case 26
             default: {
@@ -1191,508 +2026,545 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int threadsToWaitForCase_ = 0;
+    private java.lang.Object threadsToWaitFor_;
+    public ThreadsToWaitForCase
+        getThreadsToWaitForCase() {
+      return ThreadsToWaitForCase.forNumber(
+          threadsToWaitForCase_);
+    }
+
+    public Builder clearThreadsToWaitFor() {
+      threadsToWaitForCase_ = 0;
+      threadsToWaitFor_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_ =
-      java.util.Collections.emptyList();
-    private void ensureThreadsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        threads_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor>(threads_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> threadsBuilder_;
-
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder> threadsBuilder_;
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+     * @return Whether the threads field is set.
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
+    @java.lang.Override
+    public boolean hasThreads() {
+      return threadsToWaitForCase_ == 1;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+     * @return The threads.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getThreads() {
       if (threadsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(threads_);
+        if (threadsToWaitForCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
       } else {
-        return threadsBuilder_.getMessageList();
+        if (threadsToWaitForCase_ == 1) {
+          return threadsBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
-    public int getThreadsCount() {
+    public Builder setThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor value) {
       if (threadsBuilder_ == null) {
-        return threads_.size();
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        threadsToWaitFor_ = value;
+        onChanged();
       } else {
-        return threadsBuilder_.getCount();
+        threadsBuilder_.setMessage(value);
       }
+      threadsToWaitForCase_ = 1;
+      return this;
     }
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
-      if (threadsBuilder_ == null) {
-        return threads_.get(index);
-      } else {
-        return threadsBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder setThreads(
-        int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder builderForValue) {
       if (threadsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+        threadsToWaitFor_ = builderForValue.build();
+        onChanged();
+      } else {
+        threadsBuilder_.setMessage(builderForValue.build());
+      }
+      threadsToWaitForCase_ = 1;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+     */
+    public Builder mergeThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor value) {
+      if (threadsBuilder_ == null) {
+        if (threadsToWaitForCase_ == 1 &&
+            threadsToWaitFor_ != io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance()) {
+          threadsToWaitFor_ = io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          threadsToWaitFor_ = value;
         }
-        ensureThreadsIsMutable();
-        threads_.set(index, value);
         onChanged();
       } else {
-        threadsBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder setThreads(
-        int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
-      if (threadsBuilder_ == null) {
-        ensureThreadsIsMutable();
-        threads_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        threadsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder addThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
-      if (threadsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (threadsToWaitForCase_ == 1) {
+          threadsBuilder_.mergeFrom(value);
+        } else {
+          threadsBuilder_.setMessage(value);
         }
-        ensureThreadsIsMutable();
-        threads_.add(value);
-        onChanged();
-      } else {
-        threadsBuilder_.addMessage(value);
       }
+      threadsToWaitForCase_ = 1;
       return this;
     }
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder addThreads(
-        int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
-      if (threadsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureThreadsIsMutable();
-        threads_.add(index, value);
-        onChanged();
-      } else {
-        threadsBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder addThreads(
-        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
-      if (threadsBuilder_ == null) {
-        ensureThreadsIsMutable();
-        threads_.add(builderForValue.build());
-        onChanged();
-      } else {
-        threadsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder addThreads(
-        int index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder builderForValue) {
-      if (threadsBuilder_ == null) {
-        ensureThreadsIsMutable();
-        threads_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        threadsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public Builder addAllThreads(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> values) {
-      if (threadsBuilder_ == null) {
-        ensureThreadsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, threads_);
-        onChanged();
-      } else {
-        threadsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder clearThreads() {
       if (threadsBuilder_ == null) {
-        threads_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
+        if (threadsToWaitForCase_ == 1) {
+          threadsToWaitForCase_ = 0;
+          threadsToWaitFor_ = null;
+          onChanged();
+        }
       } else {
+        if (threadsToWaitForCase_ == 1) {
+          threadsToWaitForCase_ = 0;
+          threadsToWaitFor_ = null;
+        }
         threadsBuilder_.clear();
       }
       return this;
     }
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
-    public Builder removeThreads(int index) {
-      if (threadsBuilder_ == null) {
-        ensureThreadsIsMutable();
-        threads_.remove(index);
-        onChanged();
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder getThreadsBuilder() {
+      return getThreadsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder getThreadsOrBuilder() {
+      if ((threadsToWaitForCase_ == 1) && (threadsBuilder_ != null)) {
+        return threadsBuilder_.getMessageOrBuilder();
       } else {
-        threadsBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder getThreadsBuilder(
-        int index) {
-      return getThreadsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
-        int index) {
-      if (threadsBuilder_ == null) {
-        return threads_.get(index);  } else {
-        return threadsBuilder_.getMessageOrBuilder(index);
+        if (threadsToWaitForCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
+     * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
-         getThreadsOrBuilderList() {
-      if (threadsBuilder_ != null) {
-        return threadsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(threads_);
-      }
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder() {
-      return getThreadsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder(
-        int index) {
-      return getThreadsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
-    }
-    /**
-     * <pre>
-     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
-     * for compatibility reasons, we cannot wrap it into a separate message.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder> 
-         getThreadsBuilderList() {
-      return getThreadsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder> 
         getThreadsFieldBuilder() {
       if (threadsBuilder_ == null) {
-        threadsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder>(
-                threads_,
-                ((bitField0_ & 0x00000001) != 0),
+        if (!(threadsToWaitForCase_ == 1)) {
+          threadsToWaitFor_ = io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
+        }
+        threadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor) threadsToWaitFor_,
                 getParentForChildren(),
                 isClean());
-        threads_ = null;
+        threadsToWaitFor_ = null;
       }
+      threadsToWaitForCase_ = 1;
+      onChanged();
       return threadsBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignment threadList_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadListBuilder_;
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      * @return Whether the threadList field is set.
      */
+    @java.lang.Override
     public boolean hasThreadList() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return threadsToWaitForCase_ == 2;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      * @return The threadList.
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignment getThreadList() {
       if (threadListBuilder_ == null) {
-        return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+        if (threadsToWaitForCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
-        return threadListBuilder_.getMessage();
+        if (threadsToWaitForCase_ == 2) {
+          return threadListBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder setThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (threadListBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        threadList_ = value;
+        threadsToWaitFor_ = value;
+        onChanged();
       } else {
         threadListBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      threadsToWaitForCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder setThreadList(
         io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (threadListBuilder_ == null) {
-        threadList_ = builderForValue.build();
+        threadsToWaitFor_ = builderForValue.build();
+        onChanged();
       } else {
         threadListBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      threadsToWaitForCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder mergeThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (threadListBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          threadList_ != null &&
-          threadList_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
-          getThreadListBuilder().mergeFrom(value);
+        if (threadsToWaitForCase_ == 2 &&
+            threadsToWaitFor_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          threadsToWaitFor_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_)
+              .mergeFrom(value).buildPartial();
         } else {
-          threadList_ = value;
+          threadsToWaitFor_ = value;
         }
+        onChanged();
       } else {
-        threadListBuilder_.mergeFrom(value);
+        if (threadsToWaitForCase_ == 2) {
+          threadListBuilder_.mergeFrom(value);
+        } else {
+          threadListBuilder_.setMessage(value);
+        }
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      threadsToWaitForCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder clearThreadList() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      threadList_ = null;
-      if (threadListBuilder_ != null) {
-        threadListBuilder_.dispose();
-        threadListBuilder_ = null;
+      if (threadListBuilder_ == null) {
+        if (threadsToWaitForCase_ == 2) {
+          threadsToWaitForCase_ = 0;
+          threadsToWaitFor_ = null;
+          onChanged();
+        }
+      } else {
+        if (threadsToWaitForCase_ == 2) {
+          threadsToWaitForCase_ = 0;
+          threadsToWaitFor_ = null;
+        }
+        threadListBuilder_.clear();
       }
-      onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadListBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
       return getThreadListFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder() {
-      if (threadListBuilder_ != null) {
+      if ((threadsToWaitForCase_ == 2) && (threadListBuilder_ != null)) {
         return threadListBuilder_.getMessageOrBuilder();
       } else {
-        return threadList_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+        if (threadsToWaitForCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getThreadListFieldBuilder() {
       if (threadListBuilder_ == null) {
+        if (!(threadsToWaitForCase_ == 2)) {
+          threadsToWaitFor_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
         threadListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
-                getThreadList(),
+                (io.littlehorse.sdk.common.proto.VariableAssignment) threadsToWaitFor_,
                 getParentForChildren(),
                 isClean());
-        threadList_ = null;
+        threadsToWaitFor_ = null;
       }
+      threadsToWaitForCase_ = 2;
+      onChanged();
       return threadListBuilder_;
     }
 
-    private int policy_ = 0;
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The enum numeric value on the wire for policy.
-     */
-    @java.lang.Override public int getPolicyValue() {
-      return policy_;
+    private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> perThreadFailureHandlers_ =
+      java.util.Collections.emptyList();
+    private void ensurePerThreadFailureHandlersIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        perThreadFailureHandlers_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.FailureHandlerDef>(perThreadFailureHandlers_);
+        bitField0_ |= 0x00000004;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> perThreadFailureHandlersBuilder_;
+
     /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The enum numeric value on the wire for policy to set.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
-    public Builder setPolicyValue(int value) {
-      policy_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The policy.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The policy to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
-      if (value == null) {
-        throw new NullPointerException();
+    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getPerThreadFailureHandlersList() {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(perThreadFailureHandlers_);
+      } else {
+        return perThreadFailureHandlersBuilder_.getMessageList();
       }
-      bitField0_ |= 0x00000004;
-      policy_ = value.getNumber();
-      onChanged();
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public int getPerThreadFailureHandlersCount() {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        return perThreadFailureHandlers_.size();
+      } else {
+        return perThreadFailureHandlersBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef getPerThreadFailureHandlers(int index) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        return perThreadFailureHandlers_.get(index);
+      } else {
+        return perThreadFailureHandlersBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder setPerThreadFailureHandlers(
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.set(index, value);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
-    public Builder clearPolicy() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      policy_ = 0;
-      onChanged();
+    public Builder setPerThreadFailureHandlers(
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder addPerThreadFailureHandlers(io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.add(value);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder addPerThreadFailureHandlers(
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.add(index, value);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder addPerThreadFailureHandlers(
+        io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.add(builderForValue.build());
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder addPerThreadFailureHandlers(
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder addAllPerThreadFailureHandlers(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.FailureHandlerDef> values) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        ensurePerThreadFailureHandlersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, perThreadFailureHandlers_);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder clearPerThreadFailureHandlers() {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        perThreadFailureHandlers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public Builder removePerThreadFailureHandlers(int index) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        ensurePerThreadFailureHandlersIsMutable();
+        perThreadFailureHandlers_.remove(index);
+        onChanged();
+      } else {
+        perThreadFailureHandlersBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder getPerThreadFailureHandlersBuilder(
+        int index) {
+      return getPerThreadFailureHandlersFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(
+        int index) {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        return perThreadFailureHandlers_.get(index);  } else {
+        return perThreadFailureHandlersBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
+         getPerThreadFailureHandlersOrBuilderList() {
+      if (perThreadFailureHandlersBuilder_ != null) {
+        return perThreadFailureHandlersBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(perThreadFailureHandlers_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addPerThreadFailureHandlersBuilder() {
+      return getPerThreadFailureHandlersFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addPerThreadFailureHandlersBuilder(
+        int index) {
+      return getPerThreadFailureHandlersFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder> 
+         getPerThreadFailureHandlersBuilderList() {
+      return getPerThreadFailureHandlersFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
+        getPerThreadFailureHandlersFieldBuilder() {
+      if (perThreadFailureHandlersBuilder_ == null) {
+        perThreadFailureHandlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder>(
+                perThreadFailureHandlers_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        perThreadFailureHandlers_ = null;
+      }
+      return perThreadFailureHandlersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

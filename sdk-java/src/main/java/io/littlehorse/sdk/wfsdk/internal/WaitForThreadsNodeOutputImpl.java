@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
-import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
+import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 
 class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThreadsNodeOutput {
@@ -15,13 +15,45 @@ class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThre
         this.threadSpec = threadSpec;
     }
 
-    public WaitForThreadsNodeOutputImpl withPolicy(WaitForThreadsPolicy failureStrategy) {
-        Node nodesOrThrow = threadSpec.getNodesOrThrow(nodeName);
-        WaitForThreadsNode waitForThreads = nodesOrThrow.getWaitForThreads();
-        waitForThreads = waitForThreads.toBuilder().setPolicy(failureStrategy).build();
-        nodesOrThrow =
-                nodesOrThrow.toBuilder().setWaitForThreads(waitForThreads).build();
-        threadSpec.putNodes(nodeName, nodesOrThrow);
+    public WaitForThreadsNodeOutput handleExceptionOnChild(String exceptionName, ThreadFunc handler) {
+        String threadName = "exn-handler-" + this.nodeName + "-"
+                + (exceptionName != null ? exceptionName : FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION);
+        threadName = parent.getParent().addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        if (exceptionName != null) {
+            handlerDef.setSpecificFailure(exceptionName);
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION);
+        }
+
+        parent.addFailureHandlerOnWaitForThreadsNode(this, handlerDef.build());
+
+        return this;
+    }
+
+    @Override
+    public WaitForThreadsNodeOutput handleErrorOnChild(LHErrorType errorType, ThreadFunc handler) {
+        String threadName = "error-handler-" + this.nodeName + "-"
+                + (errorType != null ? errorType.name() : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        threadName = parent.getParent().addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        if (errorType != null) {
+            handlerDef.setSpecificFailure(errorType.name());
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        }
+
+        parent.addFailureHandlerOnWaitForThreadsNode(this, handlerDef.build());
+
+        return this;
+    }
+
+    @Override
+    public WaitForThreadsNodeOutput handleAnyFailureOnChild(ThreadFunc handler) {
+        String threadName = "failure-handler-" + this.nodeName + "-ANY_FAILURE";
+        threadName = parent.getParent().addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        parent.addFailureHandlerOnWaitForThreadsNode(this, handlerDef.build());
         return this;
     }
 }

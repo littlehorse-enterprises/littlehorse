@@ -58,10 +58,6 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     VAR_ERROR: _ClassVar[LHErrorType]
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
-
-class WaitForThreadsPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    STOP_ON_FAILURE: _ClassVar[WaitForThreadsPolicy]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -99,4 +95,3 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
-STOP_ON_FAILURE: WaitForThreadsPolicy

@@ -126,6 +126,25 @@ message StartMultipleThreadsRun {
 
 // The sub-node structure for a WAIT_FOR_THREADS NodeRun.
 message WaitForThreadsRun {
+  // The status of a single ThreadRun that we are waiting for.
+  enum WaitingThreadStatus {
+    // The ThreadRun is in progress (i.e. not COMPLETED nor EXCEPTION nor ERROR)
+    THREAD_IN_PROGRESS = 0;
+
+    // The ThreadRun failed with some failure, and the FailureHandler is running
+    // for that Failure.
+    THREAD_HANDLING_FAILURE = 1;
+
+    // We can mark this ThreadRun as "already waited for", meaning that either:
+    // 1. It completed successfully, OR
+    // 2. It failed, and the Failure Handler successfully completed
+    THREAD_COMPLETED_OR_FAILURE_HANDLED = 2;
+
+    // The ThreadRun did not complete successfully, and there wasn't a successful
+    // run of a Failure Handler for the Failure that was thrown.
+    THREAD_UNSUCCESSFUL = 3;
+  }
+
   // A 'WaitForThread' structure defines a thread that is being waited for.
   message WaitForThread {
     // The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun
@@ -138,16 +157,18 @@ message WaitForThreadsRun {
     // The number of the ThreadRun being waited for.
     int32 thread_run_number = 3;
 
-    // INTERNAL: flag used by scheduler internally.
-    bool already_handled = 5;
+    // The "waiting status" of this specific thread: whether it's still running,
+    // already done, handling a failure, or completely failed.
+    WaitingThreadStatus waiting_status = 4;
+
+    // If there is a failure on the ThreadRun, and we have a failure handler defined
+    // for it, then we will start a failure handler for this threadrun. This field
+    // is the id of that threadRun.
+    optional int32 failure_handler_thread_run_id = 5;
   }
 
   // The threads that are being waited for.
   repeated WaitForThread threads = 1;
-
-  // The policy to use when handling failures for Threads. Currently, only
-  // one policy exists.
-  WaitForThreadsPolicy policy = 2;
 }
 
 // The sub-node structure for an EXTERNAL_EVENT NodeRun.

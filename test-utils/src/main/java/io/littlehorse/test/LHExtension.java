@@ -83,6 +83,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
         String principalId = getPrincipalId();
+        if (testContext.getConfig().getTenantId() == null) {
+            return;
+        }
         try {
             testContext
                     .getAnonymousClient()
