@@ -20,6 +20,7 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
+import io.littlehorse.test.internal.step.AssignUserTask;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
@@ -33,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class WfRunVerifier extends AbstractVerifier {
 
@@ -170,6 +172,11 @@ public class WfRunVerifier extends AbstractVerifier {
     public <I, O> WfRunVerifier doSearch(
             Class<I> requestType, CapturedResult<O> capture, Function<TestExecutionContext, I> buildId) {
         steps.add(new SearchStep<>(requestType, buildId, capture));
+        return this;
+    }
+
+    public WfRunVerifier thenAssignUserTask(int threadRunNumber, int nodeRunNumber, boolean overrideClaim, String userId, String groupId) {
+        steps.add(new AssignUserTask(steps.size() + 1, threadRunNumber, nodeRunNumber, overrideClaim, userId, groupId));
         return this;
     }
 }

@@ -65,7 +65,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
 
         // Create the command
         CommandModel command = new CommandModel(
-                new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup), Date.from(maturationTime));
+                new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup, new Date().getTime()), Date.from(maturationTime));
 
         // Schedule the task
         LHTimer timer = new LHTimer(command);

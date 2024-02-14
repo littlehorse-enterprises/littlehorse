@@ -24,14 +24,16 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     private UserTaskRunIdModel source;
     private VariableAssignmentModel newUserId;
     private VariableAssignmentModel newUserGroup;
+    private long epoch;
 
     public DeadlineReassignUserTaskModel() {}
 
     public DeadlineReassignUserTaskModel(
-            UserTaskRunIdModel source, VariableAssignmentModel newUserId, VariableAssignmentModel newUserGroup) {
+            UserTaskRunIdModel source, VariableAssignmentModel newUserId, VariableAssignmentModel newUserGroup, long epoch) {
         this.source = source;
         this.newUserId = newUserId;
         this.newUserGroup = newUserGroup;
+        this.epoch = epoch;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
                 DeadlineReassignUserTask.newBuilder().setUserTask(source.toProto());
         if (newUserId != null) builder.setNewUserId(newUserId.toProto());
         if (newUserGroup != null) builder.setNewUserGroup(newUserGroup.toProto());
-
+        builder.setEpoch(this.epoch);
         return builder;
     }
 
@@ -49,6 +51,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         DeadlineReassignUserTask p = (DeadlineReassignUserTask) proto;
         if (p.hasNewUserId()) newUserId = VariableAssignmentModel.fromProto(p.getNewUserId(), context);
         if (p.hasNewUserGroup()) newUserGroup = VariableAssignmentModel.fromProto(p.getNewUserGroup(), context);
+        this.epoch = p.getEpoch();
         source = LHSerializable.fromProto(p.getUserTask(), UserTaskRunIdModel.class, context);
     }
 

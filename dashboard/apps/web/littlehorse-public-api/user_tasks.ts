@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -177,6 +178,7 @@ export interface UserTaskRun {
     | undefined;
   /** The NodeRun with which the UserTaskRun is associated. */
   nodeRunId: NodeRunId | undefined;
+  epoch: number;
 }
 
 export interface UserTaskRun_ResultsEntry {
@@ -573,6 +575,7 @@ function createBaseUserTaskRun(): UserTaskRun {
     notes: undefined,
     scheduledTime: undefined,
     nodeRunId: undefined,
+    epoch: 0,
   };
 }
 
@@ -607,6 +610,9 @@ export const UserTaskRun = {
     }
     if (message.nodeRunId !== undefined) {
       NodeRunId.encode(message.nodeRunId, writer.uint32(90).fork()).ldelim();
+    }
+    if (message.epoch !== 0) {
+      writer.uint32(96).int64(message.epoch);
     }
     return writer;
   },
@@ -691,6 +697,13 @@ export const UserTaskRun = {
 
           message.nodeRunId = NodeRunId.decode(reader, reader.uint32());
           continue;
+        case 12:
+          if (tag !== 96) {
+            break;
+          }
+
+          message.epoch = longToNumber(reader.int64() as Long);
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -717,6 +730,7 @@ export const UserTaskRun = {
       notes: isSet(object.notes) ? globalThis.String(object.notes) : undefined,
       scheduledTime: isSet(object.scheduledTime) ? globalThis.String(object.scheduledTime) : undefined,
       nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined,
+      epoch: isSet(object.epoch) ? globalThis.Number(object.epoch) : 0,
     };
   },
 
@@ -758,6 +772,9 @@ export const UserTaskRun = {
     if (message.nodeRunId !== undefined) {
       obj.nodeRunId = NodeRunId.toJSON(message.nodeRunId);
     }
+    if (message.epoch !== 0) {
+      obj.epoch = Math.round(message.epoch);
+    }
     return obj;
   },
 
@@ -788,6 +805,7 @@ export const UserTaskRun = {
     message.nodeRunId = (object.nodeRunId !== undefined && object.nodeRunId !== null)
       ? NodeRunId.fromPartial(object.nodeRunId)
       : undefined;
+    message.epoch = object.epoch ?? 0;
     return message;
   },
 };
@@ -1675,6 +1693,18 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function longToNumber(long: Long): number {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {
