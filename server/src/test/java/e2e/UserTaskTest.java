@@ -2,7 +2,6 @@ package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
@@ -21,9 +20,12 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
+import io.littlehorse.test.WfRunVerifier;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.MismatchedConditionException;
 import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
+import java.util.Map;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -78,17 +80,22 @@ public class UserTaskTest {
     }
 
     @Test
-    void shouldTestDeadlineReassignment(){
+    void shouldTestDeadlineReassignment() {
         SearchResultCaptor<UserTaskRunIdList> instanceCaptor = SearchResultCaptor.of(UserTaskRunIdList.class);
-        Function<TestExecutionContext, SearchUserTaskRunRequest> buildId = context -> SearchUserTaskRunRequest.newBuilder()
-                .build();
-        workflowVerifier.prepareRun(deadlineReassignment)
+        Function<TestExecutionContext, SearchUserTaskRunRequest> buildId =
+                context -> SearchUserTaskRunRequest.newBuilder().build();
+        WfRunVerifier wfRunVerifier = workflowVerifier
+                .prepareRun(deadlineReassignment)
                 .waitForStatus(RUNNING)
-                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
-                .waitForNodeRunStatus(0, 2, COMPLETED)
-                .thenAssignUserTask(0, 1, true, "anakin", null)
-                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(4))
-                .start();
+                .waitForUserTaskRunStatus(1, 1, UserTaskRunStatus.ASSIGNED)
+                .waitForNodeRunStatus(2, 1, COMPLETED, Duration.ofSeconds(8))
+                .thenAssignUserTask(1, 1, true, "anakin", null)
+                .waitForUserTaskRunStatus(1, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(20));
+        Assertions.assertThatThrownBy(wfRunVerifier::start)
+                .isInstanceOf(MismatchedConditionException.class)
+                .extracting(throwable -> (MismatchedConditionException) throwable)
+                .matches(mismatchedException -> mismatchedException.getExpectedValue() == UserTaskRunStatus.UNASSIGNED
+                        && mismatchedException.getEvaluatedValue() == UserTaskRunStatus.ASSIGNED);
     }
 
     @LHWorkflow("deadline-reassignment-workflow")
@@ -123,11 +130,16 @@ public class UserTaskTest {
     }
 
     @LHWorkflow("deadline-reassignment")
-    public Workflow buildDeadlineReassignment(){
+    public Workflow buildDeadlineReassignment() {
         return new WorkflowImpl("deadline-reassignment", entrypointThread -> {
-            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "yoda", "my-group");
-            entrypointThread.releaseToGroupOnDeadline(formOutput, 6);
-            entrypointThread.sleepSeconds(3);
+            entrypointThread.spawnThread(
+                    utThread -> {
+                        UserTaskOutput formOutput = utThread.assignUserTask(USER_TASK_DEF_NAME, "yoda", "my-group");
+                        utThread.releaseToGroupOnDeadline(formOutput, 20);
+                    },
+                    "user-task-thread",
+                    Map.of());
+            entrypointThread.spawnThread(sleepThread -> sleepThread.sleepSeconds(6), "sleep-thread", Map.of());
         });
     }
 

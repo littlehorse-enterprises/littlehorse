@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class WfRunVerifier extends AbstractVerifier {
 
@@ -117,13 +116,18 @@ public class WfRunVerifier extends AbstractVerifier {
         return this.waitForUserTaskRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
-    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+    public WfRunVerifier waitForNodeRunStatus(
+            int threadRunNumber, int nodeRunNumber, LHStatus status, Duration timeout) {
         Function<TestExecutionContext, LHStatus> objectLHStatusFunction = context -> {
             return lhClient.getNodeRun(nodeRunIdFrom(context.getWfRunId(), threadRunNumber, nodeRunNumber))
                     .getStatus();
         };
-        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, steps.size() + 1));
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, timeout, steps.size() + 1));
         return this;
+    }
+
+    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+        return waitForNodeRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
     public WfRunVerifier waitForThreadRunStatus(int threadRunNumber, LHStatus threadRunStatus) {
@@ -175,7 +179,8 @@ public class WfRunVerifier extends AbstractVerifier {
         return this;
     }
 
-    public WfRunVerifier thenAssignUserTask(int threadRunNumber, int nodeRunNumber, boolean overrideClaim, String userId, String groupId) {
+    public WfRunVerifier thenAssignUserTask(
+            int threadRunNumber, int nodeRunNumber, boolean overrideClaim, String userId, String groupId) {
         steps.add(new AssignUserTask(steps.size() + 1, threadRunNumber, nodeRunNumber, overrideClaim, userId, groupId));
         return this;
     }
