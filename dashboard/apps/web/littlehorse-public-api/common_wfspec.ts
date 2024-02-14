@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { TaskDefId } from "./object_id";
@@ -447,6 +448,39 @@ export interface UTActionTrigger_UTAReassign {
   userGroup?: VariableAssignment | undefined;
 }
 
+/**
+ * Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
+ * attempt `N` is defined as:
+ *
+ * min(base_interval_seconds * (multiplier ^N), max_delay_seconds)
+ *
+ * Note that timers in LittleHorse have a resolution of one second. Therefore,
+ * the actual delay is rounded to the nearest second. For example, a delay of
+ * 400 milliseconds is rounded to zero seconds, and the new TaskAttempt is
+ * immediately placed onto the Task Queue and will be executed as soon as a
+ * Task Worker polls it.
+ *
+ * On the contrary, a delay of 800 milliseconds rounds to one second, and
+ * the scheduler dispatches a timer to be matured in a second. Once the timer
+ * is matured, then the new TaskAttempt is placed on the task queue.
+ */
+export interface ExponentialBackoffRetryPolicy {
+  /**
+   * Base delay in ms for the first retry. We recommend starting with 400.
+   * Note that in LittleHorse, timers have a resolution of 1 second.
+   */
+  baseIntervalMs: number;
+  /** Maximum delay in seconds between retries. */
+  maxDelayMs: number;
+  /** Maximum number of retry attempts to schedule. */
+  maxAttempts: number;
+  /**
+   * The multiplier to use in calculating the retry backoff policy. We recommend
+   * starting with 2.0.
+   */
+  multiplier: number;
+}
+
 /** Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions. */
 export interface TaskNode {
   /** The type of TaskRun to schedule. */
@@ -455,15 +489,21 @@ export interface TaskNode {
     | undefined;
   /**
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-   * the worker does not yet reply to the Server.
+   * the worker does not yet reply to the Server. This is determined on a per-Attempt
+   * basis.
    */
   timeoutSeconds: number;
   /**
-   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-   * Please note that this API may change before version 1.0.0, as we are going to
-   * add significant functionality including backoff policies.
+   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
+   * the configured number of retries.
    */
-  retries: number;
+  simpleRetries?:
+    | number
+    | undefined;
+  /** Retry with Exponential Backoff. */
+  exponentialBackoff?:
+    | ExponentialBackoffRetryPolicy
+    | undefined;
   /** Input variables into the TaskDef. */
   variables: VariableAssignment[];
 }
@@ -1285,8 +1325,120 @@ export const UTActionTrigger_UTAReassign = {
   },
 };
 
+function createBaseExponentialBackoffRetryPolicy(): ExponentialBackoffRetryPolicy {
+  return { baseIntervalMs: 0, maxDelayMs: 0, maxAttempts: 0, multiplier: 0 };
+}
+
+export const ExponentialBackoffRetryPolicy = {
+  encode(message: ExponentialBackoffRetryPolicy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.baseIntervalMs !== 0) {
+      writer.uint32(8).int32(message.baseIntervalMs);
+    }
+    if (message.maxDelayMs !== 0) {
+      writer.uint32(16).int64(message.maxDelayMs);
+    }
+    if (message.maxAttempts !== 0) {
+      writer.uint32(24).int32(message.maxAttempts);
+    }
+    if (message.multiplier !== 0) {
+      writer.uint32(37).float(message.multiplier);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExponentialBackoffRetryPolicy {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExponentialBackoffRetryPolicy();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.baseIntervalMs = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxDelayMs = longToNumber(reader.int64() as Long);
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxAttempts = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 37) {
+            break;
+          }
+
+          message.multiplier = reader.float();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ExponentialBackoffRetryPolicy {
+    return {
+      baseIntervalMs: isSet(object.baseIntervalMs) ? globalThis.Number(object.baseIntervalMs) : 0,
+      maxDelayMs: isSet(object.maxDelayMs) ? globalThis.Number(object.maxDelayMs) : 0,
+      maxAttempts: isSet(object.maxAttempts) ? globalThis.Number(object.maxAttempts) : 0,
+      multiplier: isSet(object.multiplier) ? globalThis.Number(object.multiplier) : 0,
+    };
+  },
+
+  toJSON(message: ExponentialBackoffRetryPolicy): unknown {
+    const obj: any = {};
+    if (message.baseIntervalMs !== 0) {
+      obj.baseIntervalMs = Math.round(message.baseIntervalMs);
+    }
+    if (message.maxDelayMs !== 0) {
+      obj.maxDelayMs = Math.round(message.maxDelayMs);
+    }
+    if (message.maxAttempts !== 0) {
+      obj.maxAttempts = Math.round(message.maxAttempts);
+    }
+    if (message.multiplier !== 0) {
+      obj.multiplier = message.multiplier;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ExponentialBackoffRetryPolicy>, I>>(base?: I): ExponentialBackoffRetryPolicy {
+    return ExponentialBackoffRetryPolicy.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ExponentialBackoffRetryPolicy>, I>>(
+    object: I,
+  ): ExponentialBackoffRetryPolicy {
+    const message = createBaseExponentialBackoffRetryPolicy();
+    message.baseIntervalMs = object.baseIntervalMs ?? 0;
+    message.maxDelayMs = object.maxDelayMs ?? 0;
+    message.maxAttempts = object.maxAttempts ?? 0;
+    message.multiplier = object.multiplier ?? 0;
+    return message;
+  },
+};
+
 function createBaseTaskNode(): TaskNode {
-  return { taskDefId: undefined, timeoutSeconds: 0, retries: 0, variables: [] };
+  return {
+    taskDefId: undefined,
+    timeoutSeconds: 0,
+    simpleRetries: undefined,
+    exponentialBackoff: undefined,
+    variables: [],
+  };
 }
 
 export const TaskNode = {
@@ -1297,8 +1449,11 @@ export const TaskNode = {
     if (message.timeoutSeconds !== 0) {
       writer.uint32(16).int32(message.timeoutSeconds);
     }
-    if (message.retries !== 0) {
-      writer.uint32(24).int32(message.retries);
+    if (message.simpleRetries !== undefined) {
+      writer.uint32(24).int32(message.simpleRetries);
+    }
+    if (message.exponentialBackoff !== undefined) {
+      ExponentialBackoffRetryPolicy.encode(message.exponentialBackoff, writer.uint32(42).fork()).ldelim();
     }
     for (const v of message.variables) {
       VariableAssignment.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -1332,7 +1487,14 @@ export const TaskNode = {
             break;
           }
 
-          message.retries = reader.int32();
+          message.simpleRetries = reader.int32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.exponentialBackoff = ExponentialBackoffRetryPolicy.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
@@ -1354,7 +1516,10 @@ export const TaskNode = {
     return {
       taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
       timeoutSeconds: isSet(object.timeoutSeconds) ? globalThis.Number(object.timeoutSeconds) : 0,
-      retries: isSet(object.retries) ? globalThis.Number(object.retries) : 0,
+      simpleRetries: isSet(object.simpleRetries) ? globalThis.Number(object.simpleRetries) : undefined,
+      exponentialBackoff: isSet(object.exponentialBackoff)
+        ? ExponentialBackoffRetryPolicy.fromJSON(object.exponentialBackoff)
+        : undefined,
       variables: globalThis.Array.isArray(object?.variables)
         ? object.variables.map((e: any) => VariableAssignment.fromJSON(e))
         : [],
@@ -1369,8 +1534,11 @@ export const TaskNode = {
     if (message.timeoutSeconds !== 0) {
       obj.timeoutSeconds = Math.round(message.timeoutSeconds);
     }
-    if (message.retries !== 0) {
-      obj.retries = Math.round(message.retries);
+    if (message.simpleRetries !== undefined) {
+      obj.simpleRetries = Math.round(message.simpleRetries);
+    }
+    if (message.exponentialBackoff !== undefined) {
+      obj.exponentialBackoff = ExponentialBackoffRetryPolicy.toJSON(message.exponentialBackoff);
     }
     if (message.variables?.length) {
       obj.variables = message.variables.map((e) => VariableAssignment.toJSON(e));
@@ -1387,7 +1555,10 @@ export const TaskNode = {
       ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
-    message.retries = object.retries ?? 0;
+    message.simpleRetries = object.simpleRetries ?? undefined;
+    message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
+      ? ExponentialBackoffRetryPolicy.fromPartial(object.exponentialBackoff)
+      : undefined;
     message.variables = object.variables?.map((e) => VariableAssignment.fromPartial(e)) || [];
     return message;
   },
@@ -1404,6 +1575,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

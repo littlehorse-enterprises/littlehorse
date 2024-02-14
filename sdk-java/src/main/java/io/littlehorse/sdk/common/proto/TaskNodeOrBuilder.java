@@ -37,7 +37,8 @@ public interface TaskNodeOrBuilder extends
   /**
    * <pre>
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-   * the worker does not yet reply to the Server.
+   * the worker does not yet reply to the Server. This is determined on a per-Attempt
+   * basis.
    * </pre>
    *
    * <code>int32 timeout_seconds = 2;</code>
@@ -47,15 +48,51 @@ public interface TaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-   * Please note that this API may change before version 1.0.0, as we are going to
-   * add significant functionality including backoff policies.
+   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
+   * the configured number of retries.
    * </pre>
    *
-   * <code>int32 retries = 3;</code>
-   * @return The retries.
+   * <code>int32 simple_retries = 3;</code>
+   * @return Whether the simpleRetries field is set.
    */
-  int getRetries();
+  boolean hasSimpleRetries();
+  /**
+   * <pre>
+   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
+   * the configured number of retries.
+   * </pre>
+   *
+   * <code>int32 simple_retries = 3;</code>
+   * @return The simpleRetries.
+   */
+  int getSimpleRetries();
+
+  /**
+   * <pre>
+   * Retry with Exponential Backoff.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  boolean hasExponentialBackoff();
+  /**
+   * <pre>
+   * Retry with Exponential Backoff.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return The exponentialBackoff.
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff();
+  /**
+   * <pre>
+   * Retry with Exponential Backoff.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
 
   /**
    * <pre>
@@ -100,4 +137,6 @@ public interface TaskNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
       int index);
+
+  io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase getRetryPolicyCase();
 }
