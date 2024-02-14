@@ -336,7 +336,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return true;
         }
 
-        if (status == LHStatus.ERROR || status == LHStatus.HALTED || status == LHStatus.EXCEPTION) {
+        if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
             return failures.stream().allMatch(failure -> failure.isProperlyHandled());
         }
         return false;
