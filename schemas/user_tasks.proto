@@ -104,6 +104,7 @@ message UserTaskRun {
 
   // The NodeRun with which the UserTaskRun is associated.
   NodeRunId node_run_id = 11;
+  int64 epoch = 12;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.

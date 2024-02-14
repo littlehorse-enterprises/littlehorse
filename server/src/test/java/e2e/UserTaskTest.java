@@ -2,7 +2,10 @@ package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -35,6 +38,9 @@ public class UserTaskTest {
 
     @LHWorkflow("deadline-reassignment-workflow-user-without-group")
     private Workflow deadlineReassignmentUserWithoutGroupWorkflow;
+
+    @LHWorkflow("deadline-reassignment")
+    private Workflow deadlineReassignment;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -71,6 +77,20 @@ public class UserTaskTest {
         Assertions.assertThat(wfRunIdList.getResultsList()).isNotEmpty();
     }
 
+    @Test
+    void shouldTestDeadlineReassignment(){
+        SearchResultCaptor<UserTaskRunIdList> instanceCaptor = SearchResultCaptor.of(UserTaskRunIdList.class);
+        Function<TestExecutionContext, SearchUserTaskRunRequest> buildId = context -> SearchUserTaskRunRequest.newBuilder()
+                .build();
+        workflowVerifier.prepareRun(deadlineReassignment)
+                .waitForStatus(RUNNING)
+                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
+                .waitForNodeRunStatus(0, 2, COMPLETED)
+                .thenAssignUserTask(0, 1, true, "anakin", null)
+                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(4))
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
@@ -99,6 +119,15 @@ public class UserTaskTest {
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
+        });
+    }
+
+    @LHWorkflow("deadline-reassignment")
+    public Workflow buildDeadlineReassignment(){
+        return new WorkflowImpl("deadline-reassignment", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "yoda", "my-group");
+            entrypointThread.releaseToGroupOnDeadline(formOutput, 6);
+            entrypointThread.sleepSeconds(3);
         });
     }
 
