@@ -416,7 +416,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return;
         }
         if (!canBeInterrupted()) {
-            log.trace("NodeRun can't be interrupted now, not halting yet");
+            status = LHStatus.HALTING;
+            log.trace("NodeRun can't be interrupted now, moving to HALTING not HALTED");
             return;
         }
 

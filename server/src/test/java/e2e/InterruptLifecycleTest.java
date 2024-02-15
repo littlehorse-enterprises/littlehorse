@@ -1,10 +1,16 @@
 package e2e;
 
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.verify;
+
+import java.time.Duration;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -36,9 +42,27 @@ public class InterruptLifecycleTest {
     void shouldCompleteWithNoInterrupts() {
         verifier.prepareRun(interruptLifecycleTest)
             .thenSendExternalEventJsonContent(PARENT_EVENT, null)
-            .thenSendExternalEventJsonContent(PARENT_EVENT, null)
-            .waitForStatus(LHStatus.COMPLETED)
+            .thenSendExternalEventJsonContent(CHILD_EVENT, null)
+            .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
             .start();
+    }
+
+    @Test
+    void shouldCompleteAfterInterruptingTaskRun() {
+        verifier.prepareRun(interruptLifecycleTest)
+                .thenSendExternalEventJsonContent(PARENT_EVENT, null)
+                // Wait for sleep node to finish
+                .waitForNodeRunStatus(0, 2, LHStatus.COMPLETED, Duration.ofSeconds(2))
+                // Interrupt on taskNode
+                .thenSendExternalEventJsonContent(INTERRUPT_TRIGGER, null)
+                .thenVerifyTaskRun(0, 3, taskRun -> {
+                    Assertions.assertThat(taskRun.getStatus()).isIn(TaskStatus.TASK_SCHEDULED, TaskStatus.TASK_RUNNING, TaskStatus.TASK_SUCCESS);
+                })
+                .thenVerifyNodeRun(0, 3, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getStatus()).isIn(LHStatus.HALTED, LHStatus.HALTING);
+                })
+                .waitForNodeRunStatus(0, 3, LHStatus.HALTED)
+                .start();
     }
 
     @LHWorkflow("interrupt-lifecycle-test")
@@ -61,6 +85,10 @@ public class InterruptLifecycleTest {
 
     @LHTaskMethod("dummy-task")
     public String obiwan() {
+        try {
+            // Gives enough time to interrupt during taskRun.
+            Thread.sleep(50);
+        } catch(Exception ignored) {}
         return "hello there";
     }
 }
