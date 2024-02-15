@@ -416,7 +416,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return;
         }
         if (!canBeInterrupted()) {
-            log.error("This is a bug: called maybeHalt() while not interruptible");
+            log.trace("NodeRun can't be interrupted now, not halting yet");
+            return;
         }
 
         status = LHStatus.HALTED;
