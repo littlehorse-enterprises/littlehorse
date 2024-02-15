@@ -205,6 +205,7 @@ public class InterruptOnChildThreadTest {
                     ThreadRun childInterruptThread = wfRun.getThreadRuns(2);
                     Assertions.assertThat(childInterruptThread.getStatus()).isNotEqualTo(LHStatus.HALTED);
                 })
+                .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
 

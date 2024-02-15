@@ -91,9 +91,13 @@ public class WfRunVerifier extends AbstractVerifier {
     }
 
     public WfRunVerifier waitForStatus(LHStatus status) {
+        return this.waitForStatus(status, null);
+    }
+
+    public WfRunVerifier waitForStatus(LHStatus status, Duration timeout) {
         Function<TestExecutionContext, LHStatus> objectLHStatusFunction =
                 context -> lhClient.getWfRun(context.getWfRunId()).getStatus();
-        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, steps.size() + 1));
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, timeout, steps.size() + 1));
         return this;
     }
 
