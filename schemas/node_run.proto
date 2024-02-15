@@ -211,4 +211,7 @@ message Failure {
 
   // A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
   bool was_properly_handled = 4;
+
+  // If the threadRun
+  optional int32 failure_handler_threadrun_id = 5;
 }

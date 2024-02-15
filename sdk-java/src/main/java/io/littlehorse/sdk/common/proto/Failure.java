@@ -213,6 +213,33 @@ private static final long serialVersionUID = 0L;
     return wasProperlyHandled_;
   }
 
+  public static final int FAILURE_HANDLER_THREADRUN_ID_FIELD_NUMBER = 5;
+  private int failureHandlerThreadrunId_ = 0;
+  /**
+   * <pre>
+   * If the threadRun
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return Whether the failureHandlerThreadrunId field is set.
+   */
+  @java.lang.Override
+  public boolean hasFailureHandlerThreadrunId() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If the threadRun
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return The failureHandlerThreadrunId.
+   */
+  @java.lang.Override
+  public int getFailureHandlerThreadrunId() {
+    return failureHandlerThreadrunId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -239,6 +266,9 @@ private static final long serialVersionUID = 0L;
     if (wasProperlyHandled_ != false) {
       output.writeBool(4, wasProperlyHandled_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeInt32(5, failureHandlerThreadrunId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -261,6 +291,10 @@ private static final long serialVersionUID = 0L;
     if (wasProperlyHandled_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, wasProperlyHandled_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, failureHandlerThreadrunId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -288,6 +322,11 @@ private static final long serialVersionUID = 0L;
     }
     if (getWasProperlyHandled()
         != other.getWasProperlyHandled()) return false;
+    if (hasFailureHandlerThreadrunId() != other.hasFailureHandlerThreadrunId()) return false;
+    if (hasFailureHandlerThreadrunId()) {
+      if (getFailureHandlerThreadrunId()
+          != other.getFailureHandlerThreadrunId()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -310,6 +349,10 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + WAS_PROPERLY_HANDLED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getWasProperlyHandled());
+    if (hasFailureHandlerThreadrunId()) {
+      hash = (37 * hash) + FAILURE_HANDLER_THREADRUN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getFailureHandlerThreadrunId();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -460,6 +503,7 @@ private static final long serialVersionUID = 0L;
         contentBuilder_ = null;
       }
       wasProperlyHandled_ = false;
+      failureHandlerThreadrunId_ = 0;
       return this;
     }
 
@@ -508,6 +552,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.wasProperlyHandled_ = wasProperlyHandled_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.failureHandlerThreadrunId_ = failureHandlerThreadrunId_;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -572,6 +620,9 @@ private static final long serialVersionUID = 0L;
       if (other.getWasProperlyHandled() != false) {
         setWasProperlyHandled(other.getWasProperlyHandled());
       }
+      if (other.hasFailureHandlerThreadrunId()) {
+        setFailureHandlerThreadrunId(other.getFailureHandlerThreadrunId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -620,6 +671,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 40: {
+              failureHandlerThreadrunId_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1072,6 +1128,62 @@ private static final long serialVersionUID = 0L;
     public Builder clearWasProperlyHandled() {
       bitField0_ = (bitField0_ & ~0x00000008);
       wasProperlyHandled_ = false;
+      onChanged();
+      return this;
+    }
+
+    private int failureHandlerThreadrunId_ ;
+    /**
+     * <pre>
+     * If the threadRun
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+     * @return Whether the failureHandlerThreadrunId field is set.
+     */
+    @java.lang.Override
+    public boolean hasFailureHandlerThreadrunId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * If the threadRun
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+     * @return The failureHandlerThreadrunId.
+     */
+    @java.lang.Override
+    public int getFailureHandlerThreadrunId() {
+      return failureHandlerThreadrunId_;
+    }
+    /**
+     * <pre>
+     * If the threadRun
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+     * @param value The failureHandlerThreadrunId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFailureHandlerThreadrunId(int value) {
+
+      failureHandlerThreadrunId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If the threadRun
+     * </pre>
+     *
+     * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFailureHandlerThreadrunId() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      failureHandlerThreadrunId_ = 0;
       onChanged();
       return this;
     }

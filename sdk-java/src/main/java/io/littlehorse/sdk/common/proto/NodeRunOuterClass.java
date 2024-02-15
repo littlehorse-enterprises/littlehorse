@@ -138,12 +138,14 @@ public final class NodeRunOuterClass {
       ".ExternalEventIdH\001\210\001\001B\r\n\013_event_timeB\024\n\022" +
       "_external_event_id\"C\n\014SleepNodeRun\0223\n\017ma" +
       "turation_time\030\001 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\"\214\001\n\007Failure\022\024\n\014failure_name\030\001 \001(" +
+      "mestamp\"\330\001\n\007Failure\022\024\n\014failure_name\030\001 \001(" +
       "\t\022\017\n\007message\030\002 \001(\t\0220\n\007content\030\003 \001(\0132\032.li" +
       "ttlehorse.VariableValueH\000\210\001\001\022\034\n\024was_prop" +
-      "erly_handled\030\004 \001(\010B\n\n\010_contentBG\n\037io.lit" +
-      "tlehorse.sdk.common.protoP\001Z\007.;model\252\002\030L" +
-      "ittleHorse.Common.Protob\006proto3"
+      "erly_handled\030\004 \001(\010\022)\n\034failure_handler_th" +
+      "readrun_id\030\005 \001(\005H\001\210\001\001B\n\n\010_contentB\037\n\035_fa" +
+      "ilure_handler_threadrun_idBG\n\037io.littleh" +
+      "orse.sdk.common.protoP\001Z\007.;model\252\002\030Littl" +
+      "eHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -224,7 +226,7 @@ public final class NodeRunOuterClass {
     internal_static_littlehorse_Failure_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Failure_descriptor,
-        new java.lang.String[] { "FailureName", "Message", "Content", "WasProperlyHandled", "Content", });
+        new java.lang.String[] { "FailureName", "Message", "Content", "WasProperlyHandled", "FailureHandlerThreadrunId", "Content", "FailureHandlerThreadrunId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

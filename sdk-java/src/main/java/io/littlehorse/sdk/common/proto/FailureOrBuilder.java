@@ -103,4 +103,23 @@ public interface FailureOrBuilder extends
    * @return The wasProperlyHandled.
    */
   boolean getWasProperlyHandled();
+
+  /**
+   * <pre>
+   * If the threadRun
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return Whether the failureHandlerThreadrunId field is set.
+   */
+  boolean hasFailureHandlerThreadrunId();
+  /**
+   * <pre>
+   * If the threadRun
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return The failureHandlerThreadrunId.
+   */
+  int getFailureHandlerThreadrunId();
 }

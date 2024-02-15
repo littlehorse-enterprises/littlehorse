@@ -299,6 +299,8 @@ export interface Failure {
     | undefined;
   /** A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. */
   wasProperlyHandled: boolean;
+  /** If the threadRun */
+  failureHandlerThreadrunId?: number | undefined;
 }
 
 function createBaseNodeRun(): NodeRun {
@@ -1364,7 +1366,13 @@ export const SleepNodeRun = {
 };
 
 function createBaseFailure(): Failure {
-  return { failureName: "", message: "", content: undefined, wasProperlyHandled: false };
+  return {
+    failureName: "",
+    message: "",
+    content: undefined,
+    wasProperlyHandled: false,
+    failureHandlerThreadrunId: undefined,
+  };
 }
 
 export const Failure = {
@@ -1380,6 +1388,9 @@ export const Failure = {
     }
     if (message.wasProperlyHandled === true) {
       writer.uint32(32).bool(message.wasProperlyHandled);
+    }
+    if (message.failureHandlerThreadrunId !== undefined) {
+      writer.uint32(40).int32(message.failureHandlerThreadrunId);
     }
     return writer;
   },
@@ -1419,6 +1430,13 @@ export const Failure = {
 
           message.wasProperlyHandled = reader.bool();
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.failureHandlerThreadrunId = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1434,6 +1452,9 @@ export const Failure = {
       message: isSet(object.message) ? globalThis.String(object.message) : "",
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
       wasProperlyHandled: isSet(object.wasProperlyHandled) ? globalThis.Boolean(object.wasProperlyHandled) : false,
+      failureHandlerThreadrunId: isSet(object.failureHandlerThreadrunId)
+        ? globalThis.Number(object.failureHandlerThreadrunId)
+        : undefined,
     };
   },
 
@@ -1451,6 +1472,9 @@ export const Failure = {
     if (message.wasProperlyHandled === true) {
       obj.wasProperlyHandled = message.wasProperlyHandled;
     }
+    if (message.failureHandlerThreadrunId !== undefined) {
+      obj.failureHandlerThreadrunId = Math.round(message.failureHandlerThreadrunId);
+    }
     return obj;
   },
 
@@ -1465,6 +1489,7 @@ export const Failure = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.wasProperlyHandled = object.wasProperlyHandled ?? false;
+    message.failureHandlerThreadrunId = object.failureHandlerThreadrunId ?? undefined;
     return message;
   },
 };

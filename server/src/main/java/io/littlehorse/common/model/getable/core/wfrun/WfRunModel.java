@@ -368,6 +368,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
             fh.failureBeingHandled.setNodeRunPosition(failedThr.currentNodePosition);
             fh.failureBeingHandled.setThreadRunNumber(pfh.failedThreadRun);
 
+            failedThr.getCurrentNodeRun().getLatestFailure().setFailureHandlerThreadRunId(fh.getNumber());
+
             if (fh.status == LHStatus.ERROR) {
                 fh.fail(
                         new FailureModel(
