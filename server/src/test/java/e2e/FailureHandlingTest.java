@@ -77,7 +77,8 @@ public class FailureHandlingTest {
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
                     Failure failure = nodeRun.getFailures(0);
-                    Assertions.assertThat(failure.getFailureHandlerThreadrunId()).isEqualTo(1);
+                    Assertions.assertThat(failure.getFailureHandlerThreadrunId())
+                            .isEqualTo(1);
 
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.EXCEPTION);
                 })

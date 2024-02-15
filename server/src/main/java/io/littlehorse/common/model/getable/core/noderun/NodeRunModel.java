@@ -328,7 +328,18 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     public boolean isInProgress() {
-        return (status != LHStatus.COMPLETED && status != LHStatus.HALTED && status != LHStatus.ERROR);
+        switch (status) {
+            case STARTING:
+            case RUNNING:
+            case HALTING:
+                return true;
+            case HALTED:
+            case COMPLETED:
+            case EXCEPTION:
+            case ERROR:
+            case UNRECOGNIZED:
+        }
+        return false;
     }
 
     public boolean isCompletedOrRecoveredFromFailure() {
@@ -336,21 +347,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return true;
         }
 
-        if (status == LHStatus.ERROR || status == LHStatus.HALTED || status == LHStatus.EXCEPTION) {
-            if (failureHandlerIds.size() == failures.size()) {
-                if (failures.size() == 0) {
-                    log.warn("Somehow failed with no failures.");
-                    return false;
-                }
-                for (int handlerId : failureHandlerIds) {
-                    ThreadRunModel handler = getThreadRun().wfRun.getThreadRun(handlerId);
-                    if (handler.status != LHStatus.COMPLETED) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+        if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
+            return failures.stream().allMatch(failure -> failure.isProperlyHandled());
         }
+
         return false;
     }
 
@@ -406,9 +406,17 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         getThreadRun().failWithoutGrace(failure, time);
     }
 
-    public void halt() {
+    public void maybeUnHalt() {
+        setStatus(LHStatus.RUNNING);
+    }
+
+    public void maybeHalt() {
         if (!isInProgress()) {
+            log.trace("no need to halt; nodeRun not running");
             return;
+        }
+        if (!canBeInterrupted()) {
+            log.error("This is a bug: called maybeHalt() while not interruptible");
         }
 
         status = LHStatus.HALTED;

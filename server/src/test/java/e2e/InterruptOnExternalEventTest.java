@@ -1,13 +1,12 @@
 package e2e;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /*
  * Tests edge cases in the halting/unhalting logic of threadruns and noderuns.

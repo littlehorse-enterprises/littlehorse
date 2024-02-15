@@ -417,7 +417,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
 
-        getCurrentNodeRun().halt();
+        getCurrentNodeRun().maybeHalt();
     }
 
     /*
@@ -652,7 +652,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
             if (child.getCurrentNodeRun().isInProgress()) {
-                child.getCurrentNodeRun().halt();
+                child.getCurrentNodeRun().maybeHalt();
             }
         }
 
