@@ -847,7 +847,8 @@ type Failure struct {
 	Content *VariableValue `protobuf:"bytes,3,opt,name=content,proto3,oneof" json:"content,omitempty"`
 	// A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
 	WasProperlyHandled bool `protobuf:"varint,4,opt,name=was_properly_handled,json=wasProperlyHandled,proto3" json:"was_properly_handled,omitempty"`
-	// If the threadRun
+	// If there is a defined failure handler for the NodeRun, then this field is set to the
+	// id of the failure handler thread run.
 	FailureHandlerThreadrunId *int32 `protobuf:"varint,5,opt,name=failure_handler_threadrun_id,json=failureHandlerThreadrunId,proto3,oneof" json:"failure_handler_threadrun_id,omitempty"`
 }
 

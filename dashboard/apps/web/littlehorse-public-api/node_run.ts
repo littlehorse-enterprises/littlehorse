@@ -299,7 +299,10 @@ export interface Failure {
     | undefined;
   /** A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. */
   wasProperlyHandled: boolean;
-  /** If the threadRun */
+  /**
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
+   */
   failureHandlerThreadrunId?: number | undefined;
 }
 

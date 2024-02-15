@@ -217,7 +217,8 @@ private static final long serialVersionUID = 0L;
   private int failureHandlerThreadrunId_ = 0;
   /**
    * <pre>
-   * If the threadRun
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
    * </pre>
    *
    * <code>optional int32 failure_handler_threadrun_id = 5;</code>
@@ -229,7 +230,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * If the threadRun
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
    * </pre>
    *
    * <code>optional int32 failure_handler_threadrun_id = 5;</code>
@@ -1135,7 +1137,8 @@ private static final long serialVersionUID = 0L;
     private int failureHandlerThreadrunId_ ;
     /**
      * <pre>
-     * If the threadRun
+     * If there is a defined failure handler for the NodeRun, then this field is set to the
+     * id of the failure handler thread run.
      * </pre>
      *
      * <code>optional int32 failure_handler_threadrun_id = 5;</code>
@@ -1147,7 +1150,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If the threadRun
+     * If there is a defined failure handler for the NodeRun, then this field is set to the
+     * id of the failure handler thread run.
      * </pre>
      *
      * <code>optional int32 failure_handler_threadrun_id = 5;</code>
@@ -1159,7 +1163,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If the threadRun
+     * If there is a defined failure handler for the NodeRun, then this field is set to the
+     * id of the failure handler thread run.
      * </pre>
      *
      * <code>optional int32 failure_handler_threadrun_id = 5;</code>
@@ -1175,7 +1180,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If the threadRun
+     * If there is a defined failure handler for the NodeRun, then this field is set to the
+     * id of the failure handler thread run.
      * </pre>
      *
      * <code>optional int32 failure_handler_threadrun_id = 5;</code>
