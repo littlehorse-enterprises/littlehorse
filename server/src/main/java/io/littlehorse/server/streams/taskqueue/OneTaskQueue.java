@@ -1,8 +1,8 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.util.LHUtil;
 // import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import java.util.LinkedList;
@@ -92,7 +92,7 @@ public class OneTaskQueue {
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
                 hostName,
-                LHUtil.getWfRunId(scheduledTaskId.getSource()),
+                LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto()),
                 hungryClients.isEmpty());
 
         PollTaskRequestObserver luckyClient = null;
