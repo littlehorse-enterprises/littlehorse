@@ -84,6 +84,10 @@ public class ReadOnlyGetableManager {
         return store.range(start, end, cls);
     }
 
+    public <T extends Storeable<?>> LHKeyValueIterator<T> scanStoreables(String start, String end, Class<T> cls) {
+        return store.range(start, end, cls);
+    }
+
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
     protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
