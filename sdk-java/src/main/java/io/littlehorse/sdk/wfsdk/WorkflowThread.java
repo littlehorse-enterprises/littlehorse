@@ -145,6 +145,34 @@ public interface WorkflowThread {
     void scheduleReminderTask(UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
 
     /**
+     * Adds a task reminder once a user is assigned to UserTask.
+     *
+     * @param userTask is a reference to the UserTaskNode that we schedule the action after.
+     * @param delaySeconds is the delay time after which the Task should be executed.
+     * @param taskDefName The name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     */
+    void scheduleReminderTaskOnAssignment(
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
+
+    /**
+     * Adds a task reminder once a user is assigned to the UserTask.
+     *
+     * @param userTask is a reference to the UserTaskNode that we schedule the action after.
+     * @param delaySeconds is the delay time after which the Task should be executed.
+     * @param taskDefName The name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     */
+    void scheduleReminderTaskOnAssignment(
+            UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+
+    /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.
      *
      * @param condition is the WorkflowCondition to be satisfied.
