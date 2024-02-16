@@ -354,8 +354,8 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
 
   /**
-   * <code>int64 epoch = 12;</code>
+   * <code>int32 epoch = 12;</code>
    * @return The epoch.
    */
-  long getEpoch();
+  int getEpoch();
 }

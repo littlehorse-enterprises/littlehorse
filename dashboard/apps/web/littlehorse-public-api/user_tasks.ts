@@ -1,5 +1,4 @@
 /* eslint-disable */
-import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -612,7 +611,7 @@ export const UserTaskRun = {
       NodeRunId.encode(message.nodeRunId, writer.uint32(90).fork()).ldelim();
     }
     if (message.epoch !== 0) {
-      writer.uint32(96).int64(message.epoch);
+      writer.uint32(96).int32(message.epoch);
     }
     return writer;
   },
@@ -702,7 +701,7 @@ export const UserTaskRun = {
             break;
           }
 
-          message.epoch = longToNumber(reader.int64() as Long);
+          message.epoch = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1693,18 +1692,6 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
-}
-
-function longToNumber(long: Long): number {
-  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
-
-if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any;
-  _m0.configure();
 }
 
 function isObject(value: any): boolean {

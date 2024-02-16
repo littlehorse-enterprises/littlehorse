@@ -605,13 +605,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   }
 
   public static final int EPOCH_FIELD_NUMBER = 12;
-  private long epoch_ = 0L;
+  private int epoch_ = 0;
   /**
-   * <code>int64 epoch = 12;</code>
+   * <code>int32 epoch = 12;</code>
    * @return The epoch.
    */
   @java.lang.Override
-  public long getEpoch() {
+  public int getEpoch() {
     return epoch_;
   }
 
@@ -662,8 +662,8 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (nodeRunId_ != null) {
       output.writeMessage(11, getNodeRunId());
     }
-    if (epoch_ != 0L) {
-      output.writeInt64(12, epoch_);
+    if (epoch_ != 0) {
+      output.writeInt32(12, epoch_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -717,9 +717,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getNodeRunId());
     }
-    if (epoch_ != 0L) {
+    if (epoch_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(12, epoch_);
+        .computeInt32Size(12, epoch_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -828,8 +828,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       hash = (53 * hash) + getNodeRunId().hashCode();
     }
     hash = (37 * hash) + EPOCH_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getEpoch());
+    hash = (53 * hash) + getEpoch();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1020,7 +1019,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         nodeRunIdBuilder_.dispose();
         nodeRunIdBuilder_ = null;
       }
-      epoch_ = 0L;
+      epoch_ = 0;
       return this;
     }
 
@@ -1216,7 +1215,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (other.hasNodeRunId()) {
         mergeNodeRunId(other.getNodeRunId());
       }
-      if (other.getEpoch() != 0L) {
+      if (other.getEpoch() != 0) {
         setEpoch(other.getEpoch());
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -1316,7 +1315,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               break;
             } // case 90
             case 96: {
-              epoch_ = input.readInt64();
+              epoch_ = input.readInt32();
               bitField0_ |= 0x00000400;
               break;
             } // case 96
@@ -2868,21 +2867,21 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return nodeRunIdBuilder_;
     }
 
-    private long epoch_ ;
+    private int epoch_ ;
     /**
-     * <code>int64 epoch = 12;</code>
+     * <code>int32 epoch = 12;</code>
      * @return The epoch.
      */
     @java.lang.Override
-    public long getEpoch() {
+    public int getEpoch() {
       return epoch_;
     }
     /**
-     * <code>int64 epoch = 12;</code>
+     * <code>int32 epoch = 12;</code>
      * @param value The epoch to set.
      * @return This builder for chaining.
      */
-    public Builder setEpoch(long value) {
+    public Builder setEpoch(int value) {
 
       epoch_ = value;
       bitField0_ |= 0x00000400;
@@ -2890,12 +2889,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>int64 epoch = 12;</code>
+     * <code>int32 epoch = 12;</code>
      * @return This builder for chaining.
      */
     public Builder clearEpoch() {
       bitField0_ = (bitField0_ & ~0x00000400);
-      epoch_ = 0L;
+      epoch_ = 0;
       onChanged();
       return this;
     }
