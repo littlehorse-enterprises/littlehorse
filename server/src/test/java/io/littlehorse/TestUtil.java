@@ -223,8 +223,7 @@ public class TestUtil {
         return new ScheduledTaskModel(
                 taskDef("my-task").getObjectId(),
                 List.of(),
-                userTaskRun(UUID.randomUUID().toString(), Mockito.mock()),
-                wfRun(wfRunId).getId(),
+                userTaskRun(wfRunId, Mockito.mock()),
                 Mockito.mock(Answers.RETURNS_DEEP_STUBS));
     }
 
