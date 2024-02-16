@@ -241,7 +241,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public KafkaStreamsServerImpl(LHServerConfig config) {
         MetadataCache metadataCache = new MetadataCache();
         this.config = config;
-        this.taskQueueManager = new TaskQueueManager(this);
+        this.taskQueueManager = new TaskQueueManager(this, 20_000);
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
