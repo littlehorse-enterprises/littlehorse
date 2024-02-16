@@ -40,7 +40,7 @@ public abstract class MatchStep<V> extends AbstractStep {
     @Override
     protected void handleException(Throwable ex, WfRunId wfRunId) throws LHTestException {
         if (ex instanceof ConditionTimeoutException) {
-            throw new MismatchedConditionException(expectedValue, lastEvaluatedValue, id);
+            throw new MismatchedConditionException(expectedValue, lastEvaluatedValue, wfRunId, id);
         }
         super.handleException(ex, wfRunId);
     }

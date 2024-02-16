@@ -1,17 +1,11 @@
 package e2e;
 
-
-import java.util.Map;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.sdk.common.proto.Interrupted;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
+import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
-import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -19,16 +13,20 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /*
  * Verifies edge cases when interrupting parents and children at the same time.
  */
-@LHTest(externalEventNames = {
-    InterruptOnChildThreadTest.PARENT_INTERRUPT_TRIGGER,
-    InterruptOnChildThreadTest.COMPLETE_PARENT,
-    InterruptOnChildThreadTest.CHILD_INTERRUPT_TRIGGER,
-    InterruptOnChildThreadTest.COMPLETE_CHILD
-})
+@LHTest(
+        externalEventNames = {
+            InterruptOnChildThreadTest.PARENT_INTERRUPT_TRIGGER,
+            InterruptOnChildThreadTest.COMPLETE_PARENT,
+            InterruptOnChildThreadTest.CHILD_INTERRUPT_TRIGGER,
+            InterruptOnChildThreadTest.COMPLETE_CHILD
+        })
 public class InterruptOnChildThreadTest {
 
     public static final String PARENT_INTERRUPT_TRIGGER = "iact-parent-trigger";
@@ -50,7 +48,7 @@ public class InterruptOnChildThreadTest {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
                     Assertions.assertThat(child.getParentThreadId()).isEqualTo(0);
-                    
+
                     ThreadRun parent = wfRun.getThreadRuns(0);
                     Assertions.assertThat(parent.getCurrentNodePosition()).isEqualTo(3);
                 })
@@ -95,7 +93,7 @@ public class InterruptOnChildThreadTest {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
                     Assertions.assertThat(child.getParentThreadId()).isEqualTo(0);
-                    
+
                     ThreadRun parent = wfRun.getThreadRuns(0);
                     Assertions.assertThat(parent.getCurrentNodePosition()).isEqualTo(3);
                 })
@@ -149,7 +147,7 @@ public class InterruptOnChildThreadTest {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
                     Assertions.assertThat(child.getParentThreadId()).isEqualTo(0);
-                    
+
                     ThreadRun parent = wfRun.getThreadRuns(0);
                     Assertions.assertThat(parent.getCurrentNodePosition()).isEqualTo(3);
                 })
@@ -182,8 +180,10 @@ public class InterruptOnChildThreadTest {
 
                     // Child should have TWO halt reasons
                     Assertions.assertThat(child.getHaltReasonsCount()).isEqualTo(2);
-                    Assertions.assertThat(child.getHaltReasons(0).getReasonCase()).isEqualTo(ReasonCase.INTERRUPTED);
-                    Assertions.assertThat(child.getHaltReasons(1).getReasonCase()).isEqualTo(ReasonCase.PARENT_HALTED);
+                    Assertions.assertThat(child.getHaltReasons(0).getReasonCase())
+                            .isEqualTo(ReasonCase.INTERRUPTED);
+                    Assertions.assertThat(child.getHaltReasons(1).getReasonCase())
+                            .isEqualTo(ReasonCase.PARENT_HALTED);
 
                     // Verify proper parenthood of interrupt threads
                     Assertions.assertThat(childInterrupt.getParentThreadId()).isEqualTo(1);
@@ -192,7 +192,8 @@ public class InterruptOnChildThreadTest {
                     // Since the Parent Thread is halted, the child is halted, which means the child
                     // interrupt thread (which is a child of the child) should also be halted.
                     Assertions.assertThat(childInterrupt.getStatus()).isEqualTo(LHStatus.HALTED);
-                    Assertions.assertThat(childInterrupt.getHaltReasons(0).getReasonCase()).isEqualTo(ReasonCase.PARENT_HALTED);
+                    Assertions.assertThat(childInterrupt.getHaltReasons(0).getReasonCase())
+                            .isEqualTo(ReasonCase.PARENT_HALTED);
                 })
                 // Wait for the interrupt on the parent to complete.
                 .waitForThreadRunStatus(3, LHStatus.COMPLETED)
@@ -212,13 +213,16 @@ public class InterruptOnChildThreadTest {
     @LHWorkflow("interrupt-and-child-thread")
     public Workflow getInterruptAndChildThreadWf() {
         return Workflow.newWorkflow("interrupt-and-child-thread", parent -> {
-            SpawnedThread childHandle = parent.spawnThread(child -> {
-                child.waitForEvent(COMPLETE_CHILD);
+            SpawnedThread childHandle = parent.spawnThread(
+                    child -> {
+                        child.waitForEvent(COMPLETE_CHILD);
 
-                child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
-                    childInterrupt.execute("iact-dummy");
-                });
-            }, CHILD_INTERRUPT_TRIGGER, Map.of());
+                        child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
+                            childInterrupt.execute("iact-dummy");
+                        });
+                    },
+                    CHILD_INTERRUPT_TRIGGER,
+                    Map.of());
 
             parent.waitForThreads(SpawnedThreads.of(childHandle));
             parent.waitForEvent(COMPLETE_PARENT);

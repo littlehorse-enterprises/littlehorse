@@ -112,17 +112,18 @@ public class WfRunVerifier extends AbstractVerifier {
         return this.waitForUserTaskRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
-    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status, Duration timeout) {
+    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+        return this.waitForNodeRunStatus(threadRunNumber, nodeRunNumber, status, null);
+    }
+
+    public WfRunVerifier waitForNodeRunStatus(
+            int threadRunNumber, int nodeRunNumber, LHStatus status, Duration timeout) {
         Function<TestExecutionContext, LHStatus> objectLHStatusFunction = context -> {
             return lhClient.getNodeRun(nodeRunIdFrom(context.getWfRunId(), threadRunNumber, nodeRunNumber))
                     .getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, timeout, steps.size() + 1));
         return this;
-    }
-
-    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
-        return waitForNodeRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
     public WfRunVerifier waitForThreadRunStatus(int threadRunNumber, LHStatus threadRunStatus) {

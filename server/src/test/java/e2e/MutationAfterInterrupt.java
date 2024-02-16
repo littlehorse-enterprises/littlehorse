@@ -1,10 +1,5 @@
 package e2e;
 
-import java.util.Map;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -16,18 +11,22 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /*
  * Both of these test cases failed prior to this PR, and they demonstrate the concerns outlined
  * in GitHub Issue #656.
  */
-@LHTest(externalEventNames = {
-        MutationAfterInterrupt.INTERRUPT_TRIGGER,
-        MutationAfterInterrupt.COMPLETE_INTERRUPT_EVENT,
-        MutationAfterInterrupt.PARENT_EVENT,
-})
+@LHTest(
+        externalEventNames = {
+            MutationAfterInterrupt.INTERRUPT_TRIGGER,
+            MutationAfterInterrupt.COMPLETE_INTERRUPT_EVENT,
+            MutationAfterInterrupt.PARENT_EVENT,
+        })
 public class MutationAfterInterrupt {
-    
+
     public static final String INTERRUPT_TRIGGER = "mutation-after-interrupt-trigger";
     public static final String PARENT_EVENT = "mutation-after-interrupt-parent-event";
     public static final String COMPLETE_INTERRUPT_EVENT = "mutation-after-interrupt-child-event";
@@ -59,7 +58,7 @@ public class MutationAfterInterrupt {
 
     @Test
     void variableMutationsOnExternalEventNodeShouldWorkAfterInterrupt() {
-        verifier.prepareRun(mutationAfterInterruptOnTask)
+        verifier.prepareRun(mutationAfterInterruptOnExtEvt)
                 .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, Map.of())
                 .thenSendExternalEventWithContent(PARENT_EVENT, Map.of("foo", "bar"))
                 .thenSendExternalEventWithContent(COMPLETE_INTERRUPT_EVENT, Map.of())
