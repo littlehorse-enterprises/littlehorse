@@ -110,7 +110,7 @@ public final class UserTasks {
       "\n\005notes\030\t \001(\tH\002\210\001\001\0222\n\016scheduled_time\030\n \001" +
       "(\0132\032.google.protobuf.Timestamp\022+\n\013node_r" +
       "un_id\030\013 \001(\0132\026.littlehorse.NodeRunId\022\r\n\005e" +
-      "poch\030\014 \001(\003\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022" +
+      "poch\030\014 \001(\005\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022" +
       ")\n\005value\030\002 \001(\0132\032.littlehorse.VariableVal" +
       "ue:\0028\001B\r\n\013_user_groupB\n\n\010_user_idB\010\n\006_no" +
       "tes\"\262\001\n\030AssignUserTaskRunRequest\0224\n\020user" +

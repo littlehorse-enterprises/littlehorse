@@ -81,7 +81,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
-    private long epoch;
+    private int epoch;
 
     public UserTaskRunModel() {
         // Used by LHSerializable
@@ -100,7 +100,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
-        this.epoch = new Date().getTime();
+        this.epoch = 0;
         this.userTaskNode = userTaskNode;
         this.executionContext = processorContext;
         this.processorContext = processorContext;
@@ -187,7 +187,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         this.userId = newUserId;
         this.userGroup = newUserGroup;
-        this.epoch = new Date().getTime();
+        this.epoch += 1;
 
         // If the assignment changed, then we need to schedule any triggers.
         if (canScheduleActions && !Objects.equals(newUserId, oldUserId) && newUserId != null) {
