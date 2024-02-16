@@ -106,7 +106,11 @@ public class CommandProcessorTest {
                 TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);
         tenantProcessorContext.getableManager().put(nodeRun);
         final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
-                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, tenantProcessorContext);
+                TestUtil.taskDef("my-task").getObjectId(),
+                List.of(),
+                userTaskRunModel,
+                userTaskRunModel.getNodeRunId().getWfRunId(),
+                tenantProcessorContext);
         tenantProcessorContext.getTaskManager().scheduleTask(scheduledTask);
         defaultProcessorContext.getTaskManager().scheduleTask(scheduledTask);
         tenantProcessorContext.endExecution();

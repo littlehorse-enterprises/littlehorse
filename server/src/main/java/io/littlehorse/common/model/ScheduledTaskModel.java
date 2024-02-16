@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
@@ -45,6 +46,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
             TaskDefIdModel taskDefId,
             List<VarNameAndValModel> variables,
             UserTaskRunModel userTaskRun,
+            WfRunIdModel wfRunId,
             ProcessorExecutionContext processorContext) {
         this.variables = variables;
         this.createdAt = new Date();
@@ -54,14 +56,14 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         this.attemptNumber = 0;
 
         // This is just the wfRunId.
-        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getId().getWfRunId(), processorContext);
+        this.taskRunId = new TaskRunIdModel(wfRunId, processorContext);
     }
 
     @Override
     public String getStoreKey() {
         // Note: only one ScheduledTask can be active at once for a
         // TaskRun, so we don't need to worry about the attemptNumber.
-        return taskRunId.toString();
+        return LHUtil.getCompositeId(taskDefId.toString(), taskRunId.toString());
     }
 
     @Override

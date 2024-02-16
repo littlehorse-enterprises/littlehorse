@@ -2,13 +2,13 @@ package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
-import java.util.Collection;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +109,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                 return pendingTasks.offer(scheduledTaskId);
+                return pendingTasks.offer(scheduledTaskId);
             }
         } finally {
             lock.unlock();
@@ -131,6 +131,10 @@ public class OneTaskQueue {
      *                        client who made the PollTaskRequest.
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver) {
+        if (pendingTasks.isEmpty()) {
+            rehydrateFromStore(requestObserver.getRequestContext().getableManager());
+        }
+
         if (taskDefName == null) {
             taskDefName = requestObserver.getTaskDefId();
         }
@@ -168,6 +172,19 @@ public class OneTaskQueue {
 
         if (nextTask != null) {
             parent.itsAMatch(nextTask, requestObserver);
+        }
+    }
+
+    private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
+        String startKey = taskDefName + "/";
+        String endKey = startKey + "~";
+        try (LHKeyValueIterator<ScheduledTaskModel> result =
+                readOnlyGetableManager.scanStoreables(startKey, endKey, ScheduledTaskModel.class)) {
+            final AtomicBoolean queueOutOfCapacity = new AtomicBoolean(false);
+            while (result.hasNext() && !queueOutOfCapacity.get()) {
+                ScheduledTaskModel scheduledTask = result.next().getValue();
+                queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
+            }
         }
     }
 }

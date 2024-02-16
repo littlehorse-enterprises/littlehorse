@@ -272,41 +272,42 @@ public final class CommandOuterClass {
       "_scheduled\030\014 \001(\003\"4\n\021CreateRemoteTagPb\022\037\n" +
       "\003tag\030\001 \001(\0132\022.littlehorse.TagPb\"=\n\021Remove" +
       "RemoteTagPb\022\021\n\tstore_key\030\001 \001(\t\022\025\n\rpartit" +
-      "ion_key\030\002 \001(\t\"\273\001\n\020TaskClaimEventPb\022+\n\013ta" +
+      "ion_key\030\002 \001(\t\"\350\001\n\020TaskClaimEventPb\022+\n\013ta" +
       "sk_run_id\030\001 \001(\0132\026.littlehorse.TaskRunId\022" +
       "(\n\004time\030\002 \001(\0132\032.google.protobuf.Timestam" +
       "p\022\026\n\016task_worker_id\030\003 \001(\t\022 \n\023task_worker" +
-      "_version\030\004 \001(\tH\000\210\001\001B\026\n\024_task_worker_vers" +
-      "ion\"I\n\032ExternalEventNodeTimeoutPb\022+\n\013nod" +
-      "e_run_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"A" +
-      "\n\022SleepNodeMaturedPb\022+\n\013node_run_id\030\001 \001(" +
-      "\0132\026.littlehorse.NodeRunId\"m\n\022TriggeredTa" +
-      "skRunPb\022/\n\020task_to_schedule\030\001 \001(\0132\025.litt" +
-      "lehorse.TaskNode\022&\n\006source\030\002 \001(\0132\026.littl" +
-      "ehorse.NodeRunId\"\345\001\n\030DeadlineReassignUse" +
-      "rTask\0229\n\013new_user_id\030\001 \001(\0132\037.littlehorse" +
-      ".VariableAssignmentH\000\210\001\001\022<\n\016new_user_gro" +
-      "up\030\002 \001(\0132\037.littlehorse.VariableAssignmen" +
-      "tH\001\210\001\001\022-\n\tuser_task\030\004 \001(\0132\032.littlehorse." +
-      "UserTaskRunIdB\016\n\014_new_user_idB\021\n\017_new_us" +
-      "er_group\"\360\001\n\tLHTimerPb\0223\n\017maturation_tim" +
-      "e\030\001 \001(\0132\032.google.protobuf.Timestamp\022\013\n\003k" +
-      "ey\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014" +
-      "\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.Tenant" +
-      "IdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.littleho" +
-      "rse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_idB\017\n\r_p" +
-      "rincipal_id\"\212\001\n\022TaskWorkerMetadata\022\026\n\016ta" +
-      "sk_worker_id\030\001 \001(\t\0224\n\020latest_heartbeat\030\002" +
-      " \001(\0132\032.google.protobuf.Timestamp\022&\n\005host" +
-      "s\030\003 \003(\0132\027.littlehorse.LHHostInfo\"\207\002\n\017Tas" +
-      "kWorkerGroup\022*\n\002id\030\001 \001(\0132\036.littlehorse.T" +
-      "askWorkerGroupId\022.\n\ncreated_at\030\002 \001(\0132\032.g" +
-      "oogle.protobuf.Timestamp\022C\n\014task_workers" +
-      "\030\003 \003(\0132-.littlehorse.TaskWorkerGroup.Tas" +
-      "kWorkersEntry\032S\n\020TaskWorkersEntry\022\013\n\003key" +
-      "\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.littlehorse.Task" +
-      "WorkerMetadata:\0028\001B\037\n\033io.littlehorse.com" +
-      "mon.protoP\001b\006proto3"
+      "_version\030\004 \001(\tH\000\210\001\001\022+\n\013task_def_id\030\005 \001(\013" +
+      "2\026.littlehorse.TaskDefIdB\026\n\024_task_worker" +
+      "_version\"I\n\032ExternalEventNodeTimeoutPb\022+" +
+      "\n\013node_run_id\030\001 \001(\0132\026.littlehorse.NodeRu" +
+      "nId\"A\n\022SleepNodeMaturedPb\022+\n\013node_run_id" +
+      "\030\001 \001(\0132\026.littlehorse.NodeRunId\"m\n\022Trigge" +
+      "redTaskRunPb\022/\n\020task_to_schedule\030\001 \001(\0132\025" +
+      ".littlehorse.TaskNode\022&\n\006source\030\002 \001(\0132\026." +
+      "littlehorse.NodeRunId\"\345\001\n\030DeadlineReassi" +
+      "gnUserTask\0229\n\013new_user_id\030\001 \001(\0132\037.little" +
+      "horse.VariableAssignmentH\000\210\001\001\022<\n\016new_use" +
+      "r_group\030\002 \001(\0132\037.littlehorse.VariableAssi" +
+      "gnmentH\001\210\001\001\022-\n\tuser_task\030\004 \001(\0132\032.littleh" +
+      "orse.UserTaskRunIdB\016\n\014_new_user_idB\021\n\017_n" +
+      "ew_user_group\"\360\001\n\tLHTimerPb\0223\n\017maturatio" +
+      "n_time\030\001 \001(\0132\032.google.protobuf.Timestamp" +
+      "\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030" +
+      "\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.T" +
+      "enantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.lit" +
+      "tlehorse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_idB" +
+      "\017\n\r_principal_id\"\212\001\n\022TaskWorkerMetadata\022" +
+      "\026\n\016task_worker_id\030\001 \001(\t\0224\n\020latest_heartb" +
+      "eat\030\002 \001(\0132\032.google.protobuf.Timestamp\022&\n" +
+      "\005hosts\030\003 \003(\0132\027.littlehorse.LHHostInfo\"\207\002" +
+      "\n\017TaskWorkerGroup\022*\n\002id\030\001 \001(\0132\036.littleho" +
+      "rse.TaskWorkerGroupId\022.\n\ncreated_at\030\002 \001(" +
+      "\0132\032.google.protobuf.Timestamp\022C\n\014task_wo" +
+      "rkers\030\003 \003(\0132-.littlehorse.TaskWorkerGrou" +
+      "p.TaskWorkersEntry\032S\n\020TaskWorkersEntry\022\013" +
+      "\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.littlehorse" +
+      ".TaskWorkerMetadata:\0028\001B\037\n\033io.littlehors" +
+      "e.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -428,7 +429,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_TaskClaimEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskClaimEventPb_descriptor,
-        new java.lang.String[] { "TaskRunId", "Time", "TaskWorkerId", "TaskWorkerVersion", "TaskWorkerVersion", });
+        new java.lang.String[] { "TaskRunId", "Time", "TaskWorkerId", "TaskWorkerVersion", "TaskDefId", "TaskWorkerVersion", });
     internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor =
       getDescriptor().getMessageTypes().get(16);
     internal_static_littlehorse_ExternalEventNodeTimeoutPb_fieldAccessorTable = new
