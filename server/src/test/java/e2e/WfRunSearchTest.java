@@ -65,7 +65,7 @@ public class WfRunSearchTest {
                 .prepareRun(complexWorkflow)
                 .waitForStatus(RUNNING)
                 .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusRunning)
-                .thenSendExternalEventJsonContent("external-event", "{}")
+                .thenSendExternalEventWithContent("external-event", "{}")
                 .waitForStatus(COMPLETED)
                 .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusCompleted)
                 .start();

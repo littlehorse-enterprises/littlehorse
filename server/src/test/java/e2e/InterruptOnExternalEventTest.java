@@ -31,7 +31,7 @@ public class InterruptOnExternalEventTest {
     @Test
     void testHappyPath() {
         verifier.prepareRun(interruptOnExternalEvent)
-                .thenSendExternalEventJsonContent(PARENT_EVENT, null)
+                .thenSendExternalEventWithContent(PARENT_EVENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(1);
@@ -42,7 +42,7 @@ public class InterruptOnExternalEventTest {
     @Test
     void parentShouldHaltDuringInterrupt() {
         verifier.prepareRun(interruptOnExternalEvent)
-                .thenSendExternalEventJsonContent(INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
@@ -52,14 +52,14 @@ public class InterruptOnExternalEventTest {
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.HALTED);
                 })
-                .thenSendExternalEventJsonContent(CHILD_EVENT, null)
+                .thenSendExternalEventWithContent(CHILD_EVENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                 })
-                .thenSendExternalEventJsonContent(PARENT_EVENT, null)
+                .thenSendExternalEventWithContent(PARENT_EVENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
@@ -69,7 +69,7 @@ public class InterruptOnExternalEventTest {
     @Test
     void parentShouldContinueAfterInterruptFinishesWhenEventArrivesWhileHalted() {
         verifier.prepareRun(interruptOnExternalEvent)
-                .thenSendExternalEventJsonContent(INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
@@ -79,7 +79,7 @@ public class InterruptOnExternalEventTest {
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.HALTED);
                 })
-                .thenSendExternalEventJsonContent(PARENT_EVENT, null)
+                .thenSendExternalEventWithContent(PARENT_EVENT, null)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.HALTED);
                 })
@@ -87,7 +87,7 @@ public class InterruptOnExternalEventTest {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                     Assertions.assertThat(wfRun.getThreadRuns(0).getStatus()).isEqualTo(LHStatus.HALTED);
                 })
-                .thenSendExternalEventJsonContent(CHILD_EVENT, null)
+                .thenSendExternalEventWithContent(CHILD_EVENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })

@@ -41,8 +41,8 @@ public class InterruptLifecycleTest {
     @Test
     void shouldCompleteWithNoInterrupts() {
         verifier.prepareRun(interruptLifecycleTest)
-            .thenSendExternalEventJsonContent(PARENT_EVENT, null)
-            .thenSendExternalEventJsonContent(CHILD_EVENT, null)
+            .thenSendExternalEventWithContent(PARENT_EVENT, null)
+            .thenSendExternalEventWithContent(CHILD_EVENT, null)
             .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
             .start();
     }
@@ -50,11 +50,11 @@ public class InterruptLifecycleTest {
     @Test
     void shouldCompleteAfterInterruptingTaskRun() {
         verifier.prepareRun(interruptLifecycleTest)
-                .thenSendExternalEventJsonContent(PARENT_EVENT, null)
+                .thenSendExternalEventWithContent(PARENT_EVENT, null)
                 // Wait for sleep node to finish
                 .waitForNodeRunStatus(0, 2, LHStatus.COMPLETED, Duration.ofSeconds(2))
                 // Interrupt on taskNode
-                .thenSendExternalEventJsonContent(INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, null)
                 .thenVerifyTaskRun(0, 3, taskRun -> {
                     Assertions.assertThat(taskRun.getStatus()).isIn(TaskStatus.TASK_SCHEDULED, TaskStatus.TASK_RUNNING, TaskStatus.TASK_SUCCESS);
                 })

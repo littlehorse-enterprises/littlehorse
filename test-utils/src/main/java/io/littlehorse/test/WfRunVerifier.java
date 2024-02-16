@@ -1,6 +1,5 @@
 package io.littlehorse.test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -17,7 +16,6 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.AssignUserTask;
@@ -78,15 +76,9 @@ public class WfRunVerifier extends AbstractVerifier {
         return this;
     }
 
-    public WfRunVerifier thenSendExternalEventJsonContent(String externalEventName, Object content) {
-        try {
-            String json = LHLibUtil.serializeToJson(content);
-            VariableValue externalEventContent =
-                    VariableValue.newBuilder().setJsonObj(json).build();
-            steps.add(new SendExternalEventStep(externalEventName, externalEventContent, steps.size() + 1));
-        } catch (JsonProcessingException e) {
-            throw new LHTestInitializationException(e);
-        }
+    public WfRunVerifier thenSendExternalEventWithContent(String externalEventName, Object content) {
+        VariableValue externalEventContent = LHLibUtil.objToVarVal(content);
+        steps.add(new SendExternalEventStep(externalEventName, externalEventContent, steps.size() + 1));
         return this;
     }
 

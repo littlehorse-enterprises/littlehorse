@@ -96,11 +96,11 @@ public class RetentionTest {
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);
                 })
-                .thenSendExternalEventJsonContent(RETENTION_CHILD_EVENT, Map.of())
+                .thenSendExternalEventWithContent(RETENTION_CHILD_EVENT, Map.of())
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(1);
                 })
-                .thenSendExternalEventJsonContent(RETENTION_PARENT_EVENT, Map.of())
+                .thenSendExternalEventWithContent(RETENTION_PARENT_EVENT, Map.of())
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRuns(1).getNumber()).isEqualTo(2);
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(2);

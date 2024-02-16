@@ -45,7 +45,7 @@ public class InterruptOnChildThreadTest {
     void shouldCompleteWithNoInterrupts() {
         verifier.prepareRun(interruptAndChildThreadWf)
                 .waitForThreadRunStatus(1, LHStatus.RUNNING)
-                .thenSendExternalEventJsonContent(COMPLETE_CHILD, null)
+                .thenSendExternalEventWithContent(COMPLETE_CHILD, null)
                 .thenVerifyWfRun(wfRun -> {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
@@ -57,7 +57,7 @@ public class InterruptOnChildThreadTest {
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                 })
-                .thenSendExternalEventJsonContent(COMPLETE_PARENT, null)
+                .thenSendExternalEventWithContent(COMPLETE_PARENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
@@ -68,7 +68,7 @@ public class InterruptOnChildThreadTest {
     void shouldCompleteWhenChildInterrupted() {
         verifier.prepareRun(interruptAndChildThreadWf)
                 .waitForThreadRunStatus(1, LHStatus.RUNNING)
-                .thenSendExternalEventJsonContent(CHILD_INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(CHILD_INTERRUPT_TRIGGER, null)
                 .thenVerifyWfRun(wfRun -> {
                     // Ensure that the WfRun is properly interrupted
                     ThreadRun child = wfRun.getThreadRuns(1);
@@ -90,7 +90,7 @@ public class InterruptOnChildThreadTest {
                 })
                 // Wait for interrupt to complete
                 .waitForThreadRunStatus(2, LHStatus.COMPLETED)
-                .thenSendExternalEventJsonContent(COMPLETE_CHILD, null)
+                .thenSendExternalEventWithContent(COMPLETE_CHILD, null)
                 .thenVerifyWfRun(wfRun -> {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
@@ -102,7 +102,7 @@ public class InterruptOnChildThreadTest {
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                 })
-                .thenSendExternalEventJsonContent(COMPLETE_PARENT, null)
+                .thenSendExternalEventWithContent(COMPLETE_PARENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
@@ -113,7 +113,7 @@ public class InterruptOnChildThreadTest {
     void shouldCompleteWhenParentInterrupted() {
         verifier.prepareRun(interruptAndChildThreadWf)
                 .waitForThreadRunStatus(1, LHStatus.RUNNING)
-                .thenSendExternalEventJsonContent(PARENT_INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(PARENT_INTERRUPT_TRIGGER, null)
                 .thenVerifyWfRun(wfRun -> {
                     // Ensure that the WfRun is properly interrupted
                     ThreadRun parent = wfRun.getThreadRuns(0);
@@ -144,7 +144,7 @@ public class InterruptOnChildThreadTest {
                 })
                 // Wait for interrupt to complete
                 .waitForThreadRunStatus(2, LHStatus.COMPLETED)
-                .thenSendExternalEventJsonContent(COMPLETE_CHILD, null)
+                .thenSendExternalEventWithContent(COMPLETE_CHILD, null)
                 .thenVerifyWfRun(wfRun -> {
                     ThreadRun child = wfRun.getThreadRuns(1);
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.COMPLETED);
@@ -156,7 +156,7 @@ public class InterruptOnChildThreadTest {
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.RUNNING);
                 })
-                .thenSendExternalEventJsonContent(COMPLETE_PARENT, null)
+                .thenSendExternalEventWithContent(COMPLETE_PARENT, null)
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
@@ -168,8 +168,8 @@ public class InterruptOnChildThreadTest {
         verifier.prepareRun(interruptAndChildThreadWf)
                 .waitForThreadRunStatus(1, LHStatus.RUNNING)
                 // Interrupt both of them
-                .thenSendExternalEventJsonContent(CHILD_INTERRUPT_TRIGGER, null)
-                .thenSendExternalEventJsonContent(PARENT_INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(CHILD_INTERRUPT_TRIGGER, null)
+                .thenSendExternalEventWithContent(PARENT_INTERRUPT_TRIGGER, null)
                 .thenVerifyWfRun(wfRun -> {
                     // Ensure that the WfRun is properly interrupted
                     ThreadRun parent = wfRun.getThreadRuns(0);
