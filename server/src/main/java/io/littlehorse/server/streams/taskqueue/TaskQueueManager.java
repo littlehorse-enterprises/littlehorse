@@ -4,17 +4,22 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import lombok.Getter;
+
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskQueueManager {
 
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
-    public KafkaStreamsServerImpl backend;
+    @Getter
+    private KafkaStreamsServerImpl backend;
+    private final int individualQueueConfiguredCapacity;
 
-    public TaskQueueManager(KafkaStreamsServerImpl backend) {
+    public TaskQueueManager(KafkaStreamsServerImpl backend, int individualQueueConfiguredCapacity) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.backend = backend;
+        this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
     }
 
     public void onPollRequest(PollTaskRequestObserver listener, TenantIdModel tenantId) {
@@ -35,7 +40,7 @@ public class TaskQueueManager {
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
-                tenantTask, taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this));
+                tenantTask, taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity));
     }
 
     private record TenantTaskName(TenantIdModel tenantId, String taskDefName) {

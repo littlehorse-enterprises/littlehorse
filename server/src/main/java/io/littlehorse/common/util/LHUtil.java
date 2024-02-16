@@ -10,7 +10,10 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -21,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import io.littlehorse.sdk.common.proto.WfRunId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -184,6 +189,18 @@ public class LHUtil {
             throw new RuntimeException("Stupid programmer error.");
         }
         return str;
+    }
+
+    public static WfRunIdModel getWfRunId(TaskRunSourceModel taskRunSource) {
+        switch (taskRunSource.getType()) {
+            case TASK_NODE:
+                return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
+            case USER_TASK_TRIGGER:
+                return taskRunSource.getUserTaskTrigger().getNodeRunId().getWfRunId();
+            case TASKRUNSOURCE_NOT_SET:
+                // we end up returning null
+        }
+        return null;
     }
 
     public static boolean isPrimitive(VariableType variableType) {

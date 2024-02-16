@@ -1,10 +1,14 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
@@ -17,19 +21,19 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<ScheduledTaskModel> pendingTasks;
+    private LinkedBlockingQueue<ScheduledTaskModel> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
     private String hostName;
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent) {
+    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity) {
         this.taskDefName = taskDefName;
-        this.pendingTasks = new LinkedList<>();
+        this.pendingTasks = new LinkedBlockingQueue<>(capacity);
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
         this.parent = parent;
-        hostName = parent.backend.getInstanceId();
+        hostName = parent.getBackend().getInstanceId();
     }
 
     /**
@@ -49,7 +53,7 @@ public class OneTaskQueue {
             hungryClients.removeIf(thing -> {
                 log.debug(
                         "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
-                        parent.backend.getInstanceId(),
+                        parent.getBackend().getInstanceId(),
                         taskDefName,
                         disconnectedObserver.getClientId(),
                         disconnectedObserver);
@@ -79,17 +83,16 @@ public class OneTaskQueue {
      *                        that was just
      *                        scheduled.
      */
-    public void onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
+    public boolean onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
         // 2. There are no clients waiting for requests. In this case, we just
         // add the task id to the taskid list.
-
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
                 hostName,
-                LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto().build()),
+                LHUtil.getWfRunId(scheduledTaskId.getSource()),
                 hungryClients.isEmpty());
 
         PollTaskRequestObserver luckyClient = null;
@@ -106,7 +109,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                pendingTasks.add(scheduledTaskId);
+                 return pendingTasks.offer(scheduledTaskId);
             }
         } finally {
             lock.unlock();
@@ -115,7 +118,9 @@ public class OneTaskQueue {
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
             parent.itsAMatch(scheduledTaskId, luckyClient);
+            return true;
         }
+        return hungryClients.isEmpty();
     }
 
     /**
