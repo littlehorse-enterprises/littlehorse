@@ -132,11 +132,15 @@ public class TestUtil {
     }
 
     public static TaskRunModel taskRun() {
+        return taskRun(taskRunId(), new TaskDefIdModel("test-name"));
+    }
+
+    public static TaskRunModel taskRun(TaskRunIdModel taskRunId, TaskDefIdModel taskDefId) {
         TaskRunModel taskRun = new TaskRunModel();
-        taskRun.setId(taskRunId());
+        taskRun.setId(taskRunId);
         taskRun.setTaskRunSource(new TaskRunSourceModel(
                 new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
-        taskRun.setTaskDefId(new TaskDefIdModel("test-name"));
+        taskRun.setTaskDefId(taskDefId);
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);

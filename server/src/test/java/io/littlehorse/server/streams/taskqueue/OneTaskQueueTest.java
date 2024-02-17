@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.BulkUpdateJob;
@@ -80,8 +81,14 @@ public class OneTaskQueueTest {
         ScheduledTaskModel task2 = TestUtil.scheduledTaskModel("wf-2");
         ScheduledTaskModel task3 = TestUtil.scheduledTaskModel("wf-3");
         ScheduledTaskModel task4 = TestUtil.scheduledTaskModel("wf-4");
+
+        TaskRunModel taskRun3 = TestUtil.taskRun(task3.getTaskRunId(), task3.getTaskDefId());
+        TaskRunModel taskRun4 = TestUtil.taskRun(task4.getTaskRunId(), task4.getTaskDefId());
+        processorContext.getableManager().put(taskRun3);
+        processorContext.getableManager().put(taskRun4);
         processorContext.getCoreStore().put(task3);
         processorContext.getCoreStore().put(task4);
+        processorContext.endExecution();
         ArgumentCaptor<ScheduledTaskModel> captor = ArgumentCaptor.forClass(ScheduledTaskModel.class);
         OneTaskQueue boundedQueue = new OneTaskQueue(taskName, taskQueueManager, 2);
 

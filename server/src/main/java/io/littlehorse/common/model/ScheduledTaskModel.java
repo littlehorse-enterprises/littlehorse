@@ -61,7 +61,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     public String getStoreKey() {
         // Note: only one ScheduledTask can be active at once for a
         // TaskRun, so we don't need to worry about the attemptNumber.
-        return LHUtil.getCompositeId(taskDefId.toString(), taskRunId.toString());
+        return taskRunId.toString();
     }
 
     @Override

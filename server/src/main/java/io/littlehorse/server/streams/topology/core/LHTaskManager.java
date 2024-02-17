@@ -3,10 +3,8 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -67,9 +65,8 @@ public class LHTaskManager {
         timersToSchedule.add(timer);
     }
 
-    public ScheduledTaskModel markTaskAsScheduled(TaskDefIdModel taskDef, TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = this.coreStore.get(
-                LHUtil.getCompositeId(taskDef.toString(), taskRunId.toString()), ScheduledTaskModel.class);
+    public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
+        ScheduledTaskModel scheduledTask = this.coreStore.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
