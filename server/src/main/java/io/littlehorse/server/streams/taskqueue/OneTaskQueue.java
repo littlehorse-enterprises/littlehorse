@@ -2,10 +2,16 @@ package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
 // import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -176,13 +182,22 @@ public class OneTaskQueue {
     }
 
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
-        String startKey = taskDefName + "/";
+        String startKey = Tag.getAttributeString(
+                        GetableClassEnum.TASK_RUN,
+                        List.of(
+                                new Attribute("taskDefName", taskDefName),
+                                new Attribute("status", TaskStatus.TASK_SCHEDULED.name())))
+                + "/";
         String endKey = startKey + "~";
-        try (LHKeyValueIterator<ScheduledTaskModel> result =
-                readOnlyGetableManager.scanStoreables(startKey, endKey, ScheduledTaskModel.class)) {
+        try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.scanStoreables(startKey, endKey, Tag.class)) {
             final AtomicBoolean queueOutOfCapacity = new AtomicBoolean(false);
             while (result.hasNext() && !queueOutOfCapacity.get()) {
-                ScheduledTaskModel scheduledTask = result.next().getValue();
+                Tag tag = result.next().getValue();
+                String describedObjectId = tag.getDescribedObjectId();
+                TaskRunIdModel taskRunId =
+                        (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
+                ScheduledTaskModel scheduledTask =
+                        readOnlyGetableManager.get(taskRunId.toString(), ScheduledTaskModel.class);
                 queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
             }
         }

@@ -88,6 +88,10 @@ public class ReadOnlyGetableManager {
         return store.range(start, end, cls);
     }
 
+    public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
+        return store.get(storeKey, cls);
+    }
+
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
     protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
