@@ -21,17 +21,14 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedMod
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -194,7 +191,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private ThreadSpecModel threadSpecModel;
 
-    public ThreadSpecModel getThreadSpecModel() {
+    public ThreadSpecModel getThreadSpec() {
         if (threadSpecModel == null) {
             threadSpecModel = wfRun.getWfSpec().threadSpecs.get(threadSpecName);
         }
@@ -203,12 +200,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public NodeModel getCurrentNode() {
         NodeRunModel currRun = getCurrentNodeRun();
-        ThreadSpecModel t = getThreadSpecModel();
+
+        // TODO (#465): Determine which version of WfSpec we should get the ThreadSpec from.
+        ThreadSpecModel threadSpec = getThreadSpec();
         if (currRun == null) {
-            return t.nodes.get(t.entrypointNodeName);
+            return threadSpec.nodes.get(threadSpec.getEntrypointNodeName());
         }
 
-        return t.nodes.get(currRun.nodeName);
+        return threadSpec.nodes.get(currRun.getNodeName());
     }
 
     public NodeRunModel getCurrentNodeRun() {
@@ -222,7 +221,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         currentNodePosition = 0;
 
         Date now = new Date();
-        ThreadSpecModel threadSpec = getThreadSpecModel();
+        ThreadSpecModel threadSpec = getThreadSpec();
         setStatus(LHStatus.RUNNING);
         setStartTime(now);
 
@@ -292,7 +291,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void processExternalEvent(ExternalEventModel e) {
         ExternalEventDefIdModel extEvtId = e.getId().getExternalEventDefId();
-        InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtId.getName());
+        InterruptDefModel idef = getThreadSpec().getInterruptDefFor(extEvtId.getName());
         if (idef != null) {
             // trigger interrupt
             initializeInterrupt(e, idef);
@@ -458,7 +457,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 return false;
             }
         } else if (status == LHStatus.HALTING) {
-            if (getCurrentNodeRun().canBeHalted()) {
+            if (getCurrentNodeRun().maybeHalt()) {
                 setStatus(LHStatus.HALTED);
                 return true;
             } else {
@@ -477,7 +476,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
 
     public boolean canBeInterrupted() {
-        if (getCurrentNodeRun().canBeHalted()) return true;
+        if (getCurrentNodeRun().maybeHalt()) return true;
 
         for (int childId : childThreadIds) {
             if (wfRun.getThreadRun(childId).isRunning()) {
@@ -687,46 +686,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
-    // public void advanceFrom(NodeModel curNode) {
-    //     if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
-    //         return;
-    //     }
-    //     NodeModel nextNode = null;
-    //     for (EdgeModel e : curNode.outgoingEdges) {
-    //         try {
-    //             if (evaluateEdge(e)) {
-    //                 nextNode = e.getSinkNode();
-    //                 if (output != null) {
-    //                     mutateVariables(output, e.getVariableMutations());
-    //                 }
-    //                 break;
-    //             }
-    //         } catch (LHVarSubError exn) {
-    //             log.debug("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
-    //             getCurrentNodeRun()
-    //                     .fail(
-    //                             new FailureModel(
-    //                                     "Failed evaluating outgoing edge: " + exn.getMessage(),
-    //                                     LHConstants.VAR_MUTATION_ERROR),
-    //                             new Date());
-    //             return;
-    //         }
-    //     }
-    //     if (nextNode == null) {
-    //         // TODO: Later versions should validate wfSpec's so that this is not possible; however, it may
-    //         // always require some runtime checks.
-    //         getCurrentNodeRun()
-    //                 .fail(
-    //                         new FailureModel(
-    //                                 "WfSpec was invalid. There were no activated outgoing edges"
-    //                                         + " from a non-exit node.",
-    //                                 LHConstants.INTERNAL_ERROR),
-    //                         new Date());
-    //     } else {
-    //         activateNode(nextNode);
-    //     }
-    // }
-
     public void activateNode(NodeModel node) {
         Date arrivalTime = new Date();
 
@@ -748,38 +707,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         cnr.getSubNodeRun().arrive(arrivalTime);
         cnr.getSubNodeRun().advanceIfPossible(arrivalTime);
-    }
-
-    private boolean evaluateEdge(EdgeModel e) throws LHVarSubError {
-        if (e.condition == null) {
-            return true;
-        }
-
-        VariableValueModel lhs = assignVariable(e.condition.left);
-        VariableValueModel rhs = assignVariable(e.condition.right);
-
-        switch (e.condition.comparator) {
-            case LESS_THAN:
-                return Comparer.compare(lhs, rhs) < 0;
-            case LESS_THAN_EQ:
-                return Comparer.compare(lhs, rhs) <= 0;
-            case GREATER_THAN:
-                return Comparer.compare(lhs, rhs) > 0;
-            case GREATER_THAN_EQ:
-                return Comparer.compare(lhs, rhs) >= 0;
-            case EQUALS:
-                return lhs != null && Comparer.compare(lhs, rhs) == 0;
-            case NOT_EQUALS:
-                return lhs != null && Comparer.compare(lhs, rhs) != 0;
-            case IN:
-                return Comparer.contains(rhs, lhs);
-            case NOT_IN:
-                return !Comparer.contains(rhs, lhs);
-            case UNRECOGNIZED:
-        }
-
-        // TODO: Refactor this line
-        throw new RuntimeException("Unhandled comparison enum " + e.condition.comparator);
     }
 
     public ThreadRunModel getParent() {
@@ -815,32 +742,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             out.add(new VarNameAndValModel(varName, val));
         }
         return out;
-    }
-
-    private void mutateVariables(VariableValueModel nodeOutput, List<VariableMutationModel> variableMutations)
-            throws LHVarSubError {
-        // Need to do this atomically in a transaction, so that if one of the
-        // mutations fail then none of them occur.
-        // That's why we write to an in-memory Map. If all mutations succeed,
-        // then we flush the contents of the Map to the Variables.
-        Map<String, VariableValueModel> varCache = new HashMap<>();
-        for (VariableMutationModel mut : variableMutations) {
-            try {
-                mut.execute(this, varCache, nodeOutput);
-            } catch (LHVarSubError exn) {
-                exn.addPrefix("Mutating variable " + mut.lhsName + " with operation " + mut.operation);
-                throw exn;
-            }
-        }
-
-        // If we got this far without a LHVarSubError, then we can safely save all
-        // of the variables.
-        for (Map.Entry<String, VariableValueModel> entry : varCache.entrySet()) {
-            // this method saves the variable into the appropriate ThreadRun,
-            // respecting the fact that child ThreadRun's can access their
-            // parents' variables.
-            mutateVariable(entry.getKey(), entry.getValue());
-        }
     }
 
     public boolean isTerminated() {
@@ -935,7 +836,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      *                       definition or its parents definition
      */
     private void applyVarMutationOnAppropriateThread(String varName, VariableMutator function) throws LHVarSubError {
-        if (getThreadSpecModel().localGetVarDef(varName) != null) {
+        if (getThreadSpec().localGetVarDef(varName) != null) {
             function.apply(wfRun.getId(), this.number, wfRun);
         } else {
             if (getParent() != null) {
@@ -948,8 +849,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     /**
      * Mutates an existing variable on the current ThreadRun or any of its parents
-     * depending on who
-     * has the variable on its definition
+     * depending on who has the variable on its definition.
      *
      * @param varName name of the variable
      * @param var     value of the variable
@@ -1013,49 +913,5 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
          * @param wfRunModel      the wfRun of the ThreadRun that owns the variable
          */
         void apply(WfRunIdModel wfRunId, int threadRunNumber, WfRunModel wfRunModel);
-    }
-}
-
-// TODO: Shouldn't we to move this class to its own file?
-@Slf4j
-class Comparer {
-
-    @SuppressWarnings("all") // lol
-    public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
-        try {
-            if (left.getVal() == null && right.getVal() != null) return -1;
-            if (right.getVal() == null && left.getVal() != null) return 1;
-            if (right.getVal() == null && left.getVal() == null) return 0;
-
-            int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
-            return result;
-        } catch (Exception exn) {
-            log.error(exn.getMessage(), exn);
-            throw new LHVarSubError(exn, "Failed comparing the provided values.");
-        }
-    }
-
-    public static boolean contains(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
-        // Can only do for Str, Arr, and Obj
-
-        if (left.getType() == VariableType.STR) {
-            String rStr = right.asStr().getStrVal();
-
-            return left.asStr().getStrVal().contains(rStr);
-        } else if (left.getType() == VariableType.JSON_ARR) {
-            Object rObj = right.getVal();
-            List<Object> lhs = left.asArr().getJsonArrVal();
-
-            for (Object o : lhs) {
-                if (LHUtil.deepEquals(o, rObj)) {
-                    return true;
-                }
-            }
-            return false;
-        } else if (left.getType() == VariableType.JSON_OBJ) {
-            return left.asObj().getJsonObjVal().containsKey(right.asStr().getStrVal());
-        } else {
-            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getType());
-        }
     }
 }

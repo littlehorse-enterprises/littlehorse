@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -424,7 +423,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // Now we remove any old threadruns that we don't want anymore.
         for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
             ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
-            ThreadSpecModel spec = thread.getThreadSpecModel();
+            ThreadSpecModel spec = thread.getThreadSpec();
             if (spec.getRetentionPolicy() != null) {
                 if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
                     removeThreadRun(thread);

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.noderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -19,14 +20,15 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunMode
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -42,8 +44,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -271,7 +271,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     /**
      * Sets the SubNodeRun of this NodeRun. This will also set the type of the NodeRun.
-     * 
+     *
      * Called during initialization; eg. when the ThreadRunModel activates a new Node on the ThreadRun.
      * @param subNodeRun is the SubNodeRun to assign for this NodeRunModel.
      */
@@ -337,7 +337,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return id.getThreadRunNumber();
     }
 
-    /** 
+    /**
      * Called on initialization/building of a NodeRunModel.
      * @param threadRunModel is the ThreadRunModel.
      */
@@ -347,7 +347,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     /**
      * A NodeRun in LittleHorse can have zero or more Failures. For example, a NodeRun can
-     * have one Failure that is 
+     * have one Failure that is
      * @return
      */
     public FailureModel getLatestFailure() {
@@ -378,7 +378,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * Returns the Node from the ThreadSpec that this NodeRun is running.
      */
     public NodeModel getNode() {
-        return getThreadRun().getThreadSpecModel().nodes.get(nodeName);
+        return getThreadRun().getThreadSpec().nodes.get(nodeName);
     }
 
     /**
@@ -405,7 +405,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * In LittleHorse, a NodeRun may return an output. For example, a TASK NodeRun's output is the VariableValue
      * returned by the Task Method invoked during the TaskRun. An EXTERNAL_EVENT NodeRun's output is the content
      * of the ExternalEvent.
-     * 
+     *
      * Not all NodeRun types return an output though; for example, WAIT_FOR_THREADS *currently* does NOT return
      * an output.
      * @precondition the NodeRUnModel should already be completed or recovered from failure.
@@ -438,19 +438,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return false;
         }
     }
-
-    // /**
-    //  * Notes that the NodeRun is completed and at what time, and sets status appropriately.
-    //  * Called by the ThreadRunModel. Does not affect the processing 
-    //  */
-    // public void completeOrFail(Date time) {
-    //     this.endTime = time;
-    //     if (getLatestFailure() != null) {
-    //         this.status = getLatestFailure().getStatus();
-    //     } else {
-    //         this.status = LHStatus.COMPLETED;
-    //     }
-    // }
 
     /**
      * Returns the WfSpecModel for the WfSpec that this NodeRunModel's NodeRun belongs to. Note
@@ -485,7 +472,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * - Telling the ThreadRunModel to mutate the variables.
      *
      * If either of those things fail, then the resulting `Failure` is a property of the NodeRun itself.
-     * 
+     *
      * EXIT Node's do NOT have OutgoingEdges, so this method should not be called on the NodeRunModel for
      * an EXIT NodeRun.
      * @precondition the NodeRun succeeded OR its failures were all properly handled.
@@ -494,29 +481,45 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @throws NodeFailureException if evaluation of outgoing edges fails or if variable mutations fail.
      */
     public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables() throws NodeFailureException {
-        throw new NotImplementedException();
+        NodeModel currentNode = getNode();
+        ThreadRunModel thread = getThreadRun();
+
+        for (EdgeModel edge : currentNode.getOutgoingEdges()) {
+
+            // We can either fail when evaluating the outgoing edge or when mutating
+            // the variables. We want to know when the error happens so we can adjust the
+            // error message properly.
+            try {
+                if (edge.isConditionSatisfied(thread)) {
+                    // As per GH Issue #656, we do NOT mutate variables if there is a Failure, even
+                    // if the Failure is handled. If a user wants to mutate variables anyways, they
+                    // should do so in the Failure Handler.
+                    if (failures.isEmpty()) {
+                        edge.mutateVariables(thread, this.getOutput());
+                    }
+
+                    // If we get here, we have found an edge that was valid, and the variable
+                    // mutations returned successfully. We return to the ThreadRunModel the
+                    // WfSpec Node to which this Edge points.
+                    return edge.getSinkNode();
+                }
+            } catch (LHVarSubError exn) {
+                FailureModel failure = new FailureModel(
+                        "Failed evaluating edge with sink node %s: %s"
+                                .formatted(edge.getSinkNodeName(), exn.getMessage()),
+                        LHErrorType.VAR_SUB_ERROR.toString());
+                failures.add(failure);
+                throw new NodeFailureException(failure);
+            }
+        }
+
+        // If we get this far, it means that none of the Edges had a valid condition.
+        // This means that the WfSpec was invalid. This isn't possible if the user uses
+        // our SDK's.
+        FailureModel invalidWfSpecFailure = new FailureModel(
+                "Invalid WfSpec: No outgoing edges found on Node %s with all conditions satisfied".formatted(nodeName),
+                LHErrorType.VAR_SUB_ERROR.toString());
+        failures.add(invalidWfSpecFailure);
+        throw new NodeFailureException(invalidWfSpecFailure);
     }
-
-    // @Deprecated(forRemoval = true)
-    // public void fail(FailureModel failure, Date time) {
-    //     this.failures.add(failure);
-    //     endTime = time;
-    //     status = failure.getStatus();
-    //     errorMessage = failure.message;
-    //     getThreadRun().fail(failure, time);
-    // }
-
-    // @Deprecated(forRemoval = true)
-    // public void failWithoutGrace(FailureModel failure, Date time) {
-    //     this.failures.add(failure);
-    //     endTime = time;
-    //     status = failure.getStatus();
-    //     errorMessage = failure.message;
-    //     getThreadRun().failWithoutGrace(failure, time);
-    // }
-
-    // @Deprecated(forRemoval = true)
-    // public void maybeUnHalt() {
-    //     setStatus(LHStatus.RUNNING);
-    // }
 }

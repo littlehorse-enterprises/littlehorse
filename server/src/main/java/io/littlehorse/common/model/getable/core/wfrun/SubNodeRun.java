@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import java.util.Date;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +36,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * Checks if the processing of this SubNodeRun has been completed, and returns true. This method can
      * alter the state of the SubNodeRunModel and its dependents but should NOT alter the state of the
      * parent NodeRunModel.
-     * 
+     *
      * Requires the Command Processor execution context.
      * @return true if the processing for this SubNodeRun has been completed; false otherwise.
      * @throws NodeFailureException if the SubNodeRun throws a failure.
@@ -73,7 +72,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     /**
-     * Returns the WfSpec that this NodeRunModel's NodeRun belongs to. NOTE: during the case 
+     * Returns the WfSpec that this NodeRunModel's NodeRun belongs to. NOTE: during the case
      * of WfSpec Version Migration, we need to check the NodeRun's actual WfSpecId, rather than
      * blindly returning the WfRun's WfSpec, because different NodeRun's in a long-running WfRun
      * can belong to different WfSpec's after a migration has occurred.
