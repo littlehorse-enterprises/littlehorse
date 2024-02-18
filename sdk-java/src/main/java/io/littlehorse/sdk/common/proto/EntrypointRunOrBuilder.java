@@ -6,4 +6,38 @@ package io.littlehorse.sdk.common.proto;
 public interface EntrypointRunOrBuilder extends
     // @@protoc_insertion_point(interface_extends:littlehorse.EntrypointRun)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; input_variables = 1;</code>
+   */
+  int getInputVariablesCount();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; input_variables = 1;</code>
+   */
+  boolean containsInputVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getInputVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getInputVariables();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; input_variables = 1;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getInputVariablesMap();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; input_variables = 1;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue getInputVariablesOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; input_variables = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getInputVariablesOrThrow(
+      java.lang.String key);
 }

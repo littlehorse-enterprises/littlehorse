@@ -98,6 +98,7 @@ message UserTaskNodeRun {
 
 // The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
 message EntrypointRun {
+  map<string, VariableValue> input_variables = 1;
 }
 
 // The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info

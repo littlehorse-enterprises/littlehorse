@@ -111,6 +111,12 @@ export interface UserTaskNodeRun {
 
 /** The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty. */
 export interface EntrypointRun {
+  inputVariables: { [key: string]: VariableValue };
+}
+
+export interface EntrypointRun_InputVariablesEntry {
+  key: string;
+  value: VariableValue | undefined;
 }
 
 /**
@@ -808,11 +814,14 @@ export const UserTaskNodeRun = {
 };
 
 function createBaseEntrypointRun(): EntrypointRun {
-  return {};
+  return { inputVariables: {} };
 }
 
 export const EntrypointRun = {
-  encode(_: EntrypointRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: EntrypointRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    Object.entries(message.inputVariables).forEach(([key, value]) => {
+      EntrypointRun_InputVariablesEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
     return writer;
   },
 
@@ -823,6 +832,16 @@ export const EntrypointRun = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = EntrypointRun_InputVariablesEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.inputVariables[entry1.key] = entry1.value;
+          }
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -832,20 +851,125 @@ export const EntrypointRun = {
     return message;
   },
 
-  fromJSON(_: any): EntrypointRun {
-    return {};
+  fromJSON(object: any): EntrypointRun {
+    return {
+      inputVariables: isObject(object.inputVariables)
+        ? Object.entries(object.inputVariables).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
+          acc[key] = VariableValue.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
   },
 
-  toJSON(_: EntrypointRun): unknown {
+  toJSON(message: EntrypointRun): unknown {
     const obj: any = {};
+    if (message.inputVariables) {
+      const entries = Object.entries(message.inputVariables);
+      if (entries.length > 0) {
+        obj.inputVariables = {};
+        entries.forEach(([k, v]) => {
+          obj.inputVariables[k] = VariableValue.toJSON(v);
+        });
+      }
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<EntrypointRun>, I>>(base?: I): EntrypointRun {
     return EntrypointRun.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<EntrypointRun>, I>>(_: I): EntrypointRun {
+  fromPartial<I extends Exact<DeepPartial<EntrypointRun>, I>>(object: I): EntrypointRun {
     const message = createBaseEntrypointRun();
+    message.inputVariables = Object.entries(object.inputVariables ?? {}).reduce<{ [key: string]: VariableValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseEntrypointRun_InputVariablesEntry(): EntrypointRun_InputVariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const EntrypointRun_InputVariablesEntry = {
+  encode(message: EntrypointRun_InputVariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EntrypointRun_InputVariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEntrypointRun_InputVariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EntrypointRun_InputVariablesEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: EntrypointRun_InputVariablesEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EntrypointRun_InputVariablesEntry>, I>>(
+    base?: I,
+  ): EntrypointRun_InputVariablesEntry {
+    return EntrypointRun_InputVariablesEntry.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<EntrypointRun_InputVariablesEntry>, I>>(
+    object: I,
+  ): EntrypointRun_InputVariablesEntry {
+    const message = createBaseEntrypointRun_InputVariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
@@ -1520,6 +1644,10 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

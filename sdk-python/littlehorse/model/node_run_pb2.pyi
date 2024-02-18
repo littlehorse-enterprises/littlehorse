@@ -65,8 +65,17 @@ class UserTaskNodeRun(_message.Message):
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
 class EntrypointRun(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
+    __slots__ = ["input_variables"]
+    class InputVariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    INPUT_VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    input_variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    def __init__(self, input_variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
 
 class ExitRun(_message.Message):
     __slots__ = []
