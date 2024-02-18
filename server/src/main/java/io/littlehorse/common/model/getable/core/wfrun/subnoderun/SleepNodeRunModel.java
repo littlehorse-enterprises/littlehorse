@@ -89,7 +89,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean canBeInterrupted() {
+    public boolean canBeHalted() {
         return true;
     }
 }

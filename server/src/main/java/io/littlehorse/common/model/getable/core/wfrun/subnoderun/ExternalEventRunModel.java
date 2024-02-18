@@ -122,7 +122,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
      * happen.
      */
     @Override
-    public boolean canBeInterrupted() {
+    public boolean canBeHalted() {
         return true;
     }
 

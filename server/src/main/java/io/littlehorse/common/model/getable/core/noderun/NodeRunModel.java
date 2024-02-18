@@ -18,6 +18,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunM
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -25,6 +26,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -34,13 +36,14 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -51,31 +54,31 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private NodeRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private String threadSpecName;
+    private LHStatus status;
+    private Date arrivalTime;
+    private Date endTime;
+    private String nodeName;
+    private String errorMessage;
+    private List<FailureModel> failures = new ArrayList<>();
+    private List<Integer> failureHandlerIds = new ArrayList<>();
 
-    public LHStatus status;
-
-    public Date arrivalTime;
-    public Date endTime;
-
-    public String nodeName;
-
-    public String errorMessage;
-
-    public List<FailureModel> failures = new ArrayList<>();
-
-    public ExternalEventRunModel externalEventRun;
-    public TaskNodeRunModel taskRun;
-    public NodeTypeCase type;
-    public ExitRunModel exitRun;
-    public EntrypointRunModel entrypointRun;
-    public StartThreadRunModel startThreadRun;
+    private NodeTypeCase type;
+    private ExternalEventRunModel externalEventRun;
+    private TaskNodeRunModel taskRun;
+    private ExitRunModel exitRun;
+    private EntrypointRunModel entrypointRun;
+    private StartThreadRunModel startThreadRun;
     private StartMultipleThreadsRunModel startMultipleThreadsRun;
-    public WaitForThreadsRunModel waitThreadsRun;
-    public SleepNodeRunModel sleepNodeRun;
-    public UserTaskNodeRunModel userTaskRun;
+    private WaitForThreadsRunModel waitThreadsRun;
+    private SleepNodeRunModel sleepNodeRun;
+    private UserTaskNodeRunModel userTaskRun;
 
-    public List<Integer> failureHandlerIds = new ArrayList<>();
     private ExecutionContext executionContext;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    // Use `NodeRunModel#getThreadRun()`, as this field is lazy-loaded.
+    private ThreadRunModel threadRunDoNotUseMe;
 
     public NodeRunModel() {}
 
@@ -83,73 +86,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         this.executionContext = processorContext;
     }
 
-    public Object getEntrypointRunForJacksonOnly() {
-        if (entrypointRun != null) {
-            return new HashMap<>();
-        }
-        return null;
-    }
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private ThreadRunModel threadRunModelDoNotUseMe;
-
-    public ThreadRunModel getThreadRun() {
-        if (threadRunModelDoNotUseMe == null) {
-            ProcessorExecutionContext processorContext =
-                    executionContext.castOnSupport(ProcessorExecutionContext.class);
-            WfRunModel wfRunModel = processorContext.getableManager().get(id.getWfRunId());
-            threadRunModelDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
-        }
-        return threadRunModelDoNotUseMe;
-    }
-
-    public int getThreadRunNumber() {
-        return id.getThreadRunNumber();
-    }
-
-    public void setThreadRun(ThreadRunModel threadRunModel) {
-        threadRunModelDoNotUseMe = threadRunModel;
-    }
-
-    public FailureModel getLatestFailure() {
-        if (failures.size() == 0) return null;
-        return failures.get(failures.size() - 1);
-    }
-
-    public NodeRunIdModel getObjectId() {
-        return id;
-    }
-
+    @Override
     public Class<NodeRun> getProtoBaseClass() {
         return NodeRun.class;
-    }
-
-    public Date getCreatedAt() {
-        return arrivalTime;
-    }
-
-    @Override
-    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(new GetableIndex<NodeRunModel>(
-                List.of(
-                        Pair.of("status", GetableIndex.ValueType.SINGLE),
-                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)));
-    }
-
-    @Override
-    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        switch (key) {
-            case "status" -> {
-                return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
-            }
-            case "type" -> {
-                return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
-            }
-        }
-        log.warn("Tried to get value for unknown index field {}", key);
-        return List.of();
     }
 
     @Override
@@ -213,67 +152,35 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         getSubNodeRun().setNodeRun(this);
     }
 
-    public SubNodeRun<?> getSubNodeRun() {
-        switch (type) {
-            case TASK:
-                return taskRun;
-            case EXTERNAL_EVENT:
-                return externalEventRun;
-            case ENTRYPOINT:
-                return entrypointRun;
-            case EXIT:
-                return exitRun;
-            case WAIT_THREADS:
-                return waitThreadsRun;
-            case START_THREAD:
-                return startThreadRun;
-            case SLEEP:
-                return sleepNodeRun;
-            case USER_TASK:
-                return userTaskRun;
-            case START_MULTIPLE_THREADS:
-                return startMultipleThreadsRun;
-            case NODETYPE_NOT_SET:
-        }
-        throw new RuntimeException("Not possible");
+    @Override
+    public Date getCreatedAt() {
+        return arrivalTime;
     }
 
-    public void setSubNodeRun(SubNodeRun<?> snr) {
-        Class<?> cls = snr.getClass();
-        if (cls.equals(TaskNodeRunModel.class)) {
-            type = NodeTypeCase.TASK;
-            taskRun = (TaskNodeRunModel) snr;
-        } else if (cls.equals(EntrypointRunModel.class)) {
-            type = NodeTypeCase.ENTRYPOINT;
-            entrypointRun = (EntrypointRunModel) snr;
-        } else if (cls.equals(ExitRunModel.class)) {
-            type = NodeTypeCase.EXIT;
-            exitRun = (ExitRunModel) snr;
-        } else if (cls.equals(ExternalEventRunModel.class)) {
-            type = NodeTypeCase.EXTERNAL_EVENT;
-            externalEventRun = (ExternalEventRunModel) snr;
-        } else if (cls.equals(StartThreadRunModel.class)) {
-            type = NodeTypeCase.START_THREAD;
-            startThreadRun = (StartThreadRunModel) snr;
-        } else if (cls.equals(WaitForThreadsRunModel.class)) {
-            type = NodeTypeCase.WAIT_THREADS;
-            waitThreadsRun = (WaitForThreadsRunModel) snr;
-        } else if (cls.equals(SleepNodeRunModel.class)) {
-            type = NodeTypeCase.SLEEP;
-            sleepNodeRun = (SleepNodeRunModel) snr;
-        } else if (cls.equals(UserTaskNodeRunModel.class)) {
-            type = NodeTypeCase.USER_TASK;
-            userTaskRun = (UserTaskNodeRunModel) snr;
-        } else if (cls.equals(StartMultipleThreadsRunModel.class)) {
-            type = NodeTypeCase.START_MULTIPLE_THREADS;
-            startMultipleThreadsRun = (StartMultipleThreadsRunModel) snr;
-        } else {
-            throw new RuntimeException("Didn't recognize " + snr.getClass());
-        }
-
-        snr.nodeRun = this;
+    @Override
+    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        return List.of(new GetableIndex<NodeRunModel>(
+                List.of(
+                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.LOCAL)));
     }
 
+    @Override
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
+        switch (key) {
+            case "status" -> {
+                return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
+            }
+            case "type" -> {
+                return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
+            }
+        }
+        log.warn("Tried to get value for unknown index field {}", key);
+        return List.of();
+    }
+
+    @Override
     public NodeRun.Builder toProto() {
         NodeRun.Builder out = NodeRun.newBuilder()
                 .setId(id.toProto())
@@ -327,6 +234,131 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return out;
     }
 
+    @Override
+    public NodeRunIdModel getObjectId() {
+        return id;
+    }
+
+    /**
+     * A SubNodeRun is the sub-field of a NodeRun. This method returns the appropriate one
+     * from this NodeRun.
+     * @return the SubNodeRun for this NodeRun.
+     */
+    public SubNodeRun<?> getSubNodeRun() {
+        switch (type) {
+            case TASK:
+                return taskRun;
+            case EXTERNAL_EVENT:
+                return externalEventRun;
+            case ENTRYPOINT:
+                return entrypointRun;
+            case EXIT:
+                return exitRun;
+            case WAIT_THREADS:
+                return waitThreadsRun;
+            case START_THREAD:
+                return startThreadRun;
+            case SLEEP:
+                return sleepNodeRun;
+            case USER_TASK:
+                return userTaskRun;
+            case START_MULTIPLE_THREADS:
+                return startMultipleThreadsRun;
+            case NODETYPE_NOT_SET:
+        }
+        throw new RuntimeException("Not possible");
+    }
+
+    /**
+     * Sets the SubNodeRun of this NodeRun. This will also set the type of the NodeRun.
+     * 
+     * Called during initialization; eg. when the ThreadRunModel activates a new Node on the ThreadRun.
+     * @param subNodeRun is the SubNodeRun to assign for this NodeRunModel.
+     */
+    public void setSubNodeRun(SubNodeRun<?> subNodeRun) {
+        Class<?> cls = subNodeRun.getClass();
+        if (cls.equals(TaskNodeRunModel.class)) {
+            type = NodeTypeCase.TASK;
+            taskRun = (TaskNodeRunModel) subNodeRun;
+        } else if (cls.equals(EntrypointRunModel.class)) {
+            type = NodeTypeCase.ENTRYPOINT;
+            entrypointRun = (EntrypointRunModel) subNodeRun;
+        } else if (cls.equals(ExitRunModel.class)) {
+            type = NodeTypeCase.EXIT;
+            exitRun = (ExitRunModel) subNodeRun;
+        } else if (cls.equals(ExternalEventRunModel.class)) {
+            type = NodeTypeCase.EXTERNAL_EVENT;
+            externalEventRun = (ExternalEventRunModel) subNodeRun;
+        } else if (cls.equals(StartThreadRunModel.class)) {
+            type = NodeTypeCase.START_THREAD;
+            startThreadRun = (StartThreadRunModel) subNodeRun;
+        } else if (cls.equals(WaitForThreadsRunModel.class)) {
+            type = NodeTypeCase.WAIT_THREADS;
+            waitThreadsRun = (WaitForThreadsRunModel) subNodeRun;
+        } else if (cls.equals(SleepNodeRunModel.class)) {
+            type = NodeTypeCase.SLEEP;
+            sleepNodeRun = (SleepNodeRunModel) subNodeRun;
+        } else if (cls.equals(UserTaskNodeRunModel.class)) {
+            type = NodeTypeCase.USER_TASK;
+            userTaskRun = (UserTaskNodeRunModel) subNodeRun;
+        } else if (cls.equals(StartMultipleThreadsRunModel.class)) {
+            type = NodeTypeCase.START_MULTIPLE_THREADS;
+            startMultipleThreadsRun = (StartMultipleThreadsRunModel) subNodeRun;
+        } else {
+            throw new RuntimeException("Didn't recognize " + subNodeRun.getClass());
+        }
+
+        subNodeRun.nodeRun = this;
+    }
+
+    /**
+     * Returns the ThreadRunModel representing the ThreadRun that the NodeRun for this NodeRunModel
+     * is a part of.
+     *
+     * Requires a ProcessorExecutionContext; meaning that this should only be called from within the
+     * CommandProcessor execution context.
+     * @return the ThreadRunModel for the ThreadRun that this NodeRunModel's NodeRun belongs to.
+     */
+    public ThreadRunModel getThreadRun() {
+        if (threadRunDoNotUseMe == null) {
+            ProcessorExecutionContext processorContext =
+                    executionContext.castOnSupport(ProcessorExecutionContext.class);
+            WfRunModel wfRunModel = processorContext.getableManager().get(id.getWfRunId());
+            threadRunDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
+        }
+        return threadRunDoNotUseMe;
+    }
+
+    /**
+     * Returns the Id of the ThreadRun that this NodeRunModel's NodeRun belongs to.
+     * @return the ID of the ThreadRun that this NodeRunModel's NodeRun belongs to.
+     */
+    public int getThreadRunNumber() {
+        return id.getThreadRunNumber();
+    }
+
+    /** 
+     * Called on initialization/building of a NodeRunModel.
+     * @param threadRunModel is the ThreadRunModel.
+     */
+    public void setThreadRun(ThreadRunModel threadRunModel) {
+        threadRunDoNotUseMe = threadRunModel;
+    }
+
+    /**
+     * A NodeRun in LittleHorse can have zero or more Failures. For example, a NodeRun can
+     * have one Failure that is 
+     * @return
+     */
+    public FailureModel getLatestFailure() {
+        if (failures.size() == 0) return null;
+        return failures.get(failures.size() - 1);
+    }
+
+    /**
+     * Returns whether the NodeRun is making progress; i.e. it's starting/running/halting.
+     * @return if the NodeRun is in progress.
+     */
     public boolean isInProgress() {
         switch (status) {
             case STARTING:
@@ -342,86 +374,149 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return false;
     }
 
-    public boolean isCompletedOrRecoveredFromFailure() {
-        if (status == LHStatus.COMPLETED) {
-            return true;
-        }
-
-        if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
-            return failures.stream().allMatch(failure -> failure.isProperlyHandled());
-        }
-
-        return false;
-    }
-
+    /*
+     * Returns the Node from the ThreadSpec that this NodeRun is running.
+     */
     public NodeModel getNode() {
         return getThreadRun().getThreadSpecModel().nodes.get(nodeName);
     }
 
+    /**
+     * Returns the type of the Node.
+     * @return the type of the Node.
+     */
     public NodeCase getNodeType() {
         return getNode().type;
     }
 
-    /*
-     * Returns whether it's currently safe to start an interrupt thread on this
-     * NodeRun. The default answer is, "Is the node currently Running? If so, then
-     * nope, else yes". However,
+    /**
+     * Checks if the processing performed by this NodeRunModel is completed. If so, then the ThreadRunModel
+     * has permission to advance the ThreadRun past this NodeRunModel's NodeRun. Otherwise, the ThreadRunModel
+     * must continue waiting at this NodeRunModel.
+     *
+     * This method may mutate the state of the NodeRun.
+     * @return
      */
-    public boolean canBeInterrupted() {
-        return getSubNodeRun().canBeInterrupted();
+    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+        return getSubNodeRun().checkIfProcessingCompleted();
     }
 
     /**
-     * Tries to advance the NodeRun, and returns true if the status of something
-     * changes.
+     * In LittleHorse, a NodeRun may return an output. For example, a TASK NodeRun's output is the VariableValue
+     * returned by the Task Method invoked during the TaskRun. An EXTERNAL_EVENT NodeRun's output is the content
+     * of the ExternalEvent.
+     * 
+     * Not all NodeRun types return an output though; for example, WAIT_FOR_THREADS *currently* does NOT return
+     * an output.
+     * @precondition the NodeRUnModel should already be completed or recovered from failure.
+     * @return the output from this NodeRunModel's NodeRun, if such output exists.
      */
-    public boolean advanceIfPossible(Date time) {
-        if (isCompletedOrRecoveredFromFailure()) {
-            getThreadRun().advanceFrom(getNode());
+    public Optional<VariableValueModel> getOutput() {
+        if (status != LHStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot get output from a non-completed NodeRun");
+        }
+
+        return getSubNodeRun().getOutput();
+    }
+
+    /**
+     * Halts this NodeRun if possible; otherwise starts the halting process and sets the status
+     * to HALTING. Returns true if the NodeRun is successfully HALTED.
+     * @return true if the NodeRun is successfully HALTED; else false.
+     */
+    public boolean maybeHalt() {
+        if (!isInProgress()) {
+            // If the NodeRun is already completed, failed, or halted, then we're done (:
+            return true;
+        }
+
+        if (getSubNodeRun().maybeHalt()) {
+            status = LHStatus.HALTED;
             return true;
         } else {
-            return getSubNodeRun().advanceIfPossible(time);
-        }
-    }
-
-    public void complete(VariableValueModel output, Date time) {
-        endTime = time;
-        status = LHStatus.COMPLETED;
-        getThreadRun().completeCurrentNode(output, time);
-    }
-
-    public void fail(FailureModel failure, Date time) {
-        this.failures.add(failure);
-        endTime = time;
-        status = failure.getStatus();
-        errorMessage = failure.message;
-        getThreadRun().fail(failure, time);
-    }
-
-    public void failWithoutGrace(FailureModel failure, Date time) {
-        this.failures.add(failure);
-        endTime = time;
-        status = failure.getStatus();
-        errorMessage = failure.message;
-        getThreadRun().failWithoutGrace(failure, time);
-    }
-
-    public void maybeUnHalt() {
-        setStatus(LHStatus.RUNNING);
-    }
-
-    public void maybeHalt() {
-        if (!isInProgress()) {
-            log.trace("no need to halt; nodeRun not running");
-            return;
-        }
-        if (!canBeInterrupted()) {
             status = LHStatus.HALTING;
-            log.trace("NodeRun can't be interrupted now, moving to HALTING not HALTED");
-            return;
+            return false;
         }
-
-        status = LHStatus.HALTED;
-        getSubNodeRun().halt();
     }
+
+    // /**
+    //  * Notes that the NodeRun is completed and at what time, and sets status appropriately.
+    //  * Called by the ThreadRunModel. Does not affect the processing 
+    //  */
+    // public void completeOrFail(Date time) {
+    //     this.endTime = time;
+    //     if (getLatestFailure() != null) {
+    //         this.status = getLatestFailure().getStatus();
+    //     } else {
+    //         this.status = LHStatus.COMPLETED;
+    //     }
+    // }
+
+    /**
+     * Returns the WfSpecModel for the WfSpec that this NodeRunModel's NodeRun belongs to. Note
+     * that in the case of a WfSpec Version Migration, this might be different than the return
+     * value of getWfRun().getWfSpec(). For example, if we call nodeRun.getWfSpec() on an old
+     * NodeRun after a WfSpec Version Migration has already occurred, the version of the WfSpec
+     * returned could be older than the version of the WfSpec returned by wfRun.getWfSpec().
+     *
+     * Can only be called in the CommandProcessor execution context.
+     * @return the WfSpecModel for the WfSpec of this NodeRunModel's NodeRun
+     */
+    public WfSpecModel getWfSpec() {
+        ProcessorExecutionContext ctx = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        return ctx.service().getWfSpec(wfSpecId);
+    }
+
+    /**
+     * Evaluates the outgoing edge, maybe mutates variables, and returns the next Node that the ThreadRun
+     * should go to.
+     *
+     * If the NodeRun had a failure, then VariableMutations do NOT happen (this is part of our public API
+     * behavior. See comments in issue #656 on GitHub.).
+     *
+     * If the evaluation of outgoing edges fails, or the variable mutations fail, then this method adds a
+     * Failure to the NodeRun (responsibility of the NodeRunModel) and also throws a NodeFailureException (so
+     * that the ThreadRunModel can react appropriately).
+     *
+     * For several good reasons, Outgoing Edges are a property of the Node proto, not the ThreadSpec proto.
+     * Furthermore, Variable Mutations are a property of the Outgoing Edges (and by extension, also the Node).
+     * This means that the following are all responsibilities of the NodeRun:
+     * - Choosing the next Node to go to (evaluating outgoing edges)
+     * - Telling the ThreadRunModel to mutate the variables.
+     *
+     * If either of those things fail, then the resulting `Failure` is a property of the NodeRun itself.
+     * 
+     * EXIT Node's do NOT have OutgoingEdges, so this method should not be called on the NodeRunModel for
+     * an EXIT NodeRun.
+     * @precondition the NodeRun succeeded OR its failures were all properly handled.
+     * @postcondition if the NodeRun was successful, variable mutations on the activated edge are executed.
+     * @return the Node that the ThreadSpecModel should advance to next.
+     * @throws NodeFailureException if evaluation of outgoing edges fails or if variable mutations fail.
+     */
+    public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables() throws NodeFailureException {
+        throw new NotImplementedException();
+    }
+
+    // @Deprecated(forRemoval = true)
+    // public void fail(FailureModel failure, Date time) {
+    //     this.failures.add(failure);
+    //     endTime = time;
+    //     status = failure.getStatus();
+    //     errorMessage = failure.message;
+    //     getThreadRun().fail(failure, time);
+    // }
+
+    // @Deprecated(forRemoval = true)
+    // public void failWithoutGrace(FailureModel failure, Date time) {
+    //     this.failures.add(failure);
+    //     endTime = time;
+    //     status = failure.getStatus();
+    //     errorMessage = failure.message;
+    //     getThreadRun().failWithoutGrace(failure, time);
+    // }
+
+    // @Deprecated(forRemoval = true)
+    // public void maybeUnHalt() {
+    //     setStatus(LHStatus.RUNNING);
+    // }
 }

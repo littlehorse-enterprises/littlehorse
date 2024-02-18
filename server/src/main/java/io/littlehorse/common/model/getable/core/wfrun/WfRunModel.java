@@ -50,6 +50,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +71,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public Date startTime;
     public Date endTime;
-    private List<ThreadRunModel> threadRuns = new ArrayList<>();
+
+    // Using this directly is dangerous; better to use `WfRunModel#getThreadRun()`.
+    @Getter(AccessLevel.NONE)
+    private List<ThreadRunModel> threadRunsDoNotUseMe = new ArrayList<>();
+
     public List<PendingInterruptModel> pendingInterrupts = new ArrayList<>();
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ExecutionContext executionContext;
@@ -145,7 +151,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public ThreadRunModel getThreadRun(int threadRunNumber) {
-        return threadRuns.stream()
+        return threadRunsDoNotUseMe.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
                 .orElse(null);
@@ -166,7 +172,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         for (ThreadRun trpb : proto.getThreadRunsList()) {
             ThreadRunModel thr = ThreadRunModel.fromProto(trpb, context);
             thr.wfRun = this;
-            threadRuns.add(thr);
+            threadRunsDoNotUseMe.add(thr);
         }
         for (PendingInterrupt pipb : proto.getPendingInterruptsList()) {
             pendingInterrupts.add(PendingInterruptModel.fromProto(pipb, context));
@@ -208,7 +214,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             out.setEndTime(LHUtil.fromDate(endTime));
         }
 
-        for (ThreadRunModel threadRunModel : threadRuns) {
+        for (ThreadRunModel threadRunModel : threadRunsDoNotUseMe) {
             out.addThreadRuns(threadRunModel.toProto());
         }
 
@@ -264,7 +270,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         thread.wfRun = this;
         thread.type = type;
-        threadRuns.add(thread);
+        threadRunsDoNotUseMe.add(thread);
 
         thread.validateVariablesAndStart(variables);
         return thread;
@@ -387,37 +393,37 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public void advance(Date time) {
         boolean statusChanged = false;
         // Update status and then advance
-        for (ThreadRunModel thread : threadRuns) {
+        for (ThreadRunModel thread : threadRunsDoNotUseMe) {
             statusChanged = thread.updateStatus() || statusChanged;
         }
         boolean xnHandlersStarted = startXnHandlersAndInterrupts(time);
         statusChanged = xnHandlersStarted || statusChanged;
-        for (int i = threadRuns.size() - 1; i >= 0; i--) {
-            ThreadRunModel thread = threadRuns.get(i);
+        for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
+            ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
             statusChanged = thread.advance(time) || statusChanged;
         }
-        for (int i = threadRuns.size() - 1; i >= 0; i--) {
-            ThreadRunModel thread = threadRuns.get(i);
+        for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
+            ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
             statusChanged = thread.updateStatus() || statusChanged;
         }
 
         while (statusChanged) {
             startXnHandlersAndInterrupts(time);
             statusChanged = false;
-            for (int i = threadRuns.size() - 1; i >= 0; i--) {
-                ThreadRunModel thread = threadRuns.get(i);
+            for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
+                ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
             }
 
-            for (int i = threadRuns.size() - 1; i >= 0; i--) {
-                ThreadRunModel thread = threadRuns.get(i);
+            for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
+                ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
                 statusChanged = thread.updateStatus() || statusChanged;
             }
         }
 
         // Now we remove any old threadruns that we don't want anymore.
-        for (int i = threadRuns.size() - 1; i >= 0; i--) {
-            ThreadRunModel thread = threadRuns.get(i);
+        for (int i = threadRunsDoNotUseMe.size() - 1; i >= 0; i--) {
+            ThreadRunModel thread = threadRunsDoNotUseMe.get(i);
             ThreadSpecModel spec = thread.getThreadSpecModel();
             if (spec.getRetentionPolicy() != null) {
                 if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
@@ -438,7 +444,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             parent.childThreadIds.removeIf(childId -> childId.equals(thread.getNumber()));
         }
 
-        threadRuns.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
+        threadRunsDoNotUseMe.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
@@ -455,14 +461,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public void processExternalEvent(ExternalEventModel event) {
         // TODO LH-303: maybe if the event has a `threadRunNumber` and
         // `nodeRunPosition` set, it should do some validation here?
-        for (ThreadRunModel thread : threadRuns) {
+        for (ThreadRunModel thread : threadRunsDoNotUseMe) {
             thread.processExternalEvent(event);
         }
         advance(event.getCreatedAt());
     }
 
     public void processStopRequest(StopWfRunRequestModel req) {
-        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+        if (req.threadRunNumber >= threadRunsDoNotUseMe.size() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to stop a non-existent thread id.");
         }
 
@@ -485,7 +491,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void processResumeRequest(ResumeWfRunRequestModel req) {
-        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+        if (req.threadRunNumber >= threadRunsDoNotUseMe.size() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
 
@@ -503,7 +509,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
-        if (threadRunNumber >= threadRuns.size() || threadRunNumber < 0) {
+        if (threadRunNumber >= threadRunsDoNotUseMe.size() || threadRunNumber < 0) {
             throw new LHValidationError(null, "Reference to nonexistent thread.");
         }
 

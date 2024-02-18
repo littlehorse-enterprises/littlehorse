@@ -458,7 +458,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 return false;
             }
         } else if (status == LHStatus.HALTING) {
-            if (getCurrentNodeRun().canBeInterrupted()) {
+            if (getCurrentNodeRun().canBeHalted()) {
                 setStatus(LHStatus.HALTED);
                 return true;
             } else {
@@ -477,7 +477,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
 
     public boolean canBeInterrupted() {
-        if (getCurrentNodeRun().canBeInterrupted()) return true;
+        if (getCurrentNodeRun().canBeHalted()) return true;
 
         for (int childId : childThreadIds) {
             if (wfRun.getThreadRun(childId).isRunning()) {
@@ -514,7 +514,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         } else if (status == LHStatus.HALTING) {
             log.trace("Tried to advance HALTING thread, checking if halted yet.");
 
-            if (currentNodeRunModel.canBeInterrupted()) {
+            if (currentNodeRunModel.canBeHalted()) {
                 setStatus(LHStatus.HALTED);
                 log.trace("Moving thread to HALTED");
                 return true;
@@ -542,6 +542,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @param failure is the Failure that was raised.
      * @param time when the Failure occurred.
      */
+    @Deprecated(forRemoval = true)
     public void fail(FailureModel failure, Date time) {
         // First determine if the node that was failed has a relevant exception
         // handler attached.
@@ -686,67 +687,45 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
-    /*
-     * Callback used by the NodeRunModel when the NodeRun is completed, to notify this ThreadRunModel
-     * that it's time to advance the ThreadRun.
-     *
-     * This callback makes the ThreadRun advance to the next Node in the WfSpec (thus creating a new
-     * NodeRun) and it tells the WfRun to try to advance everything.
-     */
-    public void completeCurrentNode(VariableValueModel output, Date eventTime) {
-        NodeRunModel crn = getCurrentNodeRun();
-        crn.status = LHStatus.COMPLETED;
-
-        if (status == LHStatus.RUNNING) {
-            // If we got here, then we're good.
-            advanceFrom(getCurrentNode(), output);
-        }
-        getWfRun().advance(eventTime);
-    }
-
-    public void advanceFrom(NodeModel curNode) {
-        advanceFrom(curNode, null);
-    }
-
-    public void advanceFrom(NodeModel curNode, VariableValueModel output) {
-        if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
-            return;
-        }
-        NodeModel nextNode = null;
-        for (EdgeModel e : curNode.outgoingEdges) {
-            try {
-                if (evaluateEdge(e)) {
-                    nextNode = e.getSinkNode();
-                    if (output != null) {
-                        mutateVariables(output, e.getVariableMutations());
-                    }
-                    break;
-                }
-            } catch (LHVarSubError exn) {
-                log.debug("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
-                getCurrentNodeRun()
-                        .fail(
-                                new FailureModel(
-                                        "Failed evaluating outgoing edge: " + exn.getMessage(),
-                                        LHConstants.VAR_MUTATION_ERROR),
-                                new Date());
-                return;
-            }
-        }
-        if (nextNode == null) {
-            // TODO: Later versions should validate wfSpec's so that this is not possible; however, it may
-            // always require some runtime checks.
-            getCurrentNodeRun()
-                    .fail(
-                            new FailureModel(
-                                    "WfSpec was invalid. There were no activated outgoing edges"
-                                            + " from a non-exit node.",
-                                    LHConstants.INTERNAL_ERROR),
-                            new Date());
-        } else {
-            activateNode(nextNode);
-        }
-    }
+    // public void advanceFrom(NodeModel curNode) {
+    //     if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
+    //         return;
+    //     }
+    //     NodeModel nextNode = null;
+    //     for (EdgeModel e : curNode.outgoingEdges) {
+    //         try {
+    //             if (evaluateEdge(e)) {
+    //                 nextNode = e.getSinkNode();
+    //                 if (output != null) {
+    //                     mutateVariables(output, e.getVariableMutations());
+    //                 }
+    //                 break;
+    //             }
+    //         } catch (LHVarSubError exn) {
+    //             log.debug("Failing threadrun due to VarSubError {} {}", wfRun.getId(), currentNodePosition, exn);
+    //             getCurrentNodeRun()
+    //                     .fail(
+    //                             new FailureModel(
+    //                                     "Failed evaluating outgoing edge: " + exn.getMessage(),
+    //                                     LHConstants.VAR_MUTATION_ERROR),
+    //                             new Date());
+    //             return;
+    //         }
+    //     }
+    //     if (nextNode == null) {
+    //         // TODO: Later versions should validate wfSpec's so that this is not possible; however, it may
+    //         // always require some runtime checks.
+    //         getCurrentNodeRun()
+    //                 .fail(
+    //                         new FailureModel(
+    //                                 "WfSpec was invalid. There were no activated outgoing edges"
+    //                                         + " from a non-exit node.",
+    //                                 LHConstants.INTERNAL_ERROR),
+    //                         new Date());
+    //     } else {
+    //         activateNode(nextNode);
+    //     }
+    // }
 
     public void activateNode(NodeModel node) {
         Date arrivalTime = new Date();

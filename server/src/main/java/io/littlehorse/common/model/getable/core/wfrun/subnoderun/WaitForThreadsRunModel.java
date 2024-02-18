@@ -74,7 +74,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public boolean canBeInterrupted() {
+    public boolean canBeHalted() {
         return true;
     }
 
