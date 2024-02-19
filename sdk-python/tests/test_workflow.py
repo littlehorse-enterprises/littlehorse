@@ -1762,6 +1762,30 @@ class TestUserTasks(unittest.TestCase):
         reassign = action.reassign
         self.assertEqual(reassign.user_group.literal_value.str, "my-group")
 
+    def test_reminder_task(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.schedule_reminder_task(uto, 60, "my-reminder-task", "my-arg")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertTrue(action.HasField("task"))
+        reminder_task = action.task
+        print(reminder_task)
+        self.assertEqual(reminder_task.task.task_def_id.name, "my-reminder-task")
+
     def test_reassign_to_user_str(self):
         def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
