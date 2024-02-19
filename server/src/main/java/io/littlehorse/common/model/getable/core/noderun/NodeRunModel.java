@@ -346,13 +346,16 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     /**
+     * Returns the most recent Failure thrown by this NodeRunModel, if there is a Failure.
+     *
      * A NodeRun in LittleHorse can have zero or more Failures. For example, a NodeRun can
-     * have one Failure that is
-     * @return
+     * have one Failure, then the Failure Handler completes successfuly, then another Failure
+     * may be thrown when evaluating the outgoing edges.
+     * @return the most recent Failure thrown by this NodeRunModel.
      */
-    public FailureModel getLatestFailure() {
-        if (failures.size() == 0) return null;
-        return failures.get(failures.size() - 1);
+    public Optional<FailureModel> getLatestFailure() {
+        if (failures.size() == 0) return Optional.empty();
+        return Optional.of(failures.get(failures.size() - 1));
     }
 
     /**

@@ -23,7 +23,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * NodeRun. This is only to be called once.
      * @param time the time at which the NodeRun was arrived at.
      */
-    public abstract void arrive(Date time);
+    public abstract void arrive(Date time) throws NodeFailureException;
 
     /**
      * Returns the output of the NodeRun. Can only be called after completion. Requires the CommandProcessor

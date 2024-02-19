@@ -86,6 +86,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         }
     }
 
+    @Override
     public boolean hasResponse() {
         return true;
     }

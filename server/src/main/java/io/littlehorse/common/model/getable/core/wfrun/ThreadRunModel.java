@@ -229,54 +229,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         NodeRunModel entrypointRun = new NodeRunModel(processorContext);
         entrypointRun.setThreadRun(this);
-        entrypointRun.setNodeName(entrypointNode.name);
+        entrypointRun.setNodeName(entrypointNode.getName());
         entrypointRun.setStatus(LHStatus.STARTING);
         entrypointRun.setId(new NodeRunIdModel(wfRun.getId(), this.number, 0));
         entrypointRun.setWfSpecId(wfSpecId);
         entrypointRun.setThreadSpecName(threadSpecName);
         entrypointRun.setArrivalTime(now);
         entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now));
+        // Populate the variables
+        entrypointRun.getEntrypointRun().getInputVariables().putAll(variables);
         putNodeRun(entrypointRun);
-
-        try {
-            threadSpec.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
-            log.error("Invalid variables received", exn);
-            // TODO: determine how observability events should look like for this case.
-            entrypointRun.fail(
-                    new FailureModel(
-                            "Failed validating variables on start: " + exn.getMessage(),
-                            LHConstants.VAR_MUTATION_ERROR),
-                    now);
-            return;
-        }
-
-        for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
-            VariableDefModel varDef = threadVarDef.getVarDef();
-            String varName = varDef.getName();
-            VariableValueModel val;
-
-            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-                // We do NOT create a variable since we want to use the one from the parent.
-                continue;
-            }
-
-            if (variables.containsKey(varName)) {
-                val = variables.get(varName);
-            } else if (varDef.getDefaultValue() != null) {
-                val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
-                val = new VariableValueModel();
-            }
-
-            VariableModel variable = new VariableModel(varName, val, wfRun.getId(), getNumber(), wfRun.getWfSpec());
-            processorContext.getableManager().put(variable);
-        }
 
         entrypointRun.setStatus(LHStatus.RUNNING);
         entrypointRun.getSubNodeRun().arrive(now);
-        entrypointRun.getSubNodeRun().advanceIfPossible(now);
     }
 
     /*
@@ -693,14 +658,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         NodeRunModel cnr = new NodeRunModel(processorContext);
         cnr.setThreadRun(this);
-        cnr.nodeName = node.name;
-        cnr.status = LHStatus.STARTING;
+        cnr.setNodeName(node.name);
+        cnr.setStatus(LHStatus.STARTING);
         cnr.setId(new NodeRunIdModel(wfRun.getId(), number, currentNodePosition));
         cnr.setWfSpecId(wfSpecId);
         cnr.setThreadSpecName(threadSpecName);
-
-        cnr.arrivalTime = arrivalTime;
-
+        cnr.setArrivalTime(arrivalTime);
         cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
 
         putNodeRun(cnr);
