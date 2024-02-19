@@ -1120,6 +1120,31 @@ class WorkflowThread:
         )
         ut_node.actions.append(trigger)
 
+    def schedule_reminder_task(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: int,
+        task_def_name: str,
+        *args: Any,
+    ) -> None:
+        delay_in_seconds_var = to_variable_assignment(delay_in_seconds)
+        task_node = TaskNode(
+            task_def_id=TaskDefId(name=task_def_name),
+            variables=[to_variable_assignment(arg) for arg in args],
+        )
+        trigger: UTActionTrigger = UTActionTrigger(
+            task=UTActionTrigger.UTATask(task=task_node),
+            delay_seconds=delay_in_seconds_var,
+            hook=UTActionTrigger.ON_ARRIVAL,
+        )
+        cur_node = self._last_node()
+
+        if cur_node.name != user_task.node_name:
+            raise ValueError("Tried to reassign stale User Task!")
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
+        ut_node.actions.append(trigger)
+
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
