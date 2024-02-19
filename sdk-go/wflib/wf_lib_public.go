@@ -209,6 +209,13 @@ func (t *WorkflowThread) ScheduleReminderTask(
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
 }
 
+func (t *WorkflowThread) ScheduleReminderTaskOnAssignment(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.scheduleReminderTaskOnAssignment(userTask, delaySeconds, taskDefName, args)
+}
+
 func (t *WorkflowThread) ReleaseToGroupOnDeadline(
 	userTask *UserTaskOutput, deadlineSeconds interface{},
 ) {
