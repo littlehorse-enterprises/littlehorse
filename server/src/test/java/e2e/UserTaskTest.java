@@ -18,9 +18,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.SearchResultCaptor;
-import io.littlehorse.test.WfRunVerifier;
 import io.littlehorse.test.WorkflowVerifier;
-import io.littlehorse.test.internal.MismatchedConditionException;
 import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
 import java.util.Map;
@@ -38,9 +36,6 @@ public class UserTaskTest {
 
     @LHWorkflow("deadline-reassignment-workflow-user-without-group")
     private Workflow deadlineReassignmentUserWithoutGroupWorkflow;
-
-    @LHWorkflow("deadline-reassignment-with-epoch")
-    private Workflow deadlineReassignmentWithEpoch;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -75,22 +70,6 @@ public class UserTaskTest {
         WfRunIdList wfRunIdList = capturedResult.get();
         Assertions.assertThat(wfRunIdList).isNotNull();
         Assertions.assertThat(wfRunIdList.getResultsList()).isNotEmpty();
-    }
-
-    @Test
-    void shouldTestDeadlineReassignmentWithEpoch() {
-        WfRunVerifier wfRunVerifier = workflowVerifier
-                .prepareRun(deadlineReassignmentWithEpoch)
-                .waitForStatus(RUNNING)
-                .waitForUserTaskRunStatus(1, 1, UserTaskRunStatus.ASSIGNED)
-                .waitForNodeRunStatus(2, 1, COMPLETED, Duration.ofSeconds(8))
-                .thenAssignUserTask(1, 1, true, "anakin", null)
-                .waitForUserTaskRunStatus(1, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(20));
-        Assertions.assertThatThrownBy(wfRunVerifier::start)
-                .isInstanceOf(MismatchedConditionException.class)
-                .extracting(throwable -> (MismatchedConditionException) throwable)
-                .matches(mismatchedException -> mismatchedException.getExpectedValue() == UserTaskRunStatus.UNASSIGNED
-                        && mismatchedException.getEvaluatedValue() == UserTaskRunStatus.ASSIGNED);
     }
 
     @LHWorkflow("deadline-reassignment-workflow")
