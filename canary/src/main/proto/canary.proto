@@ -46,7 +46,8 @@ message LatencyBeat {
 }
 
 message TaskRunBeat {
-  google.protobuf.Timestamp scheduled_time = 2;
+  google.protobuf.Timestamp scheduled_time = 1;
+  google.protobuf.Timestamp executed_time = 2;
 }
 
 ////////////////////////////////////////////////
