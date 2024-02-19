@@ -861,12 +861,12 @@ class WorkflowThread:
         raise ReferenceError("Next node not found")
 
     def _schedule_reminder_task_helper(
-            self,
-            user_task: UserTaskOutput,
-            delay_in_seconds: VariableAssignment,
-            task_def_name: str,
-            hook: UTActionTrigger.UTHook,
-            *args: Any,
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: VariableAssignment,
+        task_def_name: str,
+        hook: UTActionTrigger.UTHook,
+        *args: Any,
     ) -> None:
         task_node = TaskNode(
             task_def_id=TaskDefId(name=task_def_name),
@@ -1153,17 +1153,29 @@ class WorkflowThread:
         *args: Any,
     ) -> None:
         delay_in_seconds_var = to_variable_assignment(delay_in_seconds)
-        self._schedule_reminder_task_helper(user_task, delay_in_seconds_var, task_def_name, UTActionTrigger.ON_ARRIVAL, args)
+        self._schedule_reminder_task_helper(
+            user_task,
+            delay_in_seconds_var,
+            task_def_name,
+            UTActionTrigger.ON_ARRIVAL,
+            args,
+        )
 
     def schedule_reminder_task_on_assignment(
-            self,
-            user_task: UserTaskOutput,
-            delay_in_seconds: Union[int, WfRunVariable],
-            task_def_name: str,
-            *args: Any,
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: Union[int, WfRunVariable],
+        task_def_name: str,
+        *args: Any,
     ) -> None:
         delay_in_seconds_var = to_variable_assignment(delay_in_seconds)
-        self._schedule_reminder_task_helper(user_task, delay_in_seconds_var, task_def_name, UTActionTrigger.ON_TASK_ASSIGNED, args)
+        self._schedule_reminder_task_helper(
+            user_task,
+            delay_in_seconds_var,
+            task_def_name,
+            UTActionTrigger.ON_TASK_ASSIGNED,
+            args,
+        )
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an

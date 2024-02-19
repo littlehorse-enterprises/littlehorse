@@ -1794,7 +1794,9 @@ class TestUserTasks(unittest.TestCase):
                 user_id="asdf",
                 user_group="my-group",
             )
-            thread.schedule_reminder_task_on_assignment(uto, 60, "my-reminder-task", "my-arg")
+            thread.schedule_reminder_task_on_assignment(
+                uto, 60, "my-reminder-task", "my-arg"
+            )
 
         wf = Workflow("my-wf", wf_func).compile()
         thread = wf.thread_specs[wf.entrypoint_thread_name]
