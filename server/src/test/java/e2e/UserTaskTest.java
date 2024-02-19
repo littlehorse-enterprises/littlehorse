@@ -21,7 +21,6 @@ import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
-import java.util.Map;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -100,20 +99,6 @@ public class UserTaskTest {
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
-        });
-    }
-
-    @LHWorkflow("deadline-reassignment-with-epoch")
-    public Workflow buildDeadlineReassignmentWithEpoch() {
-        return new WorkflowImpl("deadline-reassignment-with-epoch", entrypointThread -> {
-            entrypointThread.spawnThread(
-                    utThread -> {
-                        UserTaskOutput formOutput = utThread.assignUserTask(USER_TASK_DEF_NAME, "yoda", "my-group");
-                        utThread.releaseToGroupOnDeadline(formOutput, 20);
-                    },
-                    "user-task-thread",
-                    Map.of());
-            entrypointThread.spawnThread(sleepThread -> sleepThread.sleepSeconds(6), "sleep-thread", Map.of());
         });
     }
 
