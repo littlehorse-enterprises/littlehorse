@@ -136,9 +136,6 @@ public class OneTaskQueue {
      *                        client who made the PollTaskRequest.
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver) {
-        if (pendingTasks.isEmpty()) {
-            rehydrateFromStore(requestObserver.getRequestContext().getableManager());
-        }
 
         if (taskDefName == null) {
             taskDefName = requestObserver.getTaskDefId();
@@ -159,6 +156,9 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
+            if (pendingTasks.isEmpty()) {
+                rehydrateFromStore(requestObserver.getRequestContext().getableManager());
+            }
 
             if (!pendingTasks.isEmpty()) {
                 // This is case 1.
@@ -197,10 +197,6 @@ public class OneTaskQueue {
                         (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
                 ScheduledTaskModel scheduledTask =
                         readOnlyGetableManager.get(taskRunId.toString(), ScheduledTaskModel.class);
-                if (scheduledTask == null) {
-                    // TODO: remove this. Only verify if e2e passes
-                    return;
-                }
                 queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
             }
         }
