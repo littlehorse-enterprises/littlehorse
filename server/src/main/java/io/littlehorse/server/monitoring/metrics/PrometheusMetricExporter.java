@@ -66,7 +66,7 @@ public class PrometheusMetricExporter implements Closeable {
 
     @Override
     public void close() {
-        kafkaStreamsMeters.stream().forEach(metric -> metric.close());
+        kafkaStreamsMeters.forEach(metric -> metric.close());
         prometheusRegistry.close();
         log.info("Prometheus stopped");
     }

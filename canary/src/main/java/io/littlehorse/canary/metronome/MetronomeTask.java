@@ -64,8 +64,9 @@ class MetronomeTask {
                         .setAttemptNumber(context.getAttemptNumber()))
                 .build();
         final Beat beat = getBeatBuilder()
-                .setTaskRunBeat(
-                        TaskRunBeat.newBuilder().setScheduledTime(Timestamps.fromDate(context.getScheduledTime())))
+                .setTaskRunBeat(TaskRunBeat.newBuilder()
+                        .setExecutedTime(Timestamps.now())
+                        .setScheduledTime(Timestamps.fromDate(context.getScheduledTime())))
                 .build();
 
         // TODO: WHAT HAPPEN IF THIS FAILS?
