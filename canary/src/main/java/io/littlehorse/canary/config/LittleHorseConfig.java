@@ -11,14 +11,13 @@ public class LittleHorseConfig implements Config {
 
     public LittleHorseConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
-                .map(entry -> {
-                    final String formattedKey =
-                            entry.getKey().toUpperCase().replace(".", "_").replace("-", "_");
-
-                    return entry(formattedKey, entry.getValue());
-                })
+                .map(entry -> entry(formatKey(entry.getKey()), entry.getValue()))
                 .filter(entry -> LHConfig.configNames().contains(entry.getKey()))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static String formatKey(final String key) {
+        return key.toUpperCase().replace(".", "_").replace("-", "_");
     }
 
     @Override
