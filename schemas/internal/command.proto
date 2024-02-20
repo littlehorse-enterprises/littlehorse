@@ -170,7 +170,6 @@ message TaskClaimEventPb {
     google.protobuf.Timestamp time = 2;
     string task_worker_id = 3;
     optional string task_worker_version = 4;
-    TaskDefId task_def_id = 5;
 }
 
 message ExternalEventNodeTimeoutPb {

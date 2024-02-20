@@ -58,5 +58,6 @@ public class LHConstants {
 
     // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
+    public static final int MAX_TASKRUNS_IN_ONE_TASKQUEUE = 1_000;
 }
 // NOTE: Use m6a.4xlarge

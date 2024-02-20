@@ -87,6 +87,7 @@ public class OneTaskQueue {
      * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest
      *                        that was just
      *                        scheduled.
+     * @return True if the task was successfully scheduled, or False if the queue is full.
      */
     public boolean onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
         // There's two cases here:
