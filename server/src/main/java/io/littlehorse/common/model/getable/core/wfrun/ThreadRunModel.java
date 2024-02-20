@@ -531,39 +531,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     /**
-     * Makes the ThreadRun fail with a given Failure. If the current NodeRun
-     * @param failure is the Failure that was raised.
-     * @param time when the Failure occurred.
-     */
-    @Deprecated(forRemoval = true)
-    public void fail(FailureModel failure, Date time) {
-        // First determine if the node that was failed has a relevant exception
-        // handler attached.
-
-        NodeModel curNode = getCurrentNode();
-
-        FailureHandlerDefModel handler = null;
-
-        for (FailureHandlerDefModel candidate : curNode.failureHandlers) {
-            if (candidate.doesHandle(failure.failureName)) {
-                handler = candidate;
-                break;
-            }
-        }
-
-        if (handler == null) {
-            failWithoutGrace(failure, time);
-        } else {
-            handleFailure(failure, handler);
-        }
-    }
-
-    /**
      * In the case that a Failure is thrown and there is a FailureHandler defined for that failure,
      * we start a "Failure Handler ThreadRun" which handles that failure.
      * @param failure is the failure being handled
      * @param handler is the FailureHandlerDef that defines the ThreadSpec to handle the failure.
      */
+    @SuppressWarnings("unused")
     private void handleFailure(FailureModel failure, FailureHandlerDefModel handler) {
         PendingFailureHandlerModel pfh = new PendingFailureHandlerModel();
         pfh.failedThreadRun = this.number;
@@ -632,7 +605,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * If the failing ThreadRun is an Interrupt Handler ThreadRun, then the parent ThreadRun is marked
      * as failed as well.
      */
-    public void failWithoutGrace(FailureModel failure, Date time) {
+    protected void failWithoutGrace(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
         this.status = failure.getStatus();
         this.endTime = time;
@@ -664,17 +637,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // grace.
             getParent().failWithoutGrace(failure, time);
         }
-
-        wfRun.handleThreadStatus(number, new Date(), status);
-    }
-
-    /*
-     * Marks the ThreadRun as completed and notifies the WfRunModel as so.
-     */
-    public void complete(Date time) {
-        this.errorMessage = null;
-        setStatus(LHStatus.COMPLETED);
-        endTime = time;
 
         wfRun.handleThreadStatus(number, new Date(), status);
     }
