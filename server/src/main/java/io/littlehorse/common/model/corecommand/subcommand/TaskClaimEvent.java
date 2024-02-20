@@ -8,7 +8,6 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
-import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
@@ -38,13 +37,11 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     private Date time;
     private String taskWorkerVersion;
     private String taskWorkerId;
-    private TaskDefIdModel taskDefId;
 
     public TaskClaimEvent() {}
 
     public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
         this.taskRunId = task.getTaskRunId();
-        this.taskDefId = task.getTaskDefId();
         this.time = new Date();
         this.taskWorkerId = taskClaimer.getClientId();
         this.taskWorkerVersion = taskClaimer.getTaskWorkerVersion();
@@ -64,7 +61,6 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
                 .setTaskRunId(taskRunId.toProto())
                 .setTaskWorkerVersion(taskWorkerVersion)
                 .setTaskWorkerId(taskWorkerId)
-                .setTaskDefId(taskDefId.toProto())
                 .setTime(LHUtil.fromDate(time));
         return b;
     }
@@ -110,7 +106,6 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     public void initFrom(Message p, ExecutionContext context) {
         TaskClaimEventPb proto = (TaskClaimEventPb) p;
         taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class, context);
-        taskDefId = LHSerializable.fromProto(proto.getTaskDefId(), TaskDefIdModel.class, context);
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
