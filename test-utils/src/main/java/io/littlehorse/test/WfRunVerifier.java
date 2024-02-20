@@ -20,6 +20,7 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
+import io.littlehorse.test.internal.step.AssignUserTask;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
@@ -115,13 +116,18 @@ public class WfRunVerifier extends AbstractVerifier {
         return this.waitForUserTaskRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
-    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+    public WfRunVerifier waitForNodeRunStatus(
+            int threadRunNumber, int nodeRunNumber, LHStatus status, Duration timeout) {
         Function<TestExecutionContext, LHStatus> objectLHStatusFunction = context -> {
             return lhClient.getNodeRun(nodeRunIdFrom(context.getWfRunId(), threadRunNumber, nodeRunNumber))
                     .getStatus();
         };
-        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, steps.size() + 1));
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status, timeout, steps.size() + 1));
         return this;
+    }
+
+    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+        return waitForNodeRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
     public WfRunVerifier waitForThreadRunStatus(int threadRunNumber, LHStatus threadRunStatus) {
@@ -170,6 +176,12 @@ public class WfRunVerifier extends AbstractVerifier {
     public <I, O> WfRunVerifier doSearch(
             Class<I> requestType, CapturedResult<O> capture, Function<TestExecutionContext, I> buildId) {
         steps.add(new SearchStep<>(requestType, buildId, capture));
+        return this;
+    }
+
+    public WfRunVerifier thenAssignUserTask(
+            int threadRunNumber, int nodeRunNumber, boolean overrideClaim, String userId, String groupId) {
+        steps.add(new AssignUserTask(steps.size() + 1, threadRunNumber, nodeRunNumber, overrideClaim, userId, groupId));
         return this;
     }
 }

@@ -104,6 +104,11 @@ message UserTaskRun {
 
   // The NodeRun with which the UserTaskRun is associated.
   NodeRunId node_run_id = 11;
+
+  // Current observed epoch of the UserTaskRun, related to the number of times it has been
+  // updated or re-assigned. Used internally to implement automated reassignment and reminder
+  // tasks.
+  int32 epoch = 12;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.

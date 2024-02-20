@@ -860,6 +860,31 @@ class WorkflowThread:
                 return self._nodes[i]
         raise ReferenceError("Next node not found")
 
+    def _schedule_reminder_task_helper(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: VariableAssignment,
+        task_def_name: str,
+        hook: UTActionTrigger.UTHook,
+        *args: Any,
+    ) -> None:
+        task_node = TaskNode(
+            task_def_id=TaskDefId(name=task_def_name),
+            variables=[to_variable_assignment(arg) for arg in args],
+        )
+        trigger: UTActionTrigger = UTActionTrigger(
+            task=UTActionTrigger.UTATask(task=task_node),
+            delay_seconds=delay_in_seconds,
+            hook=hook,
+        )
+        cur_node = self._last_node()
+
+        if cur_node.name != user_task.node_name:
+            raise ValueError("Tried to reassign stale User Task!")
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
+        ut_node.actions.append(trigger)
+
     def execute(self, task_name: str, *args: Any) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
 
@@ -1119,6 +1144,38 @@ class WorkflowThread:
             delay_seconds=to_variable_assignment(deadline_seconds),
         )
         ut_node.actions.append(trigger)
+
+    def schedule_reminder_task(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: Union[int, WfRunVariable],
+        task_def_name: str,
+        *args: Any,
+    ) -> None:
+        delay_in_seconds_var = to_variable_assignment(delay_in_seconds)
+        self._schedule_reminder_task_helper(
+            user_task,
+            delay_in_seconds_var,
+            task_def_name,
+            UTActionTrigger.ON_ARRIVAL,
+            args,
+        )
+
+    def schedule_reminder_task_on_assignment(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: Union[int, WfRunVariable],
+        task_def_name: str,
+        *args: Any,
+    ) -> None:
+        delay_in_seconds_var = to_variable_assignment(delay_in_seconds)
+        self._schedule_reminder_task_helper(
+            user_task,
+            delay_in_seconds_var,
+            task_def_name,
+            UTActionTrigger.ON_TASK_ASSIGNED,
+            args,
+        )
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
