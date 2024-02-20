@@ -11,6 +11,11 @@ cd "${CONTEXT_DIR}"
 
 dashboard=false
 canary=false
+server=false
+
+if [[ $# -eq 0 ]]; then
+  server=true
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -20,6 +25,9 @@ while [[ $# -gt 0 ]]; do
     --canary)
       canary=true
       ;;
+    --server)
+      server=true
+      ;;
     *)
       echo "Unknown argument: $1"
       exit 1
@@ -28,22 +36,23 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [ ${dashboard} = true ]; then
+if [[ ${dashboard} = true ]]; then
+    echo "Building lh-dashboard"
     cd dashboard
     pnpm install
     pnpm build
     cd ..
     docker build -t littlehorse/lh-dashboard:latest -f docker/dashboard/Dockerfile .
-    exit 0
 fi
 
-if [ ${canary} = true ]; then
+if [[ ${canary} = true ]]; then
+    echo "Building lh-canary"
     ./gradlew canary:shadowJar -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-canary:latest -f docker/canary/Dockerfile .
-    exit 0
 fi
 
-# BY DEFAULT BUILD LH SERVER DOCKER
-
-./gradlew server:shadowJar -x test -x spotlessJavaCheck
-docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
+if [[ ${server} = true ]]; then
+    echo "Building lh-server"
+    ./gradlew server:shadowJar -x test -x spotlessJavaCheck
+    docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
+fi
