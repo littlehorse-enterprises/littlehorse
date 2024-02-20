@@ -201,6 +201,7 @@ message UserTaskEvent {
 
   // Empty message used to denote that the `UserTaskRun` was cancelled.
   message UTECancelled {
+    string message = 1;
   }
 
   // Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun.

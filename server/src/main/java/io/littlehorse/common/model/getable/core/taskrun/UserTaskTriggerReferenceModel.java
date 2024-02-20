@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTriggerReference> {
+public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTriggerReference> implements TaskRunSubSource {
 
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
@@ -48,16 +48,5 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
-    }
-
-    @Override
-    public void onCompleted(TaskAttemptModel successfullAttempt) {
-        // For now, we only "fire-and-forget" User Task Triggered Action TaskRun's, so
-        // we don't actually care about what happens here.
-    }
-
-    @Override
-    public void onFailed(TaskAttemptModel lastFailure) {
-        // Same here, we don't yet care about what happens.
     }
 }

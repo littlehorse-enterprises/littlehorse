@@ -15,8 +15,6 @@ public class InterruptedModel extends LHSerializable<Interrupted> implements Sub
     public boolean isResolved(WfRunModel wfRunModel) {
         ThreadRunModel iThread = wfRunModel.getThreadRun(interruptThreadId);
         if (iThread.status == LHStatus.COMPLETED) {
-            ThreadRunModel interruptedThread = wfRunModel.getThreadRun(iThread.getParentThreadId());
-            interruptedThread.getCurrentNodeRun().maybeUnHalt();
             return true;
         }
         return false;

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,13 +47,33 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private TaskRunSourceModel taskRunSource;
     private Date scheduledAt;
     private int timeoutSeconds;
-
-    @Getter(AccessLevel.NONE)
     private TaskStatus status;
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
+
+    public TaskRunModel() {
+        scheduledAt = new Date();
+        inputVariables = new ArrayList<>();
+        attempts = new ArrayList<>();
+    }
+
+    public TaskRunModel(
+            List<VarNameAndValModel> inputVars,
+            TaskRunSourceModel source,
+            TaskNodeModel node,
+            ProcessorExecutionContext processorContext) {
+        this();
+        this.inputVariables = inputVars;
+        this.taskRunSource = source;
+        this.taskDefId = node.getTaskDefId();
+        this.maxAttempts = node.getRetries() + 1;
+        this.timeoutSeconds = node.getTimeoutSeconds();
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
+        transitionTo(TaskStatus.TASK_SCHEDULED);
+    }
 
     @Override
     public Class<TaskRun> getProtoBaseClass() {
@@ -82,6 +101,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
+    @Override
     public TaskRun.Builder toProto() {
         TaskRun.Builder out = TaskRun.newBuilder()
                 .setTaskDefId(taskDefId.toProto())
@@ -102,6 +122,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return out;
     }
 
+    @Override
     public Date getCreatedAt() {
         return scheduledAt;
     }
@@ -140,31 +161,31 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return null;
     }
 
-    public TaskRunModel() {
-        scheduledAt = new Date();
-        inputVariables = new ArrayList<>();
-        attempts = new ArrayList<>();
-    }
-
-    public TaskRunModel(
-            List<VarNameAndValModel> inputVars,
-            TaskRunSourceModel source,
-            TaskNodeModel node,
-            ProcessorExecutionContext processorContext) {
-        this();
-        this.inputVariables = inputVars;
-        this.taskRunSource = source;
-        this.taskDefId = node.getTaskDefId();
-        this.maxAttempts = node.getRetries() + 1;
-        this.timeoutSeconds = node.getTimeoutSeconds();
-        this.executionContext = processorContext;
-        this.processorContext = processorContext;
-        transitionTo(TaskStatus.TASK_SCHEDULED);
-    }
-
     @Override
     public TaskRunIdModel getObjectId() {
         return id;
+    }
+
+    /**
+     * Returns whether the TaskRun is still running (that means that a TaskAttempt is currently running
+     * OR that there are TaskAttempts that are scheduled or will be scheduled once the retry backoff
+     * policy matures)
+     * @return whether the TaskRun is still running
+     */
+    public boolean isStillRunning() {
+        switch (status) {
+            case TASK_EXCEPTION:
+            case TASK_FAILED:
+            case TASK_INPUT_VAR_SUB_ERROR:
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_SUCCESS:
+            case TASK_TIMEOUT:
+                return false;
+            case TASK_SCHEDULED:
+            case TASK_RUNNING:
+            case UNRECOGNIZED:
+        }
+        return true;
     }
 
     public static TaskRunModel fromProto(TaskRun proto, ExecutionContext context) {
@@ -265,14 +286,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
         if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.
-            taskRunSource.getSubSource().onCompleted(attempt);
             transitionTo(TaskStatus.TASK_SUCCESS);
         } else if (shouldRetry()) {
             transitionTo(TaskStatus.TASK_SCHEDULED);
             scheduleAttempt();
         } else {
             transitionTo(ce.getStatus());
-            taskRunSource.getSubSource().onFailed(attempt);
         }
     }
 

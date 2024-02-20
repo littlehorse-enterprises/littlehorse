@@ -8,6 +8,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
@@ -22,6 +23,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +36,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     private ExternalEventIdModel externalEventId;
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
+    private boolean timedOut;
 
     public ExternalEventRunModel() {}
 
@@ -43,6 +46,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         this.processorContext = processorContext;
     }
 
+    @Override
     public Class<ExternalEventRun> getProtoBaseClass() {
         return ExternalEventRun.class;
     }
@@ -58,13 +62,16 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         }
         externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+        timedOut = p.getTimedOut();
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
+    @Override
     public ExternalEventRun.Builder toProto() {
-        ExternalEventRun.Builder out =
-                ExternalEventRun.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
+        ExternalEventRun.Builder out = ExternalEventRun.newBuilder()
+                .setExternalEventDefId(externalEventDefId.toProto())
+                .setTimedOut(timedOut);
 
         if (eventTime != null) {
             out.setEventTime(LHUtil.fromDate(eventTime));
@@ -77,26 +84,10 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         return out;
     }
 
-    public static ExternalEventRunModel fromProto(ExternalEventRun p, ExecutionContext context) {
-        ExternalEventRunModel out = new ExternalEventRunModel();
-        out.initFrom(p, context);
-        return out;
-    }
-
-    public void processExternalEventTimeout(ExternalEventTimeoutModel timeout) {
-        if (nodeRun.status == LHStatus.COMPLETED || nodeRun.status == LHStatus.ERROR) {
-            log.debug("ignoring timeout; already completed or failed");
-            return;
-        }
-
-        nodeRun.fail(
-                new FailureModel("External Event did not arrive in time.", LHConstants.TIMEOUT, null),
-                processorContext.currentCommand().getTime());
-    }
-
-    public boolean advanceIfPossible(Date time) {
+    @Override
+    public boolean checkIfProcessingCompleted() {
         NodeModel node = nodeRun.getNode();
-        ExternalEventNodeModel eNode = node.externalEventNode;
+        ExternalEventNodeModel eNode = node.getExternalEventNode();
 
         ExternalEventModel evt = processorContext
                 .getableManager()
@@ -109,10 +100,17 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         eventTime = evt.getCreatedAt();
         evt.markClaimedBy(nodeRun);
 
-        externalEventId = evt.getObjectId();
-
-        nodeRun.complete(evt.getContent(), time);
+        this.externalEventId = evt.getObjectId();
         return true;
+    }
+
+    @Override
+    public Optional<VariableValueModel> getOutput() {
+        if (externalEventDefId == null) {
+            throw new IllegalStateException("called getOutput() before node finished!");
+        }
+        return Optional.of(
+                processorContext.getableManager().get(externalEventId).getContent());
     }
 
     /*
@@ -122,14 +120,13 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
      * happen.
      */
     @Override
-    public boolean canBeHalted() {
+    public boolean maybeHalt() {
         return true;
     }
 
-    public void arrive(Date time) {
-        // Nothing to do
-        nodeRun.status = LHStatus.RUNNING;
-
+    @Override
+    public void arrive(Date time) throws NodeFailureException {
+        // Only thing to do is maybe schedule a timeout.
         if (getNode().getExternalEventNode().getTimeoutSeconds() != null) {
             try {
                 VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
@@ -155,12 +152,25 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                         timer.getMaturationTime(),
                         nodeRun.getId());
             } catch (LHVarSubError exn) {
-                nodeRun.fail(
-                        new FailureModel(
-                                "Failed determining timeout for ext evt node: " + exn.getMessage(),
-                                LHConstants.VAR_ERROR),
-                        time);
+                throw new NodeFailureException(new FailureModel(
+                        "Failed determining timeout for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
             }
         }
+    }
+
+    public void processExternalEventTimeout(ExternalEventTimeoutModel timeout) {
+        if (nodeRun.getStatus() == LHStatus.COMPLETED || nodeRun.getStatus() == LHStatus.ERROR) {
+            log.trace("ignoring timeout; already completed or failed");
+            return;
+        }
+
+        // This is leaking the logic of the
+        timedOut = true;
+    }
+
+    public static ExternalEventRunModel fromProto(ExternalEventRun p, ExecutionContext context) {
+        ExternalEventRunModel out = new ExternalEventRunModel();
+        out.initFrom(p, context);
+        return out;
     }
 }

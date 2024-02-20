@@ -10,14 +10,40 @@ import io.littlehorse.sdk.common.proto.HandlingFailureHaltReason;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Date;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailureHaltReason> implements SubHaltReason {
 
-    public int handlerThreadId;
+    @Getter
+    private int handlerThreadId;
 
+    public HandlingFailureHaltReasonModel() {}
+
+    public HandlingFailureHaltReasonModel(int handlerThreadId) {
+        this.handlerThreadId = handlerThreadId;
+    }
+
+    @Override
+    public Class<HandlingFailureHaltReason> getProtoBaseClass() {
+        return HandlingFailureHaltReason.class;
+    }
+
+    @Override
+    public HandlingFailureHaltReason.Builder toProto() {
+        HandlingFailureHaltReason.Builder out = HandlingFailureHaltReason.newBuilder();
+        out.setHandlerThreadId(handlerThreadId);
+        return out;
+    }
+
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) {
+        HandlingFailureHaltReason p = (HandlingFailureHaltReason) proto;
+        handlerThreadId = p.getHandlerThreadId();
+    }
+
+    @Override
     public boolean isResolved(WfRunModel wfRunModel) {
         ThreadRunModel handlerThread = wfRunModel.getThreadRun(handlerThreadId);
         log.debug(
@@ -31,9 +57,9 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                 originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
 
         if (handlerThread.status == LHStatus.COMPLETED) {
-            handledNode.getLatestFailure().setProperlyHandled(true);
+            handledNode.getLatestFailure().get().setProperlyHandled(true);
 
-            if (handledNode.type == NodeTypeCase.WAIT_THREADS) {
+            if (handledNode.getType() == NodeTypeCase.WAIT_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes
                 // is an all-or-nothing handler that catches all failed children.
                 //
@@ -49,28 +75,12 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
             }
             return true;
         } else if (handlerThread.status == LHStatus.EXCEPTION || handlerThread.status == LHStatus.ERROR) {
-            // Note: handledNode.getLatestFailure().getProperlyHandled() is already false.
-            handledNode.failWithoutGrace(handlerThread.getCurrentNodeRun().getLatestFailure(), new Date());
+            // Shouldn't need to do anything here since the new ThreadRunModel#advance() will detect this and fail
+            // anyways. Just remove the halt reason so that the threadRun properly fails.
             return true;
         } else {
             return false;
         }
-    }
-
-    public Class<HandlingFailureHaltReason> getProtoBaseClass() {
-        return HandlingFailureHaltReason.class;
-    }
-
-    public HandlingFailureHaltReason.Builder toProto() {
-        HandlingFailureHaltReason.Builder out = HandlingFailureHaltReason.newBuilder();
-        out.setHandlerThreadId(handlerThreadId);
-        return out;
-    }
-
-    @Override
-    public void initFrom(Message proto, ExecutionContext context) {
-        HandlingFailureHaltReason p = (HandlingFailureHaltReason) proto;
-        handlerThreadId = p.getHandlerThreadId();
     }
 
     public static HandlingFailureHaltReasonModel fromProto(HandlingFailureHaltReason proto, ExecutionContext context) {

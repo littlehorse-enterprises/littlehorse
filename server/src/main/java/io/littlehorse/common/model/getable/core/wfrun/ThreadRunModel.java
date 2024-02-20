@@ -1,9 +1,7 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
@@ -214,10 +212,20 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return getNodeRun(currentNodePosition);
     }
 
-    public void validateVariablesAndStart(Map<String, VariableValueModel> variables) {
-        if (currentNodePosition > 0) {
+    /**
+     * Starts the ThreadRun and advances it past the entrypoint node. Note that it is
+     * the responsibility of the caller to validate start variables before calling this
+     * method. For example:
+     * - The RunWfRequestModel validates variables before creating the WfRun
+     * - A START_THREAD NodeRun validates the variables before creating the ThreadRun
+     *
+     * @param variables are the pre-validated input variables to this ThreadRun.
+     */
+    public void createVariablesAndStart(Map<String, VariableValueModel> variables) {
+        if (currentNodePosition != -1) {
             throw new IllegalStateException("Should only be called on creation");
         }
+
         currentNodePosition = 0;
 
         Date now = new Date();
@@ -236,12 +244,33 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         entrypointRun.setThreadSpecName(threadSpecName);
         entrypointRun.setArrivalTime(now);
         entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now));
-        // Populate the variables
-        entrypointRun.getEntrypointRun().getInputVariables().putAll(variables);
         putNodeRun(entrypointRun);
 
+        for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
+            VariableDefModel varDef = threadVarDef.getVarDef();
+            String varName = varDef.getName();
+            VariableValueModel val;
+
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                // We do NOT create a variable since we want to use the one from the parent.
+                continue;
+            }
+
+            if (variables.containsKey(varName)) {
+                val = variables.get(varName);
+            } else if (varDef.getDefaultValue() != null) {
+                val = varDef.getDefaultValue();
+            } else {
+                // TODO: Will need to update this when we add the required variable feature.
+                val = new VariableValueModel();
+            }
+
+            VariableModel variable =
+                    new VariableModel(varName, val, wfRun.getId(), this.number, threadSpec.getWfSpec());
+            processorContext.getableManager().put(variable);
+        }
+
         entrypointRun.setStatus(LHStatus.RUNNING);
-        entrypointRun.getSubNodeRun().arrive(now);
     }
 
     /*
@@ -265,22 +294,22 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
         NodeRunModel nr = getNodeRun(timeout.getNodeRunId().getPosition());
-        if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
+        if (nr.getType() != NodeTypeCase.EXTERNAL_EVENT) {
             log.error("Impossible: got a misconfigured external event timeout: {}", nr.toJson());
             return;
         }
-        nr.externalEventRun.processExternalEventTimeout(timeout);
+        nr.getExternalEventRun().processExternalEventTimeout(timeout);
     }
 
     public void processSleepNodeMatured(SleepNodeMaturedModel e) {
         NodeRunModel nr = getNodeRun(e.getNodeRunId().getPosition());
-        if (nr.type != NodeTypeCase.SLEEP) {
+        if (nr.getType() != NodeTypeCase.SLEEP) {
             log.warn("Tried to mature on non-sleep node");
             // TODO: how do we wanna handle exceptions?
             return;
         }
 
-        nr.sleepNodeRun.processSleepNodeMatured(e);
+        nr.getSleepNodeRun().processSleepNodeMatured(e);
     }
 
     public void acknowledgeInterruptStarted(PendingInterruptModel pi, int handlerThreadId) {
@@ -587,8 +616,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         ThreadHaltReasonModel thr = new ThreadHaltReasonModel();
         thr.threadRunModel = this;
         thr.type = ReasonCase.HANDLING_FAILURE;
-        thr.handlingFailure = new HandlingFailureHaltReasonModel();
-        thr.handlingFailure.handlerThreadId = handlerThreadNumber;
+        thr.handlingFailure = new HandlingFailureHaltReasonModel(handlerThreadNumber);
 
         childThreadIds.add(handlerThreadNumber);
         haltReasons.add(thr);

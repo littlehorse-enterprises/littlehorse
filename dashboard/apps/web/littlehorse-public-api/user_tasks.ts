@@ -176,7 +176,14 @@ export interface UserTaskRun {
     | string
     | undefined;
   /** The NodeRun with which the UserTaskRun is associated. */
-  nodeRunId: NodeRunId | undefined;
+  nodeRunId:
+    | NodeRunId
+    | undefined;
+  /**
+   * Current observed epoch of the UserTaskRun, related to the number of times it has been
+   * updated or re-assigned. Used internally to implement automated reassignment and reminder
+   * tasks.
+   */
   epoch: number;
 }
 
@@ -298,6 +305,7 @@ export interface UserTaskEvent {
 
 /** Empty message used to denote that the `UserTaskRun` was cancelled. */
 export interface UserTaskEvent_UTECancelled {
+  message: string;
 }
 
 /** Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun. */
@@ -1462,11 +1470,14 @@ export const UserTaskEvent = {
 };
 
 function createBaseUserTaskEvent_UTECancelled(): UserTaskEvent_UTECancelled {
-  return {};
+  return { message: "" };
 }
 
 export const UserTaskEvent_UTECancelled = {
-  encode(_: UserTaskEvent_UTECancelled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: UserTaskEvent_UTECancelled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
     return writer;
   },
 
@@ -1477,6 +1488,13 @@ export const UserTaskEvent_UTECancelled = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.message = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1486,20 +1504,24 @@ export const UserTaskEvent_UTECancelled = {
     return message;
   },
 
-  fromJSON(_: any): UserTaskEvent_UTECancelled {
-    return {};
+  fromJSON(object: any): UserTaskEvent_UTECancelled {
+    return { message: isSet(object.message) ? globalThis.String(object.message) : "" };
   },
 
-  toJSON(_: UserTaskEvent_UTECancelled): unknown {
+  toJSON(message: UserTaskEvent_UTECancelled): unknown {
     const obj: any = {};
+    if (message.message !== "") {
+      obj.message = message.message;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<UserTaskEvent_UTECancelled>, I>>(base?: I): UserTaskEvent_UTECancelled {
     return UserTaskEvent_UTECancelled.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UserTaskEvent_UTECancelled>, I>>(_: I): UserTaskEvent_UTECancelled {
+  fromPartial<I extends Exact<DeepPartial<UserTaskEvent_UTECancelled>, I>>(object: I): UserTaskEvent_UTECancelled {
     const message = createBaseUserTaskEvent_UTECancelled();
+    message.message = object.message ?? "";
     return message;
   },
 };

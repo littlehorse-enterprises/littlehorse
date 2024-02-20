@@ -65,17 +65,8 @@ class UserTaskNodeRun(_message.Message):
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
 class EntrypointRun(_message.Message):
-    __slots__ = ["input_variables"]
-    class InputVariablesEntry(_message.Message):
-        __slots__ = ["key", "value"]
-        KEY_FIELD_NUMBER: _ClassVar[int]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
-    INPUT_VARIABLES_FIELD_NUMBER: _ClassVar[int]
-    input_variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
-    def __init__(self, input_variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
+    __slots__ = []
+    def __init__(self) -> None: ...
 
 class ExitRun(_message.Message):
     __slots__ = []
@@ -90,10 +81,12 @@ class StartThreadRun(_message.Message):
     def __init__(self, child_thread_id: _Optional[int] = ..., thread_spec_name: _Optional[str] = ...) -> None: ...
 
 class StartMultipleThreadsRun(_message.Message):
-    __slots__ = ["thread_spec_name"]
+    __slots__ = ["thread_spec_name", "child_thread_ids"]
     THREAD_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    CHILD_THREAD_IDS_FIELD_NUMBER: _ClassVar[int]
     thread_spec_name: str
-    def __init__(self, thread_spec_name: _Optional[str] = ...) -> None: ...
+    child_thread_ids: _containers.RepeatedScalarFieldContainer[int]
+    def __init__(self, thread_spec_name: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class WaitForThreadsRun(_message.Message):
     __slots__ = ["threads"]
@@ -125,20 +118,24 @@ class WaitForThreadsRun(_message.Message):
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...
 
 class ExternalEventRun(_message.Message):
-    __slots__ = ["external_event_def_id", "event_time", "external_event_id"]
+    __slots__ = ["external_event_def_id", "event_time", "external_event_id", "timed_out"]
     EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     EVENT_TIME_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_ID_FIELD_NUMBER: _ClassVar[int]
+    TIMED_OUT_FIELD_NUMBER: _ClassVar[int]
     external_event_def_id: _object_id_pb2.ExternalEventDefId
     event_time: _timestamp_pb2.Timestamp
     external_event_id: _object_id_pb2.ExternalEventId
-    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
+    timed_out: bool
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., timed_out: bool = ...) -> None: ...
 
 class SleepNodeRun(_message.Message):
-    __slots__ = ["maturation_time"]
+    __slots__ = ["maturation_time", "matured"]
     MATURATION_TIME_FIELD_NUMBER: _ClassVar[int]
+    MATURED_FIELD_NUMBER: _ClassVar[int]
     maturation_time: _timestamp_pb2.Timestamp
-    def __init__(self, maturation_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    matured: bool
+    def __init__(self, maturation_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., matured: bool = ...) -> None: ...
 
 class Failure(_message.Message):
     __slots__ = ["failure_name", "message", "content", "was_properly_handled", "failure_handler_threadrun_id"]

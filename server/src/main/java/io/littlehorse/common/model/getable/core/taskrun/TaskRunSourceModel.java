@@ -21,7 +21,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public TaskRunSourceModel() {}
 
-    public TaskRunSourceModel(TaskRunSubSource<?> source, ProcessorExecutionContext processorContext) {
+    public TaskRunSourceModel(TaskRunSubSource source, ProcessorExecutionContext processorContext) {
         if (source.getClass().equals(TaskNodeReferenceModel.class)) {
             this.type = TaskRunSourceCase.TASK_NODE;
             this.taskNode = (TaskNodeReferenceModel) source;
@@ -73,7 +73,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         return out;
     }
 
-    public TaskRunSubSource<?> getSubSource() {
+    public TaskRunSubSource getSubSource() {
         switch (type) {
             case TASK_NODE:
                 return taskNode;

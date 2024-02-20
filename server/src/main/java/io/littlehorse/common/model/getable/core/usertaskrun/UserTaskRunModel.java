@@ -10,8 +10,10 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -27,7 +29,6 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
@@ -71,21 +72,16 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     private UserTaskRunStatus status;
     private String notes;
     private Date scheduledTime;
-
-    // If we ever allow ad-hoc User Tasks, this will move to an optional
-    // field, or a `oneof user_task_source` field. However, note that such
-    // a change would be fine from the API Compatibility perspective.
     private NodeRunIdModel nodeRunId;
+    private int epoch;
 
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
-    private int epoch;
+    private FailureModel failureToThrowKenobi;
 
-    public UserTaskRunModel() {
-        // Used by LHSerializable
-    }
+    public UserTaskRunModel() {}
 
     public UserTaskRunModel(ProcessorExecutionContext processorContext) {
         this.processorContext = processorContext;
@@ -106,10 +102,12 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.processorContext = processorContext;
     }
 
+    @Override
     public Class<UserTaskRun> getProtoBaseClass() {
         return UserTaskRun.class;
     }
 
+    @Override
     public UserTaskRun.Builder toProto() {
         UserTaskRun.Builder out = UserTaskRun.newBuilder()
                 .setStatus(status)
@@ -134,6 +132,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         return out;
     }
 
+    @Override
     public UserTaskRunIdModel getObjectId() {
         return id;
     }
@@ -213,9 +212,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         }
     }
 
-    public void onArrival(Date time) {
+    public void onArrival(Date time) throws NodeFailureException {
         UserTaskNodeModel node = getNodeRun().getNode().getUserTaskNode();
-        getNodeRun().status = LHStatus.RUNNING;
         status = UserTaskRunStatus.UNASSIGNED;
 
         // Need to either assign to a user or to a group.
@@ -248,7 +246,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Invalid variables when creating UserTaskRun: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);
-            getNodeRun().fail(failure, time);
+            throw new NodeFailureException(failure);
         }
     }
 
@@ -256,7 +254,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         trigger.schedule(this);
     }
 
-    public void deadlineReassign(DeadlineReassignUserTaskModel trigger) throws LHApiException {
+    public void deadlineReassign(DeadlineReassignUserTaskModel trigger) {
         if (status != UserTaskRunStatus.ASSIGNED || this.epoch != trigger.getEpoch()) {
             log.debug("Not doing deadline reassignment on UT. Status {}", status);
             return;
@@ -276,10 +274,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                         thread.assignVariable(trigger.getNewUserId()).asStr().getStrVal();
             }
         } catch (LHVarSubError exn) {
-            FailureModel failure = new FailureModel(
+            this.failureToThrowKenobi = new FailureModel(
                     "Failed calculating new assignment for UserTaskRun: " + exn.getMessage(),
                     LHErrorType.VAR_SUB_ERROR.toString());
-            getNodeRun().fail(failure, processorContext.currentCommand().getTime());
             return;
         }
 
@@ -291,9 +288,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     public void cancel() {
-        status = UserTaskRunStatus.CANCELLED;
-        FailureModel failure = new FailureModel("User task cancelled", LHConstants.USER_TASK_CANCELLED);
-        getNodeRun().fail(failure, new Date());
+        this.status = UserTaskRunStatus.CANCELLED;
+        this.events.add(new UserTaskEventModel(
+                new UTECancelledModel("UserTaskRun was cancelled"),
+                processorContext.currentCommand().getTime()));
+        failureToThrowKenobi = new FailureModel("User task cancelled", LHConstants.USER_TASK_CANCELLED);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {
@@ -313,7 +312,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             this.assignTo(event.getUserId(), this.userGroup, scheduleHooks);
         }
 
-        Map<String, Object> rawNodeOutput = new HashMap<>();
         UserTaskDefModel userTaskDef = executionContext
                 .metadataManager()
                 .get(new UserTaskDefIdModel(
@@ -335,13 +333,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                                 .formatted(field.getKey(), field.getValue().getType()));
             }
             results.put(field.getKey(), field.getValue());
-            rawNodeOutput.put(field.getKey(), field.getValue().getVal());
         }
-        validateMandatoryFieldsFromCompletedEvent(userTaskFieldsGroupedByName.values(), rawNodeOutput.keySet());
-        VariableValueModel output = new VariableValueModel(rawNodeOutput);
+        validateMandatoryFieldsFromCompletedEvent(
+                userTaskFieldsGroupedByName.values(), event.getResults().keySet());
         this.status = UserTaskRunStatus.DONE;
-
-        getNodeRun().complete(output, new Date());
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(

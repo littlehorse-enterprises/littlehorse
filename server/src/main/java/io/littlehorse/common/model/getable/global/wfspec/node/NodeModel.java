@@ -108,7 +108,7 @@ public class NodeModel extends LHSerializable<Node> {
 
         for (Edge epb : proto.getOutgoingEdgesList()) {
             EdgeModel edge = EdgeModel.fromProto(epb, context);
-            edge.threadSpecModel = threadSpecModel;
+            edge.setThreadSpecModel(threadSpec);
             outgoingEdges.add(edge);
         }
 
@@ -156,7 +156,7 @@ public class NodeModel extends LHSerializable<Node> {
                         proto.getStartMultipleThreads(), StartMultipleThreadsNodeModel.class, context);
                 break;
             case NODE_NOT_SET:
-                throw new RuntimeException("Node " + name + " on thread " + threadSpecModel.name + " is unset!");
+                throw new RuntimeException("Node " + name + " on thread " + threadSpec.name + " is unset!");
         }
         getSubNode().setNode(this);
     }
@@ -171,34 +171,34 @@ public class NodeModel extends LHSerializable<Node> {
     public List<EdgeModel> outgoingEdges;
     public String name;
 
-    public ThreadSpecModel threadSpecModel;
+    public ThreadSpecModel threadSpec;
 
     public void validate() throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
-            if (e.sinkNodeName.equals(name)) {
+            if (e.getSinkNodeName().equals(name)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
             }
 
-            NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
+            NodeModel sink = threadSpec.nodes.get(e.getSinkNodeName());
             if (sink == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
+                        String.format("Outgoing edge referring to missing node %s!", e.getSinkNodeName()));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        String.format("Entrypoint node has incoming edge from node %s.", threadSpecModel.name, name));
+                        String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, name));
             }
-            if (e.condition != null) {
-                e.condition.validate();
+            if (e.getCondition() != null) {
+                e.getCondition().validate();
             }
         }
 
         if (!outgoingEdges.isEmpty()) {
             EdgeModel last = outgoingEdges.get(outgoingEdges.size() - 1);
-            if (last.condition != null) {
+            if (last.getCondition() != null) {
                 // throw new LHValidationError(
                 // null,
                 // "Last outgoing edge has non-null condition!"

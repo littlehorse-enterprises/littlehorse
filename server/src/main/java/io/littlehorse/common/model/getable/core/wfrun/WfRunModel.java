@@ -251,28 +251,31 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
-        ThreadRunModel thread = new ThreadRunModel(processorContext);
-        thread.parentThreadId = parentThreadId;
-        thread.setWfSpecId(wfSpecId);
+        ThreadRunModel newThread = new ThreadRunModel(processorContext);
+        newThread.parentThreadId = parentThreadId;
+        newThread.setWfSpecId(wfSpecId);
 
         if (parentThreadId == null) {
             // then this is the entrypoint.
             this.greatestThreadRunNumber = 0;
-            thread.number = 0;
+            newThread.number = 0;
         } else {
             this.greatestThreadRunNumber++;
-            thread.number = this.greatestThreadRunNumber;
+            newThread.number = this.greatestThreadRunNumber;
+
+            ThreadRunModel parent = getThreadRun(parentThreadId);
+            parent.getChildThreadIds().add(newThread.getNumber());
         }
 
-        thread.threadSpecName = threadName;
-        thread.currentNodePosition = -1; // this gets bumped when we start the thread
+        newThread.threadSpecName = threadName;
+        newThread.currentNodePosition = -1; // this gets bumped when we start the thread
 
-        thread.wfRun = this;
-        thread.type = type;
-        threadRunsDoNotUseMe.add(thread);
+        newThread.wfRun = this;
+        newThread.type = type;
+        threadRunsDoNotUseMe.add(newThread);
 
-        thread.validateVariablesAndStart(variables);
-        return thread;
+        newThread.createVariablesAndStart(variables);
+        return newThread;
     }
 
     public String getWfSpecName() {

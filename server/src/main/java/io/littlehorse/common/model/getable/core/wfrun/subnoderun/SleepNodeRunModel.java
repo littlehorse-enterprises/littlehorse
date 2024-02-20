@@ -6,6 +6,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
@@ -15,11 +16,15 @@ import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
+import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
-    public Date maturationTime;
-    private ExecutionContext executionContext;
+    private Date maturationTime;
+    private boolean matured;
+
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
 
@@ -31,6 +36,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         this.processorContext = processorContext;
     }
 
+    @Override
     public Class<SleepNodeRun> getProtoBaseClass() {
         return SleepNodeRun.class;
     }
@@ -39,28 +45,25 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     public void initFrom(Message proto, ExecutionContext context) {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
-        this.executionContext = context;
+        matured = p.getMatured();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
+    @Override
     public SleepNodeRun.Builder toProto() {
-        return SleepNodeRun.newBuilder().setMaturationTime(LHUtil.fromDate(maturationTime));
+        return SleepNodeRun.newBuilder()
+                .setMaturationTime(LHUtil.fromDate(maturationTime))
+                .setMatured(matured);
     }
 
-    public static SleepNodeRunModel fromProto(SleepNodeRun p, ExecutionContext context) {
-        SleepNodeRunModel out = new SleepNodeRunModel();
-        out.initFrom(p, context);
-        return out;
+    @Override
+    public boolean checkIfProcessingCompleted() {
+        return this.isMatured();
     }
 
-    public boolean advanceIfPossible(Date time) {
-        // nothing to do, we just wait for the event to come in.
-        return false;
-    }
-
-    public void arrive(Date time) {
+    @Override
+    public void arrive(Date time) throws NodeFailureException {
         // We need to schedule the timer that says "hey the node is done"
-
         SleepNodeModel sleepNode = getNode().sleepNode;
         if (sleepNode == null) {
             throw new RuntimeException("not possible to have non-sleep-node here.");
@@ -75,21 +78,27 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);
-            nodeRun.fail(failure, time);
+            throw new NodeFailureException(failure);
         }
     }
 
-    public void processSleepNodeMatured(SleepNodeMaturedModel evt) {
-        VariableValueModel nullOutput = new VariableValueModel();
-
-        // mark when we actually processed the completion, not when it was "supposed"
-        // to come in. In cases where there's a large backlog of scheduler events,
-        // this would be useful to help debug what's going on.
-        nodeRun.complete(nullOutput, new Date());
+    @Override
+    public boolean maybeHalt() {
+        return true;
     }
 
     @Override
-    public boolean canBeHalted() {
-        return true;
+    public Optional<VariableValueModel> getOutput() {
+        return Optional.empty();
+    }
+
+    public void processSleepNodeMatured(SleepNodeMaturedModel evt) {
+        this.matured = true;
+    }
+
+    public static SleepNodeRunModel fromProto(SleepNodeRun p, ExecutionContext context) {
+        SleepNodeRunModel out = new SleepNodeRunModel();
+        out.initFrom(p, context);
+        return out;
     }
 }

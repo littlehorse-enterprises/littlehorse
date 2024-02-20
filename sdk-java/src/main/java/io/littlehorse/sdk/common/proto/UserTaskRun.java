@@ -607,6 +607,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   public static final int EPOCH_FIELD_NUMBER = 12;
   private int epoch_ = 0;
   /**
+   * <pre>
+   * Current observed epoch of the UserTaskRun, related to the number of times it has been
+   * updated or re-assigned. Used internally to implement automated reassignment and reminder
+   * tasks.
+   * </pre>
+   *
    * <code>int32 epoch = 12;</code>
    * @return The epoch.
    */
@@ -2869,6 +2875,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private int epoch_ ;
     /**
+     * <pre>
+     * Current observed epoch of the UserTaskRun, related to the number of times it has been
+     * updated or re-assigned. Used internally to implement automated reassignment and reminder
+     * tasks.
+     * </pre>
+     *
      * <code>int32 epoch = 12;</code>
      * @return The epoch.
      */
@@ -2877,6 +2889,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return epoch_;
     }
     /**
+     * <pre>
+     * Current observed epoch of the UserTaskRun, related to the number of times it has been
+     * updated or re-assigned. Used internally to implement automated reassignment and reminder
+     * tasks.
+     * </pre>
+     *
      * <code>int32 epoch = 12;</code>
      * @param value The epoch to set.
      * @return This builder for chaining.
@@ -2889,6 +2907,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Current observed epoch of the UserTaskRun, related to the number of times it has been
+     * updated or re-assigned. Used internally to implement automated reassignment and reminder
+     * tasks.
+     * </pre>
+     *
      * <code>int32 epoch = 12;</code>
      * @return This builder for chaining.
      */

@@ -128,7 +128,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         for (int i = 0; i < variables.size(); i++) {
             VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
             VariableAssignmentModel assn = variables.get(i);
-            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())) {
+            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpec())) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");

@@ -157,6 +157,21 @@ private static final long serialVersionUID = 0L;
     return externalEventId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : externalEventId_;
   }
 
+  public static final int TIMED_OUT_FIELD_NUMBER = 4;
+  private boolean timedOut_ = false;
+  /**
+   * <pre>
+   * Whether we had a timeout while waiting for the ExternalEvent to come.
+   * </pre>
+   *
+   * <code>bool timed_out = 4;</code>
+   * @return The timedOut.
+   */
+  @java.lang.Override
+  public boolean getTimedOut() {
+    return timedOut_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -180,6 +195,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(3, getExternalEventId());
     }
+    if (timedOut_ != false) {
+      output.writeBool(4, timedOut_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -200,6 +218,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getExternalEventId());
+    }
+    if (timedOut_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(4, timedOut_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -231,6 +253,8 @@ private static final long serialVersionUID = 0L;
       if (!getExternalEventId()
           .equals(other.getExternalEventId())) return false;
     }
+    if (getTimedOut()
+        != other.getTimedOut()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -254,6 +278,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + EXTERNAL_EVENT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getExternalEventId().hashCode();
     }
+    hash = (37 * hash) + TIMED_OUT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getTimedOut());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -412,6 +439,7 @@ private static final long serialVersionUID = 0L;
         externalEventIdBuilder_.dispose();
         externalEventIdBuilder_ = null;
       }
+      timedOut_ = false;
       return this;
     }
 
@@ -462,6 +490,9 @@ private static final long serialVersionUID = 0L;
             ? externalEventId_
             : externalEventIdBuilder_.build();
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.timedOut_ = timedOut_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -519,6 +550,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasExternalEventId()) {
         mergeExternalEventId(other.getExternalEventId());
       }
+      if (other.getTimedOut() != false) {
+        setTimedOut(other.getTimedOut());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -566,6 +600,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              timedOut_ = input.readBool();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1046,6 +1085,50 @@ private static final long serialVersionUID = 0L;
         externalEventId_ = null;
       }
       return externalEventIdBuilder_;
+    }
+
+    private boolean timedOut_ ;
+    /**
+     * <pre>
+     * Whether we had a timeout while waiting for the ExternalEvent to come.
+     * </pre>
+     *
+     * <code>bool timed_out = 4;</code>
+     * @return The timedOut.
+     */
+    @java.lang.Override
+    public boolean getTimedOut() {
+      return timedOut_;
+    }
+    /**
+     * <pre>
+     * Whether we had a timeout while waiting for the ExternalEvent to come.
+     * </pre>
+     *
+     * <code>bool timed_out = 4;</code>
+     * @param value The timedOut to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTimedOut(boolean value) {
+
+      timedOut_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Whether we had a timeout while waiting for the ExternalEvent to come.
+     * </pre>
+     *
+     * <code>bool timed_out = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTimedOut() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      timedOut_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -111,12 +111,6 @@ export interface UserTaskNodeRun {
 
 /** The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty. */
 export interface EntrypointRun {
-  inputVariables: { [key: string]: VariableValue };
-}
-
-export interface EntrypointRun_InputVariablesEntry {
-  key: string;
-  value: VariableValue | undefined;
 }
 
 /**
@@ -148,6 +142,8 @@ export interface StartThreadRun {
 export interface StartMultipleThreadsRun {
   /** The thread_spec_name of the child thread_runs. */
   threadSpecName: string;
+  /** The list of all created child ThreadRun's */
+  childThreadIds: number[];
 }
 
 /** The sub-node structure for a WAIT_FOR_THREADS NodeRun. */
@@ -269,13 +265,25 @@ export interface ExternalEventRun {
     | string
     | undefined;
   /** The ExternalEventId of the ExternalEvent. Unset if still waiting. */
-  externalEventId?: ExternalEventId | undefined;
+  externalEventId?:
+    | ExternalEventId
+    | undefined;
+  /** Whether we had a timeout while waiting for the ExternalEvent to come. */
+  timedOut: boolean;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
 export interface SleepNodeRun {
-  /** The time at which the NodeRun will wake up. */
-  maturationTime: string | undefined;
+  /**
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
+   */
+  maturationTime:
+    | string
+    | undefined;
+  /** Whether the SleepNodeRun has been matured. */
+  matured: boolean;
 }
 
 /**
@@ -814,14 +822,11 @@ export const UserTaskNodeRun = {
 };
 
 function createBaseEntrypointRun(): EntrypointRun {
-  return { inputVariables: {} };
+  return {};
 }
 
 export const EntrypointRun = {
-  encode(message: EntrypointRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    Object.entries(message.inputVariables).forEach(([key, value]) => {
-      EntrypointRun_InputVariablesEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
-    });
+  encode(_: EntrypointRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -832,16 +837,6 @@ export const EntrypointRun = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          const entry1 = EntrypointRun_InputVariablesEntry.decode(reader, reader.uint32());
-          if (entry1.value !== undefined) {
-            message.inputVariables[entry1.key] = entry1.value;
-          }
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -851,125 +846,20 @@ export const EntrypointRun = {
     return message;
   },
 
-  fromJSON(object: any): EntrypointRun {
-    return {
-      inputVariables: isObject(object.inputVariables)
-        ? Object.entries(object.inputVariables).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
-          acc[key] = VariableValue.fromJSON(value);
-          return acc;
-        }, {})
-        : {},
-    };
+  fromJSON(_: any): EntrypointRun {
+    return {};
   },
 
-  toJSON(message: EntrypointRun): unknown {
+  toJSON(_: EntrypointRun): unknown {
     const obj: any = {};
-    if (message.inputVariables) {
-      const entries = Object.entries(message.inputVariables);
-      if (entries.length > 0) {
-        obj.inputVariables = {};
-        entries.forEach(([k, v]) => {
-          obj.inputVariables[k] = VariableValue.toJSON(v);
-        });
-      }
-    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<EntrypointRun>, I>>(base?: I): EntrypointRun {
     return EntrypointRun.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<EntrypointRun>, I>>(object: I): EntrypointRun {
+  fromPartial<I extends Exact<DeepPartial<EntrypointRun>, I>>(_: I): EntrypointRun {
     const message = createBaseEntrypointRun();
-    message.inputVariables = Object.entries(object.inputVariables ?? {}).reduce<{ [key: string]: VariableValue }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = VariableValue.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
-    return message;
-  },
-};
-
-function createBaseEntrypointRun_InputVariablesEntry(): EntrypointRun_InputVariablesEntry {
-  return { key: "", value: undefined };
-}
-
-export const EntrypointRun_InputVariablesEntry = {
-  encode(message: EntrypointRun_InputVariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): EntrypointRun_InputVariablesEntry {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEntrypointRun_InputVariablesEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = VariableValue.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): EntrypointRun_InputVariablesEntry {
-    return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
-    };
-  },
-
-  toJSON(message: EntrypointRun_InputVariablesEntry): unknown {
-    const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
-    }
-    if (message.value !== undefined) {
-      obj.value = VariableValue.toJSON(message.value);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EntrypointRun_InputVariablesEntry>, I>>(
-    base?: I,
-  ): EntrypointRun_InputVariablesEntry {
-    return EntrypointRun_InputVariablesEntry.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<EntrypointRun_InputVariablesEntry>, I>>(
-    object: I,
-  ): EntrypointRun_InputVariablesEntry {
-    const message = createBaseEntrypointRun_InputVariablesEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? VariableValue.fromPartial(object.value)
-      : undefined;
     return message;
   },
 };
@@ -1092,7 +982,7 @@ export const StartThreadRun = {
 };
 
 function createBaseStartMultipleThreadsRun(): StartMultipleThreadsRun {
-  return { threadSpecName: "" };
+  return { threadSpecName: "", childThreadIds: [] };
 }
 
 export const StartMultipleThreadsRun = {
@@ -1100,6 +990,11 @@ export const StartMultipleThreadsRun = {
     if (message.threadSpecName !== "") {
       writer.uint32(10).string(message.threadSpecName);
     }
+    writer.uint32(18).fork();
+    for (const v of message.childThreadIds) {
+      writer.int32(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -1117,6 +1012,23 @@ export const StartMultipleThreadsRun = {
 
           message.threadSpecName = reader.string();
           continue;
+        case 2:
+          if (tag === 16) {
+            message.childThreadIds.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 18) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.childThreadIds.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1127,13 +1039,21 @@ export const StartMultipleThreadsRun = {
   },
 
   fromJSON(object: any): StartMultipleThreadsRun {
-    return { threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "" };
+    return {
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
+      childThreadIds: globalThis.Array.isArray(object?.childThreadIds)
+        ? object.childThreadIds.map((e: any) => globalThis.Number(e))
+        : [],
+    };
   },
 
   toJSON(message: StartMultipleThreadsRun): unknown {
     const obj: any = {};
     if (message.threadSpecName !== "") {
       obj.threadSpecName = message.threadSpecName;
+    }
+    if (message.childThreadIds?.length) {
+      obj.childThreadIds = message.childThreadIds.map((e) => Math.round(e));
     }
     return obj;
   },
@@ -1144,6 +1064,7 @@ export const StartMultipleThreadsRun = {
   fromPartial<I extends Exact<DeepPartial<StartMultipleThreadsRun>, I>>(object: I): StartMultipleThreadsRun {
     const message = createBaseStartMultipleThreadsRun();
     message.threadSpecName = object.threadSpecName ?? "";
+    message.childThreadIds = object.childThreadIds?.map((e) => e) || [];
     return message;
   },
 };
@@ -1341,7 +1262,7 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventRun(): ExternalEventRun {
-  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined };
+  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
 }
 
 export const ExternalEventRun = {
@@ -1354,6 +1275,9 @@ export const ExternalEventRun = {
     }
     if (message.externalEventId !== undefined) {
       ExternalEventId.encode(message.externalEventId, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.timedOut === true) {
+      writer.uint32(32).bool(message.timedOut);
     }
     return writer;
   },
@@ -1386,6 +1310,13 @@ export const ExternalEventRun = {
 
           message.externalEventId = ExternalEventId.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.timedOut = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1402,6 +1333,7 @@ export const ExternalEventRun = {
         : undefined,
       eventTime: isSet(object.eventTime) ? globalThis.String(object.eventTime) : undefined,
       externalEventId: isSet(object.externalEventId) ? ExternalEventId.fromJSON(object.externalEventId) : undefined,
+      timedOut: isSet(object.timedOut) ? globalThis.Boolean(object.timedOut) : false,
     };
   },
 
@@ -1415,6 +1347,9 @@ export const ExternalEventRun = {
     }
     if (message.externalEventId !== undefined) {
       obj.externalEventId = ExternalEventId.toJSON(message.externalEventId);
+    }
+    if (message.timedOut === true) {
+      obj.timedOut = message.timedOut;
     }
     return obj;
   },
@@ -1431,18 +1366,22 @@ export const ExternalEventRun = {
     message.externalEventId = (object.externalEventId !== undefined && object.externalEventId !== null)
       ? ExternalEventId.fromPartial(object.externalEventId)
       : undefined;
+    message.timedOut = object.timedOut ?? false;
     return message;
   },
 };
 
 function createBaseSleepNodeRun(): SleepNodeRun {
-  return { maturationTime: undefined };
+  return { maturationTime: undefined, matured: false };
 }
 
 export const SleepNodeRun = {
   encode(message: SleepNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.maturationTime !== undefined) {
       Timestamp.encode(toTimestamp(message.maturationTime), writer.uint32(10).fork()).ldelim();
+    }
+    if (message.matured === true) {
+      writer.uint32(16).bool(message.matured);
     }
     return writer;
   },
@@ -1461,6 +1400,13 @@ export const SleepNodeRun = {
 
           message.maturationTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.matured = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1471,13 +1417,19 @@ export const SleepNodeRun = {
   },
 
   fromJSON(object: any): SleepNodeRun {
-    return { maturationTime: isSet(object.maturationTime) ? globalThis.String(object.maturationTime) : undefined };
+    return {
+      maturationTime: isSet(object.maturationTime) ? globalThis.String(object.maturationTime) : undefined,
+      matured: isSet(object.matured) ? globalThis.Boolean(object.matured) : false,
+    };
   },
 
   toJSON(message: SleepNodeRun): unknown {
     const obj: any = {};
     if (message.maturationTime !== undefined) {
       obj.maturationTime = message.maturationTime;
+    }
+    if (message.matured === true) {
+      obj.matured = message.matured;
     }
     return obj;
   },
@@ -1488,6 +1440,7 @@ export const SleepNodeRun = {
   fromPartial<I extends Exact<DeepPartial<SleepNodeRun>, I>>(object: I): SleepNodeRun {
     const message = createBaseSleepNodeRun();
     message.maturationTime = object.maturationTime ?? undefined;
+    message.matured = object.matured ?? false;
     return message;
   },
 };
@@ -1644,10 +1597,6 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
-}
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {
