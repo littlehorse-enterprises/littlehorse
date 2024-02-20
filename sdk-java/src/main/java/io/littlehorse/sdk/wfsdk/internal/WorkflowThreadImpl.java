@@ -199,16 +199,35 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new UserTaskOutputImpl(nodeName, this);
     }
 
+    @Override
     public void scheduleReminderTask(
             UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
+    @Override
     public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
-    public void scheduleTaskAfterHelper(UserTaskOutput ut, Object delaySeconds, String taskDefName, Object... args) {
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    public void scheduleTaskAfterHelper(
+            UserTaskOutput ut,
+            Serializable delaySeconds,
+            String taskDefName,
+            UTActionTrigger.UTHook utHook,
+            Object... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
         TaskNode taskNode = createTaskNode(taskDefName, args);
@@ -220,10 +239,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
-                .setTask(utaTask)
-                .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
-                .setDelaySeconds(assn);
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder().setTask(utaTask).setHook(utHook).setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets

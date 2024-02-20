@@ -117,6 +117,17 @@ private static final long serialVersionUID = 0L;
     return userTask_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTask_;
   }
 
+  public static final int EPOCH_FIELD_NUMBER = 5;
+  private long epoch_ = 0L;
+  /**
+   * <code>int64 epoch = 5;</code>
+   * @return The epoch.
+   */
+  @java.lang.Override
+  public long getEpoch() {
+    return epoch_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -140,6 +151,9 @@ private static final long serialVersionUID = 0L;
     if (userTask_ != null) {
       output.writeMessage(4, getUserTask());
     }
+    if (epoch_ != 0L) {
+      output.writeInt64(5, epoch_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -160,6 +174,10 @@ private static final long serialVersionUID = 0L;
     if (userTask_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getUserTask());
+    }
+    if (epoch_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(5, epoch_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -191,6 +209,8 @@ private static final long serialVersionUID = 0L;
       if (!getUserTask()
           .equals(other.getUserTask())) return false;
     }
+    if (getEpoch()
+        != other.getEpoch()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -214,6 +234,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + USER_TASK_FIELD_NUMBER;
       hash = (53 * hash) + getUserTask().hashCode();
     }
+    hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getEpoch());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -368,6 +391,7 @@ private static final long serialVersionUID = 0L;
         userTaskBuilder_.dispose();
         userTaskBuilder_ = null;
       }
+      epoch_ = 0L;
       return this;
     }
 
@@ -418,6 +442,9 @@ private static final long serialVersionUID = 0L;
         result.userTask_ = userTaskBuilder_ == null
             ? userTask_
             : userTaskBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.epoch_ = epoch_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -475,6 +502,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasUserTask()) {
         mergeUserTask(other.getUserTask());
       }
+      if (other.getEpoch() != 0L) {
+        setEpoch(other.getEpoch());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -522,6 +552,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 34
+            case 40: {
+              epoch_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -894,6 +929,38 @@ private static final long serialVersionUID = 0L;
         userTask_ = null;
       }
       return userTaskBuilder_;
+    }
+
+    private long epoch_ ;
+    /**
+     * <code>int64 epoch = 5;</code>
+     * @return The epoch.
+     */
+    @java.lang.Override
+    public long getEpoch() {
+      return epoch_;
+    }
+    /**
+     * <code>int64 epoch = 5;</code>
+     * @param value The epoch to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEpoch(long value) {
+
+      epoch_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 epoch = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearEpoch() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      epoch_ = 0L;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

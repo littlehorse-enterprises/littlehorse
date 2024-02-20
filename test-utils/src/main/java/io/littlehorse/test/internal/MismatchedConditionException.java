@@ -11,6 +11,18 @@ public class MismatchedConditionException extends LHTestException {
         this.stepId = stepId;
     }
 
+    public Object getEvaluatedValue() {
+        return evaluatedValue;
+    }
+
+    public Object getExpectedValue() {
+        return expectedValue;
+    }
+
+    public int getStepId() {
+        return stepId;
+    }
+
     @Override
     public String toString() {
         return "Expected value %s but got %s on step %s".formatted(expectedValue, evaluatedValue, stepId);

@@ -17,7 +17,7 @@ import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10user_tasks.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\x1a\x0fobject_id.proto\x1a\x0evariable.proto\"\xb2\x01\n\x0bUserTaskDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\x05\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x00\x88\x01\x01\x12*\n\x06\x66ields\x18\x04 \x03(\x0b\x32\x1a.littlehorse.UserTaskField\x12.\n\ncreated_at\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x0e\n\x0c_description\"\x98\x01\n\rUserTaskField\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x04type\x18\x02 \x01(\x0e\x32\x19.littlehorse.VariableType\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x10\n\x08required\x18\x05 \x01(\x08\x42\x0e\n\x0c_description\"\x94\x04\n\x0bUserTaskRun\x12&\n\x02id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x34\n\x10user_task_def_id\x18\x02 \x01(\x0b\x32\x1a.littlehorse.UserTaskDefId\x12\x17\n\nuser_group\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07user_id\x18\x04 \x01(\tH\x01\x88\x01\x01\x12\x36\n\x07results\x18\x06 \x03(\x0b\x32%.littlehorse.UserTaskRun.ResultsEntry\x12.\n\x06status\x18\x07 \x01(\x0e\x32\x1e.littlehorse.UserTaskRunStatus\x12*\n\x06\x65vents\x18\x08 \x03(\x0b\x32\x1a.littlehorse.UserTaskEvent\x12\x12\n\x05notes\x18\t \x01(\tH\x02\x88\x01\x01\x12\x32\n\x0escheduled_time\x18\n \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x0bnode_run_id\x18\x0b \x01(\x0b\x32\x16.littlehorse.NodeRunId\x1aJ\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\x42\r\n\x0b_user_groupB\n\n\x08_user_idB\x08\n\x06_notes\"\xb2\x01\n\x18\x41ssignUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x16\n\x0eoverride_claim\x18\x02 \x01(\x08\x12\x17\n\nuser_group\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07user_id\x18\x04 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_user_groupB\n\n\x08_user_id\"\xf6\x01\n\x1a\x43ompleteUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x45\n\x07results\x18\x02 \x03(\x0b\x32\x34.littlehorse.CompleteUserTaskRunRequest.ResultsEntry\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x1aJ\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\"P\n\x18\x43\x61ncelUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\"\xb1\x01\n\x18UserTaskTriggerReference\x12+\n\x0bnode_run_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.NodeRunId\x12\x1e\n\x16user_task_event_number\x18\x02 \x01(\x05\x12\x14\n\x07user_id\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x17\n\nuser_group\x18\x04 \x01(\tH\x01\x88\x01\x01\x42\n\n\x08_user_idB\r\n\x0b_user_group\"\x92\x04\n\rUserTaskEvent\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x43\n\rtask_executed\x18\x02 \x01(\x0b\x32*.littlehorse.UserTaskEvent.UTETaskExecutedH\x00\x12:\n\x08\x61ssigned\x18\x03 \x01(\x0b\x32&.littlehorse.UserTaskEvent.UTEAssignedH\x00\x12<\n\tcancelled\x18\x04 \x01(\x0b\x32\'.littlehorse.UserTaskEvent.UTECancelledH\x00\x1a\x0e\n\x0cUTECancelled\x1a;\n\x0fUTETaskExecuted\x12(\n\x08task_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskRunId\x1a\xc1\x01\n\x0bUTEAssigned\x12\x18\n\x0bold_user_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x1b\n\x0eold_user_group\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x0bnew_user_id\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x1b\n\x0enew_user_group\x18\x04 \x01(\tH\x03\x88\x01\x01\x42\x0e\n\x0c_old_user_idB\x11\n\x0f_old_user_groupB\x0e\n\x0c_new_user_idB\x11\n\x0f_new_user_groupB\x07\n\x05\x65vent*J\n\x11UserTaskRunStatus\x12\x0e\n\nUNASSIGNED\x10\x00\x12\x0c\n\x08\x41SSIGNED\x10\x01\x12\x08\n\x04\x44ONE\x10\x03\x12\r\n\tCANCELLED\x10\x04\x42G\n\x1fio.littlehorse.sdk.common.protoP\x01Z\x07.;model\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10user_tasks.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\x1a\x0fobject_id.proto\x1a\x0evariable.proto\"\xb2\x01\n\x0bUserTaskDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\x05\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x00\x88\x01\x01\x12*\n\x06\x66ields\x18\x04 \x03(\x0b\x32\x1a.littlehorse.UserTaskField\x12.\n\ncreated_at\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x0e\n\x0c_description\"\x98\x01\n\rUserTaskField\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x04type\x18\x02 \x01(\x0e\x32\x19.littlehorse.VariableType\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x10\n\x08required\x18\x05 \x01(\x08\x42\x0e\n\x0c_description\"\xa3\x04\n\x0bUserTaskRun\x12&\n\x02id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x34\n\x10user_task_def_id\x18\x02 \x01(\x0b\x32\x1a.littlehorse.UserTaskDefId\x12\x17\n\nuser_group\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07user_id\x18\x04 \x01(\tH\x01\x88\x01\x01\x12\x36\n\x07results\x18\x06 \x03(\x0b\x32%.littlehorse.UserTaskRun.ResultsEntry\x12.\n\x06status\x18\x07 \x01(\x0e\x32\x1e.littlehorse.UserTaskRunStatus\x12*\n\x06\x65vents\x18\x08 \x03(\x0b\x32\x1a.littlehorse.UserTaskEvent\x12\x12\n\x05notes\x18\t \x01(\tH\x02\x88\x01\x01\x12\x32\n\x0escheduled_time\x18\n \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x0bnode_run_id\x18\x0b \x01(\x0b\x32\x16.littlehorse.NodeRunId\x12\r\n\x05\x65poch\x18\x0c \x01(\x05\x1aJ\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\x42\r\n\x0b_user_groupB\n\n\x08_user_idB\x08\n\x06_notes\"\xb2\x01\n\x18\x41ssignUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x16\n\x0eoverride_claim\x18\x02 \x01(\x08\x12\x17\n\nuser_group\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07user_id\x18\x04 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_user_groupB\n\n\x08_user_id\"\xf6\x01\n\x1a\x43ompleteUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\x12\x45\n\x07results\x18\x02 \x03(\x0b\x32\x34.littlehorse.CompleteUserTaskRunRequest.ResultsEntry\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x1aJ\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\"P\n\x18\x43\x61ncelUserTaskRunRequest\x12\x34\n\x10user_task_run_id\x18\x01 \x01(\x0b\x32\x1a.littlehorse.UserTaskRunId\"\xb1\x01\n\x18UserTaskTriggerReference\x12+\n\x0bnode_run_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.NodeRunId\x12\x1e\n\x16user_task_event_number\x18\x02 \x01(\x05\x12\x14\n\x07user_id\x18\x03 \x01(\tH\x00\x88\x01\x01\x12\x17\n\nuser_group\x18\x04 \x01(\tH\x01\x88\x01\x01\x42\n\n\x08_user_idB\r\n\x0b_user_group\"\x92\x04\n\rUserTaskEvent\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x43\n\rtask_executed\x18\x02 \x01(\x0b\x32*.littlehorse.UserTaskEvent.UTETaskExecutedH\x00\x12:\n\x08\x61ssigned\x18\x03 \x01(\x0b\x32&.littlehorse.UserTaskEvent.UTEAssignedH\x00\x12<\n\tcancelled\x18\x04 \x01(\x0b\x32\'.littlehorse.UserTaskEvent.UTECancelledH\x00\x1a\x0e\n\x0cUTECancelled\x1a;\n\x0fUTETaskExecuted\x12(\n\x08task_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskRunId\x1a\xc1\x01\n\x0bUTEAssigned\x12\x18\n\x0bold_user_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x1b\n\x0eold_user_group\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x0bnew_user_id\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x1b\n\x0enew_user_group\x18\x04 \x01(\tH\x03\x88\x01\x01\x42\x0e\n\x0c_old_user_idB\x11\n\x0f_old_user_groupB\x0e\n\x0c_new_user_idB\x11\n\x0f_new_user_groupB\x07\n\x05\x65vent*J\n\x11UserTaskRunStatus\x12\x0e\n\nUNASSIGNED\x10\x00\x12\x0c\n\x08\x41SSIGNED\x10\x01\x12\x08\n\x04\x44ONE\x10\x03\x12\r\n\tCANCELLED\x10\x04\x42G\n\x1fio.littlehorse.sdk.common.protoP\x01Z\x07.;model\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -30,32 +30,32 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _USERTASKRUN_RESULTSENTRY._serialized_options = b'8\001'
   _COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY._options = None
   _COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY._serialized_options = b'8\001'
-  _globals['_USERTASKRUNSTATUS']._serialized_start=2215
-  _globals['_USERTASKRUNSTATUS']._serialized_end=2289
+  _globals['_USERTASKRUNSTATUS']._serialized_start=2230
+  _globals['_USERTASKRUNSTATUS']._serialized_end=2304
   _globals['_USERTASKDEF']._serialized_start=120
   _globals['_USERTASKDEF']._serialized_end=298
   _globals['_USERTASKFIELD']._serialized_start=301
   _globals['_USERTASKFIELD']._serialized_end=453
   _globals['_USERTASKRUN']._serialized_start=456
-  _globals['_USERTASKRUN']._serialized_end=988
-  _globals['_USERTASKRUN_RESULTSENTRY']._serialized_start=877
-  _globals['_USERTASKRUN_RESULTSENTRY']._serialized_end=951
-  _globals['_ASSIGNUSERTASKRUNREQUEST']._serialized_start=991
-  _globals['_ASSIGNUSERTASKRUNREQUEST']._serialized_end=1169
-  _globals['_COMPLETEUSERTASKRUNREQUEST']._serialized_start=1172
-  _globals['_COMPLETEUSERTASKRUNREQUEST']._serialized_end=1418
-  _globals['_COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY']._serialized_start=877
-  _globals['_COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY']._serialized_end=951
-  _globals['_CANCELUSERTASKRUNREQUEST']._serialized_start=1420
-  _globals['_CANCELUSERTASKRUNREQUEST']._serialized_end=1500
-  _globals['_USERTASKTRIGGERREFERENCE']._serialized_start=1503
-  _globals['_USERTASKTRIGGERREFERENCE']._serialized_end=1680
-  _globals['_USERTASKEVENT']._serialized_start=1683
-  _globals['_USERTASKEVENT']._serialized_end=2213
-  _globals['_USERTASKEVENT_UTECANCELLED']._serialized_start=1933
-  _globals['_USERTASKEVENT_UTECANCELLED']._serialized_end=1947
-  _globals['_USERTASKEVENT_UTETASKEXECUTED']._serialized_start=1949
-  _globals['_USERTASKEVENT_UTETASKEXECUTED']._serialized_end=2008
-  _globals['_USERTASKEVENT_UTEASSIGNED']._serialized_start=2011
-  _globals['_USERTASKEVENT_UTEASSIGNED']._serialized_end=2204
+  _globals['_USERTASKRUN']._serialized_end=1003
+  _globals['_USERTASKRUN_RESULTSENTRY']._serialized_start=892
+  _globals['_USERTASKRUN_RESULTSENTRY']._serialized_end=966
+  _globals['_ASSIGNUSERTASKRUNREQUEST']._serialized_start=1006
+  _globals['_ASSIGNUSERTASKRUNREQUEST']._serialized_end=1184
+  _globals['_COMPLETEUSERTASKRUNREQUEST']._serialized_start=1187
+  _globals['_COMPLETEUSERTASKRUNREQUEST']._serialized_end=1433
+  _globals['_COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY']._serialized_start=892
+  _globals['_COMPLETEUSERTASKRUNREQUEST_RESULTSENTRY']._serialized_end=966
+  _globals['_CANCELUSERTASKRUNREQUEST']._serialized_start=1435
+  _globals['_CANCELUSERTASKRUNREQUEST']._serialized_end=1515
+  _globals['_USERTASKTRIGGERREFERENCE']._serialized_start=1518
+  _globals['_USERTASKTRIGGERREFERENCE']._serialized_end=1695
+  _globals['_USERTASKEVENT']._serialized_start=1698
+  _globals['_USERTASKEVENT']._serialized_end=2228
+  _globals['_USERTASKEVENT_UTECANCELLED']._serialized_start=1948
+  _globals['_USERTASKEVENT_UTECANCELLED']._serialized_end=1962
+  _globals['_USERTASKEVENT_UTETASKEXECUTED']._serialized_start=1964
+  _globals['_USERTASKEVENT_UTETASKEXECUTED']._serialized_end=2023
+  _globals['_USERTASKEVENT_UTEASSIGNED']._serialized_start=2026
+  _globals['_USERTASKEVENT_UTEASSIGNED']._serialized_end=2219
 # @@protoc_insertion_point(module_scope)
