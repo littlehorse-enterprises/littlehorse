@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
-// import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -198,6 +197,10 @@ public class OneTaskQueue {
                         (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
                 ScheduledTaskModel scheduledTask =
                         readOnlyGetableManager.get(taskRunId.toString(), ScheduledTaskModel.class);
+                if (scheduledTask == null) {
+                    // TODO: remove this. Only verify if e2e passes
+                    return;
+                }
                 queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
             }
         }
