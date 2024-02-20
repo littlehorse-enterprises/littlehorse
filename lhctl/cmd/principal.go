@@ -87,4 +87,5 @@ var (
 func init() {
 	putCmd.AddCommand(putPrincipalCmd)
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
+	putPrincipalCmd.Flags().String("tenantId", "", "Tenant id")
 }
