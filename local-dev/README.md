@@ -85,13 +85,21 @@ To build the `littlehorse-server` image for local development utilizing the loca
 ./local-dev/build.sh
 ```
 
-To build de dashboard image:
+To build the dashboard image:
 
 ```
 ./local-dev/build.sh --dashboard
 ```
 
 > It creates `littlehorse/lh-dashboard:latest`.
+
+To build the canary image:
+
+```
+./local-dev/build.sh --canary
+```
+
+> It creates `littlehorse/lh-canary:latest`.
 
 ## Compile Schemas
 

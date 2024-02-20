@@ -9,14 +9,16 @@ CONTEXT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "${CONTEXT_DIR}"
 
-# BUILD DASHBOARD IF REQUESTED
-
 dashboard=false
+canary=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dashboard)
       dashboard=true
+      ;;
+    --canary)
+      canary=true
       ;;
     *)
       echo "Unknown argument: $1"
@@ -35,8 +37,13 @@ if [ ${dashboard} = true ]; then
     exit 0
 fi
 
+if [ ${canary} = true ]; then
+    ./gradlew canary:shadowJar -x test -x spotlessJavaCheck
+    docker build -t littlehorse/lh-canary:latest -f docker/canary/Dockerfile .
+    exit 0
+fi
+
 # BY DEFAULT BUILD LH SERVER DOCKER
 
-echo "Building server image using host machine's gradle cache"
 ./gradlew server:shadowJar -x test -x spotlessJavaCheck
 docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
