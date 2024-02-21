@@ -3,11 +3,17 @@ import type { Result } from '../../sections/MetadataSearch'
 
 
 interface MetadataSearchTableProps {
-    results?:Result[]
+    results :Result[]
 }
-export function MetadataSearchTable({ results }:MetadataSearchTableProps) {
+export function MetadataSearchTable({ results }: MetadataSearchTableProps) {
 
-    return <div className="table">
+    if (results.length === 0) {
+        return (<div className="flex items-center justify-items-center justify-center text-center flex-1">
+                    <p>No data available</p>
+                </div>)
+    }
+
+    return <div className="table flex-1">
         { results ? <table className="flex-1" style={{ width:'100%' }}>
             <thead className="flex" style={{
                 width:'100%'
