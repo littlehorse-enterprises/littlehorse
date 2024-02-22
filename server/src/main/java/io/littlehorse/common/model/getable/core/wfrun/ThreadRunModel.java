@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -363,11 +365,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
-        if (isTerminated() || status == LHStatus.HALTED) return;
+        if (isTerminated()) return;
 
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
         haltReasons.add(reason);
+
+        if (status != LHStatus.HALTED) setStatus(LHStatus.HALTING);
 
         // Now need to halt all the children.
         ThreadHaltReasonModel childHaltReason = new ThreadHaltReasonModel();
@@ -393,6 +397,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         getCurrentNodeRun().maybeHalt();
+        maybeFinishHaltingProcess();
     }
 
     public void setStatus(LHStatus status) {
@@ -406,6 +411,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @return true if halting this ThreadRun was successful.
      */
     public boolean maybeFinishHaltingProcess() {
+        if (status == LHStatus.HALTED) return true;
+
         if (status != LHStatus.HALTING) {
             throw new IllegalStateException("Cant finish halting if not halting");
         }
@@ -460,6 +467,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             if (currentNR.getType() == NodeTypeCase.EXIT) {
                 // Then we're done!
                 setStatus(LHStatus.COMPLETED);
+                endTime = eventTime;
                 wfRun.handleThreadStatus(number, eventTime, status);
                 return true;
             }
@@ -473,8 +481,20 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return true;
     }
 
+    /**
+     * Handles a node failure. Starts a failure handler, or fails the ThreadRun.
+     * @param exn
+     */
     private void handleNodeFailure(NodeFailureException exn) {
-        throw new NotImplementedException();
+        NodeModel node = getCurrentNode();
+        FailureModel failure = exn.getFailure();
+
+        Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
+        if (handlerOption.isEmpty()) {
+            failWithoutGrace(failure, endTime);
+        } else {
+            handleFailure(failure, handlerOption.get());
+        }
     }
 
     /**
@@ -504,7 +524,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @param failure is the failure being handled
      * @param handler is the FailureHandlerDef that defines the ThreadSpec to handle the failure.
      */
-    @SuppressWarnings("unused")
     private void handleFailure(FailureModel failure, FailureHandlerDefModel handler) {
         PendingFailureHandlerModel pfh = new PendingFailureHandlerModel();
         pfh.failedThreadRun = this.number;

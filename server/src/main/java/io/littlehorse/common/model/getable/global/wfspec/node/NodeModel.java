@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
@@ -24,6 +25,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -172,6 +174,15 @@ public class NodeModel extends LHSerializable<Node> {
     public String name;
 
     public ThreadSpecModel threadSpec;
+
+    public Optional<FailureHandlerDefModel> getHandlerFor(FailureModel failure) {
+        for (FailureHandlerDefModel handler : failureHandlers) {
+            if (handler.doesHandle(failure.getFailureName())) {
+                return Optional.of(handler);
+            }
+        }
+        return Optional.empty();
+    }
 
     public void validate() throws LHApiException {
         for (EdgeModel e : outgoingEdges) {

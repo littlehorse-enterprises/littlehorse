@@ -16,7 +16,10 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
+import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -293,27 +296,28 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private boolean startInterrupts(Date time) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
         boolean somethingChanged = false;
-        List<PendingInterruptModel> toHandleNow = new ArrayList<>();
-        // Can only send one interrupt at a time to a thread...they need to complete
-        // sequentially.
-        Set<Integer> threadsToHandleNow = new HashSet<>();
+
+        // Current server behavior is that only one ThreadRun may be interrupted at a single time. This will be
+        // configurable in the `WfSpec` in the future.
+
+        List<PendingInterruptModel> interruptsToLaunchNow = new ArrayList<>();
+        Set<Integer> threadsToInterruptNow = new HashSet<>();
 
         for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
             PendingInterruptModel pi = pendingInterrupts.get(i);
             ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
 
-            throw new NotImplementedException();
-            // if (toInterrupt.canBeInterrupted()) {
-            //     if (!threadsToHandleNow.contains(pi.interruptedThreadId)) {
-            //         threadsToHandleNow.add(pi.interruptedThreadId);
-            //         somethingChanged = true;
-            //         toHandleNow.add(0, pi);
-            //         pendingInterrupts.remove(i);
-            //     }
-            // }
+            if (!threadsToInterruptNow.contains(pi.interruptedThreadId)) {
+                if (toInterrupt.maybeFinishHaltingProcess()) {
+                    threadsToInterruptNow.add(pi.interruptedThreadId);
+                    somethingChanged = true;
+                    interruptsToLaunchNow.add(0, pi);
+                    pendingInterrupts.remove(i);
+                }
+            }
         }
 
-        for (PendingInterruptModel pi : toHandleNow) {
+        for (PendingInterruptModel pi : interruptsToLaunchNow) {
             ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
@@ -330,12 +334,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
             interruptor.interruptTriggerId = pi.externalEventId;
 
             if (interruptor.status == LHStatus.ERROR) {
-                throw new NotImplementedException();
-                // toInterrupt.fail(
-                //         new FailureModel(
-                //                 "Failed launching interrupt thread with id: " + interruptor.number,
-                //                 LHConstants.CHILD_FAILURE),
-                //         time);
+                putFailureOnThreadRun(toInterrupt,
+                        new FailureModel(
+                                "Failed launching interrupt thread with id: " + interruptor.number,
+                                LHConstants.CHILD_FAILURE),
+                        time);
             } else {
                 toInterrupt.acknowledgeInterruptStarted(pi, interruptor.number);
             }
@@ -351,46 +354,52 @@ public class WfRunModel extends CoreGetable<WfRun> {
             PendingFailureHandlerModel pfh = pendingFailures.get(i);
             ThreadRunModel failedThr = getThreadRun(pfh.failedThreadRun);
 
-            throw new NotImplementedException();
-            // if (!failedThr.canBeInterrupted()) {
-            //     continue;
-            // }
-            // somethingChanged = true;
-            // pendingFailures.remove(i);
-            // Map<String, VariableValueModel> vars = new HashMap<>();
+            if (!failedThr.maybeFinishHaltingProcess()) {
+                continue;
+            }
+            somethingChanged = true;
+            pendingFailures.remove(i);
+            Map<String, VariableValueModel> vars = new HashMap<>();
 
-            // ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
-            // if (iSpec.variableDefs.size() > 0) {
-            //     FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure().get();
-            //     vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
-            // }
+            ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
+            if (iSpec.variableDefs.size() > 0) {
+                FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure().get();
+                vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
+            }
 
-            // ThreadRunModel fh =
-            //         startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            ThreadRunModel fh =
+                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
 
-            // failedThr.getCurrentNodeRun().getFailureHandlerIds().add(fh.number);
+            failedThr.getCurrentNodeRun().getFailureHandlerIds().add(fh.number);
 
-            // fh.failureBeingHandled = new FailureBeingHandledModel();
-            // fh.failureBeingHandled.setFailureNumber(
-            //         failedThr.getCurrentNodeRun().getFailures().size() - 1);
-            // fh.failureBeingHandled.setNodeRunPosition(failedThr.currentNodePosition);
-            // fh.failureBeingHandled.setThreadRunNumber(pfh.failedThreadRun);
+            fh.failureBeingHandled = new FailureBeingHandledModel();
+            fh.failureBeingHandled.setFailureNumber(
+                    failedThr.getCurrentNodeRun().getFailures().size() - 1);
+            fh.failureBeingHandled.setNodeRunPosition(failedThr.currentNodePosition);
+            fh.failureBeingHandled.setThreadRunNumber(pfh.failedThreadRun);
 
-            // failedThr.getCurrentNodeRun().getLatestFailure().get().setFailureHandlerThreadRunId(fh.getNumber());
+            failedThr.getCurrentNodeRun().getLatestFailure().get().setFailureHandlerThreadRunId(fh.getNumber());
 
-            // if (fh.status == LHStatus.ERROR) {
-            //     throw new NotImplementedException();
-            //     fh.fail(
-            //             new FailureModel(
-            //                     "Failed launching exception handler thread with id: " + fh.number,
-            //                     LHConstants.CHILD_FAILURE),
-            //             time);
-            // } else {
-            //     failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
-            // }
+            if (fh.status == LHStatus.ERROR) {
+                putFailureOnThreadRun(failedThr,
+                        new FailureModel(
+                                "Failed launching exception handler thread with id: " + fh.number,
+                                LHConstants.CHILD_FAILURE),
+                        time);
+            } else {
+                failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
+            }
         }
 
         return somethingChanged;
+    }
+
+    private void putFailureOnThreadRun(ThreadRunModel threadToFail, FailureModel failure, Date time) {
+        NodeRunModel nodeRun = threadToFail.getCurrentNodeRun();
+        nodeRun.getFailures().add(failure);
+        threadToFail.setStatus(failure.getStatus());
+        threadToFail.setErrorMessage(failure.getMessage());
+        nodeRun.maybeHalt();
     }
 
     public void advance(Date time) {
