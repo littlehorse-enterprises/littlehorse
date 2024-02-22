@@ -6,11 +6,14 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
@@ -24,6 +27,7 @@ import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
@@ -191,6 +195,23 @@ public class PrincipalAdministrationTest {
         PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
         requester.getPerTenantAcls().clear();
         requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
+        defaultStore.put(new StoredGetable<>(requester));
+        sendCommand(putPrincipalRequest);
+        verify(server, never()).sendErrorToClient(any(), any());
+    }
+
+    @Test
+    public void shouldAllowPrincipalCreationForGlobalPrincipalCreators() {
+        ServerACLsModel writePrincipalAcl = TestUtil.singleAcl();
+        ServerACLModel acl = writePrincipalAcl.getAcls().get(0);
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        acl.setResources(List.of(ACLResource.ACL_PRINCIPAL));
+        defaultStore.put(new StoredGetable<>(new TenantModel("other-tenant")));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(writePrincipalAcl);
         defaultStore.put(new StoredGetable<>(requester));
         sendCommand(putPrincipalRequest);
         verify(server, never()).sendErrorToClient(any(), any());
