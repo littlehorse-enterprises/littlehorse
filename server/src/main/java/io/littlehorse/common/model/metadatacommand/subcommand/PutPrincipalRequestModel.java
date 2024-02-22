@@ -75,7 +75,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     public Principal process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
         PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
-
+        PrincipalModel requester = metadataManager.get(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
         if (oldPrincipal != null) {
@@ -96,7 +96,10 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         if (perTenantAcls.isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
         }
-
+        if (!requester.getPerTenantAcls().keySet().containsAll(perTenantAcls.keySet())) {
+            throw new LHApiException(
+                    Status.UNAUTHENTICATED, "You are not allowed to write over the tenant other-tenant");
+        }
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
             ServerACLsModel acls = perTenantAcl.getValue();
