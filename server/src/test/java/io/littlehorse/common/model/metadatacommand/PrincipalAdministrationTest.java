@@ -178,7 +178,22 @@ public class PrincipalAdministrationTest {
         assertThat(thrown)
                 .isNotNull()
                 .isInstanceOf(Exception.class)
-                .hasMessage("UNAUTHENTICATED: You are not allowed to write over the tenant other-tenant");
+                .hasMessage("UNAUTHENTICATED: You are not allowed to write over the tenant [other-tenant]");
+    }
+
+    @Test
+    public void shouldAllowPrincipalCreationForAdminPrincipals() {
+        defaultStore.put(new StoredGetable<>(new TenantModel("other-tenant")));
+        putPrincipalRequest.setPerTenantAcls(
+                Map.of(tenantId, TestUtil.singleAdminAcl("name"), "other-tenant", TestUtil.singleAdminAcl("name2")));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
+        defaultStore.put(new StoredGetable<>(requester));
+        sendCommand(putPrincipalRequest);
+        verify(server, never()).sendErrorToClient(any(), any());
     }
 
     private PutPrincipalRequest principalRequestToProcess() {

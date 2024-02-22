@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
@@ -96,9 +99,16 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         if (perTenantAcls.isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
         }
-        if (!requester.getPerTenantAcls().keySet().containsAll(perTenantAcls.keySet())) {
-            throw new LHApiException(
-                    Status.UNAUTHENTICATED, "You are not allowed to write over the tenant other-tenant");
+        if (!requester.isAdmin()) {
+            Set<String> unauthorizedTenants = perTenantAcls.keySet().stream()
+                    .filter(Predicate.not(
+                            tenantId -> requester.getPerTenantAcls().containsKey(tenantId)))
+                    .collect(Collectors.toSet());
+            if (!unauthorizedTenants.isEmpty()) {
+                throw new LHApiException(
+                        Status.UNAUTHENTICATED,
+                        "You are not allowed to write over the tenant %s".formatted(unauthorizedTenants));
+            }
         }
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
