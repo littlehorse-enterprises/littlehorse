@@ -138,11 +138,21 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 clientAllowedActions.addAll(clientAcl.getAllowedActions());
                 clientAllowedResources.addAll(clientAcl.getResources());
             }
-            if (!(clientAllowedActions.containsAll(authMetadata.requiredActions())
-                    && clientAllowedResources.containsAll(authMetadata.requiredResources()))) {
+            if (!(isActionAllowed(authMetadata, clientAllowedActions)
+                    && isResourceAllowed(authMetadata, clientAllowedResources))) {
                 throw new PermissionDeniedException("Missing permissions %s over resources %s"
                         .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
             }
+        }
+
+        private boolean isActionAllowed(AuthMetadata metadata, Set<ACLAction> clientAllowedActions) {
+            return clientAllowedActions.contains(ServerACLModel.ADMIN_ACTION)
+                    || clientAllowedActions.containsAll(metadata.requiredActions());
+        }
+
+        private boolean isResourceAllowed(AuthMetadata metadata, Set<ACLResource> clientAllowedResources) {
+            return clientAllowedResources.contains(ServerACLModel.ADMIN_RESOURCE)
+                    || clientAllowedResources.containsAll(metadata.requiredResources());
         }
 
         private record AuthMetadata(
