@@ -18,7 +18,7 @@ let myTimeout: NodeJS.Timeout
 export function MetadataSearch() {
     let first = true
 
-    const [ loading, setLoading ] = useState(false)
+    const [ isLoading, setIsLoading ] = useState(false)
     const [ firstLoad, setFirstLoad ] = useState(false)
     const [ limit, setLimit ] = useState(defaultLimit)
     const [ userTaskDefBookmark, setUserTaskDefBookmark ] = useState()
@@ -51,14 +51,14 @@ export function MetadataSearch() {
         }
     }
     const getData = async () => {
-        setLoading(true)
+        setIsLoading(true)
         const { results, bookmark } = await fetchData(metadataType)
         if (metadataType === 'wfSpec') {setWfSpecBookmark(bookmark)}
         if (metadataType === 'taskDef') {setTaskDefBookmark(bookmark)}
         if (metadataType === 'userTaskDef') {setUserTaskDefBookmark(bookmark)}
         if (metadataType === 'externalEventDef') {setExternalEventDefBookmark(bookmark)}
         setMetadataResults(results.map((v: Result) => ({ ...v, type: metadataType.charAt(0).toUpperCase() + metadataType.slice(1) })))
-        setLoading(false)
+        setIsLoading(false)
     }
     const getMData = async () => {
         setWfSpecBookmark(undefined)
@@ -67,7 +67,7 @@ export function MetadataSearch() {
         setExternalEventDefBookmark(undefined)
         if (metadataType) {return getData()}
 
-        setLoading(true)
+        setIsLoading(true)
         // setResults([])
 
         const wfSpecs = await fetchData('wfSpec', false, false)
@@ -102,11 +102,11 @@ export function MetadataSearch() {
         }
 
         setFirstLoad(true)
-        setLoading(false)
+        setIsLoading(false)
     }
     const loadMMore = async () => {
         if (metadataType) {return loadMore()}
-        setLoading(true)
+        setIsLoading(true)
 
         if (wfSpecBookmark) {
             const wfSpecs = await fetchData('wfSpec', true, false)
@@ -147,10 +147,10 @@ export function MetadataSearch() {
             }
         }
 
-        setLoading(false)
+        setIsLoading(false)
     }
     const loadMore = async () => {
-        setLoading(true)
+        setIsLoading(true)
 
         const { results, bookmark, status } = await fetchData(metadataType, true)
 
@@ -164,7 +164,7 @@ export function MetadataSearch() {
             ...v,
             type: metadataType.charAt(0).toUpperCase() + metadataType.slice(1)
         })) ])
-        setLoading(false)
+        setIsLoading(false)
     }
 
     const keyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -198,13 +198,11 @@ export function MetadataSearch() {
                     onClick={() => { setMetadataType('externalEventDef') }}>ExternalEventDef</Button>
             </div>
         </div>
-        <div className={`${metadataResults.length === 0 ? 'flex items-center justify-items-center justify-center' : ''}`}
-            style={{ minHeight: '568px' }}
-        >
-            {metadataResults.length ? (
-                <MetadataSearchTable results={metadataResults}/>
+        <div className="flex" style={{ minHeight: '568px' }}>
+            {!isLoading ? (
+                <MetadataSearchTable results={metadataResults} />
             ) : (
-                <Loader/>
+                <Loader />
             )}
         </div>
 
@@ -214,11 +212,10 @@ export function MetadataSearch() {
                     value={limit}
                     values={[ 10, 20, 30, 60, 100 ]}/> </> : undefined}
                 <LoadMoreButton disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark}
-                    loading={loading}
+                    loading={isLoading}
                     onClick={loadMMore}>Load More</LoadMoreButton>
             </div>
         </div>
-
     </section>
 
 }
