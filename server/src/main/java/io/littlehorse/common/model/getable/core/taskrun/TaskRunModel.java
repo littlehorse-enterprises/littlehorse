@@ -14,6 +14,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -107,7 +108,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                 .setTaskDefId(taskDefId.toProto())
                 .setMaxAttempts(maxAttempts)
                 .setScheduledAt(LHUtil.fromDate(scheduledAt))
-                .setStatus(status)
+                .setStatus(getStatus())
                 .setSource(taskRunSource.toProto())
                 .setTimeoutSeconds(timeoutSeconds)
                 .setId(id.toProto());
@@ -164,6 +165,15 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     @Override
     public TaskRunIdModel getObjectId() {
         return id;
+    }
+
+    /**
+     * Returns the status of this TaskRun, which is always given by the status of the latest
+     * attempt.
+     * @return
+     */
+    public TaskStatus getStatus() {
+        return getLatestAttempt().getStatus();
     }
 
     /**
@@ -293,6 +303,16 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         } else {
             transitionTo(ce.getStatus());
         }
+
+        processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
+    }
+
+    /**
+     * Returns the ID of the WfRun that this TaskRun belongs to.
+     * @return the ID of the WfRun that this TaskRun belongs to.
+     */
+    public WfRunIdModel getWfRunId() {
+        return taskRunSource.getSubSource().getWfRunId();
     }
 
     private void transitionTo(TaskStatus newStatus) {

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -12,7 +13,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTriggerReference> implements TaskRunSubSource {
+public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTriggerReference>
+        implements TaskRunSubSource {
 
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
@@ -31,10 +33,12 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         this.userGroup = utr.getUserGroup();
     }
 
+    @Override
     public Class<UserTaskTriggerReference> getProtoBaseClass() {
         return UserTaskTriggerReference.class;
     }
 
+    @Override
     public UserTaskTriggerReference.Builder toProto() {
         UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
                 .setNodeRunId(nodeRunId.toProto())
@@ -48,5 +52,10 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
+    }
+
+    @Override
+    public WfRunIdModel getWfRunId() {
+        return nodeRunId.getWfRunId();
     }
 }

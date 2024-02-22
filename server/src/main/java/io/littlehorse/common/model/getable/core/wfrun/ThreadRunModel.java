@@ -6,6 +6,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -53,6 +54,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 @Getter
@@ -119,7 +121,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         for (ThreadHaltReason thrpb : proto.getHaltReasonsList()) {
             ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb, context);
-            thr.threadRunModel = this;
+            thr.threadRun = this;
             haltReasons.add(thr);
         }
 
@@ -329,7 +331,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         ThreadHaltReasonModel thr = new ThreadHaltReasonModel();
-        thr.threadRunModel = this;
+        thr.threadRun = this;
         thr.type = ReasonCase.INTERRUPTED;
         thr.interrupted = new InterruptedModel();
         thr.interrupted.interruptThreadId = handlerThreadId;
@@ -360,28 +362,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void halt(ThreadHaltReasonModel reason) {
-        reason.threadRunModel = this;
-        switch (status) {
-            case COMPLETED:
-            case EXCEPTION:
-            case ERROR:
-                // Already terminated, ignoring halt
-                return;
-            case STARTING:
-            case RUNNING:
-            case HALTING:
-                if (canBeInterrupted()) {
-                    setStatus(LHStatus.HALTED);
-                } else {
-                    setStatus(LHStatus.HALTING);
-                }
-                break;
-            case HALTED:
-                setStatus(LHStatus.HALTED);
-                break;
-            case UNRECOGNIZED:
-                throw new RuntimeException("Not possible");
-        }
+        reason.setThreadRun(this);
+        if (isTerminated() || status == LHStatus.HALTED) return;
 
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
@@ -413,74 +395,35 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         getCurrentNodeRun().maybeHalt();
     }
 
-    /*
-     * Checks if the status can be changed. Returns true if status did change.
-     */
-    public boolean updateStatus() {
-        if (status == LHStatus.COMPLETED || status == LHStatus.ERROR) {
-            return false;
-        } else if (status == LHStatus.RUNNING) {
-            return false;
-        } else if (status == LHStatus.HALTED) {
-            // determine if halt reasons are resolved or not.
-
-            // This is where ThreadRun's wake up for example when an exception handler
-            // completes.
-            for (int i = haltReasons.size() - 1; i >= 0; i--) {
-                ThreadHaltReasonModel hr = haltReasons.get(i);
-                if (hr.isResolved()) {
-                    haltReasons.remove(i);
-                    log.debug(
-                            "Removed haltReason {} on thread {} {}, leaving: {}",
-                            hr,
-                            wfRun.getId(),
-                            number,
-                            haltReasons);
-                }
-            }
-            if (haltReasons.isEmpty()) {
-                log.debug("Thread {} is alive again!", number);
-                if (getCurrentNodeRun().getLatestFailure() == null
-                        || getCurrentNodeRun().getLatestFailure().isProperlyHandled()) {
-                    setStatus(LHStatus.RUNNING);
-                } else {
-                    setStatus(getCurrentNodeRun().getLatestFailure().getStatus());
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } else if (status == LHStatus.HALTING) {
-            if (getCurrentNodeRun().maybeHalt()) {
-                setStatus(LHStatus.HALTED);
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
-
     public void setStatus(LHStatus status) {
         this.status = status;
     }
 
-    /*
-     * Returns true if we can move this Thread from HALTING to HALTED status.
+    /**
+     * Tries to halt this ThreadRun, returns true if successful. As a side effect, the status of
+     * this ThreadRun and also its children may transition from HALTING to HALTED.
+     * @precondition this ThreadRun is in the HALTING state.
+     * @return true if halting this ThreadRun was successful.
      */
-
-    public boolean canBeInterrupted() {
-        if (getCurrentNodeRun().maybeHalt()) return true;
-
+    public boolean maybeFinishHaltingProcess() {
+        if (status != LHStatus.HALTING) {
+            throw new IllegalStateException("Cant finish halting if not halting");
+        }
+        boolean allChildrenHalted = true;
         for (int childId : childThreadIds) {
-            if (wfRun.getThreadRun(childId).isRunning()) {
-                return false;
+            if (!wfRun.getThreadRun(childId).maybeFinishHaltingProcess()) {
+                allChildrenHalted = false;
             }
         }
-        return true;
+
+        if (getCurrentNodeRun().maybeHalt() && allChildrenHalted) {
+            setStatus(LHStatus.HALTED);
+            return true;
+        }
+        return false;
     }
 
-    /*
+    /**
      * Returns true if this thread is in a dynamic (running) state.
      */
     public boolean isRunning() {
@@ -488,46 +431,71 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     /**
-     * Tells the ThreadRun to try to move forward. Returns true if the state of the ThreadRun is changed,
-     * meaning that the ThreadRun either advanced to a new NodeRun, changed its status (eg. from HALTING to
-     * HALTED).
+     * Tries to advance the ThreadRun and returns true if a new Node is activated, if a child thread
+     * of any type is started, or the status of the ThreadRun changes.
+     * @param eventTime is the time of the Command that causes the ThreadRun to advance.
+     * @return true if a new node is activated or sub-thread is started.
      */
     public boolean advance(Date eventTime) {
-        NodeRunModel currentNodeRunModel = getCurrentNodeRun();
+        if (isTerminated()) return false;
 
-        if (status == LHStatus.RUNNING) {
-            // Just advance the node. Not fancy.
-            return currentNodeRunModel.advanceIfPossible(eventTime);
-        } else if (status == LHStatus.HALTED) {
-            // This means we just need to wait until advance() is called again
-            // after Thread Resumption
+        if (status == LHStatus.HALTED) {
+            return maybeUnHaltIfAllHaltReasonsResolved();
+        }
 
-            log.trace("Tried to advance HALTED thread. Doing nothing.");
-            return false;
-        } else if (status == LHStatus.HALTING) {
-            log.trace("Tried to advance HALTING thread, checking if halted yet.");
+        if (status == LHStatus.HALTING) {
+            return maybeFinishHaltingProcess();
+        }
 
-            if (currentNodeRunModel.canBeHalted()) {
-                setStatus(LHStatus.HALTED);
-                log.trace("Moving thread to HALTED");
-                return true;
-            } else {
+        // At this point, we know it's a RUNNING or STARTING thread, so we advance it.
+        try {
+            NodeRunModel currentNR = getCurrentNodeRun();
+            boolean canAdvance = currentNR.checkIfProcessingCompleted();
+
+            if (!canAdvance) {
+                // then we're still waiting on the NodeRun, nothing happened.
                 return false;
             }
-        } else if (status == LHStatus.COMPLETED) {
-            // Nothing to do, this is likely an innocuous event.
-            return false;
-        } else if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
-            // This is innocuous. Occurs when a timeout event comes in after
-            // a thread fails or completes. Nothing to do.
 
-            return false;
-        } else if (status == LHStatus.STARTING) {
-            setStatus(LHStatus.RUNNING);
-            return currentNodeRunModel.advanceIfPossible(eventTime);
-        } else {
-            throw new RuntimeException("Unrecognized status: " + status);
+            if (currentNR.getType() == NodeTypeCase.EXIT) {
+                // Then we're done!
+                setStatus(LHStatus.COMPLETED);
+                wfRun.handleThreadStatus(number, eventTime, status);
+                return true;
+            }
+
+            NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables();
+            activateNode(nextNode);
+        } catch (NodeFailureException exn) {
+            handleNodeFailure(exn);
         }
+
+        return true;
+    }
+
+    private void handleNodeFailure(NodeFailureException exn) {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Tries to un-halt the thread by checking if all of the HaltReasons are resolved. Has a side-effect:
+     * resolved HaltReasons are removed, and status changed to RUNNING.
+     * @return true if the ThreadRun moved to RUNNING.
+     */
+    private boolean maybeUnHaltIfAllHaltReasonsResolved() {
+        haltReasons.removeIf(ThreadHaltReasonModel::isResolved);
+
+        if (haltReasons.isEmpty()) {
+            log.debug("Thread {} is alive again!", number);
+            if (getCurrentNodeRun().getLatestFailure().isEmpty()
+                    || getCurrentNodeRun().getLatestFailure().get().isProperlyHandled()) {
+                setStatus(LHStatus.RUNNING);
+            } else {
+                setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -587,7 +555,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         ThreadHaltReasonModel thr = new ThreadHaltReasonModel();
-        thr.threadRunModel = this;
+        thr.threadRun = this;
         thr.type = ReasonCase.HANDLING_FAILURE;
         thr.handlingFailure = new HandlingFailureHaltReasonModel(handlerThreadNumber);
 
@@ -605,7 +573,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * If the failing ThreadRun is an Interrupt Handler ThreadRun, then the parent ThreadRun is marked
      * as failed as well.
      */
-    protected void failWithoutGrace(FailureModel failure, Date time) {
+    private void failWithoutGrace(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
         this.status = failure.getStatus();
         this.endTime = time;
@@ -641,7 +609,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
-    public void activateNode(NodeModel node) {
+    public void activateNode(NodeModel node) throws NodeFailureException {
         Date arrivalTime = new Date();
 
         currentNodePosition++;
@@ -659,7 +627,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         putNodeRun(cnr);
 
         cnr.getSubNodeRun().arrive(arrivalTime);
-        cnr.getSubNodeRun().advanceIfPossible(arrivalTime);
     }
 
     public ThreadRunModel getParent() {

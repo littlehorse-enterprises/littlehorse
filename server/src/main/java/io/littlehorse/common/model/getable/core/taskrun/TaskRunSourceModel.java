@@ -33,6 +33,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         }
     }
 
+    @Override
     public Class<TaskRunSource> getProtoBaseClass() {
         return TaskRunSource.class;
     }
@@ -57,6 +58,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         }
     }
 
+    @Override
     public TaskRunSource.Builder toProto() {
         TaskRunSource.Builder out = TaskRunSource.newBuilder();
         if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());

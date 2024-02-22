@@ -401,7 +401,16 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @return
      */
     public boolean checkIfProcessingCompleted() throws NodeFailureException {
-        return getSubNodeRun().checkIfProcessingCompleted();
+        if (getSubNodeRun().checkIfProcessingCompleted()) {
+            status = LHStatus.COMPLETED;
+            endTime = executionContext
+                    .castOnSupport(ProcessorExecutionContext.class)
+                    .currentCommand()
+                    .getTime();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.taskrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -42,5 +43,10 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         this.context = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+    }
+
+    @Override
+    public WfRunIdModel getWfRunId() {
+        return nodeRunId.getWfRunId();
     }
 }
