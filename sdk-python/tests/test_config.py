@@ -135,6 +135,7 @@ class TestLHConfig(unittest.TestCase):
         config.establish_channel()
         grpc_package_mock.insecure_channel.assert_called_once_with(
             "localhost:2023",
+            ANY,
             options=[
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),
@@ -149,6 +150,7 @@ class TestLHConfig(unittest.TestCase):
         config.establish_channel("192.10.10.20:5555")
         grpc_package_mock.insecure_channel.assert_called_once_with(
             "192.10.10.20:5555",
+            ANY,
             options=[
                 ("grpc.keepalive_time_ms", 45000),
                 ("grpc.keepalive_timeout_ms", 5000),

@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Any, Optional
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
+from grpc.aio import ClientCallDetails, Metadata
+
 from littlehorse.exceptions import OAuthException
 
 
@@ -66,3 +68,51 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
             self._token = AccessToken(token_data)
 
         return self._token
+
+
+class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor):
+    def intercept_unary_unary(self, continuation, details, request):
+        metadata = []
+        if details.metadata is not None:
+            metadata = list(details.metadata)
+        metadata.append(
+            (
+                "tenantid",
+                "eduwer",
+            )
+        )
+        new_details = ClientCallDetails(
+            details.method, details.timeout, metadata, details.credentials, details.wait_for_ready
+        )
+        return continuation(new_details, request)
+
+    def intercept_stream_stream(
+            self, continuation, client_call_details, request_iterator
+    ):
+        return continuation(client_call_details, request_iterator)
+
+
+class AsyncMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.StreamStreamClientInterceptor):
+
+    async def intercept_unary_unary(self, continuation, deatils, request):
+        metadata = []
+        if deatils.metadata is not None:
+            metadata = list(deatils.metadata)
+        metadata.append(
+            (
+                "tenantid",
+                "eduwer",
+            )
+        )
+        new_details = ClientCallDetails(
+            deatils.method, deatils.timeout, metadata, deatils.credentials, deatils.wait_for_ready
+        )
+        return await continuation(new_details, request)
+
+    async def intercept_stream_stream(
+            self,
+            continuation,
+            client_call_details,
+            request_iterator,
+    ):
+        return await continuation(client_call_details, request_iterator)

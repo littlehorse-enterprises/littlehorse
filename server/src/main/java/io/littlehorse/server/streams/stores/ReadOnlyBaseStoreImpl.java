@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -25,6 +26,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * class runs in two modes: Cluster-scoped, or Tenant-scoped. In the Tenant-Scoped mode, a prefix
  * is pre-pended to every key so that we can logically isolate Tenant-Scoped data.
  */
+@Slf4j
 abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Getter
@@ -54,6 +56,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+        log.info(keyToLookFor);
         if (metadataCache != null) {
             StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
             if (storedGetablePb != null) {
