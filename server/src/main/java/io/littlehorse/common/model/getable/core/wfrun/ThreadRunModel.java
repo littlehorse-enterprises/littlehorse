@@ -674,7 +674,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         putNodeRun(cnr);
 
-        cnr.getSubNodeRun().arrive(arrivalTime);
+        cnr.arrive(arrivalTime);
     }
 
     public ThreadRunModel getParent() {

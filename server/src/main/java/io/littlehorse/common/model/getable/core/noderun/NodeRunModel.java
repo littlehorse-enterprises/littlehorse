@@ -421,6 +421,16 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return completed;
     }
 
+    public void arrive(Date time) throws NodeFailureException {
+        try {
+            getSubNodeRun().arrive(time);
+        } catch(NodeFailureException exn) {
+            failures.add(exn.getFailure());
+            setStatus(exn.getFailure().getStatus());
+            throw exn;
+        }
+    }
+
     /**
      * In LittleHorse, a NodeRun may return an output. For example, a TASK NodeRun's output is the VariableValue
      * returned by the Task Method invoked during the TaskRun. An EXTERNAL_EVENT NodeRun's output is the content
@@ -447,6 +457,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public boolean maybeHalt() {
         if (!isInProgress()) {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
+            status = LHStatus.HALTED;
             return true;
         }
 

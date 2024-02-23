@@ -86,7 +86,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     public boolean checkIfProcessingCompleted() throws NodeFailureException {
         boolean allCompleteOrHandled = true;
         for (WaitForThreadModel childThread : threads) {
-            updateStatusOf(childThread);
+            updateStatusOfAndMaybeThrow(childThread);
 
             allCompleteOrHandled = allCompleteOrHandled
                     && childThread.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED;
@@ -121,7 +121,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
      * @param child is the child we're looking at.
      * @throws NodeFailureException if the child failed with an unrecoverable error.
      */
-    private void updateStatusOf(WaitForThreadModel child) throws NodeFailureException {
+    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child) throws NodeFailureException {
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
             return;
         }
