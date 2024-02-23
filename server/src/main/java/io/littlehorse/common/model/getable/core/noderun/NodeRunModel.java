@@ -404,13 +404,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         boolean completed;
         try {
             completed = getSubNodeRun().checkIfProcessingCompleted();
-        } catch(NodeFailureException exn) {
+        } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
             status = exn.getFailure().getStatus();
             errorMessage = exn.getFailure().getMessage();
             throw exn;
         }
-        
+
         if (completed) {
             status = LHStatus.COMPLETED;
             endTime = executionContext

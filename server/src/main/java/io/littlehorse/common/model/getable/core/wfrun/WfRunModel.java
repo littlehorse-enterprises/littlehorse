@@ -334,7 +334,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
             interruptor.interruptTriggerId = pi.externalEventId;
 
             if (interruptor.status == LHStatus.ERROR) {
-                putFailureOnThreadRun(toInterrupt,
+                putFailureOnThreadRun(
+                        toInterrupt,
                         new FailureModel(
                                 "Failed launching interrupt thread with id: " + interruptor.number,
                                 LHConstants.CHILD_FAILURE),
@@ -363,7 +364,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
             ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
-                FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure().get();
+                FailureModel failure =
+                        failedThr.getCurrentNodeRun().getLatestFailure().get();
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
             }
 
@@ -381,7 +383,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
             failedThr.getCurrentNodeRun().getLatestFailure().get().setFailureHandlerThreadRunId(fh.getNumber());
 
             if (fh.status == LHStatus.ERROR) {
-                putFailureOnThreadRun(failedThr,
+                putFailureOnThreadRun(
+                        failedThr,
                         new FailureModel(
                                 "Failed launching exception handler thread with id: " + fh.number,
                                 LHConstants.CHILD_FAILURE),

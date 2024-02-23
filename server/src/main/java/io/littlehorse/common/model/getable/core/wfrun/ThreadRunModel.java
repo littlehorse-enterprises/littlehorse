@@ -52,11 +52,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 @Getter
@@ -454,9 +452,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             return maybeFinishHaltingProcess();
         }
 
-        // At this point, we know it's a RUNNING or STARTING thread, so we advance it.
+        NodeRunModel currentNR = getCurrentNodeRun();
         try {
-            NodeRunModel currentNR = getCurrentNodeRun();
+            // At this point, we know it's a RUNNING or STARTING thread, so we advance it.
+            if (currentNR.getLatestFailure().isPresent()) {
+                return maybeAdvanceFromFailedNodeRun();
+            }
+
             boolean canAdvance = currentNR.checkIfProcessingCompleted();
 
             if (!canAdvance) {
@@ -479,6 +481,33 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @return true if we advanced from the failed NodeRun, else false.
+     */
+    public boolean maybeAdvanceFromFailedNodeRun() {
+        NodeRunModel nodeRun = getCurrentNodeRun();
+        FailureModel failure = nodeRun.getLatestFailure().get();
+        if (!getCurrentNode().getHandlerFor(failure).isPresent()) {
+            throw new IllegalStateException("The Failure should be handleable, otherwise we fail earlier");
+        }
+
+        if (failure.getFailureHandlerThreadRunId() == null) return false;
+
+        boolean handled =
+                wfRun.getThreadRun(failure.getFailureHandlerThreadRunId()).getStatus() == LHStatus.COMPLETED;
+        if (handled) {
+            try {
+                NodeModel nextNode = nodeRun.evaluateOutgoingEdgesAndMaybeMutateVariables();
+                activateNode(nextNode);
+            } catch (NodeFailureException exn) {
+                failWithoutGrace(exn.getFailure(), new Date());
+                return true;
+            }
+        }
+        return handled;
     }
 
     /**
@@ -548,7 +577,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         // This also stops the children
         halt(haltReason);
-        getWfRun().advance(processorContext.currentCommand().getTime());
+        // getWfRun().advance(processorContext.currentCommand().getTime());
     }
 
     /**
