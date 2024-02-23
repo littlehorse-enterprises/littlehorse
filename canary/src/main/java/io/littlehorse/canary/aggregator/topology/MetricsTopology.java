@@ -34,6 +34,7 @@ public class MetricsTopology {
                 beatsStream,
                 TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)),
                 Duration.ofMillis(storeRetention));
+
         final DuplicatedTaskRunTopology taskRunTopology =
                 new DuplicatedTaskRunTopology(beatsStream, Duration.ofMillis(storeRetention));
 

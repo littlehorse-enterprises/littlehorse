@@ -18,6 +18,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class DuplicatedTaskRunTopology {
 
+    public static final String COUNT_TASK_STORE = "count-task";
     private final KStream<MetricKey, Double> stream;
 
     public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetention) {
@@ -25,8 +26,9 @@ public class DuplicatedTaskRunTopology {
                 .filter((key, value) -> value.hasTaskRunBeat())
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
-                .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>with(
-                                ProtobufSerdes.BeatKey(), Serdes.Long())
+                .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(COUNT_TASK_STORE)
+                        .withKeySerde(ProtobufSerdes.BeatKey())
+                        .withValueSerde(Serdes.Long())
                         .withRetention(storeRetention))
                 // filter by duplicated
                 .filter((key, value) -> value > 1L)
