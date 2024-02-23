@@ -175,11 +175,8 @@ public class InterruptOnChildThreadTest {
                     ThreadRun childInterrupt = wfRun.getThreadRuns(2);
                     ThreadRun parentInterrupt = wfRun.getThreadRuns(3);
 
-                    System.out.println("asdf");
                     Assertions.assertThat(parent.getStatus()).isEqualTo(LHStatus.HALTED);
-                    System.out.println("fdsa");
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.HALTED);
-                    System.out.println(";lkj");
 
                     // Child should have TWO halt reasons
                     Assertions.assertThat(child.getHaltReasonsCount()).isEqualTo(2);
@@ -193,8 +190,9 @@ public class InterruptOnChildThreadTest {
                     Assertions.assertThat(parentInterrupt.getParentThreadId()).isEqualTo(0);
 
                     // Since the Parent Thread is halted, the child is halted, which means the child
-                    // interrupt thread (which is a child of the child) should also be halted.
-                    Assertions.assertThat(childInterrupt.getStatus()).isEqualTo(LHStatus.HALTED);
+                    // interrupt thread (which is a child of the child) should also be halted or halting
+                    // depending on when the taskrun finishes.
+                    Assertions.assertThat(childInterrupt.getStatus()).isIn(LHStatus.HALTED, LHStatus.HALTING);
                     Assertions.assertThat(childInterrupt.getHaltReasons(0).getReasonCase())
                             .isEqualTo(ReasonCase.PARENT_HALTED);
                 })
