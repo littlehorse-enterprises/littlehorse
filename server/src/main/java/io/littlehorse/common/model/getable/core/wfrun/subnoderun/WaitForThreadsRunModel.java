@@ -57,7 +57,9 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         this.context = context.castOnSupport(ProcessorExecutionContext.class);
         WaitForThreadsRun p = (WaitForThreadsRun) proto;
         for (WaitForThreadsRun.WaitForThread wft : p.getThreadsList()) {
-            threads.add(LHSerializable.fromProto(wft, WaitForThreadModel.class, context));
+            WaitForThreadModel wftm = LHSerializable.fromProto(wft, WaitForThreadModel.class, context);
+            wftm.setNodeRun(getNodeRun());
+            threads.add(wftm);
         }
     }
 
@@ -85,6 +87,10 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     @Override
     public boolean checkIfProcessingCompleted() throws NodeFailureException {
         boolean allCompleteOrHandled = true;
+
+        // This is stupid but it's required to make things work.
+        threads.stream().forEach(child -> child.setNodeRun(nodeRun));
+
         for (WaitForThreadModel childThread : threads) {
             updateStatusOfAndMaybeThrow(childThread);
 

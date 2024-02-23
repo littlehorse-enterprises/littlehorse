@@ -29,6 +29,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Integer failureHandlerThreadRunId;
 
     private ProcessorExecutionContext context;
+    private NodeRunModel nodeRun;
 
     public WaitForThreadModel() {}
 
@@ -62,6 +63,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
         this.threadStatus = threadRun.getStatus();
         this.waitingStatus = WaitingThreadStatus.THREAD_IN_PROGRESS;
+        this.nodeRun = waitForThreadNodeRunModel;
     }
 
     @Override
@@ -89,13 +91,21 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     @Override
     public WaitForThread.Builder toProto() {
         WaitForThread.Builder out =
-                WaitForThread.newBuilder().setThreadStatus(threadStatus).setThreadRunNumber(threadRunNumber);
+                WaitForThread.newBuilder().setThreadStatus(getThreadStatus()).setThreadRunNumber(threadRunNumber);
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
         out.setWaitingStatus(waitingStatus);
 
         if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadRunId(failureHandlerThreadRunId);
+        return out;
+    }
+
+    public LHStatus getThreadStatus() {
+        if (nodeRun == null) return threadStatus;
+
+        LHStatus out = nodeRun.getThreadRun().getWfRun().getThreadRun(threadRunNumber).getStatus();
+        threadStatus = out;
         return out;
     }
 
