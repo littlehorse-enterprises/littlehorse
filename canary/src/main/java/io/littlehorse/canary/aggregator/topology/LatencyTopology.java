@@ -71,7 +71,7 @@ public class LatencyTopology {
     }
 
     private static AverageAggregator aggregate(final Beat value, final AverageAggregator aggregate) {
-        final int count = aggregate.getCount() + 1;
+        final long count = aggregate.getCount() + 1L;
         final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
         final double avg = sum / count;
         final double max = Math.max(value.getLatencyBeat().getLatency(), aggregate.getMax());
