@@ -246,7 +246,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             Map<String, VariableValueModel> variables,
             ThreadType type) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        ThreadSpecModel tspec = wfSpec.threadSpecs.get(threadName);
+        ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
@@ -321,7 +321,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             ThreadRunModel toInterrupt = getThreadRun(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
-            ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
+            ThreadSpecModel iSpec = getWfSpec().getThreadSpecs().get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
                 ExternalEventModel event = processorContext.getableManager().get(pi.externalEventId);
@@ -362,7 +362,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             pendingFailures.remove(i);
             Map<String, VariableValueModel> vars = new HashMap<>();
 
-            ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
+            ThreadSpecModel iSpec = getWfSpec().getThreadSpecs().get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 FailureModel failure =
                         failedThr.getCurrentNodeRun().getLatestFailure().get();

@@ -175,8 +175,11 @@ public class InterruptOnChildThreadTest {
                     ThreadRun childInterrupt = wfRun.getThreadRuns(2);
                     ThreadRun parentInterrupt = wfRun.getThreadRuns(3);
 
+                    System.out.println("asdf");
                     Assertions.assertThat(parent.getStatus()).isEqualTo(LHStatus.HALTED);
+                    System.out.println("fdsa");
                     Assertions.assertThat(child.getStatus()).isEqualTo(LHStatus.HALTED);
+                    System.out.println(";lkj");
 
                     // Child should have TWO halt reasons
                     Assertions.assertThat(child.getHaltReasonsCount()).isEqualTo(2);

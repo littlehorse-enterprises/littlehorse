@@ -163,6 +163,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             if (failureHandler.getStatus() == LHStatus.COMPLETED) {
                 // The failure handler succeeded, so we count this thread as "properly handled"
                 child.setWaitingStatus(WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED);
+                nodeRun.getThreadRun().getHandledFailedChildren().add(child.getThreadRunNumber());
 
             } else if (failureHandler.getStatus() == LHStatus.EXCEPTION
                     || failureHandler.getStatus() == LHStatus.ERROR) {

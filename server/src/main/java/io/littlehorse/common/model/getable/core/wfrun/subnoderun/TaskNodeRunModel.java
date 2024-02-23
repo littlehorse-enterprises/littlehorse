@@ -133,6 +133,6 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public boolean maybeHalt() {
         // TODO as part of #606: a TaskRun should be interruptible between retries.
         // For now, we can't interrupt a TaskRun until it's fully done.
-        return false;
+        return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();
     }
 }

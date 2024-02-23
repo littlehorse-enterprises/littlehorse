@@ -424,6 +424,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void arrive(Date time) throws NodeFailureException {
         try {
             getSubNodeRun().arrive(time);
+            setStatus(LHStatus.RUNNING);
         } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
             setStatus(exn.getFailure().getStatus());
@@ -457,7 +458,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public boolean maybeHalt() {
         if (!isInProgress()) {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
-            status = LHStatus.HALTED;
             return true;
         }
 
