@@ -424,7 +424,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void arrive(Date time) throws NodeFailureException {
         try {
             getSubNodeRun().arrive(time);
-        } catch(NodeFailureException exn) {
+        } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
             setStatus(exn.getFailure().getStatus());
             throw exn;

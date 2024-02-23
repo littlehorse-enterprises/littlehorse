@@ -490,6 +490,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public boolean maybeAdvanceFromFailedNodeRun() {
         NodeRunModel nodeRun = getCurrentNodeRun();
         FailureModel failure = nodeRun.getLatestFailure().get();
+        nodeRun.setStatus(failure.getStatus());
         if (!getCurrentNode().getHandlerFor(failure).isPresent()) {
             throw new IllegalStateException("The Failure should be handleable, otherwise we fail earlier");
         }
@@ -577,7 +578,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         // This also stops the children
         halt(haltReason);
-        // getWfRun().advance(processorContext.currentCommand().getTime());
     }
 
     /**

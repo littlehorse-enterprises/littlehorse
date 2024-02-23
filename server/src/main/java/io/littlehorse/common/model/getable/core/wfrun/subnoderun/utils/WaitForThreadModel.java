@@ -104,7 +104,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     public LHStatus getThreadStatus() {
         if (nodeRun == null) return threadStatus;
 
-        LHStatus out = nodeRun.getThreadRun().getWfRun().getThreadRun(threadRunNumber).getStatus();
+        LHStatus out =
+                nodeRun.getThreadRun().getWfRun().getThreadRun(threadRunNumber).getStatus();
         threadStatus = out;
         return out;
     }
