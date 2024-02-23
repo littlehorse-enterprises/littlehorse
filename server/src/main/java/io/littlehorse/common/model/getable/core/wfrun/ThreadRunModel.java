@@ -411,7 +411,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @return true if halting this ThreadRun was successful.
      */
     public boolean maybeFinishHaltingProcess() {
-        if (status == LHStatus.HALTED) return true;
+        if (isTerminated() || status == LHStatus.HALTED) return true;
 
         if (status != LHStatus.HALTING) {
             throw new IllegalStateException("Cant finish halting if not halting");
