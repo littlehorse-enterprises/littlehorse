@@ -534,8 +534,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
-            if (getCurrentNodeRun().getLatestFailure().isEmpty()
-                    || getCurrentNodeRun().getLatestFailure().get().isProperlyHandled()) {
+            if (getCurrentNodeRun().getLatestFailure().isEmpty()) {
+                setStatus(LHStatus.RUNNING);
+                getCurrentNodeRun().unHalt();
+            } else if (getCurrentNodeRun().getLatestFailure().get().isProperlyHandled()) {
                 setStatus(LHStatus.RUNNING);
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());

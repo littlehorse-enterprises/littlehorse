@@ -86,6 +86,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
 
     @Override
     public boolean checkIfProcessingCompleted() {
+        if (externalEventId != null) return true;
+
         NodeModel node = nodeRun.getNode();
         ExternalEventNodeModel eNode = node.getExternalEventNode();
 

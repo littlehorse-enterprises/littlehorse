@@ -470,6 +470,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         }
     }
 
+    public void unHalt() {
+        status = LHStatus.RUNNING;
+    }
+
     /**
      * Returns the WfSpecModel for the WfSpec that this NodeRunModel's NodeRun belongs to. Note
      * that in the case of a WfSpec Version Migration, this might be different than the return
