@@ -74,12 +74,12 @@ public class WaitForThreadsTest {
                 .waitForNodeRunStatus(entrypointThreadNumber, 3, RUNNING)
                 .thenVerifyNodeRun(entrypointThreadNumber, 3, verifyWaitForThreadNodeBeforeFirstExternalEvent)
                 .waitForThreadRunStatus(event1ThreadNumber, RUNNING)
-                .thenSendExternalEventJsonContent("thread-1-event", event1)
+                .thenSendExternalEventWithContent("thread-1-event", event1)
                 .waitForThreadRunStatus(event1ThreadNumber, COMPLETED)
                 .waitForStatus(RUNNING)
                 .waitForNodeRunStatus(entrypointThreadNumber, 3, RUNNING)
                 .thenVerifyNodeRun(entrypointThreadNumber, 3, verifyWaitForThreadNodeAfterFirstExternalEvent)
-                .thenSendExternalEventJsonContent("thread-2-event", event2)
+                .thenSendExternalEventWithContent("thread-2-event", event2)
                 .waitForStatus(COMPLETED)
                 .thenVerifyNodeRun(entrypointThreadNumber, 3, nodeRun -> {
                     assertThat(nodeRun.getStatus()).isEqualTo(COMPLETED);
@@ -104,9 +104,9 @@ public class WaitForThreadsTest {
                 .waitForThreadRunStatus(entrypointThreadNumber, RUNNING)
                 .waitForThreadRunStatus(firstEventThreadNumber, RUNNING)
                 .waitForThreadRunStatus(secondEventThreadNumber, RUNNING)
-                .thenSendExternalEventJsonContent("thread-1-event", failingEvent)
+                .thenSendExternalEventWithContent("thread-1-event", failingEvent)
                 .waitForStatus(ERROR)
-                .thenSendExternalEventJsonContent("thread-2-event", event2)
+                .thenSendExternalEventWithContent("thread-2-event", event2)
                 .waitForThreadRunStatus(entrypointThreadNumber, ERROR)
                 .waitForThreadRunStatus(firstEventThreadNumber, ERROR)
                 .waitForThreadRunStatus(secondEventThreadNumber, HALTED)
@@ -137,13 +137,13 @@ public class WaitForThreadsTest {
         workflowVerifier
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
-                .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
+                .thenSendExternalEventWithContent("person-1-approves", person1DenyEvent)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(
                         exceptionHandlerThreadNumber, 1, variableValue -> assertThat(variableValue.getStr())
                                 .isEqualTo("result"))
-                .thenSendExternalEventJsonContent("person-2-approves", person2Approves)
-                .thenSendExternalEventJsonContent("person-3-approves", person3Approves)
+                .thenSendExternalEventWithContent("person-2-approves", person2Approves)
+                .thenSendExternalEventWithContent("person-3-approves", person3Approves)
                 .waitForStatus(COMPLETED)
                 .start();
     }
@@ -154,7 +154,7 @@ public class WaitForThreadsTest {
         workflowVerifier
                 .prepareRun(waitForThreadsWithoutExceptionHandlerWorkflow)
                 .waitForStatus(RUNNING)
-                .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
+                .thenSendExternalEventWithContent("person-1-approves", person1DenyEvent)
                 .waitForStatus(EXCEPTION)
                 .start();
     }

@@ -2,7 +2,6 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -12,9 +11,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
@@ -92,20 +89,8 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
 
         WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun != null) {
-            WfSpecModel spec = service.getWfSpec(wfRun.getWfSpecId());
-            if (spec == null) {
-                wfRun.getThreadRun(0)
-                        .getCurrentNodeRun()
-                        .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
-
-                // NOTE: need to commit the dao before we throw the exception.
-                executionContext.endExecution();
-                throw new LHApiException(Status.DATA_LOSS, "Appears wfSpec was deleted");
-            } else {
-                wfRun.processExternalEvent(evt);
-            }
-            executionContext.getableManager().put(wfRun);
-            executionContext.getableManager().put(evt);
+            wfRun.processExternalEvent(evt);
+            wfRun.advance(eventTime);
         } else {
             // it's a pre-emptive event.
         }
