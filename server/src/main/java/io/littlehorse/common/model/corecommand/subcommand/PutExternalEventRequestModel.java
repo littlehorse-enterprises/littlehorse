@@ -90,8 +90,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun != null) {
             wfRun.processExternalEvent(evt);
-            executionContext.getableManager().put(wfRun);
-            executionContext.getableManager().put(evt);
+            wfRun.advance(eventTime);
         } else {
             // it's a pre-emptive event.
         }
