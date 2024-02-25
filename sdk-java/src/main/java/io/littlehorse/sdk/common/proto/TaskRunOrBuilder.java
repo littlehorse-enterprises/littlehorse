@@ -112,16 +112,6 @@ public interface TaskRunOrBuilder extends
 
   /**
    * <pre>
-   * The maximum number of attempts that may be scheduled for this TaskRun.
-   * </pre>
-   *
-   * <code>int32 max_attempts = 4;</code>
-   * @return The maxAttempts.
-   */
-  int getMaxAttempts();
-
-  /**
-   * <pre>
    * The input variables to pass into this TaskRun. Note that this is a list and not
    * a map, because ordering matters. Depending on the language implementation, not
    * every LittleHorse Task Worker SDK has the ability to determine the names of the
@@ -267,4 +257,54 @@ public interface TaskRunOrBuilder extends
    * @return The timeoutSeconds.
    */
   int getTimeoutSeconds();
+
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+   * scheduled immediately, without delay. NOTE: setting simple_total_
+   * </pre>
+   *
+   * <code>int32 simple_total_attempts = 4;</code>
+   * @return Whether the simpleTotalAttempts field is set.
+   */
+  boolean hasSimpleTotalAttempts();
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+   * scheduled immediately, without delay. NOTE: setting simple_total_
+   * </pre>
+   *
+   * <code>int32 simple_total_attempts = 4;</code>
+   * @return The simpleTotalAttempts.
+   */
+  int getSimpleTotalAttempts();
+
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  boolean hasExponentialBackoff();
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return The exponentialBackoff.
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff();
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
+
+  io.littlehorse.sdk.common.proto.TaskRun.RetryPolicyCase getRetryPolicyCase();
 }

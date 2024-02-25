@@ -11,6 +11,8 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -19,6 +21,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskRun.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -50,6 +53,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private int timeoutSeconds;
     private TaskStatus status;
 
+    private RetryPolicyCase retryPolicyType;
+    private Integer simpleTotalAttempts;
+    private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
+
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
@@ -69,10 +76,23 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.inputVariables = inputVars;
         this.taskRunSource = source;
         this.taskDefId = node.getTaskDefId();
-        this.maxAttempts = node.getRetries() + 1;
         this.timeoutSeconds = node.getTimeoutSeconds();
         this.executionContext = processorContext;
         this.processorContext = processorContext;
+
+        switch (node.getRetryPolicyType()) {
+            case SIMPLE_RETRIES:
+                this.retryPolicyType = RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS;
+                this.simpleTotalAttempts = 1 + node.getSimpleRetries();
+                break;
+            case EXPONENTIAL_BACKOFF:
+                this.retryPolicyType = RetryPolicyCase.EXPONENTIAL_BACKOFF;
+                this.exponentialBackoffRetryPolicy = node.getExponentialBackoffRetryPolicy();
+                break;
+            case RETRYPOLICY_NOT_SET:
+                this.retryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
+                break;
+        }
         transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
@@ -85,7 +105,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     public void initFrom(Message proto, ExecutionContext context) {
         TaskRun p = (TaskRun) proto;
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
-        maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class, context);
         status = p.getStatus();
@@ -106,7 +125,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     public TaskRun.Builder toProto() {
         TaskRun.Builder out = TaskRun.newBuilder()
                 .setTaskDefId(taskDefId.toProto())
-                .setMaxAttempts(maxAttempts)
                 .setScheduledAt(LHUtil.fromDate(scheduledAt))
                 .setStatus(getStatus())
                 .setSource(taskRunSource.toProto())
@@ -193,6 +211,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                 return false;
             case TASK_SCHEDULED:
             case TASK_RUNNING:
+            case TASK_PENDING:
             case UNRECOGNIZED:
         }
         return true;
@@ -298,13 +317,24 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             // Tell the WfRun that the TaskRun is done.
             transitionTo(TaskStatus.TASK_SUCCESS);
         } else if (shouldRetry()) {
-            transitionTo(TaskStatus.TASK_SCHEDULED);
-            scheduleAttempt();
+            scheduleRetryAtAppropriateTime();
         } else {
             transitionTo(ce.getStatus());
         }
 
         processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
+    }
+
+    private void scheduleRetryAtAppropriateTime() {
+        if (retryPolicyType == RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS) {
+            transitionTo(TaskStatus.TASK_SCHEDULED);
+            scheduleAttempt();
+            return;
+        }
+
+        if (retryPolicyType != RetryPolicyCase.EXPONENTIAL_BACKOFF) {
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -313,6 +343,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
      */
     public WfRunIdModel getWfRunId() {
         return taskRunSource.getSubSource().getWfRunId();
+    }
+
+    public WfRunModel getWfRun() {
+        return processorContext.getableManager().get(getWfRunId());
     }
 
     private void transitionTo(TaskStatus newStatus) {

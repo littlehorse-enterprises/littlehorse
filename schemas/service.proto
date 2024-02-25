@@ -22,20 +22,6 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
-message WaitForWorkflowEvent {
-    int32 timeout_ms = 1; // limit of 30 seconds
-    WfRunId wf_run_id = 2;
-    EventDefId event_name = 3;
-}
-
-message WorkflowEvent {
-    WfRunId wf_run_id = 1;
-    NodeRunId node_run_id = 2;
-    VariableValue content = 3;
-    google.protobuf.Timestamp emitted_time = 4;
-    EventDefId event_name = 5;
-}
-
 service LittleHorse {
   // Creates a TaskDef.
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
@@ -83,8 +69,6 @@ service LittleHorse {
 
   // Runs a WfSpec to create a WfRun.
   rpc RunWf(RunWfRequest) returns (WfRun) {}
-
-  rpc WaitForWorkflowEvent(WaitForWorkflowEventReqeust) returns (WorkflowEvent) {}
 
   // Gets a WfRun. Although useful for development and debugging, this RPC is not often
   // used by applications.

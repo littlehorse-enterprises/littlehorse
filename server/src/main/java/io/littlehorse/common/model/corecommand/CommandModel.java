@@ -18,6 +18,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
@@ -55,6 +56,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public TriggeredTaskRun triggeredTaskRun;
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
+    private TaskAttemptRetryReadyModel taskAttemptRetryReady;
     private BulkUpdateJobModel bulkJob;
 
     public Class<Command> getProtoBaseClass() {
@@ -133,6 +135,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case BULK_JOB:
                 out.setBulkJob(bulkJob.toProto());
                 break;
+            case TASK_ATTEMPT_RETRY_READY:
+                out.setTaskAttemptRetryReady(taskAttemptRetryReady.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -205,6 +210,10 @@ public class CommandModel extends AbstractCommand<Command> {
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
                 break;
+            case TASK_ATTEMPT_RETRY_READY:
+                taskAttemptRetryReady = LHSerializable.fromProto(
+                        p.getTaskAttemptRetryReady(), TaskAttemptRetryReadyModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -247,6 +256,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return cancelUserTaskRun;
             case BULK_JOB:
                 return bulkJob;
+            case TASK_ATTEMPT_RETRY_READY:
+                return taskAttemptRetryReady;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -305,6 +316,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
             bulkJob = (BulkUpdateJobModel) cmd;
+        } else if (cls.equals(TaskAttemptRetryReadyModel.class)) {
+            type = CommandCase.TASK_ATTEMPT_RETRY_READY;
+            taskAttemptRetryReady = (TaskAttemptRetryReadyModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

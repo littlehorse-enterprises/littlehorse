@@ -38,6 +38,7 @@ message Command {
         DeadlineReassignUserTask reassigned_user_task = 18;
         CancelUserTaskRunRequest cancel_user_task = 19;
         BulkUpdateJob bulk_job = 20;
+        TaskAttemptRetryReady task_attempt_retry_ready = 21;
         // TODO: Add SaveUserTask
     }
 }
@@ -188,6 +189,10 @@ message SleepNodeMaturedPb {
 message TriggeredTaskRunPb {
     TaskNode task_to_schedule = 1;
     NodeRunId source = 2;
+}
+
+message TaskAttemptRetryReady {
+    TaskRunId id = 1;
 }
 
 message DeadlineReassignUserTask {

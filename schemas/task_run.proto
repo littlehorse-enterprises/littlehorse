@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
+import "common_wfspec.proto";
 import "variable.proto";
 import "object_id.proto";
 import "user_tasks.proto";
@@ -25,9 +26,6 @@ message TaskRun {
   // the TaskRun being put on a Task Queue to be executed by the Task Workers.
   repeated TaskAttempt attempts = 3;
 
-  // The maximum number of attempts that may be scheduled for this TaskRun.
-  int32 max_attempts = 4;
-
   // The input variables to pass into this TaskRun. Note that this is a list and not
   // a map, because ordering matters. Depending on the language implementation, not
   // every LittleHorse Task Worker SDK has the ability to determine the names of the
@@ -47,6 +45,15 @@ message TaskRun {
 
   // The timeout before LH considers a TaskAttempt to be timed out.
   int32 timeout_seconds = 9;
+
+  oneof retry_policy {
+    // The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+    // scheduled immediately, without delay. NOTE: setting simple_total_
+    int32 simple_total_attempts = 4;
+
+    // Use an Exponential Backoff Retry Policy.
+    ExponentialBackoffRetryPolicy exponential_backoff = 10;
+  }
 }
 
 // A key-value pair of variable name and value.

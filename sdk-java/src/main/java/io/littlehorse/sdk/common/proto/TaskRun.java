@@ -45,6 +45,48 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskRun.class, io.littlehorse.sdk.common.proto.TaskRun.Builder.class);
   }
 
+  private int retryPolicyCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object retryPolicy_;
+  public enum RetryPolicyCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    SIMPLE_TOTAL_ATTEMPTS(4),
+    EXPONENTIAL_BACKOFF(10),
+    RETRYPOLICY_NOT_SET(0);
+    private final int value;
+    private RetryPolicyCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static RetryPolicyCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static RetryPolicyCase forNumber(int value) {
+      switch (value) {
+        case 4: return SIMPLE_TOTAL_ATTEMPTS;
+        case 10: return EXPONENTIAL_BACKOFF;
+        case 0: return RETRYPOLICY_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public RetryPolicyCase
+  getRetryPolicyCase() {
+    return RetryPolicyCase.forNumber(
+        retryPolicyCase_);
+  }
+
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId id_;
   /**
@@ -185,21 +227,6 @@ private static final long serialVersionUID = 0L;
   public io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder getAttemptsOrBuilder(
       int index) {
     return attempts_.get(index);
-  }
-
-  public static final int MAX_ATTEMPTS_FIELD_NUMBER = 4;
-  private int maxAttempts_ = 0;
-  /**
-   * <pre>
-   * The maximum number of attempts that may be scheduled for this TaskRun.
-   * </pre>
-   *
-   * <code>int32 max_attempts = 4;</code>
-   * @return The maxAttempts.
-   */
-  @java.lang.Override
-  public int getMaxAttempts() {
-    return maxAttempts_;
   }
 
   public static final int INPUT_VARIABLES_FIELD_NUMBER = 5;
@@ -401,6 +428,80 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_;
   }
 
+  public static final int SIMPLE_TOTAL_ATTEMPTS_FIELD_NUMBER = 4;
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+   * scheduled immediately, without delay. NOTE: setting simple_total_
+   * </pre>
+   *
+   * <code>int32 simple_total_attempts = 4;</code>
+   * @return Whether the simpleTotalAttempts field is set.
+   */
+  @java.lang.Override
+  public boolean hasSimpleTotalAttempts() {
+    return retryPolicyCase_ == 4;
+  }
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+   * scheduled immediately, without delay. NOTE: setting simple_total_
+   * </pre>
+   *
+   * <code>int32 simple_total_attempts = 4;</code>
+   * @return The simpleTotalAttempts.
+   */
+  @java.lang.Override
+  public int getSimpleTotalAttempts() {
+    if (retryPolicyCase_ == 4) {
+      return (java.lang.Integer) retryPolicy_;
+    }
+    return 0;
+  }
+
+  public static final int EXPONENTIAL_BACKOFF_FIELD_NUMBER = 10;
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  @java.lang.Override
+  public boolean hasExponentialBackoff() {
+    return retryPolicyCase_ == 10;
+  }
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return The exponentialBackoff.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+    if (retryPolicyCase_ == 10) {
+       return (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_;
+    }
+    return io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Use an Exponential Backoff Retry Policy.
+   * </pre>
+   *
+   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+    if (retryPolicyCase_ == 10) {
+       return (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_;
+    }
+    return io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -424,8 +525,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < attempts_.size(); i++) {
       output.writeMessage(3, attempts_.get(i));
     }
-    if (maxAttempts_ != 0) {
-      output.writeInt32(4, maxAttempts_);
+    if (retryPolicyCase_ == 4) {
+      output.writeInt32(
+          4, (int)((java.lang.Integer) retryPolicy_));
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
       output.writeMessage(5, inputVariables_.get(i));
@@ -441,6 +543,9 @@ private static final long serialVersionUID = 0L;
     }
     if (timeoutSeconds_ != 0) {
       output.writeInt32(9, timeoutSeconds_);
+    }
+    if (retryPolicyCase_ == 10) {
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -463,9 +568,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, attempts_.get(i));
     }
-    if (maxAttempts_ != 0) {
+    if (retryPolicyCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, maxAttempts_);
+        .computeInt32Size(
+            4, (int)((java.lang.Integer) retryPolicy_));
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -486,6 +592,10 @@ private static final long serialVersionUID = 0L;
     if (timeoutSeconds_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(9, timeoutSeconds_);
+    }
+    if (retryPolicyCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -514,8 +624,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!getAttemptsList()
         .equals(other.getAttemptsList())) return false;
-    if (getMaxAttempts()
-        != other.getMaxAttempts()) return false;
     if (!getInputVariablesList()
         .equals(other.getInputVariablesList())) return false;
     if (hasSource() != other.hasSource()) return false;
@@ -531,6 +639,19 @@ private static final long serialVersionUID = 0L;
     if (status_ != other.status_) return false;
     if (getTimeoutSeconds()
         != other.getTimeoutSeconds()) return false;
+    if (!getRetryPolicyCase().equals(other.getRetryPolicyCase())) return false;
+    switch (retryPolicyCase_) {
+      case 4:
+        if (getSimpleTotalAttempts()
+            != other.getSimpleTotalAttempts()) return false;
+        break;
+      case 10:
+        if (!getExponentialBackoff()
+            .equals(other.getExponentialBackoff())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -554,8 +675,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ATTEMPTS_FIELD_NUMBER;
       hash = (53 * hash) + getAttemptsList().hashCode();
     }
-    hash = (37 * hash) + MAX_ATTEMPTS_FIELD_NUMBER;
-    hash = (53 * hash) + getMaxAttempts();
     if (getInputVariablesCount() > 0) {
       hash = (37 * hash) + INPUT_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getInputVariablesList().hashCode();
@@ -572,6 +691,18 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + status_;
     hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
     hash = (53 * hash) + getTimeoutSeconds();
+    switch (retryPolicyCase_) {
+      case 4:
+        hash = (37 * hash) + SIMPLE_TOTAL_ATTEMPTS_FIELD_NUMBER;
+        hash = (53 * hash) + getSimpleTotalAttempts();
+        break;
+      case 10:
+        hash = (37 * hash) + EXPONENTIAL_BACKOFF_FIELD_NUMBER;
+        hash = (53 * hash) + getExponentialBackoff().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -724,14 +855,13 @@ private static final long serialVersionUID = 0L;
         attemptsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
-      maxAttempts_ = 0;
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
       } else {
         inputVariables_ = null;
         inputVariablesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       source_ = null;
       if (sourceBuilder_ != null) {
         sourceBuilder_.dispose();
@@ -744,6 +874,11 @@ private static final long serialVersionUID = 0L;
       }
       status_ = 0;
       timeoutSeconds_ = 0;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.clear();
+      }
+      retryPolicyCase_ = 0;
+      retryPolicy_ = null;
       return this;
     }
 
@@ -772,6 +907,7 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.sdk.common.proto.TaskRun result = new io.littlehorse.sdk.common.proto.TaskRun(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -787,9 +923,9 @@ private static final long serialVersionUID = 0L;
         result.attempts_ = attemptsBuilder_.build();
       }
       if (inputVariablesBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           inputVariables_ = java.util.Collections.unmodifiableList(inputVariables_);
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.inputVariables_ = inputVariables_;
       } else {
@@ -809,24 +945,30 @@ private static final long serialVersionUID = 0L;
             ? taskDefId_
             : taskDefIdBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.maxAttempts_ = maxAttempts_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.source_ = sourceBuilder_ == null
             ? source_
             : sourceBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.scheduledAt_ = scheduledAtBuilder_ == null
             ? scheduledAt_
             : scheduledAtBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000100) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.timeoutSeconds_ = timeoutSeconds_;
+      }
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.TaskRun result) {
+      result.retryPolicyCase_ = retryPolicyCase_;
+      result.retryPolicy_ = this.retryPolicy_;
+      if (retryPolicyCase_ == 10 &&
+          exponentialBackoffBuilder_ != null) {
+        result.retryPolicy_ = exponentialBackoffBuilder_.build();
       }
     }
 
@@ -906,14 +1048,11 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.getMaxAttempts() != 0) {
-        setMaxAttempts(other.getMaxAttempts());
-      }
       if (inputVariablesBuilder_ == null) {
         if (!other.inputVariables_.isEmpty()) {
           if (inputVariables_.isEmpty()) {
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureInputVariablesIsMutable();
             inputVariables_.addAll(other.inputVariables_);
@@ -926,7 +1065,7 @@ private static final long serialVersionUID = 0L;
             inputVariablesBuilder_.dispose();
             inputVariablesBuilder_ = null;
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
             inputVariablesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getInputVariablesFieldBuilder() : null;
@@ -946,6 +1085,19 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getTimeoutSeconds() != 0) {
         setTimeoutSeconds(other.getTimeoutSeconds());
+      }
+      switch (other.getRetryPolicyCase()) {
+        case SIMPLE_TOTAL_ATTEMPTS: {
+          setSimpleTotalAttempts(other.getSimpleTotalAttempts());
+          break;
+        }
+        case EXPONENTIAL_BACKOFF: {
+          mergeExponentialBackoff(other.getExponentialBackoff());
+          break;
+        }
+        case RETRYPOLICY_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1001,8 +1153,8 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 32: {
-              maxAttempts_ = input.readInt32();
-              bitField0_ |= 0x00000008;
+              retryPolicy_ = input.readInt32();
+              retryPolicyCase_ = 4;
               break;
             } // case 32
             case 42: {
@@ -1022,26 +1174,33 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getSourceFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getScheduledAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
             } // case 58
             case 64: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000040;
               break;
             } // case 64
             case 72: {
               timeoutSeconds_ = input.readInt32();
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000080;
               break;
             } // case 72
+            case 82: {
+              input.readMessage(
+                  getExponentialBackoffFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              retryPolicyCase_ = 10;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1057,6 +1216,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int retryPolicyCase_ = 0;
+    private java.lang.Object retryPolicy_;
+    public RetryPolicyCase
+        getRetryPolicyCase() {
+      return RetryPolicyCase.forNumber(
+          retryPolicyCase_);
+    }
+
+    public Builder clearRetryPolicy() {
+      retryPolicyCase_ = 0;
+      retryPolicy_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.TaskRunId id_;
@@ -1699,56 +1873,12 @@ private static final long serialVersionUID = 0L;
       return attemptsBuilder_;
     }
 
-    private int maxAttempts_ ;
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @return The maxAttempts.
-     */
-    @java.lang.Override
-    public int getMaxAttempts() {
-      return maxAttempts_;
-    }
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @param value The maxAttempts to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMaxAttempts(int value) {
-
-      maxAttempts_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMaxAttempts() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      maxAttempts_ = 0;
-      onChanged();
-      return this;
-    }
-
     private java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> inputVariables_ =
       java.util.Collections.emptyList();
     private void ensureInputVariablesIsMutable() {
-      if (!((bitField0_ & 0x00000010) != 0)) {
+      if (!((bitField0_ & 0x00000008) != 0)) {
         inputVariables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VarNameAndVal>(inputVariables_);
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
        }
     }
 
@@ -1975,7 +2105,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearInputVariables() {
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
       } else {
         inputVariablesBuilder_.clear();
@@ -2101,7 +2231,7 @@ private static final long serialVersionUID = 0L;
         inputVariablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VarNameAndVal, io.littlehorse.sdk.common.proto.VarNameAndVal.Builder, io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder>(
                 inputVariables_,
-                ((bitField0_ & 0x00000010) != 0),
+                ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
                 isClean());
         inputVariables_ = null;
@@ -2123,7 +2253,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the source field is set.
      */
     public boolean hasSource() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <pre>
@@ -2160,7 +2290,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2180,7 +2310,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2195,7 +2325,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
       if (sourceBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           source_ != null &&
           source_ != io.littlehorse.sdk.common.proto.TaskRunSource.getDefaultInstance()) {
           getSourceBuilder().mergeFrom(value);
@@ -2205,7 +2335,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2219,7 +2349,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder clearSource() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       source_ = null;
       if (sourceBuilder_ != null) {
         sourceBuilder_.dispose();
@@ -2238,7 +2368,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSource.Builder getSourceBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return getSourceFieldBuilder().getBuilder();
     }
@@ -2294,7 +2424,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the scheduledAt field is set.
      */
     public boolean hasScheduledAt() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -2327,7 +2457,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2345,7 +2475,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2358,7 +2488,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeScheduledAt(com.google.protobuf.Timestamp value) {
       if (scheduledAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           scheduledAt_ != null &&
           scheduledAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getScheduledAtBuilder().mergeFrom(value);
@@ -2368,7 +2498,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2380,7 +2510,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder clearScheduledAt() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       scheduledAt_ = null;
       if (scheduledAtBuilder_ != null) {
         scheduledAtBuilder_.dispose();
@@ -2397,7 +2527,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getScheduledAtBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getScheduledAtFieldBuilder().getBuilder();
     }
@@ -2460,7 +2590,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -2490,7 +2620,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000040;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -2504,7 +2634,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000040);
       status_ = 0;
       onChanged();
       return this;
@@ -2535,7 +2665,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTimeoutSeconds(int value) {
 
       timeoutSeconds_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -2548,10 +2678,250 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTimeoutSeconds() {
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000080);
       timeoutSeconds_ = 0;
       onChanged();
       return this;
+    }
+
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+     * scheduled immediately, without delay. NOTE: setting simple_total_
+     * </pre>
+     *
+     * <code>int32 simple_total_attempts = 4;</code>
+     * @return Whether the simpleTotalAttempts field is set.
+     */
+    public boolean hasSimpleTotalAttempts() {
+      return retryPolicyCase_ == 4;
+    }
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+     * scheduled immediately, without delay. NOTE: setting simple_total_
+     * </pre>
+     *
+     * <code>int32 simple_total_attempts = 4;</code>
+     * @return The simpleTotalAttempts.
+     */
+    public int getSimpleTotalAttempts() {
+      if (retryPolicyCase_ == 4) {
+        return (java.lang.Integer) retryPolicy_;
+      }
+      return 0;
+    }
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+     * scheduled immediately, without delay. NOTE: setting simple_total_
+     * </pre>
+     *
+     * <code>int32 simple_total_attempts = 4;</code>
+     * @param value The simpleTotalAttempts to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSimpleTotalAttempts(int value) {
+
+      retryPolicyCase_ = 4;
+      retryPolicy_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
+     * scheduled immediately, without delay. NOTE: setting simple_total_
+     * </pre>
+     *
+     * <code>int32 simple_total_attempts = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSimpleTotalAttempts() {
+      if (retryPolicyCase_ == 4) {
+        retryPolicyCase_ = 0;
+        retryPolicy_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> exponentialBackoffBuilder_;
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     * @return Whether the exponentialBackoff field is set.
+     */
+    @java.lang.Override
+    public boolean hasExponentialBackoff() {
+      return retryPolicyCase_ == 10;
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     * @return The exponentialBackoff.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+      if (exponentialBackoffBuilder_ == null) {
+        if (retryPolicyCase_ == 10) {
+          return (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_;
+        }
+        return io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+      } else {
+        if (retryPolicyCase_ == 10) {
+          return exponentialBackoffBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder setExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        retryPolicy_ = value;
+        onChanged();
+      } else {
+        exponentialBackoffBuilder_.setMessage(value);
+      }
+      retryPolicyCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder setExponentialBackoff(
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder builderForValue) {
+      if (exponentialBackoffBuilder_ == null) {
+        retryPolicy_ = builderForValue.build();
+        onChanged();
+      } else {
+        exponentialBackoffBuilder_.setMessage(builderForValue.build());
+      }
+      retryPolicyCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder mergeExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (retryPolicyCase_ == 10 &&
+            retryPolicy_ != io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance()) {
+          retryPolicy_ = io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.newBuilder((io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          retryPolicy_ = value;
+        }
+        onChanged();
+      } else {
+        if (retryPolicyCase_ == 10) {
+          exponentialBackoffBuilder_.mergeFrom(value);
+        } else {
+          exponentialBackoffBuilder_.setMessage(value);
+        }
+      }
+      retryPolicyCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder clearExponentialBackoff() {
+      if (exponentialBackoffBuilder_ == null) {
+        if (retryPolicyCase_ == 10) {
+          retryPolicyCase_ = 0;
+          retryPolicy_ = null;
+          onChanged();
+        }
+      } else {
+        if (retryPolicyCase_ == 10) {
+          retryPolicyCase_ = 0;
+          retryPolicy_ = null;
+        }
+        exponentialBackoffBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder getExponentialBackoffBuilder() {
+      return getExponentialBackoffFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+      if ((retryPolicyCase_ == 10) && (exponentialBackoffBuilder_ != null)) {
+        return exponentialBackoffBuilder_.getMessageOrBuilder();
+      } else {
+        if (retryPolicyCase_ == 10) {
+          return (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_;
+        }
+        return io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Use an Exponential Backoff Retry Policy.
+     * </pre>
+     *
+     * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> 
+        getExponentialBackoffFieldBuilder() {
+      if (exponentialBackoffBuilder_ == null) {
+        if (!(retryPolicyCase_ == 10)) {
+          retryPolicy_ = io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance();
+        }
+        exponentialBackoffBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy) retryPolicy_,
+                getParentForChildren(),
+                isClean());
+        retryPolicy_ = null;
+      }
+      retryPolicyCase_ = 10;
+      onChanged();
+      return exponentialBackoffBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
