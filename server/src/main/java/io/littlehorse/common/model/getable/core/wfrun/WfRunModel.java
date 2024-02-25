@@ -406,14 +406,19 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void advance(Date time) {
-        boolean statusChanged = true;
+        // startXnHandlersAndInterrupts(time);
+        // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
+        //     threadRunsUseMeCarefully.get(i).advance(time);
+        // }
 
+        boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
         // WfRun is static, meaning that there are no more advances that can be made
         // without another Command coming in.
         while (statusChanged) {
             statusChanged = startXnHandlersAndInterrupts(time);
-            for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
+            // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
+            for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
             }

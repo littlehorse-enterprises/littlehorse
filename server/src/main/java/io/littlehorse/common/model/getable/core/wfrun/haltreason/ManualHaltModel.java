@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.ManualHalt;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
@@ -10,7 +10,7 @@ public class ManualHaltModel extends LHSerializable<ManualHalt> implements SubHa
 
     public boolean meaningOfLife;
 
-    public boolean isResolved(WfRunModel wfRunModel) {
+    public boolean isResolved(ThreadRunModel haltedThread) {
         // never resolved; only removed.
         return false;
     }

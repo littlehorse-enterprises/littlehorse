@@ -222,7 +222,7 @@ public class InterruptOnChildThreadTest {
                             childInterrupt.execute("iact-dummy");
                         });
                     },
-                    CHILD_INTERRUPT_TRIGGER,
+                    "child-thread",
                     Map.of());
 
             parent.waitForThreads(SpawnedThreads.of(childHandle));
@@ -236,6 +236,10 @@ public class InterruptOnChildThreadTest {
 
     @LHTaskMethod("iact-dummy")
     public String obiwan() {
+        try {
+            Thread.sleep(500);
+        } catch (Exception exn) {
+        }
         return "hello there";
     }
 }

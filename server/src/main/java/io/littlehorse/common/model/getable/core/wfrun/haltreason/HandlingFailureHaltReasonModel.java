@@ -44,7 +44,8 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
     }
 
     @Override
-    public boolean isResolved(WfRunModel wfRunModel) {
+    public boolean isResolved(ThreadRunModel haltedThread) {
+        WfRunModel wfRunModel = haltedThread.getWfRun();
         ThreadRunModel handlerThread = wfRunModel.getThreadRun(handlerThreadId);
         log.debug(
                 "HandlingFailureHaltReason for failed thread {}: handler thread " + "status is {}",

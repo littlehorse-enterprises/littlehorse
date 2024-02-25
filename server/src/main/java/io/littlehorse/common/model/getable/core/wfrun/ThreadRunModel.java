@@ -336,8 +336,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         thr.interrupted = new InterruptedModel();
         thr.interrupted.interruptThreadId = handlerThreadId;
 
-        childThreadIds.add(handlerThreadId);
-
         haltReasons.add(thr);
     }
 
@@ -387,7 +385,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 if (reason.type != ReasonCase.PENDING_INTERRUPT && reason.type != ReasonCase.INTERRUPTED) {
                     child.halt(childHaltReason);
                 } else {
-                    log.debug("Not halting sibling interrupt thread! This will change, in future" + " release.");
+                    log.trace("Not halting sibling interrupt thread! This will change, in future release.");
                 }
             } else {
                 child.halt(childHaltReason);
@@ -471,11 +469,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 setStatus(LHStatus.COMPLETED);
                 endTime = eventTime;
                 wfRun.handleThreadStatus(number, eventTime, status);
-                return true;
+            } else {
+                NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables();
+                activateNode(nextNode);
             }
-
-            NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables();
-            activateNode(nextNode);
         } catch (NodeFailureException exn) {
             handleNodeFailure(exn);
         }
