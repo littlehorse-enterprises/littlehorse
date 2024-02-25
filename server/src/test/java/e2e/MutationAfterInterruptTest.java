@@ -21,11 +21,11 @@ import org.junit.jupiter.api.Test;
  */
 @LHTest(
         externalEventNames = {
-            MutationAfterInterrupt.INTERRUPT_TRIGGER,
-            MutationAfterInterrupt.COMPLETE_INTERRUPT_EVENT,
-            MutationAfterInterrupt.PARENT_EVENT,
+            MutationAfterInterruptTest.INTERRUPT_TRIGGER,
+            MutationAfterInterruptTest.COMPLETE_INTERRUPT_EVENT,
+            MutationAfterInterruptTest.PARENT_EVENT,
         })
-public class MutationAfterInterrupt {
+public class MutationAfterInterruptTest {
 
     public static final String INTERRUPT_TRIGGER = "mutation-after-interrupt-trigger";
     public static final String PARENT_EVENT = "mutation-after-interrupt-parent-event";
@@ -60,13 +60,13 @@ public class MutationAfterInterrupt {
     void variableMutationsOnExternalEventNodeShouldWorkAfterInterrupt() {
         verifier.prepareRun(mutationAfterInterruptOnExtEvt)
                 .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, Map.of())
-                .thenSendExternalEventWithContent(PARENT_EVENT, Map.of("foo", "bar"))
+                .thenSendExternalEventWithContent(PARENT_EVENT, "Obi-Wan Kenobi")
                 .thenSendExternalEventWithContent(COMPLETE_INTERRUPT_EVENT, Map.of())
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
                 .thenVerifyVariable(0, "event-content", variable -> {
-                    Assertions.assertThat(variable.getStr()).isEqualTo("bar");
+                    Assertions.assertThat(variable.getStr()).isEqualTo("Obi-Wan Kenobi");
                 })
                 .start();
     }
@@ -77,7 +77,7 @@ public class MutationAfterInterrupt {
             WfRunVariable taskOutputVar = wf.addVariable("task-output", VariableType.STR);
 
             NodeOutput taskOutput = wf.execute("mutation-after-interrupt-return-string-slowly");
-            wf.mutate(taskOutputVar, VariableMutationType.ASSIGN, taskOutput.jsonPath("$.foo"));
+            wf.mutate(taskOutputVar, VariableMutationType.ASSIGN, taskOutput);
 
             wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
                 handler.execute("mutation-after-interrupt-return-string-slowly");
