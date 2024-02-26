@@ -8,11 +8,10 @@
     "/dist"
   ],
   "scripts": {
-    "prebuild": "tsc --build --clean && ../local-dev/compile-proto.sh",
-    "lint": "prettier --check .",
-    "lint:fix": "prettier --write .",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write ."
   },
   "devDependencies": {
     "@tsconfig/node12": "^12.1.1",

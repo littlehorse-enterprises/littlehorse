@@ -1,3 +1,1 @@
-import LHClient, { createClient } from './LHClient'
-
-export { LHClient, createClient }
+export { LHConfig } from './LHConfig'

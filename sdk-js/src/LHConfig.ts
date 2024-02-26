@@ -1,42 +1,98 @@
-import getProperties from './utils/getProperties'
+import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
+import { LittleHorseDefinition } from './proto/service'
+import getPropertiesFile from './utils/getPropertiesFile'
+import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
 
 export const CONFIG_NAMES = [
   'LHC_API_HOST',
   'LHC_API_PORT',
   'LHC_API_PROTOCOL',
-  'LHW_TASK_WORKER_ID',
   'LHC_TENANT_ID',
-  'LHC_CLIENT_CERT',
-  'LHC_CLIENT_KEY',
   'LHC_CA_CERT',
-  'LHC_OAUTH_CLIENT_ID',
-  'LHC_OAUTH_ACCESS_TOKEN_URL',
-  'LHW_NUM_WORKER_THREADS',
-  'LHW_SERVER_CONNECT_LISTENER',
-  'LHC_GRPC_KEEPALIVE_TIME_MS',
-  'LHC_GRPC_KEEPALIVE_TIMEOUT_MS',
-  'LHW_TASK_WORKER_VERSION',
 ] as const
 
+export type Config = {
+  [key in ConfigName]?: string
+}
 export type ConfigName = (typeof CONFIG_NAMES)[number]
 
-export type Config = {
-  [key in ConfigName]: string
+const DEFAULT_CONFIG: Config = {
+  LHC_API_HOST: 'localhost',
+  LHC_API_PORT: '2023',
+  LHC_TENANT_ID: 'default',
+  LHC_API_PROTOCOL: 'PLAINTEXT',
 }
 
-// class LHConfig {
-//   private apiHost;
-//   private apiPort;
-//   private protocol;
-//   private tenantId;
+export class LHConfig {
+  private apiHost?: string = 'localhost'
+  private apiPort?: string = '2023'
+  private protocol?: string = 'PLAINTEXT'
+  private tenantId?: string = 'default'
+  private caCert?: string
+  private channel: Channel
 
-//   static fromConfigFile(file: string): LHConfig {
-//     const config = await getProperties(file)
-//     this.apiHost = config
-//   }
+  private constructor(config: Config) {
+    const mergedConfig = { ...DEFAULT_CONFIG, ...config } as Config
+    this.apiHost = mergedConfig.LHC_API_HOST
+    this.apiPort = mergedConfig.LHC_API_PORT
+    this.protocol = mergedConfig.LHC_API_PROTOCOL
+    this.tenantId = mergedConfig.LHC_TENANT_ID
+    this.caCert = mergedConfig.LHC_CA_CERT
 
-//   static with(config: Partial<Config>): LHConfig {
+    let channelCredentials
+    if (this.protocol === 'SSL') {
+      const rootCa = this.caCert ? Buffer.from(this.caCert) : undefined
+      channelCredentials = ChannelCredentials.createSsl(rootCa)
+    }
 
-//   }
+    this.channel = createChannel(`${this.apiHost}:${this.apiPort}`, channelCredentials)
+  }
 
-// }
+  /**
+   * Instantiate LHConfig from properties file
+   * @param file - path to properties file
+   * @returns LHConfig instance
+   */
+  public static fromConfigFile(file: string): LHConfig {
+    const config = getPropertiesFile(file)
+    return new LHConfig(config)
+  }
+
+  public static from(args: Partial<ConfigArgs>): LHConfig {
+    const config = getPropertiesArgs(args)
+    return new LHConfig(config)
+  }
+
+  /**
+   * Get gRPC client for littlehorse
+   *
+   * For more documentation about it's method please go to {@link https://littlehorse.dev}
+   *
+   * @param options - An object optionally containing `accessToken` and `tenantId`
+   * @returns a gRPC client for littlehorse
+   */
+  public getClient(accessToken?: string): Client<typeof LittleHorseDefinition> {
+    return createClientFactory()
+      .use((call, options) =>
+        call.next(call.request, {
+          ...options,
+          metadata: this.getMetadata(options.metadata, accessToken),
+        })
+      )
+      .create(LittleHorseDefinition, this.channel)
+  }
+
+  private getMetadata(metadata?: Metadata, accessToken?: string): Metadata {
+    let newMetadata = Metadata(metadata)
+
+    if (this.tenantId) {
+      newMetadata = newMetadata.append('tenantId', this.tenantId)
+    }
+
+    if (accessToken) {
+      newMetadata = newMetadata.append('Authorization', `Bearer ${accessToken}`)
+    }
+
+    return newMetadata
+  }
+}

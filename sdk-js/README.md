@@ -11,22 +11,24 @@ npm install littlehorse-client
 
 ## Usage
 
-### With Constructor
+### With Properties File
+
+```ini
+# File located at /example/littlehorse.config
+
+LHC_API_HOST=local.littlehorse.cloud
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=SSL
+LHC_TENANT_ID=example
+```
 
 ```ts
-import { LHClient } from 'littlehorse-client'
+import { LHConfig } from 'littlehorse-client'
 
-// Configure the server
-const config = {
-  // host: "localhost:2023", // Hostname and port to littlehorse
-  // ssl: {
-  //   enabled: true,
-  //   caRoot: "" // plain text CA cert
-  // }
-}
-const client = new LHClient(config).getClient({
-  // accessToken: "..." // optionally provide a OAuth token
-  // tenantId: "..." // optionally provide a tenant id
+const config = new LHConfig.fromPropertiesFile('/example/littlehorse.config')
+
+const client = config.getClient({
+  // accessToken: "..." // optionally provide an OAuth token
 })
 
 // client exposes all gRPC methods
@@ -35,23 +37,20 @@ await client.getTaskDef({ name: 'sample-task' })
 await client.getWfRun({ id: '1674938f8aca437e963083020fa19182' })
 ```
 
-### With factory method
+### From config object
 
 ```ts
-import { createClient } from 'littlehorse-client'
-const client = createClient({
-  server: {
-    // host: "localhost:2023", // Hostname and port to littlehorse
-    // oauth: "" // optional true otherwise false
-    // ssl: {
-    //   enabled: true,
-    //   caRoot: "" // plain text CA cert
-    // }
-  },
-  client: {
-    // accessToken: "..." // optionally provide a OAuth token
-    // tenantId: "..." // optionally provide a tenant id
-  },
+import { LHConfig } from 'littlehorse-client'
+
+const config = new LHConfig.from({
+  apiHost: 'local.littlehorse.cloud',
+  apiPort: '2023',
+  protocol: 'PLAINTEXT',
+  tenantId: 'example',
+})
+
+const client = config.getClient({
+  // accessToken: "..." // optionally provide an OAuth token
 })
 
 await client.whoami({})
