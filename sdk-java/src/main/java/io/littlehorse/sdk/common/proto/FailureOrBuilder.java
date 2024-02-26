@@ -103,4 +103,25 @@ public interface FailureOrBuilder extends
    * @return The wasProperlyHandled.
    */
   boolean getWasProperlyHandled();
+
+  /**
+   * <pre>
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return Whether the failureHandlerThreadrunId field is set.
+   */
+  boolean hasFailureHandlerThreadrunId();
+  /**
+   * <pre>
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
+   * </pre>
+   *
+   * <code>optional int32 failure_handler_threadrun_id = 5;</code>
+   * @return The failureHandlerThreadrunId.
+   */
+  int getFailureHandlerThreadrunId();
 }

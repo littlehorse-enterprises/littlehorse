@@ -31,6 +31,7 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
         if (expectedOutputs.size() != taskRuns.getResultsList().size()) {
             throw new StepExecutionException(
                     id,
+                    context.getWfRunId(),
                     "Expected %d taskRuns but got %d".formatted(expectedOutputs.size(), taskRuns.getResultsCount()));
         }
 
@@ -52,7 +53,7 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
             VariableValue taskOutput = sortedTasks.get(i).getAttempts(0).getOutput();
 
             if (!areEqual(taskOutput, expected.get(i))) {
-                throw new StepExecutionException(id, "Task outputs didn't match!");
+                throw new StepExecutionException(id, context.getWfRunId(), "Task outputs didn't match!");
             }
         }
     }
