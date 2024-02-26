@@ -1,12 +1,14 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 // One instance of this class is responsible for coordinating the grpc backend for
@@ -20,11 +22,17 @@ public class OneTaskQueue {
     private LinkedList<ScheduledTaskModel> pendingTasks;
     private TaskQueueManager parent;
 
+    @Getter
     private String taskDefName;
+
+    @Getter
+    private TenantIdModel tenantId;
+
     private String hostName;
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent) {
+    public OneTaskQueue(String taskDefName, TaskQueueManager parent, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
+        this.tenantId = tenantId;
         this.pendingTasks = new LinkedList<>();
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
@@ -164,5 +172,9 @@ public class OneTaskQueue {
         if (nextTask != null) {
             parent.itsAMatch(nextTask, requestObserver);
         }
+    }
+
+    public int size() {
+        return pendingTasks.size();
     }
 }

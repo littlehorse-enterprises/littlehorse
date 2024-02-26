@@ -52,7 +52,7 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
             mainExecutor.shutdownNow();
             mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
         });
-        mainExecutor.scheduleAtFixedRate(() -> updateMetrics(registry), 30, 5, TimeUnit.SECONDS);
+        mainExecutor.scheduleAtFixedRate(() -> updateMetrics(registry), 30, 30, TimeUnit.SECONDS);
     }
 
     private void updateMetrics(final MeterRegistry registry) {

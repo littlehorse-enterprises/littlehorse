@@ -4,6 +4,7 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +36,11 @@ public class TaskQueueManager {
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
-                tenantTask, taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this));
+                tenantTask, taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this, tenantTask.tenantId()));
+    }
+
+    public Collection<OneTaskQueue> all() {
+        return taskQueues.values();
     }
 
     private record TenantTaskName(TenantIdModel tenantId, String taskDefName) {
