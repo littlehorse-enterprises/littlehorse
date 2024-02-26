@@ -5,6 +5,8 @@ import io.javalin.http.Context;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
+import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.io.File;
@@ -32,9 +34,14 @@ public class HealthService implements Closeable, StateRestoreListener {
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
 
-    public HealthService(LHServerConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams) {
+    public HealthService(
+            LHServerConfig config,
+            KafkaStreams coreStreams,
+            KafkaStreams timerStreams,
+            TaskQueueManager taskQueueManager,
+            MetadataCache metadataCache) {
         this.prom = new PrometheusMetricExporter(config);
-        this.prom.bind(coreStreams, timerStreams);
+        this.prom.bind(coreStreams, timerStreams, taskQueueManager, metadataCache);
         this.server = Javalin.create();
 
         this.coreStreams = coreStreams;
