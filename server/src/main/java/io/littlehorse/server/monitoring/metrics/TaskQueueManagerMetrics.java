@@ -45,8 +45,9 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
     private boolean wasRegistered(MeterRegistry registry, OneTaskQueue queue) {
         return registry.getMeters().stream()
                 .filter(meter -> meter.getId().getName().equals(METRIC_NAME))
-                .filter(meter -> meter.getId().getTag(TENANT_ID_TAG) != null)
-                .anyMatch(meter -> meter.getId().getTag(TASK_NAME_TAG) != null);
+                .filter(meter ->
+                        queue.getTenantId().getId().equals(meter.getId().getTag(TENANT_ID_TAG)))
+                .anyMatch(meter -> queue.getTaskDefName().equals(meter.getId().getTag(TASK_NAME_TAG)));
     }
 
     @Override
