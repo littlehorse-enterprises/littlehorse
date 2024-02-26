@@ -11,6 +11,7 @@ public final class ServerFilterRules {
     public static final List<ServerFilterRule> RULES = List.of(
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_cache_size"),
+            accept("lh_task_queue_size"),
             accept("kafka_stream_state_compaction_pending"),
             accept("kafka_stream_state_write_stall"),
             accept("kafka_stream_state_bytes"),

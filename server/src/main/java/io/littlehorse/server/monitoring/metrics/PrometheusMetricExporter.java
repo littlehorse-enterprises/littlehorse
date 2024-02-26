@@ -25,6 +25,7 @@ public class PrometheusMetricExporter implements Closeable {
     private List<KafkaStreamsMetrics> kafkaStreamsMeters;
     private PrometheusMeterRegistry prometheusRegistry;
     private LHServerConfig config;
+    private TaskQueueManagerMetrics taskQueueManagerMetrics;
 
     public PrometheusMetricExporter(LHServerConfig config) {
         this.config = config;
@@ -43,9 +44,11 @@ public class PrometheusMetricExporter implements Closeable {
             KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache) {
+
         this.kafkaStreamsMeters = List.of(
                 new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
                 new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
         }
@@ -53,7 +56,7 @@ public class PrometheusMetricExporter implements Closeable {
         LHCacheMetrics cacheMetrics = new LHCacheMetrics(metadataCache, "metadata");
         cacheMetrics.bindTo(prometheusRegistry);
 
-        TaskQueueManagerMetrics taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
+        taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
         taskQueueManagerMetrics.bindTo(prometheusRegistry);
 
         JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();
@@ -80,6 +83,7 @@ public class PrometheusMetricExporter implements Closeable {
     public void close() {
         kafkaStreamsMeters.forEach(metric -> metric.close());
         prometheusRegistry.close();
+        taskQueueManagerMetrics.close();
         log.info("Prometheus stopped");
     }
 }

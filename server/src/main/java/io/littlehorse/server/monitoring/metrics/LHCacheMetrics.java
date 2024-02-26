@@ -8,6 +8,7 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 public class LHCacheMetrics implements MeterBinder {
 
     public static final String METRIC_NAME = "lh_cache_size";
+    public static final String CACHE_NAME_TAG = "cache_name";
     private final LHCache<?, ?> cache;
     private final String name;
 
@@ -19,8 +20,7 @@ public class LHCacheMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         Gauge.builder(METRIC_NAME, cache, LHCache::size)
-                .tag("cache_name", name)
-                .register(registry)
-                .getId();
+                .tag(CACHE_NAME_TAG, name)
+                .register(registry);
     }
 }
