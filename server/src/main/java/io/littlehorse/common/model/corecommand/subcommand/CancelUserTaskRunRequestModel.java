@@ -42,6 +42,10 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");
         }
         userTaskRun.cancel();
+        executionContext
+                .getableManager()
+                .get(userTaskRunId.getWfRunId())
+                .advance(executionContext.currentCommand().getTime());
         return Empty.getDefaultInstance();
     }
 

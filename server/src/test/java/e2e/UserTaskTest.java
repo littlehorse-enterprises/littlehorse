@@ -2,7 +2,12 @@ package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -40,6 +45,37 @@ public class UserTaskTest {
     private MyForm myForm = new MyForm();
 
     private WorkflowVerifier workflowVerifier;
+    private LittleHorseBlockingStub client;
+
+    @Test
+    void shouldCompleteUserTaskRunWithProperOutput() {
+        workflowVerifier
+                .prepareRun(deadlineReassignmentWorkflow)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    // Complete the UserTaskRun
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResultsList()
+                            .get(0)
+                            .getId();
+
+                    client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId("obiwan")
+                            .putResults("myStr", LHLibUtil.objToVarVal("kenobi"))
+                            .putResults("myInt", LHLibUtil.objToVarVal(137))
+                            .build());
+                })
+                .waitForStatus(COMPLETED)
+                .thenVerifyTaskRun(0, 2, taskRun -> {
+                    String taskResult = taskRun.getAttempts(0).getOutput().getStr();
+                    Assertions.assertThat(taskResult).contains("kenobi");
+                    Assertions.assertThat(taskResult).contains("137");
+                })
+                .start();
+    }
 
     @Test
     void shouldTransferOwnershipFromUserToGroupOnDeadline() {
@@ -106,15 +142,15 @@ public class UserTaskTest {
     public String obiwan(MyForm formData) {
         return "String was " + formData.myStr + " and int was " + formData.myInt;
     }
+}
 
-    public class MyForm {
+class MyForm {
 
-        @UserTaskField(displayName = "Str display name", description = "some discription")
-        public String myStr;
+    @UserTaskField(displayName = "Str display name", description = "some discription")
+    public String myStr;
 
-        @UserTaskField(displayName = "Int display name", description = "another discription")
-        public int myInt;
+    @UserTaskField(displayName = "Int display name", description = "another discription")
+    public int myInt;
 
-        public MyForm() {}
-    }
+    public MyForm() {}
 }

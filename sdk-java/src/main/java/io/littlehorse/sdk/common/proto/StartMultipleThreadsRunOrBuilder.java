@@ -26,4 +26,33 @@ public interface StartMultipleThreadsRunOrBuilder extends
    */
   com.google.protobuf.ByteString
       getThreadSpecNameBytes();
+
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @return A list containing the childThreadIds.
+   */
+  java.util.List<java.lang.Integer> getChildThreadIdsList();
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @return The count of childThreadIds.
+   */
+  int getChildThreadIdsCount();
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @param index The index of the element to return.
+   * @return The childThreadIds at the given index.
+   */
+  int getChildThreadIds(int index);
 }

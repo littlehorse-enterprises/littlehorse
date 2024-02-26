@@ -94,7 +94,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
         UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
 
-        if (userTaskNR.status != LHStatus.RUNNING) {
+        if (userTaskNR.getStatus() != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
             return null;
         }

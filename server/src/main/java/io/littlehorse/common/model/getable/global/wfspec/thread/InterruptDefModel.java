@@ -60,7 +60,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
                     Status.INVALID_ARGUMENT, "Refers to missing ExternalEventDef " + externalEventDefId);
         }
 
-        handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);
+        handler = ownerThreadSpecModel.wfSpec.threadSpecs.get(handlerSpecName);
         if (handler == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to missing ThreadSpec: " + handlerSpecName);
         }

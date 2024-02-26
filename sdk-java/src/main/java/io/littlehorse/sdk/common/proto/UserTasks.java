@@ -130,24 +130,25 @@ public final class UserTasks {
       "\001 \001(\0132\026.littlehorse.NodeRunId\022\036\n\026user_ta" +
       "sk_event_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000" +
       "\210\001\001\022\027\n\nuser_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_id" +
-      "B\r\n\013_user_group\"\222\004\n\rUserTaskEvent\022(\n\004tim" +
+      "B\r\n\013_user_group\"\243\004\n\rUserTaskEvent\022(\n\004tim" +
       "e\030\001 \001(\0132\032.google.protobuf.Timestamp\022C\n\rt" +
       "ask_executed\030\002 \001(\0132*.littlehorse.UserTas" +
       "kEvent.UTETaskExecutedH\000\022:\n\010assigned\030\003 \001" +
       "(\0132&.littlehorse.UserTaskEvent.UTEAssign" +
       "edH\000\022<\n\tcancelled\030\004 \001(\0132\'.littlehorse.Us" +
-      "erTaskEvent.UTECancelledH\000\032\016\n\014UTECancell" +
-      "ed\032;\n\017UTETaskExecuted\022(\n\010task_run\030\001 \001(\0132" +
-      "\026.littlehorse.TaskRunId\032\301\001\n\013UTEAssigned\022" +
-      "\030\n\013old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_gr" +
-      "oup\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001" +
-      "\022\033\n\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_us" +
-      "er_idB\021\n\017_old_user_groupB\016\n\014_new_user_id" +
-      "B\021\n\017_new_user_groupB\007\n\005event*J\n\021UserTask" +
-      "RunStatus\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022" +
-      "\010\n\004DONE\020\003\022\r\n\tCANCELLED\020\004BG\n\037io.littlehor" +
-      "se.sdk.common.protoP\001Z\007.;model\252\002\030LittleH" +
-      "orse.Common.Protob\006proto3"
+      "erTaskEvent.UTECancelledH\000\032\037\n\014UTECancell" +
+      "ed\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskExecuted\022(" +
+      "\n\010task_run\030\001 \001(\0132\026.littlehorse.TaskRunId" +
+      "\032\301\001\n\013UTEAssigned\022\030\n\013old_user_id\030\001 \001(\tH\000\210" +
+      "\001\001\022\033\n\016old_user_group\030\002 \001(\tH\001\210\001\001\022\030\n\013new_u" +
+      "ser_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user_group\030\004 \001(" +
+      "\tH\003\210\001\001B\016\n\014_old_user_idB\021\n\017_old_user_grou" +
+      "pB\016\n\014_new_user_idB\021\n\017_new_user_groupB\007\n\005" +
+      "event*J\n\021UserTaskRunStatus\022\016\n\nUNASSIGNED" +
+      "\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELLED\020" +
+      "\004BG\n\037io.littlehorse.sdk.common.protoP\001Z\007" +
+      ".;model\252\002\030LittleHorse.Common.Protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -222,7 +223,7 @@ public final class UserTasks {
     internal_static_littlehorse_UserTaskEvent_UTECancelled_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Message", });
     internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_descriptor =
       internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(1);
     internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_fieldAccessorTable = new

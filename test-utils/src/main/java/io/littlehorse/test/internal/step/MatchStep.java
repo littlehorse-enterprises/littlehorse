@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal.step;
 
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.test.internal.LHTestException;
 import io.littlehorse.test.internal.MismatchedConditionException;
 import java.time.Duration;
@@ -37,11 +38,11 @@ public abstract class MatchStep<V> extends AbstractStep {
     }
 
     @Override
-    protected void handleException(Throwable ex) throws LHTestException {
+    protected void handleException(Throwable ex, WfRunId wfRunId) throws LHTestException {
         if (ex instanceof ConditionTimeoutException) {
-            throw new MismatchedConditionException(expectedValue, lastEvaluatedValue, id);
+            throw new MismatchedConditionException(expectedValue, lastEvaluatedValue, wfRunId, id);
         }
-        super.handleException(ex);
+        super.handleException(ex, wfRunId);
     }
 
     protected abstract Predicate<? super V> matcher(V expectedValue);

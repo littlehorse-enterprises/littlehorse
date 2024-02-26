@@ -70,6 +70,22 @@ public class FailureHandlingTest {
     }
 
     @Test
+    public void failureHanlderIdShouldBeNotedOnFailure() {
+        workflowVerifier
+                .prepareRun(handleClientSpecificException)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
+                    Failure failure = nodeRun.getFailures(0);
+                    Assertions.assertThat(failure.getFailureHandlerThreadrunId())
+                            .isEqualTo(1);
+
+                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.EXCEPTION);
+                })
+                .start();
+    }
+
+    @Test
     public void shouldMarkWorkflowBusinessException() {
         workflowVerifier
                 .prepareRun(exceptionFailureWf)

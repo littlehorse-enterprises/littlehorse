@@ -142,6 +142,8 @@ export interface StartThreadRun {
 export interface StartMultipleThreadsRun {
   /** The thread_spec_name of the child thread_runs. */
   threadSpecName: string;
+  /** The list of all created child ThreadRun's */
+  childThreadIds: number[];
 }
 
 /** The sub-node structure for a WAIT_FOR_THREADS NodeRun. */
@@ -263,13 +265,25 @@ export interface ExternalEventRun {
     | string
     | undefined;
   /** The ExternalEventId of the ExternalEvent. Unset if still waiting. */
-  externalEventId?: ExternalEventId | undefined;
+  externalEventId?:
+    | ExternalEventId
+    | undefined;
+  /** Whether we had a timeout while waiting for the ExternalEvent to come. */
+  timedOut: boolean;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
 export interface SleepNodeRun {
-  /** The time at which the NodeRun will wake up. */
-  maturationTime: string | undefined;
+  /**
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
+   */
+  maturationTime:
+    | string
+    | undefined;
+  /** Whether the SleepNodeRun has been matured. */
+  matured: boolean;
 }
 
 /**
@@ -299,6 +313,11 @@ export interface Failure {
     | undefined;
   /** A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. */
   wasProperlyHandled: boolean;
+  /**
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
+   */
+  failureHandlerThreadrunId?: number | undefined;
 }
 
 function createBaseNodeRun(): NodeRun {
@@ -963,7 +982,7 @@ export const StartThreadRun = {
 };
 
 function createBaseStartMultipleThreadsRun(): StartMultipleThreadsRun {
-  return { threadSpecName: "" };
+  return { threadSpecName: "", childThreadIds: [] };
 }
 
 export const StartMultipleThreadsRun = {
@@ -971,6 +990,11 @@ export const StartMultipleThreadsRun = {
     if (message.threadSpecName !== "") {
       writer.uint32(10).string(message.threadSpecName);
     }
+    writer.uint32(18).fork();
+    for (const v of message.childThreadIds) {
+      writer.int32(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -988,6 +1012,23 @@ export const StartMultipleThreadsRun = {
 
           message.threadSpecName = reader.string();
           continue;
+        case 2:
+          if (tag === 16) {
+            message.childThreadIds.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 18) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.childThreadIds.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -998,13 +1039,21 @@ export const StartMultipleThreadsRun = {
   },
 
   fromJSON(object: any): StartMultipleThreadsRun {
-    return { threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "" };
+    return {
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
+      childThreadIds: globalThis.Array.isArray(object?.childThreadIds)
+        ? object.childThreadIds.map((e: any) => globalThis.Number(e))
+        : [],
+    };
   },
 
   toJSON(message: StartMultipleThreadsRun): unknown {
     const obj: any = {};
     if (message.threadSpecName !== "") {
       obj.threadSpecName = message.threadSpecName;
+    }
+    if (message.childThreadIds?.length) {
+      obj.childThreadIds = message.childThreadIds.map((e) => Math.round(e));
     }
     return obj;
   },
@@ -1015,6 +1064,7 @@ export const StartMultipleThreadsRun = {
   fromPartial<I extends Exact<DeepPartial<StartMultipleThreadsRun>, I>>(object: I): StartMultipleThreadsRun {
     const message = createBaseStartMultipleThreadsRun();
     message.threadSpecName = object.threadSpecName ?? "";
+    message.childThreadIds = object.childThreadIds?.map((e) => e) || [];
     return message;
   },
 };
@@ -1212,7 +1262,7 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventRun(): ExternalEventRun {
-  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined };
+  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
 }
 
 export const ExternalEventRun = {
@@ -1225,6 +1275,9 @@ export const ExternalEventRun = {
     }
     if (message.externalEventId !== undefined) {
       ExternalEventId.encode(message.externalEventId, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.timedOut === true) {
+      writer.uint32(32).bool(message.timedOut);
     }
     return writer;
   },
@@ -1257,6 +1310,13 @@ export const ExternalEventRun = {
 
           message.externalEventId = ExternalEventId.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.timedOut = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1273,6 +1333,7 @@ export const ExternalEventRun = {
         : undefined,
       eventTime: isSet(object.eventTime) ? globalThis.String(object.eventTime) : undefined,
       externalEventId: isSet(object.externalEventId) ? ExternalEventId.fromJSON(object.externalEventId) : undefined,
+      timedOut: isSet(object.timedOut) ? globalThis.Boolean(object.timedOut) : false,
     };
   },
 
@@ -1286,6 +1347,9 @@ export const ExternalEventRun = {
     }
     if (message.externalEventId !== undefined) {
       obj.externalEventId = ExternalEventId.toJSON(message.externalEventId);
+    }
+    if (message.timedOut === true) {
+      obj.timedOut = message.timedOut;
     }
     return obj;
   },
@@ -1302,18 +1366,22 @@ export const ExternalEventRun = {
     message.externalEventId = (object.externalEventId !== undefined && object.externalEventId !== null)
       ? ExternalEventId.fromPartial(object.externalEventId)
       : undefined;
+    message.timedOut = object.timedOut ?? false;
     return message;
   },
 };
 
 function createBaseSleepNodeRun(): SleepNodeRun {
-  return { maturationTime: undefined };
+  return { maturationTime: undefined, matured: false };
 }
 
 export const SleepNodeRun = {
   encode(message: SleepNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.maturationTime !== undefined) {
       Timestamp.encode(toTimestamp(message.maturationTime), writer.uint32(10).fork()).ldelim();
+    }
+    if (message.matured === true) {
+      writer.uint32(16).bool(message.matured);
     }
     return writer;
   },
@@ -1332,6 +1400,13 @@ export const SleepNodeRun = {
 
           message.maturationTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.matured = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1342,13 +1417,19 @@ export const SleepNodeRun = {
   },
 
   fromJSON(object: any): SleepNodeRun {
-    return { maturationTime: isSet(object.maturationTime) ? globalThis.String(object.maturationTime) : undefined };
+    return {
+      maturationTime: isSet(object.maturationTime) ? globalThis.String(object.maturationTime) : undefined,
+      matured: isSet(object.matured) ? globalThis.Boolean(object.matured) : false,
+    };
   },
 
   toJSON(message: SleepNodeRun): unknown {
     const obj: any = {};
     if (message.maturationTime !== undefined) {
       obj.maturationTime = message.maturationTime;
+    }
+    if (message.matured === true) {
+      obj.matured = message.matured;
     }
     return obj;
   },
@@ -1359,12 +1440,19 @@ export const SleepNodeRun = {
   fromPartial<I extends Exact<DeepPartial<SleepNodeRun>, I>>(object: I): SleepNodeRun {
     const message = createBaseSleepNodeRun();
     message.maturationTime = object.maturationTime ?? undefined;
+    message.matured = object.matured ?? false;
     return message;
   },
 };
 
 function createBaseFailure(): Failure {
-  return { failureName: "", message: "", content: undefined, wasProperlyHandled: false };
+  return {
+    failureName: "",
+    message: "",
+    content: undefined,
+    wasProperlyHandled: false,
+    failureHandlerThreadrunId: undefined,
+  };
 }
 
 export const Failure = {
@@ -1380,6 +1468,9 @@ export const Failure = {
     }
     if (message.wasProperlyHandled === true) {
       writer.uint32(32).bool(message.wasProperlyHandled);
+    }
+    if (message.failureHandlerThreadrunId !== undefined) {
+      writer.uint32(40).int32(message.failureHandlerThreadrunId);
     }
     return writer;
   },
@@ -1419,6 +1510,13 @@ export const Failure = {
 
           message.wasProperlyHandled = reader.bool();
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.failureHandlerThreadrunId = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1434,6 +1532,9 @@ export const Failure = {
       message: isSet(object.message) ? globalThis.String(object.message) : "",
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
       wasProperlyHandled: isSet(object.wasProperlyHandled) ? globalThis.Boolean(object.wasProperlyHandled) : false,
+      failureHandlerThreadrunId: isSet(object.failureHandlerThreadrunId)
+        ? globalThis.Number(object.failureHandlerThreadrunId)
+        : undefined,
     };
   },
 
@@ -1451,6 +1552,9 @@ export const Failure = {
     if (message.wasProperlyHandled === true) {
       obj.wasProperlyHandled = message.wasProperlyHandled;
     }
+    if (message.failureHandlerThreadrunId !== undefined) {
+      obj.failureHandlerThreadrunId = Math.round(message.failureHandlerThreadrunId);
+    }
     return obj;
   },
 
@@ -1465,6 +1569,7 @@ export const Failure = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.wasProperlyHandled = object.wasProperlyHandled ?? false;
+    message.failureHandlerThreadrunId = object.failureHandlerThreadrunId ?? undefined;
     return message;
   },
 };

@@ -61,6 +61,7 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         }
 
         utr.processTaskCompletedEvent(this);
+        executionContext.getableManager().get(userTaskRunId.getWfRunId()).advance(time);
         return Empty.getDefaultInstance();
     }
 

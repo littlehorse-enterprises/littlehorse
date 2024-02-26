@@ -14,24 +14,28 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
-    public String lhsName;
-    public String lhsJsonPath;
-    public VariableMutationType operation;
+    private String lhsName;
+    private String lhsJsonPath;
+    private VariableMutationType operation;
 
-    public RhsValueCase rhsValueType;
-    public VariableAssignmentModel rhsSourceVariable;
-    public VariableValueModel rhsLiteralValue;
-    public NodeOutputSourceModel nodeOutputSource;
+    private RhsValueCase rhsValueType;
+    private VariableAssignmentModel rhsSourceVariable;
+    private VariableValueModel rhsLiteralValue;
+    private NodeOutputSourceModel nodeOutputSource;
 
+    @Override
     public Class<VariableMutation> getProtoBaseClass() {
         return VariableMutation.class;
     }
 
+    @Override
     public VariableMutation.Builder toProto() {
         VariableMutation.Builder out =
                 VariableMutation.newBuilder().setLhsName(lhsName).setOperation(operation);
@@ -131,7 +135,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         VariableValueModel lhsVal = getLhsValue(thread, txnCache);
         VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
         VariableType lhsRealType =
-                thread.getThreadSpecModel().getVarDef(lhsName).getVarDef().getType();
+                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getType();
 
         try {
             // NOTE Part 2: see below
