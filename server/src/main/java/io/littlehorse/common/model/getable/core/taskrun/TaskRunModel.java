@@ -244,7 +244,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return attempts.size() < maxAttempts;
     }
 
-    public void scheduleAttempt() {
+    public void scheduleAttemptNow() {
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
         scheduledTask.setAttemptNumber(attempts.size());
@@ -328,13 +328,15 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private void scheduleRetryAtAppropriateTime() {
         if (retryPolicyType == RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS) {
             transitionTo(TaskStatus.TASK_SCHEDULED);
-            scheduleAttempt();
+            scheduleAttemptNow();
             return;
         }
 
         if (retryPolicyType != RetryPolicyCase.EXPONENTIAL_BACKOFF) {
             throw new IllegalStateException();
         }
+
+
     }
 
     /**

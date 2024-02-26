@@ -40,7 +40,7 @@ public class TaskRunModelTest {
         when(executionContext.authorization()).thenReturn(mockContext);
         taskRun.setInputVariables(new ArrayList<>());
 
-        taskRun.scheduleAttempt();
+        taskRun.scheduleAttemptNow();
         verify(processorContext.getTaskManager()).scheduleTask(any());
 
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
