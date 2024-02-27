@@ -4,6 +4,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import io.grpc.Deadline;
 
 public class LHConstants {
 
@@ -58,5 +61,7 @@ public class LHConstants {
 
     // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
+
+    public static final Deadline LARGEST_DEADLINE_FOR_WAIT_FOR_EVENT = Deadline.after(60, TimeUnit.SECONDS);
 }
 // NOTE: Use m6a.4xlarge

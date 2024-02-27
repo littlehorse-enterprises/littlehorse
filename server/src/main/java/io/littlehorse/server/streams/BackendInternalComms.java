@@ -212,7 +212,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
+    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForPedroResponse> observer) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
                 ServerTopology.CORE_STORE,
                 command.getPartitionKey(),
@@ -226,10 +226,10 @@ public class BackendInternalComms implements Closeable {
         if (meta.activeHost().equals(thisHost)) {
             localWaitForCommand(command.getCommandId(), observer);
         } else {
-            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
+            WaitForPedroRequest req = WaitForPedroRequest.newBuilder()
                     .setCommandId(command.getCommandId())
                     .build();
-            getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
+            getInternalAsyncClient(meta.activeHost()).waitForPedro(req, observer);
         }
     }
 
@@ -300,7 +300,7 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
+    public void onResponseReceived(String commandId, WaitForPedroResponse response) {
         asyncWaiters.put(commandId, response);
     }
 
@@ -308,7 +308,7 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
+    private void localWaitForCommand(String commandId, StreamObserver<WaitForPedroResponse> observer) {
         asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
@@ -425,7 +425,7 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
+        public void waitForPedro(WaitForPedroRequest req, StreamObserver<WaitForPedroResponse> ctx) {
             localWaitForCommand(req.getCommandId(), ctx);
         }
 

@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface WaitForCommandRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForCommandRequest)
+public interface WaitForPedroRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForPedroRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

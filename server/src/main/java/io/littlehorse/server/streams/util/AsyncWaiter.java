@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.proto.WaitForPedroResponse;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AsyncWaiter {
 
     private String commandId;
-    private StreamObserver<WaitForCommandResponse> observer;
-    private WaitForCommandResponse response;
+    private StreamObserver<WaitForPedroResponse> observer;
+    private WaitForPedroResponse response;
     private Date arrivalTime;
     private Exception caughtException;
 
@@ -22,7 +22,7 @@ public class AsyncWaiter {
         this.arrivalTime = new Date();
     }
 
-    public AsyncWaiter(String commandId, StreamObserver<WaitForCommandResponse> observer) {
+    public AsyncWaiter(String commandId, StreamObserver<WaitForPedroResponse> observer) {
         this();
         this.commandId = commandId;
         this.observer = observer;
@@ -34,7 +34,7 @@ public class AsyncWaiter {
         this.caughtException = caughtException;
     }
 
-    public AsyncWaiter(String commandId, WaitForCommandResponse response) {
+    public AsyncWaiter(String commandId, WaitForPedroResponse response) {
         this();
         this.commandId = commandId;
         this.response = response;
