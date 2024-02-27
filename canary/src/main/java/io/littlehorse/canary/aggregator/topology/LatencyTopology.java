@@ -20,6 +20,7 @@ import org.apache.kafka.streams.state.WindowStore;
 @Slf4j
 public class LatencyTopology {
 
+    public static final String LATENCY_AVG_STORE = "latency-avg";
     private final KStream<MetricKey, Double> stream;
 
     public LatencyTopology(
@@ -33,8 +34,9 @@ public class LatencyTopology {
                 .aggregate(
                         () -> AverageAggregator.newBuilder().build(),
                         (key, value, aggregate) -> aggregate(value, aggregate),
-                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>with(
-                                        ProtobufSerdes.BeatKey(), ProtobufSerdes.AverageAggregator())
+                        Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as(LATENCY_AVG_STORE)
+                                .withKeySerde(ProtobufSerdes.BeatKey())
+                                .withValueSerde(ProtobufSerdes.AverageAggregator())
                                 .withRetention(storeRetention))
                 .toStream((key, value) -> key.key())
                 // debug peek aggregate
