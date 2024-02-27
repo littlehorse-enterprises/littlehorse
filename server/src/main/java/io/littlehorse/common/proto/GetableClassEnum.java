@@ -69,9 +69,13 @@ public enum GetableClassEnum
    */
   TENANT(14),
   /**
-   * <code>WORKFLOW_EVENT = 15;</code>
+   * <code>WORKFLOW_EVENT_DEF = 15;</code>
    */
-  WORKFLOW_EVENT(15),
+  WORKFLOW_EVENT_DEF(15),
+  /**
+   * <code>WORKFLOW_EVENT = 16;</code>
+   */
+  WORKFLOW_EVENT(16),
   UNRECOGNIZED(-1),
   ;
 
@@ -136,9 +140,13 @@ public enum GetableClassEnum
    */
   public static final int TENANT_VALUE = 14;
   /**
-   * <code>WORKFLOW_EVENT = 15;</code>
+   * <code>WORKFLOW_EVENT_DEF = 15;</code>
    */
-  public static final int WORKFLOW_EVENT_VALUE = 15;
+  public static final int WORKFLOW_EVENT_DEF_VALUE = 15;
+  /**
+   * <code>WORKFLOW_EVENT = 16;</code>
+   */
+  public static final int WORKFLOW_EVENT_VALUE = 16;
 
 
   public final int getNumber() {
@@ -180,7 +188,8 @@ public enum GetableClassEnum
       case 12: return USER_TASK_RUN;
       case 13: return PRINCIPAL;
       case 14: return TENANT;
-      case 15: return WORKFLOW_EVENT;
+      case 15: return WORKFLOW_EVENT_DEF;
+      case 16: return WORKFLOW_EVENT;
       default: return null;
     }
   }

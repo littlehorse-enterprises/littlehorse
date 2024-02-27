@@ -1,11 +1,15 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -13,7 +17,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -57,14 +60,12 @@ public class PutWorkflowEventDefRequestModelTest {
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final String tenantId = LHConstants.DEFAULT_TENANT;
-    private TenantScopedStore tenantStore;
     private TestMetadataManager metadataManager;
 
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
         metadataProcessor = new MetadataProcessor(config, server, metadataCache);
-        TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel(tenantId), executionContext);
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 
