@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class MetronomeTask {
 
+    public static final String TASK_RUN_LATENCY_METRIC_NAME = "task_run_latency";
     private final MetricsEmitter emitter;
     private final String serverHost;
     private final int serverPort;
@@ -39,16 +40,15 @@ class MetronomeTask {
     @LHTaskMethod(MetronomeWorkflow.TASK_NAME)
     public void executeTask(final long startTime, final WorkerContext context) {
         log.trace("Executing task {}", MetronomeWorkflow.TASK_NAME);
-        emitTaskRunLatencyMetric(startTime, context);
+        emitTaskRunLatencyMetric(startTime);
         emitDuplicatedTaskRunMetric(context);
     }
 
-    private void emitTaskRunLatencyMetric(final long startTime, final WorkerContext context) {
+    private void emitTaskRunLatencyMetric(final long startTime) {
         final Duration latency = Duration.between(Instant.ofEpochMilli(startTime), Instant.now());
-        final String beatName = "task_run_latency";
 
         final BeatKey key = getBeatKeyBuilder()
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(beatName))
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(TASK_RUN_LATENCY_METRIC_NAME))
                 .build();
         final Beat beat = getBeatBuilder()
                 .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency.toMillis()))
