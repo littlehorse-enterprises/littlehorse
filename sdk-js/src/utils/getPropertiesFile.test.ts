@@ -9,7 +9,7 @@ describe('getPropertiesFile', () => {
       LHC_API_PORT: '2023',
       LHC_API_PROTOCOL: 'SSL',
       LHC_TENANT_ID: 'example',
-      LHC_CA_CERT: '-----BEGIN CERTIFICATE-----CERTIFICATE CONTENT-----END CERTIFICATE-----',
+      LHC_CA_CERT: '/path/to/cert.crt',
     })
   })
 })

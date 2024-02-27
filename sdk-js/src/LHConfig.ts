@@ -2,6 +2,7 @@ import { Channel, ChannelCredentials, Client, Metadata, createChannel, createCli
 import { LittleHorseDefinition } from './proto/service'
 import getPropertiesFile from './utils/getPropertiesFile'
 import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
+import { readFileSync } from 'fs'
 
 export const CONFIG_NAMES = [
   'LHC_API_HOST',
@@ -41,7 +42,7 @@ export class LHConfig {
 
     let channelCredentials
     if (this.protocol === 'SSL') {
-      const rootCa = this.caCert ? Buffer.from(this.caCert) : undefined
+      const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
       channelCredentials = ChannelCredentials.createSsl(rootCa)
     }
 
