@@ -168,6 +168,14 @@ class VariableMatch(_message.Message):
     value: _variable_pb2.VariableValue
     def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
+class AwaitWorkflowEventRequest(_message.Message):
+    __slots__ = ["wf_run_id", "event_def_id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: _object_id_pb2.WfRunId
+    event_def_id: _object_id_pb2.WorkflowEventDefId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., event_def_id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
+
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
