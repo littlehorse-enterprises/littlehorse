@@ -3,24 +3,24 @@ package io.littlehorse.common.model.corecommand;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.proto.WaitForPedroResponse;
+import io.littlehorse.common.proto.WaitForActionResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
-public class WaitForCommandResultModel extends LHSerializable<WaitForPedroResponse> {
+public class WaitForActionResponseModel extends LHSerializable<WaitForActionResponse> {
 
-    public String commandId;
+    public String actionId;
     public Date resultTime;
     public byte[] result;
 
-    public Class<WaitForPedroResponse> getProtoBaseClass() {
-        return WaitForPedroResponse.class;
+    public Class<WaitForActionResponse> getProtoBaseClass() {
+        return WaitForActionResponse.class;
     }
 
-    public WaitForPedroResponse.Builder toProto() {
-        WaitForPedroResponse.Builder out = WaitForPedroResponse.newBuilder()
-                .setCommandId(commandId)
+    public WaitForActionResponse.Builder toProto() {
+        WaitForActionResponse.Builder out = WaitForActionResponse.newBuilder()
+                .setActionId(actionId)
                 .setResult(ByteString.copyFrom(result))
                 .setResultTime(LHUtil.fromDate(resultTime));
         return out;
@@ -28,13 +28,13 @@ public class WaitForCommandResultModel extends LHSerializable<WaitForPedroRespon
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
-        WaitForPedroResponse p = (WaitForPedroResponse) proto;
-        commandId = p.getCommandId();
+        WaitForActionResponse p = (WaitForActionResponse) proto;
+        actionId = p.getActionId();
         resultTime = LHUtil.fromProtoTs(p.getResultTime());
         result = p.getResult().toByteArray();
     }
 
     public String getStoreKey() {
-        return commandId;
+        return actionId;
     }
 }

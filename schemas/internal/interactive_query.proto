@@ -19,12 +19,12 @@ message GetObjectResponse {
     bytes response = 1;
 }
 
-message WaitForPedroRequest {
-    string command_id = 1;
+message WaitForActionRequest {
+    string action_id = 1;
 }
 
-message WaitForPedroResponse {
-    string command_id = 1;
+message WaitForActionResponse {
+    string action_id = 1;
     google.protobuf.Timestamp result_time = 2;
     bytes result = 3;
 }

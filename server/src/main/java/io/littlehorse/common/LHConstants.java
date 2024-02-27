@@ -1,12 +1,11 @@
 package io.littlehorse.common;
 
+import io.grpc.Deadline;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import io.grpc.Deadline;
 
 public class LHConstants {
 

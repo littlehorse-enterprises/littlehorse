@@ -77,35 +77,35 @@ public final class LHInternalsGrpc {
     return getInternalScanMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForPedroRequest,
-      io.littlehorse.common.proto.WaitForPedroResponse> getWaitForPedroMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest,
+      io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "WaitForPedro",
-      requestType = io.littlehorse.common.proto.WaitForPedroRequest.class,
-      responseType = io.littlehorse.common.proto.WaitForPedroResponse.class,
+      fullMethodName = SERVICE_NAME + '/' + "WaitForAction",
+      requestType = io.littlehorse.common.proto.WaitForActionRequest.class,
+      responseType = io.littlehorse.common.proto.WaitForActionResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForPedroRequest,
-      io.littlehorse.common.proto.WaitForPedroResponse> getWaitForPedroMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForPedroRequest, io.littlehorse.common.proto.WaitForPedroResponse> getWaitForPedroMethod;
-    if ((getWaitForPedroMethod = LHInternalsGrpc.getWaitForPedroMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest,
+      io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest, io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod;
+    if ((getWaitForActionMethod = LHInternalsGrpc.getWaitForActionMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
-        if ((getWaitForPedroMethod = LHInternalsGrpc.getWaitForPedroMethod) == null) {
-          LHInternalsGrpc.getWaitForPedroMethod = getWaitForPedroMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForPedroRequest, io.littlehorse.common.proto.WaitForPedroResponse>newBuilder()
+        if ((getWaitForActionMethod = LHInternalsGrpc.getWaitForActionMethod) == null) {
+          LHInternalsGrpc.getWaitForActionMethod = getWaitForActionMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForActionRequest, io.littlehorse.common.proto.WaitForActionResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForPedro"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForAction"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForPedroRequest.getDefaultInstance()))
+                  io.littlehorse.common.proto.WaitForActionRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForPedroResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForPedro"))
+                  io.littlehorse.common.proto.WaitForActionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForAction"))
               .build();
         }
       }
     }
-    return getWaitForPedroMethod;
+    return getWaitForActionMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
@@ -203,9 +203,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    default void waitForPedro(io.littlehorse.common.proto.WaitForPedroRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForPedroResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForPedroMethod(), responseObserver);
+    default void waitForAction(io.littlehorse.common.proto.WaitForActionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForActionMethod(), responseObserver);
     }
 
     /**
@@ -261,10 +261,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void waitForPedro(io.littlehorse.common.proto.WaitForPedroRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForPedroResponse> responseObserver) {
+    public void waitForAction(io.littlehorse.common.proto.WaitForActionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getWaitForPedroMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getWaitForActionMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -308,9 +308,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.WaitForPedroResponse waitForPedro(io.littlehorse.common.proto.WaitForPedroRequest request) {
+    public io.littlehorse.common.proto.WaitForActionResponse waitForAction(io.littlehorse.common.proto.WaitForActionRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getWaitForPedroMethod(), getCallOptions(), request);
+          getChannel(), getWaitForActionMethod(), getCallOptions(), request);
     }
 
     /**
@@ -355,10 +355,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForPedroResponse> waitForPedro(
-        io.littlehorse.common.proto.WaitForPedroRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForActionResponse> waitForAction(
+        io.littlehorse.common.proto.WaitForActionRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getWaitForPedroMethod(), getCallOptions()), request);
+          getChannel().newCall(getWaitForActionMethod(), getCallOptions()), request);
     }
 
     /**
@@ -372,7 +372,7 @@ public final class LHInternalsGrpc {
 
   private static final int METHODID_GET_OBJECT = 0;
   private static final int METHODID_INTERNAL_SCAN = 1;
-  private static final int METHODID_WAIT_FOR_PEDRO = 2;
+  private static final int METHODID_WAIT_FOR_ACTION = 2;
   private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
@@ -400,9 +400,9 @@ public final class LHInternalsGrpc {
           serviceImpl.internalScan((io.littlehorse.common.proto.InternalScanPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanResponse>) responseObserver);
           break;
-        case METHODID_WAIT_FOR_PEDRO:
-          serviceImpl.waitForPedro((io.littlehorse.common.proto.WaitForPedroRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForPedroResponse>) responseObserver);
+        case METHODID_WAIT_FOR_ACTION:
+          serviceImpl.waitForAction((io.littlehorse.common.proto.WaitForActionRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse>) responseObserver);
           break;
         case METHODID_GET_ADVERTISED_HOSTS:
           serviceImpl.getAdvertisedHosts((com.google.protobuf.Empty) request,
@@ -441,12 +441,12 @@ public final class LHInternalsGrpc {
               io.littlehorse.common.proto.InternalScanResponse>(
                 service, METHODID_INTERNAL_SCAN)))
         .addMethod(
-          getWaitForPedroMethod(),
+          getWaitForActionMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.WaitForPedroRequest,
-              io.littlehorse.common.proto.WaitForPedroResponse>(
-                service, METHODID_WAIT_FOR_PEDRO)))
+              io.littlehorse.common.proto.WaitForActionRequest,
+              io.littlehorse.common.proto.WaitForActionResponse>(
+                service, METHODID_WAIT_FOR_ACTION)))
         .addMethod(
           getGetAdvertisedHostsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -504,7 +504,7 @@ public final class LHInternalsGrpc {
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
               .addMethod(getGetObjectMethod())
               .addMethod(getInternalScanMethod())
-              .addMethod(getWaitForPedroMethod())
+              .addMethod(getWaitForActionMethod())
               .addMethod(getGetAdvertisedHostsMethod())
               .build();
         }

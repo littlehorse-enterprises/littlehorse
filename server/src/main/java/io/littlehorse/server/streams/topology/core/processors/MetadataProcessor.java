@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.common.proto.WaitForPedroResponse;
+import io.littlehorse.common.proto.WaitForActionResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
@@ -64,8 +64,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForPedroResponse cmdReply = WaitForPedroResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
+                WaitForActionResponse cmdReply = WaitForActionResponse.newBuilder()
+                        .setActionId(command.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
                         .setResult(response.toByteString())
                         .build();

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForPedroResponse;
+import io.littlehorse.common.proto.WaitForActionResponse;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,31 +10,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class AsyncWaiter {
+public class ObserverInWaiting {
 
     private String commandId;
-    private StreamObserver<WaitForPedroResponse> observer;
-    private WaitForPedroResponse response;
+    private StreamObserver<WaitForActionResponse> observer;
+    private WaitForActionResponse response;
     private Date arrivalTime;
     private Exception caughtException;
 
-    public AsyncWaiter() {
+    public ObserverInWaiting() {
         this.arrivalTime = new Date();
     }
 
-    public AsyncWaiter(String commandId, StreamObserver<WaitForPedroResponse> observer) {
+    public ObserverInWaiting(String commandId, StreamObserver<WaitForActionResponse> observer) {
         this();
         this.commandId = commandId;
         this.observer = observer;
     }
 
-    public AsyncWaiter(String commandId, Exception caughtException) {
+    public ObserverInWaiting(String commandId, Exception caughtException) {
         this();
         this.commandId = commandId;
         this.caughtException = caughtException;
     }
 
-    public AsyncWaiter(String commandId, WaitForPedroResponse response) {
+    public ObserverInWaiting(String commandId, WaitForActionResponse response) {
         this();
         this.commandId = commandId;
         this.response = response;
@@ -42,7 +42,7 @@ public class AsyncWaiter {
 
     public void onMatched() {
         if (observer == null) {
-            throw new RuntimeException("Invalid call: observer null");
+            throw new IllegalStateException("Invalid call: observer null");
         }
 
         if (caughtException != null) {

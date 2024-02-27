@@ -25,15 +25,15 @@ public final class InteractiveQuery {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_GetObjectResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_WaitForPedroRequest_descriptor;
+    internal_static_littlehorse_WaitForActionRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_WaitForPedroRequest_fieldAccessorTable;
+      internal_static_littlehorse_WaitForActionRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_WaitForPedroResponse_descriptor;
+    internal_static_littlehorse_WaitForActionResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_WaitForPedroResponse_fieldAccessorTable;
+      internal_static_littlehorse_WaitForActionResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ScanFilter_descriptor;
   static final 
@@ -99,9 +99,9 @@ public final class InteractiveQuery {
       "o\"l\n\020GetObjectRequest\0222\n\013object_type\030\001 \001" +
       "(\0162\035.littlehorse.GetableClassEnum\022\021\n\tobj" +
       "ect_id\030\002 \001(\t\022\021\n\tpartition\030\003 \001(\005\"%\n\021GetOb" +
-      "jectResponse\022\020\n\010response\030\001 \001(\014\")\n\023WaitFo" +
-      "rPedroRequest\022\022\n\ncommand_id\030\001 \001(\t\"k\n\024Wai" +
-      "tForPedroResponse\022\022\n\ncommand_id\030\001 \001(\t\022/\n" +
+      "jectResponse\022\020\n\010response\030\001 \001(\014\")\n\024WaitFo" +
+      "rActionRequest\022\021\n\taction_id\030\001 \001(\t\"k\n\025Wai" +
+      "tForActionResponse\022\021\n\taction_id\030\001 \001(\t\022/\n" +
       "\013result_time\030\002 \001(\0132\032.google.protobuf.Tim" +
       "estamp\022\016\n\006result\030\003 \001(\014\"~\n\nScanFilter\022.\n\r" +
       "wf_run_status\030\001 \001(\0162\025.littlehorse.LHStat" +
@@ -165,18 +165,18 @@ public final class InteractiveQuery {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_GetObjectResponse_descriptor,
         new java.lang.String[] { "Response", });
-    internal_static_littlehorse_WaitForPedroRequest_descriptor =
+    internal_static_littlehorse_WaitForActionRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_littlehorse_WaitForPedroRequest_fieldAccessorTable = new
+    internal_static_littlehorse_WaitForActionRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_WaitForPedroRequest_descriptor,
-        new java.lang.String[] { "CommandId", });
-    internal_static_littlehorse_WaitForPedroResponse_descriptor =
+        internal_static_littlehorse_WaitForActionRequest_descriptor,
+        new java.lang.String[] { "ActionId", });
+    internal_static_littlehorse_WaitForActionResponse_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_littlehorse_WaitForPedroResponse_fieldAccessorTable = new
+    internal_static_littlehorse_WaitForActionResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_WaitForPedroResponse_descriptor,
-        new java.lang.String[] { "CommandId", "ResultTime", "Result", });
+        internal_static_littlehorse_WaitForActionResponse_descriptor,
+        new java.lang.String[] { "ActionId", "ResultTime", "Result", });
     internal_static_littlehorse_ScanFilter_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ScanFilter_fieldAccessorTable = new

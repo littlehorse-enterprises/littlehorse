@@ -73,6 +73,7 @@ NodeType = Union[
     NopNode,
     UserTaskNode,
     StartMultipleThreadsNode,
+    ThrowEventNode,
 ]
 
 
@@ -1340,7 +1341,7 @@ class WorkflowThread:
             name (str): Name of the node.
             sub_node (NodeType): One of node: [TaskNode, EntrypointNode,
             ExitNode, ExternalEventNode, SleepNode, StartThreadNode,
-            WaitForThreadsNode,  NopNode, UserTaskNode]
+            WaitForThreadsNode,  NopNode, UserTaskNode, ThrowEventNode]
 
         Returns:
             str: The name.

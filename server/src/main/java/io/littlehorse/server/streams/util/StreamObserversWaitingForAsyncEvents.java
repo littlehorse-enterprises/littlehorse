@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForPedroResponse;
+import io.littlehorse.common.proto.WaitForActionResponse;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,25 +10,24 @@ import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AsyncWaiters {
+public class StreamObserversWaitingForAsyncEvents {
 
     public Lock lock;
-    public LinkedHashMap<String, AsyncWaiter> waiters;
+    public LinkedHashMap<String, ObserverInWaiting> waiters;
 
     private static final long MAX_WAITER_AGE = 1000 * 60;
 
-    public AsyncWaiters() {
+    public StreamObserversWaitingForAsyncEvents() {
         lock = new ReentrantLock();
         waiters = new LinkedHashMap<>();
     }
 
-    // TODO: rename this to register()
-    public void put(String commandId, StreamObserver<WaitForPedroResponse> observer) {
+    public void putObserverWaitingForCommand(String commandId, StreamObserver<WaitForActionResponse> observer) {
         try {
             lock.lock();
-            AsyncWaiter waiter = waiters.get(commandId);
+            ObserverInWaiting waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new AsyncWaiter(commandId, observer));
+                waiters.put(commandId, new ObserverInWaiting(commandId, observer));
             } else {
                 if (waiter.getObserver() != null) {
                     // this means the request has come in again...
@@ -49,9 +48,9 @@ public class AsyncWaiters {
         // This happens when there is an unexpected error in the processing.
         try {
             lock.lock();
-            AsyncWaiter waiter = waiters.get(commandId);
+            ObserverInWaiting waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new AsyncWaiter(commandId, exception));
+                waiters.put(commandId, new ObserverInWaiting(commandId, exception));
             } else {
                 waiter.setCaughtException(exception);
                 waiter.onMatched();
@@ -62,13 +61,12 @@ public class AsyncWaiters {
         }
     }
 
-    // TODO: Rename this to register()
-    public void put(String commandId, WaitForPedroResponse response) {
+    public void notifyThatCommandWasProcessed(String commandId, WaitForActionResponse response) {
         try {
             lock.lock();
-            AsyncWaiter waiter = waiters.get(commandId);
+            ObserverInWaiting waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new AsyncWaiter(commandId, response));
+                waiters.put(commandId, new ObserverInWaiting(commandId, response));
             } else {
                 if (waiter.getResponse() != null) {
                     // this means that a duplicate Kafka event came through, but
@@ -90,15 +88,16 @@ public class AsyncWaiters {
     public void cleanupOldWaiters() {
         try {
             lock.lock();
-            Iterator<Map.Entry<String, AsyncWaiter>> iter = waiters.entrySet().iterator();
+            Iterator<Map.Entry<String, ObserverInWaiting>> iter =
+                    waiters.entrySet().iterator();
             long now = System.currentTimeMillis();
             while (iter.hasNext()) {
-                Map.Entry<String, AsyncWaiter> pair = iter.next();
+                Map.Entry<String, ObserverInWaiting> pair = iter.next();
                 long age = now - pair.getValue().getArrivalTime().getTime();
                 if (age < MAX_WAITER_AGE) {
                     break;
                 }
-                AsyncWaiter waiter = pair.getValue();
+                ObserverInWaiting waiter = pair.getValue();
                 if (waiter.getObserver() != null) {
                     waiter.getObserver()
                             .onError(new RuntimeException(

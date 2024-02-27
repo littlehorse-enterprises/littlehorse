@@ -17,7 +17,6 @@ import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
