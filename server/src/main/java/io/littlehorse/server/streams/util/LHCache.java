@@ -39,4 +39,8 @@ public class LHCache<K, V> {
     public void clear() {
         cache.clear();
     }
+
+    public int size() {
+        return cache.size();
+    }
 }

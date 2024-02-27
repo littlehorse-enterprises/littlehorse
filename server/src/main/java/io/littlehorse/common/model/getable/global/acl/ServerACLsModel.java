@@ -2,6 +2,8 @@ package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -36,5 +38,18 @@ public class ServerACLsModel extends LHSerializable<ServerACLs> {
         for (ServerACL acl : p.getAclsList()) {
             acls.add(LHSerializable.fromProto(acl, ServerACLModel.class, context));
         }
+    }
+
+    /**
+     * Checks whether this ACL permits the execution of
+     * a specified ${@link ACLAction} on a given ${@link ACLResource}.
+     * @param resource The resource to be verified.
+     * @param action   The action to be verified.
+     * @return True if the action on the resource is allowed; otherwise, false.
+     */
+    public boolean allows(ACLResource resource, ACLAction action) {
+        return acls.stream()
+                .anyMatch(acl -> acl.getResources().contains(resource)
+                        && acl.getAllowedActions().contains(action));
     }
 }

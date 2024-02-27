@@ -91,6 +91,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
             return PollTaskResponse.newBuilder().build();
         } else {
             taskRun.processStart(this);
+            executionContext.getableManager().get(taskRunId.wfRunId).advance(time);
             return PollTaskResponse.newBuilder()
                     .setResult(scheduledTask.toProto())
                     .build();

@@ -87,4 +87,14 @@ public interface ExternalEventRunOrBuilder extends
    * <code>optional .littlehorse.ExternalEventId external_event_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventIdOrBuilder();
+
+  /**
+   * <pre>
+   * Whether we had a timeout while waiting for the ExternalEvent to come.
+   * </pre>
+   *
+   * <code>bool timed_out = 4;</code>
+   * @return The timedOut.
+   */
+  boolean getTimedOut();
 }

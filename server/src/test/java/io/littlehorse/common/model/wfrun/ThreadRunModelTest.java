@@ -68,7 +68,7 @@ public class ThreadRunModelTest {
             parentThreadRun.setWfRun(parentWfRun);
             parentThreadRun.setWfSpecId(parentWfSpec.getId());
             parentWfRun.setId(new WfRunIdModel("parent-wf-id"));
-            parentWfRun.getThreadRuns().add(parentThreadRun);
+            parentWfRun.getThreadRunsUseMeCarefully().add(parentThreadRun);
             testProcessorContext.getableManager().put(parentWfRun);
 
             // Child WfRun setup

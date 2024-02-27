@@ -158,7 +158,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
 
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
             ThreadSpecModel ts = new ThreadSpecModel();
-            ts.wfSpecModel = this;
+            ts.wfSpec = this;
             ts.name = e.getKey();
             ts.initFrom(e.getValue(), context);
             threadSpecs.put(e.getKey(), ts);

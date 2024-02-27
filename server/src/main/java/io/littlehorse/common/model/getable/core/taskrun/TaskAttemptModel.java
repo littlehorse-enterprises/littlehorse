@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskExceptionModel;
@@ -12,9 +13,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
 
     private VariableValueModel output;
@@ -34,6 +37,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         status = TaskStatus.TASK_SCHEDULED;
     }
 
+    @Override
     public Class<TaskAttempt> getProtoBaseClass() {
         return TaskAttempt.class;
     }
@@ -66,6 +70,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
             exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class, context);
     }
 
+    @Override
     public TaskAttempt.Builder toProto() {
         TaskAttempt.Builder out = TaskAttempt.newBuilder();
 
@@ -104,5 +109,56 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
 
     public boolean containsException() {
         return exception != null;
+    }
+
+    /**
+     * If the TaskAttempt failed, returns the failureCode with which it failed. Note that this is
+     * NOT the `LHErrorType` enum, because it can include user-defined business EXCEPTIONs.
+     * @return the failure code with which the taskAttempt failed.
+     */
+    public String getFailureCode() {
+        switch (this.getStatus()) {
+            case TASK_EXCEPTION:
+                return this.getException().getName();
+            case TASK_FAILED:
+                return LHConstants.TASK_FAILURE;
+            case TASK_TIMEOUT:
+                return LHConstants.TIMEOUT;
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+                return LHConstants.VAR_MUTATION_ERROR;
+            case TASK_INPUT_VAR_SUB_ERROR:
+                return LHConstants.VAR_SUB_ERROR;
+            case TASK_RUNNING:
+            case TASK_SCHEDULED:
+            case TASK_SUCCESS:
+            case UNRECOGNIZED:
+        }
+        log.trace("Called getFailureCodeFor() on non-failed TaskAttempt. Probably you need more coffee!");
+        return null;
+    }
+
+    /**
+     * If this TaskAttempt failed, returns the human-readable message with which it failed.
+     * @return the human-readable message with which this TaskAttempt failed.
+     */
+    public String getFailureMessage() {
+        switch (this.getStatus()) {
+            case TASK_EXCEPTION:
+                return this.getException().getMessage();
+            case TASK_FAILED:
+                return "Task execution failed";
+            case TASK_TIMEOUT:
+                return "Task timed out";
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+                return "Failed serializing Task Output";
+            case TASK_INPUT_VAR_SUB_ERROR:
+                return "Failed calculating Task Input Variables";
+            case TASK_RUNNING:
+            case TASK_SCHEDULED:
+            case TASK_SUCCESS:
+            case UNRECOGNIZED:
+        }
+        log.trace("Called getFailureMessage() on non-failed TaskAttempt. Probably you need more coffee!");
+        return null;
     }
 }

@@ -10,7 +10,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
 
+@Getter
 public class ExitNodeModel extends SubNode<ExitNode> {
 
     public FailureDefModel failureDef;

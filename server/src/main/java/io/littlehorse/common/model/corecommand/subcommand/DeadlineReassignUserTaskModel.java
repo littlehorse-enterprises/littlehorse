@@ -8,12 +8,14 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.DeadlineReassignUserTask;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,6 +74,10 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         }
 
         userTaskRun.deadlineReassign(this);
+
+        WfRunModel wfRun =
+                executionContext.getableManager().get(userTaskRun.getId().getWfRunId());
+        wfRun.advance(new Date());
         return Empty.getDefaultInstance();
     }
 
