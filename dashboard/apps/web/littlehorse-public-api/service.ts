@@ -7584,7 +7584,7 @@ export const LittleHorseDefinition = {
      * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
      * completion.
      *
-     * As of 0.7.0, this feature is only partially implemented.
+     * As of 0.7.2, this feature is only partially implemented.
      */
     migrateWfSpec: {
       name: "MigrateWfSpec",
@@ -8104,7 +8104,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
    * completion.
    *
-   * As of 0.7.0, this feature is only partially implemented.
+   * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /** Creates a UserTaskDef. */
@@ -8368,7 +8368,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
    * completion.
    *
-   * As of 0.7.0, this feature is only partially implemented.
+   * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /** Creates a UserTaskDef. */

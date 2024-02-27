@@ -175,7 +175,17 @@ message Node {
     SleepNode sleep = 12;
     UserTaskNode user_task = 13;
     StartMultipleThreadsNode start_multiple_threads = 15;
+    ThrowEventNode throw_event = 16;
   }
+}
+
+// A SubNode that throws a WorkflowEvent of a specific type.
+message ThrowEventNode {
+  // The WorkflowEventDefId of the WorkflowEvent that is thrown
+  WorkflowEventDefId event_def_id = 1;
+
+  // A VariableAssignment defining the content of the WorkflowEvent that is thrown
+  VariableAssignment content = 2;
 }
 
 message UserTaskNode {

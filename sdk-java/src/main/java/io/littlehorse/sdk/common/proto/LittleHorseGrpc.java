@@ -1844,7 +1844,7 @@ public final class LittleHorseGrpc {
      * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
      * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
      * completion.
-     * As of 0.7.0, this feature is only partially implemented.
+     * As of 0.7.2, this feature is only partially implemented.
      * </pre>
      */
     default void migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request,
@@ -2460,7 +2460,7 @@ public final class LittleHorseGrpc {
      * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
      * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
      * completion.
-     * As of 0.7.0, this feature is only partially implemented.
+     * As of 0.7.2, this feature is only partially implemented.
      * </pre>
      */
     public void migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request,
@@ -3106,7 +3106,7 @@ public final class LittleHorseGrpc {
      * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
      * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
      * completion.
-     * As of 0.7.0, this feature is only partially implemented.
+     * As of 0.7.2, this feature is only partially implemented.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfSpec migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
@@ -3700,7 +3700,7 @@ public final class LittleHorseGrpc {
      * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
      * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
      * completion.
-     * As of 0.7.0, this feature is only partially implemented.
+     * As of 0.7.2, this feature is only partially implemented.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfSpec> migrateWfSpec(

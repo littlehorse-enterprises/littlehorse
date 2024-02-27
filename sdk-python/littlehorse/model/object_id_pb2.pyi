@@ -36,6 +36,12 @@ class UserTaskDefId(_message.Message):
     version: int
     def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
 
+class WorkflowEventDefId(_message.Message):
+    __slots__ = ["name"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    def __init__(self, name: _Optional[str] = ...) -> None: ...
+
 class TaskWorkerGroupId(_message.Message):
     __slots__ = ["task_def_id"]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
@@ -79,6 +85,16 @@ class NodeRunId(_message.Message):
     thread_run_number: int
     position: int
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., position: _Optional[int] = ...) -> None: ...
+
+class WorkflowEventId(_message.Message):
+    __slots__ = ["wf_run_id", "workflow_event_def_id", "id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    WORKFLOW_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: WfRunId
+    workflow_event_def_id: WorkflowEventDefId
+    id: int
+    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., workflow_event_def_id: _Optional[_Union[WorkflowEventDefId, _Mapping]] = ..., id: _Optional[int] = ...) -> None: ...
 
 class TaskRunId(_message.Message):
     __slots__ = ["wf_run_id", "task_guid"]

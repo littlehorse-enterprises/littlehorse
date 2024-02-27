@@ -360,7 +360,7 @@ class LittleHorseServicer(object):
         you must update WfRun's that are in the RUNNING state rather than allowing them to run to
         completion.
 
-        As of 0.7.0, this feature is only partially implemented.
+        As of 0.7.2, this feature is only partially implemented.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

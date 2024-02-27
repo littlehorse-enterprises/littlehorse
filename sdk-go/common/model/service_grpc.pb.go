@@ -100,7 +100,7 @@ type LittleHorseClient interface {
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
 	// completion.
 	//
-	// As of 0.7.0, this feature is only partially implemented.
+	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -775,7 +775,7 @@ type LittleHorseServer interface {
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
 	// completion.
 	//
-	// As of 0.7.0, this feature is only partially implemented.
+	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
