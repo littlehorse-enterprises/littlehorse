@@ -38,12 +38,19 @@ repos:
         pass_filenames: false
         entry: poetry -C ./sdk-python install
 
-      - id: install-node
-        name: Install Node Dependencies
+      - id: install-dashboard
+        name: Install Dashboard Dependencies
         language: system
         always_run: true
         pass_filenames: false
         entry: bash -c 'npm install pnpm --global && cd ./dashboard && pnpm install'
+
+      - id: install-sdk-js
+        name: Install sdk-js Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: bash -c 'cd ./sdk-js && npm install'
 
       # Formatters
 
@@ -67,7 +74,7 @@ repos:
         always_run: true
         pass_filenames: false
         entry: gofmt -s -w ./sdk-go
-      
+
       - id: format-sdk-js
         name: Format sdk-js
         language: system
@@ -134,7 +141,7 @@ repos:
         always_run: true
         pass_filenames: false
         entry: bash -c 'cd ./dashboard && pnpm test'
-      
+
       - id: sdk-js-tests
         name: Run sdk-js tests
         language: system
