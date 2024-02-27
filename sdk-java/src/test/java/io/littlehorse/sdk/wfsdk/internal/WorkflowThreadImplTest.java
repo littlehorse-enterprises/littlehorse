@@ -414,6 +414,7 @@ public class WorkflowThreadImplTest {
 
         Node secondThrow = entrypoint.getNodesOrThrow("2-throw-another-event-THROW_EVENT");
         assertThat(secondThrow.getThrowEvent().getEventDefId().getName()).isEqualTo("another-event");
-        assertThat(secondThrow.getThrowEvent().getContent().getLiteralValue().getStr()).isEqualTo("some-content");
+        assertThat(secondThrow.getThrowEvent().getContent().getLiteralValue().getStr())
+                .isEqualTo("some-content");
     }
 }

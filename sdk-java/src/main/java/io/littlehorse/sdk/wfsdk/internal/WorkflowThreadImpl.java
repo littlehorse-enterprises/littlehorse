@@ -614,8 +614,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public void throwEvent(String workflowEventDefName, Serializable content) {
+        checkIfIsActive();
         ThrowEventNode node = ThrowEventNode.newBuilder()
-                .setEventDefId(WorkflowEventDefId.newBuilder().setName(workflowEventDefName).build())
+                .setEventDefId(WorkflowEventDefId.newBuilder()
+                        .setName(workflowEventDefName)
+                        .build())
                 .setContent(assignVariable(content))
                 .build();
         addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
