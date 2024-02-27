@@ -23,6 +23,7 @@ from littlehorse.model.common_wfspec_pb2 import (
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
+    WorkflowEventDefId,
 )
 from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
@@ -48,6 +49,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
+    ThrowEventNode,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -191,6 +193,7 @@ class NodeCase(Enum):
     SLEEP = "SLEEP"
     USER_TASK = "USER_TASK"
     START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS"
+    THROW_EVENT = "THROW_EVENT"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -214,6 +217,8 @@ class NodeCase(Enum):
             return cls.USER_TASK
         if isinstance(node, StartMultipleThreadsNode):
             return cls.START_MULTIPLE_THREADS
+        if isinstance(node, ThrowEventNode):
+            return cls.THROW_EVENT
 
         raise TypeError("Unrecognized node type")
 
@@ -508,6 +513,8 @@ class WorkflowNode:
             return new_node(user_task=self.sub_node)
         if self.node_case == NodeCase.START_MULTIPLE_THREADS:
             return new_node(start_multiple_threads=self.sub_node)
+        if self.node_case == NodeCase.THROW_EVENT:
+            return new_node(throw_event=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -1196,6 +1203,24 @@ class WorkflowThread:
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)
+
+    def throw_event(self, workflow_event_name: str, content: Any) -> None:
+        """Adds a THROW_EVENT node which throws a WorkflowEvent.
+
+        Args:
+            workflow_event_name (str): The WorkflowEventDefId name of
+            the WorkflowEvent to throw
+            content (Any): the content of the WorkflowEvent to throw
+
+        Returns:
+            NodeOutput: A NodeOutput for this event.
+        """
+        self._check_if_active()
+        throw_node = ThrowEventNode(
+            event_def_id=WorkflowEventDefId(name=workflow_event_name),
+            content=to_variable_assignment(content),
+        )
+        node_name = self.add_node("throw-" + workflow_event_name, throw_node)
 
     def mutate(
         self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
