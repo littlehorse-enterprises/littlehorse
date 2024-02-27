@@ -57,6 +57,7 @@ import {
   WfSpecVersionMigration,
   WorkflowRetentionPolicy,
 } from "./wf_spec";
+import { PutWorkflowEventDefRequest, WorkflowEventDef } from "./workflow_event";
 
 export const protobufPackage = "littlehorse";
 
@@ -8047,6 +8048,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    putWorkflowEventDef: {
+      name: "PutWorkflowEventDef",
+      requestType: PutWorkflowEventDefRequest,
+      requestStream: false,
+      responseType: WorkflowEventDef,
+      responseStream: false,
+      options: {},
+    },
     /** EXPERIMENTAL: Creates an Principal. */
     putPrincipal: {
       name: "PutPrincipal",
@@ -8330,6 +8339,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<ListWfMetricsResponse>>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
+  putWorkflowEventDef(
+    request: PutWorkflowEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventDef>>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Returns the Principal of the caller. */
@@ -8597,6 +8610,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<ListWfMetricsResponse>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
+  putWorkflowEventDef(
+    request: DeepPartial<PutWorkflowEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventDef>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Returns the Principal of the caller. */
@@ -8606,7 +8623,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
 }
 
 function bytesFromBase64(b64: string): Uint8Array {
-  if ((globalThis as any).Buffer) {
+  if (globalThis.Buffer) {
     return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
   } else {
     const bin = globalThis.atob(b64);
@@ -8619,7 +8636,7 @@ function bytesFromBase64(b64: string): Uint8Array {
 }
 
 function base64FromBytes(arr: Uint8Array): string {
-  if ((globalThis as any).Buffer) {
+  if (globalThis.Buffer) {
     return globalThis.Buffer.from(arr).toString("base64");
   } else {
     const bin: string[] = [];

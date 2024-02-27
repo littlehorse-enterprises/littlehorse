@@ -16,6 +16,7 @@ import "user_tasks.proto";
 import "wf_spec.proto";
 import "task_def.proto";
 import "acls.proto";
+import "workflow_event.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -202,6 +203,8 @@ service LittleHorse {
 
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
+
+  rpc PutWorkflowEventDef(PutWorkflowEventDefRequest) returns (WorkflowEventDef) {}
 
   // EXPERIMENTAL: Creates an Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}

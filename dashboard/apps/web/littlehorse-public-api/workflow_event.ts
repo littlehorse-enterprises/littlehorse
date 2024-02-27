@@ -1,7 +1,8 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
+import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { WorkflowEventId } from "./object_id";
+import { WorkflowEventDefId, WorkflowEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -25,6 +26,17 @@ export interface WorkflowEvent {
     | undefined;
   /** The time that the WorkflowEvent was created. */
   createdAt: string | undefined;
+}
+
+export interface WorkflowEventDef {
+  id: WorkflowEventDefId | undefined;
+  createdAt: string | undefined;
+  type: VariableType;
+}
+
+export interface PutWorkflowEventDefRequest {
+  id: WorkflowEventDefId | undefined;
+  type: VariableType;
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
@@ -114,6 +126,173 @@ export const WorkflowEvent = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventDef(): WorkflowEventDef {
+  return { id: undefined, createdAt: undefined, type: VariableType.JSON_OBJ };
+}
+
+export const WorkflowEventDef = {
+  encode(message: WorkflowEventDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      WorkflowEventDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.type !== VariableType.JSON_OBJ) {
+      writer.uint32(24).int32(variableTypeToNumber(message.type));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventDef {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventDef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.type = variableTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkflowEventDef {
+    return {
+      id: isSet(object.id) ? WorkflowEventDefId.fromJSON(object.id) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
+      type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
+    };
+  },
+
+  toJSON(message: WorkflowEventDef): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = WorkflowEventDefId.toJSON(message.id);
+    }
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt;
+    }
+    if (message.type !== VariableType.JSON_OBJ) {
+      obj.type = variableTypeToJSON(message.type);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkflowEventDef>, I>>(base?: I): WorkflowEventDef {
+    return WorkflowEventDef.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkflowEventDef>, I>>(object: I): WorkflowEventDef {
+    const message = createBaseWorkflowEventDef();
+    message.id = (object.id !== undefined && object.id !== null)
+      ? WorkflowEventDefId.fromPartial(object.id)
+      : undefined;
+    message.createdAt = object.createdAt ?? undefined;
+    message.type = object.type ?? VariableType.JSON_OBJ;
+    return message;
+  },
+};
+
+function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
+  return { id: undefined, type: VariableType.JSON_OBJ };
+}
+
+export const PutWorkflowEventDefRequest = {
+  encode(message: PutWorkflowEventDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      WorkflowEventDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.type !== VariableType.JSON_OBJ) {
+      writer.uint32(16).int32(variableTypeToNumber(message.type));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutWorkflowEventDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutWorkflowEventDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = variableTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutWorkflowEventDefRequest {
+    return {
+      id: isSet(object.id) ? WorkflowEventDefId.fromJSON(object.id) : undefined,
+      type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
+    };
+  },
+
+  toJSON(message: PutWorkflowEventDefRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = WorkflowEventDefId.toJSON(message.id);
+    }
+    if (message.type !== VariableType.JSON_OBJ) {
+      obj.type = variableTypeToJSON(message.type);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PutWorkflowEventDefRequest>, I>>(base?: I): PutWorkflowEventDefRequest {
+    return PutWorkflowEventDefRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PutWorkflowEventDefRequest>, I>>(object: I): PutWorkflowEventDefRequest {
+    const message = createBasePutWorkflowEventDefRequest();
+    message.id = (object.id !== undefined && object.id !== null)
+      ? WorkflowEventDefId.fromPartial(object.id)
+      : undefined;
+    message.type = object.type ?? VariableType.JSON_OBJ;
     return message;
   },
 };

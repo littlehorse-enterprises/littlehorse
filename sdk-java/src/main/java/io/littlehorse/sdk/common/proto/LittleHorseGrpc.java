@@ -1627,6 +1627,37 @@ public final class LittleHorseGrpc {
     return getPutTenantMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEventDef> getPutWorkflowEventDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutWorkflowEventDef",
+      requestType = io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WorkflowEventDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEventDef> getPutWorkflowEventDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.WorkflowEventDef> getPutWorkflowEventDefMethod;
+    if ((getPutWorkflowEventDefMethod = LittleHorseGrpc.getPutWorkflowEventDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutWorkflowEventDefMethod = LittleHorseGrpc.getPutWorkflowEventDefMethod) == null) {
+          LittleHorseGrpc.getPutWorkflowEventDefMethod = getPutWorkflowEventDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.WorkflowEventDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutWorkflowEventDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WorkflowEventDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutWorkflowEventDef"))
+              .build();
+        }
+      }
+    }
+    return getPutWorkflowEventDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest,
       io.littlehorse.sdk.common.proto.Principal> getPutPrincipalMethod;
 
@@ -2320,6 +2351,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    default void putWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEventDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutWorkflowEventDefMethod(), responseObserver);
+    }
+
+    /**
      * <pre>
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
@@ -2981,6 +3019,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public void putWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEventDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutWorkflowEventDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      * <pre>
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
@@ -3568,6 +3614,13 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDef putWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutWorkflowEventDefMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4209,6 +4262,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowEventDef> putWorkflowEventDef(
+        io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutWorkflowEventDefMethod(), getCallOptions()), request);
+    }
+
+    /**
      * <pre>
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
@@ -4293,10 +4354,11 @@ public final class LittleHorseGrpc {
   private static final int METHODID_LIST_TASK_DEF_METRICS = 48;
   private static final int METHODID_LIST_WF_SPEC_METRICS = 49;
   private static final int METHODID_PUT_TENANT = 50;
-  private static final int METHODID_PUT_PRINCIPAL = 51;
-  private static final int METHODID_WHOAMI = 52;
-  private static final int METHODID_GET_SERVER_VERSION = 53;
-  private static final int METHODID_POLL_TASK = 54;
+  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 51;
+  private static final int METHODID_PUT_PRINCIPAL = 52;
+  private static final int METHODID_WHOAMI = 53;
+  private static final int METHODID_GET_SERVER_VERSION = 54;
+  private static final int METHODID_POLL_TASK = 55;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4518,6 +4580,10 @@ public final class LittleHorseGrpc {
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
+          break;
+        case METHODID_PUT_WORKFLOW_EVENT_DEF:
+          serviceImpl.putWorkflowEventDef((io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEventDef>) responseObserver);
           break;
         case METHODID_PUT_PRINCIPAL:
           serviceImpl.putPrincipal((io.littlehorse.sdk.common.proto.PutPrincipalRequest) request,
@@ -4917,6 +4983,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.Tenant>(
                 service, METHODID_PUT_TENANT)))
         .addMethod(
+          getPutWorkflowEventDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest,
+              io.littlehorse.sdk.common.proto.WorkflowEventDef>(
+                service, METHODID_PUT_WORKFLOW_EVENT_DEF)))
+        .addMethod(
           getPutPrincipalMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5037,6 +5110,7 @@ public final class LittleHorseGrpc {
               .addMethod(getListTaskDefMetricsMethod())
               .addMethod(getListWfSpecMetricsMethod())
               .addMethod(getPutTenantMethod())
+              .addMethod(getPutWorkflowEventDefMethod())
               .addMethod(getPutPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())

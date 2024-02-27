@@ -61,6 +61,7 @@ private static final long serialVersionUID = 0L;
     PUT_PRINCIPAL(12),
     DELETE_PRINCIPAL(13),
     PUT_TENANT(14),
+    WORKFLOW_EVENT_DEF(21),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -89,6 +90,7 @@ private static final long serialVersionUID = 0L;
         case 12: return PUT_PRINCIPAL;
         case 13: return DELETE_PRINCIPAL;
         case 14: return PUT_TENANT;
+        case 21: return WORKFLOW_EVENT_DEF;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -489,10 +491,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int PUT_TENANT_FIELD_NUMBER = 14;
   /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    * @return Whether the putTenant field is set.
    */
@@ -501,10 +499,6 @@ private static final long serialVersionUID = 0L;
     return metadataCommandCase_ == 14;
   }
   /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    * @return The putTenant.
    */
@@ -516,10 +510,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    */
   @java.lang.Override
@@ -528,6 +518,37 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_;
     }
     return io.littlehorse.sdk.common.proto.PutTenantRequest.getDefaultInstance();
+  }
+
+  public static final int WORKFLOW_EVENT_DEF_FIELD_NUMBER = 21;
+  /**
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   * @return Whether the workflowEventDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasWorkflowEventDef() {
+    return metadataCommandCase_ == 21;
+  }
+  /**
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   * @return The workflowEventDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest getWorkflowEventDef() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -582,6 +603,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 14) {
       output.writeMessage(14, (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 21) {
+      output.writeMessage(21, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -642,6 +666,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 14) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(14, (io.littlehorse.sdk.common.proto.PutTenantRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 21) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -714,6 +742,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutTenant()
             .equals(other.getPutTenant())) return false;
         break;
+      case 21:
+        if (!getWorkflowEventDef()
+            .equals(other.getWorkflowEventDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -780,6 +812,10 @@ private static final long serialVersionUID = 0L;
       case 14:
         hash = (37 * hash) + PUT_TENANT_FIELD_NUMBER;
         hash = (53 * hash) + getPutTenant().hashCode();
+        break;
+      case 21:
+        hash = (37 * hash) + WORKFLOW_EVENT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getWorkflowEventDef().hashCode();
         break;
       case 0:
       default:
@@ -958,6 +994,9 @@ private static final long serialVersionUID = 0L;
       if (putTenantBuilder_ != null) {
         putTenantBuilder_.clear();
       }
+      if (workflowEventDefBuilder_ != null) {
+        workflowEventDefBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1053,6 +1092,10 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 14 &&
           putTenantBuilder_ != null) {
         result.metadataCommand_ = putTenantBuilder_.build();
+      }
+      if (metadataCommandCase_ == 21 &&
+          workflowEventDefBuilder_ != null) {
+        result.metadataCommand_ = workflowEventDefBuilder_.build();
       }
     }
 
@@ -1151,6 +1194,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_TENANT: {
           mergePutTenant(other.getPutTenant());
+          break;
+        }
+        case WORKFLOW_EVENT_DEF: {
+          mergeWorkflowEventDef(other.getWorkflowEventDef());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1272,6 +1319,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 14;
               break;
             } // case 114
+            case 170: {
+              input.readMessage(
+                  getWorkflowEventDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 21;
+              break;
+            } // case 170
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2925,10 +2979,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.PutTenantRequest, io.littlehorse.sdk.common.proto.PutTenantRequest.Builder, io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder> putTenantBuilder_;
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      * @return Whether the putTenant field is set.
      */
@@ -2937,10 +2987,6 @@ private static final long serialVersionUID = 0L;
       return metadataCommandCase_ == 14;
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      * @return The putTenant.
      */
@@ -2959,10 +3005,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public Builder setPutTenant(io.littlehorse.sdk.common.proto.PutTenantRequest value) {
@@ -2979,10 +3021,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public Builder setPutTenant(
@@ -2997,10 +3035,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public Builder mergePutTenant(io.littlehorse.sdk.common.proto.PutTenantRequest value) {
@@ -3024,10 +3058,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public Builder clearPutTenant() {
@@ -3047,20 +3077,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     public io.littlehorse.sdk.common.proto.PutTenantRequest.Builder getPutTenantBuilder() {
       return getPutTenantFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     @java.lang.Override
@@ -3075,10 +3097,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
      * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3098,6 +3116,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 14;
       onChanged();
       return putTenantBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder> workflowEventDefBuilder_;
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     * @return Whether the workflowEventDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasWorkflowEventDef() {
+      return metadataCommandCase_ == 21;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     * @return The workflowEventDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest getWorkflowEventDef() {
+      if (workflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return workflowEventDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    public Builder setWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest value) {
+      if (workflowEventDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        workflowEventDefBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    public Builder setWorkflowEventDef(
+        io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder builderForValue) {
+      if (workflowEventDefBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        workflowEventDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    public Builder mergeWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest value) {
+      if (workflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 21 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.newBuilder((io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          workflowEventDefBuilder_.mergeFrom(value);
+        } else {
+          workflowEventDefBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    public Builder clearWorkflowEventDef() {
+      if (workflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        workflowEventDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder getWorkflowEventDefBuilder() {
+      return getWorkflowEventDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder() {
+      if ((metadataCommandCase_ == 21) && (workflowEventDefBuilder_ != null)) {
+        return workflowEventDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder> 
+        getWorkflowEventDefFieldBuilder() {
+      if (workflowEventDefBuilder_ == null) {
+        if (!(metadataCommandCase_ == 21)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
+        }
+        workflowEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 21;
+      onChanged();
+      return workflowEventDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
