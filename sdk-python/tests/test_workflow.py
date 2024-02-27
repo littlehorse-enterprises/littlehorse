@@ -1979,7 +1979,9 @@ class ThrowEventNodeTest(unittest.TestCase):
 
         second_throw = entrypoint.nodes["2-throw-another-event-THROW_EVENT"]
         self.assertEqual(second_throw.throw_event.event_def_id.name, "another-event")
-        self.assertEqual(second_throw.throw_event.content.literal_value.str, "some-content")
+        self.assertEqual(
+            second_throw.throw_event.content.literal_value.str, "some-content"
+        )
 
 
 if __name__ == "__main__":
