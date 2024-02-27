@@ -79,6 +79,8 @@ message NodeRun {
     // A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
     // child ThreadRun for each element in the list.
     StartMultipleThreadsRun start_multiple_threads = 21;
+
+    WorkflowEventRun workflow_event = 22;
   }
 }
 
@@ -87,6 +89,10 @@ message TaskNodeRun {
   // The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
   // at this TASK Node, then the task_run_id will be unset.
   optional TaskRunId task_run_id = 1;
+}
+
+message WorkflowEventRun {
+  WorkflowEventId workflow_event_id = 1;
 }
 
 // The sub-node structure for a USER_TASK NodeRun.
