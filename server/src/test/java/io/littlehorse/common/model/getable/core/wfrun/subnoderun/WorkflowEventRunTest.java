@@ -49,6 +49,7 @@ public class WorkflowEventRunTest {
         node.setSubNodeRun(eventRun);
         node.arrive(new Date());
         node.setStatus(LHStatus.COMPLETED);
+        Assertions.assertThat(node.getSubNodeRun()).isNotNull();
         Assertions.assertThat(node.getOutput()).isEmpty();
         Assertions.assertThat(node.checkIfProcessingCompleted()).isTrue();
         testProcessorContext.getableManager().put(node);
