@@ -33,6 +33,7 @@ import {
   VariableId,
   WfRunId,
   WfSpecId,
+  WorkflowEventDefId,
 } from "./object_id";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
@@ -57,7 +58,7 @@ import {
   WfSpecVersionMigration,
   WorkflowRetentionPolicy,
 } from "./wf_spec";
-import { PutWorkflowEventDefRequest, WorkflowEventDef } from "./workflow_event";
+import { PutWorkflowEventDefRequest, WorkflowEvent, WorkflowEventDef } from "./workflow_event";
 
 export const protobufPackage = "littlehorse";
 
@@ -336,6 +337,19 @@ export interface VariableMatch {
   varName: string;
   /** The value that the Variable must have in order to satisfy this VariableMatch */
   value: VariableValue | undefined;
+}
+
+/**
+ * Request to await until a WorkflowEvent of a certain WorkflowEventDef on a certain WfRun
+ * is thrown. Relies upon native GRPC deadlines to configure timeouts.
+ */
+export interface AwaitWorkflowEventRequest {
+  /** The ID of the WfRun which must throw the WorkflowEvent. */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** The ID of the WorkflowEventDef that must be thrown. */
+  eventDefId: WorkflowEventDefId | undefined;
 }
 
 /** A request used to retrieve a list of WfRunId's by certain criteria. */
@@ -2602,6 +2616,84 @@ export const VariableMatch = {
     message.varName = object.varName ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseAwaitWorkflowEventRequest(): AwaitWorkflowEventRequest {
+  return { wfRunId: undefined, eventDefId: undefined };
+}
+
+export const AwaitWorkflowEventRequest = {
+  encode(message: AwaitWorkflowEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.eventDefId !== undefined) {
+      WorkflowEventDefId.encode(message.eventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AwaitWorkflowEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAwaitWorkflowEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.eventDefId = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AwaitWorkflowEventRequest {
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      eventDefId: isSet(object.eventDefId) ? WorkflowEventDefId.fromJSON(object.eventDefId) : undefined,
+    };
+  },
+
+  toJSON(message: AwaitWorkflowEventRequest): unknown {
+    const obj: any = {};
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.eventDefId !== undefined) {
+      obj.eventDefId = WorkflowEventDefId.toJSON(message.eventDefId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AwaitWorkflowEventRequest>, I>>(base?: I): AwaitWorkflowEventRequest {
+    return AwaitWorkflowEventRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<AwaitWorkflowEventRequest>, I>>(object: I): AwaitWorkflowEventRequest {
+    const message = createBaseAwaitWorkflowEventRequest();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.eventDefId = (object.eventDefId !== undefined && object.eventDefId !== null)
+      ? WorkflowEventDefId.fromPartial(object.eventDefId)
       : undefined;
     return message;
   },
@@ -7790,6 +7882,21 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     *
+     * To specify the deadline, the client should use GRPC deadlines.
+     */
+    awaitWorkflowEvent: {
+      name: "AwaitWorkflowEvent",
+      requestType: AwaitWorkflowEventRequest,
+      requestStream: false,
+      responseType: WorkflowEvent,
+      responseStream: false,
+      options: {},
+    },
     /** List ExternalEvent's for a specific WfRun. */
     listExternalEvents: {
       name: "ListExternalEvents",
@@ -8212,6 +8319,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ExternalEventId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /**
+   * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+   * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+   * is not thrown before the deadline specified by the client.
+   *
+   * To specify the deadline, the client should use GRPC deadlines.
+   */
+  awaitWorkflowEvent(
+    request: AwaitWorkflowEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEvent>>;
   /** List ExternalEvent's for a specific WfRun. */
   listExternalEvents(
     request: ListExternalEventsRequest,
@@ -8480,6 +8598,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ExternalEventId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /**
+   * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+   * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+   * is not thrown before the deadline specified by the client.
+   *
+   * To specify the deadline, the client should use GRPC deadlines.
+   */
+  awaitWorkflowEvent(
+    request: DeepPartial<AwaitWorkflowEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEvent>;
   /** List ExternalEvent's for a specific WfRun. */
   listExternalEvents(
     request: DeepPartial<ListExternalEventsRequest>,
@@ -8623,7 +8752,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
 }
 
 function bytesFromBase64(b64: string): Uint8Array {
-  if (globalThis.Buffer) {
+  if ((globalThis as any).Buffer) {
     return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
   } else {
     const bin = globalThis.atob(b64);
@@ -8636,7 +8765,7 @@ function bytesFromBase64(b64: string): Uint8Array {
 }
 
 function base64FromBytes(arr: Uint8Array): string {
-  if (globalThis.Buffer) {
+  if ((globalThis as any).Buffer) {
     return globalThis.Buffer.from(arr).toString("base64");
   } else {
     const bin: string[] = [];

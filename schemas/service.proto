@@ -126,6 +126,13 @@ service LittleHorse {
   // Get a specific ExternalEvent.
   rpc GetExternalEvent(ExternalEventId) returns (ExternalEvent) {}
 
+  // Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+  // WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+  // is not thrown before the deadline specified by the client.
+  //
+  // To specify the deadline, the client should use GRPC deadlines.
+  rpc AwaitWorkflowEvent(AwaitWorkflowEventRequest) returns (WorkflowEvent) {}
+
   // List ExternalEvent's for a specific WfRun.
   rpc ListExternalEvents(ListExternalEventsRequest) returns (ExternalEventList) {}
 
@@ -403,6 +410,16 @@ message VariableMatch {
 
     // The value that the Variable must have in order to satisfy this VariableMatch
     VariableValue value = 2;
+}
+
+// Request to await until a WorkflowEvent of a certain WorkflowEventDef on a certain WfRun
+// is thrown. Relies upon native GRPC deadlines to configure timeouts.
+message AwaitWorkflowEventRequest {
+  // The ID of the WfRun which must throw the WorkflowEvent.
+  WfRunId wf_run_id = 1;
+
+  // The ID of the WorkflowEventDef that must be thrown.
+  WorkflowEventDefId event_def_id = 2;
 }
 
 // A request used to retrieve a list of WfRunId's by certain criteria.

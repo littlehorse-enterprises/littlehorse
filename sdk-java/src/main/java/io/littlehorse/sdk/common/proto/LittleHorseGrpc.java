@@ -821,6 +821,37 @@ public final class LittleHorseGrpc {
     return getGetExternalEventMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEvent> getAwaitWorkflowEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "AwaitWorkflowEvent",
+      requestType = io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WorkflowEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEvent> getAwaitWorkflowEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest, io.littlehorse.sdk.common.proto.WorkflowEvent> getAwaitWorkflowEventMethod;
+    if ((getAwaitWorkflowEventMethod = LittleHorseGrpc.getAwaitWorkflowEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getAwaitWorkflowEventMethod = LittleHorseGrpc.getAwaitWorkflowEventMethod) == null) {
+          LittleHorseGrpc.getAwaitWorkflowEventMethod = getAwaitWorkflowEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest, io.littlehorse.sdk.common.proto.WorkflowEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "AwaitWorkflowEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WorkflowEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("AwaitWorkflowEvent"))
+              .build();
+        }
+      }
+    }
+    return getAwaitWorkflowEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListExternalEventsRequest,
       io.littlehorse.sdk.common.proto.ExternalEventList> getListExternalEventsMethod;
 
@@ -2082,6 +2113,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     * To specify the deadline, the client should use GRPC deadlines.
+     * </pre>
+     */
+    default void awaitWorkflowEvent(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getAwaitWorkflowEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * List ExternalEvent's for a specific WfRun.
      * </pre>
      */
@@ -2724,6 +2768,20 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     * To specify the deadline, the client should use GRPC deadlines.
+     * </pre>
+     */
+    public void awaitWorkflowEvent(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getAwaitWorkflowEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * List ExternalEvent's for a specific WfRun.
      * </pre>
      */
@@ -3359,6 +3417,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     * To specify the deadline, the client should use GRPC deadlines.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEvent awaitWorkflowEvent(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAwaitWorkflowEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * List ExternalEvent's for a specific WfRun.
      * </pre>
      */
@@ -3979,6 +4050,20 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     * To specify the deadline, the client should use GRPC deadlines.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowEvent> awaitWorkflowEvent(
+        io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getAwaitWorkflowEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * List ExternalEvent's for a specific WfRun.
      * </pre>
      */
@@ -4329,36 +4414,37 @@ public final class LittleHorseGrpc {
   private static final int METHODID_LIST_VARIABLES = 23;
   private static final int METHODID_PUT_EXTERNAL_EVENT = 24;
   private static final int METHODID_GET_EXTERNAL_EVENT = 25;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 26;
-  private static final int METHODID_SEARCH_WF_RUN = 27;
-  private static final int METHODID_SEARCH_NODE_RUN = 28;
-  private static final int METHODID_SEARCH_TASK_RUN = 29;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 30;
-  private static final int METHODID_SEARCH_VARIABLE = 31;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 32;
-  private static final int METHODID_SEARCH_TASK_DEF = 33;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 34;
-  private static final int METHODID_SEARCH_WF_SPEC = 35;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 36;
-  private static final int METHODID_REGISTER_TASK_WORKER = 37;
-  private static final int METHODID_REPORT_TASK = 38;
-  private static final int METHODID_STOP_WF_RUN = 39;
-  private static final int METHODID_RESUME_WF_RUN = 40;
-  private static final int METHODID_DELETE_WF_RUN = 41;
-  private static final int METHODID_DELETE_TASK_DEF = 42;
-  private static final int METHODID_DELETE_WF_SPEC = 43;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 44;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 45;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 46;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 47;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 48;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 49;
-  private static final int METHODID_PUT_TENANT = 50;
-  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 51;
-  private static final int METHODID_PUT_PRINCIPAL = 52;
-  private static final int METHODID_WHOAMI = 53;
-  private static final int METHODID_GET_SERVER_VERSION = 54;
-  private static final int METHODID_POLL_TASK = 55;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 26;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 27;
+  private static final int METHODID_SEARCH_WF_RUN = 28;
+  private static final int METHODID_SEARCH_NODE_RUN = 29;
+  private static final int METHODID_SEARCH_TASK_RUN = 30;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 31;
+  private static final int METHODID_SEARCH_VARIABLE = 32;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 33;
+  private static final int METHODID_SEARCH_TASK_DEF = 34;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 35;
+  private static final int METHODID_SEARCH_WF_SPEC = 36;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 37;
+  private static final int METHODID_REGISTER_TASK_WORKER = 38;
+  private static final int METHODID_REPORT_TASK = 39;
+  private static final int METHODID_STOP_WF_RUN = 40;
+  private static final int METHODID_RESUME_WF_RUN = 41;
+  private static final int METHODID_DELETE_WF_RUN = 42;
+  private static final int METHODID_DELETE_TASK_DEF = 43;
+  private static final int METHODID_DELETE_WF_SPEC = 44;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 45;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 46;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 47;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 48;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 49;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 50;
+  private static final int METHODID_PUT_TENANT = 51;
+  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 52;
+  private static final int METHODID_PUT_PRINCIPAL = 53;
+  private static final int METHODID_WHOAMI = 54;
+  private static final int METHODID_GET_SERVER_VERSION = 55;
+  private static final int METHODID_POLL_TASK = 56;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4480,6 +4566,10 @@ public final class LittleHorseGrpc {
         case METHODID_GET_EXTERNAL_EVENT:
           serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
+          break;
+        case METHODID_AWAIT_WORKFLOW_EVENT:
+          serviceImpl.awaitWorkflowEvent((io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent>) responseObserver);
           break;
         case METHODID_LIST_EXTERNAL_EVENTS:
           serviceImpl.listExternalEvents((io.littlehorse.sdk.common.proto.ListExternalEventsRequest) request,
@@ -4801,6 +4891,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_GET_EXTERNAL_EVENT)))
         .addMethod(
+          getAwaitWorkflowEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
+              io.littlehorse.sdk.common.proto.WorkflowEvent>(
+                service, METHODID_AWAIT_WORKFLOW_EVENT)))
+        .addMethod(
           getListExternalEventsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5084,6 +5181,7 @@ public final class LittleHorseGrpc {
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())
               .addMethod(getGetExternalEventMethod())
+              .addMethod(getAwaitWorkflowEventMethod())
               .addMethod(getListExternalEventsMethod())
               .addMethod(getSearchWfRunMethod())
               .addMethod(getSearchNodeRunMethod())
