@@ -1220,7 +1220,7 @@ class WorkflowThread:
             event_def_id=WorkflowEventDefId(name=workflow_event_name),
             content=to_variable_assignment(content),
         )
-        node_name = self.add_node("throw-" + workflow_event_name, throw_node)
+        self.add_node("throw-" + workflow_event_name, throw_node)
 
     def mutate(
         self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
