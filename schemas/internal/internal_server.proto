@@ -13,7 +13,7 @@ service LHInternals {
 
     rpc InternalScan(InternalScanPb) returns (InternalScanResponse) {}
 
-    rpc WaitForCommand(WaitForCommandRequest) returns (WaitForCommandResponse) {}
+    rpc WaitForPedro(WaitForPedroRequest) returns (WaitForPedroResponse) {}
 
     rpc GetAdvertisedHosts(google.protobuf.Empty) returns (InternalGetAdvertisedHostsResponse) {}
 }

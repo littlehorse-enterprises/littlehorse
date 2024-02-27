@@ -25,17 +25,17 @@ public final class InternalServer {
     java.lang.String[] descriptorData = {
       "\n\025internal_server.proto\022\013littlehorse\032\033go" +
       "ogle/protobuf/empty.proto\032\027interactive_q" +
-      "uery.proto2\353\002\n\013LHInternals\022L\n\tGetObject\022" +
+      "uery.proto2\345\002\n\013LHInternals\022L\n\tGetObject\022" +
       "\035.littlehorse.GetObjectRequest\032\036.littleh" +
       "orse.GetObjectResponse\"\000\022P\n\014InternalScan" +
       "\022\033.littlehorse.InternalScanPb\032!.littleho" +
-      "rse.InternalScanResponse\"\000\022[\n\016WaitForCom" +
-      "mand\022\".littlehorse.WaitForCommandRequest" +
-      "\032#.littlehorse.WaitForCommandResponse\"\000\022" +
-      "_\n\022GetAdvertisedHosts\022\026.google.protobuf." +
-      "Empty\032/.littlehorse.InternalGetAdvertise" +
-      "dHostsResponse\"\000B\037\n\033io.littlehorse.commo" +
-      "n.protoP\001b\006proto3"
+      "rse.InternalScanResponse\"\000\022U\n\014WaitForPed" +
+      "ro\022 .littlehorse.WaitForPedroRequest\032!.l" +
+      "ittlehorse.WaitForPedroResponse\"\000\022_\n\022Get" +
+      "AdvertisedHosts\022\026.google.protobuf.Empty\032" +
+      "/.littlehorse.InternalGetAdvertisedHosts" +
+      "Response\"\000B\037\n\033io.littlehorse.common.prot" +
+      "oP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

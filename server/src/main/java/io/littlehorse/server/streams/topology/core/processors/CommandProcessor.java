@@ -16,7 +16,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.proto.WaitForPedroResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -102,7 +102,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
+                WaitForPedroResponse cmdReply = WaitForPedroResponse.newBuilder()
                         .setCommandId(command.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
                         .setResult(response.toByteString())

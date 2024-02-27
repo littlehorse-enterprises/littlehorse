@@ -60,12 +60,13 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.proto.WaitForPedroResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
@@ -822,7 +823,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         return internalComms.getProducer();
     }
 
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
+    public void onResponseReceived(String commandId, WaitForPedroResponse response) {
         internalComms.onResponseReceived(commandId, response);
     }
 
@@ -866,7 +867,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream,
             RequestExecutionContext requestContext) {
-        StreamObserver<WaitForCommandResponse> commandObserver =
+        StreamObserver<WaitForPedroResponse> commandObserver =
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
@@ -908,7 +909,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     private void productionCallback(
             RecordMetadata meta,
             Exception exn,
-            StreamObserver<WaitForCommandResponse> observer,
+            StreamObserver<WaitForPedroResponse> observer,
             AbstractCommand<?> command) {
         if (exn != null) {
             observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.proto.WaitForPedroResponse;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class AsyncWaiters {
     }
 
     // TODO: rename this to register()
-    public void put(String commandId, StreamObserver<WaitForCommandResponse> observer) {
+    public void put(String commandId, StreamObserver<WaitForPedroResponse> observer) {
         try {
             lock.lock();
             AsyncWaiter waiter = waiters.get(commandId);
@@ -63,7 +63,7 @@ public class AsyncWaiters {
     }
 
     // TODO: Rename this to register()
-    public void put(String commandId, WaitForCommandResponse response) {
+    public void put(String commandId, WaitForPedroResponse response) {
         try {
             lock.lock();
             AsyncWaiter waiter = waiters.get(commandId);
