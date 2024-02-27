@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
@@ -52,6 +54,10 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     @Override
     public WorkflowEventDef process(MetadataCommandExecution executionContext) {
         WorkflowEventDefModel eventDef = new WorkflowEventDefModel(id, type);
+        boolean eventDefAlreadyExists = executionContext.metadataManager().get(id) != null;
+        if (eventDefAlreadyExists) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "Workflow event already exist");
+        }
         executionContext.metadataManager().put(eventDef);
         return eventDef.toProto().build();
     }

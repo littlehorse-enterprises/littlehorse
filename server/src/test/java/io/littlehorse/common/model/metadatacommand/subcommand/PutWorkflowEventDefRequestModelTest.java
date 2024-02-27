@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
+import static org.mockito.Mockito.*;
+
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
@@ -71,6 +73,22 @@ public class PutWorkflowEventDefRequestModelTest {
         sendCommand(putWorkflowEventDef);
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
+    }
+
+    @Test
+    public void shouldValidateDuplicatedWorkflowEvents() {
+        sendCommand(putWorkflowEventDef);
+        WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
+        Assertions.assertThat(storedEventDef).isNotNull();
+        sendCommand(putWorkflowEventDef);
+        verify(server, times(1)).sendErrorToClient(anyString(), any());
+        PutWorkflowEventDefRequestModel userUpdatedCommand =
+                new PutWorkflowEventDefRequestModel(new WorkflowEventDefIdModel("user-updated"), VariableType.STR);
+        reset(server);
+        sendCommand(userUpdatedCommand);
+        verify(server, never()).sendErrorToClient(anyString(), any());
+        WorkflowEventDefModel userUpdatedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-updated"));
+        Assertions.assertThat(userUpdatedEventDef).isNotNull();
     }
 
     private PutWorkflowEventDefRequestModel createSubCommand() {
