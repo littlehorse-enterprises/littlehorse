@@ -6,6 +6,7 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/empty.proto";
 import "interactive_query.proto";
+import "workflow_event.proto";
 
 
 service LHInternals {
@@ -13,7 +14,9 @@ service LHInternals {
 
     rpc InternalScan(InternalScanPb) returns (InternalScanResponse) {}
 
-    rpc WaitForAction(WaitForActionRequest) returns (WaitForActionResponse) {}
+    rpc WaitForCommand(WaitForCommandRequest) returns (WaitForCommandResponse) {}
 
     rpc GetAdvertisedHosts(google.protobuf.Empty) returns (InternalGetAdvertisedHostsResponse) {}
+
+    rpc WaitForWfEvent(InternalWaitForWfEventRequest) returns (WorkflowEvent) {}
 }

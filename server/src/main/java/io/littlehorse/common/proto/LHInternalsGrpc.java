@@ -77,35 +77,35 @@ public final class LHInternalsGrpc {
     return getInternalScanMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest,
-      io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest,
+      io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "WaitForAction",
-      requestType = io.littlehorse.common.proto.WaitForActionRequest.class,
-      responseType = io.littlehorse.common.proto.WaitForActionResponse.class,
+      fullMethodName = SERVICE_NAME + '/' + "WaitForCommand",
+      requestType = io.littlehorse.common.proto.WaitForCommandRequest.class,
+      responseType = io.littlehorse.common.proto.WaitForCommandResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest,
-      io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForActionRequest, io.littlehorse.common.proto.WaitForActionResponse> getWaitForActionMethod;
-    if ((getWaitForActionMethod = LHInternalsGrpc.getWaitForActionMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest,
+      io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest, io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod;
+    if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
-        if ((getWaitForActionMethod = LHInternalsGrpc.getWaitForActionMethod) == null) {
-          LHInternalsGrpc.getWaitForActionMethod = getWaitForActionMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForActionRequest, io.littlehorse.common.proto.WaitForActionResponse>newBuilder()
+        if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
+          LHInternalsGrpc.getWaitForCommandMethod = getWaitForCommandMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForCommandRequest, io.littlehorse.common.proto.WaitForCommandResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForAction"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForCommand"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForActionRequest.getDefaultInstance()))
+                  io.littlehorse.common.proto.WaitForCommandRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForActionResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForAction"))
+                  io.littlehorse.common.proto.WaitForCommandResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForCommand"))
               .build();
         }
       }
     }
-    return getWaitForActionMethod;
+    return getWaitForCommandMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
@@ -137,6 +137,37 @@ public final class LHInternalsGrpc {
       }
     }
     return getGetAdvertisedHostsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalWaitForWfEventRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEvent> getWaitForWfEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "WaitForWfEvent",
+      requestType = io.littlehorse.common.proto.InternalWaitForWfEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WorkflowEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalWaitForWfEventRequest,
+      io.littlehorse.sdk.common.proto.WorkflowEvent> getWaitForWfEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalWaitForWfEventRequest, io.littlehorse.sdk.common.proto.WorkflowEvent> getWaitForWfEventMethod;
+    if ((getWaitForWfEventMethod = LHInternalsGrpc.getWaitForWfEventMethod) == null) {
+      synchronized (LHInternalsGrpc.class) {
+        if ((getWaitForWfEventMethod = LHInternalsGrpc.getWaitForWfEventMethod) == null) {
+          LHInternalsGrpc.getWaitForWfEventMethod = getWaitForWfEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalWaitForWfEventRequest, io.littlehorse.sdk.common.proto.WorkflowEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForWfEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalWaitForWfEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WorkflowEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForWfEvent"))
+              .build();
+        }
+      }
+    }
+    return getWaitForWfEventMethod;
   }
 
   /**
@@ -203,9 +234,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    default void waitForAction(io.littlehorse.common.proto.WaitForActionRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForActionMethod(), responseObserver);
+    default void waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandMethod(), responseObserver);
     }
 
     /**
@@ -213,6 +244,13 @@ public final class LHInternalsGrpc {
     default void getAdvertisedHosts(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAdvertisedHostsMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void waitForWfEvent(io.littlehorse.common.proto.InternalWaitForWfEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForWfEventMethod(), responseObserver);
     }
   }
 
@@ -261,10 +299,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void waitForAction(io.littlehorse.common.proto.WaitForActionRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse> responseObserver) {
+    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getWaitForActionMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -273,6 +311,14 @@ public final class LHInternalsGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void waitForWfEvent(io.littlehorse.common.proto.InternalWaitForWfEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getWaitForWfEventMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -308,9 +354,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.WaitForActionResponse waitForAction(io.littlehorse.common.proto.WaitForActionRequest request) {
+    public io.littlehorse.common.proto.WaitForCommandResponse waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getWaitForActionMethod(), getCallOptions(), request);
+          getChannel(), getWaitForCommandMethod(), getCallOptions(), request);
     }
 
     /**
@@ -318,6 +364,13 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse getAdvertisedHosts(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAdvertisedHostsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEvent waitForWfEvent(io.littlehorse.common.proto.InternalWaitForWfEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getWaitForWfEventMethod(), getCallOptions(), request);
     }
   }
 
@@ -355,10 +408,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForActionResponse> waitForAction(
-        io.littlehorse.common.proto.WaitForActionRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForCommandResponse> waitForCommand(
+        io.littlehorse.common.proto.WaitForCommandRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getWaitForActionMethod(), getCallOptions()), request);
+          getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request);
     }
 
     /**
@@ -368,12 +421,21 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowEvent> waitForWfEvent(
+        io.littlehorse.common.proto.InternalWaitForWfEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getWaitForWfEventMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_OBJECT = 0;
   private static final int METHODID_INTERNAL_SCAN = 1;
-  private static final int METHODID_WAIT_FOR_ACTION = 2;
+  private static final int METHODID_WAIT_FOR_COMMAND = 2;
   private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
+  private static final int METHODID_WAIT_FOR_WF_EVENT = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -400,13 +462,17 @@ public final class LHInternalsGrpc {
           serviceImpl.internalScan((io.littlehorse.common.proto.InternalScanPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanResponse>) responseObserver);
           break;
-        case METHODID_WAIT_FOR_ACTION:
-          serviceImpl.waitForAction((io.littlehorse.common.proto.WaitForActionRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForActionResponse>) responseObserver);
+        case METHODID_WAIT_FOR_COMMAND:
+          serviceImpl.waitForCommand((io.littlehorse.common.proto.WaitForCommandRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse>) responseObserver);
           break;
         case METHODID_GET_ADVERTISED_HOSTS:
           serviceImpl.getAdvertisedHosts((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse>) responseObserver);
+          break;
+        case METHODID_WAIT_FOR_WF_EVENT:
+          serviceImpl.waitForWfEvent((io.littlehorse.common.proto.InternalWaitForWfEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -441,12 +507,12 @@ public final class LHInternalsGrpc {
               io.littlehorse.common.proto.InternalScanResponse>(
                 service, METHODID_INTERNAL_SCAN)))
         .addMethod(
-          getWaitForActionMethod(),
+          getWaitForCommandMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.WaitForActionRequest,
-              io.littlehorse.common.proto.WaitForActionResponse>(
-                service, METHODID_WAIT_FOR_ACTION)))
+              io.littlehorse.common.proto.WaitForCommandRequest,
+              io.littlehorse.common.proto.WaitForCommandResponse>(
+                service, METHODID_WAIT_FOR_COMMAND)))
         .addMethod(
           getGetAdvertisedHostsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -454,6 +520,13 @@ public final class LHInternalsGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse>(
                 service, METHODID_GET_ADVERTISED_HOSTS)))
+        .addMethod(
+          getWaitForWfEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.common.proto.InternalWaitForWfEventRequest,
+              io.littlehorse.sdk.common.proto.WorkflowEvent>(
+                service, METHODID_WAIT_FOR_WF_EVENT)))
         .build();
   }
 
@@ -504,8 +577,9 @@ public final class LHInternalsGrpc {
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
               .addMethod(getGetObjectMethod())
               .addMethod(getInternalScanMethod())
-              .addMethod(getWaitForActionMethod())
+              .addMethod(getWaitForCommandMethod())
               .addMethod(getGetAdvertisedHostsMethod())
+              .addMethod(getWaitForWfEventMethod())
               .build();
         }
       }

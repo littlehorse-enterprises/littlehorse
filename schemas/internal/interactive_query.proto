@@ -8,6 +8,7 @@ import "google/protobuf/timestamp.proto";
 import "storage.proto";
 import "service.proto";
 import "common_enums.proto";
+import "object_id.proto";
 
 message GetObjectRequest {
     GetableClassEnum object_type = 1;
@@ -19,12 +20,12 @@ message GetObjectResponse {
     bytes response = 1;
 }
 
-message WaitForActionRequest {
-    string action_id = 1;
+message WaitForCommandRequest {
+    string command_id = 1;
 }
 
-message WaitForActionResponse {
-    string action_id = 1;
+message WaitForCommandResponse {
+    string command_id = 1;
     google.protobuf.Timestamp result_time = 2;
     bytes result = 3;
 }
@@ -92,4 +93,8 @@ message PartitionBookmarkPb { // used for paginated responses
 message BookmarkPb { // Used for paginated responses
     map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
     repeated int32 completed_partitions = 2;
+}
+
+message InternalWaitForWfEventRequest {
+    WorkflowEventId id = 1;
 }

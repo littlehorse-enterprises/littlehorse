@@ -3,21 +3,21 @@
 
 package io.littlehorse.common.proto;
 
-public interface WaitForActionResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForActionResponse)
+public interface WaitForCommandResponseOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForCommandResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string action_id = 1;</code>
-   * @return The actionId.
+   * <code>string command_id = 1;</code>
+   * @return The commandId.
    */
-  java.lang.String getActionId();
+  java.lang.String getCommandId();
   /**
-   * <code>string action_id = 1;</code>
-   * @return The bytes for actionId.
+   * <code>string command_id = 1;</code>
+   * @return The bytes for commandId.
    */
   com.google.protobuf.ByteString
-      getActionIdBytes();
+      getCommandIdBytes();
 
   /**
    * <code>.google.protobuf.Timestamp result_time = 2;</code>

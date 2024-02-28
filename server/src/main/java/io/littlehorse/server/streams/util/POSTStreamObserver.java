@@ -3,11 +3,11 @@ package io.littlehorse.server.streams.util;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForActionResponse;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class POSTStreamObserver<U extends Message> implements StreamObserver<WaitForActionResponse> {
+public class POSTStreamObserver<U extends Message> implements StreamObserver<WaitForCommandResponse> {
 
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
@@ -42,7 +42,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     }
 
     @Override
-    public void onNext(WaitForActionResponse reply) {
+    public void onNext(WaitForCommandResponse reply) {
         ctx.onNext(buildRespFromBytes(reply.getResult()));
     }
 }

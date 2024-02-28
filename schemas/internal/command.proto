@@ -12,8 +12,8 @@ import "user_tasks.proto";
 import "common_enums.proto";
 import "storage.proto";
 import "acls.proto";
-import "job.proto";
 import "workflow_event.proto";
+import "job.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -61,8 +61,7 @@ message MetadataCommand {
         PutPrincipalRequest put_principal = 12;
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
-        PutWorkflowEventDefRequest workflow_event_def = 21;
-
+        PutWorkflowEventDefRequest workflow_event_def = 15;
         // TODO: DeleteTenant
     }
 }

@@ -205,17 +205,29 @@ public interface MetadataCommandOrBuilder extends
   io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
 
   /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return Whether the workflowEventDef field is set.
    */
   boolean hasWorkflowEventDef();
   /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return The workflowEventDef.
    */
   io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest getWorkflowEventDef();
   /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    */
   io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder();
 

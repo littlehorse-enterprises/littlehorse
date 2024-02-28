@@ -5,7 +5,6 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.ChannelCredentials;
 import io.grpc.Context;
-import io.grpc.Deadline;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -20,6 +19,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -36,9 +36,7 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -53,8 +51,8 @@ import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
-import io.littlehorse.server.streams.util.StreamObserversWaitingForAsyncEvents;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,7 +102,7 @@ public class BackendInternalComms implements Closeable {
     private ChannelCredentials clientCreds;
 
     private Map<String, ManagedChannel> channels;
-    private StreamObserversWaitingForAsyncEvents asyncWaiters;
+    private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
@@ -147,7 +145,7 @@ public class BackendInternalComms implements Closeable {
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
-        this.asyncWaiters = new StreamObserversWaitingForAsyncEvents();
+        this.asyncWaiters = new AsyncWaiters();
 
         // TODO: Optimize this later.
         new Thread(() -> {
@@ -214,12 +212,11 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForWorkflowEvent(
-            AwaitWorkflowEventRequest request, StreamObserver<WorkflowEvent> observer, Deadline deadline) {}
-
-    public void waitForActionToHappen(String actionId, StreamObserver<WaitForActionResponse> observer) {
+    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                ServerTopology.CORE_STORE, actionId, Serdes.String().serializer());
+                ServerTopology.CORE_STORE,
+                command.getPartitionKey(),
+                Serdes.String().serializer());
 
         /*
          * As a prerequisite to this method being called, the command has already
@@ -227,11 +224,12 @@ public class BackendInternalComms implements Closeable {
          * of the in-sync replicas).
          */
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForAction(actionId, observer);
+            localWaitForCommand(command.getCommandId(), observer);
         } else {
-            WaitForActionRequest req =
-                    WaitForActionRequest.newBuilder().setActionId(actionId).build();
-            getInternalAsyncClient(meta.activeHost()).waitForAction(req, observer);
+            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
+                    .setCommandId(command.getCommandId())
+                    .build();
+            getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
         }
     }
 
@@ -302,16 +300,16 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
-    public void onResponseReceived(String commandId, WaitForActionResponse response) {
-        asyncWaiters.notifyThatCommandWasProcessed(commandId, response);
+    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
+        asyncWaiters.put(commandId, response);
     }
 
     public void sendErrorToClientForCommand(String commandId, Exception caught) {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForAction(String commandId, StreamObserver<WaitForActionResponse> observer) {
-        asyncWaiters.putObserverWaitingForCommand(commandId, observer);
+    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
+        asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
@@ -427,8 +425,8 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void waitForAction(WaitForActionRequest req, StreamObserver<WaitForActionResponse> ctx) {
-            localWaitForAction(req.getActionId(), ctx);
+        public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
+            localWaitForCommand(req.getCommandId(), ctx);
         }
 
         @Override

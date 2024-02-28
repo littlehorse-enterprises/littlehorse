@@ -157,8 +157,8 @@ public final class CommandOuterClass {
       "tobuf/timestamp.proto\032\rservice.proto\032\017ob" +
       "ject_id.proto\032\023common_wfspec.proto\032\020user" +
       "_tasks.proto\032\022common_enums.proto\032\rstorag" +
-      "e.proto\032\nacls.proto\032\tjob.proto\032\024workflow" +
-      "_event.proto\"\235\t\n\007Command\022(\n\004time\030\001 \001(\0132\032" +
+      "e.proto\032\nacls.proto\032\024workflow_event.prot" +
+      "o\032\tjob.proto\"\235\t\n\007Command\022(\n\004time\030\001 \001(\0132\032" +
       ".google.protobuf.Timestamp\022\027\n\ncommand_id" +
       "\030\002 \001(\tH\001\210\001\001\0225\n\017report_task_run\030\004 \001(\0132\032.l" +
       "ittlehorse.ReportTaskRunH\000\0229\n\020task_claim" +
@@ -208,7 +208,7 @@ public final class CommandOuterClass {
       "ncipal\030\r \001(\0132#.littlehorse.DeletePrincip" +
       "alRequestH\000\0223\n\nput_tenant\030\016 \001(\0132\035.little" +
       "horse.PutTenantRequestH\000\022E\n\022workflow_eve" +
-      "nt_def\030\025 \001(\0132\'.littlehorse.PutWorkflowEv" +
+      "nt_def\030\017 \001(\0132\'.littlehorse.PutWorkflowEv" +
       "entDefRequestH\000B\022\n\020metadata_commandB\r\n\013_" +
       "command_id\"\236\001\n\022AggregateWfMetrics\022)\n\nwf_" +
       "spec_id\030\001 \001(\0132\025.littlehorse.WfSpecId\022(\n\t" +
@@ -322,8 +322,8 @@ public final class CommandOuterClass {
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
           io.littlehorse.common.proto.Storage.getDescriptor(),
           io.littlehorse.sdk.common.proto.Acls.getDescriptor(),
-          io.littlehorse.common.proto.Job.getDescriptor(),
           io.littlehorse.sdk.common.proto.WorkflowEventOuterClass.getDescriptor(),
+          io.littlehorse.common.proto.Job.getDescriptor(),
         });
     internal_static_littlehorse_Command_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -489,8 +489,8 @@ public final class CommandOuterClass {
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.common.proto.Storage.getDescriptor();
     io.littlehorse.sdk.common.proto.Acls.getDescriptor();
-    io.littlehorse.common.proto.Job.getDescriptor();
     io.littlehorse.sdk.common.proto.WorkflowEventOuterClass.getDescriptor();
+    io.littlehorse.common.proto.Job.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForActionResponse;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,24 +10,25 @@ import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class StreamObserversWaitingForAsyncEvents {
+public class AsyncWaiters {
 
     public Lock lock;
-    public LinkedHashMap<String, ObserverInWaiting> waiters;
+    public LinkedHashMap<String, AsyncWaiter> waiters;
 
     private static final long MAX_WAITER_AGE = 1000 * 60;
 
-    public StreamObserversWaitingForAsyncEvents() {
+    public AsyncWaiters() {
         lock = new ReentrantLock();
         waiters = new LinkedHashMap<>();
     }
 
-    public void putObserverWaitingForCommand(String commandId, StreamObserver<WaitForActionResponse> observer) {
+    // TODO: rename this to register()
+    public void put(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         try {
             lock.lock();
-            ObserverInWaiting waiter = waiters.get(commandId);
+            AsyncWaiter waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new ObserverInWaiting(commandId, observer));
+                waiters.put(commandId, new AsyncWaiter(commandId, observer));
             } else {
                 if (waiter.getObserver() != null) {
                     // this means the request has come in again...
@@ -48,9 +49,9 @@ public class StreamObserversWaitingForAsyncEvents {
         // This happens when there is an unexpected error in the processing.
         try {
             lock.lock();
-            ObserverInWaiting waiter = waiters.get(commandId);
+            AsyncWaiter waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new ObserverInWaiting(commandId, exception));
+                waiters.put(commandId, new AsyncWaiter(commandId, exception));
             } else {
                 waiter.setCaughtException(exception);
                 waiter.onMatched();
@@ -61,12 +62,13 @@ public class StreamObserversWaitingForAsyncEvents {
         }
     }
 
-    public void notifyThatCommandWasProcessed(String commandId, WaitForActionResponse response) {
+    // TODO: Rename this to register()
+    public void put(String commandId, WaitForCommandResponse response) {
         try {
             lock.lock();
-            ObserverInWaiting waiter = waiters.get(commandId);
+            AsyncWaiter waiter = waiters.get(commandId);
             if (waiter == null) {
-                waiters.put(commandId, new ObserverInWaiting(commandId, response));
+                waiters.put(commandId, new AsyncWaiter(commandId, response));
             } else {
                 if (waiter.getResponse() != null) {
                     // this means that a duplicate Kafka event came through, but
@@ -88,16 +90,15 @@ public class StreamObserversWaitingForAsyncEvents {
     public void cleanupOldWaiters() {
         try {
             lock.lock();
-            Iterator<Map.Entry<String, ObserverInWaiting>> iter =
-                    waiters.entrySet().iterator();
+            Iterator<Map.Entry<String, AsyncWaiter>> iter = waiters.entrySet().iterator();
             long now = System.currentTimeMillis();
             while (iter.hasNext()) {
-                Map.Entry<String, ObserverInWaiting> pair = iter.next();
+                Map.Entry<String, AsyncWaiter> pair = iter.next();
                 long age = now - pair.getValue().getArrivalTime().getTime();
                 if (age < MAX_WAITER_AGE) {
                     break;
                 }
-                ObserverInWaiting waiter = pair.getValue();
+                AsyncWaiter waiter = pair.getValue();
                 if (waiter.getObserver() != null) {
                     waiter.getObserver()
                             .onError(new RuntimeException(
