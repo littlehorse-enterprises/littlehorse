@@ -2,74 +2,88 @@ package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class AsyncWaiters {
 
     // private Lock lock;
-    private ConcurrentHashMap<String, AsyncWaiter<?>> waiters;
+    private ConcurrentHashMap<String, CommandWaiter> commandWaiters;
+    private ConcurrentHashMap<String, WorkflowEventWaiter> eventWaiters;
 
     private static final long MAX_WAITER_AGE = 1000 * 60;
 
     public AsyncWaiters() {
-        // lock = new ReentrantLock();
-        waiters = new ConcurrentHashMap<>();
+        eventWaiters = new ConcurrentHashMap<>();
+        commandWaiters = new ConcurrentHashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     public void registerObserverWaitingForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        AsyncWaiter<WaitForCommandResponse> tmp = new AsyncWaiter<>(commandId);
-        AsyncWaiter<WaitForCommandResponse> waiter = (AsyncWaiter<WaitForCommandResponse>) waiters.putIfAbsent(commandId, tmp);
+        CommandWaiter tmp = new CommandWaiter(commandId);
+        CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setObserverAndMaybeComplete(observer)) {
-            waiters.remove(commandId);
+            commandWaiters.remove(commandId);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void markCommandFailed(String commandId, Exception exception) {
-        AsyncWaiter<WaitForCommandResponse> tmp = new AsyncWaiter<>(commandId);
-        AsyncWaiter<WaitForCommandResponse> waiter = (AsyncWaiter<WaitForCommandResponse>) waiters.putIfAbsent(commandId, tmp);
+        CommandWaiter tmp = new CommandWaiter(commandId);
+        CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setExceptionAndMaybeComplete(exception)) {
-            waiters.remove(commandId);
+            commandWaiters.remove(commandId);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void registerCommandProcessed(String commandId, WaitForCommandResponse response) {
-        AsyncWaiter<WaitForCommandResponse> tmp = new AsyncWaiter<>(commandId);
-        AsyncWaiter<WaitForCommandResponse> waiter = (AsyncWaiter<WaitForCommandResponse>) waiters.putIfAbsent(commandId, tmp);
+        CommandWaiter tmp = new CommandWaiter(commandId);
+        CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setResponseAndMaybeComplete(response)) {
-            waiters.remove(commandId);
+            commandWaiters.remove(commandId);
         }
     }
 
     public void registerWorkflowEventHappened(WorkflowEventModel event) {
-        throw new NotImplementedException();
+        String key = event.getId().toString();
+        WorkflowEventWaiter waiter = eventWaiters.get(key);
+        if (waiter != null && waiter.completeWithEvent(event)) {
+            eventWaiters.remove(key);
+        }
     }
 
-    public void registerObserverWaitingForWorkflowEvent(WorkflowEventId id, StreamObserver<WorkflowEvent> observer) {
-        throw new NotImplementedException();
+    public void registerObserverWaitingForWorkflowEvent(
+            WorkflowEventId idProto, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
+        WorkflowEventIdModel id = WorkflowEventIdModel.fromProto(idProto, WorkflowEventIdModel.class, ctx);
+        String key = id.toString();
+        WorkflowEventWaiter waiter = new WorkflowEventWaiter(id, observer);
+        eventWaiters.put(key, waiter);
+
+        // Now try to get the event out
+        WorkflowEventModel event = ctx.getableManager().get(id);
+        if (event != null && waiter.completeWithEvent(event)) {
+            eventWaiters.remove(key);
+        }
     }
 
     public void cleanupOldWaiters() {
-        Iterator<Map.Entry<String, AsyncWaiter<?>>> iter = waiters.entrySet().iterator();
+        Iterator<Map.Entry<String, CommandWaiter>> iter =
+                commandWaiters.entrySet().iterator();
         long now = System.currentTimeMillis();
         while (iter.hasNext()) {
-            Map.Entry<String, AsyncWaiter<?>> pair = iter.next();
+            Map.Entry<String, CommandWaiter> pair = iter.next();
             long age = now - pair.getValue().getArrivalTime().getTime();
             if (age < MAX_WAITER_AGE) {
                 break;
             }
-            AsyncWaiter<?> waiter = pair.getValue();
+            CommandWaiter waiter = pair.getValue();
             if (waiter.getObserver() != null) {
                 waiter.getObserver()
                         .onError(new RuntimeException(

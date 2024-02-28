@@ -387,7 +387,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private void localWaitForWfEvent(WorkflowEventId id, StreamObserver<WorkflowEvent> observer) {
-        asyncWaiters.registerObserverWaitingForWorkflowEvent(id, observer);
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(id, observer, executionContext());
     }
 
     public void registerWorkflowEventProcessed(WorkflowEventModel event) {

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.util;
 
-import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,11 +9,11 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AsyncWaiter<T extends Message> {
+public class CommandWaiter {
 
     private String commandId;
 
-    private T response;
+    private WaitForCommandResponse response;
     private Exception caughtException;
     private Lock lock;
 
@@ -21,18 +21,18 @@ public class AsyncWaiter<T extends Message> {
     private Date arrivalTime;
 
     @Getter
-    private StreamObserver<T> observer;
+    private StreamObserver<WaitForCommandResponse> observer;
 
     private boolean alreadyCompleted;
 
-    public AsyncWaiter(String commandId) {
+    public CommandWaiter(String commandId) {
         this.lock = new ReentrantLock();
         this.alreadyCompleted = false;
         this.commandId = commandId;
         this.arrivalTime = new Date();
     }
 
-    public boolean setObserverAndMaybeComplete(StreamObserver<T> observer) {
+    public boolean setObserverAndMaybeComplete(StreamObserver<WaitForCommandResponse> observer) {
         try {
             lock.lock();
             if (alreadyCompleted) return false;
@@ -43,7 +43,7 @@ public class AsyncWaiter<T extends Message> {
         }
     }
 
-    public boolean setResponseAndMaybeComplete(T response) {
+    public boolean setResponseAndMaybeComplete(WaitForCommandResponse response) {
         try {
             lock.lock();
             if (alreadyCompleted) return false;
