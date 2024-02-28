@@ -1,19 +1,23 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 public class AsyncWaiters {
 
-    public Lock lock;
-    public LinkedHashMap<String, AsyncWaiter> waiters;
+    private Lock lock;
+    private LinkedHashMap<String, AsyncWaiter> waiters;
 
     private static final long MAX_WAITER_AGE = 1000 * 60;
 
@@ -22,8 +26,7 @@ public class AsyncWaiters {
         waiters = new LinkedHashMap<>();
     }
 
-    // TODO: rename this to register()
-    public void put(String commandId, StreamObserver<WaitForCommandResponse> observer) {
+    public void registerObserverWaitingForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         try {
             lock.lock();
             AsyncWaiter waiter = waiters.get(commandId);
@@ -62,8 +65,7 @@ public class AsyncWaiters {
         }
     }
 
-    // TODO: Rename this to register()
-    public void put(String commandId, WaitForCommandResponse response) {
+    public void registerCommandProcessed(String commandId, WaitForCommandResponse response) {
         try {
             lock.lock();
             AsyncWaiter waiter = waiters.get(commandId);
@@ -85,6 +87,14 @@ public class AsyncWaiters {
         } finally {
             lock.unlock();
         }
+    }
+
+    public void registerWorkflowEventHappened(WorkflowEventModel event) {
+        throw new NotImplementedException();
+    }
+
+    public void registerObserverWaitingForWorkflowEvent(WorkflowEventId id, StreamObserver<WorkflowEvent> observer) {
+        throw new NotImplementedException();
     }
 
     public void cleanupOldWaiters() {

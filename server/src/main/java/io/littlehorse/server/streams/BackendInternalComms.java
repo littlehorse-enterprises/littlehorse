@@ -22,6 +22,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -37,6 +38,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -301,7 +304,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        asyncWaiters.put(commandId, response);
+        asyncWaiters.registerCommandProcessed(commandId, response);
     }
 
     public void sendErrorToClientForCommand(String commandId, Exception caught) {
@@ -309,7 +312,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.put(commandId, observer);
+        asyncWaiters.registerObserverWaitingForCommand(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
@@ -383,6 +386,14 @@ public class BackendInternalComms implements Closeable {
         return storeResult.getStoredObject();
     }
 
+    private void localWaitForWfEvent(WorkflowEventId id, StreamObserver<WorkflowEvent> observer) {
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(id, observer);
+    }
+
+    public void registerWorkflowEventProcessed(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
     /*
      * Implements the internal_server.proto service, which is used
      * for communication between the LH servers to do distributed lookups etc.
@@ -427,6 +438,11 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
             localWaitForCommand(req.getCommandId(), ctx);
+        }
+
+        @Override
+        public void waitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+            localWaitForWfEvent(req.getId(), ctx);
         }
 
         @Override
