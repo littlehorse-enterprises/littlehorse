@@ -45,7 +45,7 @@ public class WorkflowEventRunTest {
         node.setId(new NodeRunIdModel(wfRunId, 1, 2));
         node.setArrivalTime(new Date());
         WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
-        WorkflowEventRunModel eventRun = new WorkflowEventRunModel(eventDef, testProcessorContext);
+        ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
         node.setSubNodeRun(eventRun);
         node.arrive(new Date());
         node.setStatus(LHStatus.COMPLETED);

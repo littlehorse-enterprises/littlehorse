@@ -80,7 +80,7 @@ message NodeRun {
     // child ThreadRun for each element in the list.
     StartMultipleThreadsRun start_multiple_threads = 21;
 
-    WorkflowEventRun workflow_event = 22;
+    ThrowEventNodeRun throw_event = 22;
   }
 }
 
@@ -91,7 +91,7 @@ message TaskNodeRun {
   optional TaskRunId task_run_id = 1;
 }
 
-message WorkflowEventRun {
+message ThrowEventNodeRun {
   WorkflowEventId workflow_event_id = 1;
 }
 

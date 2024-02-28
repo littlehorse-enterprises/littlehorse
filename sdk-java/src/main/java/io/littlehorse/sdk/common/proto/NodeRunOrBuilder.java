@@ -535,19 +535,19 @@ public interface NodeRunOrBuilder extends
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder();
 
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-   * @return Whether the workflowEvent field is set.
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return Whether the throwEvent field is set.
    */
-  boolean hasWorkflowEvent();
+  boolean hasThrowEvent();
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-   * @return The workflowEvent.
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return The throwEvent.
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventRun getWorkflowEvent();
+  io.littlehorse.sdk.common.proto.ThrowEventNodeRun getThrowEvent();
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder getWorkflowEventOrBuilder();
+  io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder getThrowEventOrBuilder();
 
   io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }

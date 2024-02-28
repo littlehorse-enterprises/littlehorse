@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
-import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WorkflowEventRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
@@ -41,7 +41,7 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
 
     @Override
     public SubNodeRun<?> createSubNodeRun(Date time) {
-        return new WorkflowEventRunModel(workflowEventDefId, processorContext);
+        return new ThrowEventNodeRunModel(workflowEventDefId, processorContext);
     }
 
     @Override

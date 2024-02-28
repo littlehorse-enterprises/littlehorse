@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface WorkflowEventRunOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WorkflowEventRun)
+public interface ThrowEventNodeRunOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.ThrowEventNodeRun)
     com.google.protobuf.MessageOrBuilder {
 
   /**

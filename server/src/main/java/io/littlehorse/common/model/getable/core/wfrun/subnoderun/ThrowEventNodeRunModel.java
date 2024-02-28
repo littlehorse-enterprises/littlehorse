@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.WorkflowEventRun;
+import io.littlehorse.sdk.common.proto.ThrowEventNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -17,15 +17,15 @@ import java.util.Optional;
 import lombok.Setter;
 
 @Setter
-public class WorkflowEventRunModel extends SubNodeRun<WorkflowEventRun> {
+public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
 
     private WorkflowEventIdModel workflowEventId;
     private ProcessorExecutionContext processorExecutionContext;
     private WorkflowEventDefIdModel eventDefId;
 
-    public WorkflowEventRunModel() {}
+    public ThrowEventNodeRunModel() {}
 
-    public WorkflowEventRunModel(WorkflowEventDefIdModel defId, ProcessorExecutionContext processorContext) {
+    public ThrowEventNodeRunModel(WorkflowEventDefIdModel defId, ProcessorExecutionContext processorContext) {
         this.eventDefId = defId;
         this.processorExecutionContext = processorContext;
     }
@@ -33,18 +33,18 @@ public class WorkflowEventRunModel extends SubNodeRun<WorkflowEventRun> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         this.processorExecutionContext = context.castOnSupport(ProcessorExecutionContext.class);
-        WorkflowEventRun p = (WorkflowEventRun) proto;
+        ThrowEventNodeRun p = (ThrowEventNodeRun) proto;
         this.workflowEventId = LHSerializable.fromProto(p.getWorkflowEventId(), WorkflowEventIdModel.class, context);
     }
 
     @Override
-    public WorkflowEventRun.Builder toProto() {
-        return WorkflowEventRun.newBuilder().setWorkflowEventId(workflowEventId.toProto());
+    public ThrowEventNodeRun.Builder toProto() {
+        return ThrowEventNodeRun.newBuilder().setWorkflowEventId(workflowEventId.toProto());
     }
 
     @Override
-    public Class<WorkflowEventRun> getProtoBaseClass() {
-        return WorkflowEventRun.class;
+    public Class<ThrowEventNodeRun> getProtoBaseClass() {
+        return ThrowEventNodeRun.class;
     }
 
     @Override

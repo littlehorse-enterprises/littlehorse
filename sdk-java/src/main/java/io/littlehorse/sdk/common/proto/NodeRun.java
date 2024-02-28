@@ -65,7 +65,7 @@ private static final long serialVersionUID = 0L;
     SLEEP(19),
     USER_TASK(20),
     START_MULTIPLE_THREADS(21),
-    WORKFLOW_EVENT(22),
+    THROW_EVENT(22),
     NODETYPE_NOT_SET(0);
     private final int value;
     private NodeTypeCase(int value) {
@@ -92,7 +92,7 @@ private static final long serialVersionUID = 0L;
         case 19: return SLEEP;
         case 20: return USER_TASK;
         case 21: return START_MULTIPLE_THREADS;
-        case 22: return WORKFLOW_EVENT;
+        case 22: return THROW_EVENT;
         case 0: return NODETYPE_NOT_SET;
         default: return null;
       }
@@ -943,35 +943,35 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
   }
 
-  public static final int WORKFLOW_EVENT_FIELD_NUMBER = 22;
+  public static final int THROW_EVENT_FIELD_NUMBER = 22;
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-   * @return Whether the workflowEvent field is set.
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return Whether the throwEvent field is set.
    */
   @java.lang.Override
-  public boolean hasWorkflowEvent() {
+  public boolean hasThrowEvent() {
     return nodeTypeCase_ == 22;
   }
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-   * @return The workflowEvent.
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return The throwEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventRun getWorkflowEvent() {
+  public io.littlehorse.sdk.common.proto.ThrowEventNodeRun getThrowEvent() {
     if (nodeTypeCase_ == 22) {
-       return (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_;
+       return (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder getWorkflowEventOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder getThrowEventOrBuilder() {
     if (nodeTypeCase_ == 22) {
-       return (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_;
+       return (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1051,7 +1051,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(21, (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_);
     }
     if (nodeTypeCase_ == 22) {
-      output.writeMessage(22, (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_);
+      output.writeMessage(22, (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1147,7 +1147,7 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 22) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(22, (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_);
+        .computeMessageSize(22, (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1237,8 +1237,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getStartMultipleThreads())) return false;
         break;
       case 22:
-        if (!getWorkflowEvent()
-            .equals(other.getWorkflowEvent())) return false;
+        if (!getThrowEvent()
+            .equals(other.getThrowEvent())) return false;
         break;
       case 0:
       default:
@@ -1326,8 +1326,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getStartMultipleThreads().hashCode();
         break;
       case 22:
-        hash = (37 * hash) + WORKFLOW_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getWorkflowEvent().hashCode();
+        hash = (37 * hash) + THROW_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getThrowEvent().hashCode();
         break;
       case 0:
       default:
@@ -1537,8 +1537,8 @@ private static final long serialVersionUID = 0L;
       if (startMultipleThreadsBuilder_ != null) {
         startMultipleThreadsBuilder_.clear();
       }
-      if (workflowEventBuilder_ != null) {
-        workflowEventBuilder_.clear();
+      if (throwEventBuilder_ != null) {
+        throwEventBuilder_.clear();
       }
       nodeTypeCase_ = 0;
       nodeType_ = null;
@@ -1672,8 +1672,8 @@ private static final long serialVersionUID = 0L;
         result.nodeType_ = startMultipleThreadsBuilder_.build();
       }
       if (nodeTypeCase_ == 22 &&
-          workflowEventBuilder_ != null) {
-        result.nodeType_ = workflowEventBuilder_.build();
+          throwEventBuilder_ != null) {
+        result.nodeType_ = throwEventBuilder_.build();
       }
     }
 
@@ -1824,8 +1824,8 @@ private static final long serialVersionUID = 0L;
           mergeStartMultipleThreads(other.getStartMultipleThreads());
           break;
         }
-        case WORKFLOW_EVENT: {
-          mergeWorkflowEvent(other.getWorkflowEvent());
+        case THROW_EVENT: {
+          mergeThrowEvent(other.getThrowEvent());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -2000,7 +2000,7 @@ private static final long serialVersionUID = 0L;
             } // case 170
             case 178: {
               input.readMessage(
-                  getWorkflowEventFieldBuilder().getBuilder(),
+                  getThrowEventFieldBuilder().getBuilder(),
                   extensionRegistry);
               nodeTypeCase_ = 22;
               break;
@@ -5083,71 +5083,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WorkflowEventRun, io.littlehorse.sdk.common.proto.WorkflowEventRun.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder> workflowEventBuilder_;
+        io.littlehorse.sdk.common.proto.ThrowEventNodeRun, io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder> throwEventBuilder_;
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-     * @return Whether the workflowEvent field is set.
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+     * @return Whether the throwEvent field is set.
      */
     @java.lang.Override
-    public boolean hasWorkflowEvent() {
+    public boolean hasThrowEvent() {
       return nodeTypeCase_ == 22;
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
-     * @return The workflowEvent.
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+     * @return The throwEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRun getWorkflowEvent() {
-      if (workflowEventBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.ThrowEventNodeRun getThrowEvent() {
+      if (throwEventBuilder_ == null) {
         if (nodeTypeCase_ == 22) {
-          return (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_;
+          return (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
       } else {
         if (nodeTypeCase_ == 22) {
-          return workflowEventBuilder_.getMessage();
+          return throwEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
-    public Builder setWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventRun value) {
-      if (workflowEventBuilder_ == null) {
+    public Builder setThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNodeRun value) {
+      if (throwEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         nodeType_ = value;
         onChanged();
       } else {
-        workflowEventBuilder_.setMessage(value);
+        throwEventBuilder_.setMessage(value);
       }
       nodeTypeCase_ = 22;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
-    public Builder setWorkflowEvent(
-        io.littlehorse.sdk.common.proto.WorkflowEventRun.Builder builderForValue) {
-      if (workflowEventBuilder_ == null) {
+    public Builder setThrowEvent(
+        io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder builderForValue) {
+      if (throwEventBuilder_ == null) {
         nodeType_ = builderForValue.build();
         onChanged();
       } else {
-        workflowEventBuilder_.setMessage(builderForValue.build());
+        throwEventBuilder_.setMessage(builderForValue.build());
       }
       nodeTypeCase_ = 22;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
-    public Builder mergeWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventRun value) {
-      if (workflowEventBuilder_ == null) {
+    public Builder mergeThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNodeRun value) {
+      if (throwEventBuilder_ == null) {
         if (nodeTypeCase_ == 22 &&
-            nodeType_ != io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.sdk.common.proto.WorkflowEventRun.newBuilder((io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_)
+            nodeType_ != io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.sdk.common.proto.ThrowEventNodeRun.newBuilder((io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_)
               .mergeFrom(value).buildPartial();
         } else {
           nodeType_ = value;
@@ -5155,19 +5155,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (nodeTypeCase_ == 22) {
-          workflowEventBuilder_.mergeFrom(value);
+          throwEventBuilder_.mergeFrom(value);
         } else {
-          workflowEventBuilder_.setMessage(value);
+          throwEventBuilder_.setMessage(value);
         }
       }
       nodeTypeCase_ = 22;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
-    public Builder clearWorkflowEvent() {
-      if (workflowEventBuilder_ == null) {
+    public Builder clearThrowEvent() {
+      if (throwEventBuilder_ == null) {
         if (nodeTypeCase_ == 22) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
@@ -5178,50 +5178,50 @@ private static final long serialVersionUID = 0L;
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
-        workflowEventBuilder_.clear();
+        throwEventBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowEventRun.Builder getWorkflowEventBuilder() {
-      return getWorkflowEventFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder getThrowEventBuilder() {
+      return getThrowEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder getWorkflowEventOrBuilder() {
-      if ((nodeTypeCase_ == 22) && (workflowEventBuilder_ != null)) {
-        return workflowEventBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder getThrowEventOrBuilder() {
+      if ((nodeTypeCase_ == 22) && (throwEventBuilder_ != null)) {
+        return throwEventBuilder_.getMessageOrBuilder();
       } else {
         if (nodeTypeCase_ == 22) {
-          return (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_;
+          return (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WorkflowEventRun workflow_event = 22;</code>
+     * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WorkflowEventRun, io.littlehorse.sdk.common.proto.WorkflowEventRun.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder> 
-        getWorkflowEventFieldBuilder() {
-      if (workflowEventBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.ThrowEventNodeRun, io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder> 
+        getThrowEventFieldBuilder() {
+      if (throwEventBuilder_ == null) {
         if (!(nodeTypeCase_ == 22)) {
-          nodeType_ = io.littlehorse.sdk.common.proto.WorkflowEventRun.getDefaultInstance();
+          nodeType_ = io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
         }
-        workflowEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WorkflowEventRun, io.littlehorse.sdk.common.proto.WorkflowEventRun.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRunOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WorkflowEventRun) nodeType_,
+        throwEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ThrowEventNodeRun, io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_,
                 getParentForChildren(),
                 isClean());
         nodeType_ = null;
       }
       nodeTypeCase_ = 22;
       onChanged();
-      return workflowEventBuilder_;
+      return throwEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
