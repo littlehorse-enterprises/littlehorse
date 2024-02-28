@@ -52,6 +52,8 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
         workflowEventId = new WorkflowEventIdModel(nodeRun.getId().getWfRunId(), this.eventDefId, 0);
         WorkflowEventModel event = new WorkflowEventModel(workflowEventId, new VariableValueModel());
         processorExecutionContext.getableManager().put(event);
+
+        processorExecutionContext.notifyOfEventThrown(event);
     }
 
     @Override

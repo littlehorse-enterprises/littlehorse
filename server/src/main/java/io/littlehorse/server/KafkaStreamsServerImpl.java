@@ -25,6 +25,7 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -153,6 +154,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
@@ -780,7 +782,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
-    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {}
+    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+        WorkflowEventId.Builder eventId = WorkflowEventId.newBuilder()
+                .setWfRunId(req.getWfRunId())
+                .setWorkflowEventDefId(req.getEventDefId())
+                .setId(0);
+        internalComms.registerObserverForWorkflowEvent(eventId.build(), ctx);
+    }
 
     @Override
     @Authorize(
@@ -1004,5 +1012,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public LHHostInfo getAdvertisedHost(
             HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
         return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
+    }
+
+    public void onEventThrown(WorkflowEventModel event) {
+        internalComms.onWorkflowEventThrown(event);
     }
 }

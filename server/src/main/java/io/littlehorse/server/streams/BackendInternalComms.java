@@ -303,6 +303,14 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
+    public void registerObserverForWorkflowEvent(WorkflowEventId eventId, StreamObserver<WorkflowEvent> observer) {
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(eventId, observer, executionContext());
+    }
+
+    public void onWorkflowEventThrown(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
         asyncWaiters.registerCommandProcessed(commandId, response);
     }
