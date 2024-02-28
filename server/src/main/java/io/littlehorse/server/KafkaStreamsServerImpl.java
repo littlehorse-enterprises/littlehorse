@@ -60,12 +60,13 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.proto.WaitForActionResponse;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
@@ -151,6 +152,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
@@ -778,6 +780,11 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+        
+    }
+
+    @Override
     @Authorize(
             resources = {},
             actions = {})
@@ -822,7 +829,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         return internalComms.getProducer();
     }
 
-    public void onResponseReceived(String commandId, WaitForActionResponse response) {
+    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
         internalComms.onResponseReceived(commandId, response);
     }
 
@@ -866,7 +873,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream,
             RequestExecutionContext requestContext) {
-        StreamObserver<WaitForActionResponse> commandObserver =
+        StreamObserver<WaitForCommandResponse> commandObserver =
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
@@ -886,27 +893,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                         commandMetadata.toArray());
     }
 
-    private void productionCallback(
-            RecordMetadata meta,
-            Exception exn,
-            StreamObserver<WaitForActionResponse> observer,
-            AbstractCommand<?> command) {
-        if (exn != null) {
-            observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-        } else {
-            internalComms.waitForActionToHappen(command.getCommandId(), observer);
-        }
-    }
-
-    // @Override
-    // public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-    //     Deadline deadline =
-    // requestContext().getDeadlineFromClient().orElse(LHConstants.LARGEST_DEADLINE_FOR_WAIT_FOR_EVENT);
-    //     StreamObserver<WaitForActionResponse> internalObserver = new POSTStreamObserver<>(ctx, WorkflowEvent.class,
-    // true);
-    //     internalComms.waitForWorkflowEvent(internalObserver, deadline);
-    // }
-
     public ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
@@ -924,6 +910,18 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     private WfService getServiceFromContext() {
         return requestContext().service();
+    }
+
+    private void productionCallback(
+            RecordMetadata meta,
+            Exception exn,
+            StreamObserver<WaitForCommandResponse> observer,
+            AbstractCommand<?> command) {
+        if (exn != null) {
+            observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+        } else {
+            internalComms.waitForCommand(command, observer);
+        }
     }
 
     public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {

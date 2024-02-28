@@ -190,34 +190,31 @@ public interface MetadataCommandOrBuilder extends
   io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder();
 
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    * @return Whether the putTenant field is set.
    */
   boolean hasPutTenant();
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    * @return The putTenant.
    */
   io.littlehorse.sdk.common.proto.PutTenantRequest getPutTenant();
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
    */
   io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
-
-  /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
-   * @return Whether the workflowEventDef field is set.
-   */
-  boolean hasWorkflowEventDef();
-  /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
-   * @return The workflowEventDef.
-   */
-  io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest getWorkflowEventDef();
-  /**
-   * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 21;</code>
-   */
-  io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder();
 
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }
