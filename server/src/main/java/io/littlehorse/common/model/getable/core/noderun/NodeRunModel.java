@@ -17,9 +17,9 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunMod
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
-import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;

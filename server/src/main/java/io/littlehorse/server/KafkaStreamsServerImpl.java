@@ -780,9 +780,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
-    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-        
-    }
+    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {}
 
     @Override
     @Authorize(
