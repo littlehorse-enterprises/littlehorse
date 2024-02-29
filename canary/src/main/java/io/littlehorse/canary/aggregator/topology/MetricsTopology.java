@@ -10,10 +10,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MetricsTopology {
@@ -34,16 +31,19 @@ public class MetricsTopology {
                 beatsStream,
                 TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)),
                 Duration.ofMillis(storeRetention));
+
         final DuplicatedTaskRunTopology taskRunTopology =
                 new DuplicatedTaskRunTopology(beatsStream, Duration.ofMillis(storeRetention));
 
         latencyTopology
                 .getStream()
                 .merge(taskRunTopology.getStream())
-                .toTable(Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as(METRICS_STORE)
-                        .withKeySerde(ProtobufSerdes.MetricKey())
-                        .withValueSerde(Serdes.Double())
-                        .withRetention(Duration.ofMillis(storeRetention)));
+                .toTable(
+                        Named.as(METRICS_STORE),
+                        Materialized.<MetricKey, Double, KeyValueStore<Bytes, byte[]>>as(METRICS_STORE)
+                                .withKeySerde(ProtobufSerdes.MetricKey())
+                                .withValueSerde(Serdes.Double())
+                                .withRetention(Duration.ofMillis(storeRetention)));
     }
 
     public Topology toTopology() {

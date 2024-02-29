@@ -74,6 +74,8 @@ done
 
 # compile js protobuf
 echo "Compiling protobuf objects"
+
+# This is still being used in the dashboard, we should remove it as soon as there's not more refereces to it
 $docker_run protoc \
     --plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
     --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useDate=string,esModuleInterop=true,stringEnums=true \
@@ -83,5 +85,14 @@ $docker_run protoc \
 
 echo "Fixing imports for protobuff JS for more information see the README file"
 find "${WORK_DIR}"/dashboard/apps/web/littlehorse-public-api/ -type f -readable -writable -exec sed -i "s/import _m0/import * as _m0/g" {} \;
+
+
+# This segment is for the sdk-js should replace the dashboard version eventually
+$docker_run protoc \
+	--plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
+	--ts_proto_out /littlehorse/sdk-js/src/proto \
+	--ts_proto_opt=env=node,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,eslint_disable,esModuleInterop=true,useDate=string,stringEnums=true \
+	-I /littlehorse/schemas \
+    service.proto
 
 echo "The Force will be with you. Always."

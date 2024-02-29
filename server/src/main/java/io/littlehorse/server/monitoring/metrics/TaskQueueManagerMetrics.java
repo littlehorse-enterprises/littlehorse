@@ -31,15 +31,15 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
     }
 
     private void updateMetrics(MeterRegistry registry) {
-        for (OneTaskQueue queue : taskQueueManager.all()) {
-            if (!wasRegistered(registry, queue)) {
-                log.trace("Adding new metric for queue {}", queue.getTaskDefName());
-                Gauge.builder(METRIC_NAME, queue, OneTaskQueue::size)
-                        .tag(TENANT_ID_TAG, queue.getTenantId().getId())
-                        .tag(TASK_NAME_TAG, queue.getTaskDefName())
-                        .register(registry);
-            }
-        }
+        taskQueueManager.all().stream()
+                .filter(queue -> !wasRegistered(registry, queue))
+                .forEach(queue -> {
+                    log.trace("Adding new metric for queue {}", queue.getTaskDefName());
+                    Gauge.builder(METRIC_NAME, queue, OneTaskQueue::size)
+                            .tag(TENANT_ID_TAG, queue.getTenantId().getId())
+                            .tag(TASK_NAME_TAG, queue.getTaskDefName())
+                            .register(registry);
+                });
     }
 
     private boolean wasRegistered(MeterRegistry registry, OneTaskQueue queue) {
