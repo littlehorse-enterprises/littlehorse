@@ -24,6 +24,7 @@ const (
 	LittleHorse_GetTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetTaskDef"
 	LittleHorse_PutExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutExternalEventDef"
 	LittleHorse_GetExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetExternalEventDef"
+	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
 	LittleHorse_PutWfSpec_FullMethodName               = "/littlehorse.LittleHorse/PutWfSpec"
 	LittleHorse_GetWfSpec_FullMethodName               = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName         = "/littlehorse.LittleHorse/GetLatestWfSpec"
@@ -73,7 +74,6 @@ const (
 	LittleHorse_ListTaskDefMetrics_FullMethodName      = "/littlehorse.LittleHorse/ListTaskDefMetrics"
 	LittleHorse_ListWfSpecMetrics_FullMethodName       = "/littlehorse.LittleHorse/ListWfSpecMetrics"
 	LittleHorse_PutTenant_FullMethodName               = "/littlehorse.LittleHorse/PutTenant"
-	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
 	LittleHorse_PutPrincipal_FullMethodName            = "/littlehorse.LittleHorse/PutPrincipal"
 	LittleHorse_Whoami_FullMethodName                  = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName        = "/littlehorse.LittleHorse/GetServerVersion"
@@ -91,6 +91,8 @@ type LittleHorseClient interface {
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error)
+	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	// Gets a WfSpec.
@@ -227,7 +229,6 @@ type LittleHorseClient interface {
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
-	PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
 	// Returns the Principal of the caller.
@@ -274,6 +275,15 @@ func (c *littleHorseClient) PutExternalEventDef(ctx context.Context, in *PutExte
 func (c *littleHorseClient) GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error) {
 	out := new(ExternalEventDef)
 	err := c.cc.Invoke(ctx, LittleHorse_GetExternalEventDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error) {
+	out := new(WorkflowEventDef)
+	err := c.cc.Invoke(ctx, LittleHorse_PutWorkflowEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -743,15 +753,6 @@ func (c *littleHorseClient) PutTenant(ctx context.Context, in *PutTenantRequest,
 	return out, nil
 }
 
-func (c *littleHorseClient) PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error) {
-	out := new(WorkflowEventDef)
-	err := c.cc.Invoke(ctx, LittleHorse_PutWorkflowEventDef_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *littleHorseClient) PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error) {
 	out := new(Principal)
 	err := c.cc.Invoke(ctx, LittleHorse_PutPrincipal_FullMethodName, in, out, opts...)
@@ -791,6 +792,8 @@ type LittleHorseServer interface {
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error)
+	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
 	// Gets a WfSpec.
@@ -927,7 +930,6 @@ type LittleHorseServer interface {
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
-	PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
 	// Returns the Principal of the caller.
@@ -952,6 +954,9 @@ func (UnimplementedLittleHorseServer) PutExternalEventDef(context.Context, *PutE
 }
 func (UnimplementedLittleHorseServer) GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutWorkflowEventDef not implemented")
 }
 func (UnimplementedLittleHorseServer) PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutWfSpec not implemented")
@@ -1100,9 +1105,6 @@ func (UnimplementedLittleHorseServer) ListWfSpecMetrics(context.Context, *ListWf
 func (UnimplementedLittleHorseServer) PutTenant(context.Context, *PutTenantRequest) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
 }
-func (UnimplementedLittleHorseServer) PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutWorkflowEventDef not implemented")
-}
 func (UnimplementedLittleHorseServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
 }
@@ -1193,6 +1195,24 @@ func _LittleHorse_GetExternalEventDef_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetExternalEventDef(ctx, req.(*ExternalEventDefId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutWorkflowEventDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutWorkflowEventDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, req.(*PutWorkflowEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2087,24 +2107,6 @@ func _LittleHorse_PutTenant_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_PutWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutWorkflowEventDefRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_PutWorkflowEventDef_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, req.(*PutWorkflowEventDefRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LittleHorse_PutPrincipal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PutPrincipalRequest)
 	if err := dec(in); err != nil {
@@ -2181,6 +2183,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetExternalEventDef",
 			Handler:    _LittleHorse_GetExternalEventDef_Handler,
+		},
+		{
+			MethodName: "PutWorkflowEventDef",
+			Handler:    _LittleHorse_PutWorkflowEventDef_Handler,
 		},
 		{
 			MethodName: "PutWfSpec",
@@ -2373,10 +2379,6 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutTenant",
 			Handler:    _LittleHorse_PutTenant_Handler,
-		},
-		{
-			MethodName: "PutWorkflowEventDef",
-			Handler:    _LittleHorse_PutWorkflowEventDef_Handler,
 		},
 		{
 			MethodName: "PutPrincipal",

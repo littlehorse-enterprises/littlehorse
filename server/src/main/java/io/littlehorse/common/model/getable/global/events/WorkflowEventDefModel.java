@@ -16,7 +16,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class WorkflowEventDefModel extends MetadataGetable<WorkflowEventDef> {
 
     private WorkflowEventDefIdModel id;

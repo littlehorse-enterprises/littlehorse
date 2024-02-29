@@ -156,61 +156,6 @@ func (x *WorkflowEventDef) GetType() VariableType {
 	return VariableType_JSON_OBJ
 }
 
-type PutWorkflowEventDefRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id   *WorkflowEventDefId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Type VariableType        `protobuf:"varint,2,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
-}
-
-func (x *PutWorkflowEventDefRequest) Reset() {
-	*x = PutWorkflowEventDefRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_workflow_event_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *PutWorkflowEventDefRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PutWorkflowEventDefRequest) ProtoMessage() {}
-
-func (x *PutWorkflowEventDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_workflow_event_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PutWorkflowEventDefRequest.ProtoReflect.Descriptor instead.
-func (*PutWorkflowEventDefRequest) Descriptor() ([]byte, []int) {
-	return file_workflow_event_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *PutWorkflowEventDefRequest) GetId() *WorkflowEventDefId {
-	if x != nil {
-		return x.Id
-	}
-	return nil
-}
-
-func (x *PutWorkflowEventDefRequest) GetType() VariableType {
-	if x != nil {
-		return x.Type
-	}
-	return VariableType_JSON_OBJ
-}
-
 var File_workflow_event_proto protoreflect.FileDescriptor
 
 var file_workflow_event_proto_rawDesc = []byte{
@@ -243,20 +188,12 @@ var file_workflow_event_proto_rawDesc = []byte{
 	0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x2d, 0x0a, 0x04, 0x74,
 	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x19, 0x2e, 0x6c, 0x69, 0x74, 0x74,
 	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65,
-	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x7c, 0x0a, 0x1a, 0x50, 0x75,
-	0x74, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x65,
-	0x66, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2f, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
-	0x73, 0x65, 0x2e, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x44, 0x65, 0x66, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2d, 0x0a, 0x04, 0x74, 0x79, 0x70,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x19, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x79,
-	0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x42, 0x47, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x07, 0x2e,
-	0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48,
-	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x42, 0x47, 0x0a, 0x1f, 0x69, 0x6f,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74, 0x6c,
+	0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -271,31 +208,28 @@ func file_workflow_event_proto_rawDescGZIP() []byte {
 	return file_workflow_event_proto_rawDescData
 }
 
-var file_workflow_event_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_workflow_event_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_workflow_event_proto_goTypes = []interface{}{
-	(*WorkflowEvent)(nil),              // 0: littlehorse.WorkflowEvent
-	(*WorkflowEventDef)(nil),           // 1: littlehorse.WorkflowEventDef
-	(*PutWorkflowEventDefRequest)(nil), // 2: littlehorse.PutWorkflowEventDefRequest
-	(*WorkflowEventId)(nil),            // 3: littlehorse.WorkflowEventId
-	(*VariableValue)(nil),              // 4: littlehorse.VariableValue
-	(*timestamppb.Timestamp)(nil),      // 5: google.protobuf.Timestamp
-	(*WorkflowEventDefId)(nil),         // 6: littlehorse.WorkflowEventDefId
-	(VariableType)(0),                  // 7: littlehorse.VariableType
+	(*WorkflowEvent)(nil),         // 0: littlehorse.WorkflowEvent
+	(*WorkflowEventDef)(nil),      // 1: littlehorse.WorkflowEventDef
+	(*WorkflowEventId)(nil),       // 2: littlehorse.WorkflowEventId
+	(*VariableValue)(nil),         // 3: littlehorse.VariableValue
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*WorkflowEventDefId)(nil),    // 5: littlehorse.WorkflowEventDefId
+	(VariableType)(0),             // 6: littlehorse.VariableType
 }
 var file_workflow_event_proto_depIdxs = []int32{
-	3, // 0: littlehorse.WorkflowEvent.id:type_name -> littlehorse.WorkflowEventId
-	4, // 1: littlehorse.WorkflowEvent.content:type_name -> littlehorse.VariableValue
-	5, // 2: littlehorse.WorkflowEvent.created_at:type_name -> google.protobuf.Timestamp
-	6, // 3: littlehorse.WorkflowEventDef.id:type_name -> littlehorse.WorkflowEventDefId
-	5, // 4: littlehorse.WorkflowEventDef.created_at:type_name -> google.protobuf.Timestamp
-	7, // 5: littlehorse.WorkflowEventDef.type:type_name -> littlehorse.VariableType
-	6, // 6: littlehorse.PutWorkflowEventDefRequest.id:type_name -> littlehorse.WorkflowEventDefId
-	7, // 7: littlehorse.PutWorkflowEventDefRequest.type:type_name -> littlehorse.VariableType
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	2, // 0: littlehorse.WorkflowEvent.id:type_name -> littlehorse.WorkflowEventId
+	3, // 1: littlehorse.WorkflowEvent.content:type_name -> littlehorse.VariableValue
+	4, // 2: littlehorse.WorkflowEvent.created_at:type_name -> google.protobuf.Timestamp
+	5, // 3: littlehorse.WorkflowEventDef.id:type_name -> littlehorse.WorkflowEventDefId
+	4, // 4: littlehorse.WorkflowEventDef.created_at:type_name -> google.protobuf.Timestamp
+	6, // 5: littlehorse.WorkflowEventDef.type:type_name -> littlehorse.VariableType
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_workflow_event_proto_init() }
@@ -331,18 +265,6 @@ func file_workflow_event_proto_init() {
 				return nil
 			}
 		}
-		file_workflow_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PutWorkflowEventDefRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -350,7 +272,7 @@ func file_workflow_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_workflow_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

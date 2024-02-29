@@ -81,10 +81,10 @@ public class PutWorkflowEventDefRequestModelTest {
         sendCommand(putWorkflowEventDef);
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
-        sendCommand(putWorkflowEventDef);
+        sendCommand(new PutWorkflowEventDefRequestModel("user-created", VariableType.INT));
         verify(server, times(1)).sendErrorToClient(anyString(), any());
         PutWorkflowEventDefRequestModel userUpdatedCommand =
-                new PutWorkflowEventDefRequestModel(new WorkflowEventDefIdModel("user-updated"), VariableType.STR);
+                new PutWorkflowEventDefRequestModel("user-updated", VariableType.STR);
         reset(server);
         sendCommand(userUpdatedCommand);
         verify(server, never()).sendErrorToClient(anyString(), any());
@@ -93,8 +93,7 @@ public class PutWorkflowEventDefRequestModelTest {
     }
 
     private PutWorkflowEventDefRequestModel createSubCommand() {
-        WorkflowEventDefIdModel id = new WorkflowEventDefIdModel("user-created");
-        return new PutWorkflowEventDefRequestModel(id, VariableType.STR);
+        return new PutWorkflowEventDefRequestModel("user-created", VariableType.STR);
     }
 
     private MetadataCommandModel sendCommand(MetadataSubCommand<?> putPrincipalRequest) {

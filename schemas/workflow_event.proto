@@ -34,8 +34,3 @@ message WorkflowEventDef {
   google.protobuf.Timestamp created_at = 2;
   VariableType type = 3;
 }
-
-message PutWorkflowEventDefRequest {
-  WorkflowEventDefId id = 1;
-  VariableType type = 2;
-}

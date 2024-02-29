@@ -24,11 +24,6 @@ public final class WorkflowEventOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_WorkflowEventDef_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_PutWorkflowEventDefRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_PutWorkflowEventDefRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -48,12 +43,9 @@ public final class WorkflowEventOuterClass {
       "orkflowEventDef\022+\n\002id\030\001 \001(\0132\037.littlehors" +
       "e.WorkflowEventDefId\022.\n\ncreated_at\030\002 \001(\013" +
       "2\032.google.protobuf.Timestamp\022\'\n\004type\030\003 \001" +
-      "(\0162\031.littlehorse.VariableType\"r\n\032PutWork" +
-      "flowEventDefRequest\022+\n\002id\030\001 \001(\0132\037.little" +
-      "horse.WorkflowEventDefId\022\'\n\004type\030\002 \001(\0162\031" +
-      ".littlehorse.VariableTypeBG\n\037io.littleho" +
-      "rse.sdk.common.protoP\001Z\007.;model\252\002\030Little" +
-      "Horse.Common.Protob\006proto3"
+      "(\0162\031.littlehorse.VariableTypeBG\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\007.;model\252\002\030Li" +
+      "ttleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -75,12 +67,6 @@ public final class WorkflowEventOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventDef_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "Type", });
-    internal_static_littlehorse_PutWorkflowEventDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_littlehorse_PutWorkflowEventDefRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_PutWorkflowEventDefRequest_descriptor,
-        new java.lang.String[] { "Id", "Type", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

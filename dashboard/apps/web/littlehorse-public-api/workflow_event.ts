@@ -34,11 +34,6 @@ export interface WorkflowEventDef {
   type: VariableType;
 }
 
-export interface PutWorkflowEventDefRequest {
-  id: WorkflowEventDefId | undefined;
-  type: VariableType;
-}
-
 function createBaseWorkflowEvent(): WorkflowEvent {
   return { id: undefined, content: undefined, createdAt: undefined };
 }
@@ -216,82 +211,6 @@ export const WorkflowEventDef = {
       ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.type = object.type ?? VariableType.JSON_OBJ;
-    return message;
-  },
-};
-
-function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
-  return { id: undefined, type: VariableType.JSON_OBJ };
-}
-
-export const PutWorkflowEventDefRequest = {
-  encode(message: PutWorkflowEventDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== undefined) {
-      WorkflowEventDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(16).int32(variableTypeToNumber(message.type));
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PutWorkflowEventDefRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePutWorkflowEventDefRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = WorkflowEventDefId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.type = variableTypeFromJSON(reader.int32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PutWorkflowEventDefRequest {
-    return {
-      id: isSet(object.id) ? WorkflowEventDefId.fromJSON(object.id) : undefined,
-      type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
-    };
-  },
-
-  toJSON(message: PutWorkflowEventDefRequest): unknown {
-    const obj: any = {};
-    if (message.id !== undefined) {
-      obj.id = WorkflowEventDefId.toJSON(message.id);
-    }
-    if (message.type !== VariableType.JSON_OBJ) {
-      obj.type = variableTypeToJSON(message.type);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PutWorkflowEventDefRequest>, I>>(base?: I): PutWorkflowEventDefRequest {
-    return PutWorkflowEventDefRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<PutWorkflowEventDefRequest>, I>>(object: I): PutWorkflowEventDefRequest {
-    const message = createBasePutWorkflowEventDefRequest();
-    message.id = (object.id !== undefined && object.id !== null)
-      ? WorkflowEventDefId.fromPartial(object.id)
-      : undefined;
     message.type = object.type ?? VariableType.JSON_OBJ;
     return message;
   },

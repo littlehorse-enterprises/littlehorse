@@ -67,6 +67,14 @@ class PutTaskDefRequest(_message.Message):
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ...) -> None: ...
 
+class PutWorkflowEventDefRequest(_message.Message):
+    __slots__ = ["name", "type"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    type: _common_enums_pb2.VariableType
+    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
+
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ["name", "fields", "description"]
     NAME_FIELD_NUMBER: _ClassVar[int]

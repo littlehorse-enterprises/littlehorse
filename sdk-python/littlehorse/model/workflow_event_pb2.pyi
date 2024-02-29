@@ -27,11 +27,3 @@ class WorkflowEventDef(_message.Message):
     created_at: _timestamp_pb2.Timestamp
     type: _common_enums_pb2.VariableType
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
-
-class PutWorkflowEventDefRequest(_message.Message):
-    __slots__ = ["id", "type"]
-    ID_FIELD_NUMBER: _ClassVar[int]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
-    id: _object_id_pb2.WorkflowEventDefId
-    type: _common_enums_pb2.VariableType
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
