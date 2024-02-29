@@ -955,9 +955,11 @@ class WorkflowThread:
 
         failure_handler = FailureHandlerDef(
             handler_spec_name=thread_name,
-            any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
-            if exception_name is None
-            else None,
+            any_failure_of_type=(
+                FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
+                if exception_name is None
+                else None
+            ),
             specific_failure=exception_name,
         )
         last_node = self._find_node(node.node_name)
@@ -1020,9 +1022,9 @@ class WorkflowThread:
             ExitNode(
                 failure_def=FailureDef(
                     failure_name=failure_name,
-                    content=to_variable_assignment(output)
-                    if output is not None
-                    else None,
+                    content=(
+                        to_variable_assignment(output) if output is not None else None
+                    ),
                     message=message,
                 )
             ),
@@ -1096,9 +1098,9 @@ class WorkflowThread:
 
         reassign = UTActionTrigger.UTAReassign(
             user_id=to_variable_assignment(user_id) if user_id is not None else None,
-            user_group=to_variable_assignment(user_group)
-            if user_group is not None
-            else None,
+            user_group=(
+                to_variable_assignment(user_group) if user_group is not None else None
+            ),
         )
 
         ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
@@ -1454,9 +1456,11 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=end_node_name,
                     variable_mutations=variables_from_if_block,
-                    condition=last_condition_from_if_block
-                    if last_node_from_if_block.name == start_node.name
-                    else None,
+                    condition=(
+                        last_condition_from_if_block
+                        if last_node_from_if_block.name == start_node.name
+                        else None
+                    ),
                 )
             )
 
