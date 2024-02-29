@@ -34,7 +34,7 @@ gradle example-await-workflow-event:run --args '3000 1000 1'
 In this case, the `rpc AwaitWorkflowEvent` arrives at the server _before_ the `WorkflowEvent` has been registered, and it blocks until the `WorkflowEvent` is thrown.
 
 ```
-gradle example-await-workflow-event:run --args '500 2000 1'
+gradle example-await-workflow-event:run --args '500 5000 1'
 ```
 
 #### Timeout
