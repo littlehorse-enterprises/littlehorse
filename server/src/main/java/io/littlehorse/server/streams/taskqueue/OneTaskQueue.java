@@ -197,7 +197,7 @@ public class OneTaskQueue {
                                 new Attribute("status", TaskStatus.TASK_SCHEDULED.name())))
                 + "/";
         String endKey = startKey + "~";
-        try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.scanStoreables(startKey, endKey, Tag.class)) {
+        try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.tagScan(startKey, endKey)) {
             final AtomicBoolean queueOutOfCapacity = new AtomicBoolean(false);
             while (result.hasNext() && !queueOutOfCapacity.get()) {
                 Tag tag = result.next().getValue();

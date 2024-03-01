@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +85,8 @@ public class ReadOnlyGetableManager {
         return store.range(start, end, cls);
     }
 
-    public <T extends Storeable<?>> LHKeyValueIterator<T> scanStoreables(String start, String end, Class<T> cls) {
-        return store.range(start, end, cls);
+    public LHKeyValueIterator<Tag> tagScan(String start, String end) {
+        return store.range(start, end, Tag.class);
     }
 
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
