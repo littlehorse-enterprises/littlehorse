@@ -85,10 +85,19 @@ public class ReadOnlyGetableManager {
         return store.range(start, end, cls);
     }
 
+    /**
+     * Iterate over tags
+     */
     public LHKeyValueIterator<Tag> tagScan(String start, String end) {
         return store.range(start, end, Tag.class);
     }
 
+    /**
+     * Only use this method if you need to retrieve a Storeable
+     * @param storeKey Storeable's storekey
+     * @param cls Storeable's class
+     * @return Null if not found
+     */
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         return store.get(storeKey, cls);
     }
