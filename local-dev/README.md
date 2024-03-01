@@ -79,9 +79,27 @@ Upgrade to a new version:
 
 To build the `littlehorse-server` image for local development utilizing the local gradle cache, you can run:
 
+> It creates `littlehorse/lh-server:latest`.
+
 ```
 ./local-dev/build.sh
 ```
+
+To build the dashboard image:
+
+```
+./local-dev/build.sh --dashboard
+```
+
+> It creates `littlehorse/lh-dashboard:latest`.
+
+To build the canary image:
+
+```
+./local-dev/build.sh --canary
+```
+
+> It creates `littlehorse/lh-canary:latest`.
 
 ## Compile Schemas
 

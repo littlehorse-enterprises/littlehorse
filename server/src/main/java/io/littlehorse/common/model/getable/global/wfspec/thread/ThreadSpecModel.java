@@ -82,7 +82,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (Map.Entry<String, Node> p : proto.getNodesMap().entrySet()) {
             NodeModel n = new NodeModel();
             n.name = p.getKey();
-            n.threadSpecModel = this;
+            n.threadSpec = this;
             n.initFrom(p.getValue(), context);
             this.nodes.put(p.getKey(), n);
             if (n.type == NodeCase.ENTRYPOINT) {
@@ -112,7 +112,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public String entrypointNodeName;
 
-    public WfSpecModel wfSpecModel;
+    public WfSpecModel wfSpec;
 
     /*
      * Returns a Map containing info for all of the variables required as parameters
@@ -216,7 +216,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             return Pair.of(this.name, varDef);
         }
 
-        return wfSpecModel.lookupVarDef(name);
+        return wfSpec.lookupVarDef(name);
     }
 
     public void validate() throws LHApiException {
@@ -276,12 +276,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         // Check that interrupts aren't used anywhere else
         for (InterruptDefModel idef : interruptDefs) {
             String eedn = idef.getExternalEventDefId().getName();
-            if (wfSpecModel.getNodeExternalEventDefs().contains(eedn)) {
+            if (wfSpec.getNodeExternalEventDefs().contains(eedn)) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
             }
 
-            for (ThreadSpecModel tspec : wfSpecModel.threadSpecs.values()) {
+            for (ThreadSpecModel tspec : wfSpec.threadSpecs.values()) {
                 if (tspec.name.equals(name)) continue;
 
                 if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
@@ -398,7 +398,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         ThreadVarDefModel out = localGetVarDef(varName);
         if (out != null) return out;
 
-        Pair<String, ThreadVarDefModel> result = wfSpecModel.lookupVarDef(varName);
+        Pair<String, ThreadVarDefModel> result = wfSpec.lookupVarDef(varName);
         if (result != null) {
             return result.getRight();
         } else {

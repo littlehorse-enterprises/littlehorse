@@ -140,9 +140,11 @@ public class RequestAuthorizerTest {
             TenantModel customTenant = new TenantModel("my-tenant");
             PrincipalModel adminPrincipal = buildAdminPrincipal();
             PrincipalModel limitedPrincipal = buildLimitedPrincipal();
+            PrincipalModel tenantAdminPrincipal = buildTenantAdminPrincipal();
             metadataManager.put(customTenant);
             metadataManager.put(adminPrincipal);
             metadataManager.put(limitedPrincipal);
+            metadataManager.put(tenantAdminPrincipal);
         }
 
         @Test
@@ -162,11 +164,29 @@ public class RequestAuthorizerTest {
             Mockito.verify(mockCall).close(any(), eq(mockMetadata));
         }
 
+        @Test
+        public void supportTenantAdmins() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+            startCall();
+            assertThat(resolvedAuthContext).isNotNull();
+        }
+
         private PrincipalModel buildLimitedPrincipal() {
             PrincipalModel limitedPrincipal = new PrincipalModel();
             limitedPrincipal.setId(new PrincipalIdModel("limited-principal"));
             limitedPrincipal.setPerTenantAcls(Map.of("my-tenant", TestUtil.singleAcl()));
             return limitedPrincipal;
+        }
+
+        private PrincipalModel buildTenantAdminPrincipal() {
+            PrincipalModel tenantAdminPrincipal = new PrincipalModel();
+            tenantAdminPrincipal.setId(new PrincipalIdModel("tenant-admin-principal"));
+            tenantAdminPrincipal.setPerTenantAcls(Map.of("my-tenant", TestUtil.singleAdminAcl("")));
+            return tenantAdminPrincipal;
         }
 
         private PrincipalModel buildAdminPrincipal() {

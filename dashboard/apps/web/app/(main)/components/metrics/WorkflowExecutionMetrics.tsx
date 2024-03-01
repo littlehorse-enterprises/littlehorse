@@ -28,6 +28,7 @@ interface WorkflowExecutionMetricsProps{
 export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment().toDate(), type='HOURS_2' }:WorkflowExecutionMetricsProps) {
     const [ data, setData ] = useState<any[]>([])
     const [ chart, setChart ] = useState('workflows')
+    const [ isLoading, setIsLoading ] = useState(false)
     const windowsNotOverpassing300 = windows > 300 ? 300 : windows
 
     function timeoutP (_lastWindowStart:Date, metrics:any[]) {
@@ -112,6 +113,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
     }
 
     const getData = async () => {
+        setIsLoading(true)
         const res = await fetch('./api/metrics/wfSpec',{
             method:'POST',
             body: JSON.stringify({
@@ -127,6 +129,7 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
             const content = await res.json()
             setData( timeoutP(lastWindowStart,content.results))
         }
+        setIsLoading(false)
     }
 
     useEffect( () => {
@@ -146,18 +149,21 @@ export function WorkflowExecutionMetrics({ windows= 16, lastWindowStart=moment()
                 </div>
             </header>
 
+            {isLoading ? (
+                <Loader />
+            ) : (
+
             <div className={`${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`} style={{
                 height: data.length === 0 ? '400px' : 'auto'
-            }}>
-                {
-                    data.length > 0 ?
-                        <>
-                            {chart === 'workflows' && <WorkflowsChart data={data} type={type}  />}
-                            {chart === 'latency' && <LatencyChart data={data} type={type}  />}
-                        </>
-                        : <Loader />
-                }
-            </div>
+                    }}>
+                        {
+                    data.length > 0 ? <>
+                        {chart === 'workflows' && <WorkflowsChart data={data} type={type} />}
+                        {chart === 'latency' && <LatencyChart data={data} type={type}  />}
+                    </> : <p> No data available</p>
+                        }
+                    </div>
+            )}
         </article>
     )
 }

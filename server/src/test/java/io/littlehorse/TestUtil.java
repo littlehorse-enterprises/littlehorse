@@ -3,6 +3,7 @@ package io.littlehorse;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
@@ -144,6 +145,10 @@ public class TestUtil {
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
+
+        TaskAttemptModel attempt = new TaskAttemptModel();
+        attempt.setStatus(TaskStatus.TASK_SCHEDULED);
+        taskRun.getAttempts().add(attempt);
         return taskRun;
     }
 

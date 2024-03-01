@@ -28,6 +28,7 @@ interface TaskExecutionMetricsProps{
 export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toDate(), type='HOURS_2' }:TaskExecutionMetricsProps) {
     const [ data, setData ] = useState<any[]>([])
     const [ chart, setChart ] = useState('tasks')
+    const [ isLoading, setIsLoading ] = useState(false)
 
     const windowsNotOverpassing300 = windows > 300 ? 300 : windows
 
@@ -112,6 +113,7 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
     }
 
     const getData = async () => {
+        setIsLoading(true)
         const res = await fetch('/api/metrics/taskDef',{
             method:'POST',
             body: JSON.stringify({
@@ -125,6 +127,7 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
             const content = await res.json()
             setData( timeoutP(lastWindowStart,content.results))
         }
+        setIsLoading(false)
 
     }
 
@@ -145,14 +148,21 @@ export function TaskExecutionMetrics({ windows= 16, lastWindowStart=moment().toD
                 </div>
             </header>
 
+            {isLoading ? (
+                <Loader />
+            ) : (
+
             <div className={`${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`} style={{
                 height: data.length === 0 ? '400px' : 'auto'
-            }}>{
+                    }}>
+                        {
                     data.length > 0 ? <>
                         {chart === 'tasks' && <TaskChart data={data} type={type} />}
                         {chart === 'latency' && <LatencyTaskChart data={data} type={type}  />}
-                    </> : <Loader />
-                }</div>
+                    </> : <p> No data available</p>
+                        }
+                    </div>
+            )}
         </article>
     )
 }

@@ -9,7 +9,9 @@ public interface SleepNodeRunOrBuilder extends
 
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -18,7 +20,9 @@ public interface SleepNodeRunOrBuilder extends
   boolean hasMaturationTime();
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -27,10 +31,22 @@ public interface SleepNodeRunOrBuilder extends
   com.google.protobuf.Timestamp getMaturationTime();
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();
+
+  /**
+   * <pre>
+   * Whether the SleepNodeRun has been matured.
+   * </pre>
+   *
+   * <code>bool matured = 2;</code>
+   * @return The matured.
+   */
+  boolean getMatured();
 }

@@ -46,7 +46,9 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.Timestamp maturationTime_;
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -58,7 +60,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -70,7 +74,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time at which the NodeRun will wake up.
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -78,6 +84,21 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder() {
     return maturationTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : maturationTime_;
+  }
+
+  public static final int MATURED_FIELD_NUMBER = 2;
+  private boolean matured_ = false;
+  /**
+   * <pre>
+   * Whether the SleepNodeRun has been matured.
+   * </pre>
+   *
+   * <code>bool matured = 2;</code>
+   * @return The matured.
+   */
+  @java.lang.Override
+  public boolean getMatured() {
+    return matured_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -97,6 +118,9 @@ private static final long serialVersionUID = 0L;
     if (maturationTime_ != null) {
       output.writeMessage(1, getMaturationTime());
     }
+    if (matured_ != false) {
+      output.writeBool(2, matured_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -109,6 +133,10 @@ private static final long serialVersionUID = 0L;
     if (maturationTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getMaturationTime());
+    }
+    if (matured_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(2, matured_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -130,6 +158,8 @@ private static final long serialVersionUID = 0L;
       if (!getMaturationTime()
           .equals(other.getMaturationTime())) return false;
     }
+    if (getMatured()
+        != other.getMatured()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -145,6 +175,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MATURATION_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getMaturationTime().hashCode();
     }
+    hash = (37 * hash) + MATURED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMatured());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -285,6 +318,7 @@ private static final long serialVersionUID = 0L;
         maturationTimeBuilder_.dispose();
         maturationTimeBuilder_ = null;
       }
+      matured_ = false;
       return this;
     }
 
@@ -322,6 +356,9 @@ private static final long serialVersionUID = 0L;
         result.maturationTime_ = maturationTimeBuilder_ == null
             ? maturationTime_
             : maturationTimeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.matured_ = matured_;
       }
     }
 
@@ -372,6 +409,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasMaturationTime()) {
         mergeMaturationTime(other.getMaturationTime());
       }
+      if (other.getMatured() != false) {
+        setMatured(other.getMatured());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -405,6 +445,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              matured_ = input.readBool();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -427,7 +472,9 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> maturationTimeBuilder_;
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -438,7 +485,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -453,7 +502,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -473,7 +524,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -491,7 +544,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -514,7 +569,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -531,7 +588,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -543,7 +602,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -558,7 +619,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the NodeRun will wake up.
+     * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+     * the LH Server is back-pressuring clients due to extreme load, the timer
+     * event which marks the sleep node as "matured" may come in slightly late.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp maturation_time = 1;</code>
@@ -575,6 +638,50 @@ private static final long serialVersionUID = 0L;
         maturationTime_ = null;
       }
       return maturationTimeBuilder_;
+    }
+
+    private boolean matured_ ;
+    /**
+     * <pre>
+     * Whether the SleepNodeRun has been matured.
+     * </pre>
+     *
+     * <code>bool matured = 2;</code>
+     * @return The matured.
+     */
+    @java.lang.Override
+    public boolean getMatured() {
+      return matured_;
+    }
+    /**
+     * <pre>
+     * Whether the SleepNodeRun has been matured.
+     * </pre>
+     *
+     * <code>bool matured = 2;</code>
+     * @param value The matured to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMatured(boolean value) {
+
+      matured_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Whether the SleepNodeRun has been matured.
+     * </pre>
+     *
+     * <code>bool matured = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMatured() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      matured_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

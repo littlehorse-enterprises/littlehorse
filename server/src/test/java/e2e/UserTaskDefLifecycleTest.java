@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import io.littlehorse.test.LHTest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -16,7 +17,7 @@ public class UserTaskDefLifecycleTest {
 
     @Test
     void shouldBeIdempotent() {
-        String taskName = "sample-task";
+        String taskName = UUID.randomUUID().toString();
 
         UserTaskSchema schema = new UserTaskSchema(new SampleForm(), taskName);
 
@@ -29,7 +30,7 @@ public class UserTaskDefLifecycleTest {
 
     @Test
     void shouldCreateNewVersion() {
-        String taskName = "updated-task";
+        String taskName = UUID.randomUUID().toString();
 
         UserTaskSchema schema = new UserTaskSchema(new SampleForm(), taskName);
 

@@ -77,7 +77,7 @@ module.exports = {
             'allowTemplateLiterals': true, 'avoidEscape': true
         } ],
         '@stylistic/prefer-named-capture-group': 'off', // not needed
-        '@stylistic/indent': [ 'error', 4 ],
+        '@stylistic/indent': [ 'warn', 4 ],
         '@stylistic/object-curly-spacing': [ 'error', 'always' ],
         '@stylistic/jsx-curly-spacing': 'error',
         '@stylistic/array-bracket-spacing': [ 'error', 'always' ],
