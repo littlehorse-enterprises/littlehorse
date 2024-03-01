@@ -29,7 +29,8 @@ public class OneTaskQueueTest {
     private final String taskName = "my-task";
     private final PollTaskRequestObserver mockClient = mock(Answers.RETURNS_DEEP_STUBS);
     private final ScheduledTaskModel mockTask = mock(Answers.RETURNS_DEEP_STUBS);
-    private final OneTaskQueue taskQueue = new OneTaskQueue(taskName, taskQueueManager, Integer.MAX_VALUE);
+    private final OneTaskQueue taskQueue = new OneTaskQueue(
+            taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final Command command = commandProto();
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
     private final TestProcessorExecutionContext processorContext = TestProcessorExecutionContext.create(
@@ -63,7 +64,8 @@ public class OneTaskQueueTest {
 
     @Test
     public void shouldNotEnqueuePendingTaskWhenQueueIsFull() {
-        OneTaskQueue boundedQueue = new OneTaskQueue(taskName, taskQueueManager, 3);
+        OneTaskQueue boundedQueue =
+                new OneTaskQueue(taskName, taskQueueManager, 3, new TenantIdModel(LHConstants.DEFAULT_TENANT));
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
@@ -90,7 +92,8 @@ public class OneTaskQueueTest {
         processorContext.getCoreStore().put(task4);
         processorContext.endExecution();
         ArgumentCaptor<ScheduledTaskModel> captor = ArgumentCaptor.forClass(ScheduledTaskModel.class);
-        OneTaskQueue boundedQueue = new OneTaskQueue(taskName, taskQueueManager, 2);
+        OneTaskQueue boundedQueue =
+                new OneTaskQueue(taskName, taskQueueManager, 2, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
         boundedQueue.onTaskScheduled(task1);
         boundedQueue.onTaskScheduled(task2);

@@ -43,8 +43,8 @@ public class TaskQueueManager {
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
                 tenantTask,
-                taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity));
-                tenantTask, taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this, tenantTask.tenantId()));
+                taskToCreate -> new OneTaskQueue(
+                        taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity, taskToCreate.tenantId()));
     }
 
     public Collection<OneTaskQueue> all() {

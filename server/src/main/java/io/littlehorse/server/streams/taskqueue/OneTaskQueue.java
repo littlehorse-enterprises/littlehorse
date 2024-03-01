@@ -2,8 +2,8 @@ package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -39,7 +39,7 @@ public class OneTaskQueue {
 
     private String hostName;
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity) {
+    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.tenantId = tenantId;
         this.pendingTasks = new LinkedBlockingQueue<>(capacity);
