@@ -2,13 +2,16 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
+import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThrowEventNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -50,10 +53,19 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     @Override
     public void arrive(Date time) throws NodeFailureException {
         workflowEventId = new WorkflowEventIdModel(nodeRun.getId().getWfRunId(), this.eventDefId, 0);
-        WorkflowEventModel event = new WorkflowEventModel(workflowEventId, new VariableValueModel());
-        processorExecutionContext.getableManager().put(event);
+        try {
+            VariableValueModel content = getNodeRun()
+                    .getThreadRun()
+                    .assignVariable(getNode().getThrowEventNode().getContent());
+            WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content);
+            processorExecutionContext.getableManager().put(event);
 
-        processorExecutionContext.notifyOfEventThrown(event);
+            processorExecutionContext.notifyOfEventThrown(event);
+        } catch (LHVarSubError exn) {
+            throw new NodeFailureException(new FailureModel(
+                    "Failed calculating content of workflow Event: %s".formatted(exn.getMessage()),
+                    LHErrorType.VAR_SUB_ERROR.toString()));
+        }
     }
 
     @Override
