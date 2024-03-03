@@ -18,10 +18,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.processor.StandbyUpdateListener;
 import org.apache.kafka.streams.processor.StateRestoreListener;
+import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
-public class HealthService implements Closeable, StateRestoreListener {
+public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
 
     private PrometheusMetricExporter prom;
     private Javalin server;
@@ -128,5 +130,20 @@ public class HealthService implements Closeable, StateRestoreListener {
     @Override
     public void close() {
         this.prom.close();
+    }
+
+    @Override
+    public void onUpdateStart(TopicPartition topicPartition, String storeName, long startingOffset) {
+
+    }
+
+    @Override
+    public void onBatchLoaded(TopicPartition topicPartition, String storeName, TaskId taskId, long batchEndOffset, long batchSize, long currentEndOffset) {
+
+    }
+
+    @Override
+    public void onUpdateSuspended(TopicPartition topicPartition, String storeName, long storeOffset, long currentEndOffset, SuspendReason reason) {
+
     }
 }
