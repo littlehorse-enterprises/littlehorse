@@ -6,6 +6,8 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
@@ -22,6 +24,8 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +40,12 @@ public class WorkflowEventRunTest {
 
     @Test
     public void shouldStoreNode() throws Exception {
-        NodeRunModel node = new NodeRunModel(testProcessorContext);
+        NodeRunModel node = Mockito.spy(new NodeRunModel(testProcessorContext));
+        ThreadRunModel mockThreadRun = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+        NodeModel nodeSpec = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+        Mockito.doReturn(nodeSpec).when(node).getNode();
+        Mockito.doReturn(mockThreadRun).when(node).getThreadRun();
+        Mockito.when(mockThreadRun.assignVariable(Mockito.any())).thenReturn(TestUtil.variableValue());
         node.setStatus(LHStatus.RUNNING);
         node.setWfSpecId(TestUtil.wfSpecId());
         node.setThreadSpecName("my-thread");
