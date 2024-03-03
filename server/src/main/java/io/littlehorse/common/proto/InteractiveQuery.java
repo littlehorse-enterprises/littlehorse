@@ -146,11 +146,11 @@ public final class InteractiveQuery {
       "titionsEntry\022\034\n\024completed_partitions\030\002 \003" +
       "(\005\032]\n\031InProgressPartitionsEntry\022\013\n\003key\030\001" +
       " \001(\005\022/\n\005value\030\002 \001(\0132 .littlehorse.Partit" +
-      "ionBookmarkPb:\0028\001\"I\n\035InternalWaitForWfEv" +
-      "entRequest\022(\n\002id\030\001 \001(\0132\034.littlehorse.Wor" +
-      "kflowEventId*-\n\020ScanResultTypePb\022\r\n\tOBJE" +
-      "CT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io.littlehorse.co" +
-      "mmon.protoP\001b\006proto3"
+      "ionBookmarkPb:\0028\001\"X\n\035InternalWaitForWfEv" +
+      "entRequest\0227\n\007request\030\001 \001(\0132&.littlehors" +
+      "e.AwaitWorkflowEventRequest*-\n\020ScanResul" +
+      "tTypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io" +
+      ".littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -250,7 +250,7 @@ public final class InteractiveQuery {
     internal_static_littlehorse_InternalWaitForWfEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InternalWaitForWfEventRequest_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Request", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.Storage.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();

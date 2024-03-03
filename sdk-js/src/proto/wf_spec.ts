@@ -20,7 +20,7 @@ import {
   VariableMutation,
 } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventDefId, WfSpecId } from "./object_id";
+import { ExternalEventDefId, WfSpecId, WorkflowEventDefId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
@@ -262,6 +262,17 @@ export interface Node {
   sleep?: SleepNode | undefined;
   userTask?: UserTaskNode | undefined;
   startMultipleThreads?: StartMultipleThreadsNode | undefined;
+  throwEvent?: ThrowEventNode | undefined;
+}
+
+/** A SubNode that throws a WorkflowEvent of a specific type. */
+export interface ThrowEventNode {
+  /** The WorkflowEventDefId of the WorkflowEvent that is thrown */
+  eventDefId:
+    | WorkflowEventDefId
+    | undefined;
+  /** A VariableAssignment defining the content of the WorkflowEvent that is thrown */
+  content: VariableAssignment | undefined;
 }
 
 export interface UserTaskNode {
@@ -1819,6 +1830,7 @@ function createBaseNode(): Node {
     sleep: undefined,
     userTask: undefined,
     startMultipleThreads: undefined,
+    throwEvent: undefined,
   };
 }
 
@@ -1859,6 +1871,9 @@ export const Node = {
     }
     if (message.startMultipleThreads !== undefined) {
       StartMultipleThreadsNode.encode(message.startMultipleThreads, writer.uint32(122).fork()).ldelim();
+    }
+    if (message.throwEvent !== undefined) {
+      ThrowEventNode.encode(message.throwEvent, writer.uint32(130).fork()).ldelim();
     }
     return writer;
   },
@@ -1954,6 +1969,13 @@ export const Node = {
 
           message.startMultipleThreads = StartMultipleThreadsNode.decode(reader, reader.uint32());
           continue;
+        case 16:
+          if (tag !== 130) {
+            break;
+          }
+
+          message.throwEvent = ThrowEventNode.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1993,6 +2015,69 @@ export const Node = {
       : undefined;
     message.startMultipleThreads = (object.startMultipleThreads !== undefined && object.startMultipleThreads !== null)
       ? StartMultipleThreadsNode.fromPartial(object.startMultipleThreads)
+      : undefined;
+    message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
+      ? ThrowEventNode.fromPartial(object.throwEvent)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseThrowEventNode(): ThrowEventNode {
+  return { eventDefId: undefined, content: undefined };
+}
+
+export const ThrowEventNode = {
+  encode(message: ThrowEventNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.eventDefId !== undefined) {
+      WorkflowEventDefId.encode(message.eventDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.content !== undefined) {
+      VariableAssignment.encode(message.content, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThrowEventNode {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThrowEventNode();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.eventDefId = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ThrowEventNode>): ThrowEventNode {
+    return ThrowEventNode.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ThrowEventNode>): ThrowEventNode {
+    const message = createBaseThrowEventNode();
+    message.eventDefId = (object.eventDefId !== undefined && object.eventDefId !== null)
+      ? WorkflowEventDefId.fromPartial(object.eventDefId)
+      : undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableAssignment.fromPartial(object.content)
       : undefined;
     return message;
   },

@@ -70,7 +70,7 @@ public class ReadOnlyGetableManager {
     protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
             String prefix, Class<T> cls) {
 
-        List<GetableToStore<U, T>> out = iterateOverPrefix(prefix, cls);
+        List<GetableToStore<U, T>> out = iterateOverPrefixInternal(prefix, cls);
 
         // put everything in the buffer.
         for (GetableToStore<U, T> thing : out) {
@@ -80,13 +80,14 @@ public class ReadOnlyGetableManager {
         return out;
     }
 
+    @Deprecated(forRemoval = true)
     public <T extends StoredGetable<?, ?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return store.range(start, end, cls);
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
-    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
+    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixInternal(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();
 
@@ -113,6 +114,12 @@ public class ReadOnlyGetableManager {
         return all.entrySet().stream()
                 .map(Map.Entry::getValue)
                 .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public <U extends Message, T extends CoreGetable<U>> List<T> iterateOverPrefix(String prefix, Class<T> cls) {
+        return iterateOverPrefixInternal(prefix, cls).stream()
+                .map(getableToStore -> getableToStore.getObjectToStore())
                 .toList();
     }
 }

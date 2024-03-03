@@ -1,27 +1,36 @@
 package io.littlehorse.server.streams.util;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
-import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
-import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class AsyncWaiters {
 
-    // private Lock lock;
     private ConcurrentHashMap<String, CommandWaiter> commandWaiters;
-    private ConcurrentHashMap<String, WorkflowEventWaiter> eventWaiters;
+    private HashMap<String, GroupOfObserversWaitingForEvent> eventWaiters;
+    private Lock eventWaiterLock = new ReentrantLock();
 
     private static final long MAX_WAITER_AGE = 1000 * 60;
 
     public AsyncWaiters() {
-        eventWaiters = new ConcurrentHashMap<>();
         commandWaiters = new ConcurrentHashMap<>();
+        eventWaiters = new HashMap<>();
     }
 
     public void registerObserverWaitingForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
@@ -52,26 +61,73 @@ public class AsyncWaiters {
     }
 
     public void registerWorkflowEventHappened(WorkflowEventModel event) {
-        String key = event.getId().toString();
-        WorkflowEventWaiter waiter = eventWaiters.get(key);
-        if (waiter != null && waiter.completeWithEvent(event)) {
-            eventWaiters.remove(key);
+        String key = event.getId().getWfRunId().toString();
+
+        try {
+            eventWaiterLock.lock();
+            GroupOfObserversWaitingForEvent group = eventWaiters.get(key);
+            if (group != null) {
+                if (group.completeWithEvent(event)) {
+                    eventWaiters.remove(key);
+                }
+            }
+        } finally {
+            eventWaiterLock.unlock();
         }
     }
 
     public void registerObserverWaitingForWorkflowEvent(
-            WorkflowEventId idProto, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
-        WorkflowEventIdModel id = WorkflowEventIdModel.fromProto(idProto, WorkflowEventIdModel.class, ctx);
-        String key = id.toString();
-        WorkflowEventWaiter waiter = new WorkflowEventWaiter(id, observer);
-        eventWaiters.put(key, waiter);
+            InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
 
-        // Now try to get the event out
-        WorkflowEventModel event = ctx.getableManager().get(id);
-        if (event != null && waiter.completeWithEvent(event)) {
-            eventWaiters.remove(key);
+        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getRequest().getWfRunId(), WfRunIdModel.class, ctx);
+        String key = wfRunId.toString();
+
+        try {
+            eventWaiterLock.lock();
+            GroupOfObserversWaitingForEvent tmp = new GroupOfObserversWaitingForEvent();
+            GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(key, tmp);
+            if (group == null) group = tmp;
+
+            group.addObserverForWorkflowEvent(req.getRequest(), observer, ctx);
+
+            // Now iterate through all WorkflowEvents for that wfRun.
+            for (WorkflowEventModel candidate :
+                    ctx.getableManager().iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class)) {
+                if (group.completeWithEvent(candidate)) {
+                    eventWaiters.remove(key);
+                    break;
+                }
+            }
+        } finally {
+            eventWaiterLock.unlock();
         }
     }
+
+    // public void registerObserverWaitingForWorkflowEvent(
+    //         List<WorkflowEventId> idProtos, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
+
+    //     for (WorkflowEventId idProto : idProtos) {
+    //         WorkflowEventIdModel id = WorkflowEventIdModel.fromProto(idProto, WorkflowEventIdModel.class, ctx);
+    //         String key = id.toString();
+
+    //         try {
+    //             GroupOfObserversWaitingForEvent tmp = new GroupOfObserversWaitingForEvent();
+    //             GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(key, tmp);
+    //             if (group == null) group = tmp;
+
+    //             eventWaiterLock.lock();
+    //             group.addObserverForWorkflowEvent(observer);
+
+    //             // Now try to get the event out
+    //             WorkflowEventModel event = ctx.getableManager().get(id);
+    //             if (event != null && group.completeWithEvent(event)) {
+    //                 eventWaiters.remove(key);
+    //             }
+    //         } finally {
+    //             eventWaiterLock.unlock();
+    //         }
+    //     }
+    // }
 
     public void cleanupOldWaiters() {
         Iterator<Map.Entry<String, CommandWaiter>> iter =
@@ -86,10 +142,37 @@ public class AsyncWaiters {
             CommandWaiter waiter = pair.getValue();
             if (waiter.getObserver() != null) {
                 waiter.getObserver()
-                        .onError(new RuntimeException(
-                                "Request not processed on this worker, likely due to" + " rebalance"));
+                        .onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                                "Command not processed within deadline: likely due to rebalance")));
             }
             iter.remove();
         }
+    }
+}
+
+class GroupOfObserversWaitingForEvent {
+
+    private List<WorkflowEventWaiter> waitingRequests;
+
+    public GroupOfObserversWaitingForEvent() {
+        this.waitingRequests = new ArrayList<>();
+    }
+
+    public boolean completeWithEvent(WorkflowEventModel event) {
+        Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
+        while (iter.hasNext()) {
+            WorkflowEventWaiter waiter = iter.next();
+            if (waiter.maybeComplete(event)) {
+                iter.remove();
+            }
+        }
+        return waitingRequests.isEmpty();
+    }
+
+    public void addObserverForWorkflowEvent(
+            AwaitWorkflowEventRequest request,
+            StreamObserver<WorkflowEvent> observer,
+            RequestExecutionContext context) {
+        waitingRequests.add(new WorkflowEventWaiter(request, observer, context));
     }
 }

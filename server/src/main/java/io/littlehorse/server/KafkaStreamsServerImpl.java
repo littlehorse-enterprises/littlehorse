@@ -157,7 +157,6 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
-import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
@@ -793,11 +792,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-        WorkflowEventId.Builder eventId = WorkflowEventId.newBuilder()
-                .setWfRunId(req.getWfRunId())
-                .setWorkflowEventDefId(req.getEventDefId())
-                .setId(0);
-        internalComms.registerObserverForWorkflowEvent(eventId.build(), ctx);
+        internalComms.doWaitForWorkflowEvent(req, ctx);
     }
 
     @Override

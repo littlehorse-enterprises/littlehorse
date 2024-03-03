@@ -36,28 +36,109 @@ public interface AwaitWorkflowEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-   * @return Whether the eventDefId field is set.
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
-  boolean hasEventDefId();
+  java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId> 
+      getEventDefIdsList();
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-   * @return The eventDefId.
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefId();
+  io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefIds(int index);
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdOrBuilder();
+  int getEventDefIdsCount();
+  /**
+   * <pre>
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> 
+      getEventDefIdsOrBuilderList();
+  /**
+   * <pre>
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdsOrBuilder(
+      int index);
+
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId> 
+      getWorkflowEventsToIgnoreList();
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowEventId getWorkflowEventsToIgnore(int index);
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  int getWorkflowEventsToIgnoreCount();
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> 
+      getWorkflowEventsToIgnoreOrBuilderList();
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getWorkflowEventsToIgnoreOrBuilder(
+      int index);
 }

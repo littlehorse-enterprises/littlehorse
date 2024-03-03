@@ -37,9 +37,9 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
-import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -236,6 +236,23 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
+    public void doWaitForWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, executionContext());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                ServerTopology.CORE_STORE,
+                wfRunId.getPartitionKey().get(),
+                Serdes.String().serializer());
+
+        if (meta.activeHost().equals(thisHost)) {
+            localWaitForWfEvent(
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build(), ctx);
+        } else {
+            InternalWaitForWfEventRequest internalReq =
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
+            getInternalAsyncClient(meta.activeHost()).waitForWfEvent(internalReq, ctx);
+        }
+    }
+
     public Set<HostModel> getAllInternalHosts() {
         // It returns a sorted collection always
         return coreStreams.metadataForAllStreamsClients().stream()
@@ -303,10 +320,6 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
-    public void registerObserverForWorkflowEvent(WorkflowEventId eventId, StreamObserver<WorkflowEvent> observer) {
-        asyncWaiters.registerObserverWaitingForWorkflowEvent(eventId, observer, executionContext());
-    }
-
     public void onWorkflowEventThrown(WorkflowEventModel event) {
         asyncWaiters.registerWorkflowEventHappened(event);
     }
@@ -324,6 +337,10 @@ public class BackendInternalComms implements Closeable {
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
+    }
+
+    private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
     }
 
     public ReadOnlyKeyValueStore<String, Bytes> getRawStore(
@@ -394,10 +411,6 @@ public class BackendInternalComms implements Closeable {
         return storeResult.getStoredObject();
     }
 
-    private void localWaitForWfEvent(WorkflowEventId id, StreamObserver<WorkflowEvent> observer) {
-        asyncWaiters.registerObserverWaitingForWorkflowEvent(id, observer, executionContext());
-    }
-
     public void registerWorkflowEventProcessed(WorkflowEventModel event) {
         asyncWaiters.registerWorkflowEventHappened(event);
     }
@@ -450,7 +463,7 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-            localWaitForWfEvent(req.getId(), ctx);
+            localWaitForWfEvent(req, ctx);
         }
 
         @Override
@@ -590,6 +603,8 @@ public class BackendInternalComms implements Closeable {
             case VARIABLE:
             case TASK_RUN:
             case TASK_WORKER_GROUP:
+            case WORKFLOW_EVENT:
+            case WORKFLOW_EVENT_DEF:
             case UNRECOGNIZED:
         }
         return false;

@@ -425,8 +425,15 @@ message AwaitWorkflowEventRequest {
   // The ID of the WfRun which must throw the WorkflowEvent.
   WfRunId wf_run_id = 1;
 
-  // The ID of the WorkflowEventDef that must be thrown.
-  WorkflowEventDefId event_def_id = 2;
+  // The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+  // WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+  // WorkflowEvent thrown by the WfRun.
+  repeated WorkflowEventDefId event_def_ids = 2;
+
+  // Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+  // is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+  // 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+  repeated WorkflowEventId workflow_events_to_ignore = 3;
 }
 
 // A request used to retrieve a list of WfRunId's by certain criteria.

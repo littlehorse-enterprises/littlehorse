@@ -12,7 +12,6 @@ import "user_tasks.proto";
 import "common_enums.proto";
 import "storage.proto";
 import "acls.proto";
-import "workflow_event.proto";
 import "job.proto";
 
 

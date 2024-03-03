@@ -8,17 +8,29 @@ public interface InternalWaitForWfEventRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.WorkflowEventId id = 1;</code>
-   * @return Whether the id field is set.
+   * <pre>
+   * For now, we just pass the raw input from the external server. That's all we need to know.
+   * </pre>
+   *
+   * <code>.littlehorse.AwaitWorkflowEventRequest request = 1;</code>
+   * @return Whether the request field is set.
    */
-  boolean hasId();
+  boolean hasRequest();
   /**
-   * <code>.littlehorse.WorkflowEventId id = 1;</code>
-   * @return The id.
+   * <pre>
+   * For now, we just pass the raw input from the external server. That's all we need to know.
+   * </pre>
+   *
+   * <code>.littlehorse.AwaitWorkflowEventRequest request = 1;</code>
+   * @return The request.
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventId getId();
+  io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest getRequest();
   /**
-   * <code>.littlehorse.WorkflowEventId id = 1;</code>
+   * <pre>
+   * For now, we just pass the raw input from the external server. That's all we need to know.
+   * </pre>
+   *
+   * <code>.littlehorse.AwaitWorkflowEventRequest request = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getIdOrBuilder();
+  io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequestOrBuilder getRequestOrBuilder();
 }

@@ -96,5 +96,6 @@ message BookmarkPb { // Used for paginated responses
 }
 
 message InternalWaitForWfEventRequest {
-    WorkflowEventId id = 1;
+    // For now, we just pass the raw input from the external server. That's all we need to know.
+    AwaitWorkflowEventRequest request = 1;
 }

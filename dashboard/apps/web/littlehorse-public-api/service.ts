@@ -38,6 +38,7 @@ import {
   WfRunId,
   WfSpecId,
   WorkflowEventDefId,
+  WorkflowEventId,
 } from "./object_id";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
@@ -358,8 +359,18 @@ export interface AwaitWorkflowEventRequest {
   wfRunId:
     | WfRunId
     | undefined;
-  /** The ID of the WorkflowEventDef that must be thrown. */
-  eventDefId: WorkflowEventDefId | undefined;
+  /**
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
+   */
+  eventDefIds: WorkflowEventDefId[];
+  /**
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   */
+  workflowEventsToIgnore: WorkflowEventId[];
 }
 
 /** A request used to retrieve a list of WfRunId's by certain criteria. */
@@ -2706,7 +2717,7 @@ export const VariableMatch = {
 };
 
 function createBaseAwaitWorkflowEventRequest(): AwaitWorkflowEventRequest {
-  return { wfRunId: undefined, eventDefId: undefined };
+  return { wfRunId: undefined, eventDefIds: [], workflowEventsToIgnore: [] };
 }
 
 export const AwaitWorkflowEventRequest = {
@@ -2714,8 +2725,11 @@ export const AwaitWorkflowEventRequest = {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
     }
-    if (message.eventDefId !== undefined) {
-      WorkflowEventDefId.encode(message.eventDefId, writer.uint32(18).fork()).ldelim();
+    for (const v of message.eventDefIds) {
+      WorkflowEventDefId.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.workflowEventsToIgnore) {
+      WorkflowEventId.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2739,7 +2753,14 @@ export const AwaitWorkflowEventRequest = {
             break;
           }
 
-          message.eventDefId = WorkflowEventDefId.decode(reader, reader.uint32());
+          message.eventDefIds.push(WorkflowEventDefId.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.workflowEventsToIgnore.push(WorkflowEventId.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2753,7 +2774,12 @@ export const AwaitWorkflowEventRequest = {
   fromJSON(object: any): AwaitWorkflowEventRequest {
     return {
       wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
-      eventDefId: isSet(object.eventDefId) ? WorkflowEventDefId.fromJSON(object.eventDefId) : undefined,
+      eventDefIds: globalThis.Array.isArray(object?.eventDefIds)
+        ? object.eventDefIds.map((e: any) => WorkflowEventDefId.fromJSON(e))
+        : [],
+      workflowEventsToIgnore: globalThis.Array.isArray(object?.workflowEventsToIgnore)
+        ? object.workflowEventsToIgnore.map((e: any) => WorkflowEventId.fromJSON(e))
+        : [],
     };
   },
 
@@ -2762,8 +2788,11 @@ export const AwaitWorkflowEventRequest = {
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
     }
-    if (message.eventDefId !== undefined) {
-      obj.eventDefId = WorkflowEventDefId.toJSON(message.eventDefId);
+    if (message.eventDefIds?.length) {
+      obj.eventDefIds = message.eventDefIds.map((e) => WorkflowEventDefId.toJSON(e));
+    }
+    if (message.workflowEventsToIgnore?.length) {
+      obj.workflowEventsToIgnore = message.workflowEventsToIgnore.map((e) => WorkflowEventId.toJSON(e));
     }
     return obj;
   },
@@ -2776,9 +2805,8 @@ export const AwaitWorkflowEventRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
-    message.eventDefId = (object.eventDefId !== undefined && object.eventDefId !== null)
-      ? WorkflowEventDefId.fromPartial(object.eventDefId)
-      : undefined;
+    message.eventDefIds = object.eventDefIds?.map((e) => WorkflowEventDefId.fromPartial(e)) || [];
+    message.workflowEventsToIgnore = object.workflowEventsToIgnore?.map((e) => WorkflowEventId.fromPartial(e)) || [];
     return message;
   },
 };

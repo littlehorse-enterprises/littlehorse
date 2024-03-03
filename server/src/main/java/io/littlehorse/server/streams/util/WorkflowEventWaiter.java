@@ -1,47 +1,60 @@
 package io.littlehorse.server.streams.util;
 
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
+import io.littlehorse.sdk.common.proto.WorkflowEventId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.List;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Getter
 public class WorkflowEventWaiter {
 
-    private Lock lock;
-
-    @Getter
+    private List<WorkflowEventDefIdModel> eventsToWaitFor;
+    private List<WorkflowEventIdModel> ignoredEvents;
     private Date arrivalTime;
-
-    @Getter
     private StreamObserver<WorkflowEvent> observer;
 
     private boolean alreadyCompleted;
 
-    public WorkflowEventWaiter(WorkflowEventIdModel eventId, StreamObserver<WorkflowEvent> observer) {
-        this.lock = new ReentrantLock();
+    public WorkflowEventWaiter(
+            AwaitWorkflowEventRequest request, StreamObserver<WorkflowEvent> observer, ExecutionContext context) {
         this.alreadyCompleted = false;
         this.arrivalTime = new Date();
+        this.ignoredEvents = new ArrayList<>();
+        this.eventsToWaitFor = new ArrayList<>();
         this.observer = observer;
+
+        for (WorkflowEventId id : request.getWorkflowEventsToIgnoreList()) {
+            ignoredEvents.add(LHSerializable.fromProto(id, WorkflowEventIdModel.class, context));
+        }
+        for (WorkflowEventDefId id : request.getEventDefIdsList()) {
+            eventsToWaitFor.add(LHSerializable.fromProto(id, WorkflowEventDefIdModel.class, context));
+        }
     }
 
-    public boolean completeWithEvent(WorkflowEventModel event) {
-        try {
-            lock.lock();
-            if (alreadyCompleted) {
-                return false;
-            }
-            alreadyCompleted = true;
-        } finally {
-            lock.unlock();
+    public boolean maybeComplete(WorkflowEventModel event) {
+        if (!eventsToWaitFor.isEmpty()
+                && !eventsToWaitFor.contains(event.getId().getWorkflowEventDefId())) {
+            return false;
         }
+
+        if (ignoredEvents.contains(event.getId())) return false;
+
+        if (alreadyCompleted) return false;
+
+        alreadyCompleted = true;
         observer.onNext(event.toProto().build());
         observer.onCompleted();
+
         return true;
     }
 }

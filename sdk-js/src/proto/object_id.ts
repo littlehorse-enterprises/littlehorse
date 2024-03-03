@@ -53,6 +53,12 @@ export interface UserTaskDefId {
   version: number;
 }
 
+/** ID for a WorkflowEventDef. */
+export interface WorkflowEventDefId {
+  /** The name of the WorkflowEventDef */
+  name: string;
+}
+
 /** ID for a TaskWorkerGroup. */
 export interface TaskWorkerGroupId {
   /** TaskWorkerGroups are uniquely identified by their TaskDefId. */
@@ -118,6 +124,24 @@ export interface NodeRunId {
   threadRunNumber: number;
   /** Position of this NodeRun within its ThreadRun. */
   position: number;
+}
+
+/** An ID for a WorkflowEvent. */
+export interface WorkflowEventId {
+  /** The Id of the WfRun that threw the event. */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** The ID of the WorkflowEventDef that this WorkflowEvent is a member of. */
+  workflowEventDefId:
+    | WorkflowEventDefId
+    | undefined;
+  /**
+   * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+   * same type thrown by the WfRun. This field starts at zero and is incremented every
+   * time a WorkflowEvent of the same type is thrown by the same WfRun.
+   */
+  id: number;
 }
 
 /** ID for a TaskRun. */
@@ -394,6 +418,51 @@ export const UserTaskDefId = {
     const message = createBaseUserTaskDefId();
     message.name = object.name ?? "";
     message.version = object.version ?? 0;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventDefId(): WorkflowEventDefId {
+  return { name: "" };
+}
+
+export const WorkflowEventDefId = {
+  encode(message: WorkflowEventDefId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventDefId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventDefId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventDefId>): WorkflowEventDefId {
+    return WorkflowEventDefId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventDefId>): WorkflowEventDefId {
+    const message = createBaseWorkflowEventDefId();
+    message.name = object.name ?? "";
     return message;
   },
 };
@@ -708,6 +777,77 @@ export const NodeRunId = {
       : undefined;
     message.threadRunNumber = object.threadRunNumber ?? 0;
     message.position = object.position ?? 0;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventId(): WorkflowEventId {
+  return { wfRunId: undefined, workflowEventDefId: undefined, id: 0 };
+}
+
+export const WorkflowEventId = {
+  encode(message: WorkflowEventId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.workflowEventDefId !== undefined) {
+      WorkflowEventDefId.encode(message.workflowEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.id !== 0) {
+      writer.uint32(24).int32(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.workflowEventDefId = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.id = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventId>): WorkflowEventId {
+    return WorkflowEventId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventId>): WorkflowEventId {
+    const message = createBaseWorkflowEventId();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.workflowEventDefId = (object.workflowEventDefId !== undefined && object.workflowEventDefId !== null)
+      ? WorkflowEventDefId.fromPartial(object.workflowEventDefId)
+      : undefined;
+    message.id = object.id ?? 0;
     return message;
   },
 };

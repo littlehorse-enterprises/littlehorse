@@ -87,7 +87,6 @@ public class AwaitWorkflowEventExample {
         System.out.println("Now awaiting workflow event with timeout of " + timeoutMs + " milliseconds");
         WorkflowEvent event = client.withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
                 .awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
-                        .setEventDefId(WorkflowEventDefId.newBuilder().setName("sleep-done"))
                         .setWfRunId(WfRunId.newBuilder().setId(id))
                         .build());
 

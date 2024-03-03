@@ -21,6 +21,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private AwaitWorkflowEventRequest() {
+    eventDefIds_ = java.util.Collections.emptyList();
+    workflowEventsToIgnore_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -81,42 +83,146 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
 
-  public static final int EVENT_DEF_ID_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.WorkflowEventDefId eventDefId_;
+  public static final int EVENT_DEF_IDS_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId> eventDefIds_;
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-   * @return Whether the eventDefId field is set.
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
   @java.lang.Override
-  public boolean hasEventDefId() {
-    return eventDefId_ != null;
+  public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId> getEventDefIdsList() {
+    return eventDefIds_;
   }
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-   * @return The eventDefId.
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefId() {
-    return eventDefId_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : eventDefId_;
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> 
+      getEventDefIdsOrBuilderList() {
+    return eventDefIds_;
   }
   /**
    * <pre>
-   * The ID of the WorkflowEventDef that must be thrown.
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdOrBuilder() {
-    return eventDefId_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : eventDefId_;
+  public int getEventDefIdsCount() {
+    return eventDefIds_.size();
+  }
+  /**
+   * <pre>
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefIds(int index) {
+    return eventDefIds_.get(index);
+  }
+  /**
+   * <pre>
+   * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown by the WfRun.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdsOrBuilder(
+      int index) {
+    return eventDefIds_.get(index);
+  }
+
+  public static final int WORKFLOW_EVENTS_TO_IGNORE_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId> workflowEventsToIgnore_;
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId> getWorkflowEventsToIgnoreList() {
+    return workflowEventsToIgnore_;
+  }
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> 
+      getWorkflowEventsToIgnoreOrBuilderList() {
+    return workflowEventsToIgnore_;
+  }
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  @java.lang.Override
+  public int getWorkflowEventsToIgnoreCount() {
+    return workflowEventsToIgnore_.size();
+  }
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowEventId getWorkflowEventsToIgnore(int index) {
+    return workflowEventsToIgnore_.get(index);
+  }
+  /**
+   * <pre>
+   * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+   * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+   * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getWorkflowEventsToIgnoreOrBuilder(
+      int index) {
+    return workflowEventsToIgnore_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -136,8 +242,11 @@ private static final long serialVersionUID = 0L;
     if (wfRunId_ != null) {
       output.writeMessage(1, getWfRunId());
     }
-    if (eventDefId_ != null) {
-      output.writeMessage(2, getEventDefId());
+    for (int i = 0; i < eventDefIds_.size(); i++) {
+      output.writeMessage(2, eventDefIds_.get(i));
+    }
+    for (int i = 0; i < workflowEventsToIgnore_.size(); i++) {
+      output.writeMessage(3, workflowEventsToIgnore_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -152,9 +261,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getWfRunId());
     }
-    if (eventDefId_ != null) {
+    for (int i = 0; i < eventDefIds_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getEventDefId());
+        .computeMessageSize(2, eventDefIds_.get(i));
+    }
+    for (int i = 0; i < workflowEventsToIgnore_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, workflowEventsToIgnore_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -176,11 +289,10 @@ private static final long serialVersionUID = 0L;
       if (!getWfRunId()
           .equals(other.getWfRunId())) return false;
     }
-    if (hasEventDefId() != other.hasEventDefId()) return false;
-    if (hasEventDefId()) {
-      if (!getEventDefId()
-          .equals(other.getEventDefId())) return false;
-    }
+    if (!getEventDefIdsList()
+        .equals(other.getEventDefIdsList())) return false;
+    if (!getWorkflowEventsToIgnoreList()
+        .equals(other.getWorkflowEventsToIgnoreList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -196,9 +308,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfRunId().hashCode();
     }
-    if (hasEventDefId()) {
-      hash = (37 * hash) + EVENT_DEF_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getEventDefId().hashCode();
+    if (getEventDefIdsCount() > 0) {
+      hash = (37 * hash) + EVENT_DEF_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getEventDefIdsList().hashCode();
+    }
+    if (getWorkflowEventsToIgnoreCount() > 0) {
+      hash = (37 * hash) + WORKFLOW_EVENTS_TO_IGNORE_FIELD_NUMBER;
+      hash = (53 * hash) + getWorkflowEventsToIgnoreList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -341,11 +457,20 @@ private static final long serialVersionUID = 0L;
         wfRunIdBuilder_.dispose();
         wfRunIdBuilder_ = null;
       }
-      eventDefId_ = null;
-      if (eventDefIdBuilder_ != null) {
-        eventDefIdBuilder_.dispose();
-        eventDefIdBuilder_ = null;
+      if (eventDefIdsBuilder_ == null) {
+        eventDefIds_ = java.util.Collections.emptyList();
+      } else {
+        eventDefIds_ = null;
+        eventDefIdsBuilder_.clear();
       }
+      bitField0_ = (bitField0_ & ~0x00000002);
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        workflowEventsToIgnore_ = java.util.Collections.emptyList();
+      } else {
+        workflowEventsToIgnore_ = null;
+        workflowEventsToIgnoreBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
 
@@ -372,9 +497,31 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest buildPartial() {
       io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest result = new io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest result) {
+      if (eventDefIdsBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0)) {
+          eventDefIds_ = java.util.Collections.unmodifiableList(eventDefIds_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.eventDefIds_ = eventDefIds_;
+      } else {
+        result.eventDefIds_ = eventDefIdsBuilder_.build();
+      }
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          workflowEventsToIgnore_ = java.util.Collections.unmodifiableList(workflowEventsToIgnore_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.workflowEventsToIgnore_ = workflowEventsToIgnore_;
+      } else {
+        result.workflowEventsToIgnore_ = workflowEventsToIgnoreBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest result) {
@@ -383,11 +530,6 @@ private static final long serialVersionUID = 0L;
         result.wfRunId_ = wfRunIdBuilder_ == null
             ? wfRunId_
             : wfRunIdBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.eventDefId_ = eventDefIdBuilder_ == null
-            ? eventDefId_
-            : eventDefIdBuilder_.build();
       }
     }
 
@@ -438,8 +580,57 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfRunId()) {
         mergeWfRunId(other.getWfRunId());
       }
-      if (other.hasEventDefId()) {
-        mergeEventDefId(other.getEventDefId());
+      if (eventDefIdsBuilder_ == null) {
+        if (!other.eventDefIds_.isEmpty()) {
+          if (eventDefIds_.isEmpty()) {
+            eventDefIds_ = other.eventDefIds_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureEventDefIdsIsMutable();
+            eventDefIds_.addAll(other.eventDefIds_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.eventDefIds_.isEmpty()) {
+          if (eventDefIdsBuilder_.isEmpty()) {
+            eventDefIdsBuilder_.dispose();
+            eventDefIdsBuilder_ = null;
+            eventDefIds_ = other.eventDefIds_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+            eventDefIdsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getEventDefIdsFieldBuilder() : null;
+          } else {
+            eventDefIdsBuilder_.addAllMessages(other.eventDefIds_);
+          }
+        }
+      }
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        if (!other.workflowEventsToIgnore_.isEmpty()) {
+          if (workflowEventsToIgnore_.isEmpty()) {
+            workflowEventsToIgnore_ = other.workflowEventsToIgnore_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureWorkflowEventsToIgnoreIsMutable();
+            workflowEventsToIgnore_.addAll(other.workflowEventsToIgnore_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.workflowEventsToIgnore_.isEmpty()) {
+          if (workflowEventsToIgnoreBuilder_.isEmpty()) {
+            workflowEventsToIgnoreBuilder_.dispose();
+            workflowEventsToIgnoreBuilder_ = null;
+            workflowEventsToIgnore_ = other.workflowEventsToIgnore_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            workflowEventsToIgnoreBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getWorkflowEventsToIgnoreFieldBuilder() : null;
+          } else {
+            workflowEventsToIgnoreBuilder_.addAllMessages(other.workflowEventsToIgnore_);
+          }
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -475,12 +666,31 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              input.readMessage(
-                  getEventDefIdFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000002;
+              io.littlehorse.sdk.common.proto.WorkflowEventDefId m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.WorkflowEventDefId.parser(),
+                      extensionRegistry);
+              if (eventDefIdsBuilder_ == null) {
+                ensureEventDefIdsIsMutable();
+                eventDefIds_.add(m);
+              } else {
+                eventDefIdsBuilder_.addMessage(m);
+              }
               break;
             } // case 18
+            case 26: {
+              io.littlehorse.sdk.common.proto.WorkflowEventId m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.WorkflowEventId.parser(),
+                      extensionRegistry);
+              if (workflowEventsToIgnoreBuilder_ == null) {
+                ensureWorkflowEventsToIgnoreIsMutable();
+                workflowEventsToIgnore_.add(m);
+              } else {
+                workflowEventsToIgnoreBuilder_.addMessage(m);
+              }
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -653,159 +863,700 @@ private static final long serialVersionUID = 0L;
       return wfRunIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.WorkflowEventDefId eventDefId_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WorkflowEventDefId, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> eventDefIdBuilder_;
-    /**
-     * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
-     * </pre>
-     *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-     * @return Whether the eventDefId field is set.
-     */
-    public boolean hasEventDefId() {
-      return ((bitField0_ & 0x00000002) != 0);
+    private java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId> eventDefIds_ =
+      java.util.Collections.emptyList();
+    private void ensureEventDefIdsIsMutable() {
+      if (!((bitField0_ & 0x00000002) != 0)) {
+        eventDefIds_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WorkflowEventDefId>(eventDefIds_);
+        bitField0_ |= 0x00000002;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WorkflowEventDefId, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> eventDefIdsBuilder_;
+
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
-     * @return The eventDefId.
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefId() {
-      if (eventDefIdBuilder_ == null) {
-        return eventDefId_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : eventDefId_;
+    public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId> getEventDefIdsList() {
+      if (eventDefIdsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(eventDefIds_);
       } else {
-        return eventDefIdBuilder_.getMessage();
+        return eventDefIdsBuilder_.getMessageList();
       }
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public Builder setEventDefId(io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
-      if (eventDefIdBuilder_ == null) {
+    public int getEventDefIdsCount() {
+      if (eventDefIdsBuilder_ == null) {
+        return eventDefIds_.size();
+      } else {
+        return eventDefIdsBuilder_.getCount();
+      }
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefId getEventDefIds(int index) {
+      if (eventDefIdsBuilder_ == null) {
+        return eventDefIds_.get(index);
+      } else {
+        return eventDefIdsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public Builder setEventDefIds(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
+      if (eventDefIdsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        eventDefId_ = value;
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.set(index, value);
+        onChanged();
       } else {
-        eventDefIdBuilder_.setMessage(value);
+        eventDefIdsBuilder_.setMessage(index, value);
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public Builder setEventDefId(
-        io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder builderForValue) {
-      if (eventDefIdBuilder_ == null) {
-        eventDefId_ = builderForValue.build();
+    public Builder setEventDefIds(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder builderForValue) {
+      if (eventDefIdsBuilder_ == null) {
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.set(index, builderForValue.build());
+        onChanged();
       } else {
-        eventDefIdBuilder_.setMessage(builderForValue.build());
+        eventDefIdsBuilder_.setMessage(index, builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public Builder mergeEventDefId(io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
-      if (eventDefIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          eventDefId_ != null &&
-          eventDefId_ != io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance()) {
-          getEventDefIdBuilder().mergeFrom(value);
-        } else {
-          eventDefId_ = value;
+    public Builder addEventDefIds(io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
+      if (eventDefIdsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.add(value);
+        onChanged();
       } else {
-        eventDefIdBuilder_.mergeFrom(value);
+        eventDefIdsBuilder_.addMessage(value);
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public Builder clearEventDefId() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      eventDefId_ = null;
-      if (eventDefIdBuilder_ != null) {
-        eventDefIdBuilder_.dispose();
-        eventDefIdBuilder_ = null;
+    public Builder addEventDefIds(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
+      if (eventDefIdsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.add(index, value);
+        onChanged();
+      } else {
+        eventDefIdsBuilder_.addMessage(index, value);
       }
-      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder getEventDefIdBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getEventDefIdFieldBuilder().getBuilder();
+    public Builder addEventDefIds(
+        io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder builderForValue) {
+      if (eventDefIdsBuilder_ == null) {
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.add(builderForValue.build());
+        onChanged();
+      } else {
+        eventDefIdsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdOrBuilder() {
-      if (eventDefIdBuilder_ != null) {
-        return eventDefIdBuilder_.getMessageOrBuilder();
+    public Builder addEventDefIds(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder builderForValue) {
+      if (eventDefIdsBuilder_ == null) {
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.add(index, builderForValue.build());
+        onChanged();
       } else {
-        return eventDefId_ == null ?
-            io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : eventDefId_;
+        eventDefIdsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public Builder addAllEventDefIds(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.WorkflowEventDefId> values) {
+      if (eventDefIdsBuilder_ == null) {
+        ensureEventDefIdsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, eventDefIds_);
+        onChanged();
+      } else {
+        eventDefIdsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public Builder clearEventDefIds() {
+      if (eventDefIdsBuilder_ == null) {
+        eventDefIds_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+      } else {
+        eventDefIdsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public Builder removeEventDefIds(int index) {
+      if (eventDefIdsBuilder_ == null) {
+        ensureEventDefIdsIsMutable();
+        eventDefIds_.remove(index);
+        onChanged();
+      } else {
+        eventDefIdsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder getEventDefIdsBuilder(
+        int index) {
+      return getEventDefIdsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getEventDefIdsOrBuilder(
+        int index) {
+      if (eventDefIdsBuilder_ == null) {
+        return eventDefIds_.get(index);  } else {
+        return eventDefIdsBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
      * <pre>
-     * The ID of the WorkflowEventDef that must be thrown.
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventDefId event_def_id = 2;</code>
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> 
+         getEventDefIdsOrBuilderList() {
+      if (eventDefIdsBuilder_ != null) {
+        return eventDefIdsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(eventDefIds_);
+      }
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder addEventDefIdsBuilder() {
+      return getEventDefIdsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder addEventDefIdsBuilder(
+        int index) {
+      return getEventDefIdsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
+     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown by the WfRun.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventDefId event_def_ids = 2;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder> 
+         getEventDefIdsBuilderList() {
+      return getEventDefIdsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowEventDefId, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> 
-        getEventDefIdFieldBuilder() {
-      if (eventDefIdBuilder_ == null) {
-        eventDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getEventDefIdsFieldBuilder() {
+      if (eventDefIdsBuilder_ == null) {
+        eventDefIdsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.WorkflowEventDefId, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder>(
-                getEventDefId(),
+                eventDefIds_,
+                ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
                 isClean());
-        eventDefId_ = null;
+        eventDefIds_ = null;
       }
-      return eventDefIdBuilder_;
+      return eventDefIdsBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId> workflowEventsToIgnore_ =
+      java.util.Collections.emptyList();
+    private void ensureWorkflowEventsToIgnoreIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        workflowEventsToIgnore_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WorkflowEventId>(workflowEventsToIgnore_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WorkflowEventId, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> workflowEventsToIgnoreBuilder_;
+
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId> getWorkflowEventsToIgnoreList() {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(workflowEventsToIgnore_);
+      } else {
+        return workflowEventsToIgnoreBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public int getWorkflowEventsToIgnoreCount() {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        return workflowEventsToIgnore_.size();
+      } else {
+        return workflowEventsToIgnoreBuilder_.getCount();
+      }
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventId getWorkflowEventsToIgnore(int index) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        return workflowEventsToIgnore_.get(index);
+      } else {
+        return workflowEventsToIgnoreBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder setWorkflowEventsToIgnore(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventId value) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.set(index, value);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder setWorkflowEventsToIgnore(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder builderForValue) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder addWorkflowEventsToIgnore(io.littlehorse.sdk.common.proto.WorkflowEventId value) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.add(value);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder addWorkflowEventsToIgnore(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventId value) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.add(index, value);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder addWorkflowEventsToIgnore(
+        io.littlehorse.sdk.common.proto.WorkflowEventId.Builder builderForValue) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.add(builderForValue.build());
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder addWorkflowEventsToIgnore(
+        int index, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder builderForValue) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder addAllWorkflowEventsToIgnore(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.WorkflowEventId> values) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        ensureWorkflowEventsToIgnoreIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, workflowEventsToIgnore_);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder clearWorkflowEventsToIgnore() {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        workflowEventsToIgnore_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public Builder removeWorkflowEventsToIgnore(int index) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        ensureWorkflowEventsToIgnoreIsMutable();
+        workflowEventsToIgnore_.remove(index);
+        onChanged();
+      } else {
+        workflowEventsToIgnoreBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventId.Builder getWorkflowEventsToIgnoreBuilder(
+        int index) {
+      return getWorkflowEventsToIgnoreFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getWorkflowEventsToIgnoreOrBuilder(
+        int index) {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        return workflowEventsToIgnore_.get(index);  } else {
+        return workflowEventsToIgnoreBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> 
+         getWorkflowEventsToIgnoreOrBuilderList() {
+      if (workflowEventsToIgnoreBuilder_ != null) {
+        return workflowEventsToIgnoreBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(workflowEventsToIgnore_);
+      }
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventId.Builder addWorkflowEventsToIgnoreBuilder() {
+      return getWorkflowEventsToIgnoreFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.WorkflowEventId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventId.Builder addWorkflowEventsToIgnoreBuilder(
+        int index) {
+      return getWorkflowEventsToIgnoreFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.WorkflowEventId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it
+     * is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been
+     * 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.WorkflowEventId workflow_events_to_ignore = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.WorkflowEventId.Builder> 
+         getWorkflowEventsToIgnoreBuilderList() {
+      return getWorkflowEventsToIgnoreFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WorkflowEventId, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> 
+        getWorkflowEventsToIgnoreFieldBuilder() {
+      if (workflowEventsToIgnoreBuilder_ == null) {
+        workflowEventsToIgnoreBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WorkflowEventId, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder>(
+                workflowEventsToIgnore_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        workflowEventsToIgnore_ = null;
+      }
+      return workflowEventsToIgnoreBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

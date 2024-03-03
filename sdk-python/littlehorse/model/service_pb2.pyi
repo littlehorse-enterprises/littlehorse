@@ -177,12 +177,14 @@ class VariableMatch(_message.Message):
     def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class AwaitWorkflowEventRequest(_message.Message):
-    __slots__ = ["wf_run_id", "event_def_id"]
+    __slots__ = ["wf_run_id", "event_def_ids", "workflow_events_to_ignore"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    EVENT_DEF_IDS_FIELD_NUMBER: _ClassVar[int]
+    WORKFLOW_EVENTS_TO_IGNORE_FIELD_NUMBER: _ClassVar[int]
     wf_run_id: _object_id_pb2.WfRunId
-    event_def_id: _object_id_pb2.WorkflowEventDefId
-    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., event_def_id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
+    event_def_ids: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventDefId]
+    workflow_events_to_ignore: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventId]
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., event_def_ids: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]]] = ..., workflow_events_to_ignore: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventId, _Mapping]]] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters"]
