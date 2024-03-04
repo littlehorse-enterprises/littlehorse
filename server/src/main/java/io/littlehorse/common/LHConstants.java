@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class LHConstants {
 
     // Other various constants used by code
-    public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(2);
+    public static final Duration PUNCTUATOR_INERVAL = Duration.ofMillis(500);
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed

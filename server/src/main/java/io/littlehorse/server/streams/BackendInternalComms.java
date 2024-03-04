@@ -247,6 +247,7 @@ public class BackendInternalComms implements Closeable {
             localWaitForWfEvent(
                     InternalWaitForWfEventRequest.newBuilder().setRequest(req).build(), ctx);
         } else {
+            System.out.println("Doing the IQ");
             InternalWaitForWfEventRequest internalReq =
                     InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
             getInternalAsyncClient(meta.activeHost()).waitForWfEvent(internalReq, ctx);
