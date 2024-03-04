@@ -12,6 +12,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -31,7 +32,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private Map<TopicPartition, InProgressRestoration> restorations;
     private final Map<String, Integer> numberOfPartitionPerTopic;
-    private Map<String, InstanceStore> mappedStores = new HashMap<>();
+    private Map<String, InstanceStore> mappedStores = new ConcurrentHashMap<>();
     private State coreState;
     private State timerState;
 

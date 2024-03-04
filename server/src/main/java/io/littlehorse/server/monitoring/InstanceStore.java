@@ -1,7 +1,6 @@
 package io.littlehorse.server.monitoring;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import org.apache.kafka.streams.processor.StandbyUpdateListener;
 final class InstanceStore {
 
     private final String storeName;
-    private final Set<TopicPartitionMetrics> partitions = Collections.synchronizedSet(new HashSet<>());
+    private final Set<TopicPartitionMetrics> partitions = new HashSet<>();
     private final int clusterPartitions;
 
     public InstanceStore(final String storeName, final int numberOfPartitionAssigned) {
