@@ -4,7 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -98,8 +100,8 @@ public class ReadOnlyGetableManager {
      * @param cls Storeable's class
      * @return Null if not found
      */
-    public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
-        return store.get(storeKey, cls);
+    public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
+        return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
