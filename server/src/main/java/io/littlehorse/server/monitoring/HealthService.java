@@ -30,6 +30,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private LHServerConfig config;
 
     private Map<TopicPartition, InProgressRestoration> restorations;
+    private final Map<String, Integer> numberOfPartitionPerTopic;
+    private Map<String, InstanceStore> mappedStores = new HashMap<>();
     private State coreState;
     private State timerState;
 
@@ -43,6 +45,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache) {
         this.prom = new PrometheusMetricExporter(config);
+        this.numberOfPartitionPerTopic = config.partitionsByTopic();
         this.prom.bind(coreStreams, timerStreams, taskQueueManager, metadataCache);
         this.server = Javalin.create();
 
@@ -56,6 +59,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.server.get(config.getLivenessPath(), this::getLiveness);
         this.server.get(config.getStatusPath(), this::getStatus);
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
+        this.server.get("/stores", this::getStoreStatus);
 
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);
@@ -103,6 +107,15 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         restorations.remove(tp);
     }
 
+    private void getStoreStatus(Context ctx) {
+        try {
+            ctx.json(mappedStores);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
     private void getLiveness(Context ctx) {
         Predicate<State> isAlive = state -> state == State.RUNNING || state == State.REBALANCING;
 
@@ -134,16 +147,31 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     @Override
     public void onUpdateStart(TopicPartition topicPartition, String storeName, long startingOffset) {
-
+        InstanceStore instanceStore = mappedStores.getOrDefault(
+                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        instanceStore.recordOffsets(topicPartition, startingOffset, -1);
+        mappedStores.put(storeName, instanceStore);
     }
 
     @Override
-    public void onBatchLoaded(TopicPartition topicPartition, String storeName, TaskId taskId, long batchEndOffset, long batchSize, long currentEndOffset) {
-
+    public void onBatchLoaded(
+            TopicPartition topicPartition,
+            String storeName,
+            TaskId taskId,
+            long batchEndOffset,
+            long batchSize,
+            long currentEndOffset) {
+        InstanceStore instanceStore = mappedStores.getOrDefault(
+                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        instanceStore.recordOffsets(topicPartition, batchEndOffset, currentEndOffset);
+        mappedStores.put(storeName, instanceStore);
     }
 
     @Override
-    public void onUpdateSuspended(TopicPartition topicPartition, String storeName, long storeOffset, long currentEndOffset, SuspendReason reason) {
-
-    }
+    public void onUpdateSuspended(
+            TopicPartition topicPartition,
+            String storeName,
+            long storeOffset,
+            long currentEndOffset,
+            SuspendReason reason) {}
 }
