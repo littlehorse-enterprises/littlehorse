@@ -709,6 +709,7 @@ public class LHServerConfig extends ConfigBase {
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
         props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 1);
+        props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
         return props;
     }
 

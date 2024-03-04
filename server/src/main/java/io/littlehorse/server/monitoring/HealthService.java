@@ -173,5 +173,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             String storeName,
             long storeOffset,
             long currentEndOffset,
-            SuspendReason reason) {}
+            SuspendReason reason) {
+        InstanceStore instanceStore = mappedStores.getOrDefault(
+                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        instanceStore.suspendPartition(topicPartition, storeOffset, currentEndOffset, reason);
+        mappedStores.put(storeName, instanceStore);
+    }
 }
