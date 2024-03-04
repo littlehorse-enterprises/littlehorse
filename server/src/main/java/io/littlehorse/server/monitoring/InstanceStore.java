@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.streams.processor.StandbyUpdateListener;
 
 @Getter
+@Slf4j
 final class InstanceStore {
 
     private final String storeName;
@@ -35,5 +38,14 @@ final class InstanceStore {
     @JsonProperty("numberOfRegisteredPartitions")
     public long registeredPartitions() {
         return partitions.size();
+    }
+
+    public void suspendPartition(
+            TopicPartition topicPartition,
+            final long currentOffset,
+            final long endOffset,
+            StandbyUpdateListener.SuspendReason reason) {
+        log.info("TopicPartition %s suspended with reason %s ".formatted(topicPartition, reason));
+        partitions.remove(new TopicPartitionMetrics(topicPartition, currentOffset, endOffset));
     }
 }
