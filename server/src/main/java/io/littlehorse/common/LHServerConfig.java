@@ -108,6 +108,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
+    public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
@@ -346,6 +347,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getDiskUsagePath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_DISK_USAGE_KEY, "/diskUsage");
+    }
+
+    public String getStandbyStatusPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_STANDBY_KEY, "/standby-status");
     }
 
     public int getInternalBindPort() {

@@ -32,7 +32,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private Map<TopicPartition, InProgressRestoration> restorations;
     private final Map<String, Integer> numberOfPartitionPerTopic;
-    private Map<String, InstanceStore> mappedStores = new ConcurrentHashMap<>();
+    private final Map<String, InstanceStore> standbyStores = new ConcurrentHashMap<>();
     private State coreState;
     private State timerState;
 
@@ -47,7 +47,13 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             MetadataCache metadataCache) {
         this.prom = new PrometheusMetricExporter(config);
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
-        this.prom.bind(coreStreams, timerStreams, taskQueueManager, metadataCache);
+
+        this.prom.bind(
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                new StandbyMetrics(standbyStores, config.getLHInstanceId()));
         this.server = Javalin.create();
 
         this.coreStreams = coreStreams;
@@ -60,7 +66,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.server.get(config.getLivenessPath(), this::getLiveness);
         this.server.get(config.getStatusPath(), this::getStatus);
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
-        this.server.get("/stores", this::getStoreStatus);
+        this.server.get(config.getStandbyStatusPath(), this::getStandbyStatus);
 
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);
@@ -108,11 +114,11 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         restorations.remove(tp);
     }
 
-    private void getStoreStatus(Context ctx) {
+    private void getStandbyStatus(Context ctx) {
         try {
-            ctx.json(mappedStores);
+            ctx.json(standbyStores);
         } catch (Exception e) {
-            e.printStackTrace();
+            ctx.status(500);
             log.error(e.getMessage());
         }
     }
@@ -148,10 +154,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     @Override
     public void onUpdateStart(TopicPartition topicPartition, String storeName, long startingOffset) {
-        InstanceStore instanceStore = mappedStores.getOrDefault(
+        InstanceStore instanceStore = standbyStores.getOrDefault(
                 storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, startingOffset, -1);
-        mappedStores.put(storeName, instanceStore);
+        standbyStores.put(storeName, instanceStore);
     }
 
     @Override
@@ -162,10 +168,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             long batchEndOffset,
             long batchSize,
             long currentEndOffset) {
-        InstanceStore instanceStore = mappedStores.getOrDefault(
+        InstanceStore instanceStore = standbyStores.getOrDefault(
                 storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, batchEndOffset, currentEndOffset);
-        mappedStores.put(storeName, instanceStore);
+        standbyStores.put(storeName, instanceStore);
     }
 
     @Override
@@ -175,9 +181,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             long storeOffset,
             long currentEndOffset,
             SuspendReason reason) {
-        InstanceStore instanceStore = mappedStores.getOrDefault(
+        InstanceStore instanceStore = standbyStores.getOrDefault(
                 storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.suspendPartition(topicPartition, storeOffset, currentEndOffset, reason);
-        mappedStores.put(storeName, instanceStore);
+        standbyStores.put(storeName, instanceStore);
     }
 }

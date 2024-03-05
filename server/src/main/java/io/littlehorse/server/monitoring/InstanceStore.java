@@ -8,6 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.processor.StandbyUpdateListener;
 
+/**
+ * Represents an instance-specific store that keeps track of topic partitions.
+ * This class is responsible for managing and monitoring the topic partitions associated
+ * with the current application instance.
+ */
 @Getter
 @Slf4j
 final class InstanceStore {
@@ -16,15 +21,25 @@ final class InstanceStore {
     private final Set<TopicPartitionMetrics> partitions = new HashSet<>();
     private final int clusterPartitions;
 
-    public InstanceStore(final String storeName, final int numberOfPartitionAssigned) {
+    InstanceStore(final String storeName, final int numberOfPartitionAssigned) {
         this.storeName = storeName;
         this.clusterPartitions = numberOfPartitionAssigned;
     }
 
+    /**
+     * Record offset tracking for the topic partition
+     * @param topicPartition topic partition
+     * @param currentOffset batch end offset
+     * @param endOffset topic partition end offset
+     */
     public void recordOffsets(TopicPartition topicPartition, final long currentOffset, final long endOffset) {
         partitions.add(new TopicPartitionMetrics(topicPartition, currentOffset, endOffset));
     }
 
+    /**
+     * Calculates the total lag across all partitions in the store
+     * @return sum of lag values for all partitions.
+     */
     @JsonProperty("totalLag")
     public long totalLag() {
         return partitions.stream()
@@ -34,16 +49,28 @@ final class InstanceStore {
                 .sum();
     }
 
+    /**
+     * Retrieves the count of registered partitions associated with this store.
+     *
+     * @return The number of registered partitions for this store.
+     */
     @JsonProperty("numberOfRegisteredPartitions")
-    public long registeredPartitions() {
+    public int registeredPartitions() {
         return partitions.size();
     }
 
+    /**
+     * Suspend offset tracking for the topic partition
+     * @param topicPartition suspended partition
+     * @param currentOffset last registered offset
+     * @param endOffset partition end offset
+     * @param reason standby suspension reason
+     */
     public void suspendPartition(
-            TopicPartition topicPartition,
+            final TopicPartition topicPartition,
             final long currentOffset,
             final long endOffset,
-            StandbyUpdateListener.SuspendReason reason) {
+            final StandbyUpdateListener.SuspendReason reason) {
         log.info("TopicPartition %s suspended with reason %s ".formatted(topicPartition, reason));
         partitions.remove(new TopicPartitionMetrics(topicPartition, currentOffset, endOffset));
     }
