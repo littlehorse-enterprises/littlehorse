@@ -312,9 +312,9 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=to_variable_value(context.log_output)
-            if context.log_output
-            else None,
+            log_output=(
+                to_variable_value(context.log_output) if context.log_output else None
+            ),
         )
 
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
