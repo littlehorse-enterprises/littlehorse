@@ -31,13 +31,13 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        mainExecutor.scheduleAtFixedRate(this::updateMetrics, 1, 1, TimeUnit.SECONDS);
+        mainExecutor.scheduleAtFixedRate(this::registerMetrics, 1, 1, TimeUnit.SECONDS);
     }
 
-    void updateMetrics() {
+    void registerMetrics() {
         // Partitions per store
         standbyStores.forEach((storeName, storeStatus) -> Gauge.builder(
-                        STANDBY_PARTITIONS_METRIC_NAME, storeStatus.registeredPartitions(), Integer::intValue)
+                        STANDBY_PARTITIONS_METRIC_NAME, storeStatus, InstanceStore::registeredPartitions)
                 .tag(STORE_NAME, storeName)
                 .tag(INSTANCE_ID, instanceId)
                 .register(registry));
