@@ -149,19 +149,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
-
-        // TODO: Optimize this later.
-        new Thread(() -> {
-                    while (true) {
-                        try {
-                            Thread.sleep(20 * 1000);
-                            this.asyncWaiters.cleanupOldWaiters();
-                        } catch (InterruptedException exn) {
-                            throw new RuntimeException(exn);
-                        }
-                    }
-                })
-                .start();
     }
 
     public void start() throws IOException {

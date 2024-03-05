@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.util;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -11,6 +12,8 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,11 +29,28 @@ public class AsyncWaiters {
     private HashMap<String, GroupOfObserversWaitingForEvent> eventWaiters;
     private Lock eventWaiterLock = new ReentrantLock();
 
-    private static final long MAX_WAITER_AGE = 1000 * 60;
-
     public AsyncWaiters() {
         commandWaiters = new ConcurrentHashMap<>();
         eventWaiters = new HashMap<>();
+
+        // This came from the BackendInternalComms class. It obviously needs to be optimized/cleaned up
+        // in the future, but it has been "this way" for years. I think this is a responsibility of the
+        // AsyncWaiters class, not the BackendInternalComms class, so I moved it here. But we should
+        // still clean it up later...ideally, the new implementation wouldn't use a Thread.
+        //
+        // There likely is some GRPC construct we can use.
+        new Thread(() -> {
+                    while (true) {
+                        try {
+                            Thread.sleep(10 * 1000);
+                            this.cleanupOldCommandWaiters();
+                            cleanupOldWorkflowEventWaiters();
+                        } catch (InterruptedException exn) {
+                            throw new RuntimeException(exn);
+                        }
+                    }
+                })
+                .start();
     }
 
     public void registerObserverWaitingForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
@@ -103,40 +123,14 @@ public class AsyncWaiters {
         }
     }
 
-    // public void registerObserverWaitingForWorkflowEvent(
-    //         List<WorkflowEventId> idProtos, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
-
-    //     for (WorkflowEventId idProto : idProtos) {
-    //         WorkflowEventIdModel id = WorkflowEventIdModel.fromProto(idProto, WorkflowEventIdModel.class, ctx);
-    //         String key = id.toString();
-
-    //         try {
-    //             GroupOfObserversWaitingForEvent tmp = new GroupOfObserversWaitingForEvent();
-    //             GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(key, tmp);
-    //             if (group == null) group = tmp;
-
-    //             eventWaiterLock.lock();
-    //             group.addObserverForWorkflowEvent(observer);
-
-    //             // Now try to get the event out
-    //             WorkflowEventModel event = ctx.getableManager().get(id);
-    //             if (event != null && group.completeWithEvent(event)) {
-    //                 eventWaiters.remove(key);
-    //             }
-    //         } finally {
-    //             eventWaiterLock.unlock();
-    //         }
-    //     }
-    // }
-
-    public void cleanupOldWaiters() {
+    private void cleanupOldCommandWaiters() {
         Iterator<Map.Entry<String, CommandWaiter>> iter =
                 commandWaiters.entrySet().iterator();
-        long now = System.currentTimeMillis();
         while (iter.hasNext()) {
             Map.Entry<String, CommandWaiter> pair = iter.next();
-            long age = now - pair.getValue().getArrivalTime().getTime();
-            if (age < MAX_WAITER_AGE) {
+            Duration timePassed = Duration.between(
+                    Instant.now(), pair.getValue().getArrivalTime().toInstant());
+            if (timePassed.compareTo(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME) > 0) {
                 break;
             }
             CommandWaiter waiter = pair.getValue();
@@ -146,6 +140,22 @@ public class AsyncWaiters {
                                 "Command not processed within deadline: likely due to rebalance")));
             }
             iter.remove();
+        }
+    }
+
+    private void cleanupOldWorkflowEventWaiters() {
+        try {
+            eventWaiterLock.lock();
+            Iterator<Map.Entry<String, GroupOfObserversWaitingForEvent>> waitForEventIter =
+                    eventWaiters.entrySet().iterator();
+            while (waitForEventIter.hasNext()) {
+                Map.Entry<String, GroupOfObserversWaitingForEvent> entry = waitForEventIter.next();
+                if (entry.getValue().cleanupOldWaitersAndCheckIfEmpty()) {
+                    waitForEventIter.remove();
+                }
+            }
+        } finally {
+            eventWaiterLock.unlock();
         }
     }
 }
@@ -174,5 +184,16 @@ class GroupOfObserversWaitingForEvent {
             StreamObserver<WorkflowEvent> observer,
             RequestExecutionContext context) {
         waitingRequests.add(new WorkflowEventWaiter(request, observer, context));
+    }
+
+    public boolean cleanupOldWaitersAndCheckIfEmpty() {
+        Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
+        while (iter.hasNext()) {
+            WorkflowEventWaiter waiter = iter.next();
+            if (waiter.maybeExpire()) {
+                iter.remove();
+            }
+        }
+        return waitingRequests.isEmpty();
     }
 }
