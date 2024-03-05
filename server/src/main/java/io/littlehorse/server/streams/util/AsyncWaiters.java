@@ -26,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class AsyncWaiters {
 
     private ConcurrentHashMap<String, CommandWaiter> commandWaiters;
-    private HashMap<String, GroupOfObserversWaitingForEvent> eventWaiters;
+    private HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
     private Lock eventWaiterLock = new ReentrantLock();
 
     public AsyncWaiters() {
@@ -81,7 +81,7 @@ public class AsyncWaiters {
     }
 
     public void registerWorkflowEventHappened(WorkflowEventModel event) {
-        String key = event.getId().getWfRunId().toString();
+        WfRunIdModel key = event.getId().getWfRunId();
 
         try {
             eventWaiterLock.lock();
@@ -100,12 +100,11 @@ public class AsyncWaiters {
             InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer, RequestExecutionContext ctx) {
 
         WfRunIdModel wfRunId = LHSerializable.fromProto(req.getRequest().getWfRunId(), WfRunIdModel.class, ctx);
-        String key = wfRunId.toString();
 
         try {
             eventWaiterLock.lock();
             GroupOfObserversWaitingForEvent tmp = new GroupOfObserversWaitingForEvent();
-            GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(key, tmp);
+            GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(wfRunId, tmp);
             if (group == null) group = tmp;
 
             group.addObserverForWorkflowEvent(req.getRequest(), observer, ctx);
@@ -114,7 +113,7 @@ public class AsyncWaiters {
             for (WorkflowEventModel candidate :
                     ctx.getableManager().iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class)) {
                 if (group.completeWithEvent(candidate)) {
-                    eventWaiters.remove(key);
+                    eventWaiters.remove(wfRunId);
                     break;
                 }
             }
@@ -146,10 +145,10 @@ public class AsyncWaiters {
     private void cleanupOldWorkflowEventWaiters() {
         try {
             eventWaiterLock.lock();
-            Iterator<Map.Entry<String, GroupOfObserversWaitingForEvent>> waitForEventIter =
+            Iterator<Map.Entry<WfRunIdModel, GroupOfObserversWaitingForEvent>> waitForEventIter =
                     eventWaiters.entrySet().iterator();
             while (waitForEventIter.hasNext()) {
-                Map.Entry<String, GroupOfObserversWaitingForEvent> entry = waitForEventIter.next();
+                Map.Entry<WfRunIdModel, GroupOfObserversWaitingForEvent> entry = waitForEventIter.next();
                 if (entry.getValue().cleanupOldWaitersAndCheckIfEmpty()) {
                     waitForEventIter.remove();
                 }
