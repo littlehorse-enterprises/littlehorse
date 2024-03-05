@@ -21,6 +21,19 @@ class InstanceStoreTest {
     }
 
     @Test
+    public void shouldReplaceMetric() {
+        TopicPartition tp1 = new TopicPartition("changelo1", 0);
+        TopicPartition tp2A = new TopicPartition("changelo1", 1);
+        TopicPartition tp3 = new TopicPartition("changelo1", 2);
+        TopicPartition tp2B = new TopicPartition("changelo1", 1);
+        instanceStore.recordOffsets(tp1, 100, 1000);
+        instanceStore.recordOffsets(tp2A, 1000, 1000);
+        instanceStore.recordOffsets(tp3, 500, 1000);
+        instanceStore.recordOffsets(tp2B, 300, 1000);
+        Assertions.assertThat(instanceStore.totalLag()).isEqualTo(2100L);
+    }
+
+    @Test
     void shouldIgnoreDefaultLag() {
         TopicPartition tp1 = new TopicPartition("changelo1", 0);
         TopicPartition tp2 = new TopicPartition("changelo1", 1);

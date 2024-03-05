@@ -33,7 +33,9 @@ final class InstanceStore {
      * @param endOffset topic partition end offset
      */
     public void recordOffsets(TopicPartition topicPartition, final long currentOffset, final long endOffset) {
-        partitions.add(new TopicPartitionMetrics(topicPartition, currentOffset, endOffset));
+        TopicPartitionMetrics newMetric = new TopicPartitionMetrics(topicPartition, currentOffset, endOffset);
+        partitions.remove(newMetric);
+        partitions.add(newMetric);
     }
 
     /**
