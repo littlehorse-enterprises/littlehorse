@@ -168,7 +168,6 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             long batchEndOffset,
             long batchSize,
             long currentEndOffset) {
-        log.info("batch loaded end offset: %s current end offset: %s ".formatted(batchEndOffset, currentEndOffset));
         InstanceStore instanceStore = standbyStores.getOrDefault(
                 storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, batchEndOffset, currentEndOffset);

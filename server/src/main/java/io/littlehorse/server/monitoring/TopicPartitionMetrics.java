@@ -22,7 +22,6 @@ class TopicPartitionMetrics implements Serializable {
         this.topic = partition.topic();
         this.currentOffset = currentOffset;
         this.endOffset = endOffset;
-        log.info("current end offset " + endOffset);
         this.currentLag = endOffset < currentOffset ? -1L : this.endOffset - currentOffset;
     }
 }
