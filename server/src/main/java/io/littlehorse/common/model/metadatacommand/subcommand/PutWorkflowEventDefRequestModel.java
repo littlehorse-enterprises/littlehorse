@@ -61,7 +61,8 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
         if (old != null) {
             if (old.getType() != type) {
                 throw new LHApiException(
-                        Status.ALREADY_EXISTS, "WorkflowEventDef with name %s already exists!".formatted(name));
+                        Status.ALREADY_EXISTS,
+                        "WorkflowEventDef with name %s already exists with different type!".formatted(name));
             }
             return old.toProto().build();
         }
