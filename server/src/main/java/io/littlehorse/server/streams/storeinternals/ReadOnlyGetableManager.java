@@ -87,7 +87,7 @@ public class ReadOnlyGetableManager {
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
-    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixInternal(
+    private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixInternal(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();
 

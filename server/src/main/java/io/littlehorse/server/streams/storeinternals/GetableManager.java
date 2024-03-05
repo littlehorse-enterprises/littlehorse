@@ -201,8 +201,7 @@ public class GetableManager extends ReadOnlyGetableManager {
      */
     public <U extends Message, T extends CoreGetable<U>> T getFirstByCreatedTimeFromPrefix(
             String prefix, Class<T> cls, Predicate<T> discriminator) {
-        return iterateOverPrefixInternal(prefix, cls).stream()
-                .map(GetableToStore::getObjectToStore)
+        return iterateOverPrefix(prefix, cls).stream()
                 .filter(discriminator)
                 .min(Comparator.comparing(AbstractGetable::getCreatedAt))
                 .map(entity -> {
