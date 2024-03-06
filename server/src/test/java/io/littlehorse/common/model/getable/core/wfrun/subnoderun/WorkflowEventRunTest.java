@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -37,10 +38,12 @@ public class WorkflowEventRunTest {
     private final Command dummyCommand = buildCommand();
     private final TestProcessorExecutionContext testProcessorContext =
             TestProcessorExecutionContext.create(dummyCommand, metadata, mockProcessor);
+    private final NodeRunModel node = Mockito.spy(new NodeRunModel(testProcessorContext));
+    private final WfRunIdModel wfRunId =
+            TestUtil.wfRun(UUID.randomUUID().toString()).getId();
 
-    @Test
-    public void shouldStoreNode() throws Exception {
-        NodeRunModel node = Mockito.spy(new NodeRunModel(testProcessorContext));
+    @BeforeEach
+    public void setup() throws Exception {
         ThreadRunModel mockThreadRun = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
         NodeModel nodeSpec = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
         Mockito.doReturn(nodeSpec).when(node).getNode();
@@ -50,24 +53,70 @@ public class WorkflowEventRunTest {
         node.setWfSpecId(TestUtil.wfSpecId());
         node.setThreadSpecName("my-thread");
         node.setNodeName("my-node");
-        WfRunIdModel wfRunId = TestUtil.wfRun(UUID.randomUUID().toString()).getId();
         node.setId(new NodeRunIdModel(wfRunId, 1, 2));
         node.setArrivalTime(new Date());
+    }
+
+    @Test
+    public void shouldProcessSubNode() throws Exception {
         WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
         ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
         node.setSubNodeRun(eventRun);
+
         node.arrive(new Date());
         node.setStatus(LHStatus.COMPLETED);
         Assertions.assertThat(node.getSubNodeRun()).isNotNull();
         Assertions.assertThat(node.getOutput()).isEmpty();
         Assertions.assertThat(node.checkIfProcessingCompleted()).isTrue();
+    }
+
+    @Test
+    public void shouldStoreNodeRun() throws Exception {
+        WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
+        ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
+        node.setSubNodeRun(eventRun);
+        node.arrive(new Date());
         testProcessorContext.getableManager().put(node);
         testProcessorContext.endExecution();
         NodeRunModel storeNodeRun = testProcessorContext.getableManager().get(new NodeRunIdModel(wfRunId, 1, 2));
         Assertions.assertThat(storeNodeRun).isNotNull();
+    }
+
+    @Test
+    public void shouldStoreWorkflowEvent() throws Exception {
+        WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
+        ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
+        node.setSubNodeRun(eventRun);
+
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
         testProcessorContext.endExecution();
         WorkflowEventModel storedEvent =
                 testProcessorContext.getableManager().get(new WorkflowEventIdModel(wfRunId, eventDef, 0));
+        Assertions.assertThat(storedEvent).isNotNull();
+    }
+
+    @Test
+    public void shouldIncrementWorkflowEventSequential() throws Exception {
+        WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
+        ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
+        node.setSubNodeRun(eventRun);
+
+        // Throw event the first time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+        testProcessorContext.endExecution();
+        // Throw event a second time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+        testProcessorContext.endExecution();
+        // Throw event a third time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+        testProcessorContext.endExecution();
+
+        WorkflowEventModel storedEvent =
+                testProcessorContext.getableManager().get(new WorkflowEventIdModel(wfRunId, eventDef, 2));
         Assertions.assertThat(storedEvent).isNotNull();
     }
 
