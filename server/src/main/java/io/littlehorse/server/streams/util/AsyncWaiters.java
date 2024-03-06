@@ -160,7 +160,7 @@ public class AsyncWaiters {
 
     private static class GroupOfObserversWaitingForEvent {
 
-        private List<WorkflowEventWaiter> waitingRequests;
+        private final List<WorkflowEventWaiter> waitingRequests;
 
         public GroupOfObserversWaitingForEvent() {
             this.waitingRequests = new ArrayList<>();
@@ -185,13 +185,7 @@ public class AsyncWaiters {
         }
 
         public boolean cleanupOldWaitersAndCheckIfEmpty() {
-            Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
-            while (iter.hasNext()) {
-                WorkflowEventWaiter waiter = iter.next();
-                if (waiter.maybeExpire()) {
-                    iter.remove();
-                }
-            }
+            waitingRequests.removeIf(WorkflowEventWaiter::maybeExpire);
             return waitingRequests.isEmpty();
         }
     }
