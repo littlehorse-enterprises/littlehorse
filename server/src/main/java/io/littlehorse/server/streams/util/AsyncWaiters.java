@@ -157,42 +157,42 @@ public class AsyncWaiters {
             eventWaiterLock.unlock();
         }
     }
-}
 
-class GroupOfObserversWaitingForEvent {
+    private static class GroupOfObserversWaitingForEvent {
 
-    private List<WorkflowEventWaiter> waitingRequests;
+        private List<WorkflowEventWaiter> waitingRequests;
 
-    public GroupOfObserversWaitingForEvent() {
-        this.waitingRequests = new ArrayList<>();
-    }
-
-    public boolean completeWithEvent(WorkflowEventModel event) {
-        Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
-        while (iter.hasNext()) {
-            WorkflowEventWaiter waiter = iter.next();
-            if (waiter.maybeComplete(event)) {
-                iter.remove();
-            }
+        public GroupOfObserversWaitingForEvent() {
+            this.waitingRequests = new ArrayList<>();
         }
-        return waitingRequests.isEmpty();
-    }
 
-    public void addObserverForWorkflowEvent(
-            AwaitWorkflowEventRequest request,
-            StreamObserver<WorkflowEvent> observer,
-            RequestExecutionContext context) {
-        waitingRequests.add(new WorkflowEventWaiter(request, observer, context));
-    }
-
-    public boolean cleanupOldWaitersAndCheckIfEmpty() {
-        Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
-        while (iter.hasNext()) {
-            WorkflowEventWaiter waiter = iter.next();
-            if (waiter.maybeExpire()) {
-                iter.remove();
+        public boolean completeWithEvent(WorkflowEventModel event) {
+            Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
+            while (iter.hasNext()) {
+                WorkflowEventWaiter waiter = iter.next();
+                if (waiter.maybeComplete(event)) {
+                    iter.remove();
+                }
             }
+            return waitingRequests.isEmpty();
         }
-        return waitingRequests.isEmpty();
+
+        public void addObserverForWorkflowEvent(
+                AwaitWorkflowEventRequest request,
+                StreamObserver<WorkflowEvent> observer,
+                RequestExecutionContext context) {
+            waitingRequests.add(new WorkflowEventWaiter(request, observer, context));
+        }
+
+        public boolean cleanupOldWaitersAndCheckIfEmpty() {
+            Iterator<WorkflowEventWaiter> iter = waitingRequests.iterator();
+            while (iter.hasNext()) {
+                WorkflowEventWaiter waiter = iter.next();
+                if (waiter.maybeExpire()) {
+                    iter.remove();
+                }
+            }
+            return waitingRequests.isEmpty();
+        }
     }
 }
