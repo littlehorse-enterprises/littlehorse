@@ -35,7 +35,6 @@ import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
-import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
@@ -713,8 +712,6 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
-        props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 1);
-        props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
         return props;
     }
 
