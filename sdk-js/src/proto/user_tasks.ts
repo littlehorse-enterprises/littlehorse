@@ -289,6 +289,7 @@ export interface UserTaskEvent {
 
 /** Empty message used to denote that the `UserTaskRun` was cancelled. */
 export interface UserTaskEvent_UTECancelled {
+  message: string;
 }
 
 /** Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun. */
@@ -1163,11 +1164,14 @@ export const UserTaskEvent = {
 };
 
 function createBaseUserTaskEvent_UTECancelled(): UserTaskEvent_UTECancelled {
-  return {};
+  return { message: "" };
 }
 
 export const UserTaskEvent_UTECancelled = {
-  encode(_: UserTaskEvent_UTECancelled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: UserTaskEvent_UTECancelled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
     return writer;
   },
 
@@ -1178,6 +1182,13 @@ export const UserTaskEvent_UTECancelled = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.message = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1190,8 +1201,9 @@ export const UserTaskEvent_UTECancelled = {
   create(base?: DeepPartial<UserTaskEvent_UTECancelled>): UserTaskEvent_UTECancelled {
     return UserTaskEvent_UTECancelled.fromPartial(base ?? {});
   },
-  fromPartial(_: DeepPartial<UserTaskEvent_UTECancelled>): UserTaskEvent_UTECancelled {
+  fromPartial(object: DeepPartial<UserTaskEvent_UTECancelled>): UserTaskEvent_UTECancelled {
     const message = createBaseUserTaskEvent_UTECancelled();
+    message.message = object.message ?? "";
     return message;
   },
 };

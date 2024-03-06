@@ -937,6 +937,24 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 	}
 }
 
+func (t * WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
+	t.checkIfIsActive()
+	_, node := t.createBlankNode("throw-" + workflowEventDefName, "THROW_EVENT")
+
+	contentAssn, err := t.assignVariable(content)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+	node.Node = &model.Node_ThrowEvent{
+		ThrowEvent: &model.ThrowEventNode{
+			EventDefId: &model.WorkflowEventDefId{
+				Name: workflowEventDefName,
+			},
+			Content: contentAssn,
+		},
+	}
+}
+
 func (t *WorkflowThread) format(format string, args []*WfRunVariable) *LHFormatString {
 	return &LHFormatString{
 		format:     format,

@@ -24,6 +24,7 @@ const (
 	LittleHorse_GetTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetTaskDef"
 	LittleHorse_PutExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutExternalEventDef"
 	LittleHorse_GetExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetExternalEventDef"
+	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
 	LittleHorse_PutWfSpec_FullMethodName               = "/littlehorse.LittleHorse/PutWfSpec"
 	LittleHorse_GetWfSpec_FullMethodName               = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName         = "/littlehorse.LittleHorse/GetLatestWfSpec"
@@ -46,6 +47,7 @@ const (
 	LittleHorse_ListVariables_FullMethodName           = "/littlehorse.LittleHorse/ListVariables"
 	LittleHorse_PutExternalEvent_FullMethodName        = "/littlehorse.LittleHorse/PutExternalEvent"
 	LittleHorse_GetExternalEvent_FullMethodName        = "/littlehorse.LittleHorse/GetExternalEvent"
+	LittleHorse_AwaitWorkflowEvent_FullMethodName      = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
 	LittleHorse_ListExternalEvents_FullMethodName      = "/littlehorse.LittleHorse/ListExternalEvents"
 	LittleHorse_SearchWfRun_FullMethodName             = "/littlehorse.LittleHorse/SearchWfRun"
 	LittleHorse_SearchNodeRun_FullMethodName           = "/littlehorse.LittleHorse/SearchNodeRun"
@@ -89,6 +91,8 @@ type LittleHorseClient interface {
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error)
+	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	// Gets a WfSpec.
@@ -100,7 +104,7 @@ type LittleHorseClient interface {
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
 	// completion.
 	//
-	// As of 0.7.0, this feature is only partially implemented.
+	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -157,6 +161,12 @@ type LittleHorseClient interface {
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+	// is not thrown before the deadline specified by the client.
+	//
+	// To specify the deadline, the client should use GRPC deadlines.
+	AwaitWorkflowEvent(ctx context.Context, in *AwaitWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsRequest, opts ...grpc.CallOption) (*ExternalEventList, error)
 	// Search for WfRun's. This RPC is highly useful for applications that store data
@@ -265,6 +275,15 @@ func (c *littleHorseClient) PutExternalEventDef(ctx context.Context, in *PutExte
 func (c *littleHorseClient) GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error) {
 	out := new(ExternalEventDef)
 	err := c.cc.Invoke(ctx, LittleHorse_GetExternalEventDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error) {
+	out := new(WorkflowEventDef)
+	err := c.cc.Invoke(ctx, LittleHorse_PutWorkflowEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -463,6 +482,15 @@ func (c *littleHorseClient) PutExternalEvent(ctx context.Context, in *PutExterna
 func (c *littleHorseClient) GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error) {
 	out := new(ExternalEvent)
 	err := c.cc.Invoke(ctx, LittleHorse_GetExternalEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) AwaitWorkflowEvent(ctx context.Context, in *AwaitWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEvent, error) {
+	out := new(WorkflowEvent)
+	err := c.cc.Invoke(ctx, LittleHorse_AwaitWorkflowEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -764,6 +792,8 @@ type LittleHorseServer interface {
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error)
+	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
 	// Gets a WfSpec.
@@ -775,7 +805,7 @@ type LittleHorseServer interface {
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
 	// completion.
 	//
-	// As of 0.7.0, this feature is only partially implemented.
+	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
@@ -832,6 +862,12 @@ type LittleHorseServer interface {
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error)
+	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+	// is not thrown before the deadline specified by the client.
+	//
+	// To specify the deadline, the client should use GRPC deadlines.
+	AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error)
 	// Search for WfRun's. This RPC is highly useful for applications that store data
@@ -919,6 +955,9 @@ func (UnimplementedLittleHorseServer) PutExternalEventDef(context.Context, *PutE
 func (UnimplementedLittleHorseServer) GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEventDef not implemented")
 }
+func (UnimplementedLittleHorseServer) PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutWorkflowEventDef not implemented")
+}
 func (UnimplementedLittleHorseServer) PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutWfSpec not implemented")
 }
@@ -984,6 +1023,9 @@ func (UnimplementedLittleHorseServer) PutExternalEvent(context.Context, *PutExte
 }
 func (UnimplementedLittleHorseServer) GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEvent not implemented")
+}
+func (UnimplementedLittleHorseServer) AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AwaitWorkflowEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListExternalEvents not implemented")
@@ -1153,6 +1195,24 @@ func _LittleHorse_GetExternalEventDef_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetExternalEventDef(ctx, req.(*ExternalEventDefId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutWorkflowEventDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutWorkflowEventDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutWorkflowEventDef(ctx, req.(*PutWorkflowEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1549,6 +1609,24 @@ func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetExternalEvent(ctx, req.(*ExternalEventId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_AwaitWorkflowEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AwaitWorkflowEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).AwaitWorkflowEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_AwaitWorkflowEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).AwaitWorkflowEvent(ctx, req.(*AwaitWorkflowEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2107,6 +2185,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_GetExternalEventDef_Handler,
 		},
 		{
+			MethodName: "PutWorkflowEventDef",
+			Handler:    _LittleHorse_PutWorkflowEventDef_Handler,
+		},
+		{
 			MethodName: "PutWfSpec",
 			Handler:    _LittleHorse_PutWfSpec_Handler,
 		},
@@ -2193,6 +2275,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetExternalEvent",
 			Handler:    _LittleHorse_GetExternalEvent_Handler,
+		},
+		{
+			MethodName: "AwaitWorkflowEvent",
+			Handler:    _LittleHorse_AwaitWorkflowEvent_Handler,
 		},
 		{
 			MethodName: "ListExternalEvents",

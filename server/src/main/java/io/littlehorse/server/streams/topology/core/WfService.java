@@ -4,6 +4,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
@@ -69,6 +71,14 @@ public class WfService {
 
     public ExternalEventDefModel getExternalEventDef(String name) {
         return metadataManager.get(new ExternalEventDefIdModel(name));
+    }
+
+    public WorkflowEventDefModel getWorkflowEventDef(String name) {
+        return getWorkflowEventDef(new WorkflowEventDefIdModel(name));
+    }
+
+    public WorkflowEventDefModel getWorkflowEventDef(WorkflowEventDefIdModel id) {
+        return metadataManager.get(id);
     }
 
     public TaskDefModel getTaskDef(String name) {
