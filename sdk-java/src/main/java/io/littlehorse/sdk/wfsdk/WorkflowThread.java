@@ -342,6 +342,14 @@ public interface WorkflowThread {
     void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
 
     /**
+     * EXPERIMENTAL: Makes the active ThreadSpec throw a WorkflowEvent with a specific WorkflowEventDef
+     * and provided content.
+     * @param workflowEventDefName is the name of the WorkflowEvent to throw.
+     * @param content is the content of the WorkflowEvent that is thrown.
+     */
+    void throwEvent(String workflowEventDefName, Serializable content);
+
+    /**
      * Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
      * and creates a Child ThreadRun for each item. The list item is provided as an input variable
      * to the Child ThreadRun with the name `INPUT`.

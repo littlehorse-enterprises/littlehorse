@@ -534,5 +534,20 @@ public interface NodeRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder();
 
+  /**
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return Whether the throwEvent field is set.
+   */
+  boolean hasThrowEvent();
+  /**
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   * @return The throwEvent.
+   */
+  io.littlehorse.sdk.common.proto.ThrowEventNodeRun getThrowEvent();
+  /**
+   * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder getThrowEventOrBuilder();
+
   io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }

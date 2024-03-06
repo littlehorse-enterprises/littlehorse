@@ -10,6 +10,7 @@ include(
 
 [
         'basic',
+        'await-workflow-event',
         'variables',
         'child-thread',
         'child-workflow',
@@ -28,7 +29,8 @@ include(
         'user-tasks',
         'hundred-tasks',
         'spawn-thread-foreach',
-        'shared-variables'
+        'shared-variables',
+        'workflow-events'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

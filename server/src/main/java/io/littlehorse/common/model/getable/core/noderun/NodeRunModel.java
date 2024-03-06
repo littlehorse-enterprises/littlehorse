@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunMod
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -72,6 +73,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private WaitForThreadsRunModel waitThreadsRun;
     private SleepNodeRunModel sleepNodeRun;
     private UserTaskNodeRunModel userTaskRun;
+    private ThrowEventNodeRunModel throwEventNodeRun;
 
     private ExecutionContext executionContext;
 
@@ -137,6 +139,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case START_MULTIPLE_THREADS:
                 startMultipleThreadsRun = LHSerializable.fromProto(
                         proto.getStartMultipleThreads(), StartMultipleThreadsRunModel.class, context);
+                break;
+            case THROW_EVENT:
+                throwEventNodeRun =
+                        LHSerializable.fromProto(proto.getThrowEvent(), ThrowEventNodeRunModel.class, context);
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -221,6 +227,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 break;
             case START_MULTIPLE_THREADS:
                 out.setStartMultipleThreads(startMultipleThreadsRun.toProto());
+                break;
+            case THROW_EVENT:
+                out.setThrowEvent(throwEventNodeRun.toProto());
+                break;
             case NODETYPE_NOT_SET:
         }
 
@@ -264,6 +274,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 return userTaskRun;
             case START_MULTIPLE_THREADS:
                 return startMultipleThreadsRun;
+            case THROW_EVENT:
+                return throwEventNodeRun;
             case NODETYPE_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -304,6 +316,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else if (cls.equals(StartMultipleThreadsRunModel.class)) {
             type = NodeTypeCase.START_MULTIPLE_THREADS;
             startMultipleThreadsRun = (StartMultipleThreadsRunModel) subNodeRun;
+        } else if (cls.equals(ThrowEventNodeRunModel.class)) {
+            type = NodeTypeCase.THROW_EVENT;
+            throwEventNodeRun = (ThrowEventNodeRunModel) subNodeRun;
         } else {
             throw new RuntimeException("Didn't recognize " + subNodeRun.getClass());
         }

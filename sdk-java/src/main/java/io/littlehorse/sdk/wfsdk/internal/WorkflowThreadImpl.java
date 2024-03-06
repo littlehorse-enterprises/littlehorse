@@ -25,6 +25,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -36,6 +37,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -610,6 +612,19 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
+    @Override
+    public void throwEvent(String workflowEventDefName, Serializable content) {
+        checkIfIsActive();
+        ThrowEventNode node = ThrowEventNode.newBuilder()
+                .setEventDefId(WorkflowEventDefId.newBuilder()
+                        .setName(workflowEventDefName)
+                        .build())
+                .setContent(assignVariable(content))
+                .build();
+        addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+    }
+
+    @Override
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
@@ -782,6 +797,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 break;
             case START_MULTIPLE_THREADS:
                 node.setStartMultipleThreads((StartMultipleThreadsNode) subNode);
+                break;
+            case THROW_EVENT:
+                node.setThrowEvent((ThrowEventNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible
