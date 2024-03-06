@@ -8,14 +8,11 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,18 +128,7 @@ public class ReadOnlyGetableManager {
     }
 
     public List<WorkflowEventModel> getWorkflowEvents(WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
-        String startKey = LHUtil.getCompositeId(
-                String.valueOf(GetableClassEnum.WORKFLOW_EVENT.ordinal()), wfRunId.toString(), eventDefId.toString());
-        String endKey = LHUtil.getCompositeId(startKey, "~");
-        final List<WorkflowEventModel> out = new ArrayList<>();
-        try (LHKeyValueIterator<?> iterator = store.range(startKey, endKey, StoredGetable.class)) {
-            while (iterator.hasNext()) {
-                StoredGetable<WorkflowEvent, WorkflowEventModel> storedWorkflowEvent =
-                        (StoredGetable<WorkflowEvent, WorkflowEventModel>)
-                                iterator.next().getValue();
-                out.add(storedWorkflowEvent.getStoredObject());
-            }
-        }
-        return out;
+        String startKey = LHUtil.getCompositeId(wfRunId.toString(), eventDefId.toString());
+        return iterateOverPrefix(startKey, WorkflowEventModel.class);
     }
 }

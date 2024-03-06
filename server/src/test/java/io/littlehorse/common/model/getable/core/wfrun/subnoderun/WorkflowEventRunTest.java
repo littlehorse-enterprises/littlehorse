@@ -120,6 +120,27 @@ public class WorkflowEventRunTest {
         Assertions.assertThat(storedEvent).isNotNull();
     }
 
+    @Test
+    public void shouldIncrementWorkflowEventSequentialUsingCache() throws Exception {
+        WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
+        ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
+        node.setSubNodeRun(eventRun);
+
+        // Throw event the first time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+        // Throw event a second time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+        // Throw event a third time
+        node.arrive(new Date());
+        testProcessorContext.getableManager().put(node);
+
+        WorkflowEventModel storedEvent =
+                testProcessorContext.getableManager().get(new WorkflowEventIdModel(wfRunId, eventDef, 2));
+        Assertions.assertThat(storedEvent).isNotNull();
+    }
+
     private Command buildCommand() {
         StopWfRunRequestModel dummyCommand = new StopWfRunRequestModel();
         dummyCommand.wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
