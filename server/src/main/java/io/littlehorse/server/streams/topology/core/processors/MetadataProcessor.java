@@ -82,7 +82,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 ctx.commit();
             }
         } catch (Exception exn) {
-            exn.printStackTrace();
             log.error("Caught exception processing {} command: {}", command.getType(), exn);
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
