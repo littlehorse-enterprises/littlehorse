@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TaskQueueManagerTest {
 
     private final KafkaStreamsServerImpl mockServer = Mockito.mock();
-    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer);
+    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final ProcessorExecutionContext processorContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);

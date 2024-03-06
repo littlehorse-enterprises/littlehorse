@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
-import io.littlehorse.sdk.common.proto.TaskRunSource;
+import io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
@@ -77,7 +77,7 @@ public class LHLibUtil {
         return mapper.readValue(json, cls);
     }
 
-    public static WfRunId getWfRunId(TaskRunSource taskRunSource) {
+    public static WfRunId getWfRunId(TaskRunSourceOrBuilder taskRunSource) {
         switch (taskRunSource.getTaskRunSourceCase()) {
             case TASK_NODE:
                 return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
