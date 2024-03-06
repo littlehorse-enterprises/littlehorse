@@ -68,8 +68,8 @@ public interface WorkflowEventIdOrBuilder extends
    * time a WorkflowEvent of the same type is thrown by the same WfRun.
    * </pre>
    *
-   * <code>int32 id = 3;</code>
-   * @return The id.
+   * <code>int32 number = 3;</code>
+   * @return The number.
    */
-  int getId();
+  int getNumber();
 }

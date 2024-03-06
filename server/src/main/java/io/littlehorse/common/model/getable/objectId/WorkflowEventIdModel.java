@@ -32,7 +32,7 @@ public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, Workflow
         return WorkflowEventId.newBuilder()
                 .setWfRunId(wfRunId.toProto())
                 .setWorkflowEventDefId(workflowEventDefId.toProto())
-                .setId(id);
+                .setNumber(id);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, Workflow
         this.wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         this.workflowEventDefId =
                 LHSerializable.fromProto(p.getWorkflowEventDefId(), WorkflowEventDefIdModel.class, context);
-        this.id = p.getId();
+        this.id = p.getNumber();
     }
 
     @Override

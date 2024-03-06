@@ -141,7 +141,7 @@ export interface WorkflowEventId {
    * same type thrown by the WfRun. This field starts at zero and is incremented every
    * time a WorkflowEvent of the same type is thrown by the same WfRun.
    */
-  id: number;
+  number: number;
 }
 
 /** ID for a TaskRun. */
@@ -782,7 +782,7 @@ export const NodeRunId = {
 };
 
 function createBaseWorkflowEventId(): WorkflowEventId {
-  return { wfRunId: undefined, workflowEventDefId: undefined, id: 0 };
+  return { wfRunId: undefined, workflowEventDefId: undefined, number: 0 };
 }
 
 export const WorkflowEventId = {
@@ -793,8 +793,8 @@ export const WorkflowEventId = {
     if (message.workflowEventDefId !== undefined) {
       WorkflowEventDefId.encode(message.workflowEventDefId, writer.uint32(18).fork()).ldelim();
     }
-    if (message.id !== 0) {
-      writer.uint32(24).int32(message.id);
+    if (message.number !== 0) {
+      writer.uint32(24).int32(message.number);
     }
     return writer;
   },
@@ -825,7 +825,7 @@ export const WorkflowEventId = {
             break;
           }
 
-          message.id = reader.int32();
+          message.number = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -847,7 +847,7 @@ export const WorkflowEventId = {
     message.workflowEventDefId = (object.workflowEventDefId !== undefined && object.workflowEventDefId !== null)
       ? WorkflowEventDefId.fromPartial(object.workflowEventDefId)
       : undefined;
-    message.id = object.id ?? 0;
+    message.number = object.number ?? 0;
     return message;
   },
 };

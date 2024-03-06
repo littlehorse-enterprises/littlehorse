@@ -127,10 +127,10 @@ message WorkflowEventId {
   // The ID of the WorkflowEventDef that this WorkflowEvent is a member of.
   WorkflowEventDefId workflow_event_def_id = 2;
 
-  // An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+  // A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
   // same type thrown by the WfRun. This field starts at zero and is incremented every
   // time a WorkflowEvent of the same type is thrown by the same WfRun.
-  int32 id = 3;
+  int32 number = 3;
 }
 
 // ID for a TaskRun.

@@ -118,8 +118,8 @@ private static final long serialVersionUID = 0L;
     return workflowEventDefId_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : workflowEventDefId_;
   }
 
-  public static final int ID_FIELD_NUMBER = 3;
-  private int id_ = 0;
+  public static final int NUMBER_FIELD_NUMBER = 3;
+  private int number_ = 0;
   /**
    * <pre>
    * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
@@ -127,12 +127,12 @@ private static final long serialVersionUID = 0L;
    * time a WorkflowEvent of the same type is thrown by the same WfRun.
    * </pre>
    *
-   * <code>int32 id = 3;</code>
-   * @return The id.
+   * <code>int32 number = 3;</code>
+   * @return The number.
    */
   @java.lang.Override
-  public int getId() {
-    return id_;
+  public int getNumber() {
+    return number_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -155,8 +155,8 @@ private static final long serialVersionUID = 0L;
     if (workflowEventDefId_ != null) {
       output.writeMessage(2, getWorkflowEventDefId());
     }
-    if (id_ != 0) {
-      output.writeInt32(3, id_);
+    if (number_ != 0) {
+      output.writeInt32(3, number_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -175,9 +175,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getWorkflowEventDefId());
     }
-    if (id_ != 0) {
+    if (number_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, id_);
+        .computeInt32Size(3, number_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -204,8 +204,8 @@ private static final long serialVersionUID = 0L;
       if (!getWorkflowEventDefId()
           .equals(other.getWorkflowEventDefId())) return false;
     }
-    if (getId()
-        != other.getId()) return false;
+    if (getNumber()
+        != other.getNumber()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -225,8 +225,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WORKFLOW_EVENT_DEF_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWorkflowEventDefId().hashCode();
     }
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId();
+    hash = (37 * hash) + NUMBER_FIELD_NUMBER;
+    hash = (53 * hash) + getNumber();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -372,7 +372,7 @@ private static final long serialVersionUID = 0L;
         workflowEventDefIdBuilder_.dispose();
         workflowEventDefIdBuilder_ = null;
       }
-      id_ = 0;
+      number_ = 0;
       return this;
     }
 
@@ -417,7 +417,7 @@ private static final long serialVersionUID = 0L;
             : workflowEventDefIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.id_ = id_;
+        result.number_ = number_;
       }
     }
 
@@ -471,8 +471,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasWorkflowEventDefId()) {
         mergeWorkflowEventDefId(other.getWorkflowEventDefId());
       }
-      if (other.getId() != 0) {
-        setId(other.getId());
+      if (other.getNumber() != 0) {
+        setNumber(other.getNumber());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -515,7 +515,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 24: {
-              id_ = input.readInt32();
+              number_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
             } // case 24
@@ -846,7 +846,7 @@ private static final long serialVersionUID = 0L;
       return workflowEventDefIdBuilder_;
     }
 
-    private int id_ ;
+    private int number_ ;
     /**
      * <pre>
      * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
@@ -854,12 +854,12 @@ private static final long serialVersionUID = 0L;
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
      *
-     * <code>int32 id = 3;</code>
-     * @return The id.
+     * <code>int32 number = 3;</code>
+     * @return The number.
      */
     @java.lang.Override
-    public int getId() {
-      return id_;
+    public int getNumber() {
+      return number_;
     }
     /**
      * <pre>
@@ -868,13 +868,13 @@ private static final long serialVersionUID = 0L;
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
      *
-     * <code>int32 id = 3;</code>
-     * @param value The id to set.
+     * <code>int32 number = 3;</code>
+     * @param value The number to set.
      * @return This builder for chaining.
      */
-    public Builder setId(int value) {
+    public Builder setNumber(int value) {
 
-      id_ = value;
+      number_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
@@ -886,12 +886,12 @@ private static final long serialVersionUID = 0L;
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
      *
-     * <code>int32 id = 3;</code>
+     * <code>int32 number = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearId() {
+    public Builder clearNumber() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      id_ = 0;
+      number_ = 0;
       onChanged();
       return this;
     }

@@ -87,14 +87,14 @@ class NodeRunId(_message.Message):
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., position: _Optional[int] = ...) -> None: ...
 
 class WorkflowEventId(_message.Message):
-    __slots__ = ["wf_run_id", "workflow_event_def_id", "id"]
+    __slots__ = ["wf_run_id", "workflow_event_def_id", "number"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    ID_FIELD_NUMBER: _ClassVar[int]
+    NUMBER_FIELD_NUMBER: _ClassVar[int]
     wf_run_id: WfRunId
     workflow_event_def_id: WorkflowEventDefId
-    id: int
-    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., workflow_event_def_id: _Optional[_Union[WorkflowEventDefId, _Mapping]] = ..., id: _Optional[int] = ...) -> None: ...
+    number: int
+    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., workflow_event_def_id: _Optional[_Union[WorkflowEventDefId, _Mapping]] = ..., number: _Optional[int] = ...) -> None: ...
 
 class TaskRunId(_message.Message):
     __slots__ = ["wf_run_id", "task_guid"]
