@@ -254,6 +254,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
         this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
+        coreStreams.setStandbyUpdateListener(healthService);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
                 config,

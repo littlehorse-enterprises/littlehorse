@@ -2,6 +2,7 @@ package io.littlehorse.server.monitoring.metrics;
 
 import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.server.monitoring.StandbyMetrics;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -43,7 +44,8 @@ public class PrometheusMetricExporter implements Closeable {
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
-            MetadataCache metadataCache) {
+            MetadataCache metadataCache,
+            StandbyMetrics standbyMetrics) {
 
         this.kafkaStreamsMeters = List.of(
                 new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
@@ -55,6 +57,8 @@ public class PrometheusMetricExporter implements Closeable {
 
         LHCacheMetrics cacheMetrics = new LHCacheMetrics(metadataCache, "metadata");
         cacheMetrics.bindTo(prometheusRegistry);
+
+        standbyMetrics.bindTo(prometheusRegistry);
 
         taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
         taskQueueManagerMetrics.bindTo(prometheusRegistry);
