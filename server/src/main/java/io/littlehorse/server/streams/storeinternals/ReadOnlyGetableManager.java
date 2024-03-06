@@ -4,14 +4,17 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +90,23 @@ public class ReadOnlyGetableManager {
     @Deprecated(forRemoval = true)
     public <T extends StoredGetable<?, ?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return store.range(start, end, cls);
+    }
+
+    /**
+     * Iterate over tags
+     */
+    public LHKeyValueIterator<Tag> tagScan(String start, String end) {
+        return store.range(start, end, Tag.class);
+    }
+
+    /**
+     * Only use this method if you need to retrieve a Storeable
+     * @param storeKey Storeable's storekey
+     * @param cls Storeable's class
+     * @return Null if not found
+     */
+    public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
+        return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
