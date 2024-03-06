@@ -1,5 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Context;
+import io.grpc.Deadline;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHConstants;
@@ -14,6 +16,7 @@ import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
+import java.util.Optional;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -109,5 +112,9 @@ public class RequestExecutionContext implements ExecutionContext {
         }
         return new AuthorizationContextImpl(
                 resolvedPrincipal.getId(), tenantId, currentAcls, resolvedPrincipal.isAdmin());
+    }
+
+    public Optional<Deadline> getDeadlineFromClient() {
+        return Optional.ofNullable(Context.current().getDeadline());
     }
 }

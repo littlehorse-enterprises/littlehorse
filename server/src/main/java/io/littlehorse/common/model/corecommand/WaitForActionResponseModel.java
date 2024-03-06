@@ -8,9 +8,9 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
-public class WaitForCommandResultModel extends LHSerializable<WaitForCommandResponse> {
+public class WaitForActionResponseModel extends LHSerializable<WaitForCommandResponse> {
 
-    public String commandId;
+    public String actionId;
     public Date resultTime;
     public byte[] result;
 
@@ -20,7 +20,7 @@ public class WaitForCommandResultModel extends LHSerializable<WaitForCommandResp
 
     public WaitForCommandResponse.Builder toProto() {
         WaitForCommandResponse.Builder out = WaitForCommandResponse.newBuilder()
-                .setCommandId(commandId)
+                .setCommandId(actionId)
                 .setResult(ByteString.copyFrom(result))
                 .setResultTime(LHUtil.fromDate(resultTime));
         return out;
@@ -29,12 +29,12 @@ public class WaitForCommandResultModel extends LHSerializable<WaitForCommandResp
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         WaitForCommandResponse p = (WaitForCommandResponse) proto;
-        commandId = p.getCommandId();
+        actionId = p.getCommandId();
         resultTime = LHUtil.fromProtoTs(p.getResultTime());
         result = p.getResult().toByteArray();
     }
 
     public String getStoreKey() {
-        return commandId;
+        return actionId;
     }
 }

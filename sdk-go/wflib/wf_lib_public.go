@@ -158,6 +158,10 @@ func (t *WorkflowThread) Condition(
 	return t.condition(lhs, op, rhs)
 }
 
+func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) {
+	t.throwEvent(workflowEventDefName, content)
+}
+
 type IfElseBody func(t *WorkflowThread)
 
 func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {

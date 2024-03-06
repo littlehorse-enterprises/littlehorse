@@ -11,7 +11,7 @@ RUN mkdir /kafka /lh \
     && apt update && apt install -y nodejs \
     && npm i -g pnpm \
     && rm -rf /var/lib/apt/lists/* \
-    && wget -q https://dlcdn.apache.org/kafka/3.4.1/kafka_2.13-3.4.1.tgz -O /tmp/kafka.tgz \
+    && wget -q https://downloads.apache.org/kafka/3.7.0/kafka_2.12-3.7.0.tgz -O /tmp/kafka.tgz \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
     && rm /tmp/kafka.tgz
 

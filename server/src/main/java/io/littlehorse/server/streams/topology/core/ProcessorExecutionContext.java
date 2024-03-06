@@ -5,6 +5,7 @@ import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -21,6 +22,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.apache.kafka.common.header.Headers;
@@ -48,6 +50,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final TenantScopedStore coreStore;
     private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
+
+    private List<WorkflowEventModel> eventsToThrow;
 
     private final KafkaStreamsServerImpl server;
     private GetableUpdates getableUpdates;
@@ -81,6 +85,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
+        this.eventsToThrow = new ArrayList<>();
     }
 
     /**
@@ -142,6 +147,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (metricsAggregator != null) {
             metricsAggregator.maybePersistState();
         }
+        for (WorkflowEventModel event : eventsToThrow) {
+            server.onEventThrown(event);
+        }
     }
 
     public CommandModel currentCommand() {
@@ -187,5 +195,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     private ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore() {
         return processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
+    }
+
+    public void notifyOfEventThrown(WorkflowEventModel event) {
+        this.eventsToThrow.add(event);
     }
 }

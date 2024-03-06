@@ -2,7 +2,15 @@
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventDefId, ExternalEventId, NodeRunId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
+import {
+  ExternalEventDefId,
+  ExternalEventId,
+  NodeRunId,
+  TaskRunId,
+  UserTaskRunId,
+  WfSpecId,
+  WorkflowEventId,
+} from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -89,6 +97,7 @@ export interface NodeRun {
    * child ThreadRun for each element in the list.
    */
   startMultipleThreads?: StartMultipleThreadsRun | undefined;
+  throwEvent?: ThrowEventNodeRun | undefined;
 }
 
 /** The sub-node structure for a TASK NodeRun. */
@@ -98,6 +107,10 @@ export interface TaskNodeRun {
    * at this TASK Node, then the task_run_id will be unset.
    */
   taskRunId?: TaskRunId | undefined;
+}
+
+export interface ThrowEventNodeRun {
+  workflowEventId: WorkflowEventId | undefined;
 }
 
 /** The sub-node structure for a USER_TASK NodeRun. */
@@ -142,6 +155,8 @@ export interface StartThreadRun {
 export interface StartMultipleThreadsRun {
   /** The thread_spec_name of the child thread_runs. */
   threadSpecName: string;
+  /** The list of all created child ThreadRun's */
+  childThreadIds: number[];
 }
 
 /** The sub-node structure for a WAIT_FOR_THREADS NodeRun. */
@@ -247,13 +262,25 @@ export interface ExternalEventRun {
     | string
     | undefined;
   /** The ExternalEventId of the ExternalEvent. Unset if still waiting. */
-  externalEventId?: ExternalEventId | undefined;
+  externalEventId?:
+    | ExternalEventId
+    | undefined;
+  /** Whether we had a timeout while waiting for the ExternalEvent to come. */
+  timedOut: boolean;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
 export interface SleepNodeRun {
-  /** The time at which the NodeRun will wake up. */
-  maturationTime: string | undefined;
+  /**
+   * The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+   * the LH Server is back-pressuring clients due to extreme load, the timer
+   * event which marks the sleep node as "matured" may come in slightly late.
+   */
+  maturationTime:
+    | string
+    | undefined;
+  /** Whether the SleepNodeRun has been matured. */
+  matured: boolean;
 }
 
 /**
@@ -283,6 +310,11 @@ export interface Failure {
     | undefined;
   /** A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. */
   wasProperlyHandled: boolean;
+  /**
+   * If there is a defined failure handler for the NodeRun, then this field is set to the
+   * id of the failure handler thread run.
+   */
+  failureHandlerThreadrunId?: number | undefined;
 }
 
 function createBaseNodeRun(): NodeRun {
@@ -306,6 +338,7 @@ function createBaseNodeRun(): NodeRun {
     sleep: undefined,
     userTask: undefined,
     startMultipleThreads: undefined,
+    throwEvent: undefined,
   };
 }
 
@@ -369,6 +402,9 @@ export const NodeRun = {
     }
     if (message.startMultipleThreads !== undefined) {
       StartMultipleThreadsRun.encode(message.startMultipleThreads, writer.uint32(170).fork()).ldelim();
+    }
+    if (message.throwEvent !== undefined) {
+      ThrowEventNodeRun.encode(message.throwEvent, writer.uint32(178).fork()).ldelim();
     }
     return writer;
   },
@@ -523,6 +559,13 @@ export const NodeRun = {
 
           message.startMultipleThreads = StartMultipleThreadsRun.decode(reader, reader.uint32());
           continue;
+        case 22:
+          if (tag !== 178) {
+            break;
+          }
+
+          message.throwEvent = ThrowEventNodeRun.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -574,6 +617,9 @@ export const NodeRun = {
     message.startMultipleThreads = (object.startMultipleThreads !== undefined && object.startMultipleThreads !== null)
       ? StartMultipleThreadsRun.fromPartial(object.startMultipleThreads)
       : undefined;
+    message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
+      ? ThrowEventNodeRun.fromPartial(object.throwEvent)
+      : undefined;
     return message;
   },
 };
@@ -620,6 +666,53 @@ export const TaskNodeRun = {
     const message = createBaseTaskNodeRun();
     message.taskRunId = (object.taskRunId !== undefined && object.taskRunId !== null)
       ? TaskRunId.fromPartial(object.taskRunId)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseThrowEventNodeRun(): ThrowEventNodeRun {
+  return { workflowEventId: undefined };
+}
+
+export const ThrowEventNodeRun = {
+  encode(message: ThrowEventNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.workflowEventId !== undefined) {
+      WorkflowEventId.encode(message.workflowEventId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThrowEventNodeRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThrowEventNodeRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.workflowEventId = WorkflowEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ThrowEventNodeRun>): ThrowEventNodeRun {
+    return ThrowEventNodeRun.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ThrowEventNodeRun>): ThrowEventNodeRun {
+    const message = createBaseThrowEventNodeRun();
+    message.workflowEventId = (object.workflowEventId !== undefined && object.workflowEventId !== null)
+      ? WorkflowEventId.fromPartial(object.workflowEventId)
       : undefined;
     return message;
   },
@@ -797,7 +890,7 @@ export const StartThreadRun = {
 };
 
 function createBaseStartMultipleThreadsRun(): StartMultipleThreadsRun {
-  return { threadSpecName: "" };
+  return { threadSpecName: "", childThreadIds: [] };
 }
 
 export const StartMultipleThreadsRun = {
@@ -805,6 +898,11 @@ export const StartMultipleThreadsRun = {
     if (message.threadSpecName !== "") {
       writer.uint32(10).string(message.threadSpecName);
     }
+    writer.uint32(18).fork();
+    for (const v of message.childThreadIds) {
+      writer.int32(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -822,6 +920,23 @@ export const StartMultipleThreadsRun = {
 
           message.threadSpecName = reader.string();
           continue;
+        case 2:
+          if (tag === 16) {
+            message.childThreadIds.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 18) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.childThreadIds.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -837,6 +952,7 @@ export const StartMultipleThreadsRun = {
   fromPartial(object: DeepPartial<StartMultipleThreadsRun>): StartMultipleThreadsRun {
     const message = createBaseStartMultipleThreadsRun();
     message.threadSpecName = object.threadSpecName ?? "";
+    message.childThreadIds = object.childThreadIds?.map((e) => e) || [];
     return message;
   },
 };
@@ -982,7 +1098,7 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventRun(): ExternalEventRun {
-  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined };
+  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
 }
 
 export const ExternalEventRun = {
@@ -995,6 +1111,9 @@ export const ExternalEventRun = {
     }
     if (message.externalEventId !== undefined) {
       ExternalEventId.encode(message.externalEventId, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.timedOut === true) {
+      writer.uint32(32).bool(message.timedOut);
     }
     return writer;
   },
@@ -1027,6 +1146,13 @@ export const ExternalEventRun = {
 
           message.externalEventId = ExternalEventId.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.timedOut = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1048,18 +1174,22 @@ export const ExternalEventRun = {
     message.externalEventId = (object.externalEventId !== undefined && object.externalEventId !== null)
       ? ExternalEventId.fromPartial(object.externalEventId)
       : undefined;
+    message.timedOut = object.timedOut ?? false;
     return message;
   },
 };
 
 function createBaseSleepNodeRun(): SleepNodeRun {
-  return { maturationTime: undefined };
+  return { maturationTime: undefined, matured: false };
 }
 
 export const SleepNodeRun = {
   encode(message: SleepNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.maturationTime !== undefined) {
       Timestamp.encode(toTimestamp(message.maturationTime), writer.uint32(10).fork()).ldelim();
+    }
+    if (message.matured === true) {
+      writer.uint32(16).bool(message.matured);
     }
     return writer;
   },
@@ -1078,6 +1208,13 @@ export const SleepNodeRun = {
 
           message.maturationTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.matured = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1093,12 +1230,19 @@ export const SleepNodeRun = {
   fromPartial(object: DeepPartial<SleepNodeRun>): SleepNodeRun {
     const message = createBaseSleepNodeRun();
     message.maturationTime = object.maturationTime ?? undefined;
+    message.matured = object.matured ?? false;
     return message;
   },
 };
 
 function createBaseFailure(): Failure {
-  return { failureName: "", message: "", content: undefined, wasProperlyHandled: false };
+  return {
+    failureName: "",
+    message: "",
+    content: undefined,
+    wasProperlyHandled: false,
+    failureHandlerThreadrunId: undefined,
+  };
 }
 
 export const Failure = {
@@ -1114,6 +1258,9 @@ export const Failure = {
     }
     if (message.wasProperlyHandled === true) {
       writer.uint32(32).bool(message.wasProperlyHandled);
+    }
+    if (message.failureHandlerThreadrunId !== undefined) {
+      writer.uint32(40).int32(message.failureHandlerThreadrunId);
     }
     return writer;
   },
@@ -1153,6 +1300,13 @@ export const Failure = {
 
           message.wasProperlyHandled = reader.bool();
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.failureHandlerThreadrunId = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1173,6 +1327,7 @@ export const Failure = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.wasProperlyHandled = object.wasProperlyHandled ?? false;
+    message.failureHandlerThreadrunId = object.failureHandlerThreadrunId ?? undefined;
     return message;
   },
 };
