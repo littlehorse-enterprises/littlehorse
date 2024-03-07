@@ -270,3 +270,14 @@ func (t *WorkflowThread) HandleAnyFailure(
 ) {
 	t.handleAnyFailure(nodeOutput, handler)
 }
+
+func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	notesVar, err := u.thread.assignVariable(notes)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.Notes = notesVar
+	return u
+}
