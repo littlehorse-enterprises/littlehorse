@@ -4,10 +4,17 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +77,7 @@ public class ReadOnlyGetableManager {
     protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
             String prefix, Class<T> cls) {
 
-        List<GetableToStore<U, T>> out = iterateOverPrefix(prefix, cls);
+        List<GetableToStore<U, T>> out = iterateOverPrefixInternal(prefix, cls);
 
         // put everything in the buffer.
         for (GetableToStore<U, T> thing : out) {
@@ -80,13 +87,31 @@ public class ReadOnlyGetableManager {
         return out;
     }
 
+    @Deprecated(forRemoval = true)
     public <T extends StoredGetable<?, ?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return store.range(start, end, cls);
     }
 
+    /**
+     * Iterate over tags
+     */
+    public LHKeyValueIterator<Tag> tagScan(String start, String end) {
+        return store.range(start, end, Tag.class);
+    }
+
+    /**
+     * Only use this method if you need to retrieve a Storeable
+     * @param storeKey Storeable's storekey
+     * @param cls Storeable's class
+     * @return Null if not found
+     */
+    public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
+        return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
+    }
+
     // Note that this is an expensive operation. It's used by External Event Nodes.
     @SuppressWarnings("unchecked")
-    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
+    private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixInternal(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();
 
@@ -114,5 +139,16 @@ public class ReadOnlyGetableManager {
                 .map(Map.Entry::getValue)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public <U extends Message, T extends CoreGetable<U>> List<T> iterateOverPrefix(String prefix, Class<T> cls) {
+        return iterateOverPrefixInternal(prefix, cls).stream()
+                .map(getableToStore -> getableToStore.getObjectToStore())
+                .toList();
+    }
+
+    public List<WorkflowEventModel> getWorkflowEvents(WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
+        String startKey = LHUtil.getCompositeId(wfRunId.toString(), eventDefId.toString());
+        return iterateOverPrefix(startKey, WorkflowEventModel.class);
     }
 }

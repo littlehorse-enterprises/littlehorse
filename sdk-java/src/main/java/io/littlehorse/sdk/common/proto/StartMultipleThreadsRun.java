@@ -24,6 +24,7 @@ private static final long serialVersionUID = 0L;
   }
   private StartMultipleThreadsRun() {
     threadSpecName_ = "";
+    childThreadIds_ = emptyIntList();
   }
 
   @java.lang.Override
@@ -93,6 +94,47 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int CHILD_THREAD_IDS_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.Internal.IntList childThreadIds_;
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @return A list containing the childThreadIds.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getChildThreadIdsList() {
+    return childThreadIds_;
+  }
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @return The count of childThreadIds.
+   */
+  public int getChildThreadIdsCount() {
+    return childThreadIds_.size();
+  }
+  /**
+   * <pre>
+   * The list of all created child ThreadRun's
+   * </pre>
+   *
+   * <code>repeated int32 child_thread_ids = 2;</code>
+   * @param index The index of the element to return.
+   * @return The childThreadIds at the given index.
+   */
+  public int getChildThreadIds(int index) {
+    return childThreadIds_.getInt(index);
+  }
+  private int childThreadIdsMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -107,8 +149,16 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(threadSpecName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, threadSpecName_);
+    }
+    if (getChildThreadIdsList().size() > 0) {
+      output.writeUInt32NoTag(18);
+      output.writeUInt32NoTag(childThreadIdsMemoizedSerializedSize);
+    }
+    for (int i = 0; i < childThreadIds_.size(); i++) {
+      output.writeInt32NoTag(childThreadIds_.getInt(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -121,6 +171,20 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(threadSpecName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, threadSpecName_);
+    }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < childThreadIds_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(childThreadIds_.getInt(i));
+      }
+      size += dataSize;
+      if (!getChildThreadIdsList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      childThreadIdsMemoizedSerializedSize = dataSize;
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -139,6 +203,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadSpecName()
         .equals(other.getThreadSpecName())) return false;
+    if (!getChildThreadIdsList()
+        .equals(other.getChildThreadIdsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -152,6 +218,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + THREAD_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getThreadSpecName().hashCode();
+    if (getChildThreadIdsCount() > 0) {
+      hash = (37 * hash) + CHILD_THREAD_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getChildThreadIdsList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -291,6 +361,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       threadSpecName_ = "";
+      childThreadIds_ = emptyIntList();
       return this;
     }
 
@@ -317,9 +388,18 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.StartMultipleThreadsRun buildPartial() {
       io.littlehorse.sdk.common.proto.StartMultipleThreadsRun result = new io.littlehorse.sdk.common.proto.StartMultipleThreadsRun(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.StartMultipleThreadsRun result) {
+      if (((bitField0_ & 0x00000002) != 0)) {
+        childThreadIds_.makeImmutable();
+        bitField0_ = (bitField0_ & ~0x00000002);
+      }
+      result.childThreadIds_ = childThreadIds_;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.StartMultipleThreadsRun result) {
@@ -378,6 +458,16 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (!other.childThreadIds_.isEmpty()) {
+        if (childThreadIds_.isEmpty()) {
+          childThreadIds_ = other.childThreadIds_;
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          ensureChildThreadIdsIsMutable();
+          childThreadIds_.addAll(other.childThreadIds_);
+        }
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -409,6 +499,22 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              int v = input.readInt32();
+              ensureChildThreadIdsIsMutable();
+              childThreadIds_.addInt(v);
+              break;
+            } // case 16
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureChildThreadIdsIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                childThreadIds_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -514,6 +620,115 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       threadSpecName_ = value;
       bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Internal.IntList childThreadIds_ = emptyIntList();
+    private void ensureChildThreadIdsIsMutable() {
+      if (!((bitField0_ & 0x00000002) != 0)) {
+        childThreadIds_ = mutableCopy(childThreadIds_);
+        bitField0_ |= 0x00000002;
+      }
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @return A list containing the childThreadIds.
+     */
+    public java.util.List<java.lang.Integer>
+        getChildThreadIdsList() {
+      return ((bitField0_ & 0x00000002) != 0) ?
+               java.util.Collections.unmodifiableList(childThreadIds_) : childThreadIds_;
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @return The count of childThreadIds.
+     */
+    public int getChildThreadIdsCount() {
+      return childThreadIds_.size();
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @param index The index of the element to return.
+     * @return The childThreadIds at the given index.
+     */
+    public int getChildThreadIds(int index) {
+      return childThreadIds_.getInt(index);
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @param index The index to set the value at.
+     * @param value The childThreadIds to set.
+     * @return This builder for chaining.
+     */
+    public Builder setChildThreadIds(
+        int index, int value) {
+
+      ensureChildThreadIdsIsMutable();
+      childThreadIds_.setInt(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @param value The childThreadIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addChildThreadIds(int value) {
+
+      ensureChildThreadIdsIsMutable();
+      childThreadIds_.addInt(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @param values The childThreadIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllChildThreadIds(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureChildThreadIdsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, childThreadIds_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The list of all created child ThreadRun's
+     * </pre>
+     *
+     * <code>repeated int32 child_thread_ids = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearChildThreadIds() {
+      childThreadIds_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }

@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Metronome {
 
+    public static final String RUN_WF_LATENCY_METRIC_NAME = "run_wf_latency";
     private final MetricsEmitter emitter;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
@@ -51,17 +52,16 @@ public class Metronome {
         this.serverVersion = serverVersion;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        Shutdown.addShutdownHook("Metronome: Main Executor Thread", () -> {
-            mainExecutor.shutdownNow();
-            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        });
+        Shutdown.addShutdownHook("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency, TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
-        Shutdown.addShutdownHook("Metronome: Request Executor Thread", () -> {
-            requestsExecutor.shutdownNow();
-            requestsExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        });
+        Shutdown.addShutdownHook("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
+    }
+
+    private void closeExecutor(final ExecutorService executor) throws InterruptedException {
+        executor.shutdownNow();
+        executor.awaitTermination(1, TimeUnit.SECONDS);
     }
 
     private void executeRun() {
@@ -86,7 +86,7 @@ public class Metronome {
                 .setServerHost(serverHost)
                 .setServerPort(serverPort)
                 .setServerVersion(serverVersion)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName("run_wf_latency"))
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(RUN_WF_LATENCY_METRIC_NAME))
                 .build();
 
         final Beat beat = Beat.newBuilder()

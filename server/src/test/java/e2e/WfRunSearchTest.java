@@ -61,18 +61,24 @@ public class WfRunSearchTest {
                         .setWfSpecName("complex-workflow")
                         .setStatus(COMPLETED)
                         .build();
-        workflowVerifier
+        WfRunId id = workflowVerifier
                 .prepareRun(complexWorkflow)
                 .waitForStatus(RUNNING)
                 .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusRunning)
-                .thenSendExternalEventJsonContent("external-event", "{}")
+                .thenSendExternalEventWithContent("external-event", "{}")
                 .waitForStatus(COMPLETED)
                 .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByNameAndStatusCompleted)
                 .start();
         WfRunIdList runningWorkflowIds = wfRunIdListCaptor.getValue().get();
         WfRunIdList completedWorkflowIds = wfRunIdListCaptor.getValue().get();
-        Assertions.assertThat(completedWorkflowIds.getResultsList()).hasSize(1);
-        Assertions.assertThat(runningWorkflowIds.getResultsList()).hasSize(1);
+        Assertions.assertThat(completedWorkflowIds.getResultsList().stream()
+                        .filter(foundId -> foundId.getId().equals(id.getId()))
+                        .toList())
+                .hasSize(1);
+        Assertions.assertThat(runningWorkflowIds.getResultsList().stream()
+                        .filter(foundId -> foundId.getId().equals(id.getId()))
+                        .toList())
+                .hasSize(1);
     }
 
     @Test

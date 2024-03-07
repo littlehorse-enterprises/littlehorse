@@ -243,6 +243,37 @@ func (t *WorkflowThread) scheduleReminderTask(
 	)
 }
 
+func (t *WorkflowThread) scheduleReminderTaskOnAssignment(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaTask := model.UTActionTrigger_Task{
+		Task: &model.UTActionTrigger_UTATask{
+			Task: t.createTaskNode(taskDefName, args),
+		},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaTask,
+			Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+
 func (t *WorkflowThread) assignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
@@ -903,6 +934,24 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 		nodeName: nodeName,
 		jsonPath: nil,
 		thread:   t,
+	}
+}
+
+func (t * WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
+	t.checkIfIsActive()
+	_, node := t.createBlankNode("throw-" + workflowEventDefName, "THROW_EVENT")
+
+	contentAssn, err := t.assignVariable(content)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+	node.Node = &model.Node_ThrowEvent{
+		ThrowEvent: &model.ThrowEventNode{
+			EventDefId: &model.WorkflowEventDefId{
+				Name: workflowEventDefName,
+			},
+			Content: contentAssn,
+		},
 	}
 }
 

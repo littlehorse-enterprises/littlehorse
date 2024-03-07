@@ -40,6 +40,8 @@ enum GetableClassEnum {
     USER_TASK_RUN = 12;
     PRINCIPAL = 13;
     TENANT = 14;
+    WORKFLOW_EVENT_DEF = 15;
+    WORKFLOW_EVENT = 16;
 }
 
 message AttributePb {

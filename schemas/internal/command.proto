@@ -60,6 +60,7 @@ message MetadataCommand {
         PutPrincipalRequest put_principal = 12;
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
+        PutWorkflowEventDefRequest workflow_event_def = 15;
         // TODO: DeleteTenant
     }
 }
@@ -194,6 +195,7 @@ message DeadlineReassignUserTask {
     optional VariableAssignment new_user_id = 1;
     optional VariableAssignment new_user_group = 2;
     UserTaskRunId user_task = 4;
+    int64 epoch = 5;
 }
 
 

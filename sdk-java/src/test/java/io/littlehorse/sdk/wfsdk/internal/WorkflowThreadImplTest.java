@@ -394,4 +394,27 @@ public class WorkflowThreadImplTest {
         assertThat(wftn.getThreadsToWaitForCase()).isEqualTo(ThreadsToWaitForCase.THREAD_LIST);
         assertThat(wftn.getThreadList().getVariableName()).isEqualTo("1-child-START_MULTIPLE_THREADS");
     }
+
+    @Test
+    void testThrowEventNode() {
+        Workflow workflow = new WorkflowImpl("throw-event-wf", wf -> {
+            WfRunVariable var = wf.addVariable("my-var", VariableType.STR);
+            wf.throwEvent("my-event", var);
+            wf.throwEvent("another-event", "some-content");
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(1);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        assertThat(entrypoint.getNodesCount()).isEqualTo(4);
+
+        Node firstThrow = entrypoint.getNodesOrThrow("1-throw-my-event-THROW_EVENT");
+        assertThat(firstThrow.getThrowEvent().getEventDefId().getName()).isEqualTo("my-event");
+        assertThat(firstThrow.getThrowEvent().getContent().getVariableName()).isEqualTo("my-var");
+
+        Node secondThrow = entrypoint.getNodesOrThrow("2-throw-another-event-THROW_EVENT");
+        assertThat(secondThrow.getThrowEvent().getEventDefId().getName()).isEqualTo("another-event");
+        assertThat(secondThrow.getThrowEvent().getContent().getLiteralValue().getStr())
+                .isEqualTo("some-content");
+    }
 }

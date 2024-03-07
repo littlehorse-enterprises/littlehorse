@@ -48,6 +48,8 @@ public class UserTasksExample {
             userId,
             "testGroup"
         );
+        wf.releaseToGroupOnDeadline(formOutput, 60);
+
 
         wf.handleException(
             formOutput,

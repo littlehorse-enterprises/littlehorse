@@ -8,6 +8,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableDef,
     VariableMutation,
     VariableMutationType,
+    UTActionTrigger,
 )
 from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
@@ -1762,6 +1763,56 @@ class TestUserTasks(unittest.TestCase):
         reassign = action.reassign
         self.assertEqual(reassign.user_group.literal_value.str, "my-group")
 
+    def test_reminder_task(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.schedule_reminder_task(uto, 60, "my-reminder-task", "my-arg")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.hook, UTActionTrigger.ON_ARRIVAL)
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertTrue(action.HasField("task"))
+        reminder_task = action.task
+        self.assertEqual(reminder_task.task.task_def_id.name, "my-reminder-task")
+
+    def test_reminder_task_on_assignment(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.schedule_reminder_task_on_assignment(
+                uto, 60, "my-reminder-task", "my-arg"
+            )
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.hook, UTActionTrigger.ON_TASK_ASSIGNED)
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertTrue(action.HasField("task"))
+        reminder_task = action.task
+        self.assertEqual(reminder_task.task.task_def_id.name, "my-reminder-task")
+
     def test_reassign_to_user_str(self):
         def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
@@ -1907,6 +1958,30 @@ class FormatStringTest(unittest.TestCase):
         self.assertEqual(len(fstr.args), 2)
         self.assertEqual(fstr.args[0].variable_name, "my-str")
         self.assertEqual(fstr.args[1].variable_name, "my-str-2")
+
+
+class ThrowEventNodeTest(unittest.TestCase):
+    def test_throw_event_node(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            var = wf.add_variable("my-var", VariableType.STR)
+            wf.throw_event("my-event", var)
+            wf.throw_event("another-event", "some-content")
+
+        wf_spec = Workflow("throw-event-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        self.assertEqual(len(entrypoint.nodes), 4)
+
+        first_throw = entrypoint.nodes["1-throw-my-event-THROW_EVENT"]
+        self.assertEqual(first_throw.throw_event.event_def_id.name, "my-event")
+        self.assertEqual(first_throw.throw_event.content.variable_name, "my-var")
+
+        second_throw = entrypoint.nodes["2-throw-another-event-THROW_EVENT"]
+        self.assertEqual(second_throw.throw_event.event_def_id.name, "another-event")
+        self.assertEqual(
+            second_throw.throw_event.content.literal_value.str, "some-content"
+        )
 
 
 if __name__ == "__main__":

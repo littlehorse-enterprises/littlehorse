@@ -352,4 +352,16 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
    */
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
+
+  /**
+   * <pre>
+   * Current observed epoch of the UserTaskRun, related to the number of times it has been
+   * updated or re-assigned. Used internally to implement automated reassignment and reminder
+   * tasks.
+   * </pre>
+   *
+   * <code>int32 epoch = 12;</code>
+   * @return The epoch.
+   */
+  int getEpoch();
 }

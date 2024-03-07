@@ -13,6 +13,8 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
@@ -25,6 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,7 +80,8 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     public Principal process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
         PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
-
+        PrincipalModel requester =
+                context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
         if (oldPrincipal != null) {
@@ -96,7 +102,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         if (perTenantAcls.isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
         }
-
+        ensureThatIsAllowedToWriteInRequestedTenants(requester);
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
             ServerACLsModel acls = perTenantAcl.getValue();
@@ -113,6 +119,26 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         metadataManager.put(toSave);
         return toSave.toProto().build();
+    }
+
+    /**
+     * Validates whether the specified Principal is authorized to write to the requested tenants.
+     * @param requester principal that is executing the request
+     */
+    private void ensureThatIsAllowedToWriteInRequestedTenants(PrincipalModel requester) {
+        boolean allowsGlobalPrincipalCreation =
+                requester.getGlobalAcls().allows(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
+        if (!requester.isAdmin() && !allowsGlobalPrincipalCreation) {
+            Set<String> unauthorizedTenants = perTenantAcls.keySet().stream()
+                    .filter(Predicate.not(
+                            tenantId -> requester.getPerTenantAcls().containsKey(tenantId)))
+                    .collect(Collectors.toSet());
+            if (!unauthorizedTenants.isEmpty()) {
+                throw new LHApiException(
+                        Status.UNAUTHENTICATED,
+                        "You are not allowed to write over the tenant %s".formatted(unauthorizedTenants));
+            }
+        }
     }
 
     private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataCommandExecution context) {

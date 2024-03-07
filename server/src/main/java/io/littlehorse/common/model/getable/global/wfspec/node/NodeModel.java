@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeM
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartMultipleThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartThreadNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ThrowEventNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -24,6 +26,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +48,7 @@ public class NodeModel extends LHSerializable<Node> {
     public SleepNodeModel sleepNode;
     public UserTaskNodeModel userTaskNode;
     private StartMultipleThreadsNodeModel startMultipleThreadsNode;
-
+    private ThrowEventNodeModel throwEventNode;
     public List<FailureHandlerDefModel> failureHandlers;
 
     public Class<Node> getProtoBaseClass() {
@@ -94,6 +97,9 @@ public class NodeModel extends LHSerializable<Node> {
             case USER_TASK:
                 out.setUserTask(userTaskNode.toProto());
                 break;
+            case THROW_EVENT:
+                out.setThrowEvent(throwEventNode.toProto());
+                break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -108,7 +114,7 @@ public class NodeModel extends LHSerializable<Node> {
 
         for (Edge epb : proto.getOutgoingEdgesList()) {
             EdgeModel edge = EdgeModel.fromProto(epb, context);
-            edge.threadSpecModel = threadSpecModel;
+            edge.setThreadSpecModel(threadSpec);
             outgoingEdges.add(edge);
         }
 
@@ -155,8 +161,11 @@ public class NodeModel extends LHSerializable<Node> {
                 startMultipleThreadsNode = LHSerializable.fromProto(
                         proto.getStartMultipleThreads(), StartMultipleThreadsNodeModel.class, context);
                 break;
+            case THROW_EVENT:
+                throwEventNode = LHSerializable.fromProto(proto.getThrowEvent(), ThrowEventNodeModel.class, context);
+                break;
             case NODE_NOT_SET:
-                throw new RuntimeException("Node " + name + " on thread " + threadSpecModel.name + " is unset!");
+                throw new RuntimeException("Node " + name + " on thread " + threadSpec.name + " is unset!");
         }
         getSubNode().setNode(this);
     }
@@ -171,34 +180,43 @@ public class NodeModel extends LHSerializable<Node> {
     public List<EdgeModel> outgoingEdges;
     public String name;
 
-    public ThreadSpecModel threadSpecModel;
+    public ThreadSpecModel threadSpec;
+
+    public Optional<FailureHandlerDefModel> getHandlerFor(FailureModel failure) {
+        for (FailureHandlerDefModel handler : failureHandlers) {
+            if (handler.doesHandle(failure.getFailureName())) {
+                return Optional.of(handler);
+            }
+        }
+        return Optional.empty();
+    }
 
     public void validate() throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
-            if (e.sinkNodeName.equals(name)) {
+            if (e.getSinkNodeName().equals(name)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
             }
 
-            NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
+            NodeModel sink = threadSpec.nodes.get(e.getSinkNodeName());
             if (sink == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
+                        String.format("Outgoing edge referring to missing node %s!", e.getSinkNodeName()));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        String.format("Entrypoint node has incoming edge from node %s.", threadSpecModel.name, name));
+                        String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, name));
             }
-            if (e.condition != null) {
-                e.condition.validate();
+            if (e.getCondition() != null) {
+                e.getCondition().validate();
             }
         }
 
         if (!outgoingEdges.isEmpty()) {
             EdgeModel last = outgoingEdges.get(outgoingEdges.size() - 1);
-            if (last.condition != null) {
+            if (last.getCondition() != null) {
                 // throw new LHValidationError(
                 // null,
                 // "Last outgoing edge has non-null condition!"
@@ -237,6 +255,8 @@ public class NodeModel extends LHSerializable<Node> {
                 return userTaskNode;
             case START_MULTIPLE_THREADS:
                 return startMultipleThreadsNode;
+            case THROW_EVENT:
+                return throwEventNode;
             case NODE_NOT_SET:
         }
         throw new RuntimeException("incomplete switch statement");

@@ -79,6 +79,8 @@ message NodeRun {
     // A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
     // child ThreadRun for each element in the list.
     StartMultipleThreadsRun start_multiple_threads = 21;
+
+    ThrowEventNodeRun throw_event = 22;
   }
 }
 
@@ -87,6 +89,10 @@ message TaskNodeRun {
   // The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived
   // at this TASK Node, then the task_run_id will be unset.
   optional TaskRunId task_run_id = 1;
+}
+
+message ThrowEventNodeRun {
+  WorkflowEventId workflow_event_id = 1;
 }
 
 // The sub-node structure for a USER_TASK NodeRun.
@@ -122,6 +128,9 @@ message StartThreadRun {
 message StartMultipleThreadsRun {
   // The thread_spec_name of the child thread_runs.
   string thread_spec_name = 1;
+
+  // The list of all created child ThreadRun's
+  repeated int32 child_thread_ids = 2;
 }
 
 // The sub-node structure for a WAIT_FOR_THREADS NodeRun.
@@ -181,12 +190,20 @@ message ExternalEventRun {
 
   // The ExternalEventId of the ExternalEvent. Unset if still waiting.
   optional ExternalEventId external_event_id = 3;
+
+  // Whether we had a timeout while waiting for the ExternalEvent to come.
+  bool timed_out = 4;
 }
 
 // The sub-node structure for a SLEEP NodeRun.
 message SleepNodeRun {
-  // The time at which the NodeRun will wake up.
+  // The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if
+  // the LH Server is back-pressuring clients due to extreme load, the timer
+  // event which marks the sleep node as "matured" may come in slightly late.
   google.protobuf.Timestamp maturation_time = 1;
+
+  // Whether the SleepNodeRun has been matured.
+  bool matured = 2;
 }
 
 // Denotes a failure that happened during execution of a NodeRun or the outgoing
@@ -211,4 +228,8 @@ message Failure {
 
   // A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure.
   bool was_properly_handled = 4;
+
+  // If there is a defined failure handler for the NodeRun, then this field is set to the
+  // id of the failure handler thread run.
+  optional int32 failure_handler_threadrun_id = 5;
 }

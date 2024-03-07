@@ -25,7 +25,7 @@ public abstract class AbstractStep implements Step {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             printWfRun(context.getWfRunId(), lhClient);
-            this.handleException(throwable);
+            this.handleException(throwable, context.getWfRunId());
         }
     }
 
@@ -34,8 +34,8 @@ public abstract class AbstractStep implements Step {
         logger.debug(LHLibUtil.protoToJson(wfRun));
     }
 
-    protected void handleException(Throwable ex) throws LHTestException {
-        throw new StepExecutionException(id, ex);
+    protected void handleException(Throwable ex, WfRunId wfRunId) throws LHTestException {
+        throw new StepExecutionException(id, wfRunId, ex);
     }
 
     abstract void tryExecute(TestExecutionContext context, LittleHorseBlockingStub lhClient);

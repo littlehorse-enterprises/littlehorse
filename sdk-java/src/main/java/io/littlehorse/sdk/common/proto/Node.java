@@ -56,6 +56,7 @@ private static final long serialVersionUID = 0L;
     SLEEP(12),
     USER_TASK(13),
     START_MULTIPLE_THREADS(15),
+    THROW_EVENT(16),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -83,6 +84,7 @@ private static final long serialVersionUID = 0L;
         case 12: return SLEEP;
         case 13: return USER_TASK;
         case 15: return START_MULTIPLE_THREADS;
+        case 16: return THROW_EVENT;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -490,6 +492,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartMultipleThreadsNode.getDefaultInstance();
   }
 
+  public static final int THROW_EVENT_FIELD_NUMBER = 16;
+  /**
+   * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+   * @return Whether the throwEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasThrowEvent() {
+    return nodeCase_ == 16;
+  }
+  /**
+   * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+   * @return The throwEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThrowEventNode getThrowEvent() {
+    if (nodeCase_ == 16) {
+       return (io.littlehorse.sdk.common.proto.ThrowEventNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder getThrowEventOrBuilder() {
+    if (nodeCase_ == 16) {
+       return (io.littlehorse.sdk.common.proto.ThrowEventNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -539,6 +572,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 15) {
       output.writeMessage(15, (io.littlehorse.sdk.common.proto.StartMultipleThreadsNode) node_);
+    }
+    if (nodeCase_ == 16) {
+      output.writeMessage(16, (io.littlehorse.sdk.common.proto.ThrowEventNode) node_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -596,6 +632,10 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, (io.littlehorse.sdk.common.proto.StartMultipleThreadsNode) node_);
+    }
+    if (nodeCase_ == 16) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(16, (io.littlehorse.sdk.common.proto.ThrowEventNode) node_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -657,6 +697,10 @@ private static final long serialVersionUID = 0L;
       case 15:
         if (!getStartMultipleThreads()
             .equals(other.getStartMultipleThreads())) return false;
+        break;
+      case 16:
+        if (!getThrowEvent()
+            .equals(other.getThrowEvent())) return false;
         break;
       case 0:
       default:
@@ -720,6 +764,10 @@ private static final long serialVersionUID = 0L;
       case 15:
         hash = (37 * hash) + START_MULTIPLE_THREADS_FIELD_NUMBER;
         hash = (53 * hash) + getStartMultipleThreads().hashCode();
+        break;
+      case 16:
+        hash = (37 * hash) + THROW_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getThrowEvent().hashCode();
         break;
       case 0:
       default:
@@ -899,6 +947,9 @@ private static final long serialVersionUID = 0L;
       if (startMultipleThreadsBuilder_ != null) {
         startMultipleThreadsBuilder_.clear();
       }
+      if (throwEventBuilder_ != null) {
+        throwEventBuilder_.clear();
+      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -1001,6 +1052,10 @@ private static final long serialVersionUID = 0L;
       if (nodeCase_ == 15 &&
           startMultipleThreadsBuilder_ != null) {
         result.node_ = startMultipleThreadsBuilder_.build();
+      }
+      if (nodeCase_ == 16 &&
+          throwEventBuilder_ != null) {
+        result.node_ = throwEventBuilder_.build();
       }
     }
 
@@ -1141,6 +1196,10 @@ private static final long serialVersionUID = 0L;
           mergeStartMultipleThreads(other.getStartMultipleThreads());
           break;
         }
+        case THROW_EVENT: {
+          mergeThrowEvent(other.getThrowEvent());
+          break;
+        }
         case NODE_NOT_SET: {
           break;
         }
@@ -1267,6 +1326,13 @@ private static final long serialVersionUID = 0L;
               nodeCase_ = 15;
               break;
             } // case 122
+            case 130: {
+              input.readMessage(
+                  getThrowEventFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeCase_ = 16;
+              break;
+            } // case 130
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3197,6 +3263,148 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 15;
       onChanged();
       return startMultipleThreadsBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThrowEventNode, io.littlehorse.sdk.common.proto.ThrowEventNode.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder> throwEventBuilder_;
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     * @return Whether the throwEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasThrowEvent() {
+      return nodeCase_ == 16;
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     * @return The throwEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ThrowEventNode getThrowEvent() {
+      if (throwEventBuilder_ == null) {
+        if (nodeCase_ == 16) {
+          return (io.littlehorse.sdk.common.proto.ThrowEventNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 16) {
+          return throwEventBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    public Builder setThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNode value) {
+      if (throwEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        throwEventBuilder_.setMessage(value);
+      }
+      nodeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    public Builder setThrowEvent(
+        io.littlehorse.sdk.common.proto.ThrowEventNode.Builder builderForValue) {
+      if (throwEventBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        throwEventBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    public Builder mergeThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNode value) {
+      if (throwEventBuilder_ == null) {
+        if (nodeCase_ == 16 &&
+            node_ != io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.ThrowEventNode.newBuilder((io.littlehorse.sdk.common.proto.ThrowEventNode) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 16) {
+          throwEventBuilder_.mergeFrom(value);
+        } else {
+          throwEventBuilder_.setMessage(value);
+        }
+      }
+      nodeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    public Builder clearThrowEvent() {
+      if (throwEventBuilder_ == null) {
+        if (nodeCase_ == 16) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 16) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        throwEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThrowEventNode.Builder getThrowEventBuilder() {
+      return getThrowEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder getThrowEventOrBuilder() {
+      if ((nodeCase_ == 16) && (throwEventBuilder_ != null)) {
+        return throwEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 16) {
+          return (io.littlehorse.sdk.common.proto.ThrowEventNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ThrowEventNode, io.littlehorse.sdk.common.proto.ThrowEventNode.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder> 
+        getThrowEventFieldBuilder() {
+      if (throwEventBuilder_ == null) {
+        if (!(nodeCase_ == 16)) {
+          node_ = io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
+        }
+        throwEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ThrowEventNode, io.littlehorse.sdk.common.proto.ThrowEventNode.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ThrowEventNode) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 16;
+      onChanged();
+      return throwEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

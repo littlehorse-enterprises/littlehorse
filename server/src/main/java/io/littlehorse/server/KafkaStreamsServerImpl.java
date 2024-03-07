@@ -8,6 +8,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -25,6 +26,7 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -59,6 +61,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestM
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
@@ -66,6 +69,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
@@ -108,6 +112,7 @@ import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -151,6 +156,8 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
@@ -241,12 +248,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public KafkaStreamsServerImpl(LHServerConfig config) {
         MetadataCache metadataCache = new MetadataCache();
         this.config = config;
-        this.taskQueueManager = new TaskQueueManager(this);
+        this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-        this.healthService = new HealthService(config, coreStreams, timerStreams);
+        this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
+        coreStreams.setStandbyUpdateListener(healthService);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
                 config,
@@ -356,6 +364,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, TaskDef.class, true);
+    }
+
+    @Override
+    public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
+        PutWorkflowEventDefRequestModel reqModel =
+                LHSerializable.fromProto(req, PutWorkflowEventDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowEventDef.class, true);
     }
 
     @Override
@@ -778,6 +793,11 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+        internalComms.doWaitForWorkflowEvent(req, ctx);
+    }
+
+    @Override
     @Authorize(
             resources = {},
             actions = {})
@@ -999,5 +1019,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public LHHostInfo getAdvertisedHost(
             HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
         return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
+    }
+
+    public void onEventThrown(WorkflowEventModel event) {
+        internalComms.onWorkflowEventThrown(event);
     }
 }

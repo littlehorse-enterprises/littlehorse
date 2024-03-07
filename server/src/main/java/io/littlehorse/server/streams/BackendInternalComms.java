@@ -22,6 +22,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -36,7 +37,9 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -146,19 +149,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
-
-        // TODO: Optimize this later.
-        new Thread(() -> {
-                    while (true) {
-                        try {
-                            Thread.sleep(20 * 1000);
-                            this.asyncWaiters.cleanupOldWaiters();
-                        } catch (InterruptedException exn) {
-                            throw new RuntimeException(exn);
-                        }
-                    }
-                })
-                .start();
     }
 
     public void start() throws IOException {
@@ -233,6 +223,23 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
+    public void doWaitForWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, executionContext());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                ServerTopology.CORE_STORE,
+                wfRunId.getPartitionKey().get(),
+                Serdes.String().serializer());
+
+        if (meta.activeHost().equals(thisHost)) {
+            localWaitForWfEvent(
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build(), ctx);
+        } else {
+            InternalWaitForWfEventRequest internalReq =
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
+            getInternalAsyncClient(meta.activeHost()).waitForWfEvent(internalReq, ctx);
+        }
+    }
+
     public Set<HostModel> getAllInternalHosts() {
         // It returns a sorted collection always
         return coreStreams.metadataForAllStreamsClients().stream()
@@ -300,8 +307,12 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
+    public void onWorkflowEventThrown(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        asyncWaiters.put(commandId, response);
+        asyncWaiters.registerCommandProcessed(commandId, response);
     }
 
     public void sendErrorToClientForCommand(String commandId, Exception caught) {
@@ -309,10 +320,14 @@ public class BackendInternalComms implements Closeable {
     }
 
     private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.put(commandId, observer);
+        asyncWaiters.registerObserverWaitingForCommand(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
+    }
+
+    private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
     }
 
     public ReadOnlyKeyValueStore<String, Bytes> getRawStore(
@@ -383,6 +398,10 @@ public class BackendInternalComms implements Closeable {
         return storeResult.getStoredObject();
     }
 
+    public void registerWorkflowEventProcessed(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
     /*
      * Implements the internal_server.proto service, which is used
      * for communication between the LH servers to do distributed lookups etc.
@@ -427,6 +446,11 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
             localWaitForCommand(req.getCommandId(), ctx);
+        }
+
+        @Override
+        public void waitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+            localWaitForWfEvent(req, ctx);
         }
 
         @Override
@@ -566,6 +590,8 @@ public class BackendInternalComms implements Closeable {
             case VARIABLE:
             case TASK_RUN:
             case TASK_WORKER_GROUP:
+            case WORKFLOW_EVENT:
+            case WORKFLOW_EVENT_DEF:
             case UNRECOGNIZED:
         }
         return false;

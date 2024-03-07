@@ -51,4 +51,10 @@ public interface DeadlineReassignUserTaskOrBuilder extends
    * <code>.littlehorse.UserTaskRunId user_task = 4;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskOrBuilder();
+
+  /**
+   * <code>int64 epoch = 5;</code>
+   * @return The epoch.
+   */
+  long getEpoch();
 }

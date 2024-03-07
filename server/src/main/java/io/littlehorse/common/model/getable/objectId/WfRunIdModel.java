@@ -60,7 +60,7 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
     @Override
     public String toString() {
         if (parentWfRunId != null) {
-            return parentWfRunId.toString() + "_" + id;
+            return parentWfRunId + "_" + id;
         }
         return id;
     }

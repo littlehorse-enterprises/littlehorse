@@ -21,7 +21,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public TaskRunSourceModel() {}
 
-    public TaskRunSourceModel(TaskRunSubSource<?> source, ProcessorExecutionContext processorContext) {
+    public TaskRunSourceModel(TaskRunSubSource source, ProcessorExecutionContext processorContext) {
         if (source.getClass().equals(TaskNodeReferenceModel.class)) {
             this.type = TaskRunSourceCase.TASK_NODE;
             this.taskNode = (TaskNodeReferenceModel) source;
@@ -33,6 +33,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         }
     }
 
+    @Override
     public Class<TaskRunSource> getProtoBaseClass() {
         return TaskRunSource.class;
     }
@@ -57,6 +58,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         }
     }
 
+    @Override
     public TaskRunSource.Builder toProto() {
         TaskRunSource.Builder out = TaskRunSource.newBuilder();
         if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
@@ -73,7 +75,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         return out;
     }
 
-    public TaskRunSubSource<?> getSubSource() {
+    public TaskRunSubSource getSubSource() {
         switch (type) {
             case TASK_NODE:
                 return taskNode;

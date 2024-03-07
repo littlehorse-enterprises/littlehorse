@@ -104,7 +104,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         spec.setRetentionPolicy(retentionPolicy);
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();
-            tspec.wfSpecModel = spec;
+            tspec.wfSpec = spec;
             tspec.name = entry.getKey();
         }
 

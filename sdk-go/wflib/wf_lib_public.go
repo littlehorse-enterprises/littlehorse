@@ -158,6 +158,10 @@ func (t *WorkflowThread) Condition(
 	return t.condition(lhs, op, rhs)
 }
 
+func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) {
+	t.throwEvent(workflowEventDefName, content)
+}
+
 type IfElseBody func(t *WorkflowThread)
 
 func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
@@ -207,6 +211,13 @@ func (t *WorkflowThread) ScheduleReminderTask(
 	taskDefName string, args ...interface{},
 ) {
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
+}
+
+func (t *WorkflowThread) ScheduleReminderTaskOnAssignment(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.scheduleReminderTaskOnAssignment(userTask, delaySeconds, taskDefName, args)
 }
 
 func (t *WorkflowThread) ReleaseToGroupOnDeadline(

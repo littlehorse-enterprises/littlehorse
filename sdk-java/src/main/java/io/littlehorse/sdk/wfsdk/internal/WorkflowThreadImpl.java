@@ -25,6 +25,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -36,6 +37,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -199,16 +201,35 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new UserTaskOutputImpl(nodeName, this);
     }
 
+    @Override
     public void scheduleReminderTask(
             UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
+    @Override
     public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
-    public void scheduleTaskAfterHelper(UserTaskOutput ut, Object delaySeconds, String taskDefName, Object... args) {
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    public void scheduleTaskAfterHelper(
+            UserTaskOutput ut,
+            Serializable delaySeconds,
+            String taskDefName,
+            UTActionTrigger.UTHook utHook,
+            Object... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
         TaskNode taskNode = createTaskNode(taskDefName, args);
@@ -220,10 +241,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
-                .setTask(utaTask)
-                .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
-                .setDelaySeconds(assn);
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder().setTask(utaTask).setHook(utHook).setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
@@ -593,6 +612,19 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
+    @Override
+    public void throwEvent(String workflowEventDefName, Serializable content) {
+        checkIfIsActive();
+        ThrowEventNode node = ThrowEventNode.newBuilder()
+                .setEventDefId(WorkflowEventDefId.newBuilder()
+                        .setName(workflowEventDefName)
+                        .build())
+                .setContent(assignVariable(content))
+                .build();
+        addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+    }
+
+    @Override
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
@@ -765,6 +797,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 break;
             case START_MULTIPLE_THREADS:
                 node.setStartMultipleThreads((StartMultipleThreadsNode) subNode);
+                break;
+            case THROW_EVENT:
+                node.setThrowEvent((ThrowEventNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible

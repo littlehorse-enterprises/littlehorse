@@ -27,11 +27,7 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
         Shutdown.addShutdownHook("Topics Creator", adminClient);
 
         try {
-            adminClient
-                    .createTopics(List.of(new NewTopic(
-                            config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas())))
-                    .all()
-                    .get(1, TimeUnit.SECONDS);
+            adminClient.createTopics(getNewTopics()).all().get(1, TimeUnit.SECONDS);
             log.info("Topics {} created", config.getTopicName());
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
@@ -42,6 +38,10 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
         }
 
         log.trace("Initialized");
+    }
+
+    private List<NewTopic> getNewTopics() {
+        return List.of(new NewTopic(config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas()));
     }
 
     @Override

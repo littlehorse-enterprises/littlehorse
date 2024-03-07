@@ -3,6 +3,7 @@ package io.littlehorse;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
@@ -47,6 +48,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.mockito.Answers;
 import org.mockito.Mockito;
 
 public class TestUtil {
@@ -131,14 +133,22 @@ public class TestUtil {
     }
 
     public static TaskRunModel taskRun() {
+        return taskRun(taskRunId(), new TaskDefIdModel("test-name"));
+    }
+
+    public static TaskRunModel taskRun(TaskRunIdModel taskRunId, TaskDefIdModel taskDefId) {
         TaskRunModel taskRun = new TaskRunModel();
-        taskRun.setId(taskRunId());
+        taskRun.setId(taskRunId);
         taskRun.setTaskRunSource(new TaskRunSourceModel(
                 new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
-        taskRun.setTaskDefId(new TaskDefIdModel("test-name"));
+        taskRun.setTaskDefId(taskDefId);
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
+
+        TaskAttemptModel attempt = new TaskAttemptModel();
+        attempt.setStatus(TaskStatus.TASK_SCHEDULED);
+        taskRun.getAttempts().add(attempt);
         return taskRun;
     }
 
@@ -215,11 +225,15 @@ public class TestUtil {
     }
 
     public static ScheduledTaskModel scheduledTaskModel() {
+        return scheduledTaskModel(UUID.randomUUID().toString());
+    }
+
+    public static ScheduledTaskModel scheduledTaskModel(String wfRunId) {
         return new ScheduledTaskModel(
                 taskDef("my-task").getObjectId(),
                 List.of(),
-                userTaskRun(UUID.randomUUID().toString(), Mockito.mock()),
-                Mockito.mock());
+                userTaskRun(wfRunId, Mockito.mock()),
+                Mockito.mock(Answers.RETURNS_DEEP_STUBS));
     }
 
     public static ServerACLModel acl() {

@@ -53,9 +53,9 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
 
     @Override
     public void validate() throws LHApiException {
-        WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
+        WfSpecModel wfSpecModel = node.threadSpec.wfSpec;
 
-        if (threadSpecName.equals(node.threadSpecModel.name)) {
+        if (threadSpecName.equals(node.threadSpec.name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start same thread");
         }
 
