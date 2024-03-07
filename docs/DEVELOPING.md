@@ -35,6 +35,24 @@ pre-commit install
   export SKIP=install-python,install-dashboard,install-sdk-js,format-python,format-go,format-sdk-js,lint-python,mypy,go-tests,python-tests,dashboard-build,dashboard-tests,sdk-js-tests
   ```
 
+- Only go:
+
+  ```
+  export SKIP=install-python,install-dashboard,install-sdk-js,format-python,format-java,format-sdk-js,lint-python,mypy,python-tests,dashboard-build,dashboard-tests,sdk-js-tests,java-build,javadoc
+  ```
+
+- Only python:
+
+  ```
+  export SKIP=install-dashboard,install-sdk-js,format-go,format-java,format-sdk-js,dashboard-build,dashboard-tests,sdk-js-tests,java-build,javadoc,go-tests
+  ```
+
+- Only js:
+
+  ```
+  export SKIP=install-python,format-java,format-python,format-go,lint-python,mypy,java-build,javadoc,go-tests,python-tests
+  ```
+
 ### Setting up Dev Dependencies
 
 LittleHorse depends upon Kafka as its backing data store. You can set up Kafka via:
