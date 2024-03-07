@@ -19,6 +19,7 @@ API_HOST = "LHC_API_HOST"
 API_PORT = "LHC_API_PORT"
 API_PROTOCOL = "LHC_API_PROTOCOL"
 CLIENT_CERT = "LHC_CLIENT_CERT"
+TENANT_ID = "LHC_TENANT_ID"
 CLIENT_KEY = "LHC_CLIENT_KEY"
 CA_CERT = "LHC_CA_CERT"
 OAUTH_CLIENT_ID = "LHC_OAUTH_CLIENT_ID"
@@ -168,6 +169,10 @@ class LHConfig:
         """
         client_cert_path = self.get(CLIENT_CERT)
         return None if client_cert_path is None else read_binary(client_cert_path)
+
+    @property
+    def tenant_id(self) -> Optional[str]:
+        return self.get(TENANT_ID)
 
     def is_secure(self) -> bool:
         """Returns True if a secure connection is configured.

@@ -5,7 +5,7 @@ import grpc
 from grpc.aio import ClientCallDetails, Metadata
 
 from littlehorse.exceptions import OAuthException
-
+TENANT_ID_HEADER = "tenantid"
 
 class AccessToken:
     def __init__(self, data: dict[str, str]) -> None:
@@ -70,43 +70,43 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
         return self._token
 
 
+def _call_details_with_tenant(tenant_id, details) -> ClientCallDetails:
+    metadata = []
+    if details.metadata is not None:
+        metadata = list(details.metadata)
+    metadata.append(
+        (
+            TENANT_ID_HEADER,
+            tenant_id,
+        )
+    )
+    return ClientCallDetails(
+        details.method, details.timeout, metadata, details.credentials, details.wait_for_ready
+    )
+
+
 class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor):
+    def __init__(self, tenant_id: str):
+        self.tenant_id = tenant_id
+
     def intercept_unary_unary(self, continuation, details, request):
-        metadata = []
-        if details.metadata is not None:
-            metadata = list(details.metadata)
-        metadata.append(
-            (
-                "tenantid",
-                "eduwer",
-            )
-        )
-        new_details = ClientCallDetails(
-            details.method, details.timeout, metadata, details.credentials, details.wait_for_ready
-        )
+        new_details = _call_details_with_tenant(self.tenant_id, details)
         return continuation(new_details, request)
 
     def intercept_stream_stream(
             self, continuation, client_call_details, request_iterator
     ):
-        return continuation(client_call_details, request_iterator)
+        new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
+        return continuation(new_details, request_iterator)
 
 
 class AsyncMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.StreamStreamClientInterceptor):
 
+    def __init__(self, tenant_id: str):
+        self.tenant_id = tenant_id
+
     async def intercept_unary_unary(self, continuation, deatils, request):
-        metadata = []
-        if deatils.metadata is not None:
-            metadata = list(deatils.metadata)
-        metadata.append(
-            (
-                "tenantid",
-                "eduwer",
-            )
-        )
-        new_details = ClientCallDetails(
-            deatils.method, deatils.timeout, metadata, deatils.credentials, deatils.wait_for_ready
-        )
+        new_details = _call_details_with_tenant(self.tenant_id, deatils)
         return await continuation(new_details, request)
 
     async def intercept_stream_stream(
@@ -115,4 +115,5 @@ class AsyncMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.St
             client_call_details,
             request_iterator,
     ):
-        return await continuation(client_call_details, request_iterator)
+        new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
+        return await continuation(new_details, request_iterator)
