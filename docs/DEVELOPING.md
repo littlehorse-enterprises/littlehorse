@@ -29,6 +29,12 @@ https://pre-commit.com/ is a framework for managing and maintaining multi-langua
 pre-commit install
 ```
 
+- Only java:
+
+  ```
+  export SKIP=install-python,install-dashboard,install-sdk-js,format-python,format-go,format-sdk-js,lint-python,mypy,go-tests,python-tests,dashboard-build,dashboard-tests,sdk-js-tests
+  ```
+
 ### Setting up Dev Dependencies
 
 LittleHorse depends upon Kafka as its backing data store. You can set up Kafka via:
