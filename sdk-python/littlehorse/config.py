@@ -347,8 +347,14 @@ class LHConfig:
         if not self.is_secure():
             self._log.warning("Establishing insecure channel at %s", server)
         if not async_channel:
-            return grpc.intercept_channel(grpc.insecure_channel(server, options=channel_args), MetadataInterceptor())
-        return grpc.aio.insecure_channel(server, options=channel_args, interceptors=[AsyncMetadataInterceptor()])
+            return grpc.intercept_channel(
+                grpc.insecure_channel(server, options=channel_args), MetadataInterceptor(self.tenant_id)
+            )
+        return grpc.aio.insecure_channel(
+            server,
+            options=channel_args,
+            interceptors=[AsyncMetadataInterceptor(self.tenant_id)]
+        )
 
     def stub(
         self,
