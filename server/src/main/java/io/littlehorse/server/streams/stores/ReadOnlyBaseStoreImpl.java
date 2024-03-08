@@ -56,7 +56,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
-        log.info(keyToLookFor);
         if (metadataCache != null) {
             StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
             if (storedGetablePb != null) {
