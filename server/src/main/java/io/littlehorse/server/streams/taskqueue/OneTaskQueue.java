@@ -205,7 +205,9 @@ public class OneTaskQueue {
                 TaskRunIdModel taskRunId =
                         (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
-                queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
+                if (scheduledTask != null) {
+                    queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
+                }
             }
         }
     }
