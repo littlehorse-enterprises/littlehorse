@@ -135,7 +135,7 @@ repos:
         pass_filenames: false
         entry: bash -c 'cd ./dashboard && pnpm build'
 
-      - id: dasbboard-tests
+      - id: dashboard-tests
         name: Running Dashboard Tests
         language: system
         always_run: true
