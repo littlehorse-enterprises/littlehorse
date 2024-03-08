@@ -2,8 +2,13 @@ from datetime import datetime, timedelta
 import unittest
 from unittest.mock import ANY, call, patch, MagicMock
 from littlehorse.exceptions import OAuthException
-from littlehorse.auth import AccessToken, OAuthCredentialsProvider, MetadataInterceptor, TENANT_ID_HEADER, \
-    AsyncMetadataInterceptor
+from littlehorse.auth import (
+    AccessToken,
+    OAuthCredentialsProvider,
+    MetadataInterceptor,
+    TENANT_ID_HEADER,
+    AsyncMetadataInterceptor,
+)
 
 
 class TestAccessToken(unittest.TestCase):
@@ -106,7 +111,9 @@ class TestMetadataInterceptor(unittest.TestCase):
         request_details.return_value.timeout = 0
         request_details.return_value.credentials = None
         request_details.return_value.wait_for_ready = None
-        self.tenant_a_interceptor.intercept_unary_unary(self.assert_tenant_a_header, request_details, None)
+        self.tenant_a_interceptor.intercept_unary_unary(
+            self.assert_tenant_a_header, request_details, None
+        )
 
     def test_add_tenant_metadata_to_stream_stream(self):
         request_details = MagicMock()
@@ -115,7 +122,9 @@ class TestMetadataInterceptor(unittest.TestCase):
         request_details.return_value.timeout = 0
         request_details.return_value.credentials = None
         request_details.return_value.wait_for_ready = None
-        self.tenant_a_interceptor.intercept_stream_stream(self.assert_tenant_a_header, request_details, None)
+        self.tenant_a_interceptor.intercept_stream_stream(
+            self.assert_tenant_a_header, request_details, None
+        )
 
 
 class TestAsyncMetadataInterceptor(unittest.IsolatedAsyncioTestCase):
@@ -132,7 +141,9 @@ class TestAsyncMetadataInterceptor(unittest.IsolatedAsyncioTestCase):
         request_details.return_value.timeout = 0
         request_details.return_value.credentials = None
         request_details.return_value.wait_for_ready = None
-        await self.tenant_b_interceptor.intercept_unary_unary(self.assert_tenant_b_header, request_details, MagicMock())
+        await self.tenant_b_interceptor.intercept_unary_unary(
+            self.assert_tenant_b_header, request_details, MagicMock()
+        )
 
     async def test_add_tenant_metadata_to_stream_stream(self):
         request_details = MagicMock()
@@ -141,7 +152,9 @@ class TestAsyncMetadataInterceptor(unittest.IsolatedAsyncioTestCase):
         request_details.return_value.timeout = 0
         request_details.return_value.credentials = None
         request_details.return_value.wait_for_ready = None
-        await self.tenant_b_interceptor.intercept_stream_stream(self.assert_tenant_b_header, request_details, None)
+        await self.tenant_b_interceptor.intercept_stream_stream(
+            self.assert_tenant_b_header, request_details, None
+        )
 
 
 if __name__ == "__main__":

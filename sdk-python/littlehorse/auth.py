@@ -5,7 +5,9 @@ import grpc
 from grpc.aio import ClientCallDetails, Metadata
 
 from littlehorse.exceptions import OAuthException
+
 TENANT_ID_HEADER = "tenantid"
+
 
 class AccessToken:
     def __init__(self, data: dict[str, str]) -> None:
@@ -81,11 +83,17 @@ def _call_details_with_tenant(tenant_id, details) -> ClientCallDetails:
         )
     )
     return ClientCallDetails(
-        details.method, details.timeout, metadata, details.credentials, details.wait_for_ready
+        details.method,
+        details.timeout,
+        metadata,
+        details.credentials,
+        details.wait_for_ready,
     )
 
 
-class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor):
+class MetadataInterceptor(
+    grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor
+):
     def __init__(self, tenant_id: str):
         self.tenant_id = tenant_id
 
@@ -94,13 +102,15 @@ class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamCli
         return continuation(new_details, request)
 
     def intercept_stream_stream(
-            self, continuation, client_call_details, request_iterator
+        self, continuation, client_call_details, request_iterator
     ):
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return continuation(new_details, request_iterator)
 
 
-class AsyncMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.StreamStreamClientInterceptor):
+class AsyncMetadataInterceptor(
+    grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.StreamStreamClientInterceptor
+):
 
     def __init__(self, tenant_id: str):
         self.tenant_id = tenant_id
@@ -110,10 +120,10 @@ class AsyncMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor, grpc.aio.St
         return await continuation(new_details, request)
 
     async def intercept_stream_stream(
-            self,
-            continuation,
-            client_call_details,
-            request_iterator,
+        self,
+        continuation,
+        client_call_details,
+        request_iterator,
     ):
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return await continuation(new_details, request_iterator)

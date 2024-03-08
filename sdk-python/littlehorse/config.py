@@ -5,7 +5,11 @@ from typing import Optional, Union
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
-from littlehorse.auth import OAuthCredentialsProvider, MetadataInterceptor, AsyncMetadataInterceptor
+from littlehorse.auth import (
+    OAuthCredentialsProvider,
+    MetadataInterceptor,
+    AsyncMetadataInterceptor,
+)
 from littlehorse.model.service_pb2_grpc import LittleHorseStub
 from littlehorse.utils import read_binary
 import logging
@@ -41,12 +45,12 @@ class ChannelId:
 
     def __eq__(self, __value: object) -> bool:
         return (
-                hasattr(__value, "server")
-                and hasattr(__value, "is_async")
-                and hasattr(__value, "name")
-                and self.server == __value.server
-                and self.is_async == __value.is_async
-                and self.name == __value.name
+            hasattr(__value, "server")
+            and hasattr(__value, "is_async")
+            and hasattr(__value, "name")
+            and self.server == __value.server
+            and self.is_async == __value.is_async
+            and self.name == __value.name
         )
 
     def __hash__(self) -> int:
@@ -348,12 +352,13 @@ class LHConfig:
             self._log.warning("Establishing insecure channel at %s", server)
         if not async_channel:
             return grpc.intercept_channel(
-                grpc.insecure_channel(server, options=channel_args), MetadataInterceptor(self.tenant_id)
+                grpc.insecure_channel(server, options=channel_args),
+                MetadataInterceptor(self.tenant_id),
             )
         return grpc.aio.insecure_channel(
             server,
             options=channel_args,
-            interceptors=[AsyncMetadataInterceptor(self.tenant_id)]
+            interceptors=[AsyncMetadataInterceptor(self.tenant_id)],
         )
 
     def stub(
