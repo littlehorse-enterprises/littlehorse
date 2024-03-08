@@ -18,6 +18,9 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class DuplicatedTaskRunTopology {
 
+    public static final String DUPLICATED_TASK_COUNT_STORE = "duplicated-task-count";
+    public static final String DUPLICATED_TASK_BY_SERVER_COUNT_STORE = "duplicated-task-by-server-count";
+    public static final String DUPLICATED_TASK_METRIC_NAME = "duplicated_task_run_max_count";
     private final KStream<MetricKey, Double> stream;
 
     public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetention) {
@@ -25,8 +28,9 @@ public class DuplicatedTaskRunTopology {
                 .filter((key, value) -> value.hasTaskRunBeat())
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
-                .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>with(
-                                ProtobufSerdes.BeatKey(), Serdes.Long())
+                .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_COUNT_STORE)
+                        .withKeySerde(ProtobufSerdes.BeatKey())
+                        .withValueSerde(Serdes.Long())
                         .withRetention(storeRetention))
                 // filter by duplicated
                 .filter((key, value) -> value > 1L)
@@ -37,8 +41,10 @@ public class DuplicatedTaskRunTopology {
                 // re-key from task run to lh cluster
                 .groupBy((key, value) -> toMetricKey(key), Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Double()))
                 // count how many task were duplicated
-                .count(Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>with(
-                                ProtobufSerdes.MetricKey(), Serdes.Long())
+                .count(Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>as(
+                                DUPLICATED_TASK_BY_SERVER_COUNT_STORE)
+                        .withKeySerde(ProtobufSerdes.MetricKey())
+                        .withValueSerde(Serdes.Long())
                         .withRetention(storeRetention))
                 .mapValues((readOnlyKey, value) -> Double.valueOf(value))
                 .toStream();
@@ -46,7 +52,7 @@ public class DuplicatedTaskRunTopology {
 
     private static MetricKey toMetricKey(final BeatKey key) {
         return MetricKey.newBuilder()
-                .setId("duplicated_task_run_max_count")
+                .setId(DUPLICATED_TASK_METRIC_NAME)
                 .setServerHost(key.getServerHost())
                 .setServerPort(key.getServerPort())
                 .setServerVersion(key.getServerVersion())

@@ -158,6 +158,10 @@ func (t *WorkflowThread) Condition(
 	return t.condition(lhs, op, rhs)
 }
 
+func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) {
+	t.throwEvent(workflowEventDefName, content)
+}
+
 type IfElseBody func(t *WorkflowThread)
 
 func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
@@ -265,4 +269,15 @@ func (t *WorkflowThread) HandleAnyFailure(
 	handler ThreadFunc,
 ) {
 	t.handleAnyFailure(nodeOutput, handler)
+}
+
+func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	notesVar, err := u.thread.assignVariable(notes)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.Notes = notesVar
+	return u
 }

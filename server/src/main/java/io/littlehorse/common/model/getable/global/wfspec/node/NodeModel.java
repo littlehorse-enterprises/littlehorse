@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeM
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartMultipleThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartThreadNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ThrowEventNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -47,7 +48,7 @@ public class NodeModel extends LHSerializable<Node> {
     public SleepNodeModel sleepNode;
     public UserTaskNodeModel userTaskNode;
     private StartMultipleThreadsNodeModel startMultipleThreadsNode;
-
+    private ThrowEventNodeModel throwEventNode;
     public List<FailureHandlerDefModel> failureHandlers;
 
     public Class<Node> getProtoBaseClass() {
@@ -95,6 +96,9 @@ public class NodeModel extends LHSerializable<Node> {
                 break;
             case USER_TASK:
                 out.setUserTask(userTaskNode.toProto());
+                break;
+            case THROW_EVENT:
+                out.setThrowEvent(throwEventNode.toProto());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -156,6 +160,9 @@ public class NodeModel extends LHSerializable<Node> {
             case START_MULTIPLE_THREADS:
                 startMultipleThreadsNode = LHSerializable.fromProto(
                         proto.getStartMultipleThreads(), StartMultipleThreadsNodeModel.class, context);
+                break;
+            case THROW_EVENT:
+                throwEventNode = LHSerializable.fromProto(proto.getThrowEvent(), ThrowEventNodeModel.class, context);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Node " + name + " on thread " + threadSpec.name + " is unset!");
@@ -248,6 +255,8 @@ public class NodeModel extends LHSerializable<Node> {
                 return userTaskNode;
             case START_MULTIPLE_THREADS:
                 return startMultipleThreadsNode;
+            case THROW_EVENT:
+                return throwEventNode;
             case NODE_NOT_SET:
         }
         throw new RuntimeException("incomplete switch statement");

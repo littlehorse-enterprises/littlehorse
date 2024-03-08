@@ -12,6 +12,7 @@ import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
+import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -65,6 +66,14 @@ class PutTaskDefRequest(_message.Message):
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ...) -> None: ...
+
+class PutWorkflowEventDefRequest(_message.Message):
+    __slots__ = ["name", "type"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    type: _common_enums_pb2.VariableType
+    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ["name", "fields", "description"]
@@ -166,6 +175,16 @@ class VariableMatch(_message.Message):
     var_name: str
     value: _variable_pb2.VariableValue
     def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+
+class AwaitWorkflowEventRequest(_message.Message):
+    __slots__ = ["wf_run_id", "event_def_ids", "workflow_events_to_ignore"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    EVENT_DEF_IDS_FIELD_NUMBER: _ClassVar[int]
+    WORKFLOW_EVENTS_TO_IGNORE_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: _object_id_pb2.WfRunId
+    event_def_ids: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventDefId]
+    workflow_events_to_ignore: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventId]
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., event_def_ids: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]]] = ..., workflow_events_to_ignore: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventId, _Mapping]]] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters"]

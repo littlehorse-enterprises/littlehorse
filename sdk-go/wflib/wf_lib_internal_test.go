@@ -70,6 +70,21 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
+func TestUserTaskWithNotes(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithNotes("sample notes")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
+}
+
 func TestReminderTask(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		userVar := t.AddVariable("user", model.VariableType_STR)
@@ -506,4 +521,26 @@ func TestRetentionPolicy(t *testing.T) {
 
 	thread := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	assert.Equal(t, int(thread.RetentionPolicy.GetSecondsAfterThreadTermination()), int(137))
+}
+
+func TestThrowEvent(t *testing.T) {
+	wf := wflib.NewWorkflow(func(wf *wflib.WorkflowThread) {
+		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		wf.ThrowEvent("my-event", myVar)
+		wf.ThrowEvent("another-event", "my-content")
+	}, "throw-event")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-throw-my-event-THROW_EVENT"]
+	assert.Equal(t, node.GetThrowEvent().Content.GetVariableName(), "my-var")
+	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "my-event")
+
+	node = entrypoint.Nodes["2-throw-another-event-THROW_EVENT"]
+	assert.Equal(t, node.GetThrowEvent().Content.GetLiteralValue().GetStr(), "my-content")
+	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "another-event")
 }

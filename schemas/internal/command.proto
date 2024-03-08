@@ -61,6 +61,7 @@ message MetadataCommand {
         PutPrincipalRequest put_principal = 12;
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
+        PutWorkflowEventDefRequest workflow_event_def = 15;
         // TODO: DeleteTenant
     }
 }

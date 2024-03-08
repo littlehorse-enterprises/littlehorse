@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -119,6 +120,16 @@ public class LHConfig extends ConfigBase {
      */
     public LHConfig(Properties props) {
         super(props);
+        createdChannels = new HashMap<>();
+    }
+
+    /**
+     * Creates an LHClientConfig with config props in a specified .properties file.
+     *
+     * @param propLocation the location of the .properties file.
+     */
+    public LHConfig(Path propLocation) {
+        super(propLocation.toString());
         createdChannels = new HashMap<>();
     }
 

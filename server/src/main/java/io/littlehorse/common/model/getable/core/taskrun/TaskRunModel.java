@@ -76,23 +76,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         this.inputVariables = inputVars;
         this.taskRunSource = source;
         this.taskDefId = node.getTaskDefId();
+        this.maxAttempts = node.getRetries() + 1;
         this.timeoutSeconds = node.getTimeoutSeconds();
         this.executionContext = processorContext;
         this.processorContext = processorContext;
-
-        switch (node.getRetryPolicyType()) {
-            case SIMPLE_RETRIES:
-                this.retryPolicyType = RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS;
-                this.simpleTotalAttempts = 1 + node.getSimpleRetries();
-                break;
-            case EXPONENTIAL_BACKOFF:
-                this.retryPolicyType = RetryPolicyCase.EXPONENTIAL_BACKOFF;
-                this.exponentialBackoffRetryPolicy = node.getExponentialBackoffRetryPolicy();
-                break;
-            case RETRYPOLICY_NOT_SET:
-                this.retryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
-                break;
-        }
         transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
@@ -211,7 +198,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                 return false;
             case TASK_SCHEDULED:
             case TASK_RUNNING:
-            case TASK_PENDING:
             case UNRECOGNIZED:
         }
         return true;
@@ -325,30 +311,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
     }
 
-    private void scheduleRetryAtAppropriateTime() {
-        if (retryPolicyType == RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS) {
-            transitionTo(TaskStatus.TASK_SCHEDULED);
-            scheduleAttemptNow();
-            return;
-        }
-
-        if (retryPolicyType != RetryPolicyCase.EXPONENTIAL_BACKOFF) {
-            throw new IllegalStateException();
-        }
-
-
-    }
-
     /**
      * Returns the ID of the WfRun that this TaskRun belongs to.
      * @return the ID of the WfRun that this TaskRun belongs to.
      */
     public WfRunIdModel getWfRunId() {
         return taskRunSource.getSubSource().getWfRunId();
-    }
-
-    public WfRunModel getWfRun() {
-        return processorContext.getableManager().get(getWfRunId());
     }
 
     private void transitionTo(TaskStatus newStatus) {

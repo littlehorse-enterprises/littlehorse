@@ -2,7 +2,15 @@
 import * as _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventDefId, ExternalEventId, NodeRunId, TaskRunId, UserTaskRunId, WfSpecId } from "./object_id";
+import {
+  ExternalEventDefId,
+  ExternalEventId,
+  NodeRunId,
+  TaskRunId,
+  UserTaskRunId,
+  WfSpecId,
+  WorkflowEventId,
+} from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -89,6 +97,7 @@ export interface NodeRun {
    * child ThreadRun for each element in the list.
    */
   startMultipleThreads?: StartMultipleThreadsRun | undefined;
+  throwEvent?: ThrowEventNodeRun | undefined;
 }
 
 /** The sub-node structure for a TASK NodeRun. */
@@ -98,6 +107,10 @@ export interface TaskNodeRun {
    * at this TASK Node, then the task_run_id will be unset.
    */
   taskRunId?: TaskRunId | undefined;
+}
+
+export interface ThrowEventNodeRun {
+  workflowEventId: WorkflowEventId | undefined;
 }
 
 /** The sub-node structure for a USER_TASK NodeRun. */
@@ -341,6 +354,7 @@ function createBaseNodeRun(): NodeRun {
     sleep: undefined,
     userTask: undefined,
     startMultipleThreads: undefined,
+    throwEvent: undefined,
   };
 }
 
@@ -404,6 +418,9 @@ export const NodeRun = {
     }
     if (message.startMultipleThreads !== undefined) {
       StartMultipleThreadsRun.encode(message.startMultipleThreads, writer.uint32(170).fork()).ldelim();
+    }
+    if (message.throwEvent !== undefined) {
+      ThrowEventNodeRun.encode(message.throwEvent, writer.uint32(178).fork()).ldelim();
     }
     return writer;
   },
@@ -558,6 +575,13 @@ export const NodeRun = {
 
           message.startMultipleThreads = StartMultipleThreadsRun.decode(reader, reader.uint32());
           continue;
+        case 22:
+          if (tag !== 178) {
+            break;
+          }
+
+          message.throwEvent = ThrowEventNodeRun.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -592,6 +616,7 @@ export const NodeRun = {
       startMultipleThreads: isSet(object.startMultipleThreads)
         ? StartMultipleThreadsRun.fromJSON(object.startMultipleThreads)
         : undefined,
+      throwEvent: isSet(object.throwEvent) ? ThrowEventNodeRun.fromJSON(object.throwEvent) : undefined,
     };
   },
 
@@ -654,6 +679,9 @@ export const NodeRun = {
     if (message.startMultipleThreads !== undefined) {
       obj.startMultipleThreads = StartMultipleThreadsRun.toJSON(message.startMultipleThreads);
     }
+    if (message.throwEvent !== undefined) {
+      obj.throwEvent = ThrowEventNodeRun.toJSON(message.throwEvent);
+    }
     return obj;
   },
 
@@ -698,6 +726,9 @@ export const NodeRun = {
       : undefined;
     message.startMultipleThreads = (object.startMultipleThreads !== undefined && object.startMultipleThreads !== null)
       ? StartMultipleThreadsRun.fromPartial(object.startMultipleThreads)
+      : undefined;
+    message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
+      ? ThrowEventNodeRun.fromPartial(object.throwEvent)
       : undefined;
     return message;
   },
@@ -757,6 +788,67 @@ export const TaskNodeRun = {
     const message = createBaseTaskNodeRun();
     message.taskRunId = (object.taskRunId !== undefined && object.taskRunId !== null)
       ? TaskRunId.fromPartial(object.taskRunId)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseThrowEventNodeRun(): ThrowEventNodeRun {
+  return { workflowEventId: undefined };
+}
+
+export const ThrowEventNodeRun = {
+  encode(message: ThrowEventNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.workflowEventId !== undefined) {
+      WorkflowEventId.encode(message.workflowEventId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThrowEventNodeRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThrowEventNodeRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.workflowEventId = WorkflowEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ThrowEventNodeRun {
+    return {
+      workflowEventId: isSet(object.workflowEventId) ? WorkflowEventId.fromJSON(object.workflowEventId) : undefined,
+    };
+  },
+
+  toJSON(message: ThrowEventNodeRun): unknown {
+    const obj: any = {};
+    if (message.workflowEventId !== undefined) {
+      obj.workflowEventId = WorkflowEventId.toJSON(message.workflowEventId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ThrowEventNodeRun>, I>>(base?: I): ThrowEventNodeRun {
+    return ThrowEventNodeRun.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ThrowEventNodeRun>, I>>(object: I): ThrowEventNodeRun {
+    const message = createBaseThrowEventNodeRun();
+    message.workflowEventId = (object.workflowEventId !== undefined && object.workflowEventId !== null)
+      ? WorkflowEventId.fromPartial(object.workflowEventId)
       : undefined;
     return message;
   },

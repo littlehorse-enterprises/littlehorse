@@ -107,6 +107,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
+    public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
@@ -202,7 +203,22 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public List<NewTopic> getAllTopics() {
-        return getAllTopics(getLHClusterId(), getReplicationFactor(), getClusterPartitions());
+        return getAllTopics(getLHClusterId(), getReplicationFactor(), partitionsByTopic());
+    }
+
+    public Map<String, Integer> partitionsByTopic() {
+        Map<String, Integer> out = new HashMap<>();
+        String clusterId = getLHClusterId();
+        int clusterPartitions = getClusterPartitions();
+        out.put(getCoreCmdTopicName(clusterId), clusterPartitions);
+        out.put(getRepartitionTopicName(clusterId), clusterPartitions);
+        out.put(getTimerTopic(clusterId), clusterPartitions);
+        out.put(getCoreStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getRepartitionStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getTimerStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getMetadataStoreChangelogTopic(clusterId), 1); // global store
+        out.put(getMetadataCmdTopicName(clusterId), 1); // global store
+        return out;
     }
 
     // Internal topics are manually created because:
@@ -213,36 +229,54 @@ public class LHServerConfig extends ConfigBase {
     // creation. Thus, internal topics that are not explicitly created here will be
     // automatically created by Kafka Stream. Please make sure to manually create all internal topics.
     // Kafka has opened KIP-698 to solve this.
-    public static List<NewTopic> getAllTopics(String clusterId, short replicationFactor, int clusterPartitions) {
+    public static List<NewTopic> getAllTopics(
+            String clusterId, short replicationFactor, Map<String, Integer> partitionsByTopic) {
         HashMap<String, String> compactedTopicConfig = new HashMap<>() {
             {
                 put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
             }
         };
+        String coreCommandTopicName = getCoreCmdTopicName(clusterId);
+        NewTopic coreCommand =
+                new NewTopic(coreCommandTopicName, partitionsByTopic.get(coreCommandTopicName), replicationFactor);
 
-        NewTopic coreCommand = new NewTopic(getCoreCmdTopicName(clusterId), clusterPartitions, replicationFactor);
+        String repartitionTopicName = getRepartitionTopicName(clusterId);
+        NewTopic repartition =
+                new NewTopic(repartitionTopicName, partitionsByTopic.get(repartitionTopicName), replicationFactor);
 
-        NewTopic repartition = new NewTopic(getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
+        String timerTopicName = getTimerTopic(clusterId);
+        NewTopic timer = new NewTopic(timerTopicName, partitionsByTopic.get(timerTopicName), replicationFactor);
 
-        NewTopic timer = new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
-
+        String coreChangelogTopicName = getCoreStoreChangelogTopic(clusterId);
         NewTopic coreStoreChangelog = new NewTopic(
-                        getCoreStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
+        String repartitionStoreChangelogTopicName = getRepartitionStoreChangelogTopic(clusterId);
         NewTopic repartitionStoreChangelog = new NewTopic(
-                        getRepartitionStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        repartitionStoreChangelogTopicName,
+                        partitionsByTopic.get(repartitionStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
+        String timerStoreChangelogTopicName = getTimerStoreChangelogTopic(clusterId);
         NewTopic timerStoreChangelog = new NewTopic(
-                        getTimerStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        timerStoreChangelogTopicName,
+                        partitionsByTopic.get(timerStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
-        NewTopic metadataStoreChangelog = new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
+        String metadataStoreChangelogTopicName = getMetadataStoreChangelogTopic(clusterId);
+        NewTopic metadataStoreChangelog = new NewTopic(
+                        metadataStoreChangelogTopicName,
+                        partitionsByTopic.get(metadataStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
-        NewTopic metadataCommand =
-                new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor).configs(compactedTopicConfig);
+        String metadataCommandTopicName = getMetadataCmdTopicName(clusterId);
+        NewTopic metadataCommand = new NewTopic(
+                        metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
+                .configs(compactedTopicConfig);
 
         return List.of(
                 coreCommand,
@@ -312,6 +346,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getDiskUsagePath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_DISK_USAGE_KEY, "/diskUsage");
+    }
+
+    public String getStandbyStatusPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_STANDBY_KEY, "/standby-status");
     }
 
     public int getInternalBindPort() {

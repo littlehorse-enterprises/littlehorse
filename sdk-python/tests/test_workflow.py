@@ -1960,5 +1960,29 @@ class FormatStringTest(unittest.TestCase):
         self.assertEqual(fstr.args[1].variable_name, "my-str-2")
 
 
+class ThrowEventNodeTest(unittest.TestCase):
+    def test_throw_event_node(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            var = wf.add_variable("my-var", VariableType.STR)
+            wf.throw_event("my-event", var)
+            wf.throw_event("another-event", "some-content")
+
+        wf_spec = Workflow("throw-event-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        self.assertEqual(len(entrypoint.nodes), 4)
+
+        first_throw = entrypoint.nodes["1-throw-my-event-THROW_EVENT"]
+        self.assertEqual(first_throw.throw_event.event_def_id.name, "my-event")
+        self.assertEqual(first_throw.throw_event.content.variable_name, "my-var")
+
+        second_throw = entrypoint.nodes["2-throw-another-event-THROW_EVENT"]
+        self.assertEqual(second_throw.throw_event.event_def_id.name, "another-event")
+        self.assertEqual(
+            second_throw.throw_event.content.literal_value.str, "some-content"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

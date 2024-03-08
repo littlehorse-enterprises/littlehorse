@@ -103,7 +103,7 @@ dependencies {
     // JSONPath
     api 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
-    api 'com.jayway.jsonpath:json-path:2.8.0'
+    api 'com.jayway.jsonpath:json-path:2.9.0'
 
     // Protobuf
     api "io.grpc:grpc-netty-shaded:${grpcVersion}"

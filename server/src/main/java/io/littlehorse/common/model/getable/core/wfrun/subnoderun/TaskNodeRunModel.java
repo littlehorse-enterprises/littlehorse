@@ -117,7 +117,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // When creating a new Getable for the first time, we need to explicitly save it.
         processorContext.getableManager().put(task);
 
-        task.scheduleAttemptNow();
+        task.scheduleAttempt();
     }
 
     @Override

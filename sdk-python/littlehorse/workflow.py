@@ -23,6 +23,7 @@ from littlehorse.model.common_wfspec_pb2 import (
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
+    WorkflowEventDefId,
 )
 from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
@@ -48,6 +49,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
+    ThrowEventNode,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -71,6 +73,7 @@ NodeType = Union[
     NopNode,
     UserTaskNode,
     StartMultipleThreadsNode,
+    ThrowEventNode,
 ]
 
 
@@ -191,6 +194,7 @@ class NodeCase(Enum):
     SLEEP = "SLEEP"
     USER_TASK = "USER_TASK"
     START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS"
+    THROW_EVENT = "THROW_EVENT"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -214,6 +218,8 @@ class NodeCase(Enum):
             return cls.USER_TASK
         if isinstance(node, StartMultipleThreadsNode):
             return cls.START_MULTIPLE_THREADS
+        if isinstance(node, ThrowEventNode):
+            return cls.THROW_EVENT
 
         raise TypeError("Unrecognized node type")
 
@@ -508,6 +514,8 @@ class WorkflowNode:
             return new_node(user_task=self.sub_node)
         if self.node_case == NodeCase.START_MULTIPLE_THREADS:
             return new_node(start_multiple_threads=self.sub_node)
+        if self.node_case == NodeCase.THROW_EVENT:
+            return new_node(throw_event=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -955,9 +963,11 @@ class WorkflowThread:
 
         failure_handler = FailureHandlerDef(
             handler_spec_name=thread_name,
-            any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
-            if exception_name is None
-            else None,
+            any_failure_of_type=(
+                FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
+                if exception_name is None
+                else None
+            ),
             specific_failure=exception_name,
         )
         last_node = self._find_node(node.node_name)
@@ -1020,9 +1030,9 @@ class WorkflowThread:
             ExitNode(
                 failure_def=FailureDef(
                     failure_name=failure_name,
-                    content=to_variable_assignment(output)
-                    if output is not None
-                    else None,
+                    content=(
+                        to_variable_assignment(output) if output is not None else None
+                    ),
                     message=message,
                 )
             ),
@@ -1096,9 +1106,9 @@ class WorkflowThread:
 
         reassign = UTActionTrigger.UTAReassign(
             user_id=to_variable_assignment(user_id) if user_id is not None else None,
-            user_group=to_variable_assignment(user_group)
-            if user_group is not None
-            else None,
+            user_group=(
+                to_variable_assignment(user_group) if user_group is not None else None
+            ),
         )
 
         ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
@@ -1196,6 +1206,24 @@ class WorkflowThread:
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)
+
+    def throw_event(self, workflow_event_name: str, content: Any) -> None:
+        """Adds a THROW_EVENT node which throws a WorkflowEvent.
+
+        Args:
+            workflow_event_name (str): The WorkflowEventDefId name of
+            the WorkflowEvent to throw
+            content (Any): the content of the WorkflowEvent to throw
+
+        Returns:
+            NodeOutput: A NodeOutput for this event.
+        """
+        self._check_if_active()
+        throw_node = ThrowEventNode(
+            event_def_id=WorkflowEventDefId(name=workflow_event_name),
+            content=to_variable_assignment(content),
+        )
+        self.add_node("throw-" + workflow_event_name, throw_node)
 
     def mutate(
         self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
@@ -1315,7 +1343,7 @@ class WorkflowThread:
             name (str): Name of the node.
             sub_node (NodeType): One of node: [TaskNode, EntrypointNode,
             ExitNode, ExternalEventNode, SleepNode, StartThreadNode,
-            WaitForThreadsNode,  NopNode, UserTaskNode]
+            WaitForThreadsNode,  NopNode, UserTaskNode, ThrowEventNode]
 
         Returns:
             str: The name.
@@ -1454,9 +1482,11 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=end_node_name,
                     variable_mutations=variables_from_if_block,
-                    condition=last_condition_from_if_block
-                    if last_node_from_if_block.name == start_node.name
-                    else None,
+                    condition=(
+                        last_condition_from_if_block
+                        if last_node_from_if_block.name == start_node.name
+                        else None
+                    ),
                 )
             )
 
