@@ -136,8 +136,8 @@ public class AsyncWaiters {
                             .onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                                     "Command not processed within deadline: likely due to rebalance")));
                 }
+                iter.remove();
             }
-            iter.remove();
         }
     }
 
