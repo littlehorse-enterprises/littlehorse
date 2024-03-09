@@ -77,6 +77,7 @@ public class CommandWaiter {
             observer.onCompleted();
             log.debug("Sent response for command {}", commandId);
         }
+        this.alreadyCompleted = true;
         return true;
     }
 }
