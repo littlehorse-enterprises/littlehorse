@@ -360,21 +360,24 @@ public class BackendInternalComms implements Closeable {
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
         if (host.port() == -1) {
-            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
         }
         return LHInternalsGrpc.newBlockingStub(getChannel(host)).withCallCredentials(internalCredentials);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
         if (host.port() == -1) {
-            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
         }
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
     private LHInternalsStub getInternalAsyncClient(HostInfo host) {
         if (host.port() == -1) {
-            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
         }
         return LHInternalsGrpc.newStub(getChannel(host))
                 .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
