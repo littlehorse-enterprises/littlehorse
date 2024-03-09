@@ -7,8 +7,10 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -20,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +37,13 @@ public abstract class Workflow {
     protected PutWfSpecRequest.Builder spec;
     protected Queue<Pair<String, ThreadFunc>> threadFuncs;
     protected Integer defaultTaskTimeout;
-    protected int defaultTaskRetries;
     protected WorkflowRetentionPolicy wfRetentionPolicy;
     protected ThreadRetentionPolicy defaultThreadRetentionPolicy;
     protected String parentWfSpecName;
+
+    protected RetryPolicyCase defaultTaskRetryPolicyType;
+    protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
+    protected Integer defaultSimpleRetries;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -50,6 +56,7 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
+        this.defaultTaskRetryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
     }
 
     /**
@@ -77,20 +84,29 @@ public abstract class Workflow {
     }
 
     /**
-     * Set default number of retries for task nodes. If this method is not called,
-     * then there are zero retries for each task node.
-     * @param retries is the number of times to retry failed TaskRun executions.
+     * Tells the Workflow to configure (by default) a Simple Retry Policy for every Task Node. Passing
+     * a value of '1' means that there will be one retry upon failure. Retries are scheduled immediately
+     * without delay.
+     *
+     * Can be overriden by setting the retry policy on the WorkflowThread or TaskNodeOutput level.
+     * @param defaultSimpleRetries is the number ofretries to attempt.
      */
-    public void setDefaultTaskRetries(int retries) {
-        this.defaultTaskRetries = retries;
+    public void setDefaultSimpleTaskRetries(int defaultSimpleRetries) {
+        this.defaultTaskRetryPolicyType = RetryPolicyCase.SIMPLE_RETRIES;
+        this.defaultSimpleRetries = defaultSimpleRetries;
     }
 
     /**
-     * Get the default number of retries for task nodes.
-     * @return The default number of retries for task nodes.
+     * Tells the Workflow to configure (by default) the specified ExponentialBackoffRetryPolicy as
+     * the retry policy.
+     *
+     * Can be overriden by setting the retry policy on the WorkflowThread or TaskNodeOutput level.
+     * @param defaultPolicy is the Exponential Backoff Retry Policy to configure by default for all
+     * Task Nodes.
      */
-    public int getDefaultTaskRetries() {
-        return defaultTaskRetries;
+    public void setDefaultTaskExponentialBackoffPolicy(ExponentialBackoffRetryPolicy defaultPolicy) {
+        this.defaultTaskRetryPolicyType = RetryPolicyCase.EXPONENTIAL_BACKOFF;
+        this.defaultExponentialBackoff = defaultPolicy;
     }
 
     /**

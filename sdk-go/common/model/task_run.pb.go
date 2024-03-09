@@ -250,7 +250,9 @@ type TaskAttempt struct {
 	// Optional information provided by the Task Worker SDK for debugging. Usually, if set
 	// it contains a stacktrace or it contains information logged via `WorkerContext#log()`.
 	LogOutput *VariableValue `protobuf:"bytes,2,opt,name=log_output,json=logOutput,proto3,oneof" json:"log_output,omitempty"`
-	// The time the TaskAttempt was scheduled on the Task Queue.
+	// The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+	// in the TASK_PENDING status; for example, when waiting between retries with exponential
+	// backoff.
 	ScheduleTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=schedule_time,json=scheduleTime,proto3,oneof" json:"schedule_time,omitempty"`
 	// The time the TaskAttempt was pulled off the queue and sent to a TaskWorker.
 	StartTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`

@@ -115,15 +115,13 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                     new TaskRunSourceModel(
                             new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
                     taskToSchedule,
-                    executionContext);
-            taskRun.setId(taskRunId);
-            taskRun.getAttempts().add(new TaskAttemptModel());
+                    executionContext,
+                    taskRunId);
+
             executionContext.getableManager().put(taskRun);
-            executionContext.getTaskManager().scheduleTask(toSchedule);
 
+            taskRun.dispatchTaskToQueue();
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
-
-            executionContext.getableManager().put(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }

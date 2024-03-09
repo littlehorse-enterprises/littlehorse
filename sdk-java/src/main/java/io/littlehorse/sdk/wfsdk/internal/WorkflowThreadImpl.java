@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.sdk.common.proto.FailureDef;
@@ -261,7 +262,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new TaskNodeOutputImpl(nodeName, this);
     }
 
-    private TaskNode createTaskNode(String taskName, Object... args) {
+    private TaskNode createTaskNode(String taskName, Serializable... args) {
         TaskNode.Builder taskNode =
                 TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
         parent.addTaskDefName(taskName);
@@ -275,7 +276,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         // Can be overriden via NodeOutput.withRetries();
-        taskNode.setRetries(parent.getDefaultTaskRetries());
+        switch(parent.getRetryPolicyType()) {
+            case RETRYPOLICY_NOT_SET:
+                break;
+            case SIMPLE_RETRIES:
+                taskNode.setSimpleRetries(parent.getDefaultSimpleRetries().get());
+                break;
+            case EXPONENTIAL_BACKOFF:
+                taskNode.setExponentialBackoff(parent.getDefaultExponentialBackoffRetryPolicy().get());
+                break;
+        }
 
         return taskNode.build();
     }
@@ -499,7 +509,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new SpawnedThreadImpl(this, threadName, internalStartedThreadVar);
     }
 
-    public void overrideTaskRetries(TaskNodeOutputImpl node, int retries) {
+    public void overrideTaskSimpleRetries(TaskNodeOutputImpl node, int retries) {
         checkIfIsActive();
         Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
         if (nb.getNodeCase() != NodeCase.TASK) {
@@ -507,7 +517,35 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         TaskNode.Builder taskBuilder = nb.getTaskBuilder();
-        taskBuilder.setRetries(retries);
+        taskBuilder.setSimpleRetries(retries);
+
+        nb.setTask(taskBuilder);
+        spec.putNodes(node.nodeName, nb.build());
+    }
+
+    public void overrideTaskExponentialBackoffPolicy(TaskNodeOutputImpl node, ExponentialBackoffRetryPolicy policy) {
+        checkIfIsActive();
+        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
+        if (nb.getNodeCase() != NodeCase.TASK) {
+            throw new IllegalStateException("Impossible to not have task node here");
+        }
+
+        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
+        taskBuilder.setExponentialBackoff(policy);
+
+        nb.setTask(taskBuilder);
+        spec.putNodes(node.nodeName, nb.build());
+    }
+
+    public void removeRetryPolicy(TaskNodeOutputImpl node) {
+        checkIfIsActive();
+        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
+        if (nb.getNodeCase() != NodeCase.TASK) {
+            throw new IllegalStateException("Impossible to not have task node here");
+        }
+
+        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
+        taskBuilder.clearRetryPolicy();
 
         nb.setTask(taskBuilder);
         spec.putNodes(node.nodeName, nb.build());

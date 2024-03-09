@@ -1,9 +1,11 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
+import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -11,6 +13,7 @@ import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -123,5 +126,17 @@ public class WorkflowImpl extends Workflow {
         }
         threadFuncs.add(Pair.of(subThreadName, subThreadFunc));
         return subThreadName;
+    }
+
+    public RetryPolicyCase getRetryPolicyType() {
+        return defaultTaskRetryPolicyType;
+    }
+
+    protected Optional<ExponentialBackoffRetryPolicy> getDefaultExponentialBackoffRetryPolicy() {
+        return Optional.ofNullable(defaultExponentialBackoff);
+    }
+
+    protected Optional<Integer> getDefaultSimpleRetries() {
+        return Optional.ofNullable(defaultSimpleRetries);
     }
 }

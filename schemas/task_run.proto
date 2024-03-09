@@ -71,7 +71,9 @@ message TaskAttempt {
   // it contains a stacktrace or it contains information logged via `WorkerContext#log()`.
   optional VariableValue log_output = 2;
 
-  // The time the TaskAttempt was scheduled on the Task Queue.
+  // The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+  // in the TASK_PENDING status; for example, when waiting between retries with exponential
+  // backoff.
   optional google.protobuf.Timestamp schedule_time = 3;
 
   // The time the TaskAttempt was pulled off the queue and sent to a TaskWorker.

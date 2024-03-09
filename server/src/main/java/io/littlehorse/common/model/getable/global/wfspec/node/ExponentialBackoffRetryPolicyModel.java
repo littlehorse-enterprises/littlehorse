@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
+import java.util.Optional;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -45,7 +47,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
      * first retry.
      * @return the delay in milliseconds before the next TaskAttempt should be scheduled.
      */
-    public long calculateDelayForNextAttempt(int attemptNumber) {
+    private long doSomeMath(int attemptNumber) {
         if (attemptNumber <= 0 || attemptNumber > maxAttempts) {
             throw new IllegalArgumentException("Invalid attempt number");
         }
@@ -56,5 +58,16 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
 
         // Cap the delay to the maximum allowed delay
         return Math.min(delay, maxDelayMs);
+    }
+
+    /**
+     * Takes in an attempt number (where zero is the first attempt, 1 is the first retry, etc)
+     * and returns the delay in milliseconds before the next attempt should be scheduled. Returns
+     * empty if the attempts have been exhausted.
+     * @param attemptNumber is the zero-indexed attempt number.
+     * @return the delay in milliseconds before the next attempt.
+     */
+    public Optional<Long> calculateDelayForNextAttempt(int attemptNumber) {
+        return (attemptNumber >= maxAttempts) ? Optional.empty() : Optional.of(doSomeMath(attemptNumber));
     }
 }

@@ -84,7 +84,11 @@ export interface TaskAttempt {
   logOutput?:
     | VariableValue
     | undefined;
-  /** The time the TaskAttempt was scheduled on the Task Queue. */
+  /**
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
+   */
   scheduleTime?:
     | string
     | undefined;

@@ -630,7 +630,7 @@ type WorkflowEventId struct {
 	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
 	// The ID of the WorkflowEventDef that this WorkflowEvent is a member of.
 	WorkflowEventDefId *WorkflowEventDefId `protobuf:"bytes,2,opt,name=workflow_event_def_id,json=workflowEventDefId,proto3" json:"workflow_event_def_id,omitempty"`
-	// An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+	// A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
 	// same type thrown by the WfRun. This field starts at zero and is incremented every
 	// time a WorkflowEvent of the same type is thrown by the same WfRun.
 	Number int32 `protobuf:"varint,3,opt,name=number,proto3" json:"number,omitempty"`

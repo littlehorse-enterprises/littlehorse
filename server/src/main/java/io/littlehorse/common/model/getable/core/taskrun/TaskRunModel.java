@@ -10,6 +10,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
@@ -45,7 +46,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
-    private int maxAttempts;
     private TaskDefIdModel taskDefId;
     private List<VarNameAndValModel> inputVariables;
     private TaskRunSourceModel taskRunSource;
@@ -71,15 +71,36 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             List<VarNameAndValModel> inputVars,
             TaskRunSourceModel source,
             TaskNodeModel node,
-            ProcessorExecutionContext processorContext) {
+            ProcessorExecutionContext processorContext,
+            TaskRunIdModel id) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
         this.taskDefId = node.getTaskDefId();
-        this.maxAttempts = node.getRetries() + 1;
         this.timeoutSeconds = node.getTimeoutSeconds();
         this.executionContext = processorContext;
         this.processorContext = processorContext;
+        this.id = id;
+
+        // technically the enum's are different for the TaskNode and TaskRun proto, so this is
+        // unfortunately necessary.
+        switch (node.getRetryPolicyType()) {
+            case SIMPLE_RETRIES:
+                this.retryPolicyType = RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS;
+                // for compatibility with previous versions, TaskNode has retries, TaskRun has
+                // total attempts including retries. Confusing? Yeah...but hey we are gonna
+                // be compatible.
+                this.simpleTotalAttempts = 1 + node.getSimpleRetries();
+                break;
+            case EXPONENTIAL_BACKOFF:
+                this.retryPolicyType = RetryPolicyCase.EXPONENTIAL_BACKOFF;
+                this.exponentialBackoffRetryPolicy = node.getExponentialBackoffRetryPolicy();
+                break;
+            case RETRYPOLICY_NOT_SET:
+                this.retryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
+                break;
+        }
+
         transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
@@ -173,6 +194,22 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     /**
+     * Returns the ID of the WfRun that this TaskRun belongs to.
+     * @return the ID of the WfRun that this TaskRun belongs to.
+     */
+    public WfRunIdModel getWfRunId() {
+        return taskRunSource.getSubSource().getWfRunId();
+    }
+
+    /**
+     * Returns the WfRunModel that this TaskRunModel's TaskRun belongs to.
+     * @return the WfRun.
+     */
+    public WfRunModel getWfRun() {
+        return processorContext.getableManager().get(getWfRunId());
+    }
+
+    /**
      * Returns the status of this TaskRun, which is always given by the status of the latest
      * attempt.
      * @return
@@ -198,6 +235,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                 return false;
             case TASK_SCHEDULED:
             case TASK_RUNNING:
+            case TASK_PENDING:
             case UNRECOGNIZED:
         }
         return true;
@@ -214,39 +252,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return attempts.get(attempts.size() - 1);
     }
 
-    public boolean shouldRetry() {
-        // Shouldn't look at nodeRun to decide whether to retry task or not.
-        TaskAttemptModel latest = getLatestAttempt();
-        if (latest == null) {
-            // This really shouldn't happen I think
-            return false;
-        }
-
-        if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
-            // Can only retry timeout or task failure.
-            return false;
-        }
-
-        return attempts.size() < maxAttempts;
-    }
-
-    public void scheduleAttemptNow() {
-        ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
-        scheduledTask.setVariables(inputVariables);
-        scheduledTask.setAttemptNumber(attempts.size());
-        scheduledTask.setCreatedAt(new Date());
-        scheduledTask.setSource(taskRunSource);
-        scheduledTask.setTaskDefId(taskDefId);
-        scheduledTask.setTaskRunId(id);
-
-        // initialization happens here
-        attempts.add(new TaskAttemptModel());
-
-        processorContext.getTaskManager().scheduleTask(scheduledTask);
-        // TODO: Update Metrics
-    }
-
-    public void processStart(TaskClaimEvent se) {
+    public void onTaskAttemptStarted(TaskClaimEvent se) {
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
@@ -267,7 +273,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public void updateTaskResult(ReportTaskRunModel ce) {
+    public void onTaskAttemptResultReported(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
@@ -308,15 +314,85 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             transitionTo(ce.getStatus());
         }
 
+        // The WfRun may need to advance.
         processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
     }
 
     /**
-     * Returns the ID of the WfRun that this TaskRun belongs to.
-     * @return the ID of the WfRun that this TaskRun belongs to.
+     * Called when a TASK_PENDING retry attempt is now ready to launch according to the retry backoff
+     * policy.
      */
-    public WfRunIdModel getWfRunId() {
-        return taskRunSource.getSubSource().getWfRunId();
+    public void markAttemptReadyToSchedule() {
+        dispatchTaskToQueue();
+    }
+
+    /**
+     * Dispatches the latest TaskAttempt to the server's Task Queues.
+     */
+    public void dispatchTaskToQueue() {
+        if (attempts.isEmpty()) {
+            throw new IllegalStateException("can't have empty attempts queue");
+        }
+        TaskAttemptModel attempt = attempts.get(attempts.size() - 1);
+        if (attempt.getStatus() != TaskStatus.TASK_PENDING) {
+            throw new IllegalStateException("Cannot schedule task attempt that isn't in PENDING state");
+        }
+
+        attempt.setStatus(TaskStatus.TASK_SCHEDULED);
+        attempt.setScheduleTime(new Date());
+
+        ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
+        scheduledTask.setVariables(inputVariables);
+        scheduledTask.setAttemptNumber(attempts.size() - 1);
+        scheduledTask.setCreatedAt(new Date());
+        scheduledTask.setSource(taskRunSource);
+        scheduledTask.setTaskDefId(taskDefId);
+        scheduledTask.setTaskRunId(id);
+
+        processorContext.getTaskManager().scheduleTask(scheduledTask);
+    }
+
+    private boolean shouldRetry() {
+        // Shouldn't look at nodeRun to decide whether to retry task or not.
+        TaskAttemptModel latest = getLatestAttempt();
+        if (latest == null) {
+            // This really shouldn't happen I think
+            return false;
+        }
+
+        if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
+            // Can only retry timeout or task failure.
+            return false;
+        }
+
+        switch (retryPolicyType) {
+            case SIMPLE_TOTAL_ATTEMPTS:
+                return simpleTotalAttempts > attempts.size();
+            case EXPONENTIAL_BACKOFF:
+                return exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(attempts.size()).isPresent();
+            case RETRYPOLICY_NOT_SET:
+        }
+        return false;
+    }
+
+    private void scheduleRetryAtAppropriateTime() {
+        if (retryPolicyType == RetryPolicyCase.SIMPLE_TOTAL_ATTEMPTS) {
+            attempts.add(new TaskAttemptModel());
+            dispatchTaskToQueue();
+            return;
+        }
+
+        if (retryPolicyType != RetryPolicyCase.EXPONENTIAL_BACKOFF) {
+            throw new IllegalStateException("Unimplemented retry policy type");
+        }
+
+        long delayMs = exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(timeoutSeconds).get();
+        Date maturationTime = new Date(System.currentTimeMillis() + delayMs);
+        LHTimer timer = new LHTimer(new CommandModel(new TaskAttemptRetryReadyModel(id), maturationTime));
+        processorContext.getTaskManager().scheduleTimer(timer);
+
+        TaskAttemptModel nextAttempt = new TaskAttemptModel();
+        attempts.add(nextAttempt);
     }
 
     private void transitionTo(TaskStatus newStatus) {

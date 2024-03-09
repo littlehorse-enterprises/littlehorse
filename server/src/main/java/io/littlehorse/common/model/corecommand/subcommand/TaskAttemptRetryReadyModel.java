@@ -18,6 +18,12 @@ public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryR
 
     private TaskRunIdModel id;
 
+    public TaskAttemptRetryReadyModel() {}
+
+    public TaskAttemptRetryReadyModel(TaskRunIdModel id) {
+        this.id = id;
+    }
+
     @Override
     public Class<TaskAttemptRetryReady> getProtoBaseClass() {
         return TaskAttemptRetryReady.class;
@@ -40,7 +46,7 @@ public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryR
     public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
         TaskRunModel taskRun = context.getableManager().get(id);
         Date time = new Date();
-        taskRun.wakeUp(time);
+        taskRun.markAttemptReadyToSchedule();
         taskRun.getWfRun().advance(time);
         return Empty.getDefaultInstance();
     }
