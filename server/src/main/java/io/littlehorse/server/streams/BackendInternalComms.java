@@ -172,6 +172,20 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
+    private KeyQueryMetadata lookupPartitionKey(ObjectIdModel<?, ?, ?> id) {
+        return lookupPartitionKey(
+                id.getStore().getStoreName(), id.getPartitionKey().get());
+    }
+
+    private KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
+        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
+                storeName, partitionKey, Serdes.String().serializer());
+        if (metadata.activeHost().port() == -1 && metadata.activeHost().host().equals("unavailable")) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready yet");
+        }
+        return metadata;
+    }
+
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeError {
 
@@ -180,10 +194,7 @@ public class BackendInternalComms implements Closeable {
                     "Can't get object without partition key; metadata objects have their own store");
         }
 
-        String storeName = objectId.getStore().getStoreName();
-
-        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
-                storeName, objectId.getPartitionKey().get(), Serdes.String().serializer());
+        KeyQueryMetadata metadata = lookupPartitionKey(objectId);
 
         if (metadata.activeHost().equals(thisHost)) {
             return getObjectLocal(objectId, clazz, metadata.partition());
@@ -203,10 +214,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                ServerTopology.CORE_STORE,
-                command.getPartitionKey(),
-                Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(ServerTopology.CORE_STORE, command.getPartitionKey());
 
         /*
          * As a prerequisite to this method being called, the command has already
@@ -225,10 +233,7 @@ public class BackendInternalComms implements Closeable {
 
     public void doWaitForWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
         WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, executionContext());
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                ServerTopology.CORE_STORE,
-                wfRunId.getPartitionKey().get(),
-                Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(wfRunId);
 
         if (meta.activeHost().equals(thisHost)) {
             localWaitForWfEvent(
@@ -354,14 +359,23 @@ public class BackendInternalComms implements Closeable {
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
+        if (host.port() == -1) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
         return LHInternalsGrpc.newBlockingStub(getChannel(host)).withCallCredentials(internalCredentials);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
+        if (host.port() == -1) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
     private LHInternalsStub getInternalAsyncClient(HostInfo host) {
+        if (host.port() == -1) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
         return LHInternalsGrpc.newStub(getChannel(host))
                 .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
     }
@@ -598,8 +612,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanResponse specificPartitionTagScan(InternalScan search) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                search.getStoreName(), search.getPartitionKey(), Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(search.getStoreName(), search.getPartitionKey());
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
         HostInfo activeHost = meta.activeHost();
 
@@ -652,8 +665,7 @@ public class BackendInternalComms implements Closeable {
         }
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
 
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                req.storeName, req.partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(req.storeName, req.partitionKey);
         int partition = meta.partition();
 
         ReadOnlyTenantScopedStore store = getStore(partition, false, req.storeName);
@@ -822,8 +834,7 @@ public class BackendInternalComms implements Closeable {
             // Every processor has the global store, so we can always do the scan locally.
             return thisHost;
         }
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(storeName, partitionKey);
         return meta.activeHost();
     }
 
