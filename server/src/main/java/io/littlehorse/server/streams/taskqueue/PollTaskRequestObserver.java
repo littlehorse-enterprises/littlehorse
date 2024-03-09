@@ -52,12 +52,12 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     @Override
     public void onError(Throwable t) {
-        log.info(
+        taskQueueManager.onRequestDisconnected(this, tenantId);
+        log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
                 taskQueueManager.getBackend().getInstanceId(),
                 clientId,
                 taskDefId);
-        taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 
     @Override

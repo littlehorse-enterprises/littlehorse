@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -64,7 +63,7 @@ public class OneTaskQueue {
         try {
             lock.lock();
             hungryClients.removeIf(thing -> {
-                log.debug(
+                log.trace(
                         "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
                         parent.getBackend().getInstanceId(),
                         taskDefName,
@@ -92,12 +91,12 @@ public class OneTaskQueue {
      * iterate through all
      * currently scheduled but not started tasks in the state store.
      *
-     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest
+     * @param scheduledTask is the ::getObjectId() for the TaskScheduleRequest
      *                        that was just
      *                        scheduled.
      * @return True if the task was successfully scheduled, or False if the queue is full.
      */
-    public boolean onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
+    public boolean onTaskScheduled(ScheduledTaskModel scheduledTask) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -106,12 +105,10 @@ public class OneTaskQueue {
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
                 hostName,
-                LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto()),
+                LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
 
         PollTaskRequestObserver luckyClient = null;
-        // long result = 0;
-        // long start = System.nanoTime();
         try {
             lock.lock();
             if (!hungryClients.isEmpty()) {
@@ -123,7 +120,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                return pendingTasks.offer(scheduledTaskId);
+                return pendingTasks.offer(scheduledTask);
             }
         } finally {
             lock.unlock();
@@ -131,7 +128,7 @@ public class OneTaskQueue {
 
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTaskId, luckyClient);
+            parent.itsAMatch(scheduledTask, luckyClient);
             return true;
         }
         return hungryClients.isEmpty();
@@ -189,6 +186,9 @@ public class OneTaskQueue {
         }
     }
 
+    /**
+     * Can only be called within a lock
+     */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
@@ -198,15 +198,22 @@ public class OneTaskQueue {
                 + "/";
         String endKey = startKey + "~";
         try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.tagScan(startKey, endKey)) {
-            final AtomicBoolean queueOutOfCapacity = new AtomicBoolean(false);
-            while (result.hasNext() && !queueOutOfCapacity.get()) {
+
+            // Not needed to be atomic since this method is called within a lock
+            boolean queueOutOfCapacity = false;
+
+            while (result.hasNext() && !queueOutOfCapacity) {
                 Tag tag = result.next().getValue();
                 String describedObjectId = tag.getDescribedObjectId();
                 TaskRunIdModel taskRunId =
                         (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
                 if (scheduledTask != null) {
-                    queueOutOfCapacity.set(!pendingTasks.offer(scheduledTask));
+                    if (!hungryClients.isEmpty()) {
+                        parent.itsAMatch(scheduledTask, hungryClients.remove());
+                    } else {
+                        queueOutOfCapacity = !pendingTasks.offer(scheduledTask);
+                    }
                 }
             }
         }
