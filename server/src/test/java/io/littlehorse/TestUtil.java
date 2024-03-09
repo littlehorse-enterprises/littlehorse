@@ -36,6 +36,7 @@ import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.TaskRun.RetryPolicyCase;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -142,7 +143,7 @@ public class TestUtil {
         taskRun.setTaskRunSource(new TaskRunSourceModel(
                 new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
         taskRun.setTaskDefId(taskDefId);
-        taskRun.setMaxAttempts(10);
+        taskRun.setRetryPolicyType(RetryPolicyCase.RETRYPOLICY_NOT_SET);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
 

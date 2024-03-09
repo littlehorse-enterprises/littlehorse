@@ -33,7 +33,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private LHTaskErrorModel error;
 
     public TaskAttemptModel() {
-        this.status = TaskStatus.TASK_SCHEDULED;
+        this.status = TaskStatus.TASK_PENDING;
     }
 
     @Override

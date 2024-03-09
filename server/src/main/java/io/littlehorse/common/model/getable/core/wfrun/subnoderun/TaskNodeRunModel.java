@@ -108,11 +108,16 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         // Create a TaskRun
         TaskNodeReferenceModel source = new TaskNodeReferenceModel(nodeRun.getObjectId(), nodeRun.getWfSpecId());
-        
+
         this.taskRunId = new TaskRunIdModel(nodeRun.getId().getWfRunId(), processorContext);
         TaskRunModel task = new TaskRunModel(
-                inputVariables, new TaskRunSourceModel(source, processorContext), node, processorContext, this.taskRunId);
+                inputVariables,
+                new TaskRunSourceModel(source, processorContext),
+                node,
+                processorContext,
+                this.taskRunId);
         task.setId(taskRunId);
+        task.dispatchTaskToQueue();
 
         // When creating a new Getable for the first time, we need to explicitly save it.
         processorContext.getableManager().put(task);

@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
-import java.util.Optional;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.Getter;
 
 @Getter

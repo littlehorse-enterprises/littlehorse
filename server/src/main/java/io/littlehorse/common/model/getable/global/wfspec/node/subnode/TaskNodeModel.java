@@ -60,6 +60,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     public TaskNodeModel() {
         variables = new ArrayList<>();
+        this.retryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
     }
 
     public void setNode(NodeModel node) {

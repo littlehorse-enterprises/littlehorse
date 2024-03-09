@@ -101,6 +101,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                 break;
         }
 
+        this.attempts.add(new TaskAttemptModel());
+
         transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
@@ -125,6 +127,20 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         for (VarNameAndVal v : p.getInputVariablesList()) {
             inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
+
+        retryPolicyType = p.getRetryPolicyCase();
+        switch (retryPolicyType) {
+            case SIMPLE_TOTAL_ATTEMPTS:
+                simpleTotalAttempts = p.getSimpleTotalAttempts();
+                break;
+            case EXPONENTIAL_BACKOFF:
+                exponentialBackoffRetryPolicy = LHSerializable.fromProto(
+                        p.getExponentialBackoff(), ExponentialBackoffRetryPolicyModel.class, context);
+                break;
+            case RETRYPOLICY_NOT_SET:
+                // nothing to do
+        }
+
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
@@ -144,6 +160,17 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         }
         for (TaskAttemptModel attempt : attempts) {
             out.addAttempts(attempt.toProto());
+        }
+
+        switch (retryPolicyType) {
+            case SIMPLE_TOTAL_ATTEMPTS:
+                out.setSimpleTotalAttempts(simpleTotalAttempts);
+                break;
+            case EXPONENTIAL_BACKOFF:
+                out.setExponentialBackoff(exponentialBackoffRetryPolicy.toProto());
+                break;
+            case RETRYPOLICY_NOT_SET:
+                // nothing to do
         }
 
         return out;
@@ -369,7 +396,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             case SIMPLE_TOTAL_ATTEMPTS:
                 return simpleTotalAttempts > attempts.size();
             case EXPONENTIAL_BACKOFF:
-                return exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(attempts.size()).isPresent();
+                return exponentialBackoffRetryPolicy
+                        .calculateDelayForNextAttempt(attempts.size())
+                        .isPresent();
             case RETRYPOLICY_NOT_SET:
         }
         return false;
@@ -386,7 +415,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             throw new IllegalStateException("Unimplemented retry policy type");
         }
 
-        long delayMs = exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(timeoutSeconds).get();
+        long delayMs = exponentialBackoffRetryPolicy
+                .calculateDelayForNextAttempt(timeoutSeconds)
+                .get();
         Date maturationTime = new Date(System.currentTimeMillis() + delayMs);
         LHTimer timer = new LHTimer(new CommandModel(new TaskAttemptRetryReadyModel(id), maturationTime));
         processorContext.getTaskManager().scheduleTimer(timer);

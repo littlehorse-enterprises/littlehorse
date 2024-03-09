@@ -276,14 +276,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         // Can be overriden via NodeOutput.withRetries();
-        switch(parent.getRetryPolicyType()) {
+        switch (parent.getRetryPolicyType()) {
             case RETRYPOLICY_NOT_SET:
                 break;
             case SIMPLE_RETRIES:
                 taskNode.setSimpleRetries(parent.getDefaultSimpleRetries().get());
                 break;
             case EXPONENTIAL_BACKOFF:
-                taskNode.setExponentialBackoff(parent.getDefaultExponentialBackoffRetryPolicy().get());
+                taskNode.setExponentialBackoff(
+                        parent.getDefaultExponentialBackoffRetryPolicy().get());
                 break;
         }
 
