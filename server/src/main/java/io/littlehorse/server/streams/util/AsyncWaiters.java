@@ -130,15 +130,14 @@ public class AsyncWaiters {
             Duration timePassed = Duration.between(
                     Instant.now(), pair.getValue().getArrivalTime().toInstant());
             if (timePassed.compareTo(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME) > 0) {
-                break;
+                CommandWaiter waiter = pair.getValue();
+                if (waiter.getObserver() != null) {
+                    waiter.getObserver()
+                            .onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                                    "Command not processed within deadline: likely due to rebalance")));
+                }
+                iter.remove();
             }
-            CommandWaiter waiter = pair.getValue();
-            if (waiter.getObserver() != null) {
-                waiter.getObserver()
-                        .onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
-                                "Command not processed within deadline: likely due to rebalance")));
-            }
-            iter.remove();
         }
     }
 
