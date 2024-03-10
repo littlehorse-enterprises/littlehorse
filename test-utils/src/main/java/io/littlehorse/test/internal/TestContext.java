@@ -18,7 +18,6 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.LHWorkflowEvent;
-import io.littlehorse.test.WorkflowEventProvider;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.lang.reflect.Field;
@@ -71,8 +70,7 @@ public class TestContext {
                 ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHWorkflowEvent.class);
         for (Field annotatedField : annotatedFields) {
             annotatedField.setAccessible(true);
-            WorkflowEventProvider fieldVal = (WorkflowEventProvider) annotatedField.get(testInstance);
-            results.add(fieldVal.get());
+            results.add((PutWorkflowEventDefRequest) annotatedField.get(testInstance));
         }
         return results;
     }
@@ -116,6 +114,7 @@ public class TestContext {
         if (!workflowEventDefMap.containsKey(req.getName())) {
             WorkflowEventDef result = lhClient.putWorkflowEventDef(req);
             workflowEventDefMap.put(req.getName(), result);
+            lhClient.putWorkflowEventDef(req);
         }
     }
 
