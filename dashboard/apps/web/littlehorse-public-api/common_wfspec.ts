@@ -454,23 +454,16 @@ export interface UTActionTrigger_UTAReassign {
  *
  * min(base_interval_seconds * (multiplier ^N), max_delay_seconds)
  *
- * Note that timers in LittleHorse have a resolution of one second. Therefore,
- * the actual delay is rounded to the nearest second. For example, a delay of
- * 400 milliseconds is rounded to zero seconds, and the new TaskAttempt is
- * immediately placed onto the Task Queue and will be executed as soon as a
- * Task Worker polls it.
- *
- * On the contrary, a delay of 800 milliseconds rounds to one second, and
- * the scheduler dispatches a timer to be matured in a second. Once the timer
- * is matured, then the new TaskAttempt is placed on the task queue.
+ * Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
+ * so timing is not exact.
  */
 export interface ExponentialBackoffRetryPolicy {
   /**
-   * Base delay in ms for the first retry. We recommend starting with 400.
-   * Note that in LittleHorse, timers have a resolution of 1 second.
+   * Base delay in ms for the first retry. Note that in LittleHorse, timers have a
+   * resolution of 500-1000 milliseconds. Must be greater than zero.
    */
   baseIntervalMs: number;
-  /** Maximum delay in seconds between retries. */
+  /** Maximum delay in milliseconds between retries. */
   maxDelayMs: number;
   /**
    * Maximum number of retries to schedule. Setting this to `1` means that one retry
@@ -479,7 +472,7 @@ export interface ExponentialBackoffRetryPolicy {
   maxRetries: number;
   /**
    * The multiplier to use in calculating the retry backoff policy. We recommend
-   * starting with 2.0.
+   * starting with 2.0. Must be at least 1.0.
    */
   multiplier: number;
 }

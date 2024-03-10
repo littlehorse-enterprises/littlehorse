@@ -681,30 +681,23 @@ func (*UTActionTrigger_Reassign) isUTActionTrigger_Action() {}
 //
 // min(base_interval_seconds * (multiplier ^N), max_delay_seconds)
 //
-// Note that timers in LittleHorse have a resolution of one second. Therefore,
-// the actual delay is rounded to the nearest second. For example, a delay of
-// 400 milliseconds is rounded to zero seconds, and the new TaskAttempt is
-// immediately placed onto the Task Queue and will be executed as soon as a
-// Task Worker polls it.
-//
-// On the contrary, a delay of 800 milliseconds rounds to one second, and
-// the scheduler dispatches a timer to be matured in a second. Once the timer
-// is matured, then the new TaskAttempt is placed on the task queue.
+// Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
+// so timing is not exact.
 type ExponentialBackoffRetryPolicy struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Base delay in ms for the first retry. We recommend starting with 400.
-	// Note that in LittleHorse, timers have a resolution of 1 second.
+	// Base delay in ms for the first retry. Note that in LittleHorse, timers have a
+	// resolution of 500-1000 milliseconds. Must be greater than zero.
 	BaseIntervalMs int32 `protobuf:"varint,1,opt,name=base_interval_ms,json=baseIntervalMs,proto3" json:"base_interval_ms,omitempty"`
-	// Maximum delay in seconds between retries.
+	// Maximum delay in milliseconds between retries.
 	MaxDelayMs int64 `protobuf:"varint,2,opt,name=max_delay_ms,json=maxDelayMs,proto3" json:"max_delay_ms,omitempty"`
 	// Maximum number of retries to schedule. Setting this to `1` means that one retry
 	// will be scheduled after a failed first task attempt.
 	MaxRetries int32 `protobuf:"varint,3,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`
 	// The multiplier to use in calculating the retry backoff policy. We recommend
-	// starting with 2.0.
+	// starting with 2.0. Must be at least 1.0.
 	Multiplier float32 `protobuf:"fixed32,4,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
 }
 

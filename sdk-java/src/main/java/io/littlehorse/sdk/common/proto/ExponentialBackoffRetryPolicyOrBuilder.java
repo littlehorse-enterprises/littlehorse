@@ -9,8 +9,8 @@ public interface ExponentialBackoffRetryPolicyOrBuilder extends
 
   /**
    * <pre>
-   * Base delay in ms for the first retry. We recommend starting with 400.
-   * Note that in LittleHorse, timers have a resolution of 1 second.
+   * Base delay in ms for the first retry. Note that in LittleHorse, timers have a
+   * resolution of 500-1000 milliseconds. Must be greater than zero.
    * </pre>
    *
    * <code>int32 base_interval_ms = 1;</code>
@@ -20,7 +20,7 @@ public interface ExponentialBackoffRetryPolicyOrBuilder extends
 
   /**
    * <pre>
-   * Maximum delay in seconds between retries.
+   * Maximum delay in milliseconds between retries.
    * </pre>
    *
    * <code>int64 max_delay_ms = 2;</code>
@@ -42,7 +42,7 @@ public interface ExponentialBackoffRetryPolicyOrBuilder extends
   /**
    * <pre>
    * The multiplier to use in calculating the retry backoff policy. We recommend
-   * starting with 2.0.
+   * starting with 2.0. Must be at least 1.0.
    * </pre>
    *
    * <code>float multiplier = 4;</code>
