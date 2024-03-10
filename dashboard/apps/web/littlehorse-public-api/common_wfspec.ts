@@ -472,8 +472,11 @@ export interface ExponentialBackoffRetryPolicy {
   baseIntervalMs: number;
   /** Maximum delay in seconds between retries. */
   maxDelayMs: number;
-  /** Maximum number of retry attempts to schedule. */
-  maxAttempts: number;
+  /**
+   * Maximum number of retries to schedule. Setting this to `1` means that one retry
+   * will be scheduled after a failed first task attempt.
+   */
+  maxRetries: number;
   /**
    * The multiplier to use in calculating the retry backoff policy. We recommend
    * starting with 2.0.
@@ -1326,7 +1329,7 @@ export const UTActionTrigger_UTAReassign = {
 };
 
 function createBaseExponentialBackoffRetryPolicy(): ExponentialBackoffRetryPolicy {
-  return { baseIntervalMs: 0, maxDelayMs: 0, maxAttempts: 0, multiplier: 0 };
+  return { baseIntervalMs: 0, maxDelayMs: 0, maxRetries: 0, multiplier: 0 };
 }
 
 export const ExponentialBackoffRetryPolicy = {
@@ -1337,8 +1340,8 @@ export const ExponentialBackoffRetryPolicy = {
     if (message.maxDelayMs !== 0) {
       writer.uint32(16).int64(message.maxDelayMs);
     }
-    if (message.maxAttempts !== 0) {
-      writer.uint32(24).int32(message.maxAttempts);
+    if (message.maxRetries !== 0) {
+      writer.uint32(24).int32(message.maxRetries);
     }
     if (message.multiplier !== 0) {
       writer.uint32(37).float(message.multiplier);
@@ -1372,7 +1375,7 @@ export const ExponentialBackoffRetryPolicy = {
             break;
           }
 
-          message.maxAttempts = reader.int32();
+          message.maxRetries = reader.int32();
           continue;
         case 4:
           if (tag !== 37) {
@@ -1394,7 +1397,7 @@ export const ExponentialBackoffRetryPolicy = {
     return {
       baseIntervalMs: isSet(object.baseIntervalMs) ? globalThis.Number(object.baseIntervalMs) : 0,
       maxDelayMs: isSet(object.maxDelayMs) ? globalThis.Number(object.maxDelayMs) : 0,
-      maxAttempts: isSet(object.maxAttempts) ? globalThis.Number(object.maxAttempts) : 0,
+      maxRetries: isSet(object.maxRetries) ? globalThis.Number(object.maxRetries) : 0,
       multiplier: isSet(object.multiplier) ? globalThis.Number(object.multiplier) : 0,
     };
   },
@@ -1407,8 +1410,8 @@ export const ExponentialBackoffRetryPolicy = {
     if (message.maxDelayMs !== 0) {
       obj.maxDelayMs = Math.round(message.maxDelayMs);
     }
-    if (message.maxAttempts !== 0) {
-      obj.maxAttempts = Math.round(message.maxAttempts);
+    if (message.maxRetries !== 0) {
+      obj.maxRetries = Math.round(message.maxRetries);
     }
     if (message.multiplier !== 0) {
       obj.multiplier = message.multiplier;
@@ -1425,7 +1428,7 @@ export const ExponentialBackoffRetryPolicy = {
     const message = createBaseExponentialBackoffRetryPolicy();
     message.baseIntervalMs = object.baseIntervalMs ?? 0;
     message.maxDelayMs = object.maxDelayMs ?? 0;
-    message.maxAttempts = object.maxAttempts ?? 0;
+    message.maxRetries = object.maxRetries ?? 0;
     message.multiplier = object.multiplier ?? 0;
     return message;
   },

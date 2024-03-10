@@ -86,19 +86,20 @@ private static final long serialVersionUID = 0L;
     return maxDelayMs_;
   }
 
-  public static final int MAX_ATTEMPTS_FIELD_NUMBER = 3;
-  private int maxAttempts_ = 0;
+  public static final int MAX_RETRIES_FIELD_NUMBER = 3;
+  private int maxRetries_ = 0;
   /**
    * <pre>
-   * Maximum number of retry attempts to schedule.
+   * Maximum number of retries to schedule. Setting this to `1` means that one retry
+   * will be scheduled after a failed first task attempt.
    * </pre>
    *
-   * <code>int32 max_attempts = 3;</code>
-   * @return The maxAttempts.
+   * <code>int32 max_retries = 3;</code>
+   * @return The maxRetries.
    */
   @java.lang.Override
-  public int getMaxAttempts() {
-    return maxAttempts_;
+  public int getMaxRetries() {
+    return maxRetries_;
   }
 
   public static final int MULTIPLIER_FIELD_NUMBER = 4;
@@ -137,8 +138,8 @@ private static final long serialVersionUID = 0L;
     if (maxDelayMs_ != 0L) {
       output.writeInt64(2, maxDelayMs_);
     }
-    if (maxAttempts_ != 0) {
-      output.writeInt32(3, maxAttempts_);
+    if (maxRetries_ != 0) {
+      output.writeInt32(3, maxRetries_);
     }
     if (java.lang.Float.floatToRawIntBits(multiplier_) != 0) {
       output.writeFloat(4, multiplier_);
@@ -160,9 +161,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(2, maxDelayMs_);
     }
-    if (maxAttempts_ != 0) {
+    if (maxRetries_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, maxAttempts_);
+        .computeInt32Size(3, maxRetries_);
     }
     if (java.lang.Float.floatToRawIntBits(multiplier_) != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -187,8 +188,8 @@ private static final long serialVersionUID = 0L;
         != other.getBaseIntervalMs()) return false;
     if (getMaxDelayMs()
         != other.getMaxDelayMs()) return false;
-    if (getMaxAttempts()
-        != other.getMaxAttempts()) return false;
+    if (getMaxRetries()
+        != other.getMaxRetries()) return false;
     if (java.lang.Float.floatToIntBits(getMultiplier())
         != java.lang.Float.floatToIntBits(
             other.getMultiplier())) return false;
@@ -208,8 +209,8 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + MAX_DELAY_MS_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getMaxDelayMs());
-    hash = (37 * hash) + MAX_ATTEMPTS_FIELD_NUMBER;
-    hash = (53 * hash) + getMaxAttempts();
+    hash = (37 * hash) + MAX_RETRIES_FIELD_NUMBER;
+    hash = (53 * hash) + getMaxRetries();
     hash = (37 * hash) + MULTIPLIER_FIELD_NUMBER;
     hash = (53 * hash) + java.lang.Float.floatToIntBits(
         getMultiplier());
@@ -363,7 +364,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       baseIntervalMs_ = 0;
       maxDelayMs_ = 0L;
-      maxAttempts_ = 0;
+      maxRetries_ = 0;
       multiplier_ = 0F;
       return this;
     }
@@ -405,7 +406,7 @@ private static final long serialVersionUID = 0L;
         result.maxDelayMs_ = maxDelayMs_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.maxAttempts_ = maxAttempts_;
+        result.maxRetries_ = maxRetries_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.multiplier_ = multiplier_;
@@ -462,8 +463,8 @@ private static final long serialVersionUID = 0L;
       if (other.getMaxDelayMs() != 0L) {
         setMaxDelayMs(other.getMaxDelayMs());
       }
-      if (other.getMaxAttempts() != 0) {
-        setMaxAttempts(other.getMaxAttempts());
+      if (other.getMaxRetries() != 0) {
+        setMaxRetries(other.getMaxRetries());
       }
       if (other.getMultiplier() != 0F) {
         setMultiplier(other.getMultiplier());
@@ -505,7 +506,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 24: {
-              maxAttempts_ = input.readInt32();
+              maxRetries_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
             } // case 24
@@ -622,46 +623,49 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int maxAttempts_ ;
+    private int maxRetries_ ;
     /**
      * <pre>
-     * Maximum number of retry attempts to schedule.
+     * Maximum number of retries to schedule. Setting this to `1` means that one retry
+     * will be scheduled after a failed first task attempt.
      * </pre>
      *
-     * <code>int32 max_attempts = 3;</code>
-     * @return The maxAttempts.
+     * <code>int32 max_retries = 3;</code>
+     * @return The maxRetries.
      */
     @java.lang.Override
-    public int getMaxAttempts() {
-      return maxAttempts_;
+    public int getMaxRetries() {
+      return maxRetries_;
     }
     /**
      * <pre>
-     * Maximum number of retry attempts to schedule.
+     * Maximum number of retries to schedule. Setting this to `1` means that one retry
+     * will be scheduled after a failed first task attempt.
      * </pre>
      *
-     * <code>int32 max_attempts = 3;</code>
-     * @param value The maxAttempts to set.
+     * <code>int32 max_retries = 3;</code>
+     * @param value The maxRetries to set.
      * @return This builder for chaining.
      */
-    public Builder setMaxAttempts(int value) {
+    public Builder setMaxRetries(int value) {
 
-      maxAttempts_ = value;
+      maxRetries_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Maximum number of retry attempts to schedule.
+     * Maximum number of retries to schedule. Setting this to `1` means that one retry
+     * will be scheduled after a failed first task attempt.
      * </pre>
      *
-     * <code>int32 max_attempts = 3;</code>
+     * <code>int32 max_retries = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearMaxAttempts() {
+    public Builder clearMaxRetries() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      maxAttempts_ = 0;
+      maxRetries_ = 0;
       onChanged();
       return this;
     }

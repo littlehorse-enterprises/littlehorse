@@ -240,8 +240,9 @@ message ExponentialBackoffRetryPolicy {
     // Maximum delay in seconds between retries.
     int64 max_delay_ms = 2;
 
-    // Maximum number of retry attempts to schedule.
-    int32 max_attempts = 3;
+    // Maximum number of retries to schedule. Setting this to `1` means that one retry
+    // will be scheduled after a failed first task attempt.
+    int32 max_retries = 3;
 
     // The multiplier to use in calculating the retry backoff policy. We recommend
     // starting with 2.0.

@@ -164,6 +164,42 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         if (timeoutSeconds == 0) {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
+
+        validateRetryPolicy();
+    }
+
+    private void validateRetryPolicy() throws LHApiException {
+        switch (retryPolicyType) {
+            case RETRYPOLICY_NOT_SET: {
+                // nothing to validate (:
+                return;
+            }
+            case SIMPLE_RETRIES: {
+                if (simpleRetries < 0) {
+                    throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot have negative retries!");
+                }
+                return;
+            }
+            case EXPONENTIAL_BACKOFF: {
+                if (exponentialBackoffRetryPolicy.getBaseIntervalMs() <= 0) {
+                    throw new LHApiException(Status.INVALID_ARGUMENT, "Exponential Backoff Base interval must be > 0!");
+                }
+                if (exponentialBackoffRetryPolicy.getMultiplier() < 1.0) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Exponential Backoff Multiplier must be at least 1.0!");
+                }
+                if (exponentialBackoffRetryPolicy.getMaxRetries() < 1) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "With Exponential Backoff you must configure at least 1 max attempt");
+                }
+                if (exponentialBackoffRetryPolicy.getMaxDelayMs() < exponentialBackoffRetryPolicy.getBaseIntervalMs()) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Exponential Backoff max delay cannot be less than base delay");
+                }
+                return;
+            }
+        }
     }
 
     @Override

@@ -30,13 +30,14 @@ public interface ExponentialBackoffRetryPolicyOrBuilder extends
 
   /**
    * <pre>
-   * Maximum number of retry attempts to schedule.
+   * Maximum number of retries to schedule. Setting this to `1` means that one retry
+   * will be scheduled after a failed first task attempt.
    * </pre>
    *
-   * <code>int32 max_attempts = 3;</code>
-   * @return The maxAttempts.
+   * <code>int32 max_retries = 3;</code>
+   * @return The maxRetries.
    */
-  int getMaxAttempts();
+  int getMaxRetries();
 
   /**
    * <pre>

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
@@ -12,6 +13,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -151,38 +153,77 @@ public class WorkflowThreadImplTest {
         Node taskNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
 
-        assertThat(taskNode.getTask().getRetries()).isEqualTo(0);
+        assertThat(taskNode.getTask().getRetryPolicyCase()).isEqualTo(RetryPolicyCase.RETRYPOLICY_NOT_SET);
     }
 
     @Test
     void setIndividualRetry() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf").withRetries(2);
+            thread.execute("asdf").withSimpleRetries(2);
             ;
         });
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node taskNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
 
-        assertThat(taskNode.getTask().getRetries()).isEqualTo(2);
+        assertThat(taskNode.getTask().getSimpleRetries()).isEqualTo(2);
     }
 
     @Test
     void setDefaultRetryAndOverride() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.execute("asdf");
-            thread.execute("asdf").withRetries(2);
+            thread.execute("asdf").withSimpleRetries(2);
         });
-        wf.setDefaultTaskRetries(1);
+        wf.setDefaultSimpleTaskRetries(1);
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node defaultNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
 
-        assertThat(defaultNode.getTask().getRetries()).isEqualTo(1);
+        assertThat(defaultNode.getTask().getSimpleRetries()).isEqualTo(1);
 
         Node overridenNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
-        assertThat(overridenNode.getTask().getRetries()).isEqualTo(2);
+        assertThat(overridenNode.getTask().getSimpleRetries()).isEqualTo(2);
+    }
+
+    @Test
+    void setDefaultExponentialBackoffPolicyAndOverride() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf");
+            thread.execute("asdf").withSimpleRetries(2);
+            thread.execute("asdf")
+                    .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
+                            .setBaseIntervalMs(500)
+                            .setMultiplier(137)
+                            .setMaxRetries(42)
+                            .setMaxDelayMs(100000)
+                            .build());
+        });
+        wf.setDefaultTaskExponentialBackoffPolicy(ExponentialBackoffRetryPolicy.newBuilder()
+                .setBaseIntervalMs(500)
+                .setMultiplier(2)
+                .setMaxRetries(5)
+                .setMaxDelayMs(50000)
+                .build());
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        Node defaultNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+        assertThat(defaultNode.getTask().getExponentialBackoff().getBaseIntervalMs())
+                .isEqualTo(500);
+
+        Node overridenNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
+        assertThat(overridenNode.getTask().getSimpleRetries()).isEqualTo(2);
+
+        Node overridenNodeWithExponential =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("3-asdf-TASK");
+        assertThat(overridenNodeWithExponential
+                        .getTask()
+                        .getExponentialBackoff()
+                        .getMultiplier())
+                .isEqualTo(137);
     }
 
     @Test

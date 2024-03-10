@@ -12,7 +12,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
 
     private int baseIntervalMs;
     private long maxDelayMs;
-    private int maxAttempts;
+    private int maxRetries;
     private float multiplier;
 
     @Override
@@ -25,7 +25,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
         ExponentialBackoffRetryPolicy.Builder out = ExponentialBackoffRetryPolicy.newBuilder()
                 .setBaseIntervalMs(baseIntervalMs)
                 .setMaxDelayMs(maxDelayMs)
-                .setMaxAttempts(maxAttempts)
+                .setMaxRetries(maxRetries)
                 .setMultiplier(multiplier);
 
         return out;
@@ -36,7 +36,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
         ExponentialBackoffRetryPolicy p = (ExponentialBackoffRetryPolicy) proto;
         baseIntervalMs = p.getBaseIntervalMs();
         maxDelayMs = p.getMaxDelayMs();
-        maxAttempts = p.getMaxAttempts();
+        maxRetries = p.getMaxRetries();
         multiplier = p.getMultiplier();
     }
 
@@ -47,7 +47,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
      * @return the delay in milliseconds before the next TaskAttempt should be scheduled.
      */
     private long doSomeMath(int attemptNumber) {
-        if (attemptNumber <= 0 || attemptNumber > maxAttempts) {
+        if (attemptNumber <= 0 || attemptNumber > maxRetries) {
             throw new IllegalArgumentException("Invalid attempt number");
         }
 
@@ -67,6 +67,6 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
      * @return the delay in milliseconds before the next attempt.
      */
     public Optional<Long> calculateDelayForNextAttempt(int attemptNumber) {
-        return (attemptNumber >= maxAttempts) ? Optional.empty() : Optional.of(doSomeMath(attemptNumber));
+        return (attemptNumber >= maxRetries) ? Optional.empty() : Optional.of(doSomeMath(attemptNumber));
     }
 }
