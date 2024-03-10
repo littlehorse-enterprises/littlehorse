@@ -5,8 +5,12 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class ExponentialBackoffRetryPolicyModel extends LHSerializable<ExponentialBackoffRetryPolicy> {
 
