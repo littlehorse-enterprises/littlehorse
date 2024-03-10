@@ -2,10 +2,6 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Duration;
-
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -19,6 +15,8 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
 
 @LHTest
 public class RetryTest {
@@ -35,12 +33,13 @@ public class RetryTest {
             WfRunVariable timesToFailBackoff = wf.addVariable("times-to-fail-backoff", 1);
 
             wf.execute("retry-task", timesToFailSimple).withSimpleRetries(2);
-            wf.execute("retry-task", timesToFailBackoff).withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
-                    .setBaseIntervalMs(1000)
-                    .setMultiplier(2)
-                    .setMaxDelayMs(2000)
-                    .setMaxRetries(2)
-                    .build());
+            wf.execute("retry-task", timesToFailBackoff)
+                    .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
+                            .setBaseIntervalMs(1000)
+                            .setMultiplier(2)
+                            .setMaxDelayMs(2000)
+                            .setMaxRetries(2)
+                            .build());
         });
     }
 
@@ -55,7 +54,8 @@ public class RetryTest {
                     // next TaskRun should be the time that the `ReportTaskRun` is processed by the command processor.
                     // That generally happens in 10-30ms, so we will put a time limit of 50. If this becomes flaky, we
                     // can re-evaluate it.
-                    assertThat(millisecondsBetween(task.getAttempts(0), task.getAttempts(1))).isLessThan(50);
+                    assertThat(millisecondsBetween(task.getAttempts(0), task.getAttempts(1)))
+                            .isLessThan(50);
                 })
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
@@ -80,8 +80,10 @@ public class RetryTest {
                     assertThat(task.getAttemptsCount()).isEqualTo(3);
 
                     // The base is 1000, then the max delay is 2000.
-                    assertThat(millisecondsBetween(task.getAttempts(0), task.getAttempts(1))).isBetween(1000L, 2100L);
-                    assertThat(millisecondsBetween(task.getAttempts(1), task.getAttempts(2))).isBetween(2000L, 3100L);
+                    assertThat(millisecondsBetween(task.getAttempts(0), task.getAttempts(1)))
+                            .isBetween(1000L, 2100L);
+                    assertThat(millisecondsBetween(task.getAttempts(1), task.getAttempts(2)))
+                            .isBetween(2000L, 3100L);
                 })
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
@@ -108,7 +110,8 @@ public class RetryTest {
 
     private long millisecondsBetween(TaskAttempt first, TaskAttempt second) {
         long firstEndTime = LHLibUtil.fromProtoTs(first.getEndTime()).getTime();
-        long secondScheduleTime = LHLibUtil.fromProtoTs(second.getScheduleTime()).getTime();
+        long secondScheduleTime =
+                LHLibUtil.fromProtoTs(second.getScheduleTime()).getTime();
         return secondScheduleTime - firstEndTime;
     }
 }
