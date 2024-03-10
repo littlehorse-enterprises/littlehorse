@@ -71,6 +71,6 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
      * @return the delay in milliseconds before the next attempt.
      */
     public Optional<Long> calculateDelayForNextAttempt(int attemptNumber) {
-        return (attemptNumber >= maxRetries) ? Optional.empty() : Optional.of(doSomeMath(attemptNumber));
+        return (attemptNumber > maxRetries) ? Optional.empty() : Optional.of(doSomeMath(attemptNumber));
     }
 }
