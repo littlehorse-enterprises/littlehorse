@@ -452,7 +452,7 @@ export interface UTActionTrigger_UTAReassign {
  * Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
  * attempt `N` is defined as:
  *
- * min(base_interval_seconds * (multiplier ^N), max_delay_seconds)
+ * min(base_interval_ms * (multiplier ^(N-1)), max_delay_ms)
  *
  * Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
  * so timing is not exact.
