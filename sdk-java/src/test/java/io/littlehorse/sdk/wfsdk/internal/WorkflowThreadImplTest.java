@@ -17,6 +17,8 @@ import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
+import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
@@ -24,6 +26,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -457,5 +460,26 @@ public class WorkflowThreadImplTest {
         assertThat(secondThrow.getThrowEvent().getEventDefId().getName()).isEqualTo("another-event");
         assertThat(secondThrow.getThrowEvent().getContent().getLiteralValue().getStr())
                 .isEqualTo("some-content");
+    }
+
+    @Test
+    void testReminderTaskWithNoArguments() {
+        Workflow workflow = new WorkflowImpl("throw-event-wf", wf -> {
+            UserTaskOutput uto = wf.assignUserTask("some-usertaskdef", "some-person", "some-group");
+            wf.scheduleReminderTask(uto, 10, "some-taskdef");
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(1);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+
+        Node node = entrypoint.getNodesOrThrow("1-some-usertaskdef-USER_TASK");
+        assertThat(node.getNodeCase()).isEqualTo(NodeCase.USER_TASK);
+
+        UserTaskNode utn = node.getUserTask();
+        assertThat(utn.getActionsCount()).isEqualTo(1);
+
+        UTATask taskTrigger = utn.getActions(0).getTask();
+        assertThat(taskTrigger.getTask().getVariablesCount()).isEqualTo(0);
     }
 }

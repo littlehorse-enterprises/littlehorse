@@ -129,7 +129,7 @@ public interface WorkflowThread {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -142,7 +142,8 @@ public interface WorkflowThread {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    void scheduleReminderTask(UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Adds a task reminder once a user is assigned to UserTask.
@@ -156,7 +157,7 @@ public interface WorkflowThread {
      *     pass that literal value in.
      */
     void scheduleReminderTaskOnAssignment(
-            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Adds a task reminder once a user is assigned to the UserTask.
@@ -170,7 +171,7 @@ public interface WorkflowThread {
      *     pass that literal value in.
      */
     void scheduleReminderTaskOnAssignment(
-            UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+            UserTaskOutput userTask, int delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.

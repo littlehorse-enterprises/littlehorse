@@ -204,24 +204,32 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public void scheduleReminderTask(
-            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
     @Override
-    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
     @Override
     public void scheduleReminderTaskOnAssignment(
-            UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
     }
 
     @Override
     public void scheduleReminderTaskOnAssignment(
-            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
     }
 
@@ -230,7 +238,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             Serializable delaySeconds,
             String taskDefName,
             UTActionTrigger.UTHook utHook,
-            Object... args) {
+            Serializable... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
         TaskNode taskNode = createTaskNode(taskDefName, args);
