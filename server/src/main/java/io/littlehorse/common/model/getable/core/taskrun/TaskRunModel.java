@@ -416,7 +416,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         }
 
         long delayMs = exponentialBackoffRetryPolicy
-                .calculateDelayForNextAttempt(timeoutSeconds)
+                .calculateDelayForNextAttempt(attempts.size())
                 .get();
         Date maturationTime = new Date(System.currentTimeMillis() + delayMs);
         LHTimer timer = new LHTimer(new CommandModel(new TaskAttemptRetryReadyModel(id), maturationTime));
