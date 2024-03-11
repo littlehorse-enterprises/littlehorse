@@ -24,14 +24,14 @@ class ExternalEvent(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ..., claimed: bool = ...) -> None: ...
 
 class ExternalEventDef(_message.Message):
-    __slots__ = ["name", "created_at", "retention_policy"]
-    NAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["id", "created_at", "retention_policy"]
+    ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
-    name: str
+    id: _object_id_pb2.ExternalEventDefId
     created_at: _timestamp_pb2.Timestamp
     retention_policy: ExternalEventRetentionPolicy
-    def __init__(self, name: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
 
 class ExternalEventRetentionPolicy(_message.Message):
     __slots__ = ["seconds_after_put"]

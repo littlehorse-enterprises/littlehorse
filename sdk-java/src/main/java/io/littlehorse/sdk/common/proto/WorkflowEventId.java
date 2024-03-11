@@ -122,7 +122,7 @@ private static final long serialVersionUID = 0L;
   private int number_ = 0;
   /**
    * <pre>
-   * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+   * A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
    * same type thrown by the WfRun. This field starts at zero and is incremented every
    * time a WorkflowEvent of the same type is thrown by the same WfRun.
    * </pre>
@@ -849,7 +849,7 @@ private static final long serialVersionUID = 0L;
     private int number_ ;
     /**
      * <pre>
-     * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+     * A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
      * same type thrown by the WfRun. This field starts at zero and is incremented every
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
@@ -863,7 +863,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+     * A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
      * same type thrown by the WfRun. This field starts at zero and is incremented every
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
@@ -881,7 +881,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * An ID that makes the WorkflowEventId unique among all WorkflowEvent's of the
+     * A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the
      * same type thrown by the WfRun. This field starts at zero and is incremented every
      * time a WorkflowEvent of the same type is thrown by the same WfRun.
      * </pre>
