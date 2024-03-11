@@ -575,6 +575,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'evaluate-risk-of-decision',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -632,6 +633,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'save-risk-evaluation-results',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -692,6 +694,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'save-risk-evaluation-results',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -792,6 +795,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name: 'evaluate-risk-of-decision'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -860,6 +864,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name: 'save-risk-evaluation-results'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -938,6 +943,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 'name': 'save-risk-evaluation-results',
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -1319,6 +1325,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'fail',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': []
                                 }
                             },
@@ -1335,6 +1342,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'my-task',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': []
                                 }
                             },
@@ -1372,6 +1380,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'my-task',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': []
                                 }
                             },
@@ -1485,6 +1494,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'eating-donut',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'number-of-donuts'
@@ -2026,6 +2036,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'evaluate-risk-of-decision',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -2082,6 +2093,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'save-risk-evaluation-results',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -2121,6 +2133,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'explain-decision',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -2168,6 +2181,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'save-risk-evaluation-results',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'request-id'
@@ -2322,6 +2336,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name: 'evaluate-risk-of-decision'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -2391,6 +2406,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name:  'save-risk-evaluation-results'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -2443,6 +2459,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name:'explain-decision'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -2503,6 +2520,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name: 'save-risk-evaluation-results'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'request-id'
@@ -2736,6 +2754,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'parent-task-1',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'parent-var'
@@ -2800,6 +2819,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'parent-task-2',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': []
                                 }
                             },
@@ -2862,6 +2882,7 @@ describe('Layouting graph from LH Nodes', () => {
                                         'name': 'child-task',
                                     },
                                     'timeoutSeconds': 15,
+                                    'retries': 0,
                                     'variables': [
                                         {
                                             'variableName': 'child-var'
@@ -3011,6 +3032,7 @@ describe('Layouting graph from LH Nodes', () => {
                                 name: 'child-task'
                             },
                             'timeoutSeconds': 15,
+                            'retries': 0,
                             'variables': [
                                 {
                                     'variableName': 'child-var'
