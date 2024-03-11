@@ -298,8 +298,6 @@ class LHConfig:
             Channel: A closable channel. Use 'with' or channel.close().
         """
         server = server or self.bootstrap_server
-        secure_channel = grpc.secure_channel
-        insecure_channel = grpc.insecure_channel
 
         channel_args = [
             ("grpc.keepalive_time_ms", self.grpc_keepalive_time_ms),
@@ -308,10 +306,44 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        if async_channel:
-            self._log.debug("Establishing an async channel")
-            secure_channel = grpc.aio.secure_channel
-            insecure_channel = grpc.aio.insecure_channel
+        def create_channel(target, options, interceptors, secure_channel: bool):
+            credentials = []
+            if not self.is_secure():
+                self._log.warning("Establishing insecure channel at %s", server)
+            elif self.has_authentication():
+                credentials = grpc.composite_channel_credentials(
+                    get_ssl_config(),
+                    get_oauth_config(),
+                )
+                self._log.debug("Establishing secure channel with OAuth at %s", server)
+            else:
+                credentials = get_ssl_config()
+                self._log.debug("Establishing secure channel at %s", server)
+
+            if async_channel and secure_channel:
+                return grpc.aio.secure_channel(
+                    target,
+                    credentials,
+                    options,
+                    interceptors=interceptors,
+                )
+            elif async_channel:
+                return grpc.aio.insecure_channel(
+                    target,
+                    credentials,
+                    options,
+                    interceptors=interceptors,
+                )
+            elif secure_channel:
+                return grpc.intercept_channel(
+                    grpc.secure_channel(target, credentials, options=channel_args),
+                    MetadataInterceptor(self.tenant_id),
+                )
+            else:
+                return grpc.intercept_channel(
+                    grpc.insecure_channel(target, options=channel_args),
+                    MetadataInterceptor(self.tenant_id),
+                )
 
         def get_ssl_config() -> ChannelCredentials:
             return grpc.ssl_channel_credentials(
@@ -329,36 +361,11 @@ class LHConfig:
                 )
             )
 
-        if self.is_secure() and self.has_authentication():
-            self._log.debug("Establishing secure channel with OAuth at %s", server)
-            return secure_channel(
-                server,
-                grpc.composite_channel_credentials(
-                    get_ssl_config(),
-                    get_oauth_config(),
-                ),
-                options=channel_args,
-            )
-
-        if self.is_secure():
-            self._log.debug("Establishing secure channel at %s", server)
-            return secure_channel(
-                server,
-                get_ssl_config(),
-                options=channel_args,
-            )
-
-        if not self.is_secure():
-            self._log.warning("Establishing insecure channel at %s", server)
-        if not async_channel:
-            return grpc.intercept_channel(
-                grpc.insecure_channel(server, options=channel_args),
-                MetadataInterceptor(self.tenant_id),
-            )
-        return grpc.aio.insecure_channel(
+        return create_channel(
             server,
             options=channel_args,
             interceptors=[AsyncMetadataInterceptor(self.tenant_id)],
+            secure_channel=self.is_secure(),
         )
 
     def stub(

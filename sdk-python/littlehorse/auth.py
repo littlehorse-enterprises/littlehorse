@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, Optional
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
-from grpc.aio import ClientCallDetails, Metadata
+from grpc.aio import ClientCallDetails
 
 from littlehorse.exceptions import OAuthException
 
