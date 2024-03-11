@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
-import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -128,15 +127,11 @@ public class WorkflowImpl extends Workflow {
         return subThreadName;
     }
 
-    public RetryPolicyCase getRetryPolicyType() {
-        return defaultTaskRetryPolicyType;
-    }
-
     protected Optional<ExponentialBackoffRetryPolicy> getDefaultExponentialBackoffRetryPolicy() {
         return Optional.ofNullable(defaultExponentialBackoff);
     }
 
-    protected Optional<Integer> getDefaultSimpleRetries() {
-        return Optional.ofNullable(defaultSimpleRetries);
+    protected int getDefaultSimpleRetries() {
+        return defaultSimpleRetries;
     }
 }

@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
-import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
@@ -40,9 +39,8 @@ public abstract class Workflow {
     protected ThreadRetentionPolicy defaultThreadRetentionPolicy;
     protected String parentWfSpecName;
 
-    protected RetryPolicyCase defaultTaskRetryPolicyType;
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
-    protected Integer defaultSimpleRetries;
+    protected int defaultSimpleRetries;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -55,7 +53,6 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
-        this.defaultTaskRetryPolicyType = RetryPolicyCase.RETRYPOLICY_NOT_SET;
     }
 
     /**
@@ -90,8 +87,10 @@ public abstract class Workflow {
      * Can be overriden by setting the retry policy on the WorkflowThread or TaskNodeOutput level.
      * @param defaultSimpleRetries is the number ofretries to attempt.
      */
-    public void setDefaultSimpleTaskRetries(int defaultSimpleRetries) {
-        this.defaultTaskRetryPolicyType = RetryPolicyCase.SIMPLE_RETRIES;
+    public void setDefaultTaskRetries(int defaultSimpleRetries) {
+        if (defaultSimpleRetries < 0) {
+            throw new IllegalArgumentException("Cannot have negative retries!");
+        }
         this.defaultSimpleRetries = defaultSimpleRetries;
     }
 
@@ -104,7 +103,6 @@ public abstract class Workflow {
      * Task Nodes.
      */
     public void setDefaultTaskExponentialBackoffPolicy(ExponentialBackoffRetryPolicy defaultPolicy) {
-        this.defaultTaskRetryPolicyType = RetryPolicyCase.EXPONENTIAL_BACKOFF;
         this.defaultExponentialBackoff = defaultPolicy;
     }
 

@@ -404,11 +404,6 @@ export interface ExponentialBackoffRetryPolicy {
   /** Maximum delay in milliseconds between retries. */
   maxDelayMs: number;
   /**
-   * Maximum number of retries to schedule. Setting this to `1` means that one retry
-   * will be scheduled after a failed first task attempt.
-   */
-  maxRetries: number;
-  /**
    * The multiplier to use in calculating the retry backoff policy. We recommend
    * starting with 2.0. Must be at least 1.0.
    */
@@ -428,13 +423,19 @@ export interface TaskNode {
    */
   timeoutSeconds: number;
   /**
-   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
-   * the configured number of retries.
+   * Configures the amount of retries allowed on this TaskNode.
+   *
+   * Retryable errors include:
+   * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+   *   Task Worker in time.
+   * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+   *   the Task Function.
+   *
+   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    */
-  simpleRetries?:
-    | number
-    | undefined;
-  /** Retry with Exponential Backoff. */
+  retries: number;
+  /** If this field is set, then retries will use Exponential Backoff. */
   exponentialBackoff?:
     | ExponentialBackoffRetryPolicy
     | undefined;
@@ -1063,7 +1064,7 @@ export const UTActionTrigger_UTAReassign = {
 };
 
 function createBaseExponentialBackoffRetryPolicy(): ExponentialBackoffRetryPolicy {
-  return { baseIntervalMs: 0, maxDelayMs: 0, maxRetries: 0, multiplier: 0 };
+  return { baseIntervalMs: 0, maxDelayMs: 0, multiplier: 0 };
 }
 
 export const ExponentialBackoffRetryPolicy = {
@@ -1074,11 +1075,8 @@ export const ExponentialBackoffRetryPolicy = {
     if (message.maxDelayMs !== 0) {
       writer.uint32(16).int64(message.maxDelayMs);
     }
-    if (message.maxRetries !== 0) {
-      writer.uint32(24).int32(message.maxRetries);
-    }
     if (message.multiplier !== 0) {
-      writer.uint32(37).float(message.multiplier);
+      writer.uint32(29).float(message.multiplier);
     }
     return writer;
   },
@@ -1105,14 +1103,7 @@ export const ExponentialBackoffRetryPolicy = {
           message.maxDelayMs = longToNumber(reader.int64() as Long);
           continue;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.maxRetries = reader.int32();
-          continue;
-        case 4:
-          if (tag !== 37) {
+          if (tag !== 29) {
             break;
           }
 
@@ -1134,20 +1125,13 @@ export const ExponentialBackoffRetryPolicy = {
     const message = createBaseExponentialBackoffRetryPolicy();
     message.baseIntervalMs = object.baseIntervalMs ?? 0;
     message.maxDelayMs = object.maxDelayMs ?? 0;
-    message.maxRetries = object.maxRetries ?? 0;
     message.multiplier = object.multiplier ?? 0;
     return message;
   },
 };
 
 function createBaseTaskNode(): TaskNode {
-  return {
-    taskDefId: undefined,
-    timeoutSeconds: 0,
-    simpleRetries: undefined,
-    exponentialBackoff: undefined,
-    variables: [],
-  };
+  return { taskDefId: undefined, timeoutSeconds: 0, retries: 0, exponentialBackoff: undefined, variables: [] };
 }
 
 export const TaskNode = {
@@ -1158,8 +1142,8 @@ export const TaskNode = {
     if (message.timeoutSeconds !== 0) {
       writer.uint32(16).int32(message.timeoutSeconds);
     }
-    if (message.simpleRetries !== undefined) {
-      writer.uint32(24).int32(message.simpleRetries);
+    if (message.retries !== 0) {
+      writer.uint32(24).int32(message.retries);
     }
     if (message.exponentialBackoff !== undefined) {
       ExponentialBackoffRetryPolicy.encode(message.exponentialBackoff, writer.uint32(42).fork()).ldelim();
@@ -1196,7 +1180,7 @@ export const TaskNode = {
             break;
           }
 
-          message.simpleRetries = reader.int32();
+          message.retries = reader.int32();
           continue;
         case 5:
           if (tag !== 42) {
@@ -1230,7 +1214,7 @@ export const TaskNode = {
       ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
-    message.simpleRetries = object.simpleRetries ?? undefined;
+    message.retries = object.retries ?? 0;
     message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
       ? ExponentialBackoffRetryPolicy.fromPartial(object.exponentialBackoff)
       : undefined;

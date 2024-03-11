@@ -10,20 +10,14 @@ public class TaskNodeOutputImpl extends NodeOutputImpl implements TaskNodeOutput
     }
 
     @Override
-    public TaskNodeOutputImpl withNoRetries() {
-        parent.removeRetryPolicy(this);
-        return this;
-    }
-
-    @Override
     public TaskNodeOutputImpl withExponentialBackoff(ExponentialBackoffRetryPolicy policy) {
         parent.overrideTaskExponentialBackoffPolicy(this, policy);
         return this;
     }
 
     @Override
-    public TaskNodeOutputImpl withSimpleRetries(int retries) {
-        parent.overrideTaskSimpleRetries(this, retries);
+    public TaskNodeOutputImpl withRetries(int retries) {
+        parent.overrideTaskRetries(this, retries);
         return this;
     }
 }

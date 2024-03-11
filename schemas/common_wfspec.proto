@@ -233,13 +233,9 @@ message ExponentialBackoffRetryPolicy {
     // Maximum delay in milliseconds between retries.
     int64 max_delay_ms = 2;
 
-    // Maximum number of retries to schedule. Setting this to `1` means that one retry
-    // will be scheduled after a failed first task attempt.
-    int32 max_retries = 3;
-
     // The multiplier to use in calculating the retry backoff policy. We recommend
     // starting with 2.0. Must be at least 1.0.
-    float multiplier = 4;
+    float multiplier = 3;
 }
 
 // Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
@@ -252,7 +248,8 @@ message TaskNode {
   // basis.
   int32 timeout_seconds = 2;
 
-  // The policy for scheduling additional TaskAttempt's upon encountering a retryable error.
+  // Configures the amount of retries allowed on this TaskNode.
+  //
   // Retryable errors include:
   // - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
   //   Task Worker in time.
@@ -261,14 +258,10 @@ message TaskNode {
   //
   // Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
   // TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
-  oneof retry_policy {
-    // Simplest retry policy. Retries are immediately put back on the Task Queue, up to
-    // the configured number of retries.
-    int32 simple_retries = 3;
+  int32 retries = 3;
 
-    // Retry with Exponential Backoff.
-    ExponentialBackoffRetryPolicy exponential_backoff = 5;
-  }
+  // If this field is set, then retries will use Exponential Backoff.
+  optional ExponentialBackoffRetryPolicy exponential_backoff = 5;
 
   // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;

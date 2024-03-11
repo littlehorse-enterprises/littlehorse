@@ -283,17 +283,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
             taskNode.setTimeoutSeconds(parent.getDefaultTaskTimeout());
         }
 
-        // Can be overriden via NodeOutput.withRetries();
-        switch (parent.getRetryPolicyType()) {
-            case RETRYPOLICY_NOT_SET:
-                break;
-            case SIMPLE_RETRIES:
-                taskNode.setSimpleRetries(parent.getDefaultSimpleRetries().get());
-                break;
-            case EXPONENTIAL_BACKOFF:
-                taskNode.setExponentialBackoff(
-                        parent.getDefaultExponentialBackoffRetryPolicy().get());
-                break;
+        taskNode.setRetries(parent.getDefaultSimpleRetries());
+
+        if (parent.getDefaultExponentialBackoffRetryPolicy().isPresent()) {
+            taskNode.setExponentialBackoff(
+                    parent.getDefaultExponentialBackoffRetryPolicy().get());
         }
 
         return taskNode.build();
@@ -518,7 +512,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new SpawnedThreadImpl(this, threadName, internalStartedThreadVar);
     }
 
-    public void overrideTaskSimpleRetries(TaskNodeOutputImpl node, int retries) {
+    public void overrideTaskRetries(TaskNodeOutputImpl node, int retries) {
         checkIfIsActive();
         Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
         if (nb.getNodeCase() != NodeCase.TASK) {
@@ -526,7 +520,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         TaskNode.Builder taskBuilder = nb.getTaskBuilder();
-        taskBuilder.setSimpleRetries(retries);
+        taskBuilder.setRetries(retries);
 
         nb.setTask(taskBuilder);
         spec.putNodes(node.nodeName, nb.build());
@@ -541,20 +535,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         TaskNode.Builder taskBuilder = nb.getTaskBuilder();
         taskBuilder.setExponentialBackoff(policy);
-
-        nb.setTask(taskBuilder);
-        spec.putNodes(node.nodeName, nb.build());
-    }
-
-    public void removeRetryPolicy(TaskNodeOutputImpl node) {
-        checkIfIsActive();
-        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
-        if (nb.getNodeCase() != NodeCase.TASK) {
-            throw new IllegalStateException("Impossible to not have task node here");
-        }
-
-        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
-        taskBuilder.clearRetryPolicy();
 
         nb.setTask(taskBuilder);
         spec.putNodes(node.nodeName, nb.build());

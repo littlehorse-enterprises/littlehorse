@@ -48,49 +48,47 @@ public interface TaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
-   * the configured number of retries.
+   * Configures the amount of retries allowed on this TaskNode.
+   *
+   * Retryable errors include:
+   * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+   *   Task Worker in time.
+   * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+   *   the Task Function.
+   *
+   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    * </pre>
    *
-   * <code>int32 simple_retries = 3;</code>
-   * @return Whether the simpleRetries field is set.
+   * <code>int32 retries = 3;</code>
+   * @return The retries.
    */
-  boolean hasSimpleRetries();
-  /**
-   * <pre>
-   * Simplest retry policy. Retries are immediately put back on the Task Queue, up to
-   * the configured number of retries.
-   * </pre>
-   *
-   * <code>int32 simple_retries = 3;</code>
-   * @return The simpleRetries.
-   */
-  int getSimpleRetries();
+  int getRetries();
 
   /**
    * <pre>
-   * Retry with Exponential Backoff.
+   * If this field is set, then retries will use Exponential Backoff.
    * </pre>
    *
-   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
    * @return Whether the exponentialBackoff field is set.
    */
   boolean hasExponentialBackoff();
   /**
    * <pre>
-   * Retry with Exponential Backoff.
+   * If this field is set, then retries will use Exponential Backoff.
    * </pre>
    *
-   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
    * @return The exponentialBackoff.
    */
   io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff();
   /**
    * <pre>
-   * Retry with Exponential Backoff.
+   * If this field is set, then retries will use Exponential Backoff.
    * </pre>
    *
-   * <code>.littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
    */
   io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
 
@@ -137,6 +135,4 @@ public interface TaskNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
       int index);
-
-  io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase getRetryPolicyCase();
 }

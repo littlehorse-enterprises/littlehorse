@@ -55,13 +55,11 @@ export interface TaskRun {
   /** The timeout before LH considers a TaskAttempt to be timed out. */
   timeoutSeconds: number;
   /**
-   * The maximum number of attempts that may be scheduled for this TaskRun. Retries are
-   * scheduled immediately, without delay. NOTE: setting simple_total_
+   * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+   * total_attempts to 1 means that there are no retries.
    */
-  simpleTotalAttempts?:
-    | number
-    | undefined;
-  /** Use an Exponential Backoff Retry Policy. */
+  totalAttempts: number;
+  /** Optional backoff policy . */
   exponentialBackoff?: ExponentialBackoffRetryPolicy | undefined;
 }
 
@@ -173,7 +171,7 @@ function createBaseTaskRun(): TaskRun {
     scheduledAt: undefined,
     status: TaskStatus.TASK_SCHEDULED,
     timeoutSeconds: 0,
-    simpleTotalAttempts: undefined,
+    totalAttempts: 0,
     exponentialBackoff: undefined,
   };
 }
@@ -204,8 +202,8 @@ export const TaskRun = {
     if (message.timeoutSeconds !== 0) {
       writer.uint32(72).int32(message.timeoutSeconds);
     }
-    if (message.simpleTotalAttempts !== undefined) {
-      writer.uint32(32).int32(message.simpleTotalAttempts);
+    if (message.totalAttempts !== 0) {
+      writer.uint32(32).int32(message.totalAttempts);
     }
     if (message.exponentialBackoff !== undefined) {
       ExponentialBackoffRetryPolicy.encode(message.exponentialBackoff, writer.uint32(82).fork()).ldelim();
@@ -281,7 +279,7 @@ export const TaskRun = {
             break;
           }
 
-          message.simpleTotalAttempts = reader.int32();
+          message.totalAttempts = reader.int32();
           continue;
         case 10:
           if (tag !== 82) {
@@ -316,7 +314,7 @@ export const TaskRun = {
     message.scheduledAt = object.scheduledAt ?? undefined;
     message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
-    message.simpleTotalAttempts = object.simpleTotalAttempts ?? undefined;
+    message.totalAttempts = object.totalAttempts ?? 0;
     message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
       ? ExponentialBackoffRetryPolicy.fromPartial(object.exponentialBackoff)
       : undefined;

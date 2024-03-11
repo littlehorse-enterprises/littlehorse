@@ -32,13 +32,13 @@ public class RetryTest {
             WfRunVariable timesToFailSimple = wf.addVariable("times-to-fail-simple", 1);
             WfRunVariable timesToFailBackoff = wf.addVariable("times-to-fail-backoff", 1);
 
-            wf.execute("retry-task", timesToFailSimple).withSimpleRetries(2);
+            wf.execute("retry-task", timesToFailSimple).withRetries(2);
             wf.execute("retry-task", timesToFailBackoff)
+                    .withRetries(2)
                     .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
                             .setBaseIntervalMs(1000)
                             .setMultiplier(2)
                             .setMaxDelayMs(2000)
-                            .setMaxRetries(2)
                             .build());
         });
     }

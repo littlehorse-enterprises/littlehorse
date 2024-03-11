@@ -8,7 +8,6 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.sdk.common.proto.TaskNode.RetryPolicyCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,9 +33,8 @@ public class TaskNodeModelTest {
     @Test
     void shouldThrowWhenMaxDelayLessThanBaseDelay() {
         TaskNodeModel toTest = createTaskNodeWithEmptyTaskDef();
-        toTest.setRetryPolicyType(RetryPolicyCase.EXPONENTIAL_BACKOFF);
-        toTest.setExponentialBackoffRetryPolicy(
-                new ExponentialBackoffRetryPolicyModel(100, (long) 50, 20, (float) 1.1));
+        toTest.setSimpleRetries(20);
+        toTest.setExponentialBackoffRetryPolicy(new ExponentialBackoffRetryPolicyModel(100, (long) 50, (float) 1.1));
 
         try {
             toTest.validate();
@@ -49,8 +47,7 @@ public class TaskNodeModelTest {
     @Test
     void shouldThrowWhenBaseDelayIsZero() {
         TaskNodeModel toTest = createTaskNodeWithEmptyTaskDef();
-        toTest.setRetryPolicyType(RetryPolicyCase.EXPONENTIAL_BACKOFF);
-        toTest.setExponentialBackoffRetryPolicy(new ExponentialBackoffRetryPolicyModel(0, (long) 50, 20, (float) 1.1));
+        toTest.setExponentialBackoffRetryPolicy(new ExponentialBackoffRetryPolicyModel(0, (long) 50, (float) 1.1));
 
         try {
             toTest.validate();
@@ -64,7 +61,6 @@ public class TaskNodeModelTest {
     @Test
     void shouldThrowWhenSimpleRetriesAreNegative() {
         TaskNodeModel toTest = createTaskNodeWithEmptyTaskDef();
-        toTest.setRetryPolicyType(RetryPolicyCase.SIMPLE_RETRIES);
         toTest.setSimpleRetries(-1);
 
         try {

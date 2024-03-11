@@ -79,23 +79,7 @@ private static final long serialVersionUID = 0L;
     return maxDelayMs_;
   }
 
-  public static final int MAX_RETRIES_FIELD_NUMBER = 3;
-  private int maxRetries_ = 0;
-  /**
-   * <pre>
-   * Maximum number of retries to schedule. Setting this to `1` means that one retry
-   * will be scheduled after a failed first task attempt.
-   * </pre>
-   *
-   * <code>int32 max_retries = 3;</code>
-   * @return The maxRetries.
-   */
-  @java.lang.Override
-  public int getMaxRetries() {
-    return maxRetries_;
-  }
-
-  public static final int MULTIPLIER_FIELD_NUMBER = 4;
+  public static final int MULTIPLIER_FIELD_NUMBER = 3;
   private float multiplier_ = 0F;
   /**
    * <pre>
@@ -103,7 +87,7 @@ private static final long serialVersionUID = 0L;
    * starting with 2.0. Must be at least 1.0.
    * </pre>
    *
-   * <code>float multiplier = 4;</code>
+   * <code>float multiplier = 3;</code>
    * @return The multiplier.
    */
   @java.lang.Override
@@ -131,11 +115,8 @@ private static final long serialVersionUID = 0L;
     if (maxDelayMs_ != 0L) {
       output.writeInt64(2, maxDelayMs_);
     }
-    if (maxRetries_ != 0) {
-      output.writeInt32(3, maxRetries_);
-    }
     if (java.lang.Float.floatToRawIntBits(multiplier_) != 0) {
-      output.writeFloat(4, multiplier_);
+      output.writeFloat(3, multiplier_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -154,13 +135,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(2, maxDelayMs_);
     }
-    if (maxRetries_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, maxRetries_);
-    }
     if (java.lang.Float.floatToRawIntBits(multiplier_) != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(4, multiplier_);
+        .computeFloatSize(3, multiplier_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -181,8 +158,6 @@ private static final long serialVersionUID = 0L;
         != other.getBaseIntervalMs()) return false;
     if (getMaxDelayMs()
         != other.getMaxDelayMs()) return false;
-    if (getMaxRetries()
-        != other.getMaxRetries()) return false;
     if (java.lang.Float.floatToIntBits(getMultiplier())
         != java.lang.Float.floatToIntBits(
             other.getMultiplier())) return false;
@@ -202,8 +177,6 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + MAX_DELAY_MS_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getMaxDelayMs());
-    hash = (37 * hash) + MAX_RETRIES_FIELD_NUMBER;
-    hash = (53 * hash) + getMaxRetries();
     hash = (37 * hash) + MULTIPLIER_FIELD_NUMBER;
     hash = (53 * hash) + java.lang.Float.floatToIntBits(
         getMultiplier());
@@ -350,7 +323,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       baseIntervalMs_ = 0;
       maxDelayMs_ = 0L;
-      maxRetries_ = 0;
       multiplier_ = 0F;
       return this;
     }
@@ -392,9 +364,6 @@ private static final long serialVersionUID = 0L;
         result.maxDelayMs_ = maxDelayMs_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.maxRetries_ = maxRetries_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.multiplier_ = multiplier_;
       }
     }
@@ -449,9 +418,6 @@ private static final long serialVersionUID = 0L;
       if (other.getMaxDelayMs() != 0L) {
         setMaxDelayMs(other.getMaxDelayMs());
       }
-      if (other.getMaxRetries() != 0) {
-        setMaxRetries(other.getMaxRetries());
-      }
       if (other.getMultiplier() != 0F) {
         setMultiplier(other.getMultiplier());
       }
@@ -491,16 +457,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 24: {
-              maxRetries_ = input.readInt32();
+            case 29: {
+              multiplier_ = input.readFloat();
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
-            case 37: {
-              multiplier_ = input.readFloat();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 37
+            } // case 29
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -609,53 +570,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int maxRetries_ ;
-    /**
-     * <pre>
-     * Maximum number of retries to schedule. Setting this to `1` means that one retry
-     * will be scheduled after a failed first task attempt.
-     * </pre>
-     *
-     * <code>int32 max_retries = 3;</code>
-     * @return The maxRetries.
-     */
-    @java.lang.Override
-    public int getMaxRetries() {
-      return maxRetries_;
-    }
-    /**
-     * <pre>
-     * Maximum number of retries to schedule. Setting this to `1` means that one retry
-     * will be scheduled after a failed first task attempt.
-     * </pre>
-     *
-     * <code>int32 max_retries = 3;</code>
-     * @param value The maxRetries to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMaxRetries(int value) {
-
-      maxRetries_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Maximum number of retries to schedule. Setting this to `1` means that one retry
-     * will be scheduled after a failed first task attempt.
-     * </pre>
-     *
-     * <code>int32 max_retries = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMaxRetries() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      maxRetries_ = 0;
-      onChanged();
-      return this;
-    }
-
     private float multiplier_ ;
     /**
      * <pre>
@@ -663,7 +577,7 @@ private static final long serialVersionUID = 0L;
      * starting with 2.0. Must be at least 1.0.
      * </pre>
      *
-     * <code>float multiplier = 4;</code>
+     * <code>float multiplier = 3;</code>
      * @return The multiplier.
      */
     @java.lang.Override
@@ -676,14 +590,14 @@ private static final long serialVersionUID = 0L;
      * starting with 2.0. Must be at least 1.0.
      * </pre>
      *
-     * <code>float multiplier = 4;</code>
+     * <code>float multiplier = 3;</code>
      * @param value The multiplier to set.
      * @return This builder for chaining.
      */
     public Builder setMultiplier(float value) {
 
       multiplier_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -693,11 +607,11 @@ private static final long serialVersionUID = 0L;
      * starting with 2.0. Must be at least 1.0.
      * </pre>
      *
-     * <code>float multiplier = 4;</code>
+     * <code>float multiplier = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearMultiplier() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       multiplier_ = 0F;
       onChanged();
       return this;

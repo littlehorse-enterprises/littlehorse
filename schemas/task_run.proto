@@ -46,14 +46,12 @@ message TaskRun {
   // The timeout before LH considers a TaskAttempt to be timed out.
   int32 timeout_seconds = 9;
 
-  oneof retry_policy {
-    // The maximum number of attempts that may be scheduled for this TaskRun. Retries are
-    // scheduled immediately, without delay. NOTE: setting simple_total_
-    int32 simple_total_attempts = 4;
+  // The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+  // total_attempts to 1 means that there are no retries.
+  int32 total_attempts = 4;
 
-    // Use an Exponential Backoff Retry Policy.
-    ExponentialBackoffRetryPolicy exponential_backoff = 10;
-  }
+  // Optional backoff policy .
+  optional ExponentialBackoffRetryPolicy exponential_backoff = 10;
 }
 
 // A key-value pair of variable name and value.

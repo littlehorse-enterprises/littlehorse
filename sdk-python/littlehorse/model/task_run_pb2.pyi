@@ -12,7 +12,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class TaskRun(_message.Message):
-    __slots__ = ["id", "task_def_id", "attempts", "input_variables", "source", "scheduled_at", "status", "timeout_seconds", "simple_total_attempts", "exponential_backoff"]
+    __slots__ = ["id", "task_def_id", "attempts", "input_variables", "source", "scheduled_at", "status", "timeout_seconds", "total_attempts", "exponential_backoff"]
     ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     ATTEMPTS_FIELD_NUMBER: _ClassVar[int]
@@ -21,7 +21,7 @@ class TaskRun(_message.Message):
     SCHEDULED_AT_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
-    SIMPLE_TOTAL_ATTEMPTS_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_ATTEMPTS_FIELD_NUMBER: _ClassVar[int]
     EXPONENTIAL_BACKOFF_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.TaskRunId
     task_def_id: _object_id_pb2.TaskDefId
@@ -31,9 +31,9 @@ class TaskRun(_message.Message):
     scheduled_at: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.TaskStatus
     timeout_seconds: int
-    simple_total_attempts: int
+    total_attempts: int
     exponential_backoff: _common_wfspec_pb2.ExponentialBackoffRetryPolicy
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempts: _Optional[_Iterable[_Union[TaskAttempt, _Mapping]]] = ..., input_variables: _Optional[_Iterable[_Union[VarNameAndVal, _Mapping]]] = ..., source: _Optional[_Union[TaskRunSource, _Mapping]] = ..., scheduled_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., timeout_seconds: _Optional[int] = ..., simple_total_attempts: _Optional[int] = ..., exponential_backoff: _Optional[_Union[_common_wfspec_pb2.ExponentialBackoffRetryPolicy, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempts: _Optional[_Iterable[_Union[TaskAttempt, _Mapping]]] = ..., input_variables: _Optional[_Iterable[_Union[VarNameAndVal, _Mapping]]] = ..., source: _Optional[_Union[TaskRunSource, _Mapping]] = ..., scheduled_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., timeout_seconds: _Optional[int] = ..., total_attempts: _Optional[int] = ..., exponential_backoff: _Optional[_Union[_common_wfspec_pb2.ExponentialBackoffRetryPolicy, _Mapping]] = ...) -> None: ...
 
 class VarNameAndVal(_message.Message):
     __slots__ = ["var_name", "value"]
