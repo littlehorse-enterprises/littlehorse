@@ -135,7 +135,9 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.Timestamp scheduleTime_;
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -147,7 +149,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -159,7 +163,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1355,7 +1361,9 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduleTimeBuilder_;
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1366,7 +1374,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1381,7 +1391,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1401,7 +1413,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1419,7 +1433,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1442,7 +1458,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1459,7 +1477,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1471,7 +1491,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -1486,7 +1508,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the TaskAttempt was scheduled on the Task Queue.
+     * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+     * in the TASK_PENDING status; for example, when waiting between retries with exponential
+     * backoff.
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>

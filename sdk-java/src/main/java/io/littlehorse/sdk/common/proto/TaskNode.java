@@ -43,6 +43,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskNode.class, io.littlehorse.sdk.common.proto.TaskNode.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
@@ -86,7 +87,8 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-   * the worker does not yet reply to the Server.
+   * the worker does not yet reply to the Server. This is determined on a per-Attempt
+   * basis.
    * </pre>
    *
    * <code>int32 timeout_seconds = 2;</code>
@@ -101,9 +103,16 @@ private static final long serialVersionUID = 0L;
   private int retries_ = 0;
   /**
    * <pre>
-   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-   * Please note that this API may change before version 1.0.0, as we are going to
-   * add significant functionality including backoff policies.
+   * Configures the amount of retries allowed on this TaskNode.
+   *
+   * Retryable errors include:
+   * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+   *   Task Worker in time.
+   * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+   *   the Task Function.
+   *
+   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    * </pre>
    *
    * <code>int32 retries = 3;</code>
@@ -112,6 +121,44 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public int getRetries() {
     return retries_;
+  }
+
+  public static final int EXPONENTIAL_BACKOFF_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  @java.lang.Override
+  public boolean hasExponentialBackoff() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return The exponentialBackoff.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+  }
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
   }
 
   public static final int VARIABLES_FIELD_NUMBER = 4;
@@ -201,6 +248,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < variables_.size(); i++) {
       output.writeMessage(4, variables_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(5, getExponentialBackoff());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -226,6 +276,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, variables_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getExponentialBackoff());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -250,6 +304,11 @@ private static final long serialVersionUID = 0L;
         != other.getTimeoutSeconds()) return false;
     if (getRetries()
         != other.getRetries()) return false;
+    if (hasExponentialBackoff() != other.hasExponentialBackoff()) return false;
+    if (hasExponentialBackoff()) {
+      if (!getExponentialBackoff()
+          .equals(other.getExponentialBackoff())) return false;
+    }
     if (!getVariablesList()
         .equals(other.getVariablesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -271,6 +330,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTimeoutSeconds();
     hash = (37 * hash) + RETRIES_FIELD_NUMBER;
     hash = (53 * hash) + getRetries();
+    if (hasExponentialBackoff()) {
+      hash = (37 * hash) + EXPONENTIAL_BACKOFF_FIELD_NUMBER;
+      hash = (53 * hash) + getExponentialBackoff().hashCode();
+    }
     if (getVariablesCount() > 0) {
       hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getVariablesList().hashCode();
@@ -398,13 +461,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.TaskNode.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getTaskDefIdFieldBuilder();
+        getExponentialBackoffFieldBuilder();
+        getVariablesFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -417,13 +488,18 @@ private static final long serialVersionUID = 0L;
       }
       timeoutSeconds_ = 0;
       retries_ = 0;
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
       if (variablesBuilder_ == null) {
         variables_ = java.util.Collections.emptyList();
       } else {
         variables_ = null;
         variablesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       return this;
     }
 
@@ -458,9 +534,9 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.TaskNode result) {
       if (variablesBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0)) {
+        if (((bitField0_ & 0x00000010) != 0)) {
           variables_ = java.util.Collections.unmodifiableList(variables_);
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000010);
         }
         result.variables_ = variables_;
       } else {
@@ -481,6 +557,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.retries_ = retries_;
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.exponentialBackoff_ = exponentialBackoffBuilder_ == null
+            ? exponentialBackoff_
+            : exponentialBackoffBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -536,11 +620,14 @@ private static final long serialVersionUID = 0L;
       if (other.getRetries() != 0) {
         setRetries(other.getRetries());
       }
+      if (other.hasExponentialBackoff()) {
+        mergeExponentialBackoff(other.getExponentialBackoff());
+      }
       if (variablesBuilder_ == null) {
         if (!other.variables_.isEmpty()) {
           if (variables_.isEmpty()) {
             variables_ = other.variables_;
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000010);
           } else {
             ensureVariablesIsMutable();
             variables_.addAll(other.variables_);
@@ -553,7 +640,7 @@ private static final long serialVersionUID = 0L;
             variablesBuilder_.dispose();
             variablesBuilder_ = null;
             variables_ = other.variables_;
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000010);
             variablesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getVariablesFieldBuilder() : null;
@@ -618,6 +705,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  getExponentialBackoffFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -794,7 +888,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
@@ -807,7 +902,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
@@ -824,7 +920,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
@@ -840,9 +937,16 @@ private static final long serialVersionUID = 0L;
     private int retries_ ;
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
@@ -854,9 +958,16 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
@@ -872,9 +983,16 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
@@ -887,12 +1005,167 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> exponentialBackoffBuilder_;
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     * @return Whether the exponentialBackoff field is set.
+     */
+    public boolean hasExponentialBackoff() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     * @return The exponentialBackoff.
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+      if (exponentialBackoffBuilder_ == null) {
+        return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      } else {
+        return exponentialBackoffBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder setExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        exponentialBackoff_ = value;
+      } else {
+        exponentialBackoffBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder setExponentialBackoff(
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder builderForValue) {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoff_ = builderForValue.build();
+      } else {
+        exponentialBackoffBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder mergeExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          exponentialBackoff_ != null &&
+          exponentialBackoff_ != io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance()) {
+          getExponentialBackoffBuilder().mergeFrom(value);
+        } else {
+          exponentialBackoff_ = value;
+        }
+      } else {
+        exponentialBackoffBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder clearExponentialBackoff() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder getExponentialBackoffBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getExponentialBackoffFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+      if (exponentialBackoffBuilder_ != null) {
+        return exponentialBackoffBuilder_.getMessageOrBuilder();
+      } else {
+        return exponentialBackoff_ == null ?
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      }
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> 
+        getExponentialBackoffFieldBuilder() {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoffBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder>(
+                getExponentialBackoff(),
+                getParentForChildren(),
+                isClean());
+        exponentialBackoff_ = null;
+      }
+      return exponentialBackoffBuilder_;
+    }
+
     private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> variables_ =
       java.util.Collections.emptyList();
     private void ensureVariablesIsMutable() {
-      if (!((bitField0_ & 0x00000008) != 0)) {
+      if (!((bitField0_ & 0x00000010) != 0)) {
         variables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignment>(variables_);
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
        }
     }
 
@@ -1086,7 +1359,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearVariables() {
       if (variablesBuilder_ == null) {
         variables_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
       } else {
         variablesBuilder_.clear();
@@ -1191,7 +1464,7 @@ private static final long serialVersionUID = 0L;
         variablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 variables_,
-                ((bitField0_ & 0x00000008) != 0),
+                ((bitField0_ & 0x00000010) != 0),
                 getParentForChildren(),
                 isClean());
         variables_ = null;

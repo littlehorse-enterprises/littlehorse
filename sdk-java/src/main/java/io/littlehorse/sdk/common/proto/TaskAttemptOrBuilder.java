@@ -39,7 +39,9 @@ public interface TaskAttemptOrBuilder extends
 
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -48,7 +50,9 @@ public interface TaskAttemptOrBuilder extends
   boolean hasScheduleTime();
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>
@@ -57,7 +61,9 @@ public interface TaskAttemptOrBuilder extends
   com.google.protobuf.Timestamp getScheduleTime();
   /**
    * <pre>
-   * The time the TaskAttempt was scheduled on the Task Queue.
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>

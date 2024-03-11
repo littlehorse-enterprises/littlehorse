@@ -142,7 +142,6 @@ public class TestUtil {
         taskRun.setTaskRunSource(new TaskRunSourceModel(
                 new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
         taskRun.setTaskDefId(taskDefId);
-        taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
 

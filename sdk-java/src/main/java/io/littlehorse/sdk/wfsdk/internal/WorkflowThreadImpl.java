@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.sdk.common.proto.FailureDef;
@@ -203,24 +204,32 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public void scheduleReminderTask(
-            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
     @Override
-    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
     @Override
     public void scheduleReminderTaskOnAssignment(
-            UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
     }
 
     @Override
     public void scheduleReminderTaskOnAssignment(
-            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
     }
 
@@ -229,7 +238,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             Serializable delaySeconds,
             String taskDefName,
             UTActionTrigger.UTHook utHook,
-            Object... args) {
+            Serializable... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
         TaskNode taskNode = createTaskNode(taskDefName, args);
@@ -261,7 +270,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new TaskNodeOutputImpl(nodeName, this);
     }
 
-    private TaskNode createTaskNode(String taskName, Object... args) {
+    private TaskNode createTaskNode(String taskName, Serializable... args) {
         TaskNode.Builder taskNode =
                 TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
         parent.addTaskDefName(taskName);
@@ -274,8 +283,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
             taskNode.setTimeoutSeconds(parent.getDefaultTaskTimeout());
         }
 
-        // Can be overriden via NodeOutput.withRetries();
-        taskNode.setRetries(parent.getDefaultTaskRetries());
+        taskNode.setRetries(parent.getDefaultSimpleRetries());
+
+        if (parent.getDefaultExponentialBackoffRetryPolicy().isPresent()) {
+            taskNode.setExponentialBackoff(
+                    parent.getDefaultExponentialBackoffRetryPolicy().get());
+        }
 
         return taskNode.build();
     }
@@ -508,6 +521,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         TaskNode.Builder taskBuilder = nb.getTaskBuilder();
         taskBuilder.setRetries(retries);
+
+        nb.setTask(taskBuilder);
+        spec.putNodes(node.nodeName, nb.build());
+    }
+
+    public void overrideTaskExponentialBackoffPolicy(TaskNodeOutputImpl node, ExponentialBackoffRetryPolicy policy) {
+        checkIfIsActive();
+        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
+        if (nb.getNodeCase() != NodeCase.TASK) {
+            throw new IllegalStateException("Impossible to not have task node here");
+        }
+
+        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
+        taskBuilder.setExponentialBackoff(policy);
 
         nb.setTask(taskBuilder);
         spec.putNodes(node.nodeName, nb.build());

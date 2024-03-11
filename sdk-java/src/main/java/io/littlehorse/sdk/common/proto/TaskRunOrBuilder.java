@@ -112,16 +112,6 @@ public interface TaskRunOrBuilder extends
 
   /**
    * <pre>
-   * The maximum number of attempts that may be scheduled for this TaskRun.
-   * </pre>
-   *
-   * <code>int32 max_attempts = 4;</code>
-   * @return The maxAttempts.
-   */
-  int getMaxAttempts();
-
-  /**
-   * <pre>
    * The input variables to pass into this TaskRun. Note that this is a list and not
    * a map, because ordering matters. Depending on the language implementation, not
    * every LittleHorse Task Worker SDK has the ability to determine the names of the
@@ -267,4 +257,42 @@ public interface TaskRunOrBuilder extends
    * @return The timeoutSeconds.
    */
   int getTimeoutSeconds();
+
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+   * total_attempts to 1 means that there are no retries.
+   * </pre>
+   *
+   * <code>int32 total_attempts = 4;</code>
+   * @return The totalAttempts.
+   */
+  int getTotalAttempts();
+
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  boolean hasExponentialBackoff();
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return The exponentialBackoff.
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff();
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
 }
