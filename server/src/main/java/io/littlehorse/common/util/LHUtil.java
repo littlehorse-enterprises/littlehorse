@@ -10,6 +10,7 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
@@ -217,12 +218,11 @@ public class LHUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Object> strToJsonArr(String jsonStr) {
+    public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {
         try {
             return mapper.readValue(jsonStr, List.class);
         } catch (JsonProcessingException exn) {
-            log.error(exn.getMessage(), exn);
-            return null;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_ARR value: %s".formatted(exn.getMessage()));
         }
     }
 
@@ -231,8 +231,7 @@ public class LHUtil {
         try {
             return mapper.readValue(jsonStr, Map.class);
         } catch (JsonProcessingException exn) {
-            log.error(exn.getMessage(), exn);
-            return null;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_OBJ value: %s".formatted(exn.getMessage()));
         }
     }
 
@@ -246,8 +245,8 @@ public class LHUtil {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (Exception exn) {
-                log.error("Failed writing map or list to json, returning null.", exn);
-                return null;
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Unable to serialize argument: %s".formatted(exn.getMessage()));
             }
         }
         return obj.toString();

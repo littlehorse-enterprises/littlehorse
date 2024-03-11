@@ -280,31 +280,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
    * @return Whether the bulkJob field is set.
    */
   boolean hasBulkJob();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
    * @return The bulkJob.
    */
   io.littlehorse.common.proto.BulkUpdateJob getBulkJob();
   /**
+   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   */
+  io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
+   * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
+   * @return Whether the taskAttemptRetryReady field is set.
    */
-  io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
+  boolean hasTaskAttemptRetryReady();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
+   * @return The taskAttemptRetryReady.
+   */
+  io.littlehorse.common.proto.TaskAttemptRetryReady getTaskAttemptRetryReady();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
+   */
+  io.littlehorse.common.proto.TaskAttemptRetryReadyOrBuilder getTaskAttemptRetryReadyOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

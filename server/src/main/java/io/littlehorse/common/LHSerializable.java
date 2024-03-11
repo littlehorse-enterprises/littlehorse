@@ -39,7 +39,10 @@ public abstract class LHSerializable<T extends Message> {
             T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto, context);
             return out;
-        } catch (Exception exn) {
+        } catch (NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException exn) {
             log.error("This shouldn't be possible", exn);
             throw new RuntimeException(exn);
         }
