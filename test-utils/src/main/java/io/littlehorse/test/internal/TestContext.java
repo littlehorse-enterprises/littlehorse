@@ -1,7 +1,5 @@
 package io.littlehorse.test.internal;
 
-import io.grpc.Status.Code;
-import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -10,7 +8,9 @@ import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -18,6 +18,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.LHWorkflowEvent;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.lang.reflect.Field;
@@ -41,6 +42,8 @@ public class TestContext {
 
     private final Map<String, UserTaskSchema> userTaskSchemasStore = new HashMap<>();
 
+    private final Map<String, WorkflowEventDef> workflowEventDefMap = new HashMap<>();
+
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
     private final Lock wfSpecStoreLock;
@@ -60,6 +63,17 @@ public class TestContext {
             workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), config));
         }
         return workers;
+    }
+
+    public List<PutWorkflowEventDefRequest> discoverWorkflowEvents(Object testInstance) throws IllegalAccessException {
+        List<PutWorkflowEventDefRequest> results = new ArrayList<>();
+        List<Field> annotatedFields =
+                ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHWorkflowEvent.class);
+        for (Field annotatedField : annotatedFields) {
+            annotatedField.setAccessible(true);
+            results.add((PutWorkflowEventDefRequest) annotatedField.get(testInstance));
+        }
+        return results;
     }
 
     public List<UserTaskSchema> discoverUserTaskSchemas(Object testInstance) throws IllegalAccessException {
@@ -92,14 +106,16 @@ public class TestContext {
                     .setName(externalEventDef.getId().getName())
                     .build();
 
-            try {
-                ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
-                externalEventDefMap.put(externalEventDefResult.getId().getName(), externalEventDefResult);
-            } catch (StatusRuntimeException exn) {
-                if (exn.getStatus().getCode() != Code.ALREADY_EXISTS) {
-                    throw exn;
-                }
-            }
+            ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
+            externalEventDefMap.put(externalEventDefResult.getId().getName(), externalEventDefResult);
+        }
+    }
+
+    public void registerWorkflowEventDef(PutWorkflowEventDefRequest req) {
+        if (!workflowEventDefMap.containsKey(req.getName())) {
+            WorkflowEventDef result = lhClient.putWorkflowEventDef(req);
+            workflowEventDefMap.put(req.getName(), result);
+            lhClient.putWorkflowEventDef(req);
         }
     }
 
