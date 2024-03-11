@@ -330,7 +330,6 @@ class LHConfig:
             elif async_channel:
                 return grpc.aio.insecure_channel(
                     target,
-                    credentials,
                     options,
                     interceptors=interceptors,
                 )
