@@ -2,7 +2,7 @@
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId } from "./object_id";
+import { ExternalEventDefId, ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 export const protobufPackage = "littlehorse";
@@ -55,8 +55,10 @@ export interface ExternalEvent {
 
 /** The ExternalEventDef defines the blueprint for an ExternalEvent. */
 export interface ExternalEventDef {
-  /** The name of the ExternalEventDef. */
-  name: string;
+  /** The id of the ExternalEventDef. */
+  id:
+    | ExternalEventDefId
+    | undefined;
   /** When the ExternalEventDef was created. */
   createdAt:
     | string
@@ -230,13 +232,13 @@ export const ExternalEvent = {
 };
 
 function createBaseExternalEventDef(): ExternalEventDef {
-  return { name: "", createdAt: undefined, retentionPolicy: undefined };
+  return { id: undefined, createdAt: undefined, retentionPolicy: undefined };
 }
 
 export const ExternalEventDef = {
   encode(message: ExternalEventDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== undefined) {
+      ExternalEventDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
@@ -259,7 +261,7 @@ export const ExternalEventDef = {
             break;
           }
 
-          message.name = reader.string();
+          message.id = ExternalEventDefId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -286,7 +288,7 @@ export const ExternalEventDef = {
 
   fromJSON(object: any): ExternalEventDef {
     return {
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      id: isSet(object.id) ? ExternalEventDefId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       retentionPolicy: isSet(object.retentionPolicy)
         ? ExternalEventRetentionPolicy.fromJSON(object.retentionPolicy)
@@ -296,8 +298,8 @@ export const ExternalEventDef = {
 
   toJSON(message: ExternalEventDef): unknown {
     const obj: any = {};
-    if (message.name !== "") {
-      obj.name = message.name;
+    if (message.id !== undefined) {
+      obj.id = ExternalEventDefId.toJSON(message.id);
     }
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
@@ -313,7 +315,9 @@ export const ExternalEventDef = {
   },
   fromPartial<I extends Exact<DeepPartial<ExternalEventDef>, I>>(object: I): ExternalEventDef {
     const message = createBaseExternalEventDef();
-    message.name = object.name ?? "";
+    message.id = (object.id !== undefined && object.id !== null)
+      ? ExternalEventDefId.fromPartial(object.id)
+      : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? ExternalEventRetentionPolicy.fromPartial(object.retentionPolicy)

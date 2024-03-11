@@ -2,6 +2,7 @@ package io.littlehorse.test.internal;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -92,7 +93,7 @@ public class TestContext {
             LHTest lhTestAnnotation = testInstance.getClass().getAnnotation(LHTest.class);
             return Stream.of(lhTestAnnotation.externalEventNames())
                     .map(externalEventName -> ExternalEventDef.newBuilder()
-                            .setName(externalEventName)
+                            .setId(ExternalEventDefId.newBuilder().setName(externalEventName))
                             .build())
                     .toList();
         }
@@ -100,13 +101,13 @@ public class TestContext {
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
-        if (!externalEventDefMap.containsKey(externalEventDef.getName())) {
+        if (!externalEventDefMap.containsKey(externalEventDef.getId().getName())) {
             PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
-                    .setName(externalEventDef.getName())
+                    .setName(externalEventDef.getId().getName())
                     .build();
 
             ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
-            externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+            externalEventDefMap.put(externalEventDefResult.getId().getName(), externalEventDefResult);
         }
     }
 
