@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
@@ -15,6 +16,8 @@ import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
+import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
@@ -22,6 +25,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -183,6 +187,46 @@ public class WorkflowThreadImplTest {
         Node overridenNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
         assertThat(overridenNode.getTask().getRetries()).isEqualTo(2);
+    }
+
+    @Test
+    void setDefaultExponentialBackoffPolicyAndOverride() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf");
+            thread.execute("asdf").withRetries(2);
+            thread.execute("asdf")
+                    .withRetries(42)
+                    .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
+                            .setBaseIntervalMs(500)
+                            .setMultiplier(137)
+                            .setMaxDelayMs(100000)
+                            .build());
+        });
+        wf.setDefaultTaskExponentialBackoffPolicy(ExponentialBackoffRetryPolicy.newBuilder()
+                .setBaseIntervalMs(500)
+                .setMultiplier(2)
+                .setMaxDelayMs(50000)
+                .build());
+        wf.setDefaultTaskRetries(5);
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        Node defaultNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+        assertThat(defaultNode.getTask().getExponentialBackoff().getBaseIntervalMs())
+                .isEqualTo(500);
+        assertThat(defaultNode.getTask().getRetries()).isEqualTo(5);
+
+        Node overridenNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
+        assertThat(overridenNode.getTask().getRetries()).isEqualTo(2);
+
+        Node overridenNodeWithExponential =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("3-asdf-TASK");
+        assertThat(overridenNodeWithExponential
+                        .getTask()
+                        .getExponentialBackoff()
+                        .getMultiplier())
+                .isEqualTo(137);
     }
 
     @Test
@@ -416,5 +460,26 @@ public class WorkflowThreadImplTest {
         assertThat(secondThrow.getThrowEvent().getEventDefId().getName()).isEqualTo("another-event");
         assertThat(secondThrow.getThrowEvent().getContent().getLiteralValue().getStr())
                 .isEqualTo("some-content");
+    }
+
+    @Test
+    void testReminderTaskWithNoArguments() {
+        Workflow workflow = new WorkflowImpl("throw-event-wf", wf -> {
+            UserTaskOutput uto = wf.assignUserTask("some-usertaskdef", "some-person", "some-group");
+            wf.scheduleReminderTask(uto, 10, "some-taskdef");
+        });
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(1);
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+
+        Node node = entrypoint.getNodesOrThrow("1-some-usertaskdef-USER_TASK");
+        assertThat(node.getNodeCase()).isEqualTo(NodeCase.USER_TASK);
+
+        UserTaskNode utn = node.getUserTask();
+        assertThat(utn.getActionsCount()).isEqualTo(1);
+
+        UTATask taskTrigger = utn.getActions(0).getTask();
+        assertThat(taskTrigger.getTask().getVariablesCount()).isEqualTo(0);
     }
 }

@@ -8,6 +8,7 @@ import {
   taskStatusFromJSON,
   taskStatusToNumber,
 } from "./common_enums";
+import { ExponentialBackoffRetryPolicy } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskDefId, TaskRunId, WfSpecId } from "./object_id";
 import { UserTaskTriggerReference } from "./user_tasks";
@@ -30,8 +31,6 @@ export interface TaskRun {
    * the TaskRun being put on a Task Queue to be executed by the Task Workers.
    */
   attempts: TaskAttempt[];
-  /** The maximum number of attempts that may be scheduled for this TaskRun. */
-  maxAttempts: number;
   /**
    * The input variables to pass into this TaskRun. Note that this is a list and not
    * a map, because ordering matters. Depending on the language implementation, not
@@ -55,6 +54,13 @@ export interface TaskRun {
   status: TaskStatus;
   /** The timeout before LH considers a TaskAttempt to be timed out. */
   timeoutSeconds: number;
+  /**
+   * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+   * total_attempts to 1 means that there are no retries.
+   */
+  totalAttempts: number;
+  /** Optional backoff policy . */
+  exponentialBackoff?: ExponentialBackoffRetryPolicy | undefined;
 }
 
 /** A key-value pair of variable name and value. */
@@ -74,7 +80,11 @@ export interface TaskAttempt {
   logOutput?:
     | VariableValue
     | undefined;
-  /** The time the TaskAttempt was scheduled on the Task Queue. */
+  /**
+   * The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+   * in the TASK_PENDING status; for example, when waiting between retries with exponential
+   * backoff.
+   */
   scheduleTime?:
     | string
     | undefined;
@@ -156,12 +166,13 @@ function createBaseTaskRun(): TaskRun {
     id: undefined,
     taskDefId: undefined,
     attempts: [],
-    maxAttempts: 0,
     inputVariables: [],
     source: undefined,
     scheduledAt: undefined,
     status: TaskStatus.TASK_SCHEDULED,
     timeoutSeconds: 0,
+    totalAttempts: 0,
+    exponentialBackoff: undefined,
   };
 }
 
@@ -175,9 +186,6 @@ export const TaskRun = {
     }
     for (const v of message.attempts) {
       TaskAttempt.encode(v!, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.maxAttempts !== 0) {
-      writer.uint32(32).int32(message.maxAttempts);
     }
     for (const v of message.inputVariables) {
       VarNameAndVal.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -193,6 +201,12 @@ export const TaskRun = {
     }
     if (message.timeoutSeconds !== 0) {
       writer.uint32(72).int32(message.timeoutSeconds);
+    }
+    if (message.totalAttempts !== 0) {
+      writer.uint32(32).int32(message.totalAttempts);
+    }
+    if (message.exponentialBackoff !== undefined) {
+      ExponentialBackoffRetryPolicy.encode(message.exponentialBackoff, writer.uint32(82).fork()).ldelim();
     }
     return writer;
   },
@@ -224,13 +238,6 @@ export const TaskRun = {
           }
 
           message.attempts.push(TaskAttempt.decode(reader, reader.uint32()));
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.maxAttempts = reader.int32();
           continue;
         case 5:
           if (tag !== 42) {
@@ -267,6 +274,20 @@ export const TaskRun = {
 
           message.timeoutSeconds = reader.int32();
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.totalAttempts = reader.int32();
+          continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.exponentialBackoff = ExponentialBackoffRetryPolicy.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -286,7 +307,6 @@ export const TaskRun = {
       ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
     message.attempts = object.attempts?.map((e) => TaskAttempt.fromPartial(e)) || [];
-    message.maxAttempts = object.maxAttempts ?? 0;
     message.inputVariables = object.inputVariables?.map((e) => VarNameAndVal.fromPartial(e)) || [];
     message.source = (object.source !== undefined && object.source !== null)
       ? TaskRunSource.fromPartial(object.source)
@@ -294,6 +314,10 @@ export const TaskRun = {
     message.scheduledAt = object.scheduledAt ?? undefined;
     message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
+    message.totalAttempts = object.totalAttempts ?? 0;
+    message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
+      ? ExponentialBackoffRetryPolicy.fromPartial(object.exponentialBackoff)
+      : undefined;
     return message;
   },
 };

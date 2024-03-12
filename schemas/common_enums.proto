@@ -48,6 +48,10 @@ enum TaskStatus {
   TASK_INPUT_VAR_SUB_ERROR = 6;
   // Task Function business logic determined that there was a business exception.
   TASK_EXCEPTION = 8;
+  // Refers to a TaskAttempt that is not yet scheduled. This happens when using retries
+  // with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled
+  // until it "matures", but it does already exist.
+  TASK_PENDING = 9;
 }
 
 // Metrics

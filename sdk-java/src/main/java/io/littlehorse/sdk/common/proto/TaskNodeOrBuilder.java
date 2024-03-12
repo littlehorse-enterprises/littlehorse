@@ -37,7 +37,8 @@ public interface TaskNodeOrBuilder extends
   /**
    * <pre>
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-   * the worker does not yet reply to the Server.
+   * the worker does not yet reply to the Server. This is determined on a per-Attempt
+   * basis.
    * </pre>
    *
    * <code>int32 timeout_seconds = 2;</code>
@@ -47,15 +48,49 @@ public interface TaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-   * Please note that this API may change before version 1.0.0, as we are going to
-   * add significant functionality including backoff policies.
+   * Configures the amount of retries allowed on this TaskNode.
+   *
+   * Retryable errors include:
+   * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+   *   Task Worker in time.
+   * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+   *   the Task Function.
+   *
+   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    * </pre>
    *
    * <code>int32 retries = 3;</code>
    * @return The retries.
    */
   int getRetries();
+
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  boolean hasExponentialBackoff();
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return The exponentialBackoff.
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff();
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
 
   /**
    * <pre>

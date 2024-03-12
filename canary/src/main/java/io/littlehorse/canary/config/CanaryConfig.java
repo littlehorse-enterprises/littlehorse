@@ -25,6 +25,7 @@ public class CanaryConfig implements Config {
     public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
     public static final String METRONOME_ACTIVE_MODE_ENABLE = "metronome.active.mode.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
+    public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
     private final Map<String, Object> configs;
 
     public CanaryConfig(final Map<String, Object> configs) {
@@ -66,6 +67,10 @@ public class CanaryConfig implements Config {
 
     public String getTopicName() {
         return getConfig(TOPIC_NAME);
+    }
+
+    public long getTopicCreationTimeoutMs() {
+        return Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS));
     }
 
     public int getTopicPartitions() {

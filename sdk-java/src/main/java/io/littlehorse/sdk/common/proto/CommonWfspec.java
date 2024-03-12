@@ -60,6 +60,11 @@ public final class CommonWfspec {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_UTActionTrigger_UTAReassign_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ExponentialBackoffRetryPolicy_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ExponentialBackoffRetryPolicy_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_TaskNode_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -112,20 +117,25 @@ public final class CommonWfspec {
       "8\n\nuser_group\030\002 \001(\0132\037.littlehorse.Variab" +
       "leAssignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_g" +
       "roup\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TAS" +
-      "K_ASSIGNED\020\001B\010\n\006action\"\225\001\n\010TaskNode\022+\n\013t" +
-      "ask_def_id\030\001 \001(\0132\026.littlehorse.TaskDefId" +
-      "\022\027\n\017timeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001" +
-      "(\005\0222\n\tvariables\030\004 \003(\0132\037.littlehorse.Vari" +
-      "ableAssignment*\230\001\n\024VariableMutationType\022" +
-      "\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBT" +
-      "RACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMO" +
-      "VE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREM" +
-      "OVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000\022" +
-      "\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017G" +
-      "REATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUA" +
-      "LS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BG\n\037io.littlehor" +
-      "se.sdk.common.protoP\001Z\007.;model\252\002\030LittleH" +
-      "orse.Common.Protob\006proto3"
+      "K_ASSIGNED\020\001B\010\n\006action\"c\n\035ExponentialBac" +
+      "koffRetryPolicy\022\030\n\020base_interval_ms\030\001 \001(" +
+      "\005\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 " +
+      "\001(\002\"\373\001\n\010TaskNode\022+\n\013task_def_id\030\001 \001(\0132\026." +
+      "littlehorse.TaskDefId\022\027\n\017timeout_seconds" +
+      "\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n\023exponential_b" +
+      "ackoff\030\005 \001(\0132*.littlehorse.ExponentialBa" +
+      "ckoffRetryPolicyH\000\210\001\001\0222\n\tvariables\030\004 \003(\013" +
+      "2\037.littlehorse.VariableAssignmentB\026\n\024_ex" +
+      "ponential_backoff*\230\001\n\024VariableMutationTy" +
+      "pe\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010S" +
+      "UBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021R" +
+      "EMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\n" +
+      "REMOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN" +
+      "\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023" +
+      "\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_E" +
+      "QUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BG\n\037io.little" +
+      "horse.sdk.common.protoP\001Z\007.;model\252\002\030Litt" +
+      "leHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -188,12 +198,18 @@ public final class CommonWfspec {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor,
         new java.lang.String[] { "UserId", "UserGroup", "UserId", "UserGroup", });
-    internal_static_littlehorse_TaskNode_descriptor =
+    internal_static_littlehorse_ExponentialBackoffRetryPolicy_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_littlehorse_ExponentialBackoffRetryPolicy_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ExponentialBackoffRetryPolicy_descriptor,
+        new java.lang.String[] { "BaseIntervalMs", "MaxDelayMs", "Multiplier", });
+    internal_static_littlehorse_TaskNode_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_TaskNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskNode_descriptor,
-        new java.lang.String[] { "TaskDefId", "TimeoutSeconds", "Retries", "Variables", });
+        new java.lang.String[] { "TaskDefId", "TimeoutSeconds", "Retries", "ExponentialBackoff", "Variables", "ExponentialBackoff", });
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -35,7 +36,6 @@ import lombok.Setter;
 public class TaskNodeModel extends SubNode<TaskNode> {
 
     private TaskDefIdModel taskDefId;
-    private int retries;
     private List<VariableAssignmentModel> variables;
     private int timeoutSeconds;
 
@@ -43,6 +43,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     private WfService wfService;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
+
+    private int simpleRetries;
+    private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
 
     public TaskDefModel getTaskDef() {
         if (taskDef == null) {
@@ -69,7 +72,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
-        retries = p.getRetries();
 
         timeoutSeconds = p.getTimeoutSeconds();
         if (timeoutSeconds == 0) {
@@ -81,16 +83,26 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+
+        simpleRetries = p.getRetries();
+        if (p.hasExponentialBackoff()) {
+            exponentialBackoffRetryPolicy = LHSerializable.fromProto(
+                    p.getExponentialBackoff(), ExponentialBackoffRetryPolicyModel.class, context);
+        }
     }
 
     public TaskNode.Builder toProto() {
         TaskNode.Builder out = TaskNode.newBuilder()
                 .setTaskDefId(taskDefId.toProto())
                 .setTimeoutSeconds(timeoutSeconds)
-                .setRetries(retries);
+                .setRetries(simpleRetries);
 
         for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
+        }
+
+        if (exponentialBackoffRetryPolicy != null) {
+            out.setExponentialBackoff(exponentialBackoffRetryPolicy.toProto());
         }
         return out;
     }
@@ -104,9 +116,8 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         if (taskDef == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
         }
-        if (retries < 0) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "has negative " + "number of retries!");
-        }
+
+        // TODO: Validate retry policy; ensure that it is sensible.
 
         // Now need to validate that all of the variables are provided.
         if (variables.size() != taskDef.inputVars.size()) {
@@ -138,6 +149,26 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         if (timeoutSeconds == 0) {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
+
+        validateRetryPolicy();
+    }
+
+    private void validateRetryPolicy() throws LHApiException {
+        if (simpleRetries < 0) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot have negative retries!");
+        }
+        if (exponentialBackoffRetryPolicy == null) return;
+        if (exponentialBackoffRetryPolicy.getBaseIntervalMs() <= 0) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Exponential Backoff Base interval must be > 0!");
+        }
+        if (exponentialBackoffRetryPolicy.getMultiplier() < 1.0) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Exponential Backoff Multiplier must be at least 1.0!");
+        }
+        if (exponentialBackoffRetryPolicy.getMaxDelayMs() < exponentialBackoffRetryPolicy.getBaseIntervalMs()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Exponential Backoff max delay cannot be less than base delay");
+        }
+        return;
     }
 
     @Override

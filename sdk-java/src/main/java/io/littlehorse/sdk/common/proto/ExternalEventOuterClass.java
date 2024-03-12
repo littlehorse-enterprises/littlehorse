@@ -47,15 +47,16 @@ public final class ExternalEventOuterClass {
       ".VariableValue\022\036\n\021thread_run_number\030\004 \001(" +
       "\005H\000\210\001\001\022\036\n\021node_run_position\030\005 \001(\005H\001\210\001\001\022\017" +
       "\n\007claimed\030\006 \001(\010B\024\n\022_thread_run_numberB\024\n" +
-      "\022_node_run_position\"\225\001\n\020ExternalEventDef" +
-      "\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\022C\n\020retention_poli" +
-      "cy\030\003 \001(\0132).littlehorse.ExternalEventRete" +
-      "ntionPolicy\"P\n\034ExternalEventRetentionPol" +
-      "icy\022\033\n\021seconds_after_put\030\001 \001(\003H\000B\023\n\021ext_" +
-      "evt_gc_policyBG\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
-      ".Protob\006proto3"
+      "\022_node_run_position\"\264\001\n\020ExternalEventDef" +
+      "\022+\n\002id\030\001 \001(\0132\037.littlehorse.ExternalEvent" +
+      "DefId\022.\n\ncreated_at\030\002 \001(\0132\032.google.proto" +
+      "buf.Timestamp\022C\n\020retention_policy\030\003 \001(\0132" +
+      ").littlehorse.ExternalEventRetentionPoli" +
+      "cy\"P\n\034ExternalEventRetentionPolicy\022\033\n\021se" +
+      "conds_after_put\030\001 \001(\003H\000B\023\n\021ext_evt_gc_po" +
+      "licyBG\n\037io.littlehorse.sdk.common.protoP" +
+      "\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -75,7 +76,7 @@ public final class ExternalEventOuterClass {
     internal_static_littlehorse_ExternalEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDef_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "RetentionPolicy", });
+        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", });
     internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable = new
