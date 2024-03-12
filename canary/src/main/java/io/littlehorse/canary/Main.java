@@ -5,6 +5,7 @@ import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
 import io.littlehorse.canary.metronome.MetronomeBootstrap;
+import io.littlehorse.canary.metronome.MetronomeWorkerBootstrap;
 import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
 import io.littlehorse.canary.util.Shutdown;
 import java.io.IOException;
@@ -48,6 +49,11 @@ public class Main {
         if (config.isMetronomeEnabled()) {
             final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
             prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
+        }
+
+        if (config.isMetronomeWorkerEnabled()) {
+            final MetronomeWorkerBootstrap metronomeWorkerBootstrap = new MetronomeWorkerBootstrap(config);
+            prometheusExporterBootstrap.addMeasurable(metronomeWorkerBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {

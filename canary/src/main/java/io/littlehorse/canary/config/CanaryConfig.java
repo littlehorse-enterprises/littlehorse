@@ -23,7 +23,6 @@ public class CanaryConfig implements Config {
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
     public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
-    public static final String METRONOME_CLIENT_ENABLE = "metronome.client.enable";
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
     public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
@@ -100,10 +99,6 @@ public class CanaryConfig implements Config {
 
     public boolean isMetronomeEnabled() {
         return Boolean.parseBoolean(getConfig(METRONOME_ENABLE));
-    }
-
-    public boolean isMetronomeClientEnabled() {
-        return Boolean.parseBoolean(getConfig(METRONOME_CLIENT_ENABLE));
     }
 
     public boolean isMetronomeWorkerEnabled() {
