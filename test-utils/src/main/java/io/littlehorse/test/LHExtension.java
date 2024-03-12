@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -75,6 +76,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             List<ExternalEventDef> externalEventDefinitions =
                     testContext.discoverExternalEventDefinitions(testInstance);
             externalEventDefinitions.forEach(testContext::registerExternalEventDef);
+
+            List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
+            workflowEvents.forEach(testContext::registerWorkflowEventDef);
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }

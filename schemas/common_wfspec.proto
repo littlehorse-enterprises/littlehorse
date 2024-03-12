@@ -218,19 +218,50 @@ message UTActionTrigger {
   UTHook hook = 6;
 }
 
+// Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
+// attempt `N` is defined as:
+//
+// min(base_interval_ms * (multiplier ^(N-1)), max_delay_ms)
+//
+// Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
+// so timing is not exact.
+message ExponentialBackoffRetryPolicy {
+    // Base delay in ms for the first retry. Note that in LittleHorse, timers have a
+    // resolution of 500-1000 milliseconds. Must be greater than zero.
+    int32 base_interval_ms = 1;
+
+    // Maximum delay in milliseconds between retries.
+    int64 max_delay_ms = 2;
+
+    // The multiplier to use in calculating the retry backoff policy. We recommend
+    // starting with 2.0. Must be at least 1.0.
+    float multiplier = 3;
+}
+
 // Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 message TaskNode {
   // The type of TaskRun to schedule.
   TaskDefId task_def_id = 1;
 
   // How long until LittleHorse determines that the Task Worker had a technical ERROR if
-  // the worker does not yet reply to the Server.
+  // the worker does not yet reply to the Server. This is determined on a per-Attempt
+  // basis.
   int32 timeout_seconds = 2;
 
-  // EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-  // Please note that this API may change before version 1.0.0, as we are going to
-  // add significant functionality including backoff policies.
+  // Configures the amount of retries allowed on this TaskNode.
+  //
+  // Retryable errors include:
+  // - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+  //   Task Worker in time.
+  // - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+  //   the Task Function.
+  //
+  // Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+  // TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
   int32 retries = 3;
+
+  // If this field is set, then retries will use Exponential Backoff.
+  optional ExponentialBackoffRetryPolicy exponential_backoff = 5;
 
   // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;

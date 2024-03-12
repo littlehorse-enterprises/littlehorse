@@ -15,7 +15,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
 
 public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
@@ -102,20 +101,19 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
     }
 }
 
-@Slf4j
 class Comparer {
 
-    @SuppressWarnings("all") // lol
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
             if (left.getVal() == null && right.getVal() != null) return -1;
             if (right.getVal() == null && left.getVal() != null) return 1;
             if (right.getVal() == null && left.getVal() == null) return 0;
 
+            @SuppressWarnings("all")
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
+
             return result;
         } catch (Exception exn) {
-            log.error(exn.getMessage(), exn);
             throw new LHVarSubError(exn, "Failed comparing the provided values.");
         }
     }
