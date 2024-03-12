@@ -11,17 +11,18 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PrometheusExporterBootstrap extends Bootstrap {
 
     private final PrometheusMeterRegistry prometheusRegistry;
 
     public PrometheusExporterBootstrap(final CanaryConfig config) {
         super(config);
-
         prometheusRegistry = initializeRegistry();
-
         new PrometheusExporterServer(config.getMetricsPort(), config.getMetricsPath(), prometheusRegistry);
+        log.info("Initialized");
     }
 
     private PrometheusMeterRegistry initializeRegistry() {

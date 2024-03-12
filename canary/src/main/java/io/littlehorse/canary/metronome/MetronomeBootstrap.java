@@ -37,7 +37,7 @@ public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
                 lhConfig.getApiBootstrapPort(),
                 LHClientUtil.getServerVersion(lhClient));
 
-        log.trace("Initialized");
+        log.info("Initialized");
     }
 
     @Override

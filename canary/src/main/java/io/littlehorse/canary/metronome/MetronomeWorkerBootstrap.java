@@ -9,7 +9,9 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
 
     private final MetricsEmitter emitter;
@@ -32,6 +34,8 @@ public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
         Shutdown.addShutdownHook("Metronome: LH Task Worker", worker);
         worker.registerTaskDef();
         worker.start();
+
+        log.info("Initialized");
     }
 
     @Override
