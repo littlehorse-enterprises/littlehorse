@@ -40,7 +40,7 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
             }
         }
 
-        log.trace("Initialized");
+        log.info("Initialized");
     }
 
     private List<NewTopic> getNewTopics() {

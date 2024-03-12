@@ -23,9 +23,13 @@ public class CanaryConfig implements Config {
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
     public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
-    public static final String METRONOME_ACTIVE_MODE_ENABLE = "metronome.active.mode.enable";
+    public static final String METRICS_FILTER_PREFIX = "%s\\[\\d+\\]".formatted(METRICS_FILTER_ENABLE);
+    public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
     public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
+    public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
+    public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
+
     private final Map<String, Object> configs;
 
     public CanaryConfig(final Map<String, Object> configs) {
@@ -101,8 +105,8 @@ public class CanaryConfig implements Config {
         return Boolean.parseBoolean(getConfig(METRONOME_ENABLE));
     }
 
-    public boolean isMetronomeActiveModeEnabled() {
-        return Boolean.parseBoolean(getConfig(METRONOME_ACTIVE_MODE_ENABLE));
+    public boolean isMetronomeWorkerEnabled() {
+        return Boolean.parseBoolean(getConfig(METRONOME_WORKER_ENABLE));
     }
 
     public boolean isAggregatorEnabled() {
@@ -131,9 +135,16 @@ public class CanaryConfig implements Config {
 
     public List<String> getEnabledMetrics() {
         return configs.entrySet().stream()
-                .filter(entry -> entry.getKey().matches("%s\\[\\d+\\]".formatted(METRICS_FILTER_ENABLE)))
+                .filter(entry -> entry.getKey().matches(METRICS_FILTER_PREFIX))
                 .map(Entry::getValue)
                 .map(Object::toString)
                 .toList();
+    }
+
+    public Map<String, Object> getCommonTags() {
+        return configs.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(METRICS_COMMON_TAGS_PREFIX))
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().substring(METRICS_COMMON_TAGS_PREFIX.length()), Entry::getValue));
     }
 }
