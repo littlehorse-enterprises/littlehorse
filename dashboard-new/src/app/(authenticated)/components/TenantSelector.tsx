@@ -1,10 +1,11 @@
 'use client'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Menu, Transition } from '@headlessui/react'
-import React, { FC, Fragment } from 'react'
+import { FC, Fragment } from 'react'
+import { setTenant } from '../../../setTenant'
 
 export const TenantSelector: FC = () => {
-  const { tenants, tenantId, setTenantId } = useWhoAmI()
+  const { tenants, tenantId } = useWhoAmI()
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -45,7 +46,7 @@ export const TenantSelector: FC = () => {
                   <button
                     className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
                     onClick={() => {
-                      setTenantId(tenant)
+                      setTenant(tenant)
                     }}
                   >
                     {tenant}

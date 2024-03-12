@@ -1,9 +1,8 @@
 import { WhoAmIContext } from '@/contexts/WhoAmIContext'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import getWhoAmI from './getWhoami'
+import { cookies } from 'next/headers'
+import getWhoAmI from '../getWhoami'
 import { Header } from './components/Header'
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Authenticated',
@@ -16,9 +15,10 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const { tenants, user } = await getWhoAmI()
+  const tenantId = cookies().get('tenantId')?.value
 
   return (
-    <WhoAmIContext user={user} tenants={tenants}>
+    <WhoAmIContext user={user} tenants={tenants} tenantId={tenantId}>
       <Header />
       {children}
     </WhoAmIContext>

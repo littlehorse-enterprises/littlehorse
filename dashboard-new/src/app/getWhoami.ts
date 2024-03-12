@@ -1,12 +1,8 @@
 import lhConfig from '@/lhConfig'
-import { authOptions } from '../api/auth/[...nextauth]/authOptions'
-import { DefaultSession, getServerSession } from 'next-auth'
 import { ACLAction, ACLResource, Principal, ServerACLs } from 'littlehorse-client/dist/proto/acls'
-
-type WhoAmI = {
-  user: DefaultSession['user']
-  tenants: string[]
-}
+import { getServerSession } from 'next-auth'
+import { WhoAmI } from '../types'
+import { authOptions } from './api/auth/[...nextauth]/authOptions'
 
 const getWhoAmI = async (): Promise<WhoAmI> => {
   const session = await getServerSession(authOptions)

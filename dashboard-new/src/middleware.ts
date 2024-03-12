@@ -1,7 +1,5 @@
-import { getServerSession } from 'next-auth'
 import nextAuth from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
-import { authOptions } from './app/api/auth/[...nextauth]/authOptions'
 import { getToken } from 'next-auth/jwt'
 
 const withoutAuth = () => {

@@ -1,32 +1,31 @@
 'use client'
 
+import { setTenant } from '@/setTenant'
 import { DefaultSession } from 'next-auth'
-import { FC, PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
+import { FC, PropsWithChildren, createContext, useContext, useEffect } from 'react'
 
 type ContextProps = {
   user: DefaultSession['user']
-  tenantId: string
+  tenantId?: string
   tenants: string[]
-  setTenantId: (tenantId: string) => void
 }
 
 const Context = createContext<ContextProps>({
   user: {},
   tenantId: '',
   tenants: [],
-  setTenantId: () => {},
 })
 
-type WhoAmIContextProps = { user: DefaultSession['user']; tenants: string[] }
+type WhoAmIContextProps = ContextProps
 
-export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants }) => {
-  const [tenantId, internalSetTenantId] = useState(tenants[0])
+export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId }) => {
+  useEffect(() => {
+    if (!tenantId) {
+      setTenant(tenants[0])
+    }
+  })
 
-  const setTenantId = useCallback((tenant: string) => {
-    internalSetTenantId(tenant)
-  }, [])
-
-  return <Context.Provider value={{ user, tenantId, tenants, setTenantId }}>{children}</Context.Provider>
+  return <Context.Provider value={{ user, tenants, tenantId: tenantId || tenants[0] }}>{children}</Context.Provider>
 }
 
 export const useWhoAmI = () => {
