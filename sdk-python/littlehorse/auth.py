@@ -72,7 +72,9 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
         return self._token
 
 
-def _call_details_with_tenant(tenant_id: str | None, details: Any) -> ClientCallDetails:
+def _call_details_with_tenant(
+    tenant_id: Optional[str], details: Any
+) -> ClientCallDetails:
     metadata = []
     if details.metadata is not None:
         metadata = list(details.metadata)
@@ -95,7 +97,7 @@ def _call_details_with_tenant(tenant_id: str | None, details: Any) -> ClientCall
 class MetadataInterceptor(
     grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor
 ):
-    def __init__(self, tenant_id: str | None):
+    def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     def intercept_unary_unary(
@@ -112,7 +114,7 @@ class MetadataInterceptor(
 
 
 class AsyncUnaryUnaryMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
-    def __init__(self, tenant_id: str | None):
+    def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     async def intercept_unary_unary(
@@ -123,7 +125,7 @@ class AsyncUnaryUnaryMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
 
 
 class AsyncStreamStreamMetadataInterceptor(grpc.aio.StreamStreamClientInterceptor):
-    def __init__(self, tenant_id: str | None):
+    def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     async def intercept_stream_stream(
@@ -137,7 +139,7 @@ class AsyncStreamStreamMetadataInterceptor(grpc.aio.StreamStreamClientIntercepto
 
 
 class AsyncStreamUnaryMetadataInterceptor(grpc.aio.StreamUnaryClientInterceptor):
-    def __init__(self, tenant_id: str | None):
+    def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     async def intercept_stream_unary(
@@ -151,7 +153,7 @@ class AsyncStreamUnaryMetadataInterceptor(grpc.aio.StreamUnaryClientInterceptor)
 
 
 class AsyncUnaryStreamMetadataInterceptor(grpc.aio.UnaryStreamClientInterceptor):
-    def __init__(self, tenant_id: str | None):
+    def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     async def intercept_unary_stream(
