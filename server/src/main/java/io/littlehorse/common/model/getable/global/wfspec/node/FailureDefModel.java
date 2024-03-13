@@ -10,6 +10,8 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
@@ -63,6 +65,8 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
     public void validate() throws LHApiException {
         if (LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Failure name " + failureName + " is reserved!");
+        } else if (!LHUtil.isValidLHName(failureName)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid name for exception: " + failureName);
         }
     }
 

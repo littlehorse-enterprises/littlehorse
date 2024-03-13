@@ -21,7 +21,7 @@ public class NodeModelTest {
         Assertions.assertThat(validationException)
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
-                .hasMessage("FAILED_PRECONDITION: Invalid names for exception handlers: my.handler");
+                .hasMessage("INVALID_ARGUMENT: Invalid names for exception handlers: my.handler");
         verify(mockSubnode, never()).validate();
     }
 

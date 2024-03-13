@@ -246,7 +246,7 @@ public class NodeModel extends LHSerializable<Node> {
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(LHUtil::isValidLHName)).collect(Collectors.joining(", "));
         if(!invalidNames.isEmpty()) {
-            throw new LHApiException(Status.FAILED_PRECONDITION, "Invalid names for exception handlers: " + invalidNames);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid names for exception handlers: " + invalidNames);
         }
     }
 
