@@ -14,11 +14,13 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.AssignUserTask;
+import io.littlehorse.test.internal.step.AwaitWorkflowEventStep;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
@@ -79,6 +81,11 @@ public class WfRunVerifier extends AbstractVerifier {
     public WfRunVerifier thenSendExternalEventWithContent(String externalEventName, Object content) {
         VariableValue externalEventContent = LHLibUtil.objToVarVal(content);
         steps.add(new SendExternalEventStep(externalEventName, externalEventContent, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenAwaitWorkflowEvent(String workflowEventDefName, Consumer<WorkflowEvent> verifier) {
+        steps.add(new AwaitWorkflowEventStep(workflowEventDefName, verifier, steps.size() + 1));
         return this;
     }
 

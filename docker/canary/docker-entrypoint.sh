@@ -4,7 +4,7 @@ set -e
 
 if [ "$1" = 'canary' ]; then
     shift
-    exec java -Dlogback.configurationFile=/lh/logback.xml -jar /lh/canary.jar "$@"
+    exec java -Dlog4j2.configurationFile=/lh/log4j2.properties -jar /lh/canary.jar "$@"
 fi
 
 exec "$@"

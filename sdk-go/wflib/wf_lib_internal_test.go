@@ -70,6 +70,21 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
+func TestUserTaskWithNotes(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithNotes("sample notes")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
+}
+
 func TestReminderTask(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		userVar := t.AddVariable("user", model.VariableType_STR)

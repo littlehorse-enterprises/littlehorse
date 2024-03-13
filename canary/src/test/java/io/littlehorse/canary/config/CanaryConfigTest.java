@@ -44,4 +44,17 @@ class CanaryConfigTest {
 
         assertThat(output).containsExactlyInAnyOrder("test_ms", "test_ms2");
     }
+
+    @Test
+    void getCommonTags() {
+        Map<String, Object> input = Map.of(
+                "lh.canary.metrics.common.tags.application_id", "my_id",
+                "lh.canary.metrics.common.tags.extra", "extra_tag");
+
+        CanaryConfig canaryConfig = new CanaryConfig(input);
+
+        Map<String, Object> output = canaryConfig.getCommonTags();
+
+        assertThat(output).contains(entry("application_id", "my_id"), entry("extra", "extra_tag"));
+    }
 }

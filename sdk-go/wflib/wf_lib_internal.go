@@ -937,9 +937,9 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 	}
 }
 
-func (t * WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
+func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
 	t.checkIfIsActive()
-	_, node := t.createBlankNode("throw-" + workflowEventDefName, "THROW_EVENT")
+	_, node := t.createBlankNode("throw-"+workflowEventDefName, "THROW_EVENT")
 
 	contentAssn, err := t.assignVariable(content)
 	if err != nil {

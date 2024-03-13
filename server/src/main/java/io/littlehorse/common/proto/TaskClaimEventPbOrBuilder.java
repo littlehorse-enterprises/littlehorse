@@ -65,19 +65,4 @@ public interface TaskClaimEventPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskWorkerVersionBytes();
-
-  /**
-   * <code>.littlehorse.TaskDefId task_def_id = 5;</code>
-   * @return Whether the taskDefId field is set.
-   */
-  boolean hasTaskDefId();
-  /**
-   * <code>.littlehorse.TaskDefId task_def_id = 5;</code>
-   * @return The taskDefId.
-   */
-  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
-  /**
-   * <code>.littlehorse.TaskDefId task_def_id = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 }
