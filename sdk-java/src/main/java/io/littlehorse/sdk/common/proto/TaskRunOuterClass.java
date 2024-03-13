@@ -95,10 +95,12 @@ public final class TaskRunOuterClass {
       "spec_id\"@\n\021TaskNodeReference\022+\n\013node_run" +
       "_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"F\n\013LHT" +
       "askError\022&\n\004type\030\001 \001(\0162\030.littlehorse.LHE" +
-      "rrorType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTaskExcep" +
-      "tion\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tBG\n\037i" +
-      "o.littlehorse.sdk.common.protoP\001Z\007.;mode" +
-      "l\252\002\030LittleHorse.Common.Protob\006proto3"
+      "rrorType\022\017\n\007message\030\002 \001(\t\"]\n\017LHTaskExcep" +
+      "tion\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\022+\n\007c" +
+      "ontent\030\003 \001(\0132\032.littlehorse.VariableValue" +
+      "BG\n\037io.littlehorse.sdk.common.protoP\001Z\007." +
+      ";model\252\002\030LittleHorse.Common.Protob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -150,7 +152,7 @@ public final class TaskRunOuterClass {
     internal_static_littlehorse_LHTaskException_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTaskException_descriptor,
-        new java.lang.String[] { "Name", "Message", });
+        new java.lang.String[] { "Name", "Message", "Content", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

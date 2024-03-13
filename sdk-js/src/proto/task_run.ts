@@ -149,6 +149,7 @@ export interface LHTaskException {
   name: string;
   /** Human readadble description of the failure. */
   message: string;
+  content: VariableValue | undefined;
 }
 
 function createBaseTaskRun(): TaskRun {
@@ -696,7 +697,7 @@ export const LHTaskError = {
 };
 
 function createBaseLHTaskException(): LHTaskException {
-  return { name: "", message: "" };
+  return { name: "", message: "", content: undefined };
 }
 
 export const LHTaskException = {
@@ -706,6 +707,9 @@ export const LHTaskException = {
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -731,6 +735,13 @@ export const LHTaskException = {
 
           message.message = reader.string();
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -747,6 +758,9 @@ export const LHTaskException = {
     const message = createBaseLHTaskException();
     message.name = object.name ?? "";
     message.message = object.message ?? "";
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
     return message;
   },
 };

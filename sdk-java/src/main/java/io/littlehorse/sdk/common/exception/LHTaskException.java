@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.common.exception;
 
+import io.littlehorse.sdk.common.proto.VariableValue;
 import lombok.Getter;
 
 /**
@@ -9,14 +10,18 @@ import lombok.Getter;
 public class LHTaskException extends Exception {
 
     private final String name;
+    private final VariableValue content;
 
     public LHTaskException(String name, String message) {
         super(message);
         this.name = name;
+        this.content = VariableValue.newBuilder().build(); // null content
+    }
+    public LHTaskException(String name, String message, VariableValue content) {
+        super(message);
+        this.name = name;
+        this.content = content;
     }
 
-    public LHTaskException(String name, String message, Throwable cause) {
-        super(message, cause);
-        this.name = name;
-    }
+
 }
