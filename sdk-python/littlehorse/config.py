@@ -8,7 +8,10 @@ from jproperties import Properties
 from littlehorse.auth import (
     OAuthCredentialsProvider,
     MetadataInterceptor,
-    AsyncMetadataInterceptor,
+    AsyncUnaryUnaryMetadataInterceptor,
+    AsyncStreamStreamMetadataInterceptor,
+    AsyncStreamUnaryMetadataInterceptor,
+    AsyncUnaryStreamMetadataInterceptor,
 )
 from littlehorse.model.service_pb2_grpc import LittleHorseStub
 from littlehorse.utils import read_binary
@@ -306,7 +309,7 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        def create_channel(target, options, interceptors, secure_channel: bool):
+        def create_channel(target, options, secure_channel: bool):
             credentials = []
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)
@@ -320,18 +323,26 @@ class LHConfig:
                 credentials = get_ssl_config()
                 self._log.debug("Establishing secure channel at %s", server)
 
+            # https://github.com/grpc/grpc/issues/31442
+            async_interceptors = [
+                AsyncUnaryUnaryMetadataInterceptor(self.tenant_id),
+                AsyncStreamStreamMetadataInterceptor(self.tenant_id),
+                AsyncStreamUnaryMetadataInterceptor(self.tenant_id),
+                AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
+            ]
             if async_channel and secure_channel:
+
                 return grpc.aio.secure_channel(
                     target,
                     credentials,
                     options,
-                    interceptors=interceptors,
+                    interceptors=async_interceptors,
                 )
             elif async_channel:
                 return grpc.aio.insecure_channel(
                     target,
                     options,
-                    interceptors=interceptors,
+                    interceptors=async_interceptors,
                 )
             elif secure_channel:
                 return grpc.intercept_channel(
@@ -363,7 +374,6 @@ class LHConfig:
         return create_channel(
             server,
             options=channel_args,
-            interceptors=[AsyncMetadataInterceptor(self.tenant_id)],
             secure_channel=self.is_secure(),
         )
 
