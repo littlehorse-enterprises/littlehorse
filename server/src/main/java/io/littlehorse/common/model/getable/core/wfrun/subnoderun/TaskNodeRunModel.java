@@ -78,7 +78,9 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         // If we got this far, then there was a failure!
         TaskAttemptModel lastAttempt = taskRun.getLatestAttempt();
-        FailureModel failure = new FailureModel(lastAttempt.getFailureMessage(), lastAttempt.getFailureCode());
+        FailureModel failure = lastAttempt.getFailureContent()
+                .map(content -> new FailureModel(lastAttempt.getFailureMessage(), lastAttempt.getFailureCode(), content))
+                .orElse(new FailureModel(lastAttempt.getFailureMessage(), lastAttempt.getFailureCode()));
         throw new NodeFailureException(failure);
     }
 
