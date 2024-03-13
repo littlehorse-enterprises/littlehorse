@@ -277,8 +277,7 @@ public class TestUtil {
                         .build());
     }
 
-
-    public static FailureHandlerDefModel exceptionHandler(String failureName){
+    public static FailureHandlerDefModel exceptionHandler(String failureName) {
         FailureHandlerDefModel handlerDef = new FailureHandlerDefModel();
         handlerDef.handlerSpecName = "my-handler";
         handlerDef.specificFailure = failureName;

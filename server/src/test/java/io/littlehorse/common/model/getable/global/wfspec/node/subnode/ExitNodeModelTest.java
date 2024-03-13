@@ -6,14 +6,13 @@ import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 class ExitNodeModelTest {
     private ExitNodeModel exitNodeModel = new ExitNodeModel();
     private FailureDefModel exception = TestUtil.exceptionFailureDef("my-exception");
     private FailureDefModel invalidException = TestUtil.exceptionFailureDef("my.exception");
 
     @Test
-    public void shouldValidateFailureName(){
+    public void shouldValidateFailureName() {
         exitNodeModel.failureDef = exception;
         exitNodeModel.validate();
         exitNodeModel.failureDef = invalidException;

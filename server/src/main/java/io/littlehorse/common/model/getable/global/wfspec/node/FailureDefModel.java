@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;

@@ -32,11 +32,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 @Slf4j
 @Getter
@@ -240,12 +238,13 @@ public class NodeModel extends LHSerializable<Node> {
         getSubNode().validate();
     }
 
-    private void validateFailureHandlers(){
+    private void validateFailureHandlers() {
         String invalidNames = failureHandlers.stream()
                 .map(FailureHandlerDefModel::getSpecificFailure)
                 .filter(Objects::nonNull)
-                .filter(Predicate.not(LHUtil::isValidLHName)).collect(Collectors.joining(", "));
-        if(!invalidNames.isEmpty()) {
+                .filter(Predicate.not(LHUtil::isValidLHName))
+                .collect(Collectors.joining(", "));
+        if (!invalidNames.isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid names for exception handlers: " + invalidNames);
         }
     }
