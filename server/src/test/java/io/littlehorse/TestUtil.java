@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -273,5 +274,13 @@ public class TestUtil {
                 Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
                         .withLoggingDisabled()
                         .build());
+    }
+
+
+    public static FailureHandlerDefModel exceptionHandler(String failureName){
+        FailureHandlerDefModel handlerDef = new FailureHandlerDefModel();
+        handlerDef.handlerSpecName = "my-handler";
+        handlerDef.specificFailure = failureName;
+        return handlerDef;
     }
 }

@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ThrowEvent
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.Node;
@@ -26,11 +27,16 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 
 @Slf4j
 @Getter
@@ -229,8 +235,19 @@ public class NodeModel extends LHSerializable<Node> {
                                 """);
             }
         }
+        validateFailureHandlers();
 
         getSubNode().validate();
+    }
+
+    private void validateFailureHandlers(){
+        String invalidNames = failureHandlers.stream()
+                .map(FailureHandlerDefModel::getSpecificFailure)
+                .filter(Objects::nonNull)
+                .filter(Predicate.not(LHUtil::isValidLHName)).collect(Collectors.joining(", "));
+        if(!invalidNames.isEmpty()) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "Invalid names for exception handlers: " + invalidNames);
+        }
     }
 
     public SubNode<?> getSubNode() {
