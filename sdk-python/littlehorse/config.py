@@ -1,7 +1,7 @@
 import os
 import uuid
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, Any
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
@@ -309,7 +309,9 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        def create_channel(target, options, secure_channel: bool):
+        def create_channel(
+            target: Optional[str], options: Any, secure_channel: bool
+        ) -> Channel:
             credentials = []
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)

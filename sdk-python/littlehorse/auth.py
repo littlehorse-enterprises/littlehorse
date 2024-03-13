@@ -72,16 +72,17 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
         return self._token
 
 
-def _call_details_with_tenant(tenant_id, details) -> ClientCallDetails:
+def _call_details_with_tenant(tenant_id: str | None, details: Any) -> ClientCallDetails:
     metadata = []
     if details.metadata is not None:
         metadata = list(details.metadata)
-    metadata.append(
-        (
-            TENANT_ID_HEADER,
-            tenant_id,
+    if tenant_id:
+        metadata.append(
+            (
+                TENANT_ID_HEADER,
+                tenant_id,
+            )
         )
-    )
     return ClientCallDetails(
         details.method,
         details.timeout,
@@ -94,66 +95,70 @@ def _call_details_with_tenant(tenant_id, details) -> ClientCallDetails:
 class MetadataInterceptor(
     grpc.UnaryUnaryClientInterceptor, grpc.StreamStreamClientInterceptor
 ):
-    def __init__(self, tenant_id: str):
+    def __init__(self, tenant_id: str | None):
         self.tenant_id = tenant_id
 
-    def intercept_unary_unary(self, continuation, details, request):
+    def intercept_unary_unary(
+        self, continuation: Any, details: Any, request: Any
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, details)
         return continuation(new_details, request)
 
     def intercept_stream_stream(
-        self, continuation, client_call_details, request_iterator
-    ):
+        self, continuation: Any, client_call_details: Any, request_iterator: Any
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return continuation(new_details, request_iterator)
 
 
 class AsyncUnaryUnaryMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
-    def __init__(self, tenant_id: str):
+    def __init__(self, tenant_id: str | None):
         self.tenant_id = tenant_id
 
-    async def intercept_unary_unary(self, continuation, deatils, request):
+    async def intercept_unary_unary(
+        self, continuation: Any, deatils: Any, request: Any
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, deatils)
         return await continuation(new_details, request)
 
 
 class AsyncStreamStreamMetadataInterceptor(grpc.aio.StreamStreamClientInterceptor):
-    def __init__(self, tenant_id: str):
+    def __init__(self, tenant_id: str | None):
         self.tenant_id = tenant_id
 
     async def intercept_stream_stream(
         self,
-        continuation,
-        client_call_details,
-        request_iterator,
-    ):
+        continuation: Any,
+        client_call_details: Any,
+        request_iterator: Any,
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return await continuation(new_details, request_iterator)
 
 
 class AsyncStreamUnaryMetadataInterceptor(grpc.aio.StreamUnaryClientInterceptor):
-    def __init__(self, tenant_id: str):
+    def __init__(self, tenant_id: str | None):
         self.tenant_id = tenant_id
 
     async def intercept_stream_unary(
         self,
-        continuation,
-        client_call_details,
-        request_iterator,
-    ):
+        continuation: Any,
+        client_call_details: Any,
+        request_iterator: Any,
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return await continuation(new_details, request_iterator)
 
 
 class AsyncUnaryStreamMetadataInterceptor(grpc.aio.UnaryStreamClientInterceptor):
-    def __init__(self, tenant_id: str):
+    def __init__(self, tenant_id: str | None):
         self.tenant_id = tenant_id
 
     async def intercept_unary_stream(
         self,
-        continuation,
-        client_call_details,
-        request,
-    ):
+        continuation: Any,
+        client_call_details: Any,
+        request: Any,
+    ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return await continuation(new_details, client_call_details)
