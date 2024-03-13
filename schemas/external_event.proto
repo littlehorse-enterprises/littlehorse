@@ -46,8 +46,8 @@ message ExternalEvent {
 
 // The ExternalEventDef defines the blueprint for an ExternalEvent.
 message ExternalEventDef {
-  // The name of the ExternalEventDef.
-  string name = 1;
+  // The id of the ExternalEventDef.
+  ExternalEventDefId id = 1;
 
   // When the ExternalEventDef was created.
   google.protobuf.Timestamp created_at = 2;

@@ -77,6 +77,16 @@ public enum TaskStatus
    * <code>TASK_EXCEPTION = 8;</code>
    */
   TASK_EXCEPTION(8),
+  /**
+   * <pre>
+   * Refers to a TaskAttempt that is not yet scheduled. This happens when using retries
+   * with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled
+   * until it "matures", but it does already exist.
+   * </pre>
+   *
+   * <code>TASK_PENDING = 9;</code>
+   */
+  TASK_PENDING(9),
   UNRECOGNIZED(-1),
   ;
 
@@ -145,6 +155,16 @@ public enum TaskStatus
    * <code>TASK_EXCEPTION = 8;</code>
    */
   public static final int TASK_EXCEPTION_VALUE = 8;
+  /**
+   * <pre>
+   * Refers to a TaskAttempt that is not yet scheduled. This happens when using retries
+   * with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled
+   * until it "matures", but it does already exist.
+   * </pre>
+   *
+   * <code>TASK_PENDING = 9;</code>
+   */
+  public static final int TASK_PENDING_VALUE = 9;
 
 
   public final int getNumber() {
@@ -179,6 +199,7 @@ public enum TaskStatus
       case 5: return TASK_OUTPUT_SERIALIZING_ERROR;
       case 6: return TASK_INPUT_VAR_SUB_ERROR;
       case 8: return TASK_EXCEPTION;
+      case 9: return TASK_PENDING;
       default: return null;
     }
   }

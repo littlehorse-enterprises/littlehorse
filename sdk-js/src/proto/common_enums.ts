@@ -136,6 +136,12 @@ export enum TaskStatus {
   TASK_INPUT_VAR_SUB_ERROR = "TASK_INPUT_VAR_SUB_ERROR",
   /** TASK_EXCEPTION - Task Function business logic determined that there was a business exception. */
   TASK_EXCEPTION = "TASK_EXCEPTION",
+  /**
+   * TASK_PENDING - Refers to a TaskAttempt that is not yet scheduled. This happens when using retries
+   * with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled
+   * until it "matures", but it does already exist.
+   */
+  TASK_PENDING = "TASK_PENDING",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -165,6 +171,9 @@ export function taskStatusFromJSON(object: any): TaskStatus {
     case 8:
     case "TASK_EXCEPTION":
       return TaskStatus.TASK_EXCEPTION;
+    case 9:
+    case "TASK_PENDING":
+      return TaskStatus.TASK_PENDING;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -190,6 +199,8 @@ export function taskStatusToNumber(object: TaskStatus): number {
       return 6;
     case TaskStatus.TASK_EXCEPTION:
       return 8;
+    case TaskStatus.TASK_PENDING:
+      return 9;
     case TaskStatus.UNRECOGNIZED:
     default:
       return -1;

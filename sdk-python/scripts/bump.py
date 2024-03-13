@@ -105,6 +105,15 @@ class Bump:
                 self.console.print(f"Nex version is: [dodger_blue1]{next_version}[/]")
                 sys.exit(0)
 
+            # remind about lhctl version
+            confirmation = self.console.input(
+                "[bold]Did you remember to update `lhctl version`?"
+                " ([green]yes[/]/[red]no[/])? [/]"
+            )
+            if not confirmation.startswith("y"):
+                self.console.print("Aborting!")
+                sys.exit(1)
+
             # validate branch
             if self.run_command("git branch --show-current") != "master":
                 confirmation = self.console.input(

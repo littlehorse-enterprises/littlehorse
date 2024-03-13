@@ -45,6 +45,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskRun.class, io.littlehorse.sdk.common.proto.TaskRun.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId id_;
   /**
@@ -185,21 +186,6 @@ private static final long serialVersionUID = 0L;
   public io.littlehorse.sdk.common.proto.TaskAttemptOrBuilder getAttemptsOrBuilder(
       int index) {
     return attempts_.get(index);
-  }
-
-  public static final int MAX_ATTEMPTS_FIELD_NUMBER = 4;
-  private int maxAttempts_ = 0;
-  /**
-   * <pre>
-   * The maximum number of attempts that may be scheduled for this TaskRun.
-   * </pre>
-   *
-   * <code>int32 max_attempts = 4;</code>
-   * @return The maxAttempts.
-   */
-  @java.lang.Override
-  public int getMaxAttempts() {
-    return maxAttempts_;
   }
 
   public static final int INPUT_VARIABLES_FIELD_NUMBER = 5;
@@ -401,6 +387,60 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_;
   }
 
+  public static final int TOTAL_ATTEMPTS_FIELD_NUMBER = 4;
+  private int totalAttempts_ = 0;
+  /**
+   * <pre>
+   * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+   * total_attempts to 1 means that there are no retries.
+   * </pre>
+   *
+   * <code>int32 total_attempts = 4;</code>
+   * @return The totalAttempts.
+   */
+  @java.lang.Override
+  public int getTotalAttempts() {
+    return totalAttempts_;
+  }
+
+  public static final int EXPONENTIAL_BACKOFF_FIELD_NUMBER = 10;
+  private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  @java.lang.Override
+  public boolean hasExponentialBackoff() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   * @return The exponentialBackoff.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+  }
+  /**
+   * <pre>
+   * Optional backoff policy .
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -424,8 +464,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < attempts_.size(); i++) {
       output.writeMessage(3, attempts_.get(i));
     }
-    if (maxAttempts_ != 0) {
-      output.writeInt32(4, maxAttempts_);
+    if (totalAttempts_ != 0) {
+      output.writeInt32(4, totalAttempts_);
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
       output.writeMessage(5, inputVariables_.get(i));
@@ -441,6 +481,9 @@ private static final long serialVersionUID = 0L;
     }
     if (timeoutSeconds_ != 0) {
       output.writeInt32(9, timeoutSeconds_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(10, getExponentialBackoff());
     }
     getUnknownFields().writeTo(output);
   }
@@ -463,9 +506,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, attempts_.get(i));
     }
-    if (maxAttempts_ != 0) {
+    if (totalAttempts_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, maxAttempts_);
+        .computeInt32Size(4, totalAttempts_);
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -486,6 +529,10 @@ private static final long serialVersionUID = 0L;
     if (timeoutSeconds_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(9, timeoutSeconds_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, getExponentialBackoff());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -514,8 +561,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!getAttemptsList()
         .equals(other.getAttemptsList())) return false;
-    if (getMaxAttempts()
-        != other.getMaxAttempts()) return false;
     if (!getInputVariablesList()
         .equals(other.getInputVariablesList())) return false;
     if (hasSource() != other.hasSource()) return false;
@@ -531,6 +576,13 @@ private static final long serialVersionUID = 0L;
     if (status_ != other.status_) return false;
     if (getTimeoutSeconds()
         != other.getTimeoutSeconds()) return false;
+    if (getTotalAttempts()
+        != other.getTotalAttempts()) return false;
+    if (hasExponentialBackoff() != other.hasExponentialBackoff()) return false;
+    if (hasExponentialBackoff()) {
+      if (!getExponentialBackoff()
+          .equals(other.getExponentialBackoff())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -554,8 +606,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ATTEMPTS_FIELD_NUMBER;
       hash = (53 * hash) + getAttemptsList().hashCode();
     }
-    hash = (37 * hash) + MAX_ATTEMPTS_FIELD_NUMBER;
-    hash = (53 * hash) + getMaxAttempts();
     if (getInputVariablesCount() > 0) {
       hash = (37 * hash) + INPUT_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getInputVariablesList().hashCode();
@@ -572,6 +622,12 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + status_;
     hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
     hash = (53 * hash) + getTimeoutSeconds();
+    hash = (37 * hash) + TOTAL_ATTEMPTS_FIELD_NUMBER;
+    hash = (53 * hash) + getTotalAttempts();
+    if (hasExponentialBackoff()) {
+      hash = (37 * hash) + EXPONENTIAL_BACKOFF_FIELD_NUMBER;
+      hash = (53 * hash) + getExponentialBackoff().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -695,13 +751,25 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.TaskRun.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getIdFieldBuilder();
+        getTaskDefIdFieldBuilder();
+        getAttemptsFieldBuilder();
+        getInputVariablesFieldBuilder();
+        getSourceFieldBuilder();
+        getScheduledAtFieldBuilder();
+        getExponentialBackoffFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -724,14 +792,13 @@ private static final long serialVersionUID = 0L;
         attemptsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
-      maxAttempts_ = 0;
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
       } else {
         inputVariables_ = null;
         inputVariablesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       source_ = null;
       if (sourceBuilder_ != null) {
         sourceBuilder_.dispose();
@@ -744,6 +811,12 @@ private static final long serialVersionUID = 0L;
       }
       status_ = 0;
       timeoutSeconds_ = 0;
+      totalAttempts_ = 0;
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
       return this;
     }
 
@@ -787,9 +860,9 @@ private static final long serialVersionUID = 0L;
         result.attempts_ = attemptsBuilder_.build();
       }
       if (inputVariablesBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           inputVariables_ = java.util.Collections.unmodifiableList(inputVariables_);
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.inputVariables_ = inputVariables_;
       } else {
@@ -809,25 +882,33 @@ private static final long serialVersionUID = 0L;
             ? taskDefId_
             : taskDefIdBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.maxAttempts_ = maxAttempts_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.source_ = sourceBuilder_ == null
             ? source_
             : sourceBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.scheduledAt_ = scheduledAtBuilder_ == null
             ? scheduledAt_
             : scheduledAtBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000100) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.timeoutSeconds_ = timeoutSeconds_;
       }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.totalAttempts_ = totalAttempts_;
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.exponentialBackoff_ = exponentialBackoffBuilder_ == null
+            ? exponentialBackoff_
+            : exponentialBackoffBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -906,14 +987,11 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.getMaxAttempts() != 0) {
-        setMaxAttempts(other.getMaxAttempts());
-      }
       if (inputVariablesBuilder_ == null) {
         if (!other.inputVariables_.isEmpty()) {
           if (inputVariables_.isEmpty()) {
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureInputVariablesIsMutable();
             inputVariables_.addAll(other.inputVariables_);
@@ -926,7 +1004,7 @@ private static final long serialVersionUID = 0L;
             inputVariablesBuilder_.dispose();
             inputVariablesBuilder_ = null;
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
             inputVariablesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getInputVariablesFieldBuilder() : null;
@@ -946,6 +1024,12 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getTimeoutSeconds() != 0) {
         setTimeoutSeconds(other.getTimeoutSeconds());
+      }
+      if (other.getTotalAttempts() != 0) {
+        setTotalAttempts(other.getTotalAttempts());
+      }
+      if (other.hasExponentialBackoff()) {
+        mergeExponentialBackoff(other.getExponentialBackoff());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1001,8 +1085,8 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 32: {
-              maxAttempts_ = input.readInt32();
-              bitField0_ |= 0x00000008;
+              totalAttempts_ = input.readInt32();
+              bitField0_ |= 0x00000100;
               break;
             } // case 32
             case 42: {
@@ -1022,26 +1106,33 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getSourceFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getScheduledAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
             } // case 58
             case 64: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000040;
               break;
             } // case 64
             case 72: {
               timeoutSeconds_ = input.readInt32();
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000080;
               break;
             } // case 72
+            case 82: {
+              input.readMessage(
+                  getExponentialBackoffFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1699,56 +1790,12 @@ private static final long serialVersionUID = 0L;
       return attemptsBuilder_;
     }
 
-    private int maxAttempts_ ;
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @return The maxAttempts.
-     */
-    @java.lang.Override
-    public int getMaxAttempts() {
-      return maxAttempts_;
-    }
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @param value The maxAttempts to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMaxAttempts(int value) {
-
-      maxAttempts_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The maximum number of attempts that may be scheduled for this TaskRun.
-     * </pre>
-     *
-     * <code>int32 max_attempts = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMaxAttempts() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      maxAttempts_ = 0;
-      onChanged();
-      return this;
-    }
-
     private java.util.List<io.littlehorse.sdk.common.proto.VarNameAndVal> inputVariables_ =
       java.util.Collections.emptyList();
     private void ensureInputVariablesIsMutable() {
-      if (!((bitField0_ & 0x00000010) != 0)) {
+      if (!((bitField0_ & 0x00000008) != 0)) {
         inputVariables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VarNameAndVal>(inputVariables_);
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
        }
     }
 
@@ -1975,7 +2022,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearInputVariables() {
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
       } else {
         inputVariablesBuilder_.clear();
@@ -2101,7 +2148,7 @@ private static final long serialVersionUID = 0L;
         inputVariablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VarNameAndVal, io.littlehorse.sdk.common.proto.VarNameAndVal.Builder, io.littlehorse.sdk.common.proto.VarNameAndValOrBuilder>(
                 inputVariables_,
-                ((bitField0_ & 0x00000010) != 0),
+                ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
                 isClean());
         inputVariables_ = null;
@@ -2123,7 +2170,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the source field is set.
      */
     public boolean hasSource() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <pre>
@@ -2160,7 +2207,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2180,7 +2227,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2195,7 +2242,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeSource(io.littlehorse.sdk.common.proto.TaskRunSource value) {
       if (sourceBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           source_ != null &&
           source_ != io.littlehorse.sdk.common.proto.TaskRunSource.getDefaultInstance()) {
           getSourceBuilder().mergeFrom(value);
@@ -2205,7 +2252,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sourceBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -2219,7 +2266,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public Builder clearSource() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       source_ = null;
       if (sourceBuilder_ != null) {
         sourceBuilder_.dispose();
@@ -2238,7 +2285,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TaskRunSource source = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunSource.Builder getSourceBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return getSourceFieldBuilder().getBuilder();
     }
@@ -2294,7 +2341,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the scheduledAt field is set.
      */
     public boolean hasScheduledAt() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -2327,7 +2374,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2345,7 +2392,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2358,7 +2405,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeScheduledAt(com.google.protobuf.Timestamp value) {
       if (scheduledAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           scheduledAt_ != null &&
           scheduledAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getScheduledAtBuilder().mergeFrom(value);
@@ -2368,7 +2415,7 @@ private static final long serialVersionUID = 0L;
       } else {
         scheduledAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2380,7 +2427,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public Builder clearScheduledAt() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       scheduledAt_ = null;
       if (scheduledAtBuilder_ != null) {
         scheduledAtBuilder_.dispose();
@@ -2397,7 +2444,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getScheduledAtBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getScheduledAtFieldBuilder().getBuilder();
     }
@@ -2460,7 +2507,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -2490,7 +2537,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000040;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -2504,7 +2551,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000040);
       status_ = 0;
       onChanged();
       return this;
@@ -2535,7 +2582,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTimeoutSeconds(int value) {
 
       timeoutSeconds_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -2548,10 +2595,212 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTimeoutSeconds() {
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000080);
       timeoutSeconds_ = 0;
       onChanged();
       return this;
+    }
+
+    private int totalAttempts_ ;
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+     * total_attempts to 1 means that there are no retries.
+     * </pre>
+     *
+     * <code>int32 total_attempts = 4;</code>
+     * @return The totalAttempts.
+     */
+    @java.lang.Override
+    public int getTotalAttempts() {
+      return totalAttempts_;
+    }
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+     * total_attempts to 1 means that there are no retries.
+     * </pre>
+     *
+     * <code>int32 total_attempts = 4;</code>
+     * @param value The totalAttempts to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTotalAttempts(int value) {
+
+      totalAttempts_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+     * total_attempts to 1 means that there are no retries.
+     * </pre>
+     *
+     * <code>int32 total_attempts = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTotalAttempts() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      totalAttempts_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> exponentialBackoffBuilder_;
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     * @return Whether the exponentialBackoff field is set.
+     */
+    public boolean hasExponentialBackoff() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     * @return The exponentialBackoff.
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+      if (exponentialBackoffBuilder_ == null) {
+        return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      } else {
+        return exponentialBackoffBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder setExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        exponentialBackoff_ = value;
+      } else {
+        exponentialBackoffBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder setExponentialBackoff(
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder builderForValue) {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoff_ = builderForValue.build();
+      } else {
+        exponentialBackoffBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder mergeExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (((bitField0_ & 0x00000200) != 0) &&
+          exponentialBackoff_ != null &&
+          exponentialBackoff_ != io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance()) {
+          getExponentialBackoffBuilder().mergeFrom(value);
+        } else {
+          exponentialBackoff_ = value;
+        }
+      } else {
+        exponentialBackoffBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public Builder clearExponentialBackoff() {
+      bitField0_ = (bitField0_ & ~0x00000200);
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder getExponentialBackoffBuilder() {
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return getExponentialBackoffFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+      if (exponentialBackoffBuilder_ != null) {
+        return exponentialBackoffBuilder_.getMessageOrBuilder();
+      } else {
+        return exponentialBackoff_ == null ?
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional backoff policy .
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> 
+        getExponentialBackoffFieldBuilder() {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoffBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder>(
+                getExponentialBackoff(),
+                getParentForChildren(),
+                isClean());
+        exponentialBackoff_ = null;
+      }
+      return exponentialBackoffBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

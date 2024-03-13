@@ -33,8 +33,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private LHTaskErrorModel error;
 
     public TaskAttemptModel() {
-        scheduleTime = new Date();
-        status = TaskStatus.TASK_SCHEDULED;
+        this.status = TaskStatus.TASK_PENDING;
     }
 
     @Override
@@ -131,6 +130,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
+            case TASK_PENDING:
             case UNRECOGNIZED:
         }
         log.trace("Called getFailureCodeFor() on non-failed TaskAttempt. Probably you need more coffee!");
@@ -157,6 +157,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
             case UNRECOGNIZED:
+            case TASK_PENDING:
         }
         log.trace("Called getFailureMessage() on non-failed TaskAttempt. Probably you need more coffee!");
         return null;

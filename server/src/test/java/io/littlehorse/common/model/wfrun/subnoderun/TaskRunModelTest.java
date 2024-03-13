@@ -12,7 +12,9 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class TaskRunModelTest {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRunProto = TaskRun.newBuilder()
                 .setId(new TaskRunIdModel(new WfRunIdModel("asdf"), processorContext).toProto())
+                .addAttempts(TaskAttempt.newBuilder().setStatus(TaskStatus.TASK_PENDING))
                 .build();
         when(executionContext.castOnSupport(ProcessorExecutionContext.class)).thenReturn(processorContext);
 
@@ -40,12 +43,12 @@ public class TaskRunModelTest {
         when(executionContext.authorization()).thenReturn(mockContext);
         taskRun.setInputVariables(new ArrayList<>());
 
-        taskRun.scheduleAttempt();
+        taskRun.dispatchTaskToQueue();
         verify(processorContext.getTaskManager()).scheduleTask(any());
 
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
         // act
-        taskRun.processStart(taskClaimEvent);
+        taskRun.onTaskAttemptStarted(taskClaimEvent);
 
         // assert
         assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion()).isEqualTo(taskClaimEvent.getTaskWorkerVersion());
