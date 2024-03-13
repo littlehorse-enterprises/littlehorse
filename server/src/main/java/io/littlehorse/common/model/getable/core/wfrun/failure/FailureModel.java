@@ -33,7 +33,7 @@ public class FailureModel extends LHSerializable<Failure> {
     public FailureModel(String message, String failureName, VariableValueModel content) {
         this.message = message;
         this.failureName = failureName;
-        this.content = new VariableValueModel();
+        this.content = content;
     }
 
     public static FailureModel fromProto(Failure p, ExecutionContext context) {

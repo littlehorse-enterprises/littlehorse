@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -166,7 +165,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     }
 
     public Optional<VariableValueModel> getFailureContent() {
-        if(this.getStatus().equals(TaskStatus.TASK_EXCEPTION)){
+        if (this.getStatus().equals(TaskStatus.TASK_EXCEPTION)) {
             return Optional.ofNullable(this.getException().getContent());
         }
         return Optional.empty();
