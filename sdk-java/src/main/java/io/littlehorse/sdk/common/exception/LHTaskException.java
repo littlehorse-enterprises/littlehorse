@@ -17,11 +17,10 @@ public class LHTaskException extends Exception {
         this.name = name;
         this.content = VariableValue.newBuilder().build(); // null content
     }
+
     public LHTaskException(String name, String message, VariableValue content) {
         super(message);
         this.name = name;
         this.content = content;
     }
-
-
 }
