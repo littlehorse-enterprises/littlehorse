@@ -67,10 +67,10 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         KafkaStreamsServerImpl server = Mockito.mock();
-        KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
+        KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()
-                .build();
+                .build());
         KeyValueStore<String, Bytes> nativeCoreStore = Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()

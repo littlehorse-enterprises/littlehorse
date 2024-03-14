@@ -19,6 +19,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.List;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -101,7 +102,9 @@ public class OneTaskQueueTest {
         boundedQueue.onTaskScheduled(task1);
         boundedQueue.onTaskScheduled(task2);
         boundedQueue.onTaskScheduled(task3);
+        Assertions.assertThat(boundedQueue.isOutOfCapacity()).isTrue();
         boundedQueue.onTaskScheduled(task4);
+
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);

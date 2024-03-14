@@ -39,6 +39,9 @@ public class OneTaskQueue {
 
     private String hostName;
 
+    @Getter
+    private boolean outOfCapacity;
+
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.tenantId = tenantId;
@@ -121,7 +124,8 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                return pendingTasks.offer(scheduledTask);
+                outOfCapacity = !pendingTasks.offer(scheduledTask);
+                return !outOfCapacity;
             }
         } finally {
             lock.unlock();
@@ -163,7 +167,7 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            if (pendingTasks.isEmpty()) {
+            if (pendingTasks.isEmpty() && outOfCapacity) {
                 rehydrateFromStore(requestContext, requestContext.getableManager());
             }
 
@@ -200,10 +204,7 @@ public class OneTaskQueue {
                 + "/";
         String endKey = startKey + "~";
         try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.tagScan(startKey, endKey)) {
-
-            // Not needed to be atomic since this method is called within a lock
             boolean queueOutOfCapacity = false;
-
             while (result.hasNext() && !queueOutOfCapacity) {
                 Tag tag = result.next().getValue();
                 String describedObjectId = tag.getDescribedObjectId();
@@ -218,6 +219,7 @@ public class OneTaskQueue {
                     }
                 }
             }
+            this.outOfCapacity = queueOutOfCapacity;
         }
     }
 
