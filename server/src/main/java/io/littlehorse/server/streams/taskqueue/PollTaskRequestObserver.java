@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,11 +19,17 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     private StreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
-    private PrincipalIdModel principalId;
+
+    @Getter
+    private final PrincipalIdModel principalId;
+
     private TaskDefIdModel taskDefId;
     private String clientId;
     private String taskWorkerVersion;
+
+    @Getter
     private final TenantIdModel tenantId;
+
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;

@@ -203,6 +203,7 @@ import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -834,7 +835,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
      * infers the request context from the GRPC Context.
      */
     public void returnTaskToClient(
-            ScheduledTaskModel scheduledTask, PollTaskRequestObserver client, RequestExecutionContext requestContext) {
+            ScheduledTaskModel scheduledTask, PollTaskRequestObserver client, ExecutionContext requestContext) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
 
         processCommand(
@@ -842,7 +843,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 client.getResponseObserver(),
                 PollTaskResponse.class,
                 false,
-                requestContext);
+                client.getPrincipalId(),
+                client.getTenantId());
     }
 
     public LHProducer getProducer() {
@@ -877,7 +879,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
-        processCommand(command, responseObserver, responseCls, shouldCompleteStream, requestContext);
+        processCommand(
+                command,
+                responseObserver,
+                responseCls,
+                shouldCompleteStream,
+                requestContext.authorization().principalId(),
+                requestContext.authorization().tenantId());
     }
 
     /*
@@ -892,7 +900,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             StreamObserver<RC> responseObserver,
             Class<RC> responseCls,
             boolean shouldCompleteStream,
-            RequestExecutionContext requestContext) {
+            PrincipalIdModel principalId,
+            TenantIdModel tenantId) {
         StreamObserver<WaitForCommandResponse> commandObserver =
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
@@ -900,9 +909,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         command.setCommandId(LHUtil.generateGuid());
 
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(
-                requestContext.authorization().tenantId(),
-                requestContext.authorization().principalId());
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         internalComms
                 .getProducer()
                 .send(

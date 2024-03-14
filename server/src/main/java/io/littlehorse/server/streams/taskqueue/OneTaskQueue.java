@@ -129,7 +129,7 @@ public class OneTaskQueue {
 
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient);
+            parent.itsAMatch(scheduledTask, luckyClient, scheduledTask.getProcessorContext());
             return true;
         }
         return hungryClients.isEmpty();
@@ -164,7 +164,7 @@ public class OneTaskQueue {
         try {
             lock.lock();
             if (pendingTasks.isEmpty()) {
-                rehydrateFromStore(requestContext.getableManager());
+                rehydrateFromStore(requestContext, requestContext.getableManager());
             }
 
             if (!pendingTasks.isEmpty()) {
@@ -183,14 +183,15 @@ public class OneTaskQueue {
         }
 
         if (nextTask != null) {
-            parent.itsAMatch(nextTask, requestObserver);
+            parent.itsAMatch(nextTask, requestObserver, requestContext);
         }
     }
 
     /**
      * Can only be called within a lock
      */
-    private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
+    private void rehydrateFromStore(
+            RequestExecutionContext requestContext, ReadOnlyGetableManager readOnlyGetableManager) {
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
@@ -211,7 +212,7 @@ public class OneTaskQueue {
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
                 if (scheduledTask != null) {
                     if (!hungryClients.isEmpty()) {
-                        parent.itsAMatch(scheduledTask, hungryClients.remove());
+                        parent.itsAMatch(scheduledTask, hungryClients.remove(), requestContext);
                     } else {
                         queueOutOfCapacity = !pendingTasks.offer(scheduledTask);
                     }
