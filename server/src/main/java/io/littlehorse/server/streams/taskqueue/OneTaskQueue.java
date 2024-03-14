@@ -10,6 +10,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -141,7 +142,7 @@ public class OneTaskQueue {
      *                        that talks to the
      *                        client who made the PollTaskRequest.
      */
-    public void onPollRequest(PollTaskRequestObserver requestObserver) {
+    public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
 
         if (taskDefName == null) {
             taskDefName = requestObserver.getTaskDefId();
@@ -163,7 +164,7 @@ public class OneTaskQueue {
         try {
             lock.lock();
             if (pendingTasks.isEmpty()) {
-                rehydrateFromStore(requestObserver.getRequestContext().getableManager());
+                rehydrateFromStore(requestContext.getableManager());
             }
 
             if (!pendingTasks.isEmpty()) {

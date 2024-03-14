@@ -4,6 +4,7 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,8 +25,9 @@ public class TaskQueueManager {
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
     }
 
-    public void onPollRequest(PollTaskRequestObserver listener, TenantIdModel tenantId) {
-        getSubQueue(new TenantTaskName(tenantId, listener.getTaskDefId())).onPollRequest(listener);
+    public void onPollRequest(
+            PollTaskRequestObserver listener, TenantIdModel tenantId, RequestExecutionContext requestContext) {
+        getSubQueue(new TenantTaskName(tenantId, listener.getTaskDefId())).onPollRequest(listener, requestContext);
     }
 
     public void onRequestDisconnected(PollTaskRequestObserver observer, TenantIdModel tenantId) {
@@ -36,8 +38,11 @@ public class TaskQueueManager {
         getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(scheduledTask);
     }
 
-    public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-        backend.returnTaskToClient(scheduledTask, luckyClient);
+    public void itsAMatch(
+            ScheduledTaskModel scheduledTask,
+            PollTaskRequestObserver luckyClient,
+            RequestExecutionContext requestContext) {
+        backend.returnTaskToClient(scheduledTask, luckyClient, requestContext);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {

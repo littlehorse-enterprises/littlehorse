@@ -18,7 +18,7 @@ import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.Authorize;
-import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Method;
@@ -28,13 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
-    BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider;
+    private final CoreStoreProvider coreStoreProvider;
 
     private final AclVerifier aclVerifier;
     private final Context.Key<RequestExecutionContext> executionContextKey;
@@ -45,11 +42,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
             BindableService service,
             Context.Key<RequestExecutionContext> executionContextKey,
             MetadataCache metadataCache,
-            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider,
+            CoreStoreProvider coreStoreProvider,
             LHServerConfig lhConfig) {
         this.aclVerifier = new AclVerifier(service);
         this.executionContextKey = executionContextKey;
-        this.storeProvider = storeProvider;
+        this.coreStoreProvider = coreStoreProvider;
         this.metadataCache = metadataCache;
         this.lhConfig = lhConfig;
     }
@@ -88,8 +85,8 @@ public class RequestAuthorizer implements ServerAuthorizer {
         return new RequestExecutionContext(
                 clientId,
                 tenantId,
-                storeProvider.apply(null, ServerTopology.GLOBAL_METADATA_STORE),
-                storeProvider.apply(null, ServerTopology.CORE_STORE),
+                coreStoreProvider.getNativeGlobalStore(),
+                coreStoreProvider.nativeCoreStore(),
                 metadataCache,
                 lhConfig);
     }

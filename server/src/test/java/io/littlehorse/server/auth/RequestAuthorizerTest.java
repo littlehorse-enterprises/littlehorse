@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.TestCoreStoreProvider;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.TestRequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -57,8 +58,8 @@ public class RequestAuthorizerTest {
     private final TestRequestExecutionContext requestContext = TestRequestExecutionContext.create();
     private TestMetadataManager metadataManager =
             TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
-    private final RequestAuthorizer requestAuthorizer =
-            new RequestAuthorizer(server, contextKey, metadataCache, requestContext::resolveStoreName, lhConfig);
+    private final RequestAuthorizer requestAuthorizer = new RequestAuthorizer(
+            server, contextKey, metadataCache, new TestCoreStoreProvider(requestContext), lhConfig);
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata mockMetadata = mock();
 

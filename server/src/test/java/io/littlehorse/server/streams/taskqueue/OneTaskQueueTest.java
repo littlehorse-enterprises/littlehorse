@@ -15,6 +15,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.NoOpJob;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.List;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -39,24 +40,26 @@ public class OneTaskQueueTest {
                     new TenantIdModel(LHConstants.DEFAULT_TENANT),
                     new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)),
             mockProcessor);
+    private RequestExecutionContext requestContext = mock();
 
     @BeforeEach
     public void setup() {
         when(mockClient.getTaskDefId()).thenReturn(taskName);
-        when(mockClient.getRequestContext().getableManager()).thenReturn(processorContext.getableManager());
+        when(mockClient.getFreshExecutionContext().getableManager()).thenReturn(processorContext.getableManager());
+        when(requestContext.getableManager()).thenReturn(processorContext.getableManager());
     }
 
     @Test
     public void shouldEnqueueScheduledTask() {
         taskQueue.onTaskScheduled(mockTask);
         verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onPollRequest(mockClient);
+        taskQueue.onPollRequest(mockClient, requestContext);
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
     }
 
     @Test
     public void shouldRememberPendingClient() {
-        taskQueue.onPollRequest(mockClient);
+        taskQueue.onPollRequest(mockClient, requestContext);
         verify(taskQueueManager, never()).itsAMatch(any(), any());
         taskQueue.onTaskScheduled(mockTask);
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
@@ -70,10 +73,10 @@ public class OneTaskQueueTest {
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
         assertThat(boundedQueue.onTaskScheduled(mockTask)).isFalse();
-        boundedQueue.onPollRequest(mockClient);
-        boundedQueue.onPollRequest(mockClient);
-        boundedQueue.onPollRequest(mockClient);
-        boundedQueue.onPollRequest(mockClient);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
         verify(taskQueueManager, times(3)).itsAMatch(mockTask, mockClient);
     }
 
@@ -99,11 +102,11 @@ public class OneTaskQueueTest {
         boundedQueue.onTaskScheduled(task2);
         boundedQueue.onTaskScheduled(task3);
         boundedQueue.onTaskScheduled(task4);
-        boundedQueue.onPollRequest(mockClient);
-        boundedQueue.onPollRequest(mockClient);
-        boundedQueue.onPollRequest(mockClient);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
         processorContext.getCoreStore().delete(task3);
-        boundedQueue.onPollRequest(mockClient);
+        boundedQueue.onPollRequest(mockClient, requestContext);
         InOrder inOrder = inOrder(taskQueueManager);
         inOrder.verify(taskQueueManager).itsAMatch(same(task1), same(mockClient));
         inOrder.verify(taskQueueManager).itsAMatch(same(task2), same(mockClient));
