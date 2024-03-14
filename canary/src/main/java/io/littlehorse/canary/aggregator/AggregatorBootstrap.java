@@ -34,7 +34,8 @@ public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
         Shutdown.addShutdownHook("Aggregator Topology", kafkaStreams);
 
         kafkaStreams.start();
-        log.trace("Initialized");
+
+        log.info("Initialized");
     }
 
     @Override
