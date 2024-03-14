@@ -8,6 +8,10 @@
     - [`LHS_KAFKA_TRUSTSTORE`](#lhs_kafka_truststore)
     - [`LHS_KAFKA_TRUSTSTORE_PASSWORD`](#lhs_kafka_truststore_password)
     - [`LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE`](#lhs_kafka_truststore_password_file)
+    - [`LHS_KAFKA_SECURITY_PROTOCOL`](#lhs_kafka_security_protocol)
+    - [`LHS_KAFKA_SASL_MECHANISM`](#lhs_kafka_sasl_mechanism)
+    - [`LHS_KAFKA_SASL_JAAS_CONFIG`](#lhs_kafka_sasl_jaas_config)
+    - [`LHS_KAFKA_SASL_JAAS_CONFIG_FILE`](#lhs_kafka_sasl_jaas_config_file)
   - [Server Internal Connections](#server-internal-connections)
     - [`LHS_INTERNAL_BIND_PORT`](#lhs_internal_bind_port)
     - [`LHS_INTERNAL_ADVERTISED_HOST`](#lhs_internal_advertised_host)
@@ -125,6 +129,46 @@ The password for the trust store file. This is optional. [Kafka Official](https:
 
 The password for the trust store file. If it is different to null it overrides the `LHS_KAFKA_TRUSTSTORE_PASSWORD` config
 and load the password from the file. This is optional. [Kafka Official](https://kafka.apache.org/documentation/#brokerconfigs_ssl.truststore.password).
+
+- **Type:** path
+- **Default:** null
+- **Importance:** medium
+
+---
+
+### `LHS_KAFKA_SECURITY_PROTOCOL`
+
+The protocol with which to talk to the Kafka brokers. Defaults to `PLAINTEXT`. [Kafka Official](https://kafka.apache.org/documentation/#brokerconfigs_security.protcol).
+
+- **Type:** `PLAINTEXT`|`SSL`|`SASL_SSL`
+- **Default:** `PLAINTEXT`
+- **Importance:** medium
+
+---
+
+### `LHS_KAFKA_SASL_MECHANISM`
+
+The mechanism used for SASL connections to the Kafka brokers. Only valid if `LHS_KAFKA_SECURITY_PROTOCOL` is set to `SASL_SSL`. [Kafka Official](https://kafka.apache.org/documentation/#producerconfigs_sasl.mechanism).
+
+- **Type:** `PLAINTEXT`|`SSL`|`SASL_SSL`
+- **Default:** `PLAINTEXT`
+- **Importance:** medium
+
+---
+
+### `LHS_KAFKA_SASL_JAAS_CONFIG`
+
+The Jaas Config to be used to connect to the Kafka brokers. Only valid if the `LHS_KAFKA_SECURITY_PROTOCOL` is set to `SASL_SSL`. [Kafka Official](https://kafka.apache.org/documentation/#producerconfigs_sasl.jaas.config)
+
+- **Type:** string
+- **Default:** null
+- **Importance:** medium
+
+---
+
+### `LHS_KAFKA_SASL_JAAS_CONFIG_FILE`
+
+A file containing the Jaas Config to be used to connect to the Kafka brokers. Only valid if the `LHS_KAFKA_SECURITY_PROTOCOL` is set to `SASL_SSL`. [Kafka Official](https://kafka.apache.org/documentation/#producerconfigs_sasl.jaas.config)
 
 - **Type:** path
 - **Default:** null
