@@ -33,7 +33,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     private Date createdAt;
 
     private TaskRunSourceModel source;
-    private ProcessorExecutionContext processorContext;
 
     public ScheduledTaskModel() {
         variables = new ArrayList<>();
@@ -56,7 +55,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
 
         // This is just the wfRunId.
         this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRunId().getWfRunId(), processorContext);
-        this.processorContext = processorContext;
     }
 
     @Override
@@ -108,7 +106,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
             this.createdAt = new Date();
         }
         this.source = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class, context);
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
