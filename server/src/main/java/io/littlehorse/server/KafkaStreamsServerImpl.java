@@ -203,7 +203,6 @@ import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -834,8 +833,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
      * grpc call that asynchronously waits for the command to be processed. It
      * infers the request context from the GRPC Context.
      */
-    public void returnTaskToClient(
-            ScheduledTaskModel scheduledTask, PollTaskRequestObserver client, ExecutionContext requestContext) {
+    public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
 
         processCommand(

@@ -129,7 +129,7 @@ public class OneTaskQueue {
 
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient, scheduledTask.getProcessorContext());
+            parent.itsAMatch(scheduledTask, luckyClient);
             return true;
         }
         return hungryClients.isEmpty();
@@ -183,7 +183,7 @@ public class OneTaskQueue {
         }
 
         if (nextTask != null) {
-            parent.itsAMatch(nextTask, requestObserver, requestContext);
+            parent.itsAMatch(nextTask, requestObserver);
         }
     }
 
@@ -212,7 +212,7 @@ public class OneTaskQueue {
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
                 if (scheduledTask != null) {
                     if (!hungryClients.isEmpty()) {
-                        parent.itsAMatch(scheduledTask, hungryClients.remove(), requestContext);
+                        parent.itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
                         queueOutOfCapacity = !pendingTasks.offer(scheduledTask);
                     }

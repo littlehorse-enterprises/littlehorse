@@ -4,7 +4,6 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Collection;
 import java.util.Objects;
@@ -39,9 +38,8 @@ public class TaskQueueManager {
         getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(scheduledTask);
     }
 
-    public void itsAMatch(
-            ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient, ExecutionContext requestContext) {
-        backend.returnTaskToClient(scheduledTask, luckyClient, requestContext);
+    public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
+        backend.returnTaskToClient(scheduledTask, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
