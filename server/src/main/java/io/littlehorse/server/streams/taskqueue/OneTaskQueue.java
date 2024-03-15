@@ -40,6 +40,9 @@ public class OneTaskQueue {
     private String hostName;
 
     @Getter
+    /*
+     * If it is true, the queue should execute a task rehydration from store
+     */
     private boolean outOfCapacity;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
