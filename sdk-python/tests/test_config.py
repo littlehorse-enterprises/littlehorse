@@ -142,6 +142,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.http2.max_pings_without_data", 0),
             ],
         )
+        grpc_package_mock.intercept_channel.assert_called_once_with(ANY, ANY)
 
     @patch("littlehorse.config.grpc")
     def test_establish_insecure_channel_with_custom_server(self, grpc_package_mock):
@@ -156,6 +157,7 @@ class TestLHConfig(unittest.TestCase):
                 ("grpc.http2.max_pings_without_data", 0),
             ],
         )
+        grpc_package_mock.intercept_channel.assert_called_once_with(ANY, ANY)
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")

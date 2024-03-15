@@ -1,8 +1,17 @@
 from datetime import datetime, timedelta
 import unittest
-from unittest.mock import ANY, call, patch
+from unittest.mock import ANY, call, patch, MagicMock
 from littlehorse.exceptions import OAuthException
-from littlehorse.auth import AccessToken, OAuthCredentialsProvider
+from littlehorse.auth import (
+    AccessToken,
+    OAuthCredentialsProvider,
+    MetadataInterceptor,
+    TENANT_ID_HEADER,
+    AsyncUnaryUnaryMetadataInterceptor,
+    AsyncStreamStreamMetadataInterceptor,
+    AsyncUnaryStreamMetadataInterceptor,
+    AsyncStreamUnaryMetadataInterceptor,
+)
 
 
 class TestAccessToken(unittest.TestCase):
@@ -87,6 +96,93 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
             ]
         )
         self.assertIsNot(token1, token2)
+
+
+class TestMetadataInterceptor(unittest.TestCase):
+
+    def setUp(self):
+        self.tenant_a_interceptor = MetadataInterceptor("A")
+
+    def assert_tenant_a_header(self, client_call_details, request):
+        self.assertEqual(client_call_details.metadata[0], (TENANT_ID_HEADER, "A"))
+
+    def test_add_tenant_metadata_to_unary_unary(self):
+
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        self.tenant_a_interceptor.intercept_unary_unary(
+            self.assert_tenant_a_header, request_details, None
+        )
+
+    def test_add_tenant_metadata_to_stream_stream(self):
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        self.tenant_a_interceptor.intercept_stream_stream(
+            self.assert_tenant_a_header, request_details, None
+        )
+
+
+class TestAsyncMetadataInterceptor(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.unary_unary_interceptor = AsyncUnaryUnaryMetadataInterceptor("B")
+        self.stream_stream_interceptor = AsyncStreamStreamMetadataInterceptor("B")
+        self.unary_stream_interceptor = AsyncUnaryStreamMetadataInterceptor("B")
+        self.stream_unary_interceptor = AsyncStreamUnaryMetadataInterceptor("B")
+
+    async def assert_tenant_b_header(self, client_call_details, request):
+        self.assertEqual(client_call_details.metadata[0], (TENANT_ID_HEADER, "B"))
+
+    async def test_add_tenant_metadata_to_unary_unary(self):
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        await self.unary_unary_interceptor.intercept_unary_unary(
+            self.assert_tenant_b_header, request_details, MagicMock()
+        )
+
+    async def test_add_tenant_metadata_to_stream_stream(self):
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        await self.stream_stream_interceptor.intercept_stream_stream(
+            self.assert_tenant_b_header, request_details, None
+        )
+
+    async def test_add_tenant_metadata_to_unary_stream(self):
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        await self.unary_stream_interceptor.intercept_unary_stream(
+            self.assert_tenant_b_header, request_details, None
+        )
+
+    async def test_add_tenant_metadata_to_stream_unary(self):
+        request_details = MagicMock()
+        request_details.return_value.metadata = None
+        request_details.return_value.method = "my-method"
+        request_details.return_value.timeout = 0
+        request_details.return_value.credentials = None
+        request_details.return_value.wait_for_ready = None
+        await self.stream_unary_interceptor.intercept_stream_unary(
+            self.assert_tenant_b_header, request_details, None
+        )
 
 
 if __name__ == "__main__":
