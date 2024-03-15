@@ -1,5 +1,8 @@
 package io.littlehorse.server.streams.util;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.TestStreamObserver;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
@@ -8,14 +11,6 @@ import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +19,13 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class AsyncWaitersTest {

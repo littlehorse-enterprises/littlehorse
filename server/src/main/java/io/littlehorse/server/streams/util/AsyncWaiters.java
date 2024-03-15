@@ -12,7 +12,6 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class AsyncWaiters {
         CommandWaiter tmp = new CommandWaiter(commandId);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
-        if  (waiter.setObserverAndMaybeComplete(observer)) {
+        if (waiter.setObserverAndMaybeComplete(observer)) {
             commandWaiters.remove(commandId);
         }
     }
