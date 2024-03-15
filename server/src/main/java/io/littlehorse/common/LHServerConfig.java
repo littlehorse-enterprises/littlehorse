@@ -94,12 +94,16 @@ public class LHServerConfig extends ConfigBase {
     public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
 
     // Kafka authentication/security
+    public static final String KAFKA_SECURITY_PROTOCOL_KEY = "LHS_KAFKA_SECURITY_PROTOCOL";
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
     public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
     public static final String KAFKA_KEYSTORE_PASSWORD_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD";
     public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
+    public static final String KAFKA_SASL_MECHANISM_KEY = "LHS_KAFKA_SASL_MECHANISM";
+    public static final String KAFKA_SASL_JAAS_CONFIG_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG";
+    public static final String KAFKA_SASL_JAAS_CONFIG_FILE_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG_FILE";
 
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
@@ -642,48 +646,85 @@ public class LHServerConfig extends ConfigBase {
      * Either way, this all should be configurable.
      */
     private void addKafkaSecuritySettings(Properties conf) {
+        String securityProtocol = getOrSetDefault(KAFKA_SECURITY_PROTOCOL_KEY, "PLAINTEXT");
+
         String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
-        String keystorePassword = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_KEY, null);
-        String keystorePasswordFile = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_FILE_KEY, null);
+        String keystorePassword =
+                getFromConfigOrFile(KAFKA_KEYSTORE_PASSWORD_KEY, KAFKA_KEYSTORE_PASSWORD_FILE_KEY, null);
+
         String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
-        String truststorePassword = getOrSetDefault(KAFKA_TRUSTSTORE_PASSWORD_KEY, null);
-        String truststorePasswordFile = getOrSetDefault(KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY, null);
+        String truststorePassword =
+                getFromConfigOrFile(KAFKA_TRUSTSTORE_PASSWORD_KEY, KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY, null);
 
-        if (keystorePasswordFile != null) {
-            log.info("Loading Keystore Password form file");
-            keystorePassword = loadSettingFromFile(keystorePasswordFile);
+        String saslMechanism = getOrSetDefault(KAFKA_SASL_MECHANISM_KEY, null);
+        String jaasConfig = getFromConfigOrFile(KAFKA_SASL_JAAS_CONFIG_KEY, KAFKA_SASL_JAAS_CONFIG_FILE_KEY, null);
+
+        conf.put("security.protocol", securityProtocol);
+        if (securityProtocol.equals("PLAINTEXT")) {
+            if (keystoreLoc != null
+                    || keystorePassword != null
+                    || truststoreLoc != null
+                    || truststorePassword != null
+                    || jaasConfig != null
+                    || saslMechanism != null) {
+                throw new LHMisconfigurationException(
+                        "Check your LHS_KAFKA_SECURITY_PROTOCOL. Cannot have PLAINTEXT with other security configs.");
+            }
+            log.info("Connecting to Kafka with PLAINTEXT");
+
+        } else if (securityProtocol.equals("SSL")) {
+            if (keystoreLoc != null) {
+                if (keystorePassword == null) {
+                    throw new LHMisconfigurationException(
+                            "Must set LHS_KAFKA_KEYSTORE_PASSWORD or LHS_KAFKA_KEYSTORE_PASSWORD_FILE if"
+                                    + " LHS_KAFKA_KEYSTORE location is set");
+                }
+                conf.put("ssl.keystore.type", "PKCS12");
+                conf.put("ssl.keystore.location", keystoreLoc);
+                conf.put("ssl.keystore.password", keystorePassword);
+                log.info("Connecting to Kafka with MTLS.");
+            } else {
+                log.info("Connecting to Kafka with TLS.");
+            }
+
+        } else if (securityProtocol.equals("SASL_SSL")) {
+            if (saslMechanism == null || jaasConfig == null) {
+                throw new LHMisconfigurationException("Must set SASL mechanism and Jaas Config using SASL_SSL");
+            }
+            conf.put("sasl.mechanism", saslMechanism);
+            conf.put("sasl.jaas.config", jaasConfig);
+        } else {
+            throw new LHMisconfigurationException(
+                    "Only SASL_SSL, PLAINTEXT, and SSL supported for LHS_KAFKA_SECURITY_PROTOCOL");
         }
 
-        if (truststorePasswordFile != null) {
-            log.info("Loading Truststore Password form files");
-            truststorePassword = loadSettingFromFile(truststorePasswordFile);
+        if (truststoreLoc != null) {
+            if (truststorePassword == null) {
+                throw new LHMisconfigurationException("LHS_KAFKA_TRUSTORE set but no password provided");
+            }
+            conf.put("ssl.truststore.type", "PKCS12");
+            conf.put("ssl.truststore.location", truststoreLoc);
+            conf.put("ssl.truststore.password", truststorePassword);
         }
+    }
 
-        if (keystoreLoc == null && keystorePassword == null && truststoreLoc == null && truststorePassword == null) {
-            log.info("Using plaintext kafka access");
-            return;
+    /**
+     * Some configs can be set either directly or via a file (generally, passwords).
+     * @param primary is the config which *might* have the config set.
+     * @param fileLocation is the file which *might* have the config set.
+     * @param defaultVal is the value to return if none are set.
+     * @return the config if set or the default.
+     * @throws LHMisconfigurationException if both primary and fileLocation are set.
+     */
+    private String getFromConfigOrFile(String primary, String fileLocation, String defaultVal) {
+        String primaryVal = getOrSetDefault(primary, null);
+        String fileLocationVal = getOrSetDefault(fileLocation, null);
+        if (primaryVal != null && fileLocationVal != null) {
+            throw new LHMisconfigurationException("Cannot set both %s and %s".formatted(primary, fileLocation));
         }
-
-        if (keystoreLoc == null || keystorePassword == null || truststoreLoc == null || truststorePassword == null) {
-            throw new RuntimeException("Must provide all or none of the following configs: "
-                    + KAFKA_KEYSTORE_KEY
-                    + ", "
-                    + KAFKA_KEYSTORE_PASSWORD_KEY
-                    + ", "
-                    + KAFKA_TRUSTSTORE_KEY
-                    + ", "
-                    + KAFKA_TRUSTSTORE_PASSWORD_KEY);
-        }
-
-        conf.put("security.protocol", "SSL");
-
-        conf.put("ssl.keystore.type", "PKCS12");
-        conf.put("ssl.keystore.location", keystoreLoc);
-        conf.put("ssl.keystore.password", keystorePassword);
-
-        conf.put("ssl.truststore.type", "PKCS12");
-        conf.put("ssl.truststore.location", truststoreLoc);
-        conf.put("ssl.truststore.password", truststorePassword);
+        if (primaryVal != null) return primaryVal;
+        if (fileLocationVal != null) return loadSettingFromFile(fileLocationVal);
+        return defaultVal;
     }
 
     public Properties getCoreStreamsConfig() {
@@ -910,7 +951,7 @@ public class LHServerConfig extends ConfigBase {
             return null;
         }
         if (serverCertFile == null || serverKeyFile == null) {
-            throw new RuntimeException("CA cert file provided but missing cert or key");
+            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
         }
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);
@@ -933,7 +974,7 @@ public class LHServerConfig extends ConfigBase {
         }
 
         if (serverCertFile == null || serverKeyFile == null) {
-            throw new RuntimeException("CA cert file provided but missing cert or key");
+            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
         }
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);
