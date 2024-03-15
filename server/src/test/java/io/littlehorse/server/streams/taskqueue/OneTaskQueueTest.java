@@ -61,6 +61,7 @@ public class OneTaskQueueTest {
     @Test
     public void shouldRememberPendingClient() {
         taskQueue.onPollRequest(mockClient, requestContext);
+        verifyNoInteractions(processorContext.getableManager());
         verify(taskQueueManager, never()).itsAMatch(any(), any());
         taskQueue.onTaskScheduled(mockTask);
         verify(taskQueueManager, times(1)).itsAMatch(same(mockTask), same(mockClient));

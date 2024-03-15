@@ -171,7 +171,7 @@ public class OneTaskQueue {
         try {
             lock.lock();
             if (pendingTasks.isEmpty() && outOfCapacity) {
-                rehydrateFromStore(requestContext, requestContext.getableManager());
+                rehydrateFromStore(requestContext.getableManager());
             }
 
             if (!pendingTasks.isEmpty()) {
@@ -197,8 +197,7 @@ public class OneTaskQueue {
     /**
      * Can only be called within a lock
      */
-    private void rehydrateFromStore(
-            RequestExecutionContext requestContext, ReadOnlyGetableManager readOnlyGetableManager) {
+    private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
