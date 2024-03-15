@@ -1,3 +1,4 @@
+'use server'
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { getClient } from '@/lhConfig'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
@@ -6,7 +7,7 @@ import { getServerSession } from 'next-auth'
 type GetWfSpecProps = {
   name: string
   version: string
-  tenantId: string
+  tenantId?: string
 }
 
 export const getWfSpec = async ({ name, version, tenantId }: GetWfSpecProps): Promise<WfSpec> => {
@@ -14,22 +15,11 @@ export const getWfSpec = async ({ name, version, tenantId }: GetWfSpecProps): Pr
 
   console.log({ tenantId, accessToken: session?.accessToken })
   const client = getClient({ tenantId, accessToken: session?.accessToken })
-  let vs = {}
-
   if (/[0-9]+\.[0-9]+/.test(version)) {
     const [majorVersion, revision] = version.split('.')
-    vs = {
-      majorVersion,
-      revision,
-    }
+    return client.getWfSpec({ name, majorVersion: parseInt(majorVersion), revision: parseInt(revision) })
   }
 
-  const request = {
-    ...vs,
-    name,
-  }
-
-  console.log({ request })
-
-  return client.getWfSpec(request)
+  client.searchWfSpec
+  return client.getLatestWfSpec({ name })
 }
