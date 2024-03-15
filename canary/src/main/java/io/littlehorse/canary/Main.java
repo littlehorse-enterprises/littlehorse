@@ -44,14 +44,14 @@ public class Main {
         final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(config);
         prometheusExporterBootstrap.addMeasurable(kafkaTopicBootstrap);
 
-        if (config.isMetronomeEnabled()) {
-            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
-            prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
-        }
-
         if (config.isMetronomeWorkerEnabled()) {
             final MetronomeWorkerBootstrap metronomeWorkerBootstrap = new MetronomeWorkerBootstrap(config);
             prometheusExporterBootstrap.addMeasurable(metronomeWorkerBootstrap);
+        }
+
+        if (config.isMetronomeEnabled()) {
+            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
+            prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
         }
 
         if (config.isAggregatorEnabled()) {
