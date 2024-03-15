@@ -1,11 +1,18 @@
 import os
 import uuid
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, Any
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
-from littlehorse.auth import OAuthCredentialsProvider
+from littlehorse.auth import (
+    OAuthCredentialsProvider,
+    MetadataInterceptor,
+    AsyncUnaryUnaryMetadataInterceptor,
+    AsyncStreamStreamMetadataInterceptor,
+    AsyncStreamUnaryMetadataInterceptor,
+    AsyncUnaryStreamMetadataInterceptor,
+)
 from littlehorse.model.service_pb2_grpc import LittleHorseStub
 from littlehorse.utils import read_binary
 import logging
@@ -19,6 +26,7 @@ API_HOST = "LHC_API_HOST"
 API_PORT = "LHC_API_PORT"
 API_PROTOCOL = "LHC_API_PROTOCOL"
 CLIENT_CERT = "LHC_CLIENT_CERT"
+TENANT_ID = "LHC_TENANT_ID"
 CLIENT_KEY = "LHC_CLIENT_KEY"
 CA_CERT = "LHC_CA_CERT"
 OAUTH_CLIENT_ID = "LHC_OAUTH_CLIENT_ID"
@@ -169,6 +177,10 @@ class LHConfig:
         client_cert_path = self.get(CLIENT_CERT)
         return None if client_cert_path is None else read_binary(client_cert_path)
 
+    @property
+    def tenant_id(self) -> Optional[str]:
+        return self.get(TENANT_ID)
+
     def is_secure(self) -> bool:
         """Returns True if a secure connection is configured.
 
@@ -289,8 +301,6 @@ class LHConfig:
             Channel: A closable channel. Use 'with' or channel.close().
         """
         server = server or self.bootstrap_server
-        secure_channel = grpc.secure_channel
-        insecure_channel = grpc.insecure_channel
 
         channel_args = [
             ("grpc.keepalive_time_ms", self.grpc_keepalive_time_ms),
@@ -299,10 +309,53 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        if async_channel:
-            self._log.debug("Establishing an async channel")
-            secure_channel = grpc.aio.secure_channel
-            insecure_channel = grpc.aio.insecure_channel
+        def create_channel(
+            target: Optional[str], options: Any, secure_channel: bool
+        ) -> Channel:
+            credentials = []
+            if not self.is_secure():
+                self._log.warning("Establishing insecure channel at %s", server)
+            elif self.has_authentication():
+                credentials = grpc.composite_channel_credentials(
+                    get_ssl_config(),
+                    get_oauth_config(),
+                )
+                self._log.debug("Establishing secure channel with OAuth at %s", server)
+            else:
+                credentials = get_ssl_config()
+                self._log.debug("Establishing secure channel at %s", server)
+
+            # https://github.com/grpc/grpc/issues/31442
+            async_interceptors = [
+                AsyncUnaryUnaryMetadataInterceptor(self.tenant_id),
+                AsyncStreamStreamMetadataInterceptor(self.tenant_id),
+                AsyncStreamUnaryMetadataInterceptor(self.tenant_id),
+                AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
+            ]
+            if async_channel and secure_channel:
+
+                return grpc.aio.secure_channel(
+                    target,
+                    credentials,
+                    options,
+                    interceptors=async_interceptors,
+                )
+            elif async_channel:
+                return grpc.aio.insecure_channel(
+                    target,
+                    options,
+                    interceptors=async_interceptors,
+                )
+            elif secure_channel:
+                return grpc.intercept_channel(
+                    grpc.secure_channel(target, credentials, options=channel_args),
+                    MetadataInterceptor(self.tenant_id),
+                )
+            else:
+                return grpc.intercept_channel(
+                    grpc.insecure_channel(target, options=channel_args),
+                    MetadataInterceptor(self.tenant_id),
+                )
 
         def get_ssl_config() -> ChannelCredentials:
             return grpc.ssl_channel_credentials(
@@ -320,29 +373,11 @@ class LHConfig:
                 )
             )
 
-        if self.is_secure() and self.has_authentication():
-            self._log.debug("Establishing secure channel with OAuth at %s", server)
-            return secure_channel(
-                server,
-                grpc.composite_channel_credentials(
-                    get_ssl_config(),
-                    get_oauth_config(),
-                ),
-                options=channel_args,
-            )
-
-        if self.is_secure():
-            self._log.debug("Establishing secure channel at %s", server)
-            return secure_channel(
-                server,
-                get_ssl_config(),
-                options=channel_args,
-            )
-
-        if not self.is_secure():
-            self._log.warning("Establishing insecure channel at %s", server)
-
-        return insecure_channel(server, options=channel_args)
+        return create_channel(
+            server,
+            options=channel_args,
+            secure_channel=self.is_secure(),
+        )
 
     def stub(
         self,
@@ -369,6 +404,7 @@ class LHConfig:
 
         if channel is None:
             channel = self.establish_channel(channel_id.server, channel_id.is_async)
+
             self._opened_channels[channel_id] = channel
         else:
             self._log.debug("Reusing channel %s", channel_id)
