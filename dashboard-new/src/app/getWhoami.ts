@@ -6,26 +6,15 @@ import { authOptions } from './api/auth/[...nextauth]/authOptions'
 
 const getWhoAmI = async (): Promise<WhoAmI> => {
   const session = await getServerSession(authOptions)
-  if (session) {
-    const { accessToken } = session
-    const client = lhConfig.getClient(accessToken)
+  const client = lhConfig.getClient(session?.accessToken)
 
-    const { perTenantAcls, globalAcls } = await client.whoami({})
+  const { id, perTenantAcls, globalAcls } = await client.whoami({})
 
-    const tenants = getTenants({ perTenantAcls, globalAcls })
+  const tenants = getTenants({ perTenantAcls, globalAcls })
 
-    return {
-      user: session.user,
-      tenants,
-    }
-  } else {
-    return {
-      user: {
-        name: 'anonymous',
-        email: 'anonymous',
-      },
-      tenants: ['default'],
-    }
+  return {
+    user: session?.user || { name: id?.id },
+    tenants,
   }
 }
 
