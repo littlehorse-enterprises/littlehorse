@@ -10,6 +10,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -37,6 +38,12 @@ public class OneTaskQueue {
     private TenantIdModel tenantId;
 
     private String hostName;
+
+    @Getter
+    /*
+     * If it is true, the queue should execute a task rehydration from store
+     */
+    private boolean outOfCapacity;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
@@ -120,7 +127,8 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                return pendingTasks.offer(scheduledTask);
+                outOfCapacity = !pendingTasks.offer(scheduledTask);
+                return !outOfCapacity;
             }
         } finally {
             lock.unlock();
@@ -141,7 +149,7 @@ public class OneTaskQueue {
      *                        that talks to the
      *                        client who made the PollTaskRequest.
      */
-    public void onPollRequest(PollTaskRequestObserver requestObserver) {
+    public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
 
         if (taskDefName == null) {
             taskDefName = requestObserver.getTaskDefId();
@@ -162,8 +170,8 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            if (pendingTasks.isEmpty()) {
-                rehydrateFromStore(requestObserver.getRequestContext().getableManager());
+            if (pendingTasks.isEmpty() && outOfCapacity) {
+                rehydrateFromStore(requestContext.getableManager());
             }
 
             if (!pendingTasks.isEmpty()) {
@@ -198,10 +206,7 @@ public class OneTaskQueue {
                 + "/";
         String endKey = startKey + "~";
         try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.tagScan(startKey, endKey)) {
-
-            // Not needed to be atomic since this method is called within a lock
             boolean queueOutOfCapacity = false;
-
             while (result.hasNext() && !queueOutOfCapacity) {
                 Tag tag = result.next().getValue();
                 String describedObjectId = tag.getDescribedObjectId();
@@ -216,6 +221,7 @@ public class OneTaskQueue {
                     }
                 }
             }
+            this.outOfCapacity = queueOutOfCapacity;
         }
     }
 

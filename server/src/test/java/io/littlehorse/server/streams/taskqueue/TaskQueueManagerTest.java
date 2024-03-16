@@ -2,8 +2,10 @@ package io.littlehorse.server.streams.taskqueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,12 +14,14 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -54,9 +58,18 @@ public class TaskQueueManagerTest {
     @BeforeEach
     void setup() {
         when(processorContext.getableManager().get(any())).thenReturn(TestUtil.nodeRun());
+        when(requestContext.getableManager().get(any())).thenReturn(TestUtil.nodeRun());
         when(requestContext.authorization().tenantId()).thenReturn(new TenantIdModel("my-tenant"));
         taskToSchedule = new ScheduledTaskModel(taskId, List.of(), userTaskRun, processorContext);
-        trackableObserver = new PollTaskRequestObserver(mock(), queueManager, requestContext);
+        trackableObserver = spy(new PollTaskRequestObserver(
+                mock(),
+                queueManager,
+                new TenantIdModel("my-tenant"),
+                new PrincipalIdModel(""),
+                mock(),
+                new MetadataCache(),
+                mock()));
+        doReturn(requestContext).when(trackableObserver).getFreshExecutionContext();
     }
 
     @Test

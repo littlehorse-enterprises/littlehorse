@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -161,5 +162,12 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         }
         log.trace("Called getFailureMessage() on non-failed TaskAttempt. Probably you need more coffee!");
         return null;
+    }
+
+    public Optional<VariableValueModel> getFailureContent() {
+        if (this.getStatus().equals(TaskStatus.TASK_EXCEPTION)) {
+            return Optional.ofNullable(this.getException().getContent());
+        }
+        return Optional.empty();
     }
 }

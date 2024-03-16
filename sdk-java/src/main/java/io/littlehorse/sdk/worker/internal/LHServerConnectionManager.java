@@ -306,6 +306,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return io.littlehorse.sdk.common.proto.LHTaskException.newBuilder()
                 .setName(exn.getName())
                 .setMessage(Throwables.getStackTraceAsString(exn))
+                .setContent(exn.getContent())
                 .build();
     }
 
