@@ -92,9 +92,11 @@ class LHTaskError(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.LHErrorType, str]] = ..., message: _Optional[str] = ...) -> None: ...
 
 class LHTaskException(_message.Message):
-    __slots__ = ["name", "message"]
+    __slots__ = ["name", "message", "content"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
     name: str
     message: str
-    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ...) -> None: ...
+    content: _variable_pb2.VariableValue
+    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
