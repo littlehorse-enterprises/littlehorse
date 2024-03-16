@@ -621,6 +621,7 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
+        conf.put("client.id", this.getClientId());
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -795,6 +796,7 @@ public class LHServerConfig extends ConfigBase {
                         + this.getInternalAdvertisedPort());
 
         props.put("bootstrap.servers", this.getBootstrapServers());
+        props.put("client.id", this.getClientId());
         props.put("state.dir", getStateDirectory());
         props.put("request.timeout.ms", 1000 * 60);
         props.put("producer.transaction.timeout.ms", 1000 * 60);
@@ -850,6 +852,10 @@ public class LHServerConfig extends ConfigBase {
         addKafkaSecuritySettings(props);
 
         return props;
+    }
+
+    private String getClientId() {
+        return this.getLHClusterId() + "-" + this.getLHInstanceId();
     }
 
     public int getNumNetworkThreads() {
