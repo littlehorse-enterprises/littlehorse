@@ -202,6 +202,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -217,11 +218,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StoreQueryParameters;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LittleHorseImplBase {
@@ -237,16 +234,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     private ListenersManager listenerManager;
     private HealthService healthService;
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
-
-    private static final boolean ENABLE_STALE_STORES = true;
+    private final MetadataCache metadataCache;
+    private final CoreStoreProvider coreStoreProvider;
 
     private RequestExecutionContext requestContext() {
-
         return contextKey.get();
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
-        MetadataCache metadataCache = new MetadataCache();
+        this.metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
         this.coreStreams = new KafkaStreams(
@@ -256,6 +252,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
         coreStreams.setStandbyUpdateListener(healthService);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
+        coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.listenerManager = new ListenersManager(
                 config,
                 this,
@@ -263,10 +260,10 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 healthService.getMeterRegistry(),
                 metadataCache,
                 contextKey,
-                this::readOnlyStore);
+                coreStoreProvider);
 
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, this::readOnlyStore);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
     }
 
     public String getInstanceId() {
@@ -462,7 +459,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
-        return new PollTaskRequestObserver(ctx, taskQueueManager, requestContext());
+        AuthorizationContext authorization = requestContext().authorization();
+        return new PollTaskRequestObserver(
+                ctx,
+                taskQueueManager,
+                authorization.tenantId(),
+                authorization.principalId(),
+                coreStoreProvider,
+                metadataCache,
+                config);
     }
 
     @Override
@@ -830,12 +835,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
+
         processCommand(
                 new CommandModel(claimEvent),
                 client.getResponseObserver(),
                 PollTaskResponse.class,
                 false,
-                client.getRequestContext());
+                client.getPrincipalId(),
+                client.getTenantId());
     }
 
     public LHProducer getProducer() {
@@ -870,7 +877,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
-        processCommand(command, responseObserver, responseCls, shouldCompleteStream, requestContext);
+        processCommand(
+                command,
+                responseObserver,
+                responseCls,
+                shouldCompleteStream,
+                requestContext.authorization().principalId(),
+                requestContext.authorization().tenantId());
     }
 
     /*
@@ -885,7 +898,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             StreamObserver<RC> responseObserver,
             Class<RC> responseCls,
             boolean shouldCompleteStream,
-            RequestExecutionContext requestContext) {
+            PrincipalIdModel principalId,
+            TenantIdModel tenantId) {
         StreamObserver<WaitForCommandResponse> commandObserver =
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
@@ -893,9 +907,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         command.setCommandId(LHUtil.generateGuid());
 
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(
-                requestContext.authorization().tenantId(),
-                requestContext.authorization().principalId());
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         internalComms
                 .getProducer()
                 .send(
@@ -904,21 +916,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                         command.getTopic(config),
                         callback,
                         commandMetadata.toArray());
-    }
-
-    public ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {
-        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
-
-        if (ENABLE_STALE_STORES) {
-            params = params.enableStaleStores();
-        }
-
-        if (specificPartition != null) {
-            params = params.withPartition(specificPartition);
-        }
-
-        return coreStreams.store(params);
     }
 
     private WfService getServiceFromContext() {

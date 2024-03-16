@@ -5,6 +5,7 @@ import io.grpc.Context;
 import io.grpc.Grpc;
 import io.grpc.Server;
 import io.littlehorse.server.auth.RequestAuthorizer;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -13,10 +14,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class ServerListener implements Closeable {
@@ -32,7 +30,7 @@ public class ServerListener implements Closeable {
             MeterRegistry meter,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> executionContextKey,
-            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
+            CoreStoreProvider coreStoreProvider) {
         this.config = config;
         this.server = Grpc.newServerBuilderForPort(config.getPort(), config.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
@@ -40,7 +38,7 @@ public class ServerListener implements Closeable {
                 .addService(service)
                 .intercept(new MetricCollectingServerInterceptor(meter))
                 .intercept(new RequestAuthorizer(
-                        service, executionContextKey, metadataCache, storeProvider, config.getConfig()))
+                        service, executionContextKey, metadataCache, coreStoreProvider, config.getConfig()))
                 .intercept(config.getAuthorizer())
                 .executor(executor)
                 .build();
