@@ -86,6 +86,7 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -348,7 +349,11 @@ public class BackendInternalComms implements Closeable {
             params = params.withPartition(specificPartition);
         }
 
-        return coreStreams.store(params);
+        try {
+            return coreStreams.store(params);
+        } catch (InvalidStateStoreException exn) {
+            throw new LHApiException(Status.UNAVAILABLE, "Handling rebalance; retry in a second or two");
+        }
     }
 
     private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
@@ -367,10 +372,6 @@ public class BackendInternalComms implements Closeable {
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        if (host.port() == -1) {
-            throw new LHApiException(
-                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
-        }
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
