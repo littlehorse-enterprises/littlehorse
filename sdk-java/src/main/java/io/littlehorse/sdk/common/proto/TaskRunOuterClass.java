@@ -98,11 +98,12 @@ public final class TaskRunOuterClass {
       "\013_wf_spec_id\"@\n\021TaskNodeReference\022+\n\013nod" +
       "e_run_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"F" +
       "\n\013LHTaskError\022&\n\004type\030\001 \001(\0162\030.littlehors" +
-      "e.LHErrorType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTask" +
+      "e.LHErrorType\022\017\n\007message\030\002 \001(\t\"]\n\017LHTask" +
       "Exception\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t" +
-      "BG\n\037io.littlehorse.sdk.common.protoP\001Z\007." +
-      ";model\252\002\030LittleHorse.Common.Protob\006proto" +
-      "3"
+      "\022+\n\007content\030\003 \001(\0132\032.littlehorse.Variable" +
+      "ValueBG\n\037io.littlehorse.sdk.common.proto" +
+      "P\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -155,7 +156,7 @@ public final class TaskRunOuterClass {
     internal_static_littlehorse_LHTaskException_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTaskException_descriptor,
-        new java.lang.String[] { "Name", "Message", });
+        new java.lang.String[] { "Name", "Message", "Content", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
