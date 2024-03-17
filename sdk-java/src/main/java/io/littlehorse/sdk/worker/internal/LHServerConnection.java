@@ -1,12 +1,10 @@
 package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
-import io.littlehorse.sdk.common.proto.ScheduledTask;
 import java.io.Closeable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,17 +47,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
 
     @Override
     public void onNext(PollTaskResponse taskToDo) {
-        if (taskToDo.hasResult()) {
-            ScheduledTask scheduledTask = taskToDo.getResult();
-            String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
-            log.debug("Received task schedule request for wfRun {}", wfRunId);
-
-            manager.submitTaskForExecution(scheduledTask, this.stub);
-
-            log.debug("Scheduled task on threadpool for wfRun {}", wfRunId);
-        } else {
-            log.error("Didn't successfully claim task, likely due to server restart.");
-        }
+        manager.maybeExecuteTask(taskToDo, this.stub);
 
         if (stillRunning) {
             askForMoreWork();
