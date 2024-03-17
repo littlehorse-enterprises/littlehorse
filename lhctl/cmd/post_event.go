@@ -44,8 +44,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 
 		varTypeEnum := model.VariableType(varType)
 
-		content := &model.VariableValue{
-		}
+		content := &model.VariableValue{}
 
 		if len(args) == 4 {
 			payloadStr := args[3]
@@ -65,7 +64,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 
 		common.PrintResp(
 			getGlobalClient(cmd).PutExternalEvent(
-				requestContext(),
+				requestContext(cmd),
 				&req,
 			),
 		)

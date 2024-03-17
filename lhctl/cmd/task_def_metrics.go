@@ -47,7 +47,7 @@ taskDefName.
 		ts := timestamppb.Now()
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
-			requestContext(),
+			requestContext(cmd),
 			&model.ListTaskMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),

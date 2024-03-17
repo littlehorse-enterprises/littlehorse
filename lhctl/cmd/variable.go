@@ -48,7 +48,7 @@ var getVariableCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).GetVariable(
-				requestContext(),
+				requestContext(cmd),
 				&model.VariableId{
 					WfRunId:         common.StrToWfRunId(args[0]),
 					ThreadRunNumber: int32(threadRunNumber),
@@ -123,7 +123,7 @@ Choose one of the following option groups:
 		search.Limit = &limit
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchVariable(requestContext(), &search),
+			getGlobalClient(cmd).SearchVariable(requestContext(cmd), &search),
 		)
 	},
 }
@@ -148,7 +148,7 @@ Lists all Variable's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListVariables(
-			requestContext(),
+			requestContext(cmd),
 			req,
 		))
 	},

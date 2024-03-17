@@ -24,7 +24,7 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 			log.Fatal("You must provide the wfRunId and userTaskGuid")
 		}
 		client := getGlobalClient(cmd)
-		executeUserTask(args[0], args[1], &client)
+		executeUserTask(cmd, args[0], args[1], &client)
 	},
 }
 
@@ -38,7 +38,7 @@ var cancelUserTaskRunCmd = &cobra.Command{
 			log.Fatal("You must provide the wfRunId and userTaskGuid")
 		}
 		client := getGlobalClient(cmd)
-		cancelUserTask(args[0], args[1], &client)
+		cancelUserTask(cmd, args[0], args[1], &client)
 	},
 }
 
@@ -59,7 +59,7 @@ Lists all UserTaskRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
-			requestContext(),
+			requestContext(cmd),
 			req,
 		))
 	},
@@ -109,7 +109,7 @@ The following option groups are supported:
 		}
 
 		common.PrintResp(getGlobalClient(cmd).AssignUserTaskRun(
-			requestContext(),
+			requestContext(cmd),
 			reassign,
 		))
 	},
@@ -144,7 +144,7 @@ var getUserTaskRunCmd = &cobra.Command{
 		wfRunId, userTaskGuid := args[0], args[1]
 
 		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.UserTaskRunId{
 				WfRunId:      common.StrToWfRunId(wfRunId),
 				UserTaskGuid: userTaskGuid,
@@ -216,12 +216,12 @@ Choose one of the following option groups:
 		search.Bookmark = bookmark
 		search.Limit = &limit
 
-		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(requestContext(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(requestContext(cmd), search))
 
 	},
 }
 
-func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
+func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
 	completeUserTask := &model.CompleteUserTaskRunRequest{
@@ -233,7 +233,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHo
 	}
 
 	// First, get the UserTaskRun.
-	userTaskRun, err := getUserTaskRun(wfRunId, userTaskGuid, client)
+	userTaskRun, err := getUserTaskRun(cmd, wfRunId, userTaskGuid, client)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -243,7 +243,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHo
 	}
 
 	// Next, get the UserTaskDef.
-	userTaskDef, err := getUserTaskDef(userTaskRun, client)
+	userTaskDef, err := getUserTaskDef(cmd, userTaskRun, client)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -274,18 +274,18 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LittleHo
 	fmt.Println("completing userTaskRun!")
 	// Post the result
 	common.PrintResp(
-		(*client).CompleteUserTaskRun(requestContext(), completeUserTask),
+		(*client).CompleteUserTaskRun(requestContext(cmd), completeUserTask),
 	)
 }
 
-func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
+func cancelUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
 	cancelUserTask := &model.CancelUserTaskRunRequest{
 		UserTaskRunId: &model.UserTaskRunId{
 			WfRunId:      common.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
-	(*client).CancelUserTaskRun(requestContext(), cancelUserTask)
+	(*client).CancelUserTaskRun(requestContext(cmd), cancelUserTask)
 }
 
 func promptFor(prompt string, varType model.VariableType) (*model.VariableValue, error) {
@@ -299,12 +299,16 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
-func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LittleHorseClient) (*model.UserTaskDef, error) {
-	return (*client).GetUserTaskDef(requestContext(), userTaskRun.UserTaskDefId)
+func getUserTaskDef(
+	cmd *cobra.Command, userTaskRun *model.UserTaskRun, client *model.LittleHorseClient,
+) (*model.UserTaskDef, error) {
+	return (*client).GetUserTaskDef(requestContext(cmd), userTaskRun.UserTaskDefId)
 }
 
-func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LittleHorseClient) (*model.UserTaskRun, error) {
-	resp, err := (*client).GetUserTaskRun(requestContext(), &model.UserTaskRunId{
+func getUserTaskRun(
+	cmd *cobra.Command, wfRunId, userTaskGuid string, client *model.LittleHorseClient,
+) (*model.UserTaskRun, error) {
+	resp, err := (*client).GetUserTaskRun(requestContext(cmd), &model.UserTaskRunId{
 		WfRunId:      common.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})

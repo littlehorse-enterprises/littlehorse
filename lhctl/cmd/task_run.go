@@ -34,7 +34,7 @@ var getTaskRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.TaskRunId{
 				WfRunId:  common.StrToWfRunId(args[0]),
 				TaskGuid: args[1],
@@ -100,7 +100,7 @@ Choose one of the following option groups:
 			Bookmark:      bookmark,
 			Limit:         &limit,
 		}
-		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(cmd), search))
 	},
 }
 
@@ -121,7 +121,7 @@ Lists all TaskRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskRuns(
-			requestContext(),
+			requestContext(cmd),
 			req,
 		))
 	},

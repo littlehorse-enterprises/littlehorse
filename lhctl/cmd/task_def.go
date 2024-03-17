@@ -48,7 +48,7 @@ var deployTaskDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutTaskDef(requestContext(), ptd))
+		common.PrintResp(getGlobalClient(cmd).PutTaskDef(requestContext(cmd), ptd))
 	},
 }
 
@@ -65,7 +65,7 @@ var getTaskDefCmd = &cobra.Command{
 		name := args[0]
 		common.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.TaskDefId{
 					Name: name,
 				},
@@ -89,7 +89,7 @@ for all TaskDefs.
 
 		common.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.SearchTaskDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
@@ -114,7 +114,7 @@ var deleteTaskDefCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteTaskDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.DeleteTaskDefRequest{
 					Id: &model.TaskDefId{
 						Name: name,

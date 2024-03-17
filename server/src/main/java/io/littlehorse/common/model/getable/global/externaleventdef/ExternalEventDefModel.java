@@ -28,9 +28,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         this.retentionPolicy = new ExternalEventRetentionPolicyModel();
     }
 
-    public ExternalEventDefModel(String name) {
+    public ExternalEventDefModel(String name, ExternalEventRetentionPolicyModel retentionPolicy) {
         this();
         this.id = new ExternalEventDefIdModel(name);
+        this.retentionPolicy = retentionPolicy;
     }
 
     public Date getCreatedAt() {

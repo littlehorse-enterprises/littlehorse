@@ -326,8 +326,12 @@ type tenantIdHeaderCreds struct {
 }
 
 func (c *tenantIdHeaderCreds) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
+	if c == nil || c.TenantId == nil {
+		return map[string]string{}, nil
+	}
 	return map[string]string{TENANT_ID_HEADER: *c.TenantId}, nil
 }
+
 func (c *tenantIdHeaderCreds) RequireTransportSecurity() bool {
 	return false
 }
