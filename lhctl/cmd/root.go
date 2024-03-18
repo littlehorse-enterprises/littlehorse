@@ -55,6 +55,13 @@ func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
 	globalConfig, err = common.NewConfigFromProps(configLoc)
 
 	if err != nil {
+		if os.IsNotExist(err) {
+			if configLoc != "${HOME}/.config/littlehorse.config" {
+				log.Fatal("provided config file does not exist")
+			}
+		} else {
+			log.Fatal(err)
+		}
 		globalConfig = common.NewConfigFromEnv()
 	}
 
@@ -78,8 +85,8 @@ func getGlobalClient(cmd *cobra.Command) model.LittleHorseClient {
 	return *globalClient
 }
 
-func requestContext() context.Context {
-	if globalConfig.TenantId != nil {
+func requestContext(cmd *cobra.Command) context.Context {
+	if getGlobalConfig(cmd).TenantId != nil {
 		tenantId := *globalConfig.TenantId
 		md := metadata.Pairs("tenantId", tenantId)
 		return metadata.NewOutgoingContext(context.Background(), md)

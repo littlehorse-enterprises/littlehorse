@@ -48,7 +48,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutExternalEventDef(requestContext(), peed))
+		common.PrintResp(getGlobalClient(cmd).PutExternalEventDef(requestContext(cmd), peed))
 	},
 }
 
@@ -64,7 +64,7 @@ var getExternalEventDefCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.ExternalEventDefId{
 					Name: args[0],
 				},
@@ -88,7 +88,7 @@ searches for all ExternalEventDefs.
 
 		common.PrintResp(
 			getGlobalClient(cmd).SearchExternalEventDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.SearchExternalEventDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
@@ -114,7 +114,7 @@ ExternalEventDef to delete.
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteExternalEventDef(
-				requestContext(),
+				requestContext(cmd),
 				&model.DeleteExternalEventDefRequest{
 					Id: &model.ExternalEventDefId{
 						Name: name,
