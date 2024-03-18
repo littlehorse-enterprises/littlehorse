@@ -19,7 +19,6 @@ COPY ./docker/standalone/kafka-entrypoint.sh /lh
 COPY ./docker/standalone/littlehorse-entrypoint.sh /lh
 COPY ./docker/standalone/dashboard-entrypoint.sh /lh
 COPY ./docker/standalone/docker-entrypoint.sh /lh
-COPY ./docker/standalone/log4j2.properties /lh
 
 WORKDIR /lh/dashboard
 ENV NODE_ENV=production
