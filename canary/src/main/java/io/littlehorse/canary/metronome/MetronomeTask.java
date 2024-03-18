@@ -68,8 +68,6 @@ class MetronomeTask {
                         .setExecutedTime(Timestamps.now())
                         .setScheduledTime(Timestamps.fromDate(context.getScheduledTime())))
                 .build();
-
-        // TODO: WHAT HAPPEN IF THIS FAILS?
         emitter.emit(key, beat);
     }
 }
