@@ -10,8 +10,7 @@ public final class ServerFilterRules {
     // relevance ordered
     public static final List<ServerFilterRule> RULES = List.of(
             // TODO: Wait for KIP-869 and gather state restoration metrics.
-            accept("lh_cache_size"),
-            accept("lh_task_queue_size"),
+            accept("lh_in_memory_task_queue_size"),
             accept("kafka_stream_state_compaction_pending"),
             accept("kafka_stream_state_write_stall"),
             accept("kafka_stream_state_bytes"),
@@ -26,7 +25,8 @@ public final class ServerFilterRules {
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
-            deny("kafka_admin"));
+            deny("kafka_admin"),
+            deny("lh_cache_size"));
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);
