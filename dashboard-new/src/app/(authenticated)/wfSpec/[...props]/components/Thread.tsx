@@ -1,10 +1,10 @@
 'use client'
-import { ThreadSpec } from 'littlehorse-client/dist/proto/wf_spec'
-import React, { FC } from 'react'
-import { Variables } from './Variables'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/20/solid'
+import { ThreadSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { FC } from 'react'
 import { Mutations } from './Mutations'
+import { Variables } from './Variables'
 
 type Props = {
   name: string
