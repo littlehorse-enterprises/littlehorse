@@ -198,7 +198,7 @@ public class OneTaskQueue {
      * Can only be called within a lock
      */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
-        System.out.println("rehydrating");
+        log.debug("Rehydrating");
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
