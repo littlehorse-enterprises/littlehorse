@@ -43,7 +43,7 @@ public class OneTaskQueue {
     /*
      * If it is true, the queue should execute a task rehydration from store
      */
-    private boolean outOfCapacity;
+    private boolean hasMoreTasksOnDisk;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
@@ -127,8 +127,8 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                outOfCapacity = !pendingTasks.offer(scheduledTask);
-                return !outOfCapacity;
+                hasMoreTasksOnDisk = !pendingTasks.offer(scheduledTask) || hasMoreTasksOnDisk;
+                return !hasMoreTasksOnDisk;
             }
         } finally {
             lock.unlock();
@@ -170,7 +170,7 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            if (pendingTasks.isEmpty() && outOfCapacity) {
+            if (pendingTasks.isEmpty() && hasMoreTasksOnDisk) {
                 rehydrateFromStore(requestContext.getableManager());
             }
 
@@ -198,6 +198,7 @@ public class OneTaskQueue {
      * Can only be called within a lock
      */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
+        System.out.println("rehydrating");
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
@@ -221,7 +222,7 @@ public class OneTaskQueue {
                     }
                 }
             }
-            this.outOfCapacity = queueOutOfCapacity;
+            this.hasMoreTasksOnDisk = queueOutOfCapacity;
         }
     }
 
