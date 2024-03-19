@@ -103,7 +103,7 @@ public class OneTaskQueueTest {
         boundedQueue.onTaskScheduled(task1);
         boundedQueue.onTaskScheduled(task2);
         boundedQueue.onTaskScheduled(task3);
-        Assertions.assertThat(boundedQueue.isOutOfCapacity()).isTrue();
+        Assertions.assertThat(boundedQueue.isHasMoreTasksOnDisk()).isTrue();
         boundedQueue.onTaskScheduled(task4);
 
         boundedQueue.onPollRequest(mockClient, requestContext);
