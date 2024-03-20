@@ -2,6 +2,6 @@ import { FC } from 'react'
 
 export const Diagram: FC = () => {
   return (
-    <div className="min-h-[600px] rounded min-w-full bg-slate-50 border-2 border-slate-100 shadow-inner mb-4"></div>
+    <div className="mb-4 min-h-[600px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner"></div>
   )
 }

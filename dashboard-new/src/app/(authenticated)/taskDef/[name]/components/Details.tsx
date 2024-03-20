@@ -8,7 +8,7 @@ export const Details: FC<DetailsProps> = ({ id }) => {
   return (
     <div className="mb-4">
       <span className="italic">TaskDef</span>
-      <h1 className="block font-bold text-2xl">{id?.name}</h1>
+      <h1 className="block text-2xl font-bold">{id?.name}</h1>
     </div>
   )
 }

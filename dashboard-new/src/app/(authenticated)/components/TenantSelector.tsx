@@ -10,14 +10,14 @@ export const TenantSelector: FC = () => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div className="">
-        <Menu.Button className="inline-flex bg-white w-full rounded items-center justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
+        <Menu.Button className="inline-flex w-full items-center justify-center gap-x-1.5 rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="text-blue-500 w-4 h-4"
+            className="h-4 w-4 text-blue-500"
           >
             <path
               strokeLinecap="round"
@@ -38,7 +38,7 @@ export const TenantSelector: FC = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="px-2 py-2 font-bold uppercase text-sm">Tenants</div>
+          <div className="px-2 py-2 text-sm font-bold uppercase">Tenants</div>
           {tenants.map(tenant => (
             <div key={tenant} className="py-1">
               <Menu.Item>

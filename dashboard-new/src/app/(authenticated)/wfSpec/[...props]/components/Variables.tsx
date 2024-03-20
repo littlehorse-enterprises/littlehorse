@@ -15,14 +15,14 @@ export const Variables: FC<VariablesProps> = ({ variableDefs }) => {
   if (variableDefs.length === 0) return <></>
   return (
     <div className="">
-      <h2 className="text-md font-bold mb-2">Variables</h2>
+      <h2 className="text-md mb-2 font-bold">Variables</h2>
       {variableDefs.map(variable => (
-        <div key={variable.varDef?.name} className="flex items-center gap-1 mb-1">
-          <span className="text-fuchsia-500	font-mono bg-gray-100 rounded py-1 px-2">{variable.varDef?.name}</span>
-          <span className="text-xs bg-yellow-100 rounded p-1">{VARIABLE_TYPES[variable.varDef!.type]}</span>
-          {variable.required && <span className="text-xs bg-orange-300 rounded p-1">Required</span>}
-          {variable.searchable && <span className="text-xs bg-blue-300 rounded p-1">Searchable</span>}
-          <span className="text-xs bg-green-300 rounded p-1">{accessLevels[variable.accessLevel]}</span>
+        <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
+          <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
+          <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variable.varDef!.type]}</span>
+          {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
+          {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
+          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
         </div>
       ))}
     </div>

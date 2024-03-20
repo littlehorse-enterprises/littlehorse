@@ -9,11 +9,11 @@ import { TenantSelector } from './TenantSelector'
 
 export const Header: FC = () => {
   return (
-    <nav className="bg-black border-gray-200 dark:bg-gray-900 mb-4">
-      <div className="flex flex-wrap items-center justify-between py-4 mx-auto max-w-screen-xl">
+    <nav className="mb-4 border-gray-200 bg-black dark:bg-gray-900">
+      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between py-4">
         <a href="/" className="flex items-center space-x-1 rtl:space-x-reverse">
           <Image src={LhLogo} alt="littlehorse" width={60} />
-          <div className="hidden flex-col text-white text-xl font-bold gap-0 md:flex space-y-[-10px]">
+          <div className="hidden flex-col gap-0 space-y-[-10px] text-xl font-bold text-white md:flex">
             <span>LITTLE</span>
             <span>HORSE</span>
           </div>

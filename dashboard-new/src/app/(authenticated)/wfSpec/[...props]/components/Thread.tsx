@@ -12,11 +12,11 @@ type Props = {
 }
 export const Thread: FC<Props> = ({ name, spec }) => {
   return (
-    <div className="mb-4 border-2 rounded border-slate-100 p-2">
+    <div className="mb-4 rounded border-2 border-slate-100 p-2">
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex items-center w-full justify-between">
+            <Disclosure.Button className="flex w-full items-center justify-between">
               <h2 className="text-xl">Thread: {name}</h2>
               <ChevronUpIcon className={`${open ? 'rotate-180 transform' : ''} h-6 w-6`} />
             </Disclosure.Button>

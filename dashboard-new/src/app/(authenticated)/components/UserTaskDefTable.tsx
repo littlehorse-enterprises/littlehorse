@@ -10,12 +10,12 @@ export const UserTaskDefTable: FC<Props> = ({ items }) => {
   return (
     <div className="py-4">
       {items.map(({ name, version }) => (
-        <div key={`${name}.${version}`} className="flex my-2 gap-2">
+        <div key={`${name}.${version}`} className="my-2 flex gap-2">
           <Link className="underline hover:no-underline" href={`/userTaskDef/${name}/${version}`}>
             {name}
           </Link>
-          <div className="bg-blue-200 items-center text-gray-500 text-sm font-mono rounded px-2 flex gap-2">
-            <TagIcon className="w-4 h-4 fill-none stroke-1 stroke-gray-500" />v{version}
+          <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
+            <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{version}
           </div>
         </div>
       ))}

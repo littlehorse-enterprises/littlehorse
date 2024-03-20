@@ -9,7 +9,7 @@ export const TaskDefTable: FC<Props> = ({ items }) => {
   return (
     <div className="py-4">
       {items.map(({ name }) => (
-        <div key={name} className="flex my-2 gap-2">
+        <div key={name} className="my-2 flex gap-2">
           <Link className="underline hover:no-underline" href={`/taskDef/${name}`}>
             {name}
           </Link>

@@ -13,18 +13,18 @@ export default async function Login() {
   const providers = await getProviders()
   const year = new Date().getFullYear()
   return (
-    <div className="bg-gray-100 flex justify-center items-center h-screen">
-      <div className="w-1/2 h-screen hidden lg:block">
-        <Image src={handsomeHorse} alt="LittleHorse" className="object-cover w-full h-full" />
+    <div className="flex h-screen items-center justify-center bg-gray-100">
+      <div className="hidden h-screen w-1/2 lg:block">
+        <Image src={handsomeHorse} alt="LittleHorse" className="h-full w-full object-cover" />
       </div>
-      <div className="flex sm:20 p-8 w-full lg:w-1/2 h-full flex-col justify-between">
+      <div className="sm:20 flex h-full w-full flex-col justify-between p-8 lg:w-1/2">
         <div className="flex justify-end text-blue-500">
           <Image src={lhLogo} alt="Littlehorse Logo" />
         </div>
         <div className="flex flex-grow flex-col items-center justify-center justify-items-center ">
-          <h1 className="text-5xl font-bold mb-8">
+          <h1 className="mb-8 text-5xl font-bold">
             Welcome to your
-            <span className="block my-3">Littlehorse</span>
+            <span className="my-3 block">Littlehorse</span>
             <span className="block text-blue-500">Dashboard</span>
           </h1>
           {Object.values(providers || {}).map(({ id, name }) => (

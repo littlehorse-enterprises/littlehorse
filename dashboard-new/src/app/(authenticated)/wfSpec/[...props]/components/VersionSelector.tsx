@@ -23,14 +23,14 @@ export const VersionSelector: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
       <div className="flex">
         <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">Version: </Listbox.Label>
         <div className="relative">
-          <Listbox.Button onClick={loadVersions} className="flex gap-2 ml-2 px-2 border-2 border-slate-100 rounded">
-            <TagIcon className="w-5 h-5" />
+          <Listbox.Button onClick={loadVersions} className="ml-2 flex gap-2 rounded border-2 border-slate-100 px-2">
+            <TagIcon className="h-5 w-5" />
             {majorVersion}.{revision}
           </Listbox.Button>
           <Listbox.Options className="absolute right-0 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
             {versions.map(version => (
               <Listbox.Option
-                className="block relative cursor-pointer select-none p-2 hover:bg-slate-300"
+                className="relative block cursor-pointer select-none p-2 hover:bg-slate-300"
                 key={version}
                 value={version}
                 as={Link}

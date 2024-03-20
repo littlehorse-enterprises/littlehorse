@@ -8,11 +8,11 @@ export const InputVars: FC<Props> = ({ inputVars }) => {
 
   return (
     <div className="">
-      <h2 className="font-bold text-lg mb-2">Input Variables</h2>
+      <h2 className="mb-2 text-lg font-bold">Input Variables</h2>
       {inputVars.map(({ name, type, defaultValue }) => (
-        <div key={name} className="flex items-center gap-1 mb-1">
-          <div className="text-fuchsia-500 font-mono bg-gray-100 rounded py-1 px-2">{name}</div>
-          <div className="text-xs bg-yellow-100 rounded p-1">{VARIABLE_TYPES[type]}</div>
+        <div key={name} className="mb-1 flex items-center gap-1">
+          <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{name}</div>
+          <div className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[type]}</div>
           {defaultValue && <div className="">{Object.values(defaultValue)[0]}</div>}
         </div>
       ))}
