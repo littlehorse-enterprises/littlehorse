@@ -4,6 +4,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -33,6 +34,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
     private final KafkaStreamsServerImpl server;
+    private GetableManager getableManager;
 
     public TestProcessorExecutionContext(
             Command currentCommand,
@@ -51,12 +53,13 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         this.server = server;
 
-        this.coreStore = TenantScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this);
-        this.tenantMetadataStore = TenantScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this);
-        this.clusterMetadataStore = ClusterScopedStore.newInstance(
-                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this);
+        this.coreStore = Mockito.spy(TenantScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this));
+        this.tenantMetadataStore = Mockito.spy(TenantScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this));
+        this.clusterMetadataStore = Mockito.spy(ClusterScopedStore.newInstance(
+                processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this));
+        getableManager = Mockito.spy(super.getableManager());
     }
 
     public static TestProcessorExecutionContext create(
@@ -67,10 +70,10 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         KafkaStreamsServerImpl server = Mockito.mock();
-        KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
+        KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()
-                .build();
+                .build());
         KeyValueStore<String, Bytes> nativeCoreStore = Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()
@@ -92,6 +95,11 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
                 globalTaskQueueManager,
                 metadataCache,
                 server);
+    }
+
+    @Override
+    public GetableManager getableManager() {
+        return getableManager;
     }
 
     @Override

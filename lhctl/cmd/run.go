@@ -78,7 +78,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 			if revision == nil {
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
-					requestContext(),
+					requestContext(cmd),
 					&model.GetLatestWfSpecRequest{
 						Name:         args[0],
 						MajorVersion: majorVersion,
@@ -86,7 +86,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				)
 			} else {
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
-					requestContext(),
+					requestContext(cmd),
 					&model.WfSpecId{
 						Name:         args[0],
 						MajorVersion: *majorVersion,
@@ -121,7 +121,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 		}
 
 		// At this point, we've loaded everything up, time to fire away.
-		common.PrintResp(getGlobalClient(cmd).RunWf(requestContext(), runReq))
+		common.PrintResp(getGlobalClient(cmd).RunWf(requestContext(cmd), runReq))
 	},
 }
 

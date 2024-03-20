@@ -4,6 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -30,7 +31,7 @@ var getExternalEventCmd = &cobra.Command{
 			args = strings.Split(args[0], "/")
 		}
 
-		if len(args) != 1 && len(args) != 3 {
+		if len(args) != 3 {
 			needsHelp = true
 		}
 
@@ -38,8 +39,14 @@ var getExternalEventCmd = &cobra.Command{
 			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get externalEvent -h'")
 		}
 
+		fmt.Println(args)
+
+		// fmt.Println(args)
+
+		ctx := requestContext(cmd)
+
 		common.PrintResp(getGlobalClient(cmd).GetExternalEvent(
-			requestContext(),
+			ctx,
 			&model.ExternalEventId{
 				WfRunId:            common.StrToWfRunId(args[0]),
 				ExternalEventDefId: &model.ExternalEventDefId{Name: args[1]},
@@ -101,7 +108,7 @@ Choose one of the following option groups:
 			}
 			search.ExtEvtCriteria = extEvtCriteria
 		}
-		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
 	},
 }
 
@@ -125,7 +132,7 @@ Lists all ExternalEvent's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListExternalEvents(
-			requestContext(),
+			requestContext(cmd),
 			req,
 		))
 	},

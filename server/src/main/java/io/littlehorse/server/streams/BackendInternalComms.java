@@ -52,6 +52,7 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
@@ -69,7 +70,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +86,7 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -119,7 +120,7 @@ public class BackendInternalComms implements Closeable {
             Executor executor,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
-            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
+            CoreStoreProvider coreStoreProvider) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -143,7 +144,7 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .addService(new InterBrokerCommServer())
-                .intercept(new InternalAuthorizer(contextKey, storeProvider, metadataCache, config))
+                .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
@@ -348,7 +349,11 @@ public class BackendInternalComms implements Closeable {
             params = params.withPartition(specificPartition);
         }
 
-        return coreStreams.store(params);
+        try {
+            return coreStreams.store(params);
+        } catch (InvalidStateStoreException exn) {
+            throw new LHApiException(Status.UNAVAILABLE, "Handling rebalance; retry in a second or two");
+        }
     }
 
     private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
@@ -367,10 +372,6 @@ public class BackendInternalComms implements Closeable {
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        if (host.port() == -1) {
-            throw new LHApiException(
-                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
-        }
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 

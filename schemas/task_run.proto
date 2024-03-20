@@ -144,4 +144,6 @@ message LHTaskException {
 
   // Human readadble description of the failure.
   string message = 2;
+
+  VariableValue content = 3;
 }

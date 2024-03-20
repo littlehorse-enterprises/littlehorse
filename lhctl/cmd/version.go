@@ -16,7 +16,7 @@ var versionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("lhctl version: 0.8.0")
 
-		resp, err := getGlobalClient(cmd).GetServerVersion(requestContext(), &emptypb.Empty{})
+		resp, err := getGlobalClient(cmd).GetServerVersion(requestContext(cmd), &emptypb.Empty{})
 		if err != nil {
 			if grpcStatus, ok := status.FromError(err); ok && grpcStatus.Code() == codes.Unimplemented {
 				fmt.Println("Server is outdated")

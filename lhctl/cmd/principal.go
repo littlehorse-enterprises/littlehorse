@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"strings"
-	"github.com/spf13/cobra"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/spf13/cobra"
 )
-
 
 var putPrincipalCmd = &cobra.Command{
 	Use:   "principal",
@@ -17,10 +17,10 @@ var putPrincipalCmd = &cobra.Command{
 		id := args[0]
 		serverAcls := []*model.ServerACL{}
 		per_tenant_acls := make(map[string]*model.ServerACLs)
-		for resource, actions := range parseAcl(acl){
+		for resource, actions := range parseAcl(acl) {
 			allowedResources := []model.ACLResource{resource}
 			serverAcl := model.ServerACL{
-				Resources: allowedResources,
+				Resources:      allowedResources,
 				AllowedActions: actions,
 			}
 			serverAcls = append(serverAcls, &serverAcl)
@@ -31,11 +31,11 @@ var putPrincipalCmd = &cobra.Command{
 		}
 
 		putRequest := model.PutPrincipalRequest{
-			Id: id,
+			Id:            id,
 			PerTenantAcls: per_tenant_acls,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
-			requestContext(),
+			requestContext(cmd),
 			&putRequest,
 		))
 	},
@@ -67,20 +67,20 @@ func parseAcl(input string) map[model.ACLResource][]model.ACLAction {
 }
 
 var (
-	actionsMap = map[string]model.ACLAction {
-		"read": model.ACLAction_READ,
-		"run": model.ACLAction_RUN,
+	actionsMap = map[string]model.ACLAction{
+		"read":  model.ACLAction_READ,
+		"run":   model.ACLAction_RUN,
 		"write": model.ACLAction_WRITE_METADATA,
-		"all": model.ACLAction_ALL_ACTIONS,
+		"all":   model.ACLAction_ALL_ACTIONS,
 	}
-	entitiesMap = map[string]model.ACLResource {
-		"acl_workflow": model.ACLResource_ACL_WORKFLOW,
-		"acl_task": model.ACLResource_ACL_TASK,
+	entitiesMap = map[string]model.ACLResource{
+		"acl_workflow":       model.ACLResource_ACL_WORKFLOW,
+		"acl_task":           model.ACLResource_ACL_TASK,
 		"acl_external_event": model.ACLResource_ACL_EXTERNAL_EVENT,
-		"acl_user_task": model.ACLResource_ACL_USER_TASK,
-		"acl_principal": model.ACLResource_ACL_PRINCIPAL,
-		"acl_tenant": model.ACLResource_ACL_TENANT,
-		"all": model.ACLResource_ACL_ALL_RESOURCES,
+		"acl_user_task":      model.ACLResource_ACL_USER_TASK,
+		"acl_principal":      model.ACLResource_ACL_PRINCIPAL,
+		"acl_tenant":         model.ACLResource_ACL_TENANT,
+		"all":                model.ACLResource_ACL_ALL_RESOURCES,
 	}
 )
 

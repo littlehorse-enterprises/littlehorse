@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
 
-    public static final String METRIC_NAME = "lh_task_queue_size";
+    public static final String METRIC_NAME = "lh_in_memory_task_queue_size";
     public static final String TENANT_ID_TAG = "tenant_id";
     public static final String TASK_NAME_TAG = "task_name";
     private final TaskQueueManager taskQueueManager;

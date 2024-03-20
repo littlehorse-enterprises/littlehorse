@@ -18,7 +18,7 @@ var getWfRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetWfRun(
-			requestContext(),
+			requestContext(cmd),
 			common.StrToWfRunId(args[0]),
 		))
 	},
@@ -82,7 +82,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		}
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchWfRun(requestContext(), search),
+			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
 		)
 	},
 }
@@ -98,7 +98,7 @@ var stopWfRunCmd = &cobra.Command{
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		common.PrintResp(getGlobalClient(cmd).StopWfRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.StopWfRunRequest{
 				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
@@ -118,7 +118,7 @@ var resumeWfRunCmd = &cobra.Command{
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.ResumeWfRunRequest{
 				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
@@ -137,7 +137,7 @@ var deleteWfRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).DeleteWfRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.DeleteWfRunRequest{
 				Id: &model.WfRunId{
 					Id: args[0],

@@ -56,7 +56,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
 
-        ExternalEventDefModel spec = new ExternalEventDefModel(name);
+        ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy);
 
         metadataManager.put(spec);
         return spec.toProto().build();

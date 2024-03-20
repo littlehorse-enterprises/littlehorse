@@ -51,7 +51,7 @@ var getNodeRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
-			requestContext(),
+			requestContext(cmd),
 			&model.NodeRunId{
 				WfRunId:         common.StrToWfRunId(args[0]),
 				ThreadRunNumber: int32(trn),
@@ -81,7 +81,7 @@ Lists all NodeRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
-			requestContext(),
+			requestContext(cmd),
 			req,
 		))
 	},
@@ -152,7 +152,7 @@ Valid options for Status:
 			Status:        model.LHStatus(statusInt),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(cmd), search))
 
 	},
 }

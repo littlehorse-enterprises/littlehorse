@@ -1,11 +1,14 @@
 package e2e;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -13,11 +16,13 @@ import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -77,6 +82,14 @@ public class FailureHandlingTest {
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
                     Failure failure = nodeRun.getFailures(0);
+                    Assertions.assertThat(failure.getContent()).isNotNull();
+                    try {
+                        Map<String, String> outputData = LHLibUtil.deserializeFromjson(
+                                failure.getContent().getJsonObj(), Map.class);
+                        Assertions.assertThat(outputData).containsOnlyKeys("date", "server");
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                     Assertions.assertThat(failure.getFailureHandlerThreadrunId())
                             .isEqualTo(1);
 
@@ -185,7 +198,9 @@ public class FailureHandlingTest {
         return new WorkflowImpl("handle-client-specific-exception", thread -> {
             NodeOutput node = thread.execute("business-exception-failure");
             thread.handleException(node, handler -> {
-                handler.execute("my-handler");
+                WfRunVariable failureContent =
+                        handler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
+                handler.execute("my-handler-with-args", failureContent.jsonPath("server"));
             });
             thread.execute("my-task");
         });
@@ -288,12 +303,19 @@ public class FailureHandlingTest {
 
     @LHTaskMethod("business-exception-failure")
     public String businessExceptionFailure() throws LHTaskException {
-        throw new LHTaskException("client-exception", "This is a business exception!");
+        Map<String, String> data = Map.of("date", new Date().toString(), "server", "127.0.0.1");
+        VariableValue failureContent = LHLibUtil.objToVarVal(data);
+        throw new LHTaskException("client-exception", "This is a business exception!", failureContent);
     }
 
     @LHTaskMethod("my-handler")
     public String handler() {
         return "Exception handled";
+    }
+
+    @LHTaskMethod("my-handler-with-args")
+    public String handlerWithArgs(String detail) {
+        return "Exception handled: " + detail;
     }
 
     @LHTaskMethod("my-task")

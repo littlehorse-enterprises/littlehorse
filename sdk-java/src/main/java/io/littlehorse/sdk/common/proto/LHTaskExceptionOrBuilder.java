@@ -46,4 +46,19 @@ public interface LHTaskExceptionOrBuilder extends
    */
   com.google.protobuf.ByteString
       getMessageBytes();
+
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   * @return Whether the content field is set.
+   */
+  boolean hasContent();
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   * @return The content.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getContent();
+  /**
+   * <code>.littlehorse.VariableValue content = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
 }

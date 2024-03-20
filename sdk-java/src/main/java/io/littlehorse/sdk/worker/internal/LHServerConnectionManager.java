@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -96,6 +97,21 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         this.threadPool.submit(() -> {
             this.doTask(scheduledTask, specificStub);
         });
+    }
+
+    public void maybeExecuteTask(PollTaskResponse taskToDo, LittleHorseStub specificStub) {
+        if (taskToDo.hasResult()) {
+            ScheduledTask scheduledTask = taskToDo.getResult();
+            String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
+            log.debug("Received task schedule request for wfRun {}", wfRunId);
+
+            this.submitTaskForExecution(scheduledTask, specificStub);
+
+            log.debug("Scheduled task on threadpool for wfRun {}", wfRunId);
+        } else {
+            this.workerSemaphore.release();
+            log.error("Didn't successfully claim task, likely due to server restart.");
+        }
     }
 
     private void doTask(ScheduledTask scheduledTask, LittleHorseStub specificStub) {
@@ -306,6 +322,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return io.littlehorse.sdk.common.proto.LHTaskException.newBuilder()
                 .setName(exn.getName())
                 .setMessage(Throwables.getStackTraceAsString(exn))
+                .setContent(exn.getContent())
                 .build();
     }
 
