@@ -1,4 +1,4 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 WORKDIR /lh
 COPY ./docker/canary/docker-entrypoint.sh /lh
 COPY ./docker/canary/log4j2.properties /lh
